@@ -1,3 +1,8 @@
+#!/bin/bash
+# Gorstan v2.0.0 Installation Script
+# This script installs the core dependencies for Gorstan v2.0.0
+# Usage: ./install_gorstan.sh
+# Ensure the script is run from the project root directory
 
 echo "🚀 Installing Gorstan v2.0.0 core dependencies..."
 
@@ -13,7 +18,7 @@ npm install react react-dom
 npm install --save-dev vite @vitejs/plugin-react
 
 # (Optional future) Install Howler.js if needed
-# npm install howler
+npm install howler
 
 echo "✅ Installation complete!"
 echo "👉 Now you can run: npm run dev"
