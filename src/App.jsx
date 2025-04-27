@@ -1,32 +1,42 @@
-import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-//  import viteLogo from '/vite.svg'
+import { useState, useEffect } from 'react'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [isIframe, setIsIframe] = useState(false);
+  const [showPortalMessage, setShowPortalMessage] = useState(true);
+
+  useEffect(() => {
+    // Detect if running inside an iframe
+    if (window.self !== window.top) {
+      setIsIframe(true);
+    }
+    // After 3 seconds, hide the portal message
+    const timer = setTimeout(() => {
+      setShowPortalMessage(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isIframe && showPortalMessage) {
+    return (
+      <div style={{ textAlign: "center", padding: "2rem" }}>
+        <h2>🌀 External Portal Detected</h2>
+        <p>You are accessing Gorstan through an unstable gateway.</p>
+        <p>Stability uncertain. Proceed carefully...</p>
+      </div>
+    );
+  }
 
   return (
     <>
-      <div>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
       <h1>Welcome to Gorstan</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+        <p>Simulated reality engaged. Choose your next move wisely.</p>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }
 
 export default App
+
