@@ -22,7 +22,6 @@ export default function App() {
   const logRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Initialize the game when the player name is set
   useEffect(() => {
     if (playerName) {
       game.setPlayerName(playerName);
@@ -35,21 +34,18 @@ export default function App() {
     }
   }, [playerName]);
 
-  // Auto-scroll the game log to the latest entry
   useEffect(() => {
     if (logRef.current) {
       logRef.current.scrollTop = logRef.current.scrollHeight;
     }
   }, [gameLog]);
 
-  // Automatically focus the input field
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
-  }, [command, playerName]);
+  }, [command, playerName, activePuzzle]);
 
-  // Handle player commands
   const handleCommand = () => {
     const trimmedCommand = command.trim().toLowerCase();
     if (!trimmedCommand) return;
@@ -63,16 +59,12 @@ export default function App() {
       const result = game.processCommand(command);
       setGameLog((prev) => [...prev.slice(-99), { type: 'system', text: result.message }]);
     } catch (error) {
-      setGameLog((prev) => [
-        ...prev.slice(-99),
-        { type: 'system', text: `An error occurred: ${error.message}` },
-      ]);
+      setGameLog((prev) => [...prev.slice(-99), { type: 'system', text: `An error occurred: ${error.message}` }]);
     }
 
     setCommand('');
   };
 
-  // Handle keyboard navigation for command history
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       handleCommand();
@@ -92,9 +84,8 @@ export default function App() {
     }
   };
 
-  // Determine the CSS class for log messages
   const getMessageClass = (entry) => {
-    if (game.currentRoom === 'intro') return 'text-green-400 bg-black p-4 font-mono animate-pulse';
+    if (game.currentRoom === 'intro') return 'text-green-400 bg-black p-4 text-xl font-mono animate-pulse';
     if (entry.type === 'player') return 'text-gray-400 italic';
     if (entry.text.startsWith('Ayla says:')) return 'text-yellow-300 font-handwriting bg-yellow-100 p-2 rounded-md';
     if (entry.text.toLowerCase().includes('hidden hatch opens') || entry.text.toLowerCase().includes('secret passage')) {
@@ -103,21 +94,19 @@ export default function App() {
     return '';
   };
 
-  // Handle puzzle solving
   const handlePuzzleSolve = (input) => {
     const result = activePuzzle.solve(input);
     setGameLog((prev) => [...prev.slice(-99), { type: 'system', text: result }]);
     setActivePuzzle(null);
   };
 
-  // Render the player name input screen
   if (!playerName) {
     return (
       <div className="h-screen bg-black flex flex-col justify-center items-center text-green-400 font-mono">
-        <h1 className="text-3xl mb-4">Welcome to Gorstan</h1>
+        <h1 className="text-4xl mb-4 animate-pulse">Welcome to Gorstan</h1>
         <input
           className="border p-2 mb-2 text-black"
-          placeholder="Enter your name"
+          placeholder="Enter your name..."
           value={playerName}
           onChange={(e) => setPlayerName(e.target.value)}
           ref={inputRef}
@@ -126,19 +115,18 @@ export default function App() {
     );
   }
 
-  // Render the main game interface
   return (
     <ErrorBoundary>
       <div className={`min-h-screen ${game.currentRoom === 'intro' ? 'bg-black' : 'bg-gray-900'} text-green-400 font-mono p-4 flex flex-col items-center`}>
         {rooms[game.currentRoom]?.image && (
-          <div className="mb-2">
+          <div className="mb-2 animate-fadeIn">
             <img src={rooms[game.currentRoom].image} alt="Room" className="w-full max-w-lg rounded shadow" />
           </div>
         )}
 
         <div
           ref={logRef}
-          className="bg-black text-green-400 p-4 w-full max-w-2xl h-64 overflow-y-auto rounded shadow mb-4 scroll-smooth"
+          className="bg-black text-green-400 p-4 w-full max-w-2xl h-72 overflow-y-auto rounded shadow mb-4 scroll-smooth"
         >
           {gameLog.map((entry, idx) => (
             <div key={idx} className={getMessageClass(entry)}>
@@ -154,7 +142,7 @@ export default function App() {
             <input
               ref={inputRef}
               className="border p-2 flex-1"
-              placeholder="Enter a command"
+              placeholder={game.currentRoom === 'intro' ? 'Type jump!' : 'Enter a command...'}
               value={command}
               onChange={(e) => setCommand(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -194,4 +182,3 @@ export default function App() {
     </ErrorBoundary>
   );
 }
-
