@@ -15,6 +15,7 @@ const game = new GameEngine();
 export default function App() {
   const [command, setCommand] = useState('');
   const [gameLog, setGameLog] = useState([]);
+  const [playerNameInput, setPlayerNameInput] = useState('');
   const [playerName, setPlayerName] = useState('');
   const [commandHistory, setCommandHistory] = useState([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
@@ -22,17 +23,14 @@ export default function App() {
   const logRef = useRef(null);
   const inputRef = useRef(null);
 
-  useEffect(() => {
-    if (playerName) {
-      game.setPlayerName(playerName);
-      game.currentRoom = 'intro';
-      const startRoom = rooms[game.currentRoom];
-      if (startRoom?.description) {
-        setGameLog((prev) => [...prev, { type: 'system', text: startRoom.description }]);
-      }
-      game.updateStoryProgress('gameStarted');
-    }
-  }, [playerName]);
+  const startGame = () => {
+    if (!playerNameInput.trim()) return;
+    setPlayerName(playerNameInput.trim());
+    game.setPlayerName(playerNameInput.trim());
+    game.currentRoom = 'intro';
+    setGameLog([{ type: 'system', text: `The truck barrels toward you, ${playerNameInput.trim()}... A portal shimmers open!` }]);
+    game.updateStoryProgress('gameStarted');
+  };
 
   useEffect(() => {
     if (logRef.current) {
@@ -107,10 +105,13 @@ export default function App() {
         <input
           className="border p-2 mb-2 text-black"
           placeholder="Enter your name..."
-          value={playerName}
-          onChange={(e) => setPlayerName(e.target.value)}
+          value={playerNameInput}
+          onChange={(e) => setPlayerNameInput(e.target.value)}
           ref={inputRef}
         />
+        <button onClick={startGame} className="bg-green-600 hover:bg-green-700 text-white p-2 rounded">
+          Start Adventure
+        </button>
       </div>
     );
   }
@@ -182,3 +183,4 @@ export default function App() {
     </ErrorBoundary>
   );
 }
+
