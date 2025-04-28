@@ -1,0 +1,29 @@
+/* src/tailwind.css */
+
+/* Tailwind Base Styles */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Caveat&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+/* Custom Font Classes */
+.font-handwriting {
+  font-family: 'Caveat', cursive;
+}
+
+.font-sans {
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Custom Utilities */
+.text-shadow {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.bg-gradient-to-b {
+  background: linear-gradient(to bottom, #ffffff, #f0f0f0);
+}
+

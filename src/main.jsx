@@ -1,10 +1,16 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App'
-import ErrorBoundary from './ErrorBoundary' // 👈 import the boundary
-import './index.css'
+// /src/main.jsx
+// MIT License
+// Copyright (c) 2025 Geoff Webster
+// Gorstan v2.0.0
 
-// Simple iframe detection
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import ErrorBoundary from './ErrorBoundary'; // Wrap the app in an error boundary
+import './index.css';
+import './tailwind.css'; // Import Tailwind CSS styles
+
+// Detect if running inside an iframe
 if (window.self !== window.top) {
   console.log("✅ Gorstan running inside an iframe.");
 } else {
@@ -18,7 +24,7 @@ if (!rootElement) {
 } else {
   ReactDOM.createRoot(rootElement).render(
     <React.StrictMode>
-      <ErrorBoundary> {/* 👈 wrap the app in the boundary */}
+      <ErrorBoundary>
         <App />
       </ErrorBoundary>
     </React.StrictMode>
