@@ -32,7 +32,11 @@ export default function App() {
     game.updateStoryProgress('gameStarted');
   };
 
-  useEffect(() => {
+<div className="bg-red-500 text-white">
+  If this is red, Tailwind is alive.
+</div>
+
+useEffect(() => {
     if (logRef.current) {
       logRef.current.scrollTop = logRef.current.scrollHeight;
     }
