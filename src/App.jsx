@@ -61,6 +61,9 @@ export default function App() {
     }
 
     setCommand('');
+    if (inputRef.current) {
+      inputRef.current.value = '';
+    }
   };
 
   const handleKeyDown = (e) => {
@@ -102,16 +105,21 @@ export default function App() {
     return (
       <div className="h-screen bg-black flex flex-col justify-center items-center text-green-400 font-mono">
         <h1 className="text-4xl mb-4 animate-pulse">Welcome to Gorstan</h1>
-        <input
-          className="border p-2 mb-2 text-black"
-          placeholder="Enter your name..."
-          value={playerNameInput}
-          onChange={(e) => setPlayerNameInput(e.target.value)}
-          ref={inputRef}
-        />
-        <button onClick={startGame} className="bg-green-600 hover:bg-green-700 text-white p-2 rounded">
-          Start Adventure
-        </button>
+        <div className="flex space-x-2">
+          <input
+            className="border border-green-400 p-2 text-black"
+            placeholder="Enter your name..."
+            value={playerNameInput}
+            onChange={(e) => setPlayerNameInput(e.target.value)}
+            ref={inputRef}
+          />
+          <button
+            onClick={startGame}
+            className="bg-green-600 hover:bg-green-700 text-white p-2 rounded"
+          >
+            Start Adventure
+          </button>
+        </div>
       </div>
     );
   }
