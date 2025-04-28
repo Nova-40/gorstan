@@ -8,6 +8,7 @@ import { GameEngine } from './engine/GameEngine';
 import { rooms } from './engine/rooms';
 import ErrorBoundary from './ErrorBoundary';
 import PuzzleUI from './components/PuzzleUI';
+import './tailwind.css';
 
 const game = new GameEngine();
 
@@ -21,10 +22,11 @@ export default function App() {
   const logRef = useRef(null);
   const inputRef = useRef(null);
 
+  // Initialize the game when the player name is set
   useEffect(() => {
     if (playerName) {
       game.setPlayerName(playerName);
-      game.currentRoom = 'centralpark';
+      game.currentRoom = 'intro';
       const startRoom = rooms[game.currentRoom];
       if (startRoom?.description) {
         setGameLog((prev) => [...prev, { type: 'system', text: startRoom.description }]);
@@ -33,18 +35,21 @@ export default function App() {
     }
   }, [playerName]);
 
+  // Auto-scroll the game log to the latest entry
   useEffect(() => {
     if (logRef.current) {
       logRef.current.scrollTop = logRef.current.scrollHeight;
     }
   }, [gameLog]);
 
+  // Automatically focus the input field
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
   }, [command, playerName]);
 
+  // Handle player commands
   const handleCommand = () => {
     const trimmedCommand = command.trim().toLowerCase();
     if (!trimmedCommand) return;
@@ -53,27 +58,6 @@ export default function App() {
     setCommandHistory(newHistory);
     setHistoryIndex(newHistory.length);
     setGameLog((prev) => [...prev.slice(-99), { type: 'player', text: `> ${command}` }]);
-
-    // Handle "walk" command early
-    if (trimmedCommand === 'walk') {
-      autoWalkGame(game);
-      setCommand('');
-      return;
-    }
-
-    // Handle "solve" command
-    if (trimmedCommand.startsWith('solve')) {
-      const puzzleName = trimmedCommand.split(' ')[1];
-      const puzzle = game.puzzles[puzzleName];
-      if (puzzle?.options) {
-        setActivePuzzle(puzzle);
-        setCommand('');
-        return;
-      }
-      setGameLog((prev) => [...prev.slice(-99), { type: 'system', text: 'Puzzle not found.' }]);
-      setCommand('');
-      return;
-    }
 
     try {
       const result = game.processCommand(command);
@@ -88,6 +72,7 @@ export default function App() {
     setCommand('');
   };
 
+  // Handle keyboard navigation for command history
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       handleCommand();
@@ -107,22 +92,9 @@ export default function App() {
     }
   };
 
-  const handlePuzzleSolve = (selectedOption) => {
-    if (!activePuzzle) return;
-
-    const result = activePuzzle.solve(selectedOption);
-    setGameLog((prev) => [...prev.slice(-99), { type: 'system', text: result }]);
-
-    if (result.includes('trapdoor') || result.includes('dissolves into a glowing medallion')) {
-      setActivePuzzle(null);
-      if (result.includes('trapdoor')) {
-        game.currentRoom = 'crossing2';
-        setGameLog((prev) => [...prev.slice(-99), { type: 'system', text: rooms['crossing2'].description }]);
-      }
-    }
-  };
-
+  // Determine the CSS class for log messages
   const getMessageClass = (entry) => {
+    if (game.currentRoom === 'intro') return 'text-green-400 bg-black p-4 font-mono animate-pulse';
     if (entry.type === 'player') return 'text-gray-400 italic';
     if (entry.text.startsWith('Ayla says:')) return 'text-yellow-300 font-handwriting bg-yellow-100 p-2 rounded-md';
     if (entry.text.toLowerCase().includes('hidden hatch opens') || entry.text.toLowerCase().includes('secret passage')) {
@@ -131,12 +103,20 @@ export default function App() {
     return '';
   };
 
+  // Handle puzzle solving
+  const handlePuzzleSolve = (input) => {
+    const result = activePuzzle.solve(input);
+    setGameLog((prev) => [...prev.slice(-99), { type: 'system', text: result }]);
+    setActivePuzzle(null);
+  };
+
+  // Render the player name input screen
   if (!playerName) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen p-4">
-        <h1 className="text-2xl font-bold mb-4">Welcome to Gorstan</h1>
+      <div className="h-screen bg-black flex flex-col justify-center items-center text-green-400 font-mono">
+        <h1 className="text-3xl mb-4">Welcome to Gorstan</h1>
         <input
-          className="border p-2 mb-2"
+          className="border p-2 mb-2 text-black"
           placeholder="Enter your name"
           value={playerName}
           onChange={(e) => setPlayerName(e.target.value)}
@@ -146,9 +126,10 @@ export default function App() {
     );
   }
 
+  // Render the main game interface
   return (
     <ErrorBoundary>
-      <div className="flex flex-col items-center justify-center min-h-screen p-4">
+      <div className={`min-h-screen ${game.currentRoom === 'intro' ? 'bg-black' : 'bg-gray-900'} text-green-400 font-mono p-4 flex flex-col items-center`}>
         {rooms[game.currentRoom]?.image && (
           <div className="mb-2">
             <img src={rooms[game.currentRoom].image} alt="Room" className="w-full max-w-lg rounded shadow" />
@@ -213,9 +194,4 @@ export default function App() {
     </ErrorBoundary>
   );
 }
-
-
-
-
-
 

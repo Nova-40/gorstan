@@ -6,8 +6,22 @@
 // MIT License
 // Copyright (c) 2025 Geoff Webster
 // Gorstan v2.0.0
+// /src/engine/rooms.js
+// MIT License
+// Copyright (c) 2025 Geoff Webster
+// Gorstan v2.0.0
 
 export const rooms = {
+  intro: {
+    description: 'A dark street. A yellow truck barrels toward you. A portal shimmers open beside you. A voice echoes: "That one."',
+    exits: {},
+    onEnter: (game) => {
+      if (!game.hasItem('gorstancoffee')) {
+        game.addItem('gorstancoffee', { description: 'A steaming cup of Gorstan coffee, oddly comforting.' });
+      }
+    },
+  },
+
   centralpark: {
     description: 'You are standing in the heart of Central Park. There is a strange sense that something is hidden beneath your feet.',
     exits: {
@@ -272,3 +286,4 @@ export function checkSecretTunnelAccess(game) {
     }
   }
 }
+

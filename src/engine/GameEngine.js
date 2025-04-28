@@ -1,8 +1,7 @@
-// /src/engine/gameEngine.js
+// /src/engine/GameEngine.js
 // MIT License
 // Copyright (c) 2025 Geoff Webster
 // Gorstan v2.0.0
-// src/engine/GameEngine.js
 
 import { addItem, removeItem, hasItem, listInventory, clearInventory } from './inventory';
 import { puzzles } from './puzzles';
@@ -13,7 +12,7 @@ import { getHelpAdvice } from './aylaHelp';
 export class GameEngine {
   constructor() {
     this.playerName = '';
-    this.currentRoom = '';
+    this.currentRoom = 'intro';
     this.storyProgress = {}; // Fine-grained progress markers
     this.storyFlags = new Set(); // Big story flags (defied dome, solved maze)
     this.npcMood = {}; // Mood tracker per NPC
@@ -172,6 +171,15 @@ export class GameEngine {
     const words = input.trim().toLowerCase().split(' ');
     const command = words[0];
 
+    if (this.currentRoom === 'intro') {
+      if (command === 'jump') {
+        this.currentRoom = 'controlnexus';
+        return { success: true, message: 'You dive through the shimmering portal just as the truck blazes past. Reality twists... You land heavily inside the Control Nexus.' };
+      } else {
+        return { success: false, message: 'The truck barrels toward you. You must JUMP!' };
+      }
+    }
+
     switch (command) {
       case 'go':
         return this.moveToRoom(words[1]);
@@ -200,6 +208,7 @@ export class GameEngine {
     }
   }
 }
+
 
 
 
