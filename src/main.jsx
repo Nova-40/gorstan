@@ -7,8 +7,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import ErrorBoundary from './ErrorBoundary'; // Wrap the app in an error boundary
-import './index.css';
-import './tailwind.css'; // Import Tailwind CSS styles
+import './tailwind.css';
 
 // Detect if running inside an iframe
 if (window.self !== window.top) {
