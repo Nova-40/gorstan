@@ -23,9 +23,14 @@ export default function App() {
   const [activePuzzle, setActivePuzzle] = useState(null);
   const [showIntro, setShowIntro] = useState(true);
   const [showHelp, setShowHelp] = useState(false);
+  const [showTruckScene, setShowTruckScene] = useState(false);  // New state for truck scene
+  const [truckTimer, setTruckTimer] = useState(null);  // Timer state for truck scene
+  const [truckImpact, setTruckImpact] = useState(false);  // Flag for truck impact
+  const [resettingUniverse, setResettingUniverse] = useState(false);  // Flag for resetting
   const logRef = useRef(null);
   const inputRef = useRef(null);
 
+  // Start the game by setting the player's name and initializing the game state
   const startGame = () => {
     if (!playerNameInput.trim()) return;
     const trimmedName = playerNameInput.trim();
@@ -48,6 +53,7 @@ export default function App() {
     }
   }, [command, playerName, activePuzzle]);
 
+  // Handle player commands
   const handleCommand = () => {
     const trimmedCommand = command.trim().toLowerCase();
     if (!trimmedCommand) return;
@@ -67,6 +73,7 @@ export default function App() {
     setCommand('');
   };
 
+  // Handle keyboard navigation for command history
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       handleCommand();
@@ -86,30 +93,54 @@ export default function App() {
     }
   };
 
-  const getMessageClass = (entry) => {
-    if (game.currentRoom === 'intro') return 'text-green-400 bg-black p-4 text-xl font-mono animate-pulse';
-    if (entry.type === 'player') return 'text-gray-400 italic';
-    if (entry.text.startsWith('Ayla says:')) return 'text-yellow-300 font-handwriting bg-yellow-100 p-2 rounded-md';
-    if (entry.text.toLowerCase().includes('hidden hatch opens') || entry.text.toLowerCase().includes('secret passage')) {
-      return 'text-blue-400 animate-pulse font-bold';
-    }
-    return '';
-  };
-
-  const handlePuzzleSolve = (input) => {
-    const result = activePuzzle.solve(input);
-    setGameLog((prev) => [...prev.slice(-99), { type: 'system', text: result }]);
-    setActivePuzzle(null);
-  };
-
-  const handlePanelMove = (cmd) => {
-    try {
-      const result = game.processCommand(cmd);
-      setGameLog((prev) => [...prev.slice(-99), { type: 'system', text: result.message }]);
-    } catch (error) {
-      setGameLog((prev) => [...prev.slice(-99), { type: 'system', text: `An error occurred: ${error.message}` }]);
+  // Handle truck scene button click (Jump or Wait)
+  const handleTruckChoice = (choice) => {
+    if (choice === 'jump') {
+      setShowTruckScene(false);
+      setGameLog((prev) => [...prev.slice(-99), { type: 'system', text: 'You managed to jump! Safe and sound.' }]);
+    } else {
+      setTruckImpact(true);
+      setResettingUniverse(true);
     }
   };
+
+  // Start the truck timer (15 seconds)
+  useEffect(() => {
+    if (showTruckScene) {
+      const timer = setTimeout(() => {
+        setTruckImpact(true);
+        setResettingUniverse(true);
+      }, 15000);
+      setTruckTimer(timer);
+    }
+    return () => clearTimeout(truckTimer);
+  }, [showTruckScene]);
+
+  // Handle reset of the universe when the timer expires or after impact
+  useEffect(() => {
+    if (truckImpact || resettingUniverse) {
+      setTimeout(() => {
+        setGameLog((prev) => [...prev.slice(-99), { type: 'system', text: 'You and the truck say hello... The truck is fine. You, however... well, try again.' }]);
+        setShowTruckScene(true); // Show truck scene again for retry
+        setTruckImpact(false);
+        setResettingUniverse(false);
+      }, 2000);
+    }
+  }, [truckImpact, resettingUniverse]);
+
+  // Render the truck scene screen
+  if (showTruckScene) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-90 text-white flex flex-col items-center justify-center p-8 z-50 transition-opacity duration-700 ease-in-out">
+        <h1 className="text-4xl mb-6 font-bold">You've grabbed a coffee and you're on your way home.</h1>
+        <p className="mb-4">You cross the road at Findlater's Corner but don't notice that big yellow truck barreling toward you...</p>
+        <div className="space-x-4">
+          <button onClick={() => handleTruckChoice('jump')} className="bg-green-600 text-white py-2 px-4 rounded">Jump</button>
+          <button onClick={() => handleTruckChoice('wait')} className="bg-red-600 text-white py-2 px-4 rounded">Wait</button>
+        </div>
+      </div>
+    );
+  }
 
   if (showIntro) {
     return (
