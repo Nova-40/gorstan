@@ -26,7 +26,6 @@ export default function App() {
   const logRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Start the game by setting the player's name and initializing the game state
   const startGame = () => {
     if (!playerNameInput.trim()) return;
     const trimmedName = playerNameInput.trim();
@@ -37,21 +36,18 @@ export default function App() {
     game.updateStoryProgress('gameStarted');
   };
 
-  // Auto-scroll the game log to the latest entry
   useEffect(() => {
     if (logRef.current) {
       logRef.current.scrollTop = logRef.current.scrollHeight;
     }
   }, [gameLog]);
 
-  // Automatically focus the input field
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
   }, [command, playerName, activePuzzle]);
 
-  // Handle player commands
   const handleCommand = () => {
     const trimmedCommand = command.trim().toLowerCase();
     if (!trimmedCommand) return;
@@ -71,7 +67,6 @@ export default function App() {
     setCommand('');
   };
 
-  // Handle keyboard navigation for command history
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       handleCommand();
@@ -91,7 +86,6 @@ export default function App() {
     }
   };
 
-  // Determine the CSS class for log messages
   const getMessageClass = (entry) => {
     if (game.currentRoom === 'intro') return 'text-green-400 bg-black p-4 text-xl font-mono animate-pulse';
     if (entry.type === 'player') return 'text-gray-400 italic';
@@ -102,14 +96,21 @@ export default function App() {
     return '';
   };
 
-  // Handle puzzle solving
   const handlePuzzleSolve = (input) => {
     const result = activePuzzle.solve(input);
     setGameLog((prev) => [...prev.slice(-99), { type: 'system', text: result }]);
     setActivePuzzle(null);
   };
 
-  // Render the intro screen
+  const handlePanelMove = (cmd) => {
+    try {
+      const result = game.processCommand(cmd);
+      setGameLog((prev) => [...prev.slice(-99), { type: 'system', text: result.message }]);
+    } catch (error) {
+      setGameLog((prev) => [...prev.slice(-99), { type: 'system', text: `An error occurred: ${error.message}` }]);
+    }
+  };
+
   if (showIntro) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-90 text-white flex flex-col items-center justify-center p-8 z-50 transition-opacity duration-700 ease-in-out">
@@ -135,7 +136,6 @@ export default function App() {
     );
   }
 
-  // Render the player name input screen
   if (!playerName) {
     return (
       <div className="h-screen bg-black flex flex-col justify-center items-center text-green-400 font-mono">
@@ -159,7 +159,6 @@ export default function App() {
     );
   }
 
-  // Render the main game interface
   return (
     <ErrorBoundary>
       <div className={`min-h-screen ${game.currentRoom === 'intro' ? 'bg-black' : 'bg-gray-900'} text-green-400 font-mono p-4 flex flex-col items-center`}>
@@ -224,14 +223,10 @@ export default function App() {
           </p>
         </footer>
 
-        {/* Floating MovementPanel when in game rooms */}
         {playerName && game.currentRoom !== 'intro' && (
           <MovementPanel
             currentRoom={game.currentRoom}
-            onMove={(moveCommand) => {
-              setCommand(moveCommand);
-              handleCommand();
-            }}
+            onMoveCommand={handlePanelMove}
           />
         )}
       </div>

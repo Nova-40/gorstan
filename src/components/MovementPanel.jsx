@@ -49,7 +49,7 @@ export default function MovementPanel({ currentRoom, onMove }) {
   // Render the collapsed version of the panel
   if (collapsed) {
     return (
-      <div className="fixed bottom-4 right-4">
+      <div className="fixed top-20 right-8">
         <button
           onClick={() => setCollapsed(false)}
           className="bg-gray-700 text-white p-2 rounded shadow"
@@ -64,7 +64,7 @@ export default function MovementPanel({ currentRoom, onMove }) {
   return (
     <div
       {...handlers}
-      className={`fixed bottom-4 right-4 bg-black bg-opacity-70 p-4 rounded-lg shadow-lg flex flex-col items-center space-y-2 transition-opacity duration-700 ease-in-out ${
+      className={`fixed top-20 right-8 bg-black bg-opacity-70 p-4 rounded-lg shadow-lg flex flex-col items-center space-y-2 transition-opacity duration-700 ease-in-out ${
         visible ? 'opacity-100' : 'opacity-0'
       } ${pulse ? 'animate-pulse' : ''}`}
     >
@@ -119,7 +119,7 @@ export default function MovementPanel({ currentRoom, onMove }) {
       {/* Utility Buttons */}
       <div className="flex space-x-2 pt-2">
         <button
-          onClick={() => handleMove('look')}
+          onClick={() => handleMove('look around')}
           className="bg-blue-600 hover:bg-blue-700 text-white rounded p-2 w-20 text-xs transition transform hover:scale-105"
         >
           Look
@@ -132,7 +132,7 @@ export default function MovementPanel({ currentRoom, onMove }) {
         </button>
       </div>
 
-      {/* NPC Interaction Button */}
+      {/* NPC Interaction Buttons */}
       {npcs.includes('Ayla') && (
         <button
           onClick={() => handleMove('banter')}
