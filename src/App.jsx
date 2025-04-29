@@ -3,6 +3,14 @@
 // Copyright (c) 2025 Geoff Webster
 // Gorstan v2.0.0
 
+// App Component
+// This is the main component of the Gorstan game. It manages the game state, player interactions, and renders the UI.
+// Features include:
+// - Command input for interacting with the game.
+// - A game log to display messages.
+// - A movement panel for directional navigation.
+// - Puzzle solving and player name input functionality.
+
 import { useEffect, useRef, useState } from 'react';
 import { GameEngine } from './engine/GameEngine';
 import { rooms } from './engine/rooms';
@@ -11,24 +19,22 @@ import PuzzleUI from './components/PuzzleUI';
 import MovementPanel from './components/MovementPanel';
 import './tailwind.css';
 
+// Initialize the game engine
 const game = new GameEngine();
 
 export default function App() {
-  const [command, setCommand] = useState('');
-  const [gameLog, setGameLog] = useState([]);
-  const [playerNameInput, setPlayerNameInput] = useState('');
-  const [playerName, setPlayerName] = useState('');
-  const [commandHistory, setCommandHistory] = useState([]);
-  const [historyIndex, setHistoryIndex] = useState(-1);
-  const [activePuzzle, setActivePuzzle] = useState(null);
-  const [showIntro, setShowIntro] = useState(true);
+  // State variables
+  const [command, setCommand] = useState(''); // Current command input
+  const [gameLog, setGameLog] = useState([]); // Log of game messages
+  const [playerNameInput, setPlayerNameInput] = useState(''); // Player name input field
+  const [playerName, setPlayerName] = useState(''); // Player's name
+  const [commandHistory, setCommandHistory] = useState([]); // History of entered commands
+  const [historyIndex, setHistoryIndex] = useState(-1); // Index for navigating command history
+  const [activePuzzle, setActivePuzzle] = useState(null); // Current active puzzle
+  const [showIntro, setShowIntro] = useState(true); // Whether to show the intro screen
   const [showHelp, setShowHelp] = useState(false);
-  const [showTruckScene, setShowTruckScene] = useState(false);  // New state for truck scene
-  const [truckTimer, setTruckTimer] = useState(null);  // Timer state for truck scene
-  const [truckImpact, setTruckImpact] = useState(false);  // Flag for truck impact
-  const [resettingUniverse, setResettingUniverse] = useState(false);  // Flag for resetting
-  const logRef = useRef(null);
-  const inputRef = useRef(null);
+  const logRef = useRef(null); // Reference to the game log for auto-scrolling
+  const inputRef = useRef(null); // Reference to the input field for auto-focus
 
   // Start the game by setting the player's name and initializing the game state
   const startGame = () => {
@@ -41,12 +47,14 @@ export default function App() {
     game.updateStoryProgress('gameStarted');
   };
 
+  // Auto-scroll the game log to the latest entry
   useEffect(() => {
     if (logRef.current) {
       logRef.current.scrollTop = logRef.current.scrollHeight;
     }
   }, [gameLog]);
 
+  // Automatically focus the input field
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
@@ -93,55 +101,35 @@ export default function App() {
     }
   };
 
-  // Handle truck scene button click (Jump or Wait)
-  const handleTruckChoice = (choice) => {
-    if (choice === 'jump') {
-      setShowTruckScene(false);
-      setGameLog((prev) => [...prev.slice(-99), { type: 'system', text: 'You managed to jump! Safe and sound.' }]);
-    } else {
-      setTruckImpact(true);
-      setResettingUniverse(true);
+  // Determine the CSS class for log messages
+  const getMessageClass = (entry) => {
+    if (game.currentRoom === 'intro') return 'text-green-400 bg-black p-4 text-xl font-mono animate-pulse';
+    if (entry.type === 'player') return 'text-gray-400 italic';
+    if (entry.text.startsWith('Ayla says:')) return 'text-yellow-300 font-handwriting bg-yellow-100 p-2 rounded-md';
+    if (entry.text.toLowerCase().includes('hidden hatch opens') || entry.text.toLowerCase().includes('secret passage')) {
+      return 'text-blue-400 animate-pulse font-bold';
+    }
+    return '';
+  };
+
+  // Handle puzzle solving
+  const handlePuzzleSolve = (input) => {
+    const result = activePuzzle.solve(input);
+    setGameLog((prev) => [...prev.slice(-99), { type: 'system', text: result }]);
+    setActivePuzzle(null);
+  };
+
+  // Handle movement commands from the MovementPanel
+  const handlePanelMove = (cmd) => {
+    try {
+      const result = game.processCommand(cmd);
+      setGameLog((prev) => [...prev.slice(-99), { type: 'system', text: result.message }]);
+    } catch (error) {
+      setGameLog((prev) => [...prev.slice(-99), { type: 'system', text: `An error occurred: ${error.message}` }]);
     }
   };
 
-  // Start the truck timer (15 seconds)
-  useEffect(() => {
-    if (showTruckScene) {
-      const timer = setTimeout(() => {
-        setTruckImpact(true);
-        setResettingUniverse(true);
-      }, 15000);
-      setTruckTimer(timer);
-    }
-    return () => clearTimeout(truckTimer);
-  }, [showTruckScene]);
-
-  // Handle reset of the universe when the timer expires or after impact
-  useEffect(() => {
-    if (truckImpact || resettingUniverse) {
-      setTimeout(() => {
-        setGameLog((prev) => [...prev.slice(-99), { type: 'system', text: 'You and the truck say hello... The truck is fine. You, however... well, try again.' }]);
-        setShowTruckScene(true); // Show truck scene again for retry
-        setTruckImpact(false);
-        setResettingUniverse(false);
-      }, 2000);
-    }
-  }, [truckImpact, resettingUniverse]);
-
-  // Render the truck scene screen
-  if (showTruckScene) {
-    return (
-      <div className="fixed inset-0 bg-black bg-opacity-90 text-white flex flex-col items-center justify-center p-8 z-50 transition-opacity duration-700 ease-in-out">
-        <h1 className="text-4xl mb-6 font-bold">You've grabbed a coffee and you're on your way home.</h1>
-        <p className="mb-4">You cross the road at Findlater's Corner but don't notice that big yellow truck barreling toward you...</p>
-        <div className="space-x-4">
-          <button onClick={() => handleTruckChoice('jump')} className="bg-green-600 text-white py-2 px-4 rounded">Jump</button>
-          <button onClick={() => handleTruckChoice('wait')} className="bg-red-600 text-white py-2 px-4 rounded">Wait</button>
-        </div>
-      </div>
-    );
-  }
-
+  // Render the intro screen
   if (showIntro) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-90 text-white flex flex-col items-center justify-center p-8 z-50 transition-opacity duration-700 ease-in-out">
@@ -167,6 +155,7 @@ export default function App() {
     );
   }
 
+  // Render the player name input screen
   if (!playerName) {
     return (
       <div className="h-screen bg-black flex flex-col justify-center items-center text-green-400 font-mono">
@@ -190,6 +179,7 @@ export default function App() {
     );
   }
 
+  // Render the main game interface
   return (
     <ErrorBoundary>
       <div className={`min-h-screen ${game.currentRoom === 'intro' ? 'bg-black' : 'bg-gray-900'} text-green-400 font-mono p-4 flex flex-col items-center`}>
@@ -264,3 +254,4 @@ export default function App() {
     </ErrorBoundary>
   );
 }
+
