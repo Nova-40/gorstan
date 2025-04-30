@@ -6,7 +6,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function IntroSequence() {
+export default function IntroSequence({ setHasCoffee, setShowIntro }) 
+  {
   // State variables
   const [stage, setStage] = useState(0); // Tracks the current stage of the intro sequence
   const [showButtons, setShowButtons] = useState(false); // Determines whether the decision buttons are visible
@@ -47,7 +48,8 @@ export default function IntroSequence() {
 
   // Handle the "Jump" button click
   const handleJump = () => {
-    navigate("/controlnexus"); // Navigate to the next part of the game
+    if (setShowIntro) setShowIntro(false);  // ensures the game begins
+    navigate("/controlnexus");
   };
 
   // Render the current stage of the intro sequence
