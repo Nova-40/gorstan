@@ -62,19 +62,19 @@ export const rooms = {
 
   controlnexusreturned: {
     description: 'The same Nexus... changed. Scarred by your presence.',
-    exits: { north: 'controlnexus' },
+    exits: { north: 'controlroom', south: 'controlnexus' },
     image: '/images/controlnexusreturned.png',
   },
 
   controlroom: {
     description: 'Banks of blinking panels dominate the Control Room.',
-    exits: { south: 'hiddenlab', west: 'resetroom' },
+    exits: { down: 'hiddenlab', west: 'resetroom', north: 'controlnexusreturned' },
     image: '/images/controlroom.png',
   },
 
   hiddenlab: {
     description: 'A hidden lab, whirring quietly.',
-    exits: { north: 'controlroom' },
+    exits: { up: 'controlroom' },
     image: '/images/hiddenlab.png',
   },
 
@@ -146,13 +146,13 @@ export const rooms = {
 
   crossing: {
     description: 'The Crossing: multiple pathways branch out here, some lit, some lost to darkness.',
-    exits: { west: 'centralpark', east: 'trentparkearth' },
+    exits: { west: 'dalesapartment', east: 'trentparkearth' },
     image: '/images/crossing.png',
   },
 
   crossing2: {
     description: 'Another Crossing — or is it the same? Paths twist and lie.',
-    exits: { south: 'fallback' },
+    exits: { west: 'dalesapartment',  },
     image: '/images/crossing2.png',
   },
 
