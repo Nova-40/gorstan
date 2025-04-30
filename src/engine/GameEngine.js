@@ -11,6 +11,13 @@ import { getHelpAdvice } from './aylaHelp';
 
 export class GameEngine {
   constructor() {
+  getRoomData() {
+    const base = rooms[this.currentRoom];
+    const description = typeof base.description === 'function' ? base.description(this) : base.description;
+    const items = typeof base.items === 'function' ? base.items(this) : base.items || {};
+    return { ...base, description, items };
+  }
+
     this.playerName = '';
     this.currentRoom = 'intro';
     this.storyProgress = {}; // Fine-grained progress markers
@@ -28,8 +35,25 @@ export class GameEngine {
     this.playerName = name;
   }
 
+  
+  handlePickup(itemId) {
+    const room = this.getRoomData();
+    const item = room.items && room.items[itemId];
+    if (!item || !item.canPickup) {
+      return { success: false, message: 'You cannot pick that up.' };
+    }
+    if (typeof item.onPickup === 'function') {
+      item.onPickup(this);
+    } else {
+      this.addItem(itemId);
+      this.outputLog.push(`You pick up the ${item.name}.`);
+    }
+    return { success: true, message: '' };
+  }
+
+
   moveToRoom(direction) {
-    const currentRoomData = rooms[this.currentRoom];
+    const currentRoomData = this.getRoomData();
     if (currentRoomData && currentRoomData.exits && currentRoomData.exits[direction]) {
       this.currentRoom = currentRoomData.exits[direction];
       let output = `Moved to ${this.currentRoom}.`;
@@ -208,6 +232,11 @@ export class GameEngine {
     }
   }
 }
+
+
+
+
+
 
 
 

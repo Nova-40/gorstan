@@ -1,8 +1,32 @@
-// Updated /src/engine/rooms.js
+// Rooms Configuration
+// This file defines the rooms in the Gorstan game world.
+// Each room includes a description, exits to other rooms, and optional images or items.
 
 export const rooms = {
   intro: {
-    description: 'A dark street. A yellow truck barrels toward you. A portal shimmers open beside you. A voice echoes: "That one."',
+    description: (state) => {
+      let base =
+        'A dark street. A yellow truck barrels toward you. A portal shimmers open beside you. A voice echoes: "That one."';
+      if (!state.inventory.includes('coffee')) {
+        base += ' On the ground nearby, your coffee cup sits improbably upright, glowing faintly.';
+      }
+      return base;
+    },
+    items: (state) => {
+      const items = {};
+      if (!state.inventory.includes('coffee')) {
+        items.fallenCoffee = {
+          name: 'fallen cup of coffee',
+          description: 'Your coffee, miraculously upright. You could probably pick it up.',
+          canPickup: true,
+          onPickup: (game) => {
+            game.addItem('coffee');
+            game.output('You pick up your fallen coffee. It’s still warm. Fate smiles... for now.');
+          },
+        };
+      }
+      return items;
+    },
     exits: {},
   },
 
@@ -152,7 +176,7 @@ export const rooms = {
 
   crossing2: {
     description: 'Another Crossing — or is it the same? Paths twist and lie.',
-    exits: { west: 'dalesapartment',  },
+    exits: { west: 'dalesapartment' },
     image: '/images/crossing2.png',
   },
 
