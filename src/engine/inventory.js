@@ -2,38 +2,53 @@
 // MIT License
 // Copyright (c) 2025 Geoff Webster
 // Gorstan v2.0.0
-//
 
-// src/engine/inventory.js
+const playerInventory = new Set();
 
-const _inventory = new Map();
-
-export function addItem(itemId, itemData = {}) {
-  if (!_inventory.has(itemId)) {
-    _inventory.set(itemId, { ...itemData, acquiredAt: Date.now() });
-  }
+export function addItem(itemName) {
+  playerInventory.add(itemName.toLowerCase());
 }
 
-export function removeItem(itemId) {
-  _inventory.delete(itemId);
+export function removeItem(itemName) {
+  playerInventory.delete(itemName.toLowerCase());
 }
 
-export function hasItem(itemId) {
-  return _inventory.has(itemId);
+export function hasItem(itemName) {
+  return playerInventory.has(itemName.toLowerCase());
+}
+
+export function hasAny(items = []) {
+  return items.some(item => hasItem(item));
+}
+
+export function hasAll(items = []) {
+  return items.every(item => hasItem(item));
 }
 
 export function listInventory() {
-  return Array.from(_inventory.entries()).map(([id, data]) => ({ id, ...data }));
+  return Array.from(playerInventory);
 }
 
 export function clearInventory() {
-  _inventory.clear();
+  playerInventory.clear();
+}
+
+export function transformItem(original, replacement) {
+  if (hasItem(original)) {
+    removeItem(original);
+    addItem(replacement);
+    return true;
+  }
+  return false;
 }
 
 export const inventory = {
   addItem,
   removeItem,
   hasItem,
+  hasAny,
+  hasAll,
   listInventory,
   clearInventory,
+  transformItem
 };

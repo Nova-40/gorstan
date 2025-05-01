@@ -3,148 +3,60 @@
 // Copyright (c) 2025 Geoff Webster
 // Gorstan v2.0.0
 
-import {
-  handleTalkCommand,
-  handleUseCommand,
-  handleLookCommand,
-  handleHelpCommand,
-  handleSecretsCommand,
-  handleAchievementsCommand,
-} from './npcs';
 import { inventory } from './inventory';
-import { SaveLoadSystem } from './saveLoad';
-import { ResetSystem } from './resetSystem';
-import { handleAskAylaInParser } from './aylaHelp';
-import { gameEngine } from './gameEngine';
-import { npcSupportSystem } from './npcSupportSystem';
+import { talkToNPC } from './npcs';
+import { rooms } from './rooms';
+import { onEnterRoom } from './eventTriggers';
+import { dialogueMemory } from './dialogueMemory';
 
-let resetRoomButtonPressed = false;
+export function parseCommand(command, gameState) {
+  const [verb, ...args] = command.trim().split(' ');
+  const argString = args.join(' ').toLowerCase();
 
-export function parsePlayerCommand(command, gameEngineInstance) {
-  const currentRoom = gameEngineInstance.currentRoom;
-
-  if (!command || typeof command !== 'string') {
-    return 'Invalid command input.';
-  }
-
-  const lowerCommand = command.trim().toLowerCase();
-
-  // Special glitchy intro if in crossing2 after too many resets
-  if (currentRoom === 'crossing2' && gameEngineInstance.resetCount >= 3 && Math.random() < 0.3) {
-    return '[System Error] Cro$$1n9 Detected... Memory Fluctuation...\nWelcome b4ck t0 the Cr0ssing...';
-  }
-
-  // Check special room-specific commands like confession
-  const specialCommandResult = gameEngineInstance.checkSpecialCommands(command);
-  if (specialCommandResult) {
-    return specialCommandResult;
-  }
-
-  // Handle Reset Room button logic
-  if (lowerCommand === 'press button') {
-    if (currentRoom === 'resetroom') {
-      if (!resetRoomButtonPressed) {
-        resetRoomButtonPressed = true;
-        const atmosphericMessages = [
-          'The air around you crackles ominously...',
-          'A strange hum vibrates through the walls...',
-          'Static flickers at the edges of your vision...',
-          'The button pulses faintly with unstable energy...',
-        ];
-        const randomMessage = atmosphericMessages[Math.floor(Math.random() * atmosphericMessages.length)];
-        return `The button lights up: DO NOT PRESS THIS BUTTON AGAIN.\n${randomMessage}`;
-      } else {
-        resetRoomButtonPressed = false;
-        return '\nInitiating reset in:\n5...\n4...\n3...\n2...\n1...\nMultiverse resetting...';
+  switch (verb.toLowerCase()) {
+    case 'go':
+      if (rooms[gameState.currentRoom].exits[argString]) {
+        const newRoom = rooms[gameState.currentRoom].exits[argString];
+        gameState.currentRoom = newRoom;
+        return onEnterRoom(newRoom, gameState.storyStage);
       }
-    }
-    return 'You see no button to press here.';
-  }
+      return 'You can’t go that way.';
 
-  // Handle Sit Chair teleport logic
-  if (lowerCommand === 'sit chair') {
-    if (currentRoom === 'resetroom') {
-      gameEngineInstance.currentRoom = 'trentparkearth';
-      return 'You sit in the chair. Reality shifts... You find yourself at Trent Park.';
-    }
-    if (currentRoom === 'trentparkearth') {
-      gameEngineInstance.currentRoom = 'resetroom';
-      return 'You sit in the chair. Reality fractures... You find yourself in the Reset Room.';
-    }
-    return "You don't see a chair to sit in here.";
-  }
+    case 'talk':
+      return talkToNPC(argString);
 
-  if (lowerCommand.startsWith('talk ')) {
-    return handleTalkCommand(command);
-  }
+    case 'use':
+      return gameState.handleUseCommand(command, gameState.currentRoom);
 
-  if (lowerCommand.startsWith('go ')) {
-    const direction = command.split(' ')[1];
-    return gameEngineInstance.move(direction);
-  }
+    case 'look':
+      return gameState.handleLookCommand(gameState.currentRoom, rooms);
 
-  if (lowerCommand.startsWith('use ')) {
-    return handleUseCommand(command, currentRoom);
-  }
+    case 'inventory':
+    case '/inv':
+      return inventory.listInventory().join(', ') || 'Your inventory is empty.';
 
-  if (lowerCommand === 'inventory') {
-    const items = inventory.list();
-    return items.length ? `You are carrying: ${items.join(', ')}` : 'Your inventory is empty.';
-  }
+    case '/jump':
+      return 'You brace yourself... but nothing happens. Not yet.';
 
-  if (lowerCommand === 'look') {
-    return handleLookCommand(currentRoom, gameEngineInstance.rooms);
-  }
+    case '/doors':
+      return 'Developer mode: showing all doors temporarily enabled.';
 
-  if (lowerCommand === 'help') {
-    return handleHelpCommand();
-  }
+    case '/doorsoff':
+      return 'Developer mode: hidden doors are hidden once more.';
 
-  if (lowerCommand === 'secrets') {
-    return handleSecretsCommand();
-  }
+    case 'secrets':
+      return gameState.handleSecretsCommand();
 
-  if (lowerCommand === 'achievements') {
-    return handleAchievementsCommand();
-  }
+    case 'achievements':
+      return gameState.handleAchievementsCommand();
 
-  if (lowerCommand === 'ask ayla') {
-    return handleAskAylaInParser(currentRoom);
-  }
+    case 'help':
+      const aylaSnark = dialogueMemory.getInteractionCount('Ayla') > 3
+        ? " (Or just keep shouting for Ayla, she loves that.)"
+        : '';
+      return `Available commands:\n- go [direction]\n- talk [npcname]\n- use [itemname]\n- look\n- inventory (/inv)\n- secrets\n- achievements\n- /jump (experimental)\n- /doors /doorsoff${aylaSnark}`;
 
-  if (lowerCommand === 'support') {
-    const support = npcSupportSystem.checkSupport();
-    if (!support) {
-      return '[System] You currently have no allegiance.';
-    }
-    return `[System] You are currently allied with ${support === 'al' ? 'Al' : 'Morthos'}.`;
+    default:
+      return 'Unknown command. Type "help" for a list of available actions.';
   }
-
-  if (lowerCommand === 'memory') {
-    const roomsVisited = gameEngineInstance.visitedRooms.size;
-    const secretsFound = gameEngineInstance.secretUnlocks.size;
-    const resets = gameEngineInstance.resetCount;
-    const ally = npcSupportSystem.checkSupport();
-    let memory = `[Ayla AI Memory]\n- Player: ${gameEngineInstance.playerName}\n- Rooms visited: ${roomsVisited}\n- Secrets uncovered: ${secretsFound}\n- Resets performed: ${resets}\n- Current allegiance: ${
-      ally ? (ally === 'al' ? 'Al' : 'Morthos') : 'None'
-    }`;
-    if (resets >= 3 && Math.random() < 0.4) {
-      memory += '\n[Ayla AI] Warning: data integrity compromised. (static noises)';
-    }
-    return memory;
-  }
-
-  if (lowerCommand === 'save') {
-    return SaveLoadSystem.save(gameEngineInstance);
-  }
-
-  if (lowerCommand === 'load') {
-    return SaveLoadSystem.load(gameEngineInstance);
-  }
-
-  if (lowerCommand === 'reset') {
-    return ResetSystem.resetGame(gameEngineInstance, inventory);
-  }
-
-  return "Unknown command. Type 'help' for available options.";
 }

@@ -1,32 +1,43 @@
-// /src/engine/secretUnlocks.js
+// /src/engine/secretUnlock.js
 // MIT License
 // Copyright (c) 2025 Geoff Webster
 // Gorstan v2.0.0
 
-export class SecretUnlocks {
-  constructor() {
-    this.unlockedSecrets = new Set();
-  }
+// Centralised logic for secret tunnel access and effects
 
-  unlock(secretName) {
-    this.unlockedSecrets.add(secretName);
-    return `Secret '${secretName}' has been unlocked!`;
-  }
+import { inventory } from './inventory';
+import { playerState } from './GameEngine'; // Assumes playerState is exported or passed in
 
-  isUnlocked(secretName) {
-    return this.unlockedSecrets.has(secretName);
-  }
+const validTunnelRooms = ['Control Room', 'Hidden Aevira Lab', 'Observation Deck'];
 
-  handleSpecialUse(currentRoom, itemName) {
-    // Define special unlock logic here
-    if (itemName === 'coffee' && (currentRoom === 'controlnexus' || currentRoom === 'controlroom')) {
-      return this.unlock('secretTunnel');
-    }
-    if (itemName === 'briefcase' && currentRoom === 'aevirawarehouse') {
-      return this.unlock('portalToCarron');
-    }
-    return null;
-  }
+export function canAccessSecretTunnel(currentRoom, commandUsed = '', options = {}) {
+  const hasBriefcase = inventory.has('briefcase');
+  const hasMedallion = inventory.has('medallion');
+  const isGod = options.godMode || playerState.godMode;
+  const threwCoffee = commandUsed.toLowerCase().includes('throw coffee');
+
+  const inValidRoom = validTunnelRooms.includes(currentRoom);
+
+  if (isGod) return true;
+  if ((hasBriefcase || hasMedallion) && inValidRoom) return true;
+  if (threwCoffee && inValidRoom) return true;
+
+  return false;
 }
 
-export const secretUnlocks = new SecretUnlocks();
+export function triggerTunnelEffect(currentRoom) {
+  if (!validTunnelRooms.includes(currentRoom)) return null;
+
+  return `A section of the wall trembles. A faint shimmer reveals a hidden passage...`;
+}
+
+export const secretUnlocks = {
+  handleSpecialUse(currentRoom, itemName) {
+    if (itemName === 'coffee' && validTunnelRooms.includes(currentRoom)) {
+      return triggerTunnelEffect(currentRoom);
+    }
+    return null;
+  },
+
+  unlockedSecrets: new Set()
+};

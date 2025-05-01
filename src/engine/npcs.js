@@ -9,16 +9,53 @@ import { secretUnlocks } from './secretUnlocks';
 import { achievements } from './achievements';
 
 class NPC {
-  constructor(name, dialogues) {
+  constructor(name, dialogues, options = {}) {
     this.name = name;
     this.dialogues = dialogues;
     this.interactionCount = 0;
+    this.options = options;
   }
 
-  talk() {
-    const dialogue = this.dialogues[this.interactionCount] || this.dialogues[this.dialogues.length - 1];
-    this.interactionCount++;
-    return dialogue;
+  talk(playerState = {}) {
+    const dialogueMemory = require('./dialogueMemory').dialogueMemory;
+    const inventory = require('./inventory').inventory;
+
+    dialogueMemory.recordInteraction(this.name);
+    this.interactionCount = dialogueMemory.getInteractionCount(this.name);
+
+    if (this.name === 'Polly') {
+      if (playerState.godMode) {
+        return "Polly smirks: 'Well well, playing deity today, are we?'";
+      }
+      if (inventory.hasItem('medallion')) {
+        return "Polly narrows her eyes. 'I see you've solved it. You're either clever or lucky.'";
+      }
+      if (this.interactionCount > 3) {
+        return "Polly lies again: 'This is definitely your first time speaking to me.'";
+      }
+    }
+
+    if (this.name === 'Morthos' || this.name === 'Al') {
+      const mood = dialogueMemory.getMood(this.name);
+      if (mood === 'grumpy') {
+        return `${this.name} growls, 'Didn't I already tell you what I know?'`;
+      }
+      if (inventory.hasItem('blueprint')) {
+        return `${this.name} raises an eyebrow. 'Where did you get that? This changes things.'`;
+      }
+    }
+
+    if (this.name === 'Ayla') {
+      const summons = dialogueMemory.getInteractionCount('Ayla');
+      if (summons > 10) {
+        return "Ayla rolls her eyes. 'You do know I'm not your PA, right?'";
+      }
+      if (playerState.recentRoom === 'Control Room' && !inventory.hasItem('coffee')) {
+        return "Ayla says, 'This place gives me the creeps. You didn't forget the coffee, did you?'";
+      }
+    }
+
+    return this.dialogues[this.interactionCount] || this.dialogues[this.dialogues.length - 1];
   }
 }
 
