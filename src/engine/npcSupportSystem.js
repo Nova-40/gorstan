@@ -33,6 +33,14 @@ export const npcDialogueMap = {
   }
 };
 
+export const getNpcDialogue = getMoodDialogue;
+
+export function talkToNpc(npcName, game) {
+  const mood = game.npcMood?.[npcName] || 'neutral';
+  const dialogue = getMoodDialogue(npcName, mood);
+  return dialogue || `${npcName} has nothing to say right now.`;
+}
+
 export function getMoodDialogue(npcName, moodState = 'neutral') {
   const entry = npcDialogueMap[npcName.toLowerCase()];
   if (!entry) return null;

@@ -6,7 +6,6 @@
 // Copyright (c) 2025 Geoff Webster
 // Gorstan v2.0.0
 
-// GameEngine.js — patched with handler methods
 import { addItem, removeItem, hasItem, listInventory, clearInventory } from './inventory';
 import { puzzles } from './puzzles';
 import { rooms } from './rooms';
@@ -15,30 +14,36 @@ import { getHelpAdvice } from './aylaHelp';
 
 export class GameEngine {
   constructor() {
-    this.playerName = '';
-    this.currentRoom = 'intro';
-    this.storyProgress = {};
-    this.storyFlags = new Set();
-    this.npcMood = {};
-    this.outputLog = [];
+    // Player-related properties
+    this.playerName = ''; // The player's name
+    this.currentRoom = 'intro'; // The current room the player is in
+    this.storyProgress = {}; // Fine-grained progress markers
+    this.storyFlags = new Set(); // Big story flags (e.g., "defied dome", "solved maze")
+    this.npcMood = {}; // Mood tracker for NPCs
+    this.outputLog = []; // Centralized output log for game messages
 
+    // Handlers for output, puzzles, and scenes
     this.outputHandler = null;
     this.puzzleHandler = null;
     this.sceneHandler = null;
   }
 
+  // Set the output handler for game messages
   setOutputHandler(handler) {
     this.outputHandler = handler;
   }
 
+  // Set the puzzle handler
   setPuzzleHandler(handler) {
     this.puzzleHandler = handler;
   }
 
+  // Set the scene handler
   setSceneHandler(handler) {
     this.sceneHandler = handler;
   }
 
+  // Output a message to the log and call the output handler
   output(message) {
     this.outputLog.push(message);
     if (this.outputHandler) {
@@ -46,6 +51,7 @@ export class GameEngine {
     }
   }
 
+  // Retrieve data for the current room, including dynamic descriptions and items
   getRoomData() {
     const base = rooms[this.currentRoom];
     const description = typeof base.description === 'function' ? base.description(this) : base.description;
@@ -53,6 +59,13 @@ export class GameEngine {
     return { ...base, description, items };
   }
 
+  // Describe the current room
+  describeCurrentRoom() {
+    const room = this.getRoomData();
+    return room.description || 'You are somewhere undefined.';
+  }
+
+  // Handle picking up an item in the current room
   handlePickup(itemId) {
     const room = this.getRoomData();
     const item = room.items && room.items[itemId];
@@ -75,8 +88,7 @@ export class GameEngine {
       this.currentRoom = currentRoomData.exits[direction];
       let output = `Moved to ${this.currentRoom}.`;
       if (rooms[this.currentRoom].description) {
-        output += `
-${rooms[this.currentRoom].description}`;
+        output += `\n${rooms[this.currentRoom].description}`;
       }
       if (rooms[this.currentRoom].onEnter) {
         rooms[this.currentRoom].onEnter(this);
@@ -97,53 +109,65 @@ ${rooms[this.currentRoom].description}`;
     }
   }
 
+  // Collect an item and add it to the inventory
   collectItem(itemId, itemData) {
     addItem(itemId, itemData);
     this.checkSecretTunnelMedallionAccess();
     return { success: true, message: `Collected ${itemId}.` };
   }
 
+  // Drop an item from the inventory
   dropItem(itemId) {
     removeItem(itemId);
     return { success: true, message: `Dropped ${itemId}.` };
   }
 
+  // Check if an item exists in the inventory
   checkInventory(itemId) {
     return hasItem(itemId);
   }
 
+  // List all items in the inventory
   listInventoryItems() {
     return listInventory();
   }
 
+  // Reset the inventory
   resetInventory() {
     clearInventory();
   }
 
+  // Interact with an NPC
   talkToNpc(npcName) {
     return talkToNpc(npcName, this.storyProgress, this.npcMood);
   }
 
+  // Ask an NPC about a specific topic
   askNpcAbout(npcName, topic) {
     return getNpcDialogue(npcName, topic, this.storyProgress, this.npcMood);
   }
 
+  // Get help or advice from Ayla
   getHelp() {
     return getHelpAdvice(this.currentRoom, this.storyProgress, listInventory());
   }
 
+  // Set a story flag
   setFlag(flagName) {
     this.storyFlags.add(flagName);
   }
 
+  // Check if a story flag is set
   hasFlag(flagName) {
     return this.storyFlags.has(flagName);
   }
 
+  // Remove a story flag
   removeFlag(flagName) {
     this.storyFlags.delete(flagName);
   }
 
+  // Save the game state to localStorage
   saveGame() {
     try {
       const saveData = {
@@ -160,6 +184,7 @@ ${rooms[this.currentRoom].description}`;
     }
   }
 
+  // Load the game state from localStorage
   loadGame() {
     try {
       const saveString = localStorage.getItem('gorstanSave');
@@ -180,6 +205,7 @@ ${rooms[this.currentRoom].description}`;
     }
   }
 
+  // Handle throwing an item
   throwItem(itemName) {
     const itemLower = itemName.toLowerCase();
 
@@ -199,6 +225,7 @@ ${rooms[this.currentRoom].description}`;
     }
   }
 
+  // Check if the medallion grants access to the secret tunnel
   checkSecretTunnelMedallionAccess() {
     if (hasItem('medallion')) {
       if (!rooms.centralpark.exits['down']) {
@@ -209,26 +236,31 @@ ${rooms[this.currentRoom].description}`;
     }
   }
 
+  // Update story progress with a specific flag
   updateStoryProgress(flag) {
     this.storyProgress[flag] = true;
   }
 
+  // Process a player command
   processCommand(input) {
     const words = input.trim().toLowerCase().split(' ');
     const command = words[0];
 
+    // Special handling for the intro room
     if (this.currentRoom === 'intro') {
       if (command === 'jump') {
         this.currentRoom = 'controlnexus';
         return {
           success: true,
-          message: 'You dive through the shimmering portal just as the truck blazes past. Reality twists... You land heavily inside the Control Nexus.',
+          message:
+            'You dive through the shimmering portal just as the truck blazes past. Reality twists... You land heavily inside the Control Nexus.',
         };
       } else {
         return { success: false, message: 'The truck barrels toward you. You must JUMP!' };
       }
     }
 
+    // General command processing
     switch (command) {
       case 'go':
         return this.moveToRoom(words[1]);
