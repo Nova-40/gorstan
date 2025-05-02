@@ -1,6 +1,6 @@
 // /src/engine/storyProgress.js
 // MIT License
-// Copyright (c) 2025 Geoff Webster
+Copyright (c) 2025 Geoff Webster
 // Gorstan v2.0.0
 
 // Central game progress and scoring system
@@ -163,4 +163,5 @@ export const storyProgress = {
   getHighScore,
   getErebosMessage
 };
+
 

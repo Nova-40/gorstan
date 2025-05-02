@@ -1,231 +1,134 @@
-// AppCore Component
-// This component handles the introductory sequence of the game, including:
-// - A welcome screen with options to start the intro or explore external links.
-// - A pre-intro scene describing the player's situation.
-// - A crossing sequence where the player must decide to "Jump" or "Wait".
-// - The Control Nexus game interface after the player jumps.
+// AppCore Component (Refined Intro Logic)
+// This component handles the full game introduction sequence:
+// - Welcome screen
+// - Pre-intro monologue
+// - Crossing with SPLAT or Jump
+// - Reset scene if SPLAT
+// - Post-reset decisions: pick up coffee, jump, or wait
+// - Final transition into controlnexus
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function AppCore({ setHasCoffee, setShowIntro }) {
-  // State variables
-  const [stage, setStage] = useState(0); // Tracks the current stage of the crossing sequence
-  const [showButtons, setShowButtons] = useState(false); // Determines whether the decision buttons are visible
-  const [wasTooSlow, setWasTooSlow] = useState(false); // Tracks if the user was too slow to decide
-  const [welcomeMode, setWelcomeMode] = useState(true); // Whether the welcome screen is displayed
-  const [preIntro, setPreIntro] = useState(false); // Whether the pre-intro scene is displayed
-  const [resetting, setResetting] = useState(false); // Whether the scene is resetting
-  const [showSplat, setShowSplat] = useState(false); // Whether the "SPLAT" message is displayed
-  const [hasJumped, setHasJumped] = useState(false); // Whether the player has jumped into the Control Nexus
-  const navigate = useNavigate(); // React Router's navigation hook
+  const [stage, setStage] = useState("welcome");
+  const [showButtons, setShowButtons] = useState(false);
+  const [wasTooSlow, setWasTooSlow] = useState(false);
+  const [hasCoffee, setLocalCoffee] = useState(false);
+  const navigate = useNavigate();
 
-  // Effect to handle timeout when buttons are shown
   useEffect(() => {
-    if (showButtons) {
-      const timeout = setTimeout(() => {
-        handleTimeout(); // Trigger timeout logic if no decision is made
-      }, 10000); // 10 seconds to wait before the truck hits
-      return () => clearTimeout(timeout); // Cleanup timeout on unmount
+    if (stage === "crossingButtons") {
+      const timeout = setTimeout(() => handleTimeout(), 10000);
+      return () => clearTimeout(timeout);
     }
-  }, [showButtons]);
+  }, [stage]);
 
-  // Start the intro sequence
-  const startIntro = () => {
-    setWelcomeMode(false); // Hide the welcome screen
-    setPreIntro(true); // Show the pre-intro scene
-  };
+  const startIntro = () => setStage("preIntro");
 
-  // Start the crossing sequence
-  const startCrossing = () => {
-    setPreIntro(false); // Hide the pre-intro scene
-    const audio = new Audio("/horn.mp3"); // Play a horn sound
-    audio.play().catch(() => {}); // Catch any errors (e.g., autoplay restrictions)
-    const stages = [
-      () => setStage(1), // Stage 1: Initial message
-      () => setStage(2), // Stage 2: Sound grows louder
-      () => setStage(3), // Stage 3: Metal and momentum
-      () => setShowButtons(true), // Final stage: Show decision buttons
-    ];
-    let idx = 0;
+  const advanceCrossing = () => {
+    const stages = ["crossing1", "crossing2", "crossing3", "crossingButtons"];
+    let i = 0;
     const interval = setInterval(() => {
-      if (idx < stages.length) {
-        stages[idx++](); // Progress through the stages
-      } else {
-        clearInterval(interval); // Clear the interval when all stages are complete
-      }
-    }, 1500); // Progress every 1.5 seconds
+      setStage(stages[i]);
+      i++;
+      if (i === stages.length) clearInterval(interval);
+    }, 1500);
   };
 
-  // Handle timeout when no decision is made
   const handleTimeout = () => {
-    if (setHasCoffee) setHasCoffee(false); // Update coffee state if applicable
-    setWasTooSlow(true); // Mark the user as too slow
-    setShowButtons(false); // Hide buttons
-    setShowSplat(true); // Show the "SPLAT" message
-    setTimeout(() => setResetting(true), 2000); // Start resetting after 2 seconds
-    setTimeout(() => {
-      setResetting(false); // Stop resetting
-      setWasTooSlow(false); // Reset the "too slow" state
-      setShowSplat(false); // Hide the "SPLAT" message
-      setShowButtons(true); // Show buttons again
-    }, 5500); // Reset after 5.5 seconds
+    setWasTooSlow(true);
+    if (setHasCoffee) setHasCoffee(false);
+    setLocalCoffee(false);
+    setStage("splat");
+    setTimeout(() => setStage("resetAfterSplat"), 3000);
   };
 
-  // Handle the "Wait" button click
-  const handleWait = () => {
-    handleTimeout(); // Trigger the timeout logic
-  };
-
-  // Handle the "Jump" button click
   const handleJump = () => {
-    if (setShowIntro) setShowIntro(false); // Hide the intro screen
-    setHasJumped(true); // Mark the player as having jumped
-    navigate("/controlnexus"); // Navigate to the next part of the game
+    setShowIntro(false);
+    navigate("/controlnexus");
   };
 
-  // Render the current stage of the crossing sequence
-  const renderStage = () => {
-    if (showSplat) {
-      return (
-        <div className="text-red-500 text-4xl animate-bounce">
-          💥 SPLAT 💥
-          <div className="text-sm text-gray-300 mt-2 italic">
-            Fortunately, your coffee seems to land upright without a drop being spilt — a small mercy in a cruel day.
-            <span className="block mt-1 text-xs text-amber-400 animate-pulse">
-              It even seems to glow faintly... almost as if it's important.
-            </span>
+  const handlePickupCoffee = () => {
+    setLocalCoffee(true);
+    if (setHasCoffee) setHasCoffee(true);
+  };
+
+  const handleWaitAfterReset = () => {
+    setStage("falling");
+    setTimeout(() => handleJump(), 2000);
+  };
+
+  return (
+    <div className="p-4 text-white text-center">
+      {stage === "welcome" && (
+        <>
+          <h1 className="text-3xl mb-4">Welcome to Gorstan</h1>
+          <p>Simulated reality engaged. Try not to break it.</p>
+          <button onClick={startIntro} className="mt-4 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">
+            Begin
+          </button>
+        </>
+      )}
+
+      {stage === "preIntro" && (
+        <>
+          <p className="mb-4">You sense something is wrong. The air smells like static.</p>
+          <button onClick={advanceCrossing} className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded">
+            Proceed
+          </button>
+        </>
+      )}
+
+      {stage === "crossing1" && <p>A horn blares in the distance...</p>}
+      {stage === "crossing2" && <p>It’s getting louder. Yellow... <strong>TRUCK!!!</strong></p>}
+      {stage === "crossing3" && <p>Metal and momentum converge—</p>}
+
+      {stage === "crossingButtons" && (
+        <>
+          <p className="mb-2">Do something!</p>
+          <div className="space-x-4">
+            <button onClick={handleJump} className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded">
+              Jump
+            </button>
+            <button onClick={handleTimeout} className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded">
+              Wait
+            </button>
           </div>
-        </div>
-      );
-    }
-    if (resetting) {
-      return (
-        <div className="text-blue-400 text-xl animate-pulse">
-          Please hold... Multiversal reality is resetting...
-        </div>
-      );
-    }
-    if (wasTooSlow) {
-      return (
-        <div className="text-red-600 text-lg animate-pulse">
-          Oh dear. Your prevarication hasn't ended well.<br />
-          The truck that was barrelling along has just collided with you.<br />
-          Fortunately, something somewhere in the multiverse still needs you...
-        </div>
-      );
-    }
-    switch (stage) {
-      case 0:
-        return <div className="text-white">You are standing at the edge of something strange...</div>;
-      case 1:
-        return <div className="text-white">A sound grows louder.</div>;
-      case 2:
-        return <div className="text-white">Metal. Thunder. Momentum.</div>;
-      case 3:
-        return <div className="text-yellow-400 text-2xl animate-bounce">Decide. Now.</div>;
-      default:
-        return null; // Return nothing for invalid stages
-    }
-  };
+        </>
+      )}
 
-  // Render the welcome screen
-  if (welcomeMode) {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen bg-black text-white text-center space-y-6">
-        <h1 className="text-3xl font-bold">Welcome to Gorstan</h1>
-        <p className="text-lg">A strange tale unfolds across the multiverse...</p>
-        <div className="space-x-4">
-          <button
-            onClick={startIntro}
-            className="bg-blue-600 hover:bg-blue-800 text-white px-4 py-2 rounded-xl shadow"
-          >
-            Start Intro
-          </button>
-          <a
-            href="https://www.buymeacoffee.com/gorstan"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-2 rounded-xl shadow"
-          >
-            ☕ Buy Me a Coffee
-          </a>
-          <a
-            href="https://www.geoffwebsterbooks.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl shadow"
-          >
-            📚 Read the Books
-          </a>
-        </div>
-      </div>
-    );
-  }
+      {stage === "splat" && (
+        <h1 className="text-6xl text-red-600 mt-10">SPLAT.</h1>
+      )}
 
-  // Render the pre-intro scene
-  if (preIntro) {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen bg-black text-white text-center space-y-6">
-        <p className="text-xl max-w-xl">
-          You've been having a good day. Walking to the station to get home, you grabbed a coffee from Findlater's Coffee Shop and started to cross the road at Findlater's Corner.<br /><br />
-          You didn’t notice that big yellow truck that’s barrelling along towards you...
-        </p>
-        <button
-          onClick={startCrossing}
-          className="bg-red-600 hover:bg-red-800 text-white px-4 py-2 rounded-xl shadow"
-        >
-          🚨 Continue
-        </button>
-      </div>
-    );
-  }
+      {stage === "resetAfterSplat" && (
+        <>
+          <p className="mt-6 mb-2">Multiverse resetting...</p>
+          <p className="mb-4">You awaken. Your coffee stands perfectly upright.</p>
+          <div className="space-y-2">
+            {!hasCoffee && (
+              <button onClick={handlePickupCoffee} className="bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded">
+                Pick up Coffee
+              </button>
+            )}
+            <div className="space-x-4">
+              <button onClick={handleJump} className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded">
+                Jump
+              </button>
+              <button onClick={handleWaitAfterReset} className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded">
+                Wait
+              </button>
+            </div>
+          </div>
+        </>
+      )}
 
-  // Render the Control Nexus screen after the player jumps
-  if (hasJumped) {
-    const [engine] = useState(() => new window.GameEngine());
-    const [log, setLog] = useState(["You awaken in the Control Nexus..."]);
-    const [command, setCommand] = useState("");
-
-    useEffect(() => {
-      engine.setOutputHandler(setLog);
-      const intro = engine.getRoomData()?.description;
-      if (intro) setLog([intro]);
-    }, [engine]);
-
-    const handleCommand = () => {
-      const result = engine.processCommand(command);
-      if (result?.message) setLog((prev) => [...prev, `> ${command}`, result.message]);
-      setCommand("");
-    };
-
-    return (
-      <div className="w-full h-screen bg-black text-white flex flex-col">
-        <div className="flex-1 overflow-y-auto p-4 space-y-2">
-          {log.map((line, idx) => (
-            <div key={idx} className="text-green-400 whitespace-pre-wrap">{line}</div>
-          ))}
-        </div>
-        <div className="p-4 bg-gray-900 flex">
-          <input
-            value={command}
-            onChange={(e) => setCommand(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleCommand()}
-            className="flex-1 p-2 bg-black text-white border border-gray-700 rounded"
-            placeholder="Enter your command..."
-            autoFocus
-          />
-          <button
-            onClick={handleCommand}
-            className="ml-2 px-4 py-2 bg-green-700 hover:bg-green-800 rounded"
-          >
-            Enter
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // Default fallback (should not occur)
-  return null;
+      {stage === "falling" && (
+        <p className="mt-6 italic">You feel the ground shift. Did something push you?</p>
+      )}
+    </div>
+  );
 }
+
+
