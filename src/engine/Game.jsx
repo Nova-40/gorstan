@@ -2,83 +2,75 @@
 // This component serves as the main interface for the game. It initializes the GameEngine, processes player commands, and displays game output.
 // It also manages the player's inventory, codex, score, and interactions with Ayla.
 
-// MIT License
-// Copyright (c) 2025 Geoff Webster
-// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
 import React, { useState, useEffect, useRef } from "react";
 import { GameEngine } from "./GameEngine";
 import RoomRenderer from "../components/RoomRenderer";
-import MovementPanel from "../components/MovementPanel";
 import InventoryPanel from "../components/InventoryPanel";
 import CodexPanel from "../components/CodexPanel";
 import AylaButton from "../components/AylaButton";
+import { ArrowUp, ArrowDown, ArrowLeft, ArrowRight, CornerDownLeft, Eye, Clipboard } from "lucide-react";
 
 export default function Game({ startRoom = "controlnexus" }) {
-  // Reference to the GameEngine instance
+  useEffect(() => {
+    console.log("🎮 Game component mounted");
+  }, []);
+
   const engineRef = useRef(null);
+  const [output, setOutput] = useState([]);
+  const [command, setCommand] = useState("");
+  const [currentRoom, setCurrentRoom] = useState(startRoom);
+  const [inventory, setInventory] = useState([]);
+  const [codex, setCodex] = useState([]);
+  const [score, setScore] = useState(0);
 
-  // State variables to manage game data
-  const [output, setOutput] = useState([]); // Game output log
-  const [command, setCommand] = useState(""); // Player's current command input
-  const [currentRoom, setCurrentRoom] = useState(startRoom); // Current room ID
-  const [inventory, setInventory] = useState([]); // Player's inventory
-  const [codex, setCodex] = useState([]); // Player's codex entries
-  const [score, setScore] = useState(0); // Player's score
-
-  // Initialize the GameEngine and set the starting room
   useEffect(() => {
     try {
-      const engine = new GameEngine(); // Create a new GameEngine instance
-      engine.currentRoom = startRoom; // Set the starting room
-      engineRef.current = engine; // Store the engine instance in a ref
+      const engine = new GameEngine();
+      engine.currentRoom = startRoom;
+      engineRef.current = engine;
 
-      console.log("✅ GameEngine initialized, starting in:", startRoom);
+      if (!engine.inventory.includes("coffee")) {
+        engine.addItem("coffee");
+      }
 
-      // Get the initial room description and set initial states
-      const introText = engine.describeCurrentRoom?.() || "⚠️ No room description available.";
-      setOutput([introText]);
+      setOutput([]);
       setCurrentRoom(startRoom);
-      setInventory(engine.inventory || []);
+      setInventory(engine.inventory);
       setCodex(engine.codex || []);
       setScore(engine.score || 0);
     } catch (err) {
-      // Handle errors during GameEngine initialization
       console.error("❌ GameEngine failed to start:", err);
       setOutput(["❌ GameEngine failed to start.", err.message]);
     }
   }, [startRoom]);
 
-  // Handle player commands
   const handleCommand = () => {
-    if (!command.trim()) return; // Ignore empty commands
-
+    if (!command.trim()) return;
     try {
-      // Process the command using the GameEngine
-      const result = engineRef.current.processCommand(command);
+      const trimmed = command.trim().toLowerCase();
+      const directions = ["north", "south", "east", "west", "up", "down"];
+      const synonyms = ["pickup", "grab"];
+      const parts = trimmed.split(" ");
 
-      // Update the output log with the command and the result
-      setOutput((prev) => [...prev, `> ${command}`, result]);
+      let normalisedCommand = trimmed;
 
-      // Update game state after processing the command
+      if (directions.includes(trimmed)) {
+        normalisedCommand = `go ${trimmed}`;
+      } else if (synonyms.includes(parts[0])) {
+        normalisedCommand = `take ${parts.slice(1).join(" ")}`;
+      }
+
+      const result = engineRef.current.processCommand(normalisedCommand);
+
+      setOutput((prev) => [...prev, `> ${command.trim()}`, result.message]);
       updateGameState();
     } catch (err) {
-      // Handle errors during command processing
       console.error("❌ Error processing command:", err);
-      setOutput((prev) => [...prev, `> ${command}`, `❌ ${err.message}`]);
+      setOutput((prev) => [...prev, `> ${command.trim()}`, `❌ ${err.message}`]);
     }
-
-    // Clear the command input field
     setCommand("");
   };
 
-  // Update game state (room, inventory, codex, score) after a command
   const updateGameState = () => {
     try {
       const engine = engineRef.current;
@@ -92,21 +84,22 @@ export default function Game({ startRoom = "controlnexus" }) {
     }
   };
 
-  // Handle movement commands
-  const handleMove = (direction) => {
+  const handleMove = (dir) => {
     try {
-      const result = engineRef.current.processCommand(direction);
-      setOutput((prev) => [...prev, `> move ${direction}`, result]);
+      const result = engineRef.current.processCommand(`go ${dir}`);
+      setOutput((prev) => [...prev, `> go ${dir}`, result.message]);
       updateGameState();
     } catch (err) {
       console.error("❌ Error processing movement:", err);
-      setOutput((prev) => [...prev, `> move ${direction}`, `❌ ${err.message}`]);
+      setOutput((prev) => [...prev, `> go ${dir}`, `❌ ${err.message}`]);
     }
   };
 
-  // Handle Ayla interactions
   const handleAskAyla = (query) => {
     try {
+      if (typeof engineRef.current.askAyla !== "function") {
+        throw new Error("Ayla is not available.");
+      }
       const result = engineRef.current.askAyla(query);
       setOutput((prev) => [...prev, `> ask Ayla about ${query}`, result]);
     } catch (err) {
@@ -117,22 +110,10 @@ export default function Game({ startRoom = "controlnexus" }) {
 
   return (
     <div className="min-h-screen bg-black text-green-400 p-4 font-mono">
-      {/* Main layout: Room renderer, output log, and side panels */}
       <div className="flex flex-col md:flex-row gap-4">
-        {/* Left panel: Room renderer and output log */}
         <div className="flex-1">
-          {/* Render the current room */}
           <RoomRenderer roomId={currentRoom} />
-
-          {/* Output log */}
-          <div className="my-4 max-h-80 overflow-y-auto border border-green-700 p-2">
-            {output.map((line, idx) => (
-              <div key={idx} className="whitespace-pre-wrap">{line}</div>
-            ))}
-          </div>
-
-          {/* Command input */}
-          <div className="flex gap-2 mb-2">
+          <div className="flex gap-2 mb-2 mt-4">
             <input
               className="bg-gray-800 text-green-400 p-2 flex-grow"
               value={command}
@@ -140,33 +121,34 @@ export default function Game({ startRoom = "controlnexus" }) {
               onKeyDown={(e) => e.key === "Enter" && handleCommand()}
               placeholder="Type a command..."
             />
-            <button className="bg-green-700 px-4 py-2" onClick={handleCommand}>
-              Go
-            </button>
+            <button className="bg-green-700 px-4 py-2" onClick={handleCommand}>Go</button>
           </div>
 
-          {/* Movement panel */}
-          <MovementPanel
-            roomId={currentRoom}
-            onMove={handleMove}
-          />
+          {/* Movement Panel with Icons */}
+          <div className="grid grid-cols-3 gap-2 text-white text-sm w-full max-w-xs mx-auto mt-4">
+            <button title="Up" onClick={() => handleMove("up")} className="bg-gray-700 p-2 rounded flex justify-center hover:scale-105 transition-transform"><ArrowUp /></button>
+            <button title="North" onClick={() => handleMove("north")} className="bg-gray-700 p-2 rounded flex justify-center hover:scale-105 transition-transform"><ArrowUp /></button>
+            <button title="Jump" onClick={() => handleMove("jump")} className="bg-gray-700 p-2 rounded flex justify-center hover:scale-105 transition-transform"><CornerDownLeft /></button>
+            <button title="West" onClick={() => handleMove("west")} className="bg-gray-700 p-2 rounded flex justify-center hover:scale-105 transition-transform"><ArrowLeft /></button>
+            <div></div>
+            <button title="East" onClick={() => handleMove("east")} className="bg-gray-700 p-2 rounded flex justify-center hover:scale-105 transition-transform"><ArrowRight /></button>
+            <div></div>
+            <button title="South" onClick={() => handleMove("south")} className="bg-gray-700 p-2 rounded flex justify-center hover:scale-105 transition-transform"><ArrowDown /></button>
+            <button title="Down" onClick={() => handleMove("down")} className="bg-gray-700 p-2 rounded flex justify-center hover:scale-105 transition-transform"><ArrowDown /></button>
+            <button title="Look" onClick={() => handleCommand("look") } className="col-span-1 bg-purple-700 p-2 rounded flex justify-center mt-2 hover:scale-105 transition-transform"><Eye size={16} /></button>
+            <button title="Inventory" onClick={() => setCommand("inventory")} className="col-span-1 bg-purple-700 p-2 rounded flex justify-center mt-2 hover:scale-105 transition-transform"><Clipboard size={16} /></button>
+          </div>
         </div>
 
-        {/* Right panel: Inventory, codex, score, and Ayla interactions */}
         <div className="w-full md:w-64 flex flex-col gap-4">
-          {/* Inventory panel */}
           <InventoryPanel inventory={inventory} />
-
-          {/* Codex panel */}
           <CodexPanel codex={codex} />
-
-          {/* Score display */}
           <div className="border-t border-green-700 pt-2">Score: {score}</div>
-
-          {/* Ayla interaction button */}
           <AylaButton onAsk={handleAskAyla} />
         </div>
       </div>
     </div>
   );
 }
+
+

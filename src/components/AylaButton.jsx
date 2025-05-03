@@ -44,12 +44,12 @@ export default function AylaButton({ onAsk }) {
           onKeyDown={(e) => e.key === "Enter" && handleAsk()} // Submit the query on Enter key press
           placeholder="Ask about something..."
         />
-        <button
-          className="bg-green-700 hover:bg-green-600 text-white px-4 py-1 rounded transition"
-          onClick={handleAsk} // Handle the query submission on button click
-        >
-          Ask
-        </button>
+<button
+  className="bg-green-700 hover:bg-green-600 text-white px-2 py-1 text-sm rounded transition whitespace-nowrap"
+  onClick={handleAsk}
+>
+  Ask
+</button>
       </div>
 
       {/* Error Message */}

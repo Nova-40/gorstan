@@ -68,11 +68,15 @@ export default function AppCore({ setHasCoffee, setShowIntro }) {
   // Handle timeout when the player fails to act
   const handleTimeout = () => {
     try {
-      setWasTooSlow(true); // Mark the player as too slow
-      if (setHasCoffee) setHasCoffee(false); // Update coffee state
-      setLocalCoffee(false); // Reset local coffee state
-      setStage("splat"); // Show SPLAT message
-      setTimeout(() => setStage("resetAfterSplat"), 3000); // Reset after 3 seconds
+      new Audio("/truckhorn.mp3").play(); // 🚚 Horn
+      setWasTooSlow(true);
+      if (setHasCoffee) setHasCoffee(false);
+      setLocalCoffee(false);
+      setStage("splat");
+      setTimeout(() => {
+        new Audio("/splat.mp3").play(); // 💥 SPLAT
+        setStage("resetAfterSplat");
+      }, 3000);
     } catch (err) {
       console.error("❌ Error handling timeout:", err);
     }
@@ -81,11 +85,16 @@ export default function AppCore({ setHasCoffee, setShowIntro }) {
   // Handle the "Jump" action
   const handleJump = () => {
     try {
-      setShowIntro(false); // Hide the intro screen
+      console.log("JUMP BUTTON FIRED");
       navigate("/controlnexus"); // Navigate to the Control Nexus
     } catch (err) {
       console.error("❌ Error handling jump action:", err);
     }
+  };
+
+  const handleDebug = () => {
+    console.log("Debug triggered");
+    navigate("/controlnexus");
   };
 
   // Handle picking up the coffee
