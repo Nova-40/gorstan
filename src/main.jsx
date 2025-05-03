@@ -10,6 +10,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App'; // Main application component
 import ErrorBoundary from './ErrorBoundary'; // Error boundary to catch runtime errors
 import './tailwind.css'; // Tailwind CSS for styling
+import { BrowserRouter } from "react-router-dom"; // Router for navigation
 
 // Detect if the app is running inside an iframe
 if (window.self !== window.top) {
@@ -42,9 +43,11 @@ if (!rootElement) {
   try {
     ReactDOM.createRoot(rootElement).render(
       <React.StrictMode>
-        <ErrorBoundary>
-          <App />
-        </ErrorBoundary>
+        <BrowserRouter>
+          <ErrorBoundary>
+            <App />
+          </ErrorBoundary>
+        </BrowserRouter>
       </React.StrictMode>
     );
     console.log("✅ Gorstan successfully initialized and rendered.");
