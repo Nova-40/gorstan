@@ -9,6 +9,7 @@ import InventoryPanel from "../components/InventoryPanel";
 import CodexPanel from "../components/CodexPanel";
 import AylaButton from "../components/AylaButton";
 import { ArrowUp, ArrowDown, ArrowLeft, ArrowRight, CornerDownLeft, Eye, Clipboard } from "lucide-react";
+import { rooms } from "./rooms";
 
 export default function Game({ startRoom = "controlnexus" }) {
   useEffect(() => {
@@ -16,6 +17,7 @@ export default function Game({ startRoom = "controlnexus" }) {
   }, []);
 
   const engineRef = useRef(null);
+  const outputEndRef = useRef(null);
   const [output, setOutput] = useState([]);
   const [command, setCommand] = useState("");
   const [currentRoom, setCurrentRoom] = useState(startRoom);
@@ -33,7 +35,7 @@ export default function Game({ startRoom = "controlnexus" }) {
         engine.addItem("coffee");
       }
 
-      setOutput([]);
+      setOutput([engine.describeCurrentRoom?.() || "⚠️ No room description available."]);
       setCurrentRoom(startRoom);
       setInventory(engine.inventory);
       setCodex(engine.codex || []);
@@ -44,10 +46,21 @@ export default function Game({ startRoom = "controlnexus" }) {
     }
   }, [startRoom]);
 
-  const handleCommand = () => {
-    if (!command.trim()) return;
+  useEffect(() => {
+    if (outputEndRef.current) {
+      outputEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [output]);
+
+  const addToOutput = (lines) => {
+    setOutput((prev) => [...prev.slice(-4), ...lines]);
+  };
+
+  const handleCommand = (forcedCommand = null) => {
+    const input = forcedCommand || command;
+    if (!input.trim()) return;
     try {
-      const trimmed = command.trim().toLowerCase();
+      const trimmed = input.trim().toLowerCase();
       const directions = ["north", "south", "east", "west", "up", "down"];
       const synonyms = ["pickup", "grab"];
       const parts = trimmed.split(" ");
@@ -62,13 +75,13 @@ export default function Game({ startRoom = "controlnexus" }) {
 
       const result = engineRef.current.processCommand(normalisedCommand);
 
-      setOutput((prev) => [...prev, `> ${command.trim()}`, result.message]);
+      addToOutput([`> ${input.trim()}`, result.message]);
       updateGameState();
     } catch (err) {
       console.error("❌ Error processing command:", err);
-      setOutput((prev) => [...prev, `> ${command.trim()}`, `❌ ${err.message}`]);
+      addToOutput([`> ${input.trim()}`, `❌ ${err.message}`]);
     }
-    setCommand("");
+    if (!forcedCommand) setCommand("");
   };
 
   const updateGameState = () => {
@@ -80,18 +93,18 @@ export default function Game({ startRoom = "controlnexus" }) {
       setScore(engine.score);
     } catch (err) {
       console.error("❌ Error updating game state:", err);
-      setOutput((prev) => [...prev, "❌ Error updating game state."]);
+      addToOutput(["❌ Error updating game state."]);
     }
   };
 
   const handleMove = (dir) => {
     try {
       const result = engineRef.current.processCommand(`go ${dir}`);
-      setOutput((prev) => [...prev, `> go ${dir}`, result.message]);
+      addToOutput([`> go ${dir}`, result.message]);
       updateGameState();
     } catch (err) {
       console.error("❌ Error processing movement:", err);
-      setOutput((prev) => [...prev, `> go ${dir}`, `❌ ${err.message}`]);
+      addToOutput([`> go ${dir}`, `❌ ${err.message}`]);
     }
   };
 
@@ -101,12 +114,25 @@ export default function Game({ startRoom = "controlnexus" }) {
         throw new Error("Ayla is not available.");
       }
       const result = engineRef.current.askAyla(query);
-      setOutput((prev) => [...prev, `> ask Ayla about ${query}`, result]);
+      addToOutput([`> ask Ayla about ${query}`, result]);
     } catch (err) {
       console.error("❌ Error asking Ayla:", err);
-      setOutput((prev) => [...prev, `> ask Ayla about ${query}`, `❌ ${err.message}`]);
+      addToOutput([`> ask Ayla about ${query}`, `❌ ${err.message}`]);
     }
   };
+
+  const handleLook = () => {
+    try {
+      const room = engineRef.current.getRoomData();
+      const items = Object.entries(room.items || {}).map(([key, item]) => `- ${item.name}: ${item.description}`).join("\n");
+      const text = `${room.description}\n${items ? `\nYou see:\n${items}` : ''}`;
+      addToOutput(["> look", text]);
+    } catch (err) {
+      addToOutput(["> look", `❌ ${err.message}`]);
+    }
+  };
+
+  const availableExits = rooms[currentRoom]?.exits || {};
 
   return (
     <div className="min-h-screen bg-black text-green-400 p-4 font-mono">
@@ -121,22 +147,28 @@ export default function Game({ startRoom = "controlnexus" }) {
               onKeyDown={(e) => e.key === "Enter" && handleCommand()}
               placeholder="Type a command..."
             />
-            <button className="bg-green-700 px-4 py-2" onClick={handleCommand}>Go</button>
+            <button className="bg-green-700 px-4 py-2" onClick={() => handleCommand()}>Go</button>
           </div>
 
-          {/* Movement Panel with Icons */}
-          <div className="grid grid-cols-3 gap-2 text-white text-sm w-full max-w-xs mx-auto mt-4">
-            <button title="Up" onClick={() => handleMove("up")} className="bg-gray-700 p-2 rounded flex justify-center hover:scale-105 transition-transform"><ArrowUp /></button>
-            <button title="North" onClick={() => handleMove("north")} className="bg-gray-700 p-2 rounded flex justify-center hover:scale-105 transition-transform"><ArrowUp /></button>
-            <button title="Jump" onClick={() => handleMove("jump")} className="bg-gray-700 p-2 rounded flex justify-center hover:scale-105 transition-transform"><CornerDownLeft /></button>
-            <button title="West" onClick={() => handleMove("west")} className="bg-gray-700 p-2 rounded flex justify-center hover:scale-105 transition-transform"><ArrowLeft /></button>
-            <div></div>
-            <button title="East" onClick={() => handleMove("east")} className="bg-gray-700 p-2 rounded flex justify-center hover:scale-105 transition-transform"><ArrowRight /></button>
-            <div></div>
-            <button title="South" onClick={() => handleMove("south")} className="bg-gray-700 p-2 rounded flex justify-center hover:scale-105 transition-transform"><ArrowDown /></button>
-            <button title="Down" onClick={() => handleMove("down")} className="bg-gray-700 p-2 rounded flex justify-center hover:scale-105 transition-transform"><ArrowDown /></button>
-            <button title="Look" onClick={() => handleCommand("look") } className="col-span-1 bg-purple-700 p-2 rounded flex justify-center mt-2 hover:scale-105 transition-transform"><Eye size={16} /></button>
-            <button title="Inventory" onClick={() => setCommand("inventory")} className="col-span-1 bg-purple-700 p-2 rounded flex justify-center mt-2 hover:scale-105 transition-transform"><Clipboard size={16} /></button>
+          {/* Output log */}
+          <div className="my-4 max-h-80 overflow-y-auto border border-green-700 p-2">
+            {output.map((line, idx) => (
+              <div key={idx} className="whitespace-pre-wrap">{line}</div>
+            ))}
+            <div ref={outputEndRef} />
+          </div>
+
+          {/* Row-based Movement Panel with Icons */}
+          <div className="flex flex-wrap justify-center gap-2 text-white text-sm w-full max-w-xl mx-auto mt-2">
+            <button title="North" onClick={() => handleMove("north")} className={`${availableExits.north ? "bg-green-600" : "bg-gray-700"} p-2 rounded hover:scale-105 transition-transform`}><ArrowUp /></button>
+            <button title="South" onClick={() => handleMove("south")} className={`${availableExits.south ? "bg-green-600" : "bg-gray-700"} p-2 rounded hover:scale-105 transition-transform`}><ArrowDown /></button>
+            <button title="East" onClick={() => handleMove("east")} className={`${availableExits.east ? "bg-green-600" : "bg-gray-700"} p-2 rounded hover:scale-105 transition-transform`}><ArrowRight /></button>
+            <button title="West" onClick={() => handleMove("west")} className={`${availableExits.west ? "bg-green-600" : "bg-gray-700"} p-2 rounded hover:scale-105 transition-transform`}><ArrowLeft /></button>
+            <button title="Up" onClick={() => handleMove("up")} className={`${availableExits.up ? "bg-green-600" : "bg-gray-700"} p-2 rounded hover:scale-105 transition-transform`}><ArrowUp size={16} /></button>
+            <button title="Down" onClick={() => handleMove("down")} className={`${availableExits.down ? "bg-green-600" : "bg-gray-700"} p-2 rounded hover:scale-105 transition-transform`}><ArrowDown size={16} /></button>
+            <button title="Jump" onClick={() => handleMove("jump" )} className="bg-gray-700 p-2 rounded hover:scale-105 transition-transform"><CornerDownLeft /></button>
+            <button title="Look" onClick={handleLook} className="bg-purple-700 p-2 rounded hover:scale-105 transition-transform"><Eye size={16} /></button>
+            <button title="Inventory" onClick={() => handleCommand("inventory")} className="bg-purple-700 p-2 rounded hover:scale-105 transition-transform"><Clipboard size={16} /></button>
           </div>
         </div>
 
