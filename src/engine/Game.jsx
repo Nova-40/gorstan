@@ -4,6 +4,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { GameEngine } from "./GameEngine";
 
+console.log("🎮 Game.jsx mounted");
+
 export default function Game({ startRoom = "controlnexus" }) {
   // Reference to the GameEngine instance
   const engineRef = useRef(null);
@@ -24,11 +26,14 @@ export default function Game({ startRoom = "controlnexus" }) {
       console.log("✅ GameEngine created, starting in:", startRoom);
 
       // Get the initial room description
-      const introText = engine.describeCurrentRoom?.();
-      console.log("📜 Initial room description:", introText);
+      const introText = engine.describeCurrentRoom?.() || "⚠️ No room description available.";
+      console.log("🧪 Room description:", introText);
 
       // Set the initial output log
-      setOutput([introText || "⚠️ No room description available."]);
+      setOutput([introText]);
+
+      // Log the engineRef after initialization
+      console.log("🎮 Game component loaded, engineRef:", engineRef.current);
     } catch (err) {
       // Handle errors during GameEngine initialization
       console.error("❌ GameEngine failed to start:", err);
@@ -40,11 +45,17 @@ export default function Game({ startRoom = "controlnexus" }) {
   const handleCommand = () => {
     if (!command.trim()) return; // Ignore empty commands
 
-    // Process the command using the GameEngine
-    const result = engineRef.current.processCommand(command);
+    try {
+      // Process the command using the GameEngine
+      const result = engineRef.current.processCommand(command);
 
-    // Update the output log with the command and the result
-    setOutput((prev) => [...prev, `> ${command}`, result]);
+      // Update the output log with the command and the result
+      setOutput((prev) => [...prev, `> ${command}`, result]);
+    } catch (err) {
+      // Handle errors during command processing
+      console.error("❌ Error processing command:", err);
+      setOutput((prev) => [...prev, `> ${command}`, "❌ Error processing command."]);
+    }
 
     // Clear the command input field
     setCommand("");

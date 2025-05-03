@@ -61,9 +61,13 @@ export class GameEngine {
 
   // Describe the current room
   describeCurrentRoom() {
-    const room = this.getRoomData();
-    return room.description || 'You are somewhere undefined.';
+  const room = this.getRoomData();
+  if (!room) return '❌ No such room.';
+  if (typeof room.description === 'function') {
+    return room.description(this);
   }
+  return room.description || 'You are somewhere undefined.';
+}
 
   // Handle picking up an item in the current room
   handlePickup(itemId) {
