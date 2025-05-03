@@ -28,73 +28,104 @@ export default function AppCore({ setHasCoffee, setShowIntro }) {
   // Effect to handle timeout for the crossing buttons
   useEffect(() => {
     if (stage === "crossingButtons") {
-      const warningTimeout = setTimeout(() => setCrossingWarning(true), 6000); // Show warning after 6 seconds
-      const splatTimeout = setTimeout(() => handleTimeout(), 10000); // Trigger SPLAT after 10 seconds
-      return () => {
-        clearTimeout(warningTimeout);
-        clearTimeout(splatTimeout);
-      };
+      try {
+        const warningTimeout = setTimeout(() => setCrossingWarning(true), 6000); // Show warning after 6 seconds
+        const splatTimeout = setTimeout(() => handleTimeout(), 10000); // Trigger SPLAT after 10 seconds
+        return () => {
+          clearTimeout(warningTimeout);
+          clearTimeout(splatTimeout);
+        };
+      } catch (err) {
+        console.error("❌ Error in crossingButtons timeout:", err);
+      }
     }
   }, [stage]);
 
   // Start the intro sequence
-  const startIntro = () => setStage("preIntro");
+  const startIntro = () => {
+    try {
+      setStage("preIntro");
+    } catch (err) {
+      console.error("❌ Error starting intro:", err);
+    }
+  };
 
   // Advance through the crossing sequence stages
   const advanceCrossing = () => {
-    const stages = ["crossing1", "crossing2", "crossing3", "crossingButtons"];
-    let i = 0;
-    const interval = setInterval(() => {
-      setStage(stages[i]);
-      i++;
-      if (i === stages.length) clearInterval(interval); // Stop advancing after the last stage
-    }, 1500); // Progress every 1.5 seconds
+    try {
+      const stages = ["crossing1", "crossing2", "crossing3", "crossingButtons"];
+      let i = 0;
+      const interval = setInterval(() => {
+        setStage(stages[i]);
+        i++;
+        if (i === stages.length) clearInterval(interval); // Stop advancing after the last stage
+      }, 1500); // Progress every 1.5 seconds
+    } catch (err) {
+      console.error("❌ Error advancing crossing sequence:", err);
+    }
   };
 
   // Handle timeout when the player fails to act
   const handleTimeout = () => {
-    setWasTooSlow(true); // Mark the player as too slow
-    if (setHasCoffee) setHasCoffee(false); // Update coffee state
-    setLocalCoffee(false); // Reset local coffee state
-    setStage("splat"); // Show SPLAT message
-    setTimeout(() => setStage("resetAfterSplat"), 3000); // Reset after 3 seconds
+    try {
+      setWasTooSlow(true); // Mark the player as too slow
+      if (setHasCoffee) setHasCoffee(false); // Update coffee state
+      setLocalCoffee(false); // Reset local coffee state
+      setStage("splat"); // Show SPLAT message
+      setTimeout(() => setStage("resetAfterSplat"), 3000); // Reset after 3 seconds
+    } catch (err) {
+      console.error("❌ Error handling timeout:", err);
+    }
   };
 
   // Handle the "Jump" action
   const handleJump = () => {
-
-    navigate("/controlnexus"); // Navigate to the Control Nexus
+    try {
+      setShowIntro(false); // Hide the intro screen
+      navigate("/controlnexus"); // Navigate to the Control Nexus
+    } catch (err) {
+      console.error("❌ Error handling jump action:", err);
+    }
   };
 
   // Handle picking up the coffee
   const handlePickupCoffee = () => {
-    setLocalCoffee(true);
-    if (setHasCoffee) setHasCoffee(true);
+    try {
+      setLocalCoffee(true);
+      if (setHasCoffee) setHasCoffee(true);
+    } catch (err) {
+      console.error("❌ Error picking up coffee:", err);
+    }
   };
 
   // Handle waiting after the multiverse reset
   const handleWaitAfterReset = () => {
-    setStage("falling");
-    setTimeout(() => handleJump(), 2000); // Automatically jump after 2 seconds
+    try {
+      setStage("falling");
+      setTimeout(() => handleJump(), 2000); // Automatically jump after 2 seconds
+    } catch (err) {
+      console.error("❌ Error handling wait after reset:", err);
+    }
   };
 
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center px-6 py-10">
       <div className="max-w-xl w-full text-center space-y-6">
-      {stage === "welcome" && (
-  <>
-    <a href="/controlnexus" className="block mt-2 text-sm text-yellow-400 underline hover:text-yellow-300">
-      Debug: skip to game
-    </a>
-    <h1 className="text-4xl font-bold">Welcome to Gorstan</h1>
-    <p className="italic">Simulated reality engaged. Try not to break it.</p>
-    <button onClick={startIntro} className="mt-4 bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded">
-      Begin
-    </button>
-  </>
-)}
+        {/* Welcome Screen */}
+        {stage === "welcome" && (
+          <>
+            <a href="/controlnexus" className="block mt-2 text-sm text-yellow-400 underline hover:text-yellow-300">
+              Debug: skip to game
+            </a>
+            <h1 className="text-4xl font-bold">Welcome to Gorstan</h1>
+            <p className="italic">Simulated reality engaged. Try not to break it.</p>
+            <button onClick={startIntro} className="mt-4 bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded">
+              Begin
+            </button>
+          </>
+        )}
 
-
+        {/* Pre-Intro Scene */}
         {stage === "preIntro" && (
           <>
             <p>You sense something is wrong. The air smells like static.</p>
@@ -104,10 +135,12 @@ export default function AppCore({ setHasCoffee, setShowIntro }) {
           </>
         )}
 
+        {/* Crossing Sequence */}
         {stage === "crossing1" && <p>A horn blares in the distance...</p>}
         {stage === "crossing2" && <p>{truckMessages[truckTextIndex]}</p>}
         {stage === "crossing3" && <p>Metal and momentum converge—</p>}
 
+        {/* Crossing Buttons */}
         {stage === "crossingButtons" && (
           <>
             <p>Do something!</p>
@@ -128,10 +161,12 @@ export default function AppCore({ setHasCoffee, setShowIntro }) {
           </>
         )}
 
+        {/* SPLAT Message */}
         {stage === "splat" && (
           <h1 className="text-6xl text-red-600 font-extrabold animate-pulse">SPLAT.</h1>
         )}
 
+        {/* Reset After SPLAT */}
         {stage === "resetAfterSplat" && (
           <>
             <p className="text-xl animate-pulse">Multiverse resetting...</p>
@@ -153,6 +188,7 @@ export default function AppCore({ setHasCoffee, setShowIntro }) {
           </>
         )}
 
+        {/* Falling State */}
         {stage === "falling" && (
           <p className="italic">You feel the ground shift. Did something push you?</p>
         )}

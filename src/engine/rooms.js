@@ -1,6 +1,7 @@
 // Rooms Configuration
 // This file defines the rooms in the Gorstan game world.
-// Each room includes a description, exits to other rooms, and optional images or items.
+// Each room includes a description, exits to other rooms, optional images, and interactive items.
+// It also provides utility functions to interact with the room data and handle errors gracefully.
 
 export const rooms = {
   intro: {
@@ -20,8 +21,13 @@ export const rooms = {
           description: 'Your coffee, miraculously upright. You could probably pick it up.',
           canPickup: true,
           onPickup: (game) => {
-            game.addItem('coffee');
-            game.output('You pick up your fallen coffee. It’s still warm. Fate smiles... for now.');
+            try {
+              game.addItem('coffee');
+              game.output('You pick up your fallen coffee. It’s still warm. Fate smiles... for now.');
+            } catch (err) {
+              console.error('❌ Error picking up coffee:', err);
+              game.output('Something went wrong while picking up the coffee.');
+            }
           },
         };
       }
@@ -234,5 +240,81 @@ export const rooms = {
     image: '/images/trentparkearth.png',
   },
 };
+
+/**
+ * Retrieves the description of a room.
+ * @param {string} roomName - The name of the room.
+ * @param {object} state - The current game state.
+ * @returns {string} - The room description or an error message if the room is invalid.
+ */
+export function getRoomDescription(roomName, state) {
+  try {
+    if (!rooms[roomName]) {
+      console.warn(`[Rooms] Room "${roomName}" not found. Redirecting to fallback.`);
+      return rooms.fallback.description;
+    }
+    const room = rooms[roomName];
+    return typeof room.description === 'function' ? room.description(state) : room.description;
+  } catch (err) {
+    console.error('❌ Error retrieving room description:', err);
+    return 'An error occurred while retrieving the room description.';
+  }
+}
+
+/**
+ * Retrieves the exits of a room.
+ * @param {string} roomName - The name of the room.
+ * @returns {object} - The room exits or an empty object if the room is invalid.
+ */
+export function getRoomExits(roomName) {
+  try {
+    if (!rooms[roomName]) {
+      console.warn(`[Rooms] Room "${roomName}" not found. Returning empty exits.`);
+      return {};
+    }
+    return rooms[roomName].exits || {};
+  } catch (err) {
+    console.error('❌ Error retrieving room exits:', err);
+    return {};
+  }
+}
+
+/**
+ * Retrieves the items in a room.
+ * @param {string} roomName - The name of the room.
+ * @param {object} state - The current game state.
+ * @returns {object} - The room items or an empty object if the room is invalid.
+ */
+export function getRoomItems(roomName, state) {
+  try {
+    if (!rooms[roomName]) {
+      console.warn(`[Rooms] Room "${roomName}" not found. Returning empty items.`);
+      return {};
+    }
+    const room = rooms[roomName];
+    return typeof room.items === 'function' ? room.items(state) : room.items || {};
+  } catch (err) {
+    console.error('❌ Error retrieving room items:', err);
+    return {};
+  }
+}
+
+/**
+ * Retrieves the image associated with a room.
+ * @param {string} roomName - The name of the room.
+ * @returns {string|null} - The room image URL or null if no image is defined.
+ */
+export function getRoomImage(roomName) {
+  try {
+    if (!rooms[roomName]) {
+      console.warn(`[Rooms] Room "${roomName}" not found. Returning null for image.`);
+      return null;
+    }
+    return rooms[roomName].image || null;
+  } catch (err) {
+    console.error('❌ Error retrieving room image:', err);
+    return null;
+  }
+}
 
 

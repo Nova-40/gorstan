@@ -31,11 +31,18 @@ export default function MovementPanel({ currentRoom, onMoveCommand }) {
     return () => clearTimeout(timeout);
   }, [lastMoveTime]);
 
-  // Handles movement commands and resets the pulse animation
+  /**
+   * Handles movement commands and resets the pulse animation.
+   * @param {string} command - The movement or action command.
+   */
   const handleMove = (command) => {
-    onMoveCommand(command);
-    setPulse(false);
-    setLastMoveTime(Date.now());
+    try {
+      onMoveCommand(command); // Trigger the callback with the command
+      setPulse(false); // Reset the pulse animation
+      setLastMoveTime(Date.now()); // Update the last movement time
+    } catch (err) {
+      console.error('❌ Error handling movement command:', err);
+    }
   };
 
   // Swipe gesture handlers for movement

@@ -2,110 +2,131 @@
 /* Copyright (c) 2025 Geoff Webster */
 /* Gorstan v2.0.0 */
 
+/* Root variables for consistent theming */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif; /* Default font stack */
+  line-height: 1.5; /* Improve readability */
+  font-weight: 400; /* Normal font weight */
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color-scheme: light dark; /* Support both light and dark modes */
+  color: rgba(255, 255, 255, 0.87); /* Default text color */
+  background-color: #242424; /* Default background color */
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-synthesis: none; /* Disable font synthesis for better rendering */
+  text-rendering: optimizeLegibility; /* Optimize text rendering */
+  -webkit-font-smoothing: antialiased; /* Smooth fonts on WebKit browsers */
+  -moz-osx-font-smoothing: grayscale; /* Smooth fonts on macOS */
 }
 
+/* Anchor link styling */
 a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+  font-weight: 500; /* Slightly bold for emphasis */
+  color: #646cff; /* Primary link color */
+  text-decoration: inherit; /* Inherit text decoration */
 }
 
 a:hover {
-  color: #535bf2;
+  color: #535bf2; /* Darken link color on hover */
 }
 
+/* Body styling */
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  margin: 0; /* Remove default margin */
+  display: flex; /* Use flexbox for layout */
+  place-items: center; /* Center content vertically and horizontally */
+  min-width: 320px; /* Ensure minimum width for small devices */
+  min-height: 100vh; /* Full viewport height */
 }
 
+/* Heading styling */
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+  font-size: 3.2em; /* Large font size for headings */
+  line-height: 1.1; /* Tight line spacing */
 }
 
+/* Button styling */
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
+  border-radius: 8px; /* Rounded corners */
+  border: 1px solid transparent; /* Transparent border */
+  padding: 0.6em 1.2em; /* Add padding for a comfortable click area */
+  font-size: 1em; /* Standard font size */
+  font-weight: 500; /* Slightly bold for emphasis */
+  font-family: inherit; /* Inherit font family */
+  background-color: #1a1a1a; /* Dark background for buttons */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: border-color 0.25s, transform 0.2s; /* Smooth hover effects */
 }
 
 button:hover {
-  border-color: #646cff;
+  border-color: #646cff; /* Highlight border on hover */
+  transform: scale(1.05); /* Slightly enlarge button on hover */
 }
 
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 4px auto -webkit-focus-ring-color; /* Focus outline for accessibility */
 }
 
+/* Light mode styling */
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    color: #213547; /* Darker text color for light mode */
+    background-color: #ffffff; /* Light background color */
   }
 
   a:hover {
-    color: #747bff;
+    color: #747bff; /* Adjust link hover color for light mode */
   }
 
   button {
-    background-color: #f9f9f9;
+    background-color: #f9f9f9; /* Light button background */
   }
-  body.erebos-loading::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: radial-gradient(circle at center, rgba(120,0,120,0.2), rgba(0,0,0,0.9));
-    backdrop-filter: blur(3px);
-    z-index: 9999;
-    animation: pulseGlow 1.5s infinite alternate ease-in-out;
-    pointer-events: none;
-  }
-  
-  @keyframes pulseGlow {
-    0% { background-color: rgba(0, 0, 0, 0.7); }
-    100% { background-color: rgba(80, 0, 80, 0.85); }
-  }
-  
-  body.erebos-loading::after {
-    content: 'Erebos is near...'; 
-    color: #ff66cc;
-    font-size: 2rem;
-    position: fixed;
-    top: 40%;
-    width: 100%;
-    text-align: center;
-    font-family: 'Courier New', Courier, monospace;
-    animation: flickerText 0.6s infinite alternate;
-    z-index: 10000;
-  }
-  
-  @keyframes flickerText {
-    from { opacity: 0.4; transform: scale(1.01); }
-    to { opacity: 1; transform: scale(1); }
-  }
+}
 
+/* Loading screen for "Erebos is near" effect */
+body.erebos-loading::before {
+  content: ''; /* Empty content for the overlay */
+  position: fixed; /* Fixed position to cover the entire viewport */
+  inset: 0; /* Cover the entire screen */
+  background: radial-gradient(circle at center, rgba(120, 0, 120, 0.2), rgba(0, 0, 0, 0.9)); /* Radial gradient for dramatic effect */
+  backdrop-filter: blur(3px); /* Blur the background */
+  z-index: 9999; /* Ensure it appears above all other elements */
+  animation: pulseGlow 1.5s infinite alternate ease-in-out; /* Subtle pulsing animation */
+  pointer-events: none; /* Prevent interaction with the overlay */
+}
+
+/* Keyframe animation for glowing effect */
+@keyframes pulseGlow {
+  0% {
+    background-color: rgba(0, 0, 0, 0.7); /* Start with a darker glow */
+  }
+  100% {
+    background-color: rgba(80, 0, 80, 0.85); /* End with a lighter glow */
+  }
+}
+
+/* Loading text for "Erebos is near" effect */
+body.erebos-loading::after {
+  content: 'Erebos is near...'; /* Display loading message */
+  color: #ff66cc; /* Bright pink text color */
+  font-size: 2rem; /* Large font size */
+  position: fixed; /* Fixed position */
+  top: 40%; /* Center vertically */
+  width: 100%; /* Full width */
+  text-align: center; /* Center-align text */
+  font-family: 'Courier New', Courier, monospace; /* Monospace font for a retro feel */
+  animation: flickerText 0.6s infinite alternate; /* Flickering animation */
+  z-index: 10000; /* Ensure it appears above the overlay */
+}
+
+/* Keyframe animation for flickering text */
+@keyframes flickerText {
+  from {
+    opacity: 0.4; /* Start with low opacity */
+    transform: scale(1.01); /* Slightly larger */
+  }
+  to {
+    opacity: 1; /* Full opacity */
+    transform: scale(1); /* Normal size */
+  }
 }
