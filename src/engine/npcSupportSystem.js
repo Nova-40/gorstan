@@ -149,3 +149,40 @@ export function getNpcMood(npcName, game) {
     return 'neutral';
   }
 }
+
+// 🧠 NPC Mood Management
+const npcMoods = {}; // Persistent mood state keyed by npcId
+
+/**
+ * Adjusts the mood of an NPC by a given amount.
+ * @param {string} npcId - The NPC's identifier.
+ * @param {number} amount - Amount to adjust (positive or negative).
+ * @returns {string} A short summary of the new mood.
+ */
+export function adjustNpcMood(npcId, amount) {
+  if (!npcId) return "⚠️ No NPC ID provided.";
+  if (!npcMoods[npcId]) npcMoods[npcId] = 0;
+
+  npcMoods[npcId] += amount;
+
+  // Optional clamp to range [-10, 10]
+  if (npcMoods[npcId] > 10) npcMoods[npcId] = 10;
+  if (npcMoods[npcId] < -10) npcMoods[npcId] = -10;
+
+  return getMoodDescription(npcMoods[npcId]);
+}
+
+/**
+ * Returns a human-readable description of mood level.
+ * @param {number} moodValue
+ * @returns {string}
+ */
+function getMoodDescription(moodValue) {
+  if (moodValue >= 8) return "They beam at you.";
+  if (moodValue >= 4) return "They seem pleased.";
+  if (moodValue > 0) return "They nod slightly.";
+  if (moodValue === 0) return "They’re neutral.";
+  if (moodValue > -4) return "They eye you cautiously.";
+  if (moodValue > -8) return "They seem annoyed.";
+  return "They look ready to snap.";
+}

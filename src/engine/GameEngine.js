@@ -12,6 +12,8 @@ import { rooms } from './rooms';
 import { getNpcDialogue, talkToNpc, adjustNpcMood } from './npcSupportSystem';
 import { getHelpAdvice } from './aylaHelp';
 
+
+
 export class GameEngine {
   constructor() {
     // Player-related properties

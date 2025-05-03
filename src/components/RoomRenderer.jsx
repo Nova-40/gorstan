@@ -4,7 +4,7 @@ import { rooms } from "../engine/rooms";
 
 /**
  * RoomRenderer Component
- * This component renders the details of a room, including its name, description, and visual representation.
+ * This component renders the details of a room, including its name, description, visual representation, and exits.
  * It handles missing or invalid room data gracefully and ensures proper rendering of room details.
  *
  * Props:
@@ -26,13 +26,33 @@ export default function RoomRenderer({ roomId }) {
 
     return (
       <div className="mb-4 border border-green-700 p-4 rounded shadow-md bg-gray-900">
+        {/* Room Image */}
+        {room.image && (
+          <div className="mb-4">
+            <img
+              src={room.image}
+              alt={`Visual for ${room.name || roomId}`}
+              className="w-full max-h-60 object-cover border border-green-700 rounded"
+            />
+          </div>
+        )}
+
         {/* Room Title */}
-        <div className="text-yellow-400 text-lg mb-2 font-bold">Room: {room.name || roomId}</div>
+        <div
+          className="text-yellow-400 text-lg mb-2 font-bold"
+          aria-label={`Room name: ${room.name || roomId}`}
+        >
+          Room: {room.name || roomId}
+        </div>
 
         {/* Room Description */}
-        <div className="text-green-300 text-sm mb-4">{room.description || "No description available."}</div>
+        <div className="text-green-300 text-sm mb-4">
+          {typeof room.description === "function"
+            ? room.description({})
+            : room.description || "This room has no description yet."}
+        </div>
 
-        {/* Room Visual Representation */}
+        {/* Placeholder for Room Visual Representation */}
         <div className="h-40 bg-gray-800 flex items-center justify-center text-green-400 rounded">
           [Image or visual for {room.name || roomId} here]
         </div>
@@ -53,7 +73,8 @@ export default function RoomRenderer({ roomId }) {
       </div>
     );
   } catch (err) {
-    console.error("❌ Error rendering RoomRenderer:", err);
+    // Log the error and display a fallback UI
+    console.error(`❌ Error rendering RoomRenderer for roomId "${roomId}":`, err);
     return (
       <div className="border border-red-700 p-4 rounded shadow-md bg-gray-900">
         <div className="font-bold text-red-500">Error</div>
