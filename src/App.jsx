@@ -12,31 +12,23 @@
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+// App.jsx
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import AppCore from "./AppCore"; // Core component for the introductory sequence
-import Game from "./engine/Game"; // Main game component
-import "./tailwind.css"; // Tailwind CSS for styling
+import { Routes, Route, Navigate } from "react-router-dom";
+import AppCore from "./AppCore";
+import Game from "./engine/Game";
+import "./tailwind.css";
 
 export default function App() {
   try {
     return (
-      // Set up the router for navigation
-      <Router>
-        <Routes>
-          {/* Route for the introductory sequence */}
-          <Route path="/" element={<AppCore />} />
-
-          {/* Route for the Control Nexus game interface */}
-          <Route path="/controlnexus" element={<Game startRoom="controlnexus" />} />
-
-          {/* Catch-all route to redirect invalid paths to the home page */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Router>
+      <Routes>
+        <Route path="/" element={<AppCore />} />
+        <Route path="/controlnexus" element={<Game startRoom="controlnexus" />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     );
   } catch (err) {
-    // Handle errors during rendering
     console.error("❌ Error rendering App component:", err);
     return (
       <div className="min-h-screen bg-red-900 text-white flex items-center justify-center">
@@ -46,6 +38,7 @@ export default function App() {
     );
   }
 }
+
 
 
 
