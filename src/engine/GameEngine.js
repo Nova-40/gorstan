@@ -235,7 +235,7 @@ export class GameEngine {
     const command = words[0];
 
     if (this.pendingRestart && input === 'confirm restart') {
-      this.currentRoom = 'intro';
+      this.currentRoom = 'introreset';
       this.inventory = [];
       this.codex = [];
       this.score = 0;
@@ -286,6 +286,18 @@ export class GameEngine {
         return this.saveGame();
       case 'load':
         return this.loadGame();
+      
+      case 'quit':
+        if (typeof window !== 'undefined' && window.gameState?.quitGame) {
+          window.gameState.quitGame(window.gameState);
+          return {
+            success: true,
+            message: "You step away from the simulation. Reality (or a far more elaborate simulation) is waiting.",
+          };
+        } else {
+          return { success: false, message: "Quit not available in this context." };
+        }
+
       case 'help':
         return { success: true, message: this.getHelp() };
       default:

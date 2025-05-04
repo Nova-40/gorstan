@@ -50,6 +50,11 @@ export function parseCommand(command, gameState) {
         return gameState.handleUseCommand(command, gameState.currentRoom);
       }
 
+      case 'quit': {
+        gameState.quitGame?.(gameState); // if it’s injected or globally available
+        return "You step away from the simulation. Reality (or a far more elaborate simulation) is waiting.";
+      }
+  
       case 'look': {
         // Handle inspecting the current room
         return gameState.handleLookCommand(gameState.currentRoom, rooms);
@@ -94,8 +99,7 @@ export function parseCommand(command, gameState) {
         const aylaSnark = dialogueMemory.getInteractionCount('Ayla') > 3
           ? " (Or just keep shouting for Ayla, she loves that.)"
           : '';
-        return `Available commands:\n- go [direction]\n- talk [npcname]\n- use [itemname]\n- look\n- inventory (/inv)\n- secrets\n- achievements\n- /jump (experimental)\n- /doors /doorsoff${aylaSnark}`;
-      }
+          return `Available commands:\n- go [direction]\n- talk [npcname]\n- use [itemname]\n- look\n- inventory (/inv)\n- secrets\n- achievements\n- /jump (experimental)\n- quit (return to welcome screen)\n- /doors /doorsoff${aylaSnark}`;      }
 
       default: {
         // Handle unknown commands

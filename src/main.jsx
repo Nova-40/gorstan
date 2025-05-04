@@ -11,6 +11,10 @@ import App from './App'; // Main application component
 import ErrorBoundary from './ErrorBoundary'; // Error boundary to catch runtime errors
 import './tailwind.css'; // Tailwind CSS for styling
 import { BrowserRouter } from "react-router-dom"; // Router for navigation
+// ✅ Inject engine instance
+import { GameEngine } from './engine/GameEngine';
+window.gameState = new GameEngine();
+window.gameState.hasStarted = false;  // Show welcome screen on first load
 
 // Detect if the app is running inside an iframe
 if (window.self !== window.top) {

@@ -32,6 +32,16 @@ export function getHelpAdvice(currentRoom, storyProgress, inventoryList) {
       hints.push("The briefcase seems strange. Maybe it isn't just for carrying things.");
     }
 
+    
+    // Throw coffee portal hint
+    if (
+      (currentRoom === 'controlnexus' || currentRoom === 'controlnexusreturned') &&
+      inventoryIds.includes('coffee') &&
+      !(storyProgress.portalFromNexus || storyProgress.portalFromReturned)
+    ) {
+      hints.push("That coffee you're holding… maybe it’s more useful airborne. Try throwing it?");
+    }
+
     // Secret tunnel hints
     if (currentRoom === 'centralpark' && !inventoryIds.includes('medallion')) {
       hints.push("The park hides more than just joggers and squirrels. Maybe throwing something would reveal it?");
