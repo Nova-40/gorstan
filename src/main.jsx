@@ -7,7 +7,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App"; // Main application component
-import "./index.css"; // Global styles (e.g., Tailwind CSS or custom styles)
+import "./tailwind.css"; // Global styles (e.g., Tailwind CSS or custom styles)
 
 /**
  * Initializes and renders the Gorstan React application.

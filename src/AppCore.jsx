@@ -5,7 +5,7 @@
 // Gorstan v2.0.0
 
 import { useEffect, useRef, useState } from "react";
-import { GameEngine } from "./engine/GameEngine"; // Main game engine component
+import GameEngineWrapper from "./components/GameEngineWrapper";
 import IntroSequence from "./components/IntroSequence"; // Intro sequence component
 import WelcomeScreen from "./components/WelcomeScreen"; // Welcome screen component
 
@@ -49,17 +49,10 @@ export default function AppCore() {
   };
 
   /**
-   * Sets up the global `quitGame` function for the game state.
-   * This allows the game to quit and return to the welcome screen.
+   * Resets any stale game state to ensure intro screens run as expected.
    */
   useEffect(() => {
-    try {
-      if (window.gameState) {
-        window.gameState.quitGame = (gs) => quitGame(gs, setScreen);
-      }
-    } catch (err) {
-      console.error("❌ Error setting up quitGame handler:", err);
-    }
+    window.gameState = null;
   }, []);
 
   return (
@@ -71,7 +64,7 @@ export default function AppCore() {
       {screen === "intro" && <IntroSequence onComplete={handleIntroComplete} />}
 
       {/* Render the Game Engine */}
-      {screen === "game" && <GameEngine ref={engineRef} />}
+      {screen === "game" && <GameEngineWrapper ref={engineRef} />}
     </div>
   );
 }
