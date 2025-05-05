@@ -1,8 +1,12 @@
 // TailwindCSS Configuration File
 // This file customizes the TailwindCSS framework for the Gorstan project.
-// It extends the default theme with custom fonts, colors, spacing, and plugins to enhance the game's styling and interactivity.
+// It extends the default theme with custom fonts, colors, spacing, animations, and plugins to enhance the game's styling and interactivity.
 
-module.exports = {
+import forms from '@tailwindcss/forms';
+import typography from '@tailwindcss/typography';
+import aspectRatio from '@tailwindcss/aspect-ratio';
+
+export default {
   // Specify the files Tailwind should scan for class names
   content: [
     './index.html', // Include the main HTML file
@@ -65,8 +69,8 @@ module.exports = {
     },
   },
   plugins: [
-    require('@tailwindcss/forms'), // Tailwind Forms plugin for better form styling
-    require('@tailwindcss/typography'), // Typography plugin for rich text styling
-    require('@tailwindcss/aspect-ratio'), // Aspect Ratio plugin for responsive media
+    forms, // Tailwind Forms plugin for better form styling
+    typography, // Typography plugin for rich text styling
+    aspectRatio, // Aspect Ratio plugin for responsive media
   ],
 };
