@@ -11,23 +11,21 @@ import { getHelpAdvice } from './aylaHelp';
 export class GameEngine {
   constructor() {
     this.playerName = '';
-    this.currentRoom = 'intro';
-    this.storyProgress = {};
-    this.storyFlags = new Set();
-    this.npcMood = {}; // { ayla: { mood: 0, askCount: 0 } }
-    this.outputLog = [];
-
-    this.inventory = [];
-    this.codex = [];
-    this.score = 0;
-
-    this.outputHandler = null;
-    this.puzzleHandler = null;
-    this.sceneHandler = null;
-
-    this.pendingRestart = false; // Flag for restart confirmation
+    this.currentRoom = 'introstreet1'; // Starting room
+    this.storyProgress = {}; // Tracks story progression flags
+    this.storyFlags = new Set(); // Tracks binary flags for story events
+    this.npcMood = {}; // Tracks NPC mood states
+    this.outputLog = []; // Logs game messages
+    this.inventory = []; // Player's inventory
+    this.codex = []; // Player's codex entries
+    this.score = 0; // Player's score
+    this.outputHandler = null; // Callback for output messages
+    this.puzzleHandler = null; // Callback for puzzle interactions
+    this.sceneHandler = null; // Callback for scene transitions
+    this.pendingRestart = false; // Tracks if a restart is pending
   }
 
+  // Setters for handlers
   setOutputHandler(handler) {
     this.outputHandler = handler;
   }
@@ -40,6 +38,10 @@ export class GameEngine {
     this.sceneHandler = handler;
   }
 
+  /**
+   * Outputs a message to the game log and triggers the output handler.
+   * @param {string} message - The message to output.
+   */
   output(message) {
     this.outputLog.push(message);
     if (this.outputHandler) {
@@ -47,6 +49,10 @@ export class GameEngine {
     }
   }
 
+  /**
+   * Retrieves the current room's data, including dynamic descriptions and items.
+   * @returns {object} - The current room's data.
+   */
   getRoomData() {
     const base = rooms[this.currentRoom];
     const description = typeof base.description === 'function' ? base.description(this) : base.description;
@@ -54,11 +60,20 @@ export class GameEngine {
     return { ...base, description, items };
   }
 
+  /**
+   * Describes the current room.
+   * @returns {string} - The room description.
+   */
   describeCurrentRoom() {
     const room = this.getRoomData();
     return room?.description || 'You are somewhere undefined.';
   }
 
+  /**
+   * Handles picking up an item in the current room.
+   * @param {string} itemId - The ID of the item to pick up.
+   * @returns {object} - The result of the pickup action.
+   */
   handlePickup(itemId) {
     const room = this.getRoomData();
     const item = room.items && room.items[itemId];
@@ -74,12 +89,21 @@ export class GameEngine {
     return { success: true, message: '' };
   }
 
+  /**
+   * Adds an item to the player's inventory.
+   * @param {string} itemId - The ID of the item to add.
+   */
   addItem(itemId) {
     if (!this.inventory.includes(itemId)) {
       this.inventory.push(itemId);
     }
   }
 
+  /**
+   * Moves the player to a new room based on the specified direction.
+   * @param {string} direction - The direction to move.
+   * @returns {object} - The result of the move action.
+   */
   moveToRoom(direction) {
     const currentRoomData = this.getRoomData();
     if (currentRoomData?.exits?.[direction]) {
@@ -93,58 +117,74 @@ export class GameEngine {
     }
   }
 
-  attemptPuzzle(puzzleName, input = null) {
-    const puzzle = puzzles[puzzleName];
-    return puzzle ? puzzle.solve(input) : 'No such puzzle found.';
+  /**
+   * Processes a player command and executes the corresponding action.
+   * @param {string} input - The player's command input.
+   * @returns {object} - The result of the command execution.
+   */
+  processCommand(input) {
+    const words = input.trim().toLowerCase().split(' ');
+    const command = words[0];
+
+    if (this.pendingRestart && input === 'confirm restart') {
+      this.resetGame();
+      return { success: true, message: 'Game has been restarted. Back at the beginning.' };
+    }
+
+    switch (command) {
+      case 'restart':
+        this.pendingRestart = true;
+        return {
+          success: true,
+          message: '⚠️ This will reset all progress. Type `confirm restart` to proceed.',
+        };
+      case 'go':
+        return this.moveToRoom(words[1]);
+      case 'take':
+        return this.handlePickup(words[1]);
+      case 'drop':
+        return this.dropItem(words[1]);
+      case 'talk':
+        return { success: true, message: this.talkToNpc(words.slice(1).join(' ')) };
+      case 'ask':
+        return { success: true, message: this.askNpcAbout(words[1], words.slice(2).join(' ')) };
+      case 'solve':
+        return { success: true, message: this.attemptPuzzle(words[1], words.slice(2).join(' ')) };
+      case 'inventory':
+        return { success: true, message: JSON.stringify(this.listInventoryItems(), null, 2) };
+      case 'throw':
+        return this.throwItem(words.slice(1).join(' '));
+      case 'save':
+        return this.saveGame();
+      case 'load':
+        return this.loadGame();
+      case 'quit':
+        return this.quitGame();
+      case 'help':
+        return { success: true, message: this.getHelp() };
+      default:
+        return { success: false, message: 'Unknown command.' };
+    }
   }
 
-  collectItem(itemId, itemData) {
-    this.addItem(itemId);
-    this.checkSecretTunnelMedallionAccess();
-    return { success: true, message: `Collected ${itemId}.` };
-  }
-
-  dropItem(itemId) {
-    this.inventory = this.inventory.filter(i => i !== itemId);
-    return { success: true, message: `Dropped ${itemId}.` };
-  }
-
-  checkInventory(itemId) {
-    return this.inventory.includes(itemId);
-  }
-
-  listInventoryItems() {
-    return this.inventory;
-  }
-
-  resetInventory() {
+  /**
+   * Resets the game state to its initial values.
+   */
+  resetGame() {
+    this.currentRoom = 'introstreet1';
     this.inventory = [];
+    this.codex = [];
+    this.score = 0;
+    this.storyProgress = {};
+    this.storyFlags.clear();
+    this.outputLog = [];
+    this.pendingRestart = false;
   }
 
-  talkToNpc(npcName) {
-    return talkToNpc(npcName, this.storyProgress, this.npcMood);
-  }
-
-  askNpcAbout(npcName, topic) {
-    return getNpcDialogue(npcName, topic, this.storyProgress, this.npcMood);
-  }
-
-  getHelp() {
-    return getHelpAdvice(this.currentRoom, this.storyProgress, this.inventory);
-  }
-
-  setFlag(flagName) {
-    this.storyFlags.add(flagName);
-  }
-
-  hasFlag(flagName) {
-    return this.storyFlags.has(flagName);
-  }
-
-  removeFlag(flagName) {
-    this.storyFlags.delete(flagName);
-  }
-
+  /**
+   * Saves the current game state to localStorage.
+   * @returns {object} - The result of the save action.
+   */
   saveGame() {
     try {
       const saveData = {
@@ -161,6 +201,10 @@ export class GameEngine {
     }
   }
 
+  /**
+   * Loads the game state from localStorage.
+   * @returns {object} - The result of the load action.
+   */
   loadGame() {
     try {
       const saveString = localStorage.getItem('gorstanSave');
@@ -180,128 +224,19 @@ export class GameEngine {
     }
   }
 
-  throwItem(itemName) {
-    const itemLower = itemName.toLowerCase();
-
-    if (itemLower === 'coffee' && this.currentRoom === 'centralpark') {
-      if (!rooms.centralpark.exits['down']) {
-        rooms.centralpark.exits['down'] = 'crossing2';
-        this.setFlag('secretDoorOpened');
-        return {
-          success: true,
-          message: 'You throw the coffee onto the ground. The earth trembles and a hidden hatch opens, leading downward!',
-        };
-      } else {
-        return { success: false, message: 'The secret door is already open.' };
-      }
+  /**
+   * Handles quitting the game.
+   * @returns {object} - The result of the quit action.
+   */
+  quitGame() {
+    if (typeof window !== 'undefined' && window.gameState?.quitGame) {
+      window.gameState.quitGame(window.gameState);
+      return {
+        success: true,
+        message: "You step away from the simulation. Reality (or a far more elaborate simulation) is waiting.",
+      };
     } else {
-      return { success: false, message: `Throwing ${itemName} does nothing useful here.` };
-    }
-  }
-
-  checkSecretTunnelMedallionAccess() {
-    if (this.inventory.includes('medallion') && !rooms.centralpark.exits['down']) {
-      rooms.centralpark.exits['down'] = 'crossing2';
-      this.setFlag('secretDoorOpened');
-      this.output('The medallion hums in your hand... and a hidden passage opens beneath your feet!');
-    }
-  }
-
-  updateStoryProgress(flag) {
-    this.storyProgress[flag] = true;
-  }
-
-  askAyla(query) {
-    const mood = this.npcMood.ayla || { mood: 0, askCount: 0 };
-    mood.askCount++;
-    mood.mood += 1;
-    this.npcMood.ayla = mood;
-
-    const hints = [
-      `Ayla raises an eyebrow. “You always ask about ${query}, don’t you?”`,
-      `She sighs softly. “You already *have* what you need. Try looking around ${this.currentRoom}.”`,
-      `Her tone sharpens. “You’re stalling. Check your codex. Or throw something.”`,
-    ];
-
-    const response = mood.askCount > 5
-      ? `Ayla blinks. "You've asked too many questions. Figure it out yourself."`
-      : hints[mood.askCount % hints.length] || `Ayla shrugs. "Not sure how to help with '${query}'."`;
-
-    return response;
-  }
-
-  processCommand(input) {
-    const words = input.trim().toLowerCase().split(' ');
-    const command = words[0];
-
-    if (this.pendingRestart && input === 'confirm restart') {
-      this.currentRoom = 'introreset';
-      this.inventory = [];
-      this.codex = [];
-      this.score = 0;
-      this.storyProgress = {};
-      this.storyFlags.clear();
-      this.outputLog = [];
-      this.pendingRestart = false;
-      return { success: true, message: 'Game has been restarted. Back at the beginning.' };
-    }
-
-    if (this.currentRoom === 'intro') {
-      if (command === 'jump') {
-        this.currentRoom = 'controlnexus';
-        return {
-          success: true,
-          message:
-            'You dive through the shimmering portal just as the truck blazes past. Reality twists... You land heavily inside the Control Nexus.',
-        };
-      } else {
-        return { success: false, message: 'The truck barrels toward you. You must JUMP!' };
-      }
-    }
-
-    switch (command) {
-      case 'restart':
-        this.pendingRestart = true;
-        return {
-          success: true,
-          message: '⚠️ This will reset all progress. Type `confirm restart` to proceed.',
-        };
-      case 'go':
-        return this.moveToRoom(words[1]);
-      case 'take':
-        return this.collectItem(words[1], { description: 'Mysterious item.' });
-      case 'drop':
-        return this.dropItem(words[1]);
-      case 'talk':
-        return { success: true, message: this.talkToNpc(words.slice(1).join(' ')) };
-      case 'ask':
-        return { success: true, message: this.askNpcAbout(words[1], words.slice(2).join(' ')) };
-      case 'solve':
-        return { success: true, message: this.attemptPuzzle(words[1], words.slice(2).join(' ')) };
-      case 'inventory':
-        return { success: true, message: JSON.stringify(this.listInventoryItems(), null, 2) };
-      case 'throw':
-        return this.throwItem(words.slice(1).join(' '));
-      case 'save':
-        return this.saveGame();
-      case 'load':
-        return this.loadGame();
-      
-      case 'quit':
-        if (typeof window !== 'undefined' && window.gameState?.quitGame) {
-          window.gameState.quitGame(window.gameState);
-          return {
-            success: true,
-            message: "You step away from the simulation. Reality (or a far more elaborate simulation) is waiting.",
-          };
-        } else {
-          return { success: false, message: "Quit not available in this context." };
-        }
-
-      case 'help':
-        return { success: true, message: this.getHelp() };
-      default:
-        return { success: false, message: 'Unknown command.' };
+      return { success: false, message: "Quit not available in this context." };
     }
   }
 }

@@ -1,44 +1,77 @@
+// AppCore.jsx
+// Core component for the Gorstan React application.
+// MIT License
+// Copyright (c) 2025 Geoff Webster
+// Gorstan v2.0.0
 
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import { GameEngine } from "./engine/GameEngine"; // Main game engine component
+import IntroSequence from "./components/IntroSequence"; // Intro sequence component
+import WelcomeScreen from "./components/WelcomeScreen"; // Welcome screen component
 
-export function quitGame(gameState, setShowIntro) {
-  gameState.resetGame();
-  gameState.hasStarted = false;
-  gameState.currentRoom = null;
-  setShowIntro(true);
+/**
+ * Handles quitting the game by resetting the game state and returning to the welcome screen.
+ * @param {object} gameState - The current game state object.
+ * @param {function} setScreen - Function to update the current screen state.
+ */
+export function quitGame(gameState, setScreen) {
+  try {
+    gameState.resetGame(); // Reset the game state
+    gameState.hasStarted = false; // Mark the game as not started
+    gameState.currentRoom = null; // Clear the current room
+    setScreen("welcome"); // Navigate back to the welcome screen
+  } catch (err) {
+    console.error("❌ Error while quitting the game:", err);
+  }
 }
 
-export default function AppCore({ setShowIntro }) {
-  const startIntro = () => {
-    try {
-      if (window.gameState) {
-        window.gameState.currentRoom = 'introstreet1';
-        window.gameState.hasStarted = true;
-      }
-      setShowIntro(false);
-    } catch (err) {
-      console.error("❌ Error starting intro:", err);
-    }
+/**
+ * AppCore Component
+ * Manages the main screens of the Gorstan application: Welcome, Intro, and Game.
+ * Handles transitions between screens and integrates with the game engine.
+ */
+export default function AppCore() {
+  const [screen, setScreen] = useState("welcome"); // Tracks the current screen
+  const engineRef = useRef(null); // Reference to the GameEngine component
+
+  /**
+   * Handles the completion of the intro sequence and transitions to the game screen.
+   */
+  const handleIntroComplete = () => {
+    setScreen("game");
   };
 
+  /**
+   * Starts the intro sequence by transitioning to the intro screen.
+   */
+  const startIntro = () => {
+    setScreen("intro");
+  };
+
+  /**
+   * Sets up the global `quitGame` function for the game state.
+   * This allows the game to quit and return to the welcome screen.
+   */
   useEffect(() => {
-    if (window.gameState) {
-      window.gameState.quitGame = (gs) => quitGame(gs, setShowIntro);
+    try {
+      if (window.gameState) {
+        window.gameState.quitGame = (gs) => quitGame(gs, setScreen);
+      }
+    } catch (err) {
+      console.error("❌ Error setting up quitGame handler:", err);
     }
   }, []);
 
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center px-6 py-10">
-      <div className="max-w-xl w-full text-center space-y-6">
-        <a href="/controlnexus" className="block mt-2 text-sm text-yellow-400 underline hover:text-yellow-300">
-          Debug: skip to game
-        </a>
-        <h1 className="text-4xl font-bold">Welcome to Gorstan</h1>
-        <p className="italic">Simulated reality engaged. Try not to break it.</p>
-        <button onClick={startIntro} className="mt-4 bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded">
-          Begin
-        </button>
-      </div>
+    <div className="min-h-screen bg-black text-white">
+      {/* Render the Welcome Screen */}
+      {screen === "welcome" && <WelcomeScreen onStartIntro={startIntro} />}
+
+      {/* Render the Intro Sequence */}
+      {screen === "intro" && <IntroSequence onComplete={handleIntroComplete} />}
+
+      {/* Render the Game Engine */}
+      {screen === "game" && <GameEngine ref={engineRef} />}
     </div>
   );
 }
