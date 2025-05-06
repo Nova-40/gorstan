@@ -1,3 +1,8 @@
+// /src/engine/GameEngine.js
+// MIT License
+// Copyright (c) 2025 Geoff Webster
+// Gorstan v2.0.0
+
 // GameEngine Class
 // This class serves as the core of the Gorstan game engine, managing game state, player actions, inventory, rooms, puzzles, NPC interactions, and more.
 // It provides methods for processing commands, saving/loading the game, and interacting with the game world.
@@ -7,25 +12,26 @@ import { puzzles } from './puzzles';
 import { rooms } from './rooms';
 import { getNpcDialogue, talkToNpc, adjustNpcMood } from './npcSupportSystem';
 import { getHelpAdvice } from './aylaHelp';
+import { parseCommand } from './commandParser';
 
 export class GameEngine {
   constructor() {
     this.playerName = '';
-    this.currentRoom = 'introstreet1'; // Starting room
-    this.storyProgress = {}; // Tracks story progression flags
-    this.storyFlags = new Set(); // Tracks binary flags for story events
-    this.npcMood = {}; // Tracks NPC mood states
-    this.outputLog = []; // Logs game messages
-    this.inventory = []; // Player's inventory
-    this.codex = []; // Player's codex entries
-    this.score = 0; // Player's score
-    this.outputHandler = null; // Callback for output messages
-    this.puzzleHandler = null; // Callback for puzzle interactions
-    this.sceneHandler = null; // Callback for scene transitions
-    this.pendingRestart = false; // Tracks if a restart is pending
+    this.currentRoom = 'introstreet1';
+    this.storyProgress = {};
+    this.storyFlags = new Set();
+    this.npcMood = {};
+    this.outputLog = [];
+    this.inventory = [];
+    this.codex = [];
+    this.score = 0;
+    this.outputHandler = null;
+    this.puzzleHandler = null;
+    this.sceneHandler = null;
+    this.pendingRestart = false;
+    this.quitGame = null;
   }
 
-  // Setters for handlers
   setOutputHandler(handler) {
     this.outputHandler = handler;
   }
@@ -38,10 +44,6 @@ export class GameEngine {
     this.sceneHandler = handler;
   }
 
-  /**
-   * Outputs a message to the game log and triggers the output handler.
-   * @param {string} message - The message to output.
-   */
   output(message) {
     this.outputLog.push(message);
     if (this.outputHandler) {
@@ -49,10 +51,6 @@ export class GameEngine {
     }
   }
 
-  /**
-   * Retrieves the current room's data, including dynamic descriptions and items.
-   * @returns {object} - The current room's data.
-   */
   getRoomData() {
     const base = rooms[this.currentRoom];
     const description = typeof base.description === 'function' ? base.description(this) : base.description;
@@ -60,20 +58,11 @@ export class GameEngine {
     return { ...base, description, items };
   }
 
-  /**
-   * Describes the current room.
-   * @returns {string} - The room description.
-   */
   describeCurrentRoom() {
     const room = this.getRoomData();
     return room?.description || 'You are somewhere undefined.';
   }
 
-  /**
-   * Handles picking up an item in the current room.
-   * @param {string} itemId - The ID of the item to pick up.
-   * @returns {object} - The result of the pickup action.
-   */
   handlePickup(itemId) {
     const room = this.getRoomData();
     const item = room.items && room.items[itemId];
@@ -89,25 +78,17 @@ export class GameEngine {
     return { success: true, message: '' };
   }
 
-  /**
-   * Adds an item to the player's inventory.
-   * @param {string} itemId - The ID of the item to add.
-   */
   addItem(itemId) {
     if (!this.inventory.includes(itemId)) {
       this.inventory.push(itemId);
     }
   }
 
-  /**
-   * Moves the player to a new room based on the specified direction.
-   * @param {string} direction - The direction to move.
-   * @returns {object} - The result of the move action.
-   */
   moveToRoom(direction) {
     const currentRoomData = this.getRoomData();
-    if (currentRoomData?.exits?.[direction]) {
-      this.currentRoom = currentRoomData.exits[direction];
+    const exits = typeof currentRoomData.exits === 'function' ? currentRoomData.exits(this) : currentRoomData.exits || {};
+    if (exits[direction]) {
+      this.currentRoom = exits[direction];
       if (rooms[this.currentRoom].onEnter) {
         rooms[this.currentRoom].onEnter(this);
       }
@@ -118,58 +99,31 @@ export class GameEngine {
   }
 
   /**
-   * Processes a player command and executes the corresponding action.
-   * @param {string} input - The player's command input.
-   * @returns {object} - The result of the command execution.
+   * Interprets a 'throw' command. If coffee is thrown in the right location, unlock secret.
+   * @param {string} item
+   * @returns {{success: boolean, message: string}}
    */
-  processCommand(input) {
-    const words = input.trim().toLowerCase().split(' ');
-    const command = words[0];
-
-    if (this.pendingRestart && input === 'confirm restart') {
-      this.resetGame();
-      return { success: true, message: 'Game has been restarted. Back at the beginning.' };
-    }
-
-    switch (command) {
-      case 'restart':
-        this.pendingRestart = true;
-        return {
-          success: true,
-          message: '⚠️ This will reset all progress. Type `confirm restart` to proceed.',
-        };
-      case 'go':
-        return this.moveToRoom(words[1]);
-      case 'take':
-        return this.handlePickup(words[1]);
-      case 'drop':
-        return this.dropItem(words[1]);
-      case 'talk':
-        return { success: true, message: this.talkToNpc(words.slice(1).join(' ')) };
-      case 'ask':
-        return { success: true, message: this.askNpcAbout(words[1], words.slice(2).join(' ')) };
-      case 'solve':
-        return { success: true, message: this.attemptPuzzle(words[1], words.slice(2).join(' ')) };
-      case 'inventory':
-        return { success: true, message: JSON.stringify(this.listInventoryItems(), null, 2) };
-      case 'throw':
-        return this.throwItem(words.slice(1).join(' '));
-      case 'save':
-        return this.saveGame();
-      case 'load':
-        return this.loadGame();
-      case 'quit':
-        return this.quitGame();
-      case 'help':
-        return { success: true, message: this.getHelp() };
-      default:
-        return { success: false, message: 'Unknown command.' };
+  throwItem(item) {
+    if (item === 'coffee') {
+      if (this.inventory.includes('coffee')) {
+        removeItem('coffee');
+        this.output('You hurl the steaming coffee. It splashes across the wall, revealing a shimmering outline...');
+        if (!this.storyFlags.has('secretDoorUnlocked')) {
+          this.storyFlags.add('secretDoorUnlocked');
+        }
+        return { success: true, message: 'A secret passage reveals itself.' };
+      } else {
+        return { success: false, message: "You don't have any coffee to throw." };
+      }
+    } else {
+      return { success: false, message: `Throwing ${item} achieves nothing.` };
     }
   }
 
-  /**
-   * Resets the game state to its initial values.
-   */
+  processCommand(command) {
+    return parseCommand(command, this);
+  }
+
   resetGame() {
     this.currentRoom = 'introstreet1';
     this.inventory = [];
@@ -181,10 +135,6 @@ export class GameEngine {
     this.pendingRestart = false;
   }
 
-  /**
-   * Saves the current game state to localStorage.
-   * @returns {object} - The result of the save action.
-   */
   saveGame() {
     try {
       const saveData = {
@@ -201,10 +151,6 @@ export class GameEngine {
     }
   }
 
-  /**
-   * Loads the game state from localStorage.
-   * @returns {object} - The result of the load action.
-   */
   loadGame() {
     try {
       const saveString = localStorage.getItem('gorstanSave');
@@ -224,10 +170,6 @@ export class GameEngine {
     }
   }
 
-  /**
-   * Handles quitting the game.
-   * @returns {object} - The result of the quit action.
-   */
   quitGame() {
     if (typeof window !== 'undefined' && window.gameState?.quitGame) {
       window.gameState.quitGame(window.gameState);
@@ -239,4 +181,17 @@ export class GameEngine {
       return { success: false, message: "Quit not available in this context." };
     }
   }
+
+  handleLookCommand(currentRoom, roomsData) {
+    return roomsData[currentRoom]?.description || 'There is nothing much to see.';
+  }
+
+  handleUseCommand(command, currentRoom) {
+    return `You try to use that, but nothing happens.`;
+  }
+
+  handleSecretsCommand() {
+    return 'You sense there are secrets waiting to be uncovered.';
+  }
 }
+

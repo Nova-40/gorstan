@@ -47,25 +47,25 @@ export default function WelcomeScreen({ onStartIntro }) {
         <p>
           Explore the world of Gorstan in book form:
           <a
-            href="https://www.geoffwebsterbooks.com"
+            href="https://www.thegorstanchronicles.com/book-showcase"
             target="_blank"
             rel="noopener noreferrer"
             className="text-yellow-400 underline hover:text-yellow-300 ml-1"
           >
-            Visit Geoff’s Books
+            Visit The Gorstan Chronicles
           </a>
         </p>
         <p>
-          Love the game? You can
+          Love the game? You can support development - 
           <a
             href="https://www.buymeacoffee.com/gorstan"
             target="_blank"
             rel="noopener noreferrer"
             className="text-yellow-400 underline hover:text-yellow-300 ml-1"
           >
-            buy me a coffee
-          </a>
-          and fuel the multiverse.
+             buy me a coffee 
+             </a>{" "}
+           and fuel the multiverse.
         </p>
       </div>
     </div>

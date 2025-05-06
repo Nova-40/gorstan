@@ -21,15 +21,41 @@ import { dialogueMemory } from './dialogueMemory';
  */
 export function parseCommand(command, gameState) {
   try {
-    // Split the command into verb and arguments
-    const [verb, ...args] = command.trim().split(' ');
+    const trimmed = command.trim().toLowerCase();
+    const [verb, ...args] = trimmed.split(' ');
     const argString = args.join(' ').toLowerCase();
 
-    // Handle commands based on the verb
-    switch (verb.toLowerCase()) {
+    // Support simple direction or jump commands directly
+    const directions = ['north', 'south', 'east', 'west', 'up', 'down', 'jump'];
+    if (directions.includes(trimmed)) {
+      const room = rooms[gameState.currentRoom];
+      const exits = typeof room?.exits === 'function' ? room.exits(gameState) : room?.exits || {};
+      if (exits[trimmed]) {
+        const newRoom = exits[trimmed];
+        gameState.currentRoom = newRoom;
+        return onEnterRoom(newRoom, gameState.storyStage);
+      }
+      return "You can't go that way.";
+    }
+
+    if (verb === 'ask' && argString) {
+      return talkToNPC(argString);
+    }
+
+    if (trimmed === 'fullscreen') {
+      document.documentElement.requestFullscreen?.();
+      return 'Entering fullscreen mode...';
+    }
+
+    if (trimmed === 'windowed') {
+      document.exitFullscreen?.();
+      return 'Returning to windowed mode...';
+    }
+
+    switch (verb) {
       case 'go': {
-        // Handle movement between rooms
-        const exits = rooms[gameState.currentRoom]?.exits || {};
+        const room = rooms[gameState.currentRoom];
+        const exits = typeof room?.exits === 'function' ? room.exits(gameState) : room?.exits || {};
         if (exits[argString]) {
           const newRoom = exits[argString];
           gameState.currentRoom = newRoom;
@@ -39,70 +65,60 @@ export function parseCommand(command, gameState) {
       }
 
       case 'talk': {
-        // Handle talking to NPCs
         if (!argString) return 'Who do you want to talk to?';
         return talkToNPC(argString);
       }
 
       case 'use': {
-        // Handle using items
         if (!argString) return 'What do you want to use?';
         return gameState.handleUseCommand(command, gameState.currentRoom);
       }
 
       case 'quit': {
-        gameState.quitGame?.(gameState); // if it’s injected or globally available
+        gameState.quitGame?.(gameState);
         return "You step away from the simulation. Reality (or a far more elaborate simulation) is waiting.";
       }
-  
+
       case 'look': {
-        // Handle inspecting the current room
         return gameState.handleLookCommand(gameState.currentRoom, rooms);
       }
 
       case 'inventory':
       case '/inv': {
-        // Display the player's inventory
         const items = inventory.listInventory();
         return items.length > 0 ? `Your inventory: ${items.join(', ')}` : 'Your inventory is empty.';
       }
 
       case '/jump': {
-        // Experimental command for testing
         return 'You brace yourself... but nothing happens. Not yet.';
       }
 
       case '/doors': {
-        // Developer mode: show all doors
         gameState.showAllDoors = true;
         return 'Developer mode: showing all doors temporarily enabled.';
       }
 
       case '/doorsoff': {
-        // Developer mode: hide all doors
         gameState.showAllDoors = false;
         return 'Developer mode: hidden doors are hidden once more.';
       }
 
       case 'secrets': {
-        // Handle displaying secrets
         return gameState.handleSecretsCommand();
       }
 
       case 'achievements': {
-        // Handle displaying achievements
         return gameState.handleAchievementsCommand();
       }
 
       case 'help': {
-        // Display a list of available commands
         const aylaSnark = dialogueMemory.getInteractionCount('Ayla') > 3
           ? " (Or just keep shouting for Ayla, she loves that.)"
           : '';
-          return `Available commands:\n- go [direction]\n- talk [npcname]\n- use [itemname]\n- look\n- inventory (/inv)\n- secrets\n- achievements\n- /jump (experimental)\n- quit (return to welcome screen)\n- /doors /doorsoff${aylaSnark}`;      }
+        return `Available commands:\n- north/south/east/west/jump\n- go [direction]\n- talk [npcname] or ask [npc] \n- use [itemname]\n- look\n- inventory (/inv)\n- secrets\n- achievements\n- /jump (experimental)\n- quit\n- /doors /doorsoff${aylaSnark}`;
+      }
 
       default: {
-        // Handle unknown commands
         return 'Unknown command. Type "help" for a list of available actions.';
       }
     }
@@ -111,3 +127,5 @@ export function parseCommand(command, gameState) {
     return 'An error occurred while processing your command.';
   }
 }
+
+

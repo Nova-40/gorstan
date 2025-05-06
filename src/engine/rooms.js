@@ -2,394 +2,177 @@
 // This file defines the rooms in the Gorstan game world.
 // Each room includes a description, exits to other rooms, optional images, and interactive items.
 
+// /src/engine/rooms.js
+// MIT License
+// Copyright (c) 2025 Geoff Webster
+
 export const rooms = {
-  // Aevira Warehouse
-  aevirawarehouse: {
-    description: "Rows of forgotten crates and a lingering smell of old paper fill the massive Aevira Warehouse.",
-    exits: { west: "centralpark", east: "ancientvault" },
-    image: "/images/aevirawarehouse.png",
-  },
-
-  // Ancient Vault
-  ancientvault: {
-    description: "Heavy stone doors and ancient glyphs hint at forgotten powers.",
-    exits: { west: "aevirawarehouse", east: "arbitercore" },
-    image: "/images/ancientvault.png",
-  },
-
-  // Arbiter Core
-  arbitercore: {
-    description: "The heart of judgement: an ancient machine hums faintly.",
-    exits: { west: "ancientvault" },
-    image: "/images/arbitercore.png",
-  },
-
-  // Burger Joint
-  burgerjoint: {
-    description: "An old-fashioned burger joint. The chef eyes you with a knowing smile.",
-    image: "/images/burgerjoint.png",
-    exits: { south: "centralpark" },
-  },
-
-  // Cafe Office
-  cafeoffice: {
-    description: "A side office behind Findlater’s Café.",
-    exits: { south: "findlaterscornercafe" },
-    image: "/images/cafeoffice.png",
-  },
-
-  // Carron Spire
-  carronspire: {
-    description: "A jagged mountain spire under a cold, alien sky.",
-    exits: { south: "faelake" },
-    image: "/images/carronspire.png",
-  },
-
-  // Central Park
-  centralpark: {
-    description: "You are standing in the heart of Central Park. There is a strange sense that something is hidden beneath your feet.",
-    image: "/images/centralpark.png",
-    exits: { north: "burgerjoint", east: "aevirawarehouse", down: "glitchroom" },
-  },
-
-  // Control Nexus
-  controlnexus: {
-    description: "The Control Nexus: A swirling vortex of broken commands and abandoned authority.",
-    exits: { south: "hiddenlab" },
-    image: "/images/controlnexus.png",
-  },
-
-  // Control Nexus Returned
-  controlnexusreturned: {
-    description: "The same Nexus... changed. Scarred by your presence.",
-    exits: { north: "controlnexus" },
-    image: "/images/controlnexusreturned.png",
-  },
-
-  // Control Room
-  controlroom: {
-    description: "Banks of blinking panels dominate the Control Room.",
-    exits: { south: "hiddenlab", west: "resetroom" },
-    image: "/images/controlroom.png",
-  },
-
-  // Dale's Apartment
-  dalesapartment: {
-    description: "Dale's apartment — a safe place, for now.",
-    exits: { north: "findlaterscornercafe" },
-    image: "/images/dalesapartment.png",
-  },
-
-  // Faelake
-  faelake: {
-    description: "Still waters reflect impossible constellations.",
-    exits: { north: "carronspire" },
-    image: "/images/faelake.png",
-  },
-
-  // Findlater's Corner Café
-  findlaterscornercafe: {
-    description: "Findlater's Corner Café: The smell of pastries battles the London smog.",
-    exits: { north: "cafeoffice", south: "dalesapartment" },
-    image: "/images/findlaterscornercafe.png",
-  },
-
-  // Forgotten Chamber
-  forgottenchamber: {
-    description: "A lost chamber beyond normal space.",
-    exits: { south: "storagechamber", north: "caveofechoes" },
-    image: "/images/forgottenchamber.png",
-  },
-
-  // Glitch Realm
-  glitchrealm: {
-    description: "The glitch thickens, breaking everything.",
-    exits: { south: "glitchroom", east: "lucidveil" },
-    image: "/images/glitchrealm.png",
-  },
-
-  // Glitch Room
-  glitchroom: {
-    description: "Reality flickers here. Dangerous.",
-    exits: { north: "pollysbay", east: "primeconfluence" },
-    image: "/images/glitchroom.png",
-  },
-
-  greasystoreroom: {
-    description: (state) => {
-      if (state.flags.foundNapkin) {
-        return "You stand in the greasy storeroom again. The smell is no better, but you’ve already taken the strange napkin.";
-      }
-      return "It’s dark, humid, and coated in an oily film. Shelves are stacked with expired tins and odd tools. A suspiciously folded napkin lies on a crate.";
-    },
-    image: "/images/greasystoreroom.png",
-    exits: {
-      west: "burgerjoint"
-    },
-    items: (state) => {
-      if (state.flags.foundNapkin) return {};
-      return {
-        greasyNapkin: {
-          name: "greasy napkin",
-          description: "A soggy, slightly disgusting napkin... wait — there’s a faint sketch of something... it looks like a lattice.",
-          canPickup: true,
-          onPickup: (game) => {
-            game.setFlag("foundNapkin");
-            game.addItem("greasyNapkin");
-            game.output("You carefully unfold the napkin and realise it’s a crude blueprint of the Lattice. The ink is smudged, but unmistakable.");
-          }
-        }
-      };
-    }
-  },
-  
-  latticeroom: {
-    description: (state) => {
-      if (state.flags.activatedLattice) {
-        return "The Lattice pulses more rapidly now. You feel its awareness. It is... listening.";
-      }
-      if (state.inventory?.includes("greasyNapkin")) {
-        return "You recognise the structure from the napkin sketch — this is the Lattice. Its angles shimmer, waiting for input.";
-      }
-      return "A massive geometric form floats before you. Its angles bend reality. You feel like it’s watching you, judging your presence.";
-    },
-    image: "/images/latticeroom.png",
-    exits: {
-      back: "hiddenlibrary"
-    },
-    onSay: (msg, state) => {
-      if (msg.toLowerCase() === "activate lattice" && state.inventory?.includes("greasyNapkin")) {
-        state.flags.activatedLattice = true;
-        return "You hold up the napkin. The Lattice shifts — subtly — and you hear a deep chime within your bones. It accepts you.";
-      }
-      if (msg.toLowerCase() === "activate lattice") {
-        return "Nothing happens. The Lattice does not respond.";
-      }
-    },
-    onEnter: (state) => {
-      if (!state.flags.seenLattice) {
-        state.flags.seenLattice = true;
-        state.output?.("The Lattice dominates the space, humming with latent energy.");
-      }
-    }
-  },
-  
-  // Hallucination Room
-  hallucinationroom: {
-    description: "The walls drip like wax. You cannot trust your senses here.",
-    exits: { west: "lucidveil" },
-    image: "/images/hallucinationroom.png",
-  },
-
-  // Hidden Lab
-  hiddenlab: {
-    description: "A hidden lab, whirring quietly.",
-    exits: { north: "controlroom" },
-    image: "/images/hiddenlab.png",
-  },
-
-  // Hidden Library
-  hiddenlibrary: {
-    description: "Shelves stretch into the shadows. A silent archivist watches.",
-    exits: { south: "observationsuite", north: "storagechamber", east: "latticeroom"},
-    image: "/images/hiddenlibrary.png",
-  },
-
-  // Intro Jump
-  introjump: {
-    description: "You fall through a shimmering portal, light cascading around you.",
-    image: "/images/introjump.png",
-    exits: { down: "controlnexus" },
-    onEnter: (state) => {
-      state.flags.fell = true;
-    },
-  },
-
-  // Intro Reset
-  introreset: {
-    description: "Reality twists and reforms around you. Everything resets, ready to begin anew.",
-    image: "/images/introreset.png",
-    exits: { restart: "introstreet1" },
-    onEnter: (game) => {
-      game.resetInventory();
-      game.storyFlags.clear();
-      game.currentRoom = "introstreet1";
-    },
-  },
-
-  // Intro Splat
-  introsplat: {
-    description: "SPLAT. You feel... very flat. Maybe try again?",
-    image: "/images/introsplat.png",
-    exits: {},
-    onEnter: (state) => {
-      state.flags.splatted = true;
-      if (typeof Audio !== "undefined") new Audio("/splat.mp3").play();
-    },
-  },
-
-  // Intro Street 1
+  // --- Intro Phase ---
   introstreet1: {
     description: "A dimly lit street. The air hums. You feel watched.",
     image: "/images/introstreet1.png",
-    exits: { forward: "introstreet2" },
+    exits: () => ({ north: "introstreet2" }),
   },
-
-  // Intro Street 2
   introstreet2: {
-    description: (state) => {
-      const { waited, jumped } = state.flags || {};
-      if (jumped) return "You already jumped. The truck is gone, the air still crackles.";
-      if (waited) return "You waited too long. The truck hit you. It’s... over.";
-      return "The truck is coming fast. You must decide: 'jump' or 'wait'.";
-    },
+    description: "The truck is coming fast. You must decide: 'jump' or 'wait'.",
     image: "/images/introstreet2.png",
-    exits: (state) => {
-      const { jumped, waited } = state.flags || {};
-      if (jumped) return { east: "introjump" };
-      if (waited) return { restart: "introsplat" };
-      return {};
-    },
-    onEnter: (game) => {
-      if (!game.storyFlags.has("introStartTime")) {
-        game.storyFlags.add("introStartTime");
-        game.introStartTime = Date.now();
-      } else {
-        const elapsed = Date.now() - game.introStartTime;
-        if (elapsed > 8000 && !game.flags?.jumped && !game.flags?.waited) {
-          game.setFlag("waited");
-          game.currentRoom = "introsplat";
+    onEnter: (engine) => {
+      setTimeout(() => {
+        if (!engine.storyFlags.has("jumped") && !engine.storyFlags.has("waited")) {
+          engine.output("The truck is almost here. You need to do something!");
         }
-      }
+      }, 3000);
     },
-    onSay: (msg, state) => {
-      if (msg === "jump") {
-        state.flags.jumped = true;
-        return "You leap just in time — the truck roars behind you as you vanish into a glowing rift.";
-      }
-      if (msg === "wait") {
-        state.flags.waited = true;
-        return "You wait. You freeze. That was the wrong choice.";
-      }
+    exits: (state) => {
+      const exits = {};
+      const flags = state.storyFlags || new Set();
+      if (flags.has("jumped")) exits.east = "introjump";
+      if (flags.has("waited")) exits.restart = "introsplat";
+      if (flags.has("secretDoorUnlocked")) exits.north = "introstreetclear";
+      return exits;
     },
   },
-
-  // Observation Suite
-  observationsuite: {
-    description: "A massive glass dome stares into unknown skies.",
-    exits: { west: "pollysbay", north: "hiddenlibrary" },
-    image: "/images/observationsuite.png",
+  introstreetclear: {
+    description: "A quiet corner of the street, untouched by the chaos. You’re briefly safe here.",
+    image: "/images/introstreetclear.png",
+    exits: { south: "findlaterscornercafe", north: "dalesapartment" },
+  },
+  introjump: {
+    description: "You feel yourself falling through a portal of light and static...",
+    image: "/images/introjump.png",
+    exits: { down: "controlnexus" },
+  },
+  introsplat: {
+    description: "You hesitated. Everything goes black. Then, something shifts...",
+    image: "/images/introsplat.png",
+    exits: { restart: "introreset" },
+  },
+  introreset: {
+    description: "Please hold on. Multiverse is now resetting...",
+    image: "/images/introreset.png",
+    exits: { enter: "controlnexus" },
   },
 
-  // Polly's Bay
-  pollysbay: {
-    description: "An interrogation bay. Polly’s laughter echoes endlessly.",
-    exits: { south: "glitchroom", east: "observationsuite" },
-    image: "/images/pollysbay.png",
+  // --- London Phase ---
+  findlaterscornercafe: {
+    description: "A quiet London café with the scent of burnt beans and destiny.",
+    image: "/images/findlaterscornercafe.png",
+    exits: { east: "cafeoffice" },
   },
-
-  // Prime Confluence
-  primeconfluence: {
-    description: "Streams of possibility converge into a single roaring current.",
-    exits: { west: "glitchroom" },
-    image: "/images/primeconfluence.png",
+  cafeoffice: {
+    description: "An office above the café filled with charts and whispers.",
+    image: "/images/cafeoffice.png",
+    exits: { west: "findlaterscornercafe", south: "trentparkearth" },
   },
-
-  // Reset Room
-  resetroom: {
-    description: 'An enormous blue button pulses gently at the center. A sign reads: "Do Not Push".',
-    exits: { east: "controlroom" },
-    image: "/images/resetroom.png",
-  },
-
-  // Rhiannon's Chamber
-  rhianonschamber: {
-    description: "The chamber of Rhiannon — quiet, sacred, and strangely heavy.",
-    exits: { west: "primeconfluence" },
-    image: "/images/rhianonschamber.png",
-  },
-
-  // Secret Tunnel
-  secrettunnel: {
-    description: "A secret tunnel, rough and ancient, leading who-knows-where.",
-    exits: { north: "centralpark", south: "forgottenchamber" },
-    image: "/images/secrettunnel.png",
-  },
-
-  // Storage Chamber
-  storagechamber: {
-    description: "Stacks of ancient, dusty tomes and games long forgotten.",
-    exits: { south: "hiddenlibrary", north: "forgottenchamber" },
-    image: "/images/storagechamber.png",
-  },
-
-  // Torridon After
-  torridonafter: {
-    description: "After the cataclysm: Torridon lies broken and bleeding.",
-    exits: { west: "torridonbefore" },
-    image: "/images/torridonafter.png",
-  },
-
-  // Torridon Before
-  torridonbefore: {
-    description: "Before the cataclysm: a peaceful, eerie version of Torridon.",
-    exits: { west: "torridoninn", east: "torridonafter" },
-    image: "/images/torridonbefore.png",
-  },
-
-  // Torridon Inn
-  torridoninn: {
-    description: "The Torridon Inn, quiet and mist-shrouded.",
-    exits: { east: "torridonbefore" },
-    image: "/images/torridoninn.png",
-  },
-
-  // Trent Park Earth
   trentparkearth: {
-    description: "Back on Earth: Trent Park, quiet and still.",
-    exits: { west: "crossing" },
+    description: "Trees watch you. The portal is near.",
     image: "/images/trentparkearth.png",
+    exits: { east: "dalesapartment" },
+  },
+  dalesapartment: {
+    description: "Stacks of notes and a flickering monitor. Dale was here.",
+    image: "/images/dalesapartment.png",
+    exits: { east: "stkatherinesdock" },
+  },
+  stkatherinesdock: {
+    description: "A London dock with whispers of a portal shimmering in the canal.",
+    image: "/images/stkatherinesdock.png",
+    exits: { portal: "centralpark" },
+  },
+
+  // --- New York Phase ---
+  centralpark: {
+    description: "An overgrown green with ancient benches and dimensional ripples.",
+    image: "/images/centralpark.png",
+    exits: (state) => {
+      const exits = { south: "controlnexus", east: "burgerjoint", west: "aevirawarehouse" };
+      const flags = state.storyFlags || new Set();
+      if (flags.has("coffeeThrown") || state.inventory?.includes("medallion")) {
+        exits.down = "hiddenstore";
+      }
+      return exits;
+    },
+  },
+  burgerjoint: {
+    description: "Grime, grease, and a chef who knows too much.",
+    image: "/images/burgerjoint.png",
+    onEnter: (engine) => {
+      if (!engine.storyFlags.has("chefSpoken")) {
+        engine.output("The chef eyes you. 'Can I help you with something?' he asks.");
+      }
+    },
+    exits: { west: "centralpark", storage: "greasystoreroom" },
+  },
+  greasystoreroom: {
+    description: "Shelves of junk and a napkin that shouldn't exist.",
+    image: "/images/greasystoreroom.png",
+    exits: { out: "burgerjoint" },
+    items: {
+      greasyNapkin: {
+        name: "greasy napkin",
+        description: "A crumpled, greasy napkin with a quantum sketch on it.",
+        canPickup: true,
+        onPickup: (engine) => {
+          engine.output("You pick up the napkin. It’s oddly precise.");
+        },
+      },
+      goldcoin: {
+        name: "gold coin",
+        description: "A shiny coin from another time.",
+        canPickup: true,
+      },
+    },
+  },
+  aevirawarehouse: {
+    description: "Security is tight. Unless you’ve got a reason to be here.",
+    image: "/images/aevirawarehouse.png",
+    onEnter: (engine) => {
+      if (!engine.storyFlags.has("invitedToWarehouse")) {
+        engine.output("A guard stops you. 'You're not expected. Come back later.'");
+        engine.currentRoom = "centralpark";
+      } else {
+        engine.output("The guard nods. 'Go on in. They're expecting you.'");
+      }
+    },
+    exits: { east: "centralpark" },
+  },
+
+  // --- Post Briefcase Unlock ---
+  hiddenstore: {
+    description: "A forgotten shop tucked under Central Park, filled with anomalies.",
+    image: "/images/glitchroom.png",
+    exits: { up: "centralpark", down: "glitchrealm" },
+  },
+  glitchrealm: {
+    description: "Reality is thin here. Very thin.",
+    image: "/images/glitchrealm.png",
+    onEnter: (engine) => {
+      engine.output("You feel the world glitch around you. Something isn’t right here.");
+    },
+    exits: { up: "hiddenstore" },
+  },
+
+  // --- Control Layer ---
+  controlnexus: {
+    description: "A vast control room humming with potential. Buttons flash and portals shimmer.",
+    image: "/images/controlnexus.png",
+    exits: { west: "crossing", east: "hiddenlab", north: "centralpark" },
+  },
+  hiddenlab: {
+    description: "Flickering lights. Scattered notes. A forgotten research facility.",
+    image: "/images/hiddenlab.png",
+    exits: { west: "controlnexus", down: "arbitercore" },
+  },
+  controlroom: {
+    description: "A secured room with monitors and override levers.",
+    image: "/images/controlroom.png",
+    exits: { north: "controlnexus" },
+  },
+
+  // --- Endgame (Stanton Harcourt) ---
+  stantonharcourt: {
+    description: "The past and future converge here in a quiet village... for now.",
+    image: "/images/stantonharcourt.png",
+    exits: {},
   },
 };
-
-/**
- * Retrieves the description of a room.
- * @param {string} roomName - The name of the room.
- * @param {object} state - The current game state.
- * @returns {string} - The room description or an error message if the room is invalid.
- */
-export function getRoomDescription(roomName, state) {
-  try {
-    if (!rooms[roomName]) {
-      console.warn(`[Rooms] Room "${roomName}" not found. Redirecting to fallback.`);
-      return "This room does not exist. You feel lost.";
-    }
-    const room = rooms[roomName];
-    return typeof room.description === "function" ? room.description(state) : room.description;
-  } catch (err) {
-    console.error("❌ Error retrieving room description:", err);
-    return "An error occurred while retrieving the room description.";
-  }
-}
-
-/**
- * Retrieves the exits of a room.
- * @param {string} roomName - The name of the room.
- * @param {object} state - The current game state.
- * @returns {object} - The room exits or an empty object if the room is invalid.
- */
-export function getRoomExits(roomName, state) {
-  try {
-    if (!rooms[roomName]) {
-      console.warn(`[Rooms] Room "${roomName}" not found. Returning empty exits.`);
-      return {};
-    }
-    const room = rooms[roomName];
-    return typeof room.exits === "function" ? room.exits(state) : room.exits || {};
-  } catch (err) {
-    console.error("❌ Error retrieving room exits:", err);
-    return {};
-  }
-}
-
-

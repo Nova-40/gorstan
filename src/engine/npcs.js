@@ -9,8 +9,7 @@
 
 import { inventory } from './inventory';
 import { dialogueMemory } from './dialogueMemory';
-import { secretUnlocks } from './secretUnlocks';
-import { achievements } from './achievements';
+
 
 class NPC {
   /**
