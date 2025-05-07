@@ -60,8 +60,8 @@ export default function MovementPanel({
   ];
 
   return (
-    <div className="bg-gray-800 p-3 rounded-xl shadow-lg">
-      <h2 className="text-white text-md font-semibold mb-3">Quick Actions</h2>
+    <div className="bg-gray-800 p-3 rounded-xl border border-green-500 shadow-lg">
+      <h2 className="text-white text-md font-semibold mb-3 font-sans">Quick Actions</h2>
       <div className="flex flex-wrap justify-center gap-2 items-center">
         {directions.map(({ cmd, icon, label, active }) => (
           <button

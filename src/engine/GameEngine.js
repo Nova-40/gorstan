@@ -193,5 +193,19 @@ export class GameEngine {
   handleSecretsCommand() {
     return 'You sense there are secrets waiting to be uncovered.';
   }
+  goToRoom(roomName) {
+    if (!rooms[roomName]) {
+      this.output(`⚠️ Room "${roomName}" does not exist.`);
+      return;
+    }
+    this.currentRoom = roomName;
+    const room = rooms[roomName];
+    if (typeof room.onEnter === 'function') {
+      room.onEnter(this);
+    }
+    if (this.outputHandler) {
+      this.outputHandler([this.describeCurrentRoom()]);
+    }
+  }
 }
 

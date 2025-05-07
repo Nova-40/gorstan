@@ -33,7 +33,7 @@ export default function AylaButton({ onAsk }) {
   return (
     <div className="border border-green-700 p-2 rounded shadow-md bg-gray-900">
       {/* Title */}
-      <div className="font-bold mb-1 text-green-300">Ask Ayla</div>
+      <div className="text-white text-md font-semibold mb-1 font-sans">Ask Ayla</div>
 
       {/* Input and Button */}
       <div className="flex gap-2">

@@ -10,7 +10,7 @@ import WelcomeScreen from "./components/WelcomeScreen";
 
 export default function AppCore() {
   const [screen, setScreen] = useState("welcome");
-  const [startingRoom, setStartingRoom] = useState("introstreet");
+  const [startingRoom, setStartingRoom] = useState("introstreet1");
 
   useEffect(() => {
     window.gameState = null;

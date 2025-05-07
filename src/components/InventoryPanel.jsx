@@ -19,7 +19,7 @@ export default function InventoryPanel({ inventory }) {
     return (
       <div className="border border-green-700 p-4 rounded shadow-md bg-gray-900">
         {/* Inventory Title */}
-        <div className="font-bold mb-2 text-green-300 text-lg">Inventory</div>
+        <div className="text-white text-md font-semibold mb-2 font-sans">Inventory</div>
 
         {/* Inventory Items */}
         <ul className="list-disc list-inside text-sm text-green-400">

@@ -24,11 +24,22 @@ export default function Game({ startRoom = "controlnexus" }) {
   const [codex, setCodex] = useState([]);
   const [score, setScore] = useState(0);
 
-  useEffect(() => {
+  
+useEffect(() => {
+  const room = rooms[engine.currentRoom];
+  if (room?.onEnter) {
+    room.onEnter(engine);
+  }
+}, [engine.currentRoom]);
+
+useEffect(() => {
     try {
       const engine = window.gameState || new GameEngine();
       engineRef.current = engine;
       if (!engine.currentRoom) engine.currentRoom = startRoom;
+      if (rooms[engine.currentRoom]?.onEnter) {
+        rooms[engine.currentRoom].onEnter(engine);
+      }
       if (!engine.inventory.includes("coffee")) engine.addItem("coffee");
       setOutput([engine.describeCurrentRoom?.() || "⚠️ No room description available."]);
       setCurrentRoom(engine.currentRoom);
@@ -102,7 +113,17 @@ export default function Game({ startRoom = "controlnexus" }) {
 
       <div className="w-full max-w-7xl space-y-4 flex flex-col lg:flex-row gap-6">
         <div className="flex-1 space-y-2">
+          <AnimatePresence mode="wait">
+        <motion.div
+          key={currentRoom}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           <RoomRenderer roomId={currentRoom} />
+        </motion.div>
+      </AnimatePresence>
           <div className="bg-gray-900 p-4 rounded shadow text-green-300 min-h-[120px]">
             {output.map((line, i) => (
               <div key={i}>{line}</div>

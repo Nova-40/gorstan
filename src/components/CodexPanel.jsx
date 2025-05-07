@@ -19,7 +19,7 @@ export default function CodexPanel({ codex }) {
     return (
       <div className="border border-green-700 p-4 rounded shadow-md bg-gray-900">
         {/* Codex Title */}
-        <div className="font-bold mb-2 text-green-300 text-lg">Codex</div>
+        <div className="text-white text-md font-semibold mb-2 font-sans">Codex</div>
 
         {/* Codex Entries */}
         <ul className="list-disc list-inside text-sm text-green-400">

@@ -9,6 +9,13 @@
 export const rooms = {
   // --- Intro Phase ---
   introstreet1: {
+    onEnter: (engine) => {
+      console.log("✅ onEnter for introstreet1 triggered");
+      setTimeout(() => {
+        console.log("⏳ transitioning to introstreet2");
+        engine.goToRoom("introstreet2");
+      }, 4000);
+    },
     description: "A dimly lit street. The air hums. You feel watched.",
     image: "/images/introstreet1.png",
     exits: () => ({ north: "introstreet2" }),

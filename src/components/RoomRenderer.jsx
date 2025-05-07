@@ -28,16 +28,7 @@ export default function RoomRenderer({ roomId }) {
               className="w-full max-h-60 object-cover border border-green-700 rounded"
             />
           </div>
-        )}
-
-        {/* Room Description */}
-        <div className="text-green-300 text-sm mb-4">
-          {typeof room.description === "function"
-            ? room.description({})
-            : room.description || "This room has no description yet."}
-        </div>
-
-        {/* Room Exits */}
+        )}        {/* Room Exits */}
         {room.exits && (
   <div className="mt-4">
     <div className="text-green-500 font-semibold mb-1 text-xs uppercase tracking-wide">
