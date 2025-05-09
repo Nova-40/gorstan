@@ -1,6 +1,5 @@
 // /src/engine/AutoWalkGame.js
-// MIT License
-// Copyright (c) 2025 Geoff Webster
+// MIT License Copyright (c) 2025 Geoff Webster
 // Gorstan v2.0.0
 
 // Auto-Walk System
@@ -13,29 +12,40 @@ import { rooms } from './rooms';
  * Automatically navigates through the game world, exploring rooms in a preferred order.
  * @param {object} game - The game state object.
  */
-export function autoWalkGame(game) {
+export function autoWalkGame(game = {}) {
   try {
     console.log('--- Auto-walk Starting ---');
 
-    let currentRoom = game.currentRoom || 'crossing'; // Start from the current room or default to 'crossing'
+    // Validate game state and set defaults
+    const currentRoom = game.currentRoom || 'crossing'; // Start from the current room or default to 'crossing'
     const visited = new Set(); // Tracks visited rooms to avoid revisiting
     const preferredOrder = ['north', 'east', 'south', 'west', 'down', 'up']; // Preferred order of movement
+    const maxIterations = 100; // Safeguard against infinite loops
+    let iterationCount = 0;
 
-    while (currentRoom && !visited.has(currentRoom)) {
-      const room = rooms[currentRoom];
+    let roomToVisit = currentRoom;
 
-      // Handle invalid room scenarios
-      if (!room) {
-        console.error(`❌ Error: Room "${currentRoom}" does not exist.`);
+    while (roomToVisit && !visited.has(roomToVisit)) {
+      iterationCount++;
+      if (iterationCount > maxIterations) {
+        console.error('❌ Error: Maximum iteration limit reached. Terminating auto-walk.');
         break;
       }
 
-      console.log(`Currently in: ${currentRoom}`);
-      visited.add(currentRoom); // Mark the current room as visited
+      const room = rooms[roomToVisit];
 
-      const exits = Object.entries(room.exits || {}); // Get the room's exits
+      // Handle invalid room scenarios
+      if (!room) {
+        console.error(`❌ Error: Room "${roomToVisit}" does not exist.`);
+        break;
+      }
+
+      console.log(`Currently in: ${roomToVisit}`);
+      visited.add(roomToVisit); // Mark the current room as visited
+
+      const exits = room.exits && typeof room.exits === 'object' ? Object.entries(room.exits) : [];
       if (exits.length === 0) {
-        console.log(`No exits found in room "${currentRoom}". End of auto-walk.`);
+        console.log(`No exits found in room "${roomToVisit}". End of auto-walk.`);
         break;
       }
 
@@ -51,18 +61,18 @@ export function autoWalkGame(game) {
 
       const [dir, nextRoom] = nextMove;
       console.log(`Moving ${dir.toUpperCase()} to ${nextRoom}`);
-      currentRoom = nextRoom;
+      roomToVisit = nextRoom;
 
       // Trigger room entry events
       const roomDescription = game.onEnterRoom
-        ? game.onEnterRoom(currentRoom, game.storyStage)
-        : `You enter ${currentRoom}.`;
+        ? game.onEnterRoom(roomToVisit, game.storyStage || 1)
+        : `You enter ${roomToVisit}.`;
       console.log(roomDescription);
     }
 
     console.log('--- Auto-walk Finished ---');
   } catch (err) {
-    console.error('❌ Error during auto-walk:', err);
+    console.error('❌ Error during auto-walk:', err.message);
     console.log('Auto-walk terminated due to an error.');
   }
 }

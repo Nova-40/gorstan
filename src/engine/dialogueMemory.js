@@ -1,6 +1,5 @@
 // /src/engine/dialogueMemory.js
-// MIT License
-// Copyright (c) 2025 Geoff Webster
+// MIT License Copyright (c) 2025 Geoff Webster
 // Gorstan v2.0.0
 
 // Dialogue Memory System
@@ -8,6 +7,28 @@
 // It ensures NPC dialogue evolves as the player progresses through the game.
 
 import { npcs } from './npcs';
+
+// Constants for special responses
+const SPECIAL_RESPONSES = {
+  polly: {
+    threshold: 3,
+    response: 'Polly sighs. "Fine. Maybe I do know a shortcut... or maybe I don\'t."',
+  },
+  ayla: {
+    threshold: 5,
+    response: 'Ayla grins. "You\'re really determined. I like that."',
+  },
+};
+
+// Constants for unprompted hints
+const UNPROMPTED_HINTS = {
+  'Control Room': {
+    2: 'A faint hum grows louder. Something here is waiting for you.',
+  },
+  'Library of the Nine': {
+    3: 'The books seem to whisper secrets. Perhaps you should listen.',
+  },
+};
 
 class DialogueMemory {
   constructor() {
@@ -53,17 +74,10 @@ class DialogueMemory {
   specialResponse(npcName) {
     try {
       const count = this.getInteractionCount(npcName);
-
-      // Special response logic for Polly
-      if (npcName === 'polly' && count >= 3) {
-        return 'Polly sighs. "Fine. Maybe I do know a shortcut... or maybe I don\'t."';
+      const npcResponse = SPECIAL_RESPONSES[npcName];
+      if (npcResponse && count >= npcResponse.threshold) {
+        return npcResponse.response;
       }
-
-      // Special response logic for Ayla
-      if (npcName === 'ayla' && count >= 5) {
-        return 'Ayla grins. "You\'re really determined. I like that."';
-      }
-
       return null;
     } catch (err) {
       console.error('❌ Error generating special response for NPC:', err);
@@ -81,8 +95,10 @@ class DialogueMemory {
       if (!this.hintMemory[roomName]) {
         this.hintMemory[roomName] = [];
       }
-      this.hintMemory[roomName].push(storyStage);
-      console.log(`[DialogueMemory] Hint recorded for room: ${roomName} at story stage: ${storyStage}`);
+      if (!this.hintMemory[roomName].includes(storyStage)) {
+        this.hintMemory[roomName].push(storyStage);
+        console.log(`[DialogueMemory] Hint recorded for room: ${roomName} at story stage: ${storyStage}`);
+      }
     } catch (err) {
       console.error('❌ Error recording unprompted hint:', err);
     }
@@ -96,16 +112,10 @@ class DialogueMemory {
    */
   triggerUnpromptedHint(roomName, storyStage) {
     try {
-      if (!this.hintMemory[roomName] || !this.hintMemory[roomName].includes(storyStage)) {
+      const roomHints = UNPROMPTED_HINTS[roomName];
+      if (roomHints && roomHints[storyStage]) {
         this.recordUnpromptedHint(roomName, storyStage);
-
-        // Example hints based on room and story stage
-        if (roomName === 'Control Room' && storyStage >= 2) {
-          return 'A faint hum grows louder. Something here is waiting for you.';
-        }
-        if (roomName === 'Library of the Nine' && storyStage >= 3) {
-          return 'The books seem to whisper secrets. Perhaps you should listen.';
-        }
+        return roomHints[storyStage];
       }
       return null;
     } catch (err) {

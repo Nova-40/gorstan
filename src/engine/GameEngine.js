@@ -1,21 +1,18 @@
 // /src/engine/GameEngine.js
-// MIT License
-// Copyright (c) 2025 Geoff Webster
+// MIT License Copyright (c) 2025 Geoff Webster
 // Gorstan v2.0.0
 
 // GameEngine Class
 // This class serves as the core of the Gorstan game engine, managing game state, player actions, inventory, rooms, puzzles, NPC interactions, and more.
-// It provides methods for processing commands, saving/loading the game, and interacting with the game world.
 
 import { addItem, removeItem, hasItem, listInventory, clearInventory } from './inventory';
 import { puzzles } from './puzzles';
 import { rooms } from './rooms';
-import { getNpcDialogue, talkToNpc, adjustNpcMood } from './npcSupportSystem';
-import { getHelpAdvice } from './aylaHelp';
 import { parseCommand } from './commandParser';
 
 export class GameEngine {
   constructor() {
+    this.aylaActive = true;
     this.playerName = '';
     this.currentRoom = 'introstreet1';
     this.storyProgress = {};
@@ -29,183 +26,163 @@ export class GameEngine {
     this.puzzleHandler = null;
     this.sceneHandler = null;
     this.pendingRestart = false;
-    this.quitGame = null;
   }
 
+  // --- Handlers ---
+
+  /**
+   * Sets the output handler for displaying messages.
+   * @param {function} handler - The function to handle output messages.
+   */
   setOutputHandler(handler) {
+    if (typeof handler !== 'function') {
+      console.error('❌ Invalid output handler provided.');
+      return;
+    }
     this.outputHandler = handler;
   }
 
-  setPuzzleHandler(handler) {
-    this.puzzleHandler = handler;
-  }
-
+  /**
+   * Sets the scene handler for updating the visible room.
+   * @param {function} handler - The function to handle scene changes.
+   */
   setSceneHandler(handler) {
+    if (typeof handler !== 'function') {
+      console.error('❌ Invalid scene handler provided.');
+      return;
+    }
     this.sceneHandler = handler;
   }
 
+  // --- Output and Logging ---
+
+  /**
+   * Outputs a message to the game log and triggers the output handler.
+   * Limits the size of the output log to prevent memory bloat.
+   * @param {string} message - The message to output.
+   */
   output(message) {
+    if (typeof message !== 'string') {
+      console.error('❌ Invalid message type. Expected a string.');
+      return;
+    }
     this.outputLog.push(message);
-    if (this.outputHandler) {
-      this.outputHandler([...this.outputLog]);
+    if (this.outputLog.length > 50) {
+      this.outputLog = this.outputLog.slice(-50); // Retain only the last 50 messages
     }
-  }
-
-  getRoomData() {
-    const base = rooms[this.currentRoom];
-    const description = typeof base.description === 'function' ? base.description(this) : base.description;
-    const items = typeof base.items === 'function' ? base.items(this) : base.items || {};
-    return { ...base, description, items };
-  }
-
-  describeCurrentRoom() {
-    const room = this.getRoomData();
-    return room?.description || 'You are somewhere undefined.';
-  }
-
-  handlePickup(itemId) {
-    const room = this.getRoomData();
-    const item = room.items && room.items[itemId];
-    if (!item || !item.canPickup) {
-      return { success: false, message: 'You cannot pick that up.' };
-    }
-    if (typeof item.onPickup === 'function') {
-      item.onPickup(this);
-    } else {
-      this.addItem(itemId);
-      this.output(`You pick up the ${item.name}.`);
-    }
-    return { success: true, message: '' };
-  }
-
-  addItem(itemId) {
-    if (!this.inventory.includes(itemId)) {
-      this.inventory.push(itemId);
-    }
-  }
-
-  moveToRoom(direction) {
-    const currentRoomData = this.getRoomData();
-    const exits = typeof currentRoomData.exits === 'function' ? currentRoomData.exits(this) : currentRoomData.exits || {};
-    if (exits[direction]) {
-      this.currentRoom = exits[direction];
-      if (rooms[this.currentRoom].onEnter) {
-        rooms[this.currentRoom].onEnter(this);
+    if (typeof this.outputHandler === 'function') {
+      try {
+        this.outputHandler([...this.outputLog]);
+      } catch (err) {
+        console.error('❌ Error in output handler:', err);
       }
-      return { success: true, message: this.describeCurrentRoom() };
-    } else {
-      return { success: false, message: 'You cannot go that way.' };
+    }
+  }
+
+  // --- Room Management ---
+
+  /**
+   * Retrieves data for the current room, including its description and items.
+   * @returns {object} The room data.
+   */
+  getRoomData() {
+    try {
+      const base = rooms[this.currentRoom];
+      if (!base) {
+        throw new Error(`Room "${this.currentRoom}" does not exist.`);
+      }
+      const description = typeof base.description === 'function' ? base.description(this) : base.description;
+      const items = typeof base.items === 'function' ? base.items(this) : base.items || {};
+      return { ...base, description, items };
+    } catch (err) {
+      console.error('❌ Error retrieving room data:', err);
+      return { description: 'An undefined space.', items: {} };
     }
   }
 
   /**
-   * Interprets a 'throw' command. If coffee is thrown in the right location, unlock secret.
-   * @param {string} item
-   * @returns {{success: boolean, message: string}}
+   * Moves the player to a specific room by name.
+   * @param {string} roomName - The name of the room to move to.
    */
-  throwItem(item) {
-    if (item === 'coffee') {
-      if (this.inventory.includes('coffee')) {
-        removeItem('coffee');
-        this.output('You hurl the steaming coffee. It splashes across the wall, revealing a shimmering outline...');
-        if (!this.storyFlags.has('secretDoorUnlocked')) {
-          this.storyFlags.add('secretDoorUnlocked');
-        }
-        return { success: true, message: 'A secret passage reveals itself.' };
-      } else {
-        return { success: false, message: "You don't have any coffee to throw." };
-      }
-    } else {
-      return { success: false, message: `Throwing ${item} achieves nothing.` };
-    }
-  }
-
-  processCommand(command) {
-    return parseCommand(command, this);
-  }
-
-  resetGame() {
-    this.currentRoom = 'introstreet1';
-    this.inventory = [];
-    this.codex = [];
-    this.score = 0;
-    this.storyProgress = {};
-    this.storyFlags.clear();
-    this.outputLog = [];
-    this.pendingRestart = false;
-  }
-
-  saveGame() {
-    try {
-      const saveData = {
-        playerName: this.playerName,
-        currentRoom: this.currentRoom,
-        storyProgress: this.storyProgress,
-        storyFlags: Array.from(this.storyFlags),
-        inventory: [...this.inventory],
-      };
-      localStorage.setItem('gorstanSave', JSON.stringify(saveData));
-      return { success: true, message: 'Game saved.' };
-    } catch {
-      return { success: false, message: 'Failed to save game.' };
-    }
-  }
-
-  loadGame() {
-    try {
-      const saveString = localStorage.getItem('gorstanSave');
-      if (saveString) {
-        const saveData = JSON.parse(saveString);
-        this.playerName = saveData.playerName;
-        this.currentRoom = saveData.currentRoom;
-        this.storyProgress = saveData.storyProgress;
-        this.storyFlags = new Set(saveData.storyFlags);
-        this.inventory = [...saveData.inventory];
-        return { success: true, message: 'Game loaded.' };
-      } else {
-        return { success: false, message: 'No save game found.' };
-      }
-    } catch {
-      return { success: false, message: 'Failed to load game.' };
-    }
-  }
-
-  quitGame() {
-    if (typeof window !== 'undefined' && window.gameState?.quitGame) {
-      window.gameState.quitGame(window.gameState);
-      return {
-        success: true,
-        message: "You step away from the simulation. Reality (or a far more elaborate simulation) is waiting.",
-      };
-    } else {
-      return { success: false, message: "Quit not available in this context." };
-    }
-  }
-
-  handleLookCommand(currentRoom, roomsData) {
-    return roomsData[currentRoom]?.description || 'There is nothing much to see.';
-  }
-
-  handleUseCommand(command, currentRoom) {
-    return `You try to use that, but nothing happens.`;
-  }
-
-  handleSecretsCommand() {
-    return 'You sense there are secrets waiting to be uncovered.';
-  }
   goToRoom(roomName) {
-    if (!rooms[roomName]) {
-      this.output(`⚠️ Room "${roomName}" does not exist.`);
+    try {
+      if (!rooms[roomName]) {
+        this.output(`⚠️ Room "${roomName}" does not exist.`);
+        return;
+      }
+      this.currentRoom = roomName;
+      const room = rooms[roomName];
+      if (typeof room.onEnter === 'function') {
+        room.onEnter(this);
+      }
+      this.output(this.describeCurrentRoom());
+    } catch (err) {
+      console.error('❌ Error moving to room:', err);
+    }
+  }
+
+  /**
+   * Moves the player to a new room based on the specified direction.
+   * @param {string} direction - The direction to move.
+   * @returns {object} The result of the move action.
+   */
+  moveToRoom(direction) {
+    try {
+      const currentRoomData = this.getRoomData();
+      const exits = typeof currentRoomData.exits === 'function' ? currentRoomData.exits(this) : currentRoomData.exits || {};
+      if (exits[direction]) {
+        this.goToRoom(exits[direction]);
+        return { success: true, message: this.describeCurrentRoom() };
+      } else {
+        return { success: false, message: 'You cannot go that way.' };
+      }
+    } catch (err) {
+      console.error('❌ Error moving to room:', err);
+      return { success: false, message: 'An error occurred while moving to the room.' };
+    }
+  }
+
+  // --- Inventory Management ---
+
+  /**
+   * Adds an item to the player's inventory.
+   * Validates that the item exists in the game world before adding it.
+   * @param {string} itemId - The ID of the item to add.
+   */
+  addItem(itemId) {
+    if (!itemId || typeof itemId !== 'string') {
+      console.error('❌ Invalid item ID provided.');
       return;
     }
-    this.currentRoom = roomName;
-    const room = rooms[roomName];
-    if (typeof room.onEnter === 'function') {
-      room.onEnter(this);
+    const roomData = this.getRoomData();
+    if (!roomData.items[itemId]) {
+      this.output(`⚠️ Item "${itemId}" does not exist in the current room.`);
+      return;
     }
-    if (this.outputHandler) {
-      this.outputHandler([this.describeCurrentRoom()]);
+    if (!this.inventory.includes(itemId)) {
+      this.inventory.push(itemId);
+      this.output(`✅ You picked up: ${roomData.items[itemId].name}`);
+    }
+  }
+
+  // --- Command Processing ---
+
+  /**
+   * Processes a player command using the command parser.
+   * @param {string} command - The command to process.
+   * @returns {object} The result of the command.
+   */
+  processCommand(command) {
+    try {
+      const result = parseCommand(command, this);
+      if (this.outputHandler && result) {
+        const lines = Array.isArray(result) ? result : [result];
+        this.outputHandler(lines);
+      }
+      return result;
+    } catch (err) {
+      console.error('❌ Error processing command:', err);
+      return { success: false, message: 'An error occurred while processing the command.' };
     }
   }
 }
-

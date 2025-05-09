@@ -1,15 +1,41 @@
 // /src/engine/aylaHelp.js
-// MIT License
-// Copyright (c) 2025 Geoff Webster
+// MIT License Copyright (c) 2025 Geoff Webster
 // Gorstan v2.0.0
 
 // Ayla Help System
 // This module provides contextual hints and advice from Ayla based on the player's current room, story progress, and inventory.
 // It ensures Ayla's responses are dynamic, helpful, and occasionally sassy.
 
-export function getHelpAdvice(currentRoom, storyProgress, inventoryList) {
+// Constants for static messages
+const SASS_REMARKS = [
+  "Don't make me spell it out.",
+  "You're smarter than this, probably.",
+  "If you need more help, maybe ask the chef. He seems lonely.",
+  "Try not to break *everything*.",
+  "Would a reset help? Kidding. Probably.",
+  "You know, I could just solve this for you. But where's the fun in that?",
+  "If I had a coin for every time you asked for help... I'd have a lot of coins.",
+];
+
+const MOTIVATIONAL_MESSAGES = [
+  "You're closer than you think. Keep going!",
+  "Even the darkest paths lead somewhere. Trust yourself.",
+  "You're doing better than you realize. Don't give up.",
+  "Every step forward is progress. Even the small ones.",
+  "Remember: the journey matters as much as the destination.",
+  "You've got this. Ayla believes in you.",
+];
+
+/**
+ * Provides contextual hints based on the player's current room, story progress, and inventory.
+ * @param {string} currentRoom - The player's current room.
+ * @param {object} storyProgress - The player's current story progress.
+ * @param {Array} inventoryList - The player's inventory.
+ * @returns {string} - A contextual hint from Ayla.
+ */
+export function getHelpAdvice(currentRoom, storyProgress = {}, inventoryList = []) {
   try {
-    const inventoryIds = inventoryList.map(item => item.id); // Extract item IDs from the inventory
+    const inventoryIds = Array.isArray(inventoryList) ? inventoryList.map(item => item.id) : [];
     const hints = []; // Array to store contextual hints
 
     // Early game hints
@@ -32,8 +58,7 @@ export function getHelpAdvice(currentRoom, storyProgress, inventoryList) {
       hints.push("The briefcase seems strange. Maybe it isn't just for carrying things.");
     }
 
-    
-    // Throw coffee portal hint
+    // Coffee portal hint
     if (
       (currentRoom === 'controlnexus' || currentRoom === 'controlnexusreturned') &&
       inventoryIds.includes('coffee') &&
@@ -67,20 +92,8 @@ export function getHelpAdvice(currentRoom, storyProgress, inventoryList) {
       hints.push("Honestly? I'd just explore. And maybe don't poke the obvious traps.");
     }
 
-    // Sassify Ayla's voice randomly
-    const sass = [
-      "Don't make me spell it out.",
-      "You're smarter than this, probably.",
-      "If you need more help, maybe ask the chef. He seems lonely.",
-      "Try not to break *everything*.",
-      "Would a reset help? Kidding. Probably.",
-      "You know, I could just solve this for you. But where's the fun in that?",
-      "If I had a coin for every time you asked for help... I'd have a lot of coins.",
-    ];
-
-    const randomSass = sass[Math.floor(Math.random() * sass.length)];
-
     // Combine the first hint with a random sassy remark
+    const randomSass = SASS_REMARKS[Math.floor(Math.random() * SASS_REMARKS.length)];
     return `Ayla says: ${hints[0]} ${randomSass}`;
   } catch (err) {
     console.error('❌ Error generating Ayla help advice:', err);
@@ -93,7 +106,7 @@ export function getHelpAdvice(currentRoom, storyProgress, inventoryList) {
  * @param {object} storyProgress - The player's current story progress.
  * @returns {string} - A summary of Ayla's advice.
  */
-export function getAylaSummary(storyProgress) {
+export function getAylaSummary(storyProgress = {}) {
   try {
     if (!storyProgress.gotRunbag) {
       return "Ayla says: 'Your runbag is still missing. Maybe check your apartment?'";
@@ -117,16 +130,7 @@ export function getAylaSummary(storyProgress) {
  */
 export function getAylaMotivation() {
   try {
-    const motivations = [
-      "You're closer than you think. Keep going!",
-      "Even the darkest paths lead somewhere. Trust yourself.",
-      "You're doing better than you realize. Don't give up.",
-      "Every step forward is progress. Even the small ones.",
-      "Remember: the journey matters as much as the destination.",
-      "You've got this. Ayla believes in you.",
-    ];
-
-    const randomMotivation = motivations[Math.floor(Math.random() * motivations.length)];
+    const randomMotivation = MOTIVATIONAL_MESSAGES[Math.floor(Math.random() * MOTIVATIONAL_MESSAGES.length)];
     return `Ayla says: ${randomMotivation}`;
   } catch (err) {
     console.error('❌ Error generating Ayla motivation:', err);

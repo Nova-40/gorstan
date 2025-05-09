@@ -1,59 +1,69 @@
+// RoomRenderer.jsx
+// Renders a room in the Gorstan React application.
+// MIT License Copyright (c) 2025 Geoff Webster
+// Gorstan v2.0.0
+
 import React from "react";
 import PropTypes from "prop-types";
 import { rooms } from "../engine/rooms";
 
 /**
  * RoomRenderer Component
- * Renders the current room's image, description, and available exits.
+ * Renders a room based on the provided room ID.
+ *
+ * Props:
+ * - roomId: The ID of the room to render.
  */
 export default function RoomRenderer({ roomId }) {
-  try {
-    if (!roomId || typeof roomId !== "string") {
-      throw new Error("Invalid room ID. Please provide a valid room identifier.");
-    }
+  // Fetch the room data
+  const room = rooms[roomId];
 
-    const room = rooms[roomId];
-    if (!room) {
-      throw new Error(`Room with ID "${roomId}" not found.`);
-    }
-
-    return (
-      <div className="mb-4 border border-green-700 p-4 rounded shadow-md bg-gray-900">
-        {/* Room Image */}
-        {room.image && (
-          <div className="mb-4">
-            <img
-              src={room.image}
-              alt={`Visual for ${room.name || roomId}`}
-              className="w-full max-h-60 object-cover border border-green-700 rounded"
-            />
-          </div>
-        )}        {/* Room Exits */}
-        {room.exits && (
-  <div className="mt-4">
-    <div className="text-green-500 font-semibold mb-1 text-xs uppercase tracking-wide">
-      Exits:
-    </div>
-    <ul className="pl-4 text-green-300 text-xs space-y-1 list-none">
-      {Object.keys(room.exits).map((direction, index) => (
-        <li key={index}>{direction.toUpperCase()}</li>
-      ))}
-    </ul>
-  </div>
-)}
-      </div>
-    );
-  } catch (err) {
-    console.error(`❌ Error rendering RoomRenderer for roomId "${roomId}":`, err);
-    return (
-      <div className="border border-red-700 p-4 rounded shadow-md bg-gray-900">
-        <div className="font-bold text-red-500">Error</div>
-        <p className="text-gray-400 text-sm">Failed to load the room. Please try again later.</p>
-      </div>
-    );
+  // Handle missing room
+  if (!room) {
+    console.warn("🚨 Room not found:", roomId);
+    return <div className="text-red-400 p-4">🚨 Room "{roomId}" not found.</div>;
   }
+
+  console.log("🧩 Rendering room:", roomId, room);
+
+  /**
+   * Helper function to get exits as a string.
+   * @returns {string} A comma-separated list of exits.
+   */
+  const getExits = () => {
+    if (!room.exits) return "None";
+    const exits = typeof room.exits === "function" ? room.exits({}) : room.exits;
+    return Object.keys(exits).join(", ");
+  };
+
+  return (
+    <div className="p-4">
+      {/* Room Image */}
+      {room.image ? (
+        <div className="mb-2 border border-green-700 p-3 rounded shadow-md bg-gray-900">
+          <img
+            src={room.image}
+            alt={`Room: ${roomId}`}
+            className="max-w-[640px] w-full mx-auto rounded"
+            onError={(e) => {
+              console.warn("⚠️ Failed to load room image:", room.image);
+              e.target.src = "/placeholder.png"; // Fallback image
+            }}
+          />
+        </div>
+      ) : (
+        <div className="text-gray-500 italic mb-2">(No image available for this room)</div>
+      )}
+
+      {/* Room Exits */}
+      <div className="text-sm text-green-400 mt-2">
+        <strong>Exits:</strong> {getExits()}
+      </div>
+    </div>
+  );
 }
 
+// PropTypes for type-checking
 RoomRenderer.propTypes = {
-  roomId: PropTypes.string.isRequired,
+  roomId: PropTypes.string.isRequired, // The ID of the room to render
 };

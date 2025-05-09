@@ -1,6 +1,6 @@
+import { addScore, setMilestone } from './storyProgress';
 // /src/engine/commandParser.js
-// MIT License
-// Copyright (c) 2025 Geoff Webster
+// MIT License Copyright (c) 2025 Geoff Webster
 // Gorstan v2.0.0
 
 // Command Parser System
@@ -19,7 +19,11 @@ import { dialogueMemory } from './dialogueMemory';
  * @param {object} gameState - The current game state object.
  * @returns {string} - The result of the command execution.
  */
-export function parseCommand(command, gameState) {
+export function parseCommand(command, gameState = {}) {
+  if (typeof command !== 'string' || !command.trim()) {
+    return 'Invalid command. Please enter a valid action.';
+  }
+
   try {
     const trimmed = command.trim().toLowerCase();
     const [verb, ...args] = trimmed.split(' ');
@@ -38,21 +42,17 @@ export function parseCommand(command, gameState) {
       return "You can't go that way.";
     }
 
-    if (verb === 'ask' && argString) {
-      return talkToNPC(argString);
-    }
-
-    if (trimmed === 'fullscreen') {
-      document.documentElement.requestFullscreen?.();
-      return 'Entering fullscreen mode...';
-    }
-
-    if (trimmed === 'windowed') {
-      document.exitFullscreen?.();
-      return 'Returning to windowed mode...';
-    }
-
+    // Handle specific commands
     switch (verb) {
+      case 'ask': {
+        if (argString.startsWith('ayla')) {
+          if (!gameState.aylaActive) return "There’s no one by that name here.";
+          const question = argString.slice(4).trim();
+          return `Ayla: "${question}" — I’ll think about it and get back to you."`;
+        }
+        return talkToNPC(argString);
+      }
+
       case 'go': {
         const room = rooms[gameState.currentRoom];
         const exits = typeof room?.exits === 'function' ? room.exits(gameState) : room?.exits || {};
@@ -71,7 +71,23 @@ export function parseCommand(command, gameState) {
 
       case 'use': {
         if (!argString) return 'What do you want to use?';
-        return gameState.handleUseCommand(command, gameState.currentRoom);
+        return gameState.handleUseCommand?.(command, gameState.currentRoom) || 'Unable to use that.';
+      }
+
+      case 'fullscreen': {
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen();
+          return 'Entering fullscreen mode...';
+        }
+        return 'Fullscreen mode is not supported in your browser.';
+      }
+
+      case 'windowed': {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+          return 'Returning to windowed mode...';
+        }
+        return 'Windowed mode is not supported in your browser.';
       }
 
       case 'quit': {
@@ -80,17 +96,13 @@ export function parseCommand(command, gameState) {
       }
 
       case 'look': {
-        return gameState.handleLookCommand(gameState.currentRoom, rooms);
+        return gameState.handleLookCommand?.(gameState.currentRoom, rooms) || 'There’s nothing to look at here.';
       }
 
       case 'inventory':
       case '/inv': {
         const items = inventory.listInventory();
         return items.length > 0 ? `Your inventory: ${items.join(', ')}` : 'Your inventory is empty.';
-      }
-
-      case '/jump': {
-        return 'You brace yourself... but nothing happens. Not yet.';
       }
 
       case '/doors': {
@@ -104,11 +116,11 @@ export function parseCommand(command, gameState) {
       }
 
       case 'secrets': {
-        return gameState.handleSecretsCommand();
+        return gameState.handleSecretsCommand?.() || 'No secrets to reveal.';
       }
 
       case 'achievements': {
-        return gameState.handleAchievementsCommand();
+        return gameState.handleAchievementsCommand?.() || 'No achievements to display.';
       }
 
       case 'help': {
@@ -124,8 +136,6 @@ export function parseCommand(command, gameState) {
     }
   } catch (err) {
     console.error('❌ Error parsing command:', err);
-    return 'An error occurred while processing your command.';
+    return 'An error occurred while processing your command. Please try again.';
   }
 }
-
-

@@ -2,18 +2,20 @@
 // This file defines the rooms in the Gorstan game world.
 // Each room includes a description, exits to other rooms, optional images, and interactive items.
 
-// /src/engine/rooms.js
-// MIT License
-// Copyright (c) 2025 Geoff Webster
+// MIT License Copyright (c) 2025 Geoff Webster
 
 export const rooms = {
   // --- Intro Phase ---
   introstreet1: {
     onEnter: (engine) => {
+      if (!engine || typeof engine.enterRoom !== 'function') {
+        console.error('❌ Invalid engine object in introstreet1 onEnter.');
+        return;
+      }
       console.log("✅ onEnter for introstreet1 triggered");
       setTimeout(() => {
         console.log("⏳ transitioning to introstreet2");
-        engine.goToRoom("introstreet2");
+        engine.enterRoom("introstreet2");
       }, 4000);
     },
     description: "A dimly lit street. The air hums. You feel watched.",
@@ -24,6 +26,10 @@ export const rooms = {
     description: "The truck is coming fast. You must decide: 'jump' or 'wait'.",
     image: "/images/introstreet2.png",
     onEnter: (engine) => {
+      if (!engine || typeof engine.output !== 'function') {
+        console.error('❌ Invalid engine object in introstreet2 onEnter.');
+        return;
+      }
       setTimeout(() => {
         if (!engine.storyFlags.has("jumped") && !engine.storyFlags.has("waited")) {
           engine.output("The truck is almost here. You need to do something!");
@@ -32,7 +38,7 @@ export const rooms = {
     },
     exits: (state) => {
       const exits = {};
-      const flags = state.storyFlags || new Set();
+      const flags = state?.storyFlags || new Set();
       if (flags.has("jumped")) exits.east = "introjump";
       if (flags.has("waited")) exits.restart = "introsplat";
       if (flags.has("secretDoorUnlocked")) exits.north = "introstreetclear";
@@ -50,14 +56,74 @@ export const rooms = {
     exits: { down: "controlnexus" },
   },
   introsplat: {
-    description: "You hesitated. Everything goes black. Then, something shifts...",
-    image: "/images/introsplat.png",
-    exits: { restart: "introreset" },
+    description: "Blackness surrounds you. A terminal glows faintly in the void.",
+    exits: { reset: "introreset" },
+    onEnter: (engine) => {
+      if (!engine || typeof engine.output !== 'function') {
+        console.error('❌ Invalid engine object in introsplat onEnter.');
+        return;
+      }
+      const lines = [
+        "Reality is a construct…",
+        "Calibrating your consciousness…",
+        "Deploying the Gorstan protocol…",
+        "Warning: truck detected.",
+        "Brace for impact…",
+        "Multiverse resetting...",
+      ];
+      lines.forEach((line, i) => {
+        setTimeout(() => engine.output(line), i * 1600);
+      });
+      setTimeout(() => engine.move("reset"), lines.length * 1600 + 1000);
+    },
   },
   introreset: {
     description: "Please hold on. Multiverse is now resetting...",
     image: "/images/introreset.png",
     exits: { enter: "controlnexus" },
+  },
+
+  // --- Post Briefcase Unlock ---
+  hiddenstore: {
+    description: "A forgotten shop tucked under Central Park, filled with anomalies.",
+    image: "/images/glitchroom.png",
+    exits: { up: "centralpark", down: "glitchrealm" },
+  },
+  glitchrealm: {
+    description: "Reality is thin here. Very thin.",
+    image: "/images/glitchrealm.png",
+    onEnter: (engine) => {
+      if (!engine || typeof engine.output !== 'function') {
+        console.error('❌ Invalid engine object in glitchrealm onEnter.');
+        return;
+      }
+      engine.output("You feel the world glitch around you. Something isn’t right here.");
+    },
+    exits: { up: "hiddenstore" },
+  },
+
+  // --- Control Layer ---
+  controlnexus: {
+    description: "A vast control room humming with potential. Buttons flash and portals shimmer.",
+    image: "/images/controlnexus.png",
+    exits: { west: "crossing", east: "hiddenlab", north: "centralpark" },
+  },
+  hiddenlab: {
+    description: "Flickering lights. Scattered notes. A forgotten research facility.",
+    image: "/images/hiddenlab.png",
+    exits: { west: "controlnexus", down: "arbitercore" },
+  },
+  controlroom: {
+    description: "A secured room with monitors and override levers.",
+    image: "/images/controlroom.png",
+    exits: { north: "controlnexus" },
+  },
+
+  // --- Endgame (Stanton Harcourt) ---
+  stantonharcourt: {
+    description: "The past and future converge here in a quiet village... for now.",
+    image: "/images/stantonharcourt.png",
+    exits: {},
   },
 
   // --- London Phase ---
@@ -93,7 +159,7 @@ export const rooms = {
     image: "/images/centralpark.png",
     exits: (state) => {
       const exits = { south: "controlnexus", east: "burgerjoint", west: "aevirawarehouse" };
-      const flags = state.storyFlags || new Set();
+      const flags = state?.storyFlags || new Set();
       if (flags.has("coffeeThrown") || state.inventory?.includes("medallion")) {
         exits.down = "hiddenstore";
       }
@@ -120,6 +186,10 @@ export const rooms = {
         description: "A crumpled, greasy napkin with a quantum sketch on it.",
         canPickup: true,
         onPickup: (engine) => {
+          if (!engine || typeof engine.output !== 'function') {
+            console.error('❌ Invalid engine object in greasyNapkin onPickup.');
+            return;
+          }
           engine.output("You pick up the napkin. It’s oddly precise.");
         },
       },
@@ -129,57 +199,5 @@ export const rooms = {
         canPickup: true,
       },
     },
-  },
-  aevirawarehouse: {
-    description: "Security is tight. Unless you’ve got a reason to be here.",
-    image: "/images/aevirawarehouse.png",
-    onEnter: (engine) => {
-      if (!engine.storyFlags.has("invitedToWarehouse")) {
-        engine.output("A guard stops you. 'You're not expected. Come back later.'");
-        engine.currentRoom = "centralpark";
-      } else {
-        engine.output("The guard nods. 'Go on in. They're expecting you.'");
-      }
-    },
-    exits: { east: "centralpark" },
-  },
-
-  // --- Post Briefcase Unlock ---
-  hiddenstore: {
-    description: "A forgotten shop tucked under Central Park, filled with anomalies.",
-    image: "/images/glitchroom.png",
-    exits: { up: "centralpark", down: "glitchrealm" },
-  },
-  glitchrealm: {
-    description: "Reality is thin here. Very thin.",
-    image: "/images/glitchrealm.png",
-    onEnter: (engine) => {
-      engine.output("You feel the world glitch around you. Something isn’t right here.");
-    },
-    exits: { up: "hiddenstore" },
-  },
-
-  // --- Control Layer ---
-  controlnexus: {
-    description: "A vast control room humming with potential. Buttons flash and portals shimmer.",
-    image: "/images/controlnexus.png",
-    exits: { west: "crossing", east: "hiddenlab", north: "centralpark" },
-  },
-  hiddenlab: {
-    description: "Flickering lights. Scattered notes. A forgotten research facility.",
-    image: "/images/hiddenlab.png",
-    exits: { west: "controlnexus", down: "arbitercore" },
-  },
-  controlroom: {
-    description: "A secured room with monitors and override levers.",
-    image: "/images/controlroom.png",
-    exits: { north: "controlnexus" },
-  },
-
-  // --- Endgame (Stanton Harcourt) ---
-  stantonharcourt: {
-    description: "The past and future converge here in a quiet village... for now.",
-    image: "/images/stantonharcourt.png",
-    exits: {},
   },
 };

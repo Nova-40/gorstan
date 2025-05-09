@@ -9,10 +9,19 @@
 
 import alLyricsData from '../../../public/alLyrics.json';
 
+// Constants for fallback messages and help responses
+const FALLBACK_MESSAGE = "[Al] (silence... perhaps he's tuning his instrument.)";
+const HELP_RESPONSES = [
+  "[Al] You could use a little music in your soul. Join me, and your path will be smoother.",
+  "[Al] The rhythm of the world beats in threes. Follow it, and you'll find your way.",
+  "[Al] I've given you all the notes. Now play your own song.",
+  "[Al] (a knowing smile, but no words this time.)",
+];
+
 class Al {
   constructor() {
     try {
-      this.lyrics = alLyricsData.lyrics || []; // Load lyrics from external JSON
+      this.lyrics = Array.isArray(alLyricsData.lyrics) ? alLyricsData.lyrics : []; // Load lyrics from external JSON
       this.helpCount = 0; // Tracks how many times Al has offered help
     } catch (err) {
       console.error('❌ Error initializing Al:', err);
@@ -27,13 +36,13 @@ class Al {
   getRandomLyric() {
     try {
       if (this.lyrics.length === 0) {
-        return "[Al] (silence... perhaps he's tuning his instrument.)";
+        return FALLBACK_MESSAGE;
       }
       const index = Math.floor(Math.random() * this.lyrics.length);
       return `[Al sings] "${this.lyrics[index]}"`;
     } catch (err) {
       console.error('❌ Error retrieving random lyric:', err);
-      return "[Al] (silence... perhaps he's tuning his instrument.)";
+      return FALLBACK_MESSAGE;
     }
   }
 
@@ -44,20 +53,12 @@ class Al {
    */
   offerHelp() {
     try {
+      const responseIndex = Math.min(this.helpCount, HELP_RESPONSES.length - 1);
       this.helpCount++;
-      if (this.helpCount === 1) {
-        return "[Al] You could use a little music in your soul. Join me, and your path will be smoother.";
-      }
-      if (this.helpCount === 2) {
-        return "[Al] The rhythm of the world beats in threes. Follow it, and you'll find your way.";
-      }
-      if (this.helpCount >= 3) {
-        return "[Al] I've given you all the notes. Now play your own song.";
-      }
-      return "[Al] (a knowing smile, but no words this time.)";
+      return HELP_RESPONSES[responseIndex];
     } catch (err) {
       console.error('❌ Error offering help:', err);
-      return "[Al] (a knowing smile, but no words this time.)";
+      return HELP_RESPONSES[HELP_RESPONSES.length - 1];
     }
   }
 
@@ -66,10 +67,10 @@ class Al {
    * @param {object} gameState - The current game state, including inventory and story progress.
    * @returns {string} - A tailored response from Al.
    */
-  interact(gameState) {
+  interact(gameState = {}) {
     try {
-      const inventory = gameState.inventory || [];
-      const storyStage = gameState.storyStage || 1;
+      const inventory = Array.isArray(gameState.inventory) ? gameState.inventory : [];
+      const storyStage = typeof gameState.storyStage === 'number' ? gameState.storyStage : 1;
 
       if (inventory.includes('blueprint')) {
         return "[Al] Ah, the blueprint. A map to chaos, or perhaps to clarity. Use it wisely.";
@@ -80,7 +81,7 @@ class Al {
       return this.getRandomLyric();
     } catch (err) {
       console.error('❌ Error during interaction with Al:', err);
-      return "[Al] (silence... perhaps he's tuning his instrument.)";
+      return FALLBACK_MESSAGE;
     }
   }
 
