@@ -1,8 +1,10 @@
+// /src/engine/rooms.js
+// MIT License Copyright (c) 2025 Geoff Webster
+// Gorstan v2.1.0
+
 // Rooms Configuration
 // This file defines the rooms in the Gorstan game world.
 // Each room includes a description, exits to other rooms, optional images, and interactive items.
-
-// MIT License Copyright (c) 2025 Geoff Webster
 
 export const rooms = {
   // --- Intro Phase ---
@@ -106,51 +108,12 @@ export const rooms = {
   controlnexus: {
     description: "A vast control room humming with potential. Buttons flash and portals shimmer.",
     image: "/images/controlnexus.png",
-    exits: { west: "crossing", east: "hiddenlab", north: "centralpark" },
+    exits: { east: "controlnexusreturned" },
   },
   hiddenlab: {
     description: "Flickering lights. Scattered notes. A forgotten research facility.",
     image: "/images/hiddenlab.png",
     exits: { west: "controlnexus", down: "arbitercore" },
-  },
-  controlroom: {
-    description: "A secured room with monitors and override levers.",
-    image: "/images/controlroom.png",
-    exits: { north: "controlnexus" },
-  },
-
-  // --- Endgame (Stanton Harcourt) ---
-  stantonharcourt: {
-    description: "The past and future converge here in a quiet village... for now.",
-    image: "/images/stantonharcourt.png",
-    exits: {},
-  },
-
-  // --- London Phase ---
-  findlaterscornercafe: {
-    description: "A quiet London café with the scent of burnt beans and destiny.",
-    image: "/images/findlaterscornercafe.png",
-    exits: { east: "cafeoffice" },
-  },
-  cafeoffice: {
-    description: "An office above the café filled with charts and whispers.",
-    image: "/images/cafeoffice.png",
-    exits: { west: "findlaterscornercafe", south: "trentparkearth" },
-  },
-  trentparkearth: {
-    description: "Trees watch you. The portal is near.",
-    image: "/images/trentparkearth.png",
-    exits: { east: "dalesapartment" },
-  },
-  dalesapartment: {
-    description: "Stacks of notes and a flickering monitor. Dale was here.",
-    image: "/images/dalesapartment.png",
-    exits: { east: "stkatherinesdock" },
-  },
-  stkatherinesdock: {
-    description: "A London dock with whispers of a portal shimmering in the canal.",
-    image: "/images/stkatherinesdock.png",
-    exits: { portal: "centralpark" },
   },
 
   // --- New York Phase ---
@@ -160,13 +123,29 @@ export const rooms = {
     exits: (state) => {
       const exits = { south: "controlnexus", east: "burgerjoint", west: "aevirawarehouse" };
       const flags = state?.storyFlags || new Set();
-      if (flags.has("coffeeThrown") || state.inventory?.includes()) {
+      if (flags.has("coffeeThrown")) {
         exits.down = "hiddenstore";
       }
       return exits;
     },
   },
   burgerjoint: {
+  
+    onCommand: (cmd, engine) => {
+      const state = engine.getFlag("chefTalk") || 0;
+      if (cmd.toLowerCase().includes("talk")) {
+        if (state === 0) {
+          engine.output("The chef nods. 'Go help yourself from the store room, mate.'");
+          engine.setFlag("chefTalk", 1);
+        } else if (state === 1) {
+          engine.output("He grins. 'They're expecting you at the warehouse now.'");
+          engine.setFlag("chefTalk", 2);
+        } else {
+          engine.output("'What are you still doing here? They’re waiting.'");
+        }
+      }
+    },
+
     description: "Grime, grease, and a chef who knows too much.",
     image: "/images/burgerjoint.png",
     onEnter: (engine) => {
@@ -177,12 +156,13 @@ export const rooms = {
     exits: { west: "centralpark", storage: "greasystoreroom" },
   },
   greasystoreroom: {
+    items: ["briefcase"],
     description: "Shelves of junk and a napkin that shouldn't exist.",
     image: "/images/greasystoreroom.png",
     exits: { out: "burgerjoint" },
     items: {
       greasyNapkin: {
-        name: "greasy napkin",
+        name: "Greasy Napkin",
         description: "A crumpled, greasy napkin with a quantum sketch on it.",
         canPickup: true,
         onPickup: (engine) => {
@@ -194,10 +174,325 @@ export const rooms = {
         },
       },
       goldcoin: {
-        name: "gold coin",
+        name: "Gold Coin",
         description: "A shiny coin from another time.",
         canPickup: true,
       },
     },
   },
-};
+
+  // --- Arbiter Phase ---
+  arbitercore: {
+    description: "A silence here cuts deep. Something dormant... judges.",
+    image: "/images/arbitercore.png",
+    onEnter: (engine) => {
+      if (!engine || typeof engine.output !== 'function') {
+        console.error('❌ Invalid engine object in arbitercore onEnter.');
+        return;
+      }
+      engine.output("The Arbiter's presence is overwhelming. You feel as though you're being weighed.");
+    },
+    exits: { up: "hiddenlab" },
+  },
+
+  // --- Crossing Phase ---
+  crossing: {
+    description: "This place doesn’t belong to any one timeline. It watches you pass.",
+    image: "/images/crossing.png",
+    exits: { east: "controlnexus", west: "pollysbay" },
+  },
+  pollysbay: {
+    description: "You step onto cracked tiles. The walls flicker with projection static. This is not a seaside bay, no matter what the appearance is. This place is too clean.",
+    image: "/images/pollysbay.png",
+    exits: { east: "crossing", south: "findlaterscornercafe" },
+  },
+
+  // --- Findlaters Café Phase ---
+  findlaterscornercafe: {
+    description: "The smell of coffee and pastries fills the air. A quiet hum of conversation surrounds you.",
+    image: "/images/findlaterscornercafe.png",
+    onEnter: (engine) => {
+      if (!engine.storyFlags.has("hadFlatWhite")) {
+        engine.output("The barista smiles. 'Flat white? It's the best in town.'");
+      }
+    },
+    exits: { north: "pollysbay", west: "centralpark" },
+  },
+
+  // --- Dale's Apartment ---
+  dalesapartment: {
+    items: ["runbag"],
+    description: "A small, cluttered apartment. Papers and books are scattered everywhere.",
+    image: "/images/dalesapartment.png",
+    exits: { south: "introstreetclear" },
+    items: {
+      runbag: {
+        name: "Runbag",
+        description: "A sturdy bag filled with essentials for a quick escape.",
+        canPickup: true,
+        onPickup: (engine) => {
+          if (!engine || typeof engine.output !== 'function') {
+            console.error('❌ Invalid engine object in runbag onPickup.');
+            return;
+          }
+          engine.output("You pick up the runbag. It feels like it’s been waiting for you.");
+        },
+      },
+    },
+  },
+
+  // --- Observation Deck ---
+  observationdeck: {
+    description: "You peer through reinforced glass. The stars are wrong.",
+    image: "/images/observationdeck.png",
+    exits: { down: "controlnexus" },
+  },
+
+  // --- Aevira Warehouse ---
+  aevirawarehouse: {
+  
+    onEnter: (engine) => {
+      if (!engine.hasItem("briefcase")) {
+        engine.output("A security guard stops you. 'Oi! You ain't cleared!' He panics and pushes you back to Central Park.");
+        engine.moveTo("centralpark");
+      } else {
+        engine.output("The guards see the briefcase. 'Right this way.' You step in and feel the weight of expectation.");
+        engine.triggerBriefcasePuzzle?.();
+      }
+    },
+
+    description: "Stacks of crates and machinery hum faintly. This place feels abandoned, but not empty.",
+    image: "/images/aevirawarehouse.png",
+    exits: { north: "centralpark" },
+    items: {
+      faeCrownShard: {
+        name: "Fae Crown Shard",
+        description: "A shimmering fragment from a long-lost monarchy.",
+        canPickup: true,
+        onPickup: (engine) => {
+          if (!engine || typeof engine.output !== 'function') {
+            console.error('❌ Invalid engine object in faeCrownShard onPickup.');
+            return;
+          }
+          engine.output("You pick up the shard. It glows faintly in your hand.");
+        },
+      },
+    },
+  },
+
+  // --- Rhiannon's Chamber ---
+  rhiannonschamber: {
+    description: "Glyphs pulse across the walls. A mirror in the centre shows not your reflection, but possibilities.",
+    image: "/images/rhiannonschamber.png",
+    exits: { },
+  },
+
+  // --- Torridon Phase ---
+  torridonbefore: {
+    description: "The village before the storm. The air is tense with anticipation.",
+    image: "/images/torridonbefore.png",
+    exits: { east: "carronspire" },
+  },
+  torridonafter: {
+    description: "A quiet village after the storm. The air feels heavy with loss.",
+    image: "/images/torridonafter.png",
+    exits: { west: "torridonbefore", east: "ancientvault" },
+  },
+  torridoninn: {
+    description: "A cozy inn with a roaring fire and the smell of fresh bread.",
+    image: "/images/torridoninn.png",
+    exits: { north: "torridonbefore", south: "stkatherinesdock" },
+  },
+
+  // --- Trent Park ---
+  trentparkearth: {
+    onCommand: (cmd, engine) => {
+      if (cmd.toLowerCase() === "sit") {
+        engine.moveTo("resetroom");
+        engine.output("You sit on the old bench. Something hums... and the world shifts.");
+      }
+    },
+    description: "A park on Earth, filled with crows and the faint sound of distant traffic.",
+    image: "/images/trentparkearth.png",
+    exits: { north: "centralpark", south: "stkatherinesdock" },
+  },
+
+  ancientvault: {
+    description: "You find yourself in ancientvault. The air is thick with mystery.",
+    image: "/images/ancientvault.png",
+    exits: { secret: "arbitercore" }
+  },
+
+  cafeoffice: {
+    description: "You find yourself in cafeoffice. The air is thick with mystery.",
+    image: "/images/cafeoffice.png",
+    exits: { north: "findlaterscornercafe", secret: "torridonbefore" }
+  },
+
+  carronspire: {
+    description: "You find yourself in carronspire. The air is thick with mystery.",
+    image: "/images/carronspire.png",
+    exits: { secret: "latticeroom" }
+  },
+
+  controlnexusreturned: {
+    description: "You find yourself in controlnexusreturned. The air is thick with mystery.",
+    image: "/images/controlnexusreturned.png",
+    exits: { east: "controlroom" }
+  },
+
+  controlroom: {
+    description: "You find yourself in controlroom. The air is thick with mystery.",
+    image: "/images/controlroom.png",
+    exits: { north: "resetroom", secret: "observationsuite" }
+  },
+
+  crossing2: {
+    description: "You find yourself in crossing2. The air is thick with mystery.",
+    image: "/images/crossing2.png",
+    exits: { south: "centralpark" }
+  },
+
+  elfhame: {
+    description: "You find yourself in elfhame. The air is thick with mystery.",
+    image: "/images/elfhame.png",
+    exits: { east: "faelake", south: "faelake2" }
+  },
+
+  faelake: {
+    description: "You find yourself in faelake. The air is thick with mystery.",
+    image: "/images/faelake.png",
+    exits: { east: "rhiannonschamber" }
+  },
+
+  faelake2: {
+    description: "You find yourself in faelake2. The air is thick with mystery.",
+    image: "/images/faelake2.png",
+    exits: { west: "faelake" }
+  },
+
+  fallback: {
+    description: "You find yourself in fallback. The air is thick with mystery.",
+    image: "/images/fallback.png",
+    exits: { south: "centralpark" }
+  },
+
+  forgottenchamber: {
+    description: "You find yourself in forgottenchamber. The air is thick with mystery.",
+    image: "/images/forgottenchamber.png",
+    exits: { down: "maze1" }
+  },
+
+  glitchroom: {
+    description: "You find yourself in glitchroom. The air is thick with mystery.",
+    image: "/images/glitchroom.png",
+    exits: { south: "centralpark" }
+  },
+
+  hallucinationroom: {
+    description: "You find yourself in hallucinationroom. The air is thick with mystery.",
+    image: "/images/hallucinationroom.png",
+    exits: { south: "centralpark" }
+  },
+
+  hiddenlibrary: {
+    description: "You find yourself in hiddenlibrary. The air is thick with mystery.",
+    image: "/images/hiddenlibrary.png",
+    exits: { east: "libraryarchivist" }
+  },
+
+  introstart: {
+    description: "You find yourself in introstart. The air is thick with mystery.",
+    image: "/images/introstart.png",
+    exits: { south: "centralpark" }
+  },
+
+  latticeroom: {
+    description: "You find yourself in latticeroom. The air is thick with mystery.",
+    image: "/images/latticeroom.png",
+    exits: { secret: "lucidveil" }
+  },
+
+  libraryarchivist: {
+    description: "You find yourself in libraryarchivist. The air is thick with mystery.",
+    image: "/images/libraryarchivist.png",
+    exits: { south: "centralpark" }
+  },
+
+  lucidveil: {
+    description: "You find yourself in lucidveil. The air is thick with mystery.",
+    image: "/images/lucidveil.png",
+    exits: { west: "stantonharcourt" }
+  },
+
+  maze1: {
+    description: "You find yourself in maze1. The air is thick with mystery.",
+    image: "/images/maze1.png",
+    exits: { forward: "maze2", loop: "maze3" }
+  },
+
+  maze2: {
+    description: "You find yourself in maze2. The air is thick with mystery.",
+    image: "/images/maze2.png",
+    exits: { forward: "maze3", loop: "maze1" }
+  },
+
+  maze3: {
+    description: "You find yourself in maze3. The air is thick with mystery.",
+    image: "/images/maze3.png",
+    exits: { forward: "maze1", out1: "secrettunnel", out2: "elfhame", out3: "glitchroom" }
+  },
+
+  observationsuite: {
+    description: "You find yourself in observationsuite. The air is thick with mystery.",
+    image: "/images/observationsuite.png",
+    exits: { east: "primeconfluence", secret: "resetroom" }
+  },
+
+  primeconfluence: {
+    description: "You find yourself in primeconfluence. The air is thick with mystery.",
+    image: "/images/primeconfluence.png",
+    exits: { }
+  },
+
+  resetroom: {
+    description: "You find yourself in resetroom. The air is thick with mystery.",
+    image: "/images/resetroom.png",
+    exits: { }
+  },
+
+  rhianonschamber: {
+    description: "You find yourself in rhianonschamber. The air is thick with mystery.",
+    image: "/images/rhianonschamber.png",
+    exits: { south: "centralpark" }
+  },
+
+  secrettunnel: {
+    description: "You find yourself in secrettunnel. The air is thick with mystery.",
+    image: "/images/secrettunnel.png",
+    exits: { exit1: "centralpark", exit2: "trentparkearth", exit3: "pollysbay", exit4: "resetroom", exit5: "elfhame", exit6: "maze1" }
+  },
+
+  stkatherinesdock: {
+  
+    onCommand: (cmd, engine) => {
+      if (cmd.toLowerCase().includes("portal")) {
+        if (engine.hasItem("runbag")) {
+          engine.output("The portal hums and opens toward Central Park.");
+          engine.moveTo("centralpark");
+        } else {
+          engine.output("The portal flickers but remains shut. Something’s missing.");
+        }
+      }
+    },
+
+    description: "You find yourself in stkatherinesdock. The air is thick with mystery.",
+    image: "/images/stkatherinesdock.png",
+    exits: { west: "centralpark" }
+  },
+
+  storagechamber: {
+    description: "You find yourself in storagechamber. The air is thick with mystery.",
+    image: "/images/storagechamber.png",
+    exits: { south: "centralpark" }
+  }}

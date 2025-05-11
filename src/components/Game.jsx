@@ -1,3 +1,4 @@
+
 // Game.jsx
 // Main game interface for the Gorstan React application.
 // MIT License
@@ -11,45 +12,24 @@ import CodexPanel from "../components/CodexPanel";
 import AylaButton from "../components/AylaButton";
 import MovementPanel from "../components/MovementPanel";
 import { rooms } from "../engine/rooms";
-import { GameEngine } from "../engine/GameEngine";
+import GameEngine from "../engine/GameEngine";
 import RoomGuard from "./RoomGuard";
 
-/**
- * Game Component
- * This component serves as the main interface for the Gorstan game.
- * It initializes the game engine, manages game state, and renders the UI for the player.
- *
- * Props:
- * - startRoom (string): The starting room for the game. Defaults to "controlnexus".
- */
 export default function Game({ startRoom = "controlnexus" }) {
-  const engineRef = useRef(null); // Reference to the GameEngine instance
-  const outputEndRef = useRef(null); // Reference to the output container for auto-scrolling
+  const engineRef = useRef(null);
+  const outputEndRef = useRef(null);
 
-  // --- Game State ---
-  const [output, setOutput] = useState([]); // Game output messages
-  const [command, setCommand] = useState(""); // Player's current command
-  const [currentRoom, setCurrentRoom] = useState(null); // Current room ID
-  const [stage, setStage] = useState("intro"); // intro → name → game
-  const [inventory, setInventory] = useState([]); // Player's inventory
-  const [codex, setCodex] = useState([]); // Player's codex entries
-  const [score, setScore] = useState(0); // Player's score
-  const [quickActions, setQuickActions] = useState([]); // Room-specific quick action buttons
+  const [output, setOutput] = useState([]);
+  const [command, setCommand] = useState("");
+  const [currentRoom, setCurrentRoom] = useState(null);
+  const [stage, setStage] = useState("welcome");
+  const [inventory, setInventory] = useState([]);
+  const [codex, setCodex] = useState([]);
+  const [score, setScore] = useState(0);
+  const [quickActions, setQuickActions] = useState([]);
 
-  // --- Intro Lines ---
-  const introLines = [
-    "Reality is a construct…",
-    "Calibrating your consciousness…",
-    "Deploying the Gorstan protocol…",
-    "Warning: truck detected.",
-    "Brace for impact…",
-  ];
-
-  /**
-   * Initializes the game engine and sets up the initial game state.
-   */
   useEffect(() => {
-    let splatTimer; // Timeout ID for the splat timer
+    let splatTimer;
 
     try {
       const engine = window.gameState || new GameEngine();
@@ -74,14 +54,12 @@ export default function Game({ startRoom = "controlnexus" }) {
       setCodex(engine.codex || []);
       setScore(engine.score || 0);
 
-      // Set quick actions for specific rooms
       if (engine.currentRoom === "introstreet2") {
         setQuickActions([
           { label: "Jump", action: () => handleCommand("jump") },
           { label: "Wait", action: () => handleCommand("wait") },
         ]);
 
-        // Splat timer for inaction
         splatTimer = setTimeout(() => {
           if (!engine.storyFlags.has("jumped") && !engine.storyFlags.has("splatted")) {
             handleCommand("wait");
@@ -93,36 +71,25 @@ export default function Game({ startRoom = "controlnexus" }) {
       setOutput(["❌ GameEngine failed to start.", err.message]);
     }
 
-    // Cleanup function to clear the splat timer
     return () => {
       if (splatTimer) clearTimeout(splatTimer);
     };
   }, [startRoom]);
 
-  /**
-   * Automatically scrolls the output container to the bottom when new output is added.
-   */
   useEffect(() => {
     if (outputEndRef.current) {
       outputEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [output]);
 
-  /**
-   * Adds new lines to the game output.
-   * @param {string[]} lines - Array of lines to add to the output.
-   */
   const addToOutput = (lines) => {
     if (!Array.isArray(lines)) {
       console.error("❌ Invalid output format. Expected an array of strings.");
       return;
     }
-    setOutput((prev) => [...prev.slice(-10), ...lines]); // Keep the last 10 lines for better context
+    setOutput((prev) => [...prev.slice(-10), ...lines]);
   };
 
-  /**
-   * Updates the game state (current room, inventory, codex, score) from the GameEngine.
-   */
   const updateGameState = () => {
     try {
       const engine = engineRef.current;
@@ -135,23 +102,16 @@ export default function Game({ startRoom = "controlnexus" }) {
     }
   };
 
-  /**
-   * Handles player commands and processes them through the GameEngine.
-   * @param {string|null} forcedCommand - Optional forced command to process.
-   */
   const handleCommand = (forcedCommand = null) => {
     const input = forcedCommand || command;
     if (!input.trim()) return;
 
     try {
       const normalizedCommand = normalizeCommand(input.trim());
-
-      // Process the command through the GameEngine
       const result = engineRef.current.processCommand(normalizedCommand);
       addToOutput([`> ${input.trim()}`, result.message]);
       updateGameState();
 
-      // Disable quick action buttons after certain commands
       if (["jump", "wait"].includes(normalizedCommand)) {
         setQuickActions((prev) =>
           prev.map((action) => ({
@@ -165,14 +125,9 @@ export default function Game({ startRoom = "controlnexus" }) {
       addToOutput([`> ${input.trim()}`, `❌ ${err.message}`]);
     }
 
-    if (!forcedCommand) setCommand(""); // Clear the command input if not forced
+    if (!forcedCommand) setCommand("");
   };
 
-  /**
-   * Normalizes player commands for consistency.
-   * @param {string} input - The raw player command.
-   * @returns {string} - The normalized command.
-   */
   const normalizeCommand = (input) => {
     const directions = ["north", "south", "east", "west", "up", "down"];
     const synonyms = ["pickup", "grab"];
@@ -188,7 +143,6 @@ export default function Game({ startRoom = "controlnexus" }) {
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col items-center p-4">
-      {/* Motivational Message with Link */}
       <div className="flex justify-center items-center text-xs text-blue-400 italic mb-2 font-handwriting">
         <span>Enjoy the game — Read The Gorstan Chronicles</span>
         <a
@@ -202,45 +156,7 @@ export default function Game({ startRoom = "controlnexus" }) {
       </div>
 
       <div className="w-full max-w-7xl space-y-4 flex flex-col lg:flex-row gap-6">
-        {/* Left Panel: Room Renderer and Output */}
         <div className="flex-1 space-y-2">
-          {stage === "intro" && (
-            <div className="bg-gray-900 p-4 rounded shadow text-green-300 min-h-[240px] flex flex-col justify-center items-center">
-              {introLines.map((line, i) => (
-                <p key={i} className="mb-2">
-                  {line}
-                </p>
-              ))}
-              <button
-                className="mt-4 px-4 py-2 bg-green-700 hover:bg-green-600 rounded"
-                onClick={() => setStage("name")}
-              >
-                Continue
-              </button>
-            </div>
-          )}
-
-          {stage === "name" && (
-            <div className="bg-gray-900 p-4 rounded shadow text-green-300 min-h-[240px] flex flex-col justify-center items-center">
-              <p className="mb-4">What’s your name, traveller?</p>
-              <input
-                className="p-2 rounded bg-gray-800 border border-green-500 text-white"
-                value={command}
-                onChange={(e) => setCommand(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && command.trim()) {
-                    engineRef.current.playerName = command.trim();
-                    setCommand("");
-                    setStage("game");
-                    engineRef.current.enterRoom("introstreet1");
-                  }
-                }}
-                placeholder="Type your name..."
-                autoFocus
-              />
-            </div>
-          )}
-
           {stage === "game" && <RoomGuard roomId={currentRoom} />}
           <div className="bg-gray-900 p-4 rounded shadow text-green-300 min-h-[120px]">
             {output.map((line, i) => (
@@ -271,7 +187,6 @@ export default function Game({ startRoom = "controlnexus" }) {
           </div>
         </div>
 
-        {/* Right Panel: Inventory, Codex, and Movement */}
         <div className="w-full lg:w-64 space-y-4">
           <InventoryPanel inventory={inventory} initiallyCollapsed />
           <CodexPanel codex={codex} initiallyCollapsed />
