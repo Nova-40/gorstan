@@ -1,7 +1,7 @@
 // RoomRenderer.jsx
 // Renders a room in the Gorstan React application.
 // MIT License Copyright (c) 2025 Geoff Webster
-// Gorstan v2.0.0
+// Gorstan v2.1.0
 
 import React from "react";
 import PropTypes from "prop-types";
@@ -38,6 +38,13 @@ export default function RoomRenderer({ roomId }) {
 
   return (
     <div className="p-4">
+      {/* Room Description */}
+      {room.description && (
+        <div className="mt-2 text-lg italic text-gray-300">
+          {room.description}
+        </div>
+      )}
+
       {/* Room Image */}
       {room.image ? (
         <div className="mb-2 border border-green-700 p-3 rounded shadow-md bg-gray-900">

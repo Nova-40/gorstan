@@ -1,12 +1,13 @@
-// MultiverseReset Component
+// MultiverseReset.jsx
 // This component simulates the resetting of the multiverse with a series of animated lines.
 // It provides a visual effect and triggers a callback when the reset is complete.
 
 // MIT License
 // Copyright (c) 2025 Geoff Webster
-// Gorstan v2.0.0
+// Gorstan v2.1.0
 
 import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 
 export default function MultiverseReset({ onComplete }) {
   // State to track the lines being displayed
@@ -21,7 +22,7 @@ export default function MultiverseReset({ onComplete }) {
       try {
         if (count < 10) {
           // Add a new line to the display
-          setLines((prev) => [...prev, "Multiverse resetting..."]);
+          setLines((prev) => [...prev, `Multiverse resetting... ${count + 1}/10`]);
           count++;
         } else {
           // Stop the interval and trigger the falling animation
@@ -60,6 +61,18 @@ export default function MultiverseReset({ onComplete }) {
           {line}
         </div>
       ))}
+
+      {/* Add a visual indicator for the reset process */}
+      {falling && (
+        <div className="mt-4 text-center text-yellow-400">
+          <p>🌌 Multiverse Reset Complete 🌌</p>
+        </div>
+      )}
     </div>
   );
 }
+
+// PropTypes for type-checking
+MultiverseReset.propTypes = {
+  onComplete: PropTypes.func.isRequired, // Callback function triggered when the reset is complete
+};

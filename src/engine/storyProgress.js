@@ -1,7 +1,7 @@
 // /src/engine/storyProgress.js
 // MIT License
 // Copyright (c) 2025 Geoff Webster
-// Gorstan v2.0.0
+// Gorstan v2.1.0
 
 // Central game progress and scoring system
 // This module manages the player's progress, score, milestones, and story state.
@@ -13,7 +13,7 @@ class StoryProgress {
     this.milestones = new Set(); // Set of achieved milestones
     this.storyStage = 1; // Current stage of the story
     this.erebosActive = false; // Whether Erebos is active
-    this.currentRoom = 'Nexus'; // Player's current room
+    this.currentRoom = "Nexus"; // Player's current room
     this.trackedEvents = {
       resetTriggered: false,
       coffeeThrown: false,
@@ -22,7 +22,7 @@ class StoryProgress {
       librarianSpoken: false,
       erebosEncountered: false,
     };
-    this.lastErebosMessage = ''; // Last message from Erebos interactions
+    this.lastErebosMessage = ""; // Last message from Erebos interactions
   }
 
   // --- Score Management ---
@@ -32,9 +32,10 @@ class StoryProgress {
    * @param {number} amount - The number of points to add.
    * @param {string} [reason] - Optional reason for the score increase.
    */
-  addScore(amount, reason = '') {
+  addScore(amount, reason = "") {
     this.score += amount;
     if (reason) console.log(`[Score +${amount}] ${reason}`);
+    this.updateHighScore(); // Automatically update high score
   }
 
   /**
@@ -43,13 +44,14 @@ class StoryProgress {
    * @param {number} amount - The number of points to deduct.
    * @param {string} [reason] - Optional reason for the score decrease.
    */
-  decayScore(amount, reason = '') {
+  decayScore(amount, reason = "") {
     this.score = Math.max(0, this.score - amount);
     if (reason) console.log(`[Score -${amount}] ${reason}`);
     if (this.score === 0 && this.erebosActive) {
-      console.warn('[Erebos] Score reduced to 0 — teleporting player to Control Nexus.');
-      this.lastErebosMessage = 'Your mind fractures. You awake in the Control Nexus. The air tastes of static.';
-      this.currentRoom = 'controlnexus';
+      console.warn("[Erebos] Score reduced to 0 — teleporting player to Control Nexus.");
+      this.lastErebosMessage =
+        "Your mind fractures. You awake in the Control Nexus. The air tastes of static.";
+      this.currentRoom = "controlnexus";
       this.erebosActive = false;
     }
   }
@@ -92,6 +94,7 @@ class StoryProgress {
    */
   updateStoryStage(stage) {
     this.storyStage = Math.max(this.storyStage, stage);
+    console.log(`[Story Stage] Updated to ${this.storyStage}`);
   }
 
   /**
@@ -109,7 +112,12 @@ class StoryProgress {
    * @param {string} eventKey - The event key to track.
    */
   trackEvent(eventKey) {
-    if (eventKey in this.trackedEvents) this.trackedEvents[eventKey] = true;
+    if (eventKey in this.trackedEvents) {
+      this.trackedEvents[eventKey] = true;
+      console.log(`[Event] ${eventKey} tracked.`);
+    } else {
+      console.warn(`[Event] Unknown event key: ${eventKey}`);
+    }
   }
 
   // --- Progress Management ---
@@ -135,11 +143,11 @@ class StoryProgress {
   saveProgress() {
     try {
       const saveData = JSON.stringify(this.getProgressSummary());
-      localStorage.setItem('gorstan_save', saveData);
-      console.log('[Save] Progress saved to localStorage.');
+      localStorage.setItem("gorstan_save", saveData);
+      console.log("[Save] Progress saved to localStorage.");
       this.updateHighScore();
     } catch (err) {
-      console.error('[Save] Failed to save progress:', err);
+      console.error("[Save] Failed to save progress:", err);
     }
   }
 
@@ -148,19 +156,19 @@ class StoryProgress {
    */
   loadProgress() {
     try {
-      const data = localStorage.getItem('gorstan_save');
+      const data = localStorage.getItem("gorstan_save");
       if (data) {
         const parsed = JSON.parse(data);
         this.score = parsed.score || 0;
         this.storyStage = parsed.storyStage || 1;
-        this.currentRoom = parsed.currentRoom || 'Nexus';
+        this.currentRoom = parsed.currentRoom || "Nexus";
         this.erebosActive = parsed.erebosActive || false;
         this.milestones = new Set(parsed.milestones || []);
         Object.assign(this.trackedEvents, parsed.trackedEvents || {});
-        console.log('[Load] Progress loaded from localStorage.');
+        console.log("[Load] Progress loaded from localStorage.");
       }
     } catch (err) {
-      console.warn('[Load] Failed to parse saved progress:', err);
+      console.warn("[Load] Failed to parse saved progress:", err);
     }
   }
 
@@ -171,8 +179,8 @@ class StoryProgress {
    */
   activateErebos() {
     this.erebosActive = true;
-    console.log('[Erebos] Erebos has begun to ooze through the rooms...');
-    document.body.classList.add('erebos-loading');
+    console.log("[Erebos] Erebos has begun to ooze through the rooms...");
+    document.body.classList.add("erebos-loading");
   }
 
   /**
@@ -180,8 +188,8 @@ class StoryProgress {
    */
   deactivateErebos() {
     this.erebosActive = false;
-    console.log('[Erebos] Erebos has dissipated.');
-    document.body.classList.remove('erebos-loading');
+    console.log("[Erebos] Erebos has dissipated.");
+    document.body.classList.remove("erebos-loading");
   }
 
   /**
@@ -199,13 +207,13 @@ class StoryProgress {
    */
   updateHighScore() {
     try {
-      const previous = parseInt(localStorage.getItem('gorstan_highscore'), 10) || 0;
+      const previous = parseInt(localStorage.getItem("gorstan_highscore"), 10) || 0;
       if (this.score > previous) {
-        localStorage.setItem('gorstan_highscore', this.score);
+        localStorage.setItem("gorstan_highscore", this.score);
         console.log(`[High Score] New personal best: ${this.score}`);
       }
     } catch (err) {
-      console.error('[High Score] Failed to update high score:', err);
+      console.error("[High Score] Failed to update high score:", err);
     }
   }
 
@@ -215,9 +223,9 @@ class StoryProgress {
    */
   getHighScore() {
     try {
-      return parseInt(localStorage.getItem('gorstan_highscore'), 10) || 0;
+      return parseInt(localStorage.getItem("gorstan_highscore"), 10) || 0;
     } catch (err) {
-      console.error('[High Score] Failed to retrieve high score:', err);
+      console.error("[High Score] Failed to retrieve high score:", err);
       return 0;
     }
   }

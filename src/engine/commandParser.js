@@ -1,12 +1,8 @@
-import { addScore, setMilestone } from './storyProgress';
-// /src/engine/commandParser.js
+// src/engine/commandParser.js
 // MIT License Copyright (c) 2025 Geoff Webster
-// Gorstan v2.0.0
+// Gorstan v2.1.0
 
-// Command Parser System
-// This module processes player commands and routes them to the appropriate game logic.
-// It ensures smooth interaction between the player and the game engine.
-
+import { addScore, setMilestone } from './storyProgress';
 import { inventory } from './inventory';
 import { talkToNPC } from './npcs';
 import { rooms } from './rooms';

@@ -1,7 +1,7 @@
 // CommandInput.jsx
 // MIT License
 // Copyright (c) 2025 Geoff Webster
-// Gorstan v2.0.0
+// Gorstan v2.1.0
 
 // This component provides a text input field for the player to type commands
 // and a submit button to process those commands. It is designed to be reusable
@@ -33,11 +33,15 @@ export default function CommandInput({ command, setCommand, onSubmit }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2 mt-2">
+    <form
+      onSubmit={handleSubmit}
+      className="flex gap-2 mt-2 items-center"
+      aria-label="Command Input Form"
+    >
       {/* Input Field for Commands */}
       <input
         type="text"
-        className="flex-1 bg-gray-800 text-white p-2 rounded border border-green-500"
+        className="flex-1 bg-gray-800 text-white p-2 rounded border border-green-500 focus:outline-none focus:ring-2 focus:ring-green-400"
         value={command}
         onChange={(e) => setCommand(e.target.value)}
         placeholder="Type a command..."
@@ -48,7 +52,7 @@ export default function CommandInput({ command, setCommand, onSubmit }) {
       {/* Submit Button */}
       <button
         type="submit"
-        className="px-4 py-2 rounded bg-green-700 hover:bg-green-600 border border-green-500"
+        className="px-4 py-2 rounded bg-green-700 hover:bg-green-600 border border-green-500 transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400"
         aria-label="Submit Command"
       >
         Enter

@@ -1,7 +1,7 @@
 // WelcomeScreen.jsx
 // Welcome screen for the Gorstan React application.
 // MIT License Copyright (c) 2025 Geoff Webster
-// Gorstan v2.0.0
+// Gorstan v2.1.0
 
 import React from "react";
 import PropTypes from "prop-types";
@@ -64,13 +64,13 @@ export default function WelcomeScreen({ onStartIntro }) {
     <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white p-4 space-y-6">
       {/* Title Section */}
       <h1 className="text-4xl font-bold">Welcome to Gorstan</h1>
-      <p className="italic">Simulated reality engaged. Try not to break it.</p>
+      <p className="italic text-green-400">Simulated reality engaged. Try not to break it.</p>
 
       {/* Start Button Section */}
       <div className="flex space-x-4">
         <button
           onClick={onStartIntro}
-          className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded"
+          className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded transition-transform transform hover:scale-105"
           aria-label="Start the Gorstan intro sequence"
         >
           Enter Gorstan

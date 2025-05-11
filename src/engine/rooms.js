@@ -160,7 +160,7 @@ export const rooms = {
     exits: (state) => {
       const exits = { south: "controlnexus", east: "burgerjoint", west: "aevirawarehouse" };
       const flags = state?.storyFlags || new Set();
-      if (flags.has("coffeeThrown") || state.inventory?.includes("medallion")) {
+      if (flags.has("coffeeThrown") || state.inventory?.includes()) {
         exits.down = "hiddenstore";
       }
       return exits;

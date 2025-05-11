@@ -1,6 +1,6 @@
 // /src/engine/aylaHelp.js
 // MIT License Copyright (c) 2025 Geoff Webster
-// Gorstan v2.0.0
+// Gorstan v2.1.0
 
 // Ayla Help System
 // This module provides contextual hints and advice from Ayla based on the player's current room, story progress, and inventory.

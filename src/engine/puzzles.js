@@ -6,6 +6,8 @@
 // This module defines the puzzles in the Gorstan game world.
 // Each puzzle includes a description, logic for solving it, and consequences for success or failure.
 
+import { items } from './items';
+import { addScore, setMilestone } from './storyProgress';
 import { hasItem, addItem, removeItem } from './inventory';
 
 let briefcaseAttemptsLeft = 2; // Tracks remaining attempts for the briefcase puzzle
@@ -30,6 +32,9 @@ export const puzzles = {
 
         if (selectedOption === correctAnswer) {
           removeItem('briefcase');
+          if (items.medallion) items.medallion.active = true;
+          setMilestone && setMilestone('medallionUnlocked');
+          addScore && addScore(10, 'Unlocked the Quantum Medallion');
           addItem('medallion', { description: 'An ancient medallion, humming with power.' });
           briefcaseAttemptsLeft = 2; // Reset attempts for future replays
           return 'The lock clicks open! The briefcase dissolves into a glowing medallion.';

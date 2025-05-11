@@ -1,7 +1,7 @@
 // IntroSequence.jsx
 // Intro sequence for the Gorstan React application.
 // MIT License Copyright (c) 2025 Geoff Webster
-// Gorstan v2.0.0
+// Gorstan v2.1.0
 
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
@@ -80,7 +80,7 @@ export default function IntroSequence({ onComplete }) {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white text-lg relative">
       {/* Display the current message */}
-      <p>{messages[index]}</p>
+      <p className="animate-fade-in">{messages[index]}</p>
 
       {/* Skip Intro Button */}
       {showSkip && (
@@ -89,7 +89,8 @@ export default function IntroSequence({ onComplete }) {
             setIsCompleted(true); // Prevent multiple calls to onComplete
             onComplete();
           }}
-          className="absolute bottom-4 right-4 text-sm underline text-yellow-300"
+          className="absolute bottom-4 right-4 text-sm underline text-yellow-300 hover:text-yellow-500 transition-colors"
+          aria-label="Skip the intro sequence"
         >
           Skip Intro
         </button>

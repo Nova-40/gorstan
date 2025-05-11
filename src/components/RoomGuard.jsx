@@ -1,7 +1,7 @@
 // RoomGuard.jsx
 // Guards against invalid or missing room IDs and renders the appropriate room.
 // MIT License Copyright (c) 2025 Geoff Webster
-// Gorstan v2.0.0
+// Gorstan v2.1.0
 
 import React from "react";
 import { rooms } from "../engine/rooms";
@@ -19,7 +19,11 @@ export default function RoomGuard({ roomId }) {
   // Handle loading state when roomId is null or undefined
   if (!roomId) {
     console.warn("⏳ RoomGuard received null or undefined roomId.");
-    return <div className="text-yellow-400 p-4">⏳ Loading room...</div>;
+    return (
+      <div className="text-yellow-400 p-4 animate-pulse">
+        ⏳ Loading room...
+      </div>
+    );
   }
 
   // Fetch the room data
@@ -49,3 +53,8 @@ export default function RoomGuard({ roomId }) {
     );
   }
 }
+
+// PropTypes for type-checking
+RoomGuard.propTypes = {
+  roomId: PropTypes.string.isRequired, // The ID of the room to render
+};

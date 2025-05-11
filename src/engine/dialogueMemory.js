@@ -1,10 +1,10 @@
 // /src/engine/dialogueMemory.js
 // MIT License Copyright (c) 2025 Geoff Webster
-// Gorstan v2.0.0
+// Gorstan v2.1.0
 
 // Dialogue Memory System
-// This module tracks NPC interactions and provides dynamic responses based on interaction history.
-// It ensures NPC dialogue evolves as the player progresses through the game.
+// Tracks NPC interactions and provides dynamic responses based on interaction history.
+// Ensures NPC dialogue evolves as the player progresses through the game.
 
 import { npcs } from './npcs';
 
@@ -121,6 +121,22 @@ class DialogueMemory {
     } catch (err) {
       console.error('❌ Error triggering unprompted hint:', err);
       return null;
+    }
+  }
+
+  /**
+   * Retrieves all recorded interactions for debugging or analytics.
+   * @returns {object} - A summary of all NPC interactions and room hints.
+   */
+  getMemorySummary() {
+    try {
+      return {
+        npcMemory: { ...this.npcMemory },
+        hintMemory: { ...this.hintMemory },
+      };
+    } catch (err) {
+      console.error('❌ Error retrieving memory summary:', err);
+      return {};
     }
   }
 }

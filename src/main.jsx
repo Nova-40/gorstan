@@ -1,8 +1,7 @@
 // main.jsx
 // Entry point for the Gorstan React application.
-// MIT License
-// Copyright (c) 2025 Geoff Webster
-// Gorstan v2.0.0
+// MIT License Copyright (c) 2025 Geoff Webster
+// Gorstan v2.1.0
 
 import React from "react";
 import ReactDOM from "react-dom/client";
@@ -18,7 +17,8 @@ const rootElement = document.getElementById("root");
 if (!rootElement) {
   // Log an error and stop rendering if the root element is missing
   console.error("❌ Root element not found. Ensure your HTML file has a <div id='root'></div>.");
-  // Optionally, display a fallback error message in the DOM
+
+  // Display a fallback error message in the DOM
   const fallbackMessage = document.createElement("div");
   fallbackMessage.style.textAlign = "center";
   fallbackMessage.style.padding = "2rem";
@@ -43,6 +43,7 @@ if (!rootElement) {
   } catch (err) {
     // Handle rendering errors
     console.error("❌ An error occurred while rendering the application:", err);
+
     // Display a fallback error message in the root element
     rootElement.innerHTML = `
       <div style="text-align: center; padding: 2rem; background-color: #2e2e2e; color: #ffffff; font-family: Arial, sans-serif;">

@@ -1,7 +1,7 @@
 // MovementPanel.jsx
 // Displays movement and quick action buttons for the Gorstan React application.
 // MIT License Copyright (c) 2025 Geoff Webster
-// Gorstan v2.0.0
+// Gorstan v2.1.0
 
 import React from "react";
 import PropTypes from "prop-types";

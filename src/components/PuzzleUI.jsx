@@ -1,10 +1,7 @@
 // src/components/PuzzleUI.jsx
 // MIT License
 // Copyright (c) 2025 Geoff Webster
-// Gorstan v2.0.0
-
-// PuzzleUI Component
-// This component renders a puzzle interface for the player, allowing them to interact with puzzles by selecting options and submitting answers.
+// Gorstan v2.1.0
 
 import { useState } from "react";
 import PropTypes from "prop-types";
@@ -21,8 +18,14 @@ export default function PuzzleUI({ puzzle, onSolve }) {
   const [selectedOption, setSelectedOption] = useState(""); // Tracks the currently selected option
   const [error, setError] = useState(null); // Tracks any errors during puzzle interaction
 
-  // If no puzzle is provided, render nothing
-  if (!puzzle) return null;
+  // If no puzzle is provided, render a fallback message
+  if (!puzzle) {
+    return (
+      <div className="flex items-center justify-center bg-gray-800 p-6 rounded shadow-md">
+        <p className="text-gray-500 italic">(No puzzle available)</p>
+      </div>
+    );
+  }
 
   /**
    * Handles the submission of the selected option.

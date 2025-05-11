@@ -19,7 +19,11 @@ export function addItem(itemName) {
     if (!itemName || typeof itemName !== 'string') {
       throw new Error('Invalid item name.');
     }
-    playerInventory.add(itemName.toLowerCase());
+    const normalizedItem = itemName.toLowerCase();
+    if (playerInventory.has(normalizedItem)) {
+      return `${itemName} is already in your inventory.`;
+    }
+    playerInventory.add(normalizedItem);
     console.log(`[Inventory] Added item: ${itemName}`);
     return `${itemName} has been added to your inventory.`;
   } catch (err) {
@@ -38,10 +42,11 @@ export function removeItem(itemName) {
     if (!itemName || typeof itemName !== 'string') {
       throw new Error('Invalid item name.');
     }
-    if (!playerInventory.has(itemName.toLowerCase())) {
+    const normalizedItem = itemName.toLowerCase();
+    if (!playerInventory.has(normalizedItem)) {
       return `${itemName} is not in your inventory.`;
     }
-    playerInventory.delete(itemName.toLowerCase());
+    playerInventory.delete(normalizedItem);
     console.log(`[Inventory] Removed item: ${itemName}`);
     return `${itemName} has been removed from your inventory.`;
   } catch (err) {
@@ -98,7 +103,7 @@ export function hasAll(items = []) {
  */
 export function listInventory() {
   try {
-    return Array.from(playerInventory);
+    return Array.from(playerInventory).map(item => item.charAt(0).toUpperCase() + item.slice(1));
   } catch (err) {
     console.error('❌ Error listing inventory items:', err);
     return [];

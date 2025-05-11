@@ -1,6 +1,6 @@
 // /src/engine/eventTriggers.js
 // MIT License Copyright (c) 2025 Geoff Webster
-// Gorstan v2.0.0
+// Gorstan v2.1.0
 
 // Event Triggers System
 // This module handles room-specific events and interactions when the player enters a room.
