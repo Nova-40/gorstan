@@ -6,6 +6,7 @@
 import React from "react";
 import { rooms } from "../engine/rooms";
 import RoomRenderer from "./RoomRenderer";
+import PropTypes from 'prop-types';
 
 /**
  * RoomGuard Component
