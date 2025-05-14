@@ -7,15 +7,16 @@ import { rooms } from "./rooms";
 
 export default class GameEngine {
   constructor({ startRoom, setCurrentRoom, addToOutput, getState, updateScore, setInventory }) {
-    this.currentRoom = startRoom;
+    this.startRoom = startRoom;
     this.setCurrentRoom = setCurrentRoom;
     this.addToOutput = addToOutput;
     this.getState = getState;
-    this.setInventory = setInventory;
     this.updateScore = updateScore || (() => {});
-    this.storyFlags = new Set();
-    this.inventory = [];
-    this.codex = [];
+    this.setInventory = setInventory;
+
+    this.currentRoom = startRoom;
+    this.buttonPressCount = 0;
+    this.resetTimeout = null;
   }
 
   start() {
@@ -65,7 +66,34 @@ export default class GameEngine {
       return;
     }
 
+    // Special internal command
+    if (trimmed === "press button") {
+      this.handleResetButtonPress();
+      return;
+    }
+
     this.addToOutput(`🗨️ You said: "${command}"`);
+  }
+
+  handleResetButtonPress() {
+    this.buttonPressCount++;
+
+    if (this.buttonPressCount === 1) {
+      this.enterRoom("buttonpressed");
+      this.addToOutput("You press the button. A low hum fills the room...");
+
+      this.resetTimeout = setTimeout(() => {
+        this.enterRoom("resetroom");
+        this.addToOutput("You're back in the reset room. The button pulses faintly.");
+        this.buttonPressCount = 0;
+      }, 6000);
+
+    } else if (this.buttonPressCount === 2) {
+      clearTimeout(this.resetTimeout);
+      this.addToOutput("⚠️ MULTIVERSE RESETTING ⚠️");
+      this.enterRoom("introreset");
+      this.buttonPressCount = 0;
+    }
   }
 
   output(text) {
@@ -76,19 +104,16 @@ export default class GameEngine {
     this.enterRoom(roomId);
   }
 
-  moveToDirection(direction) {
+  moveToDirection(dir) {
     const room = rooms[this.currentRoom];
-    if (!room || !room.exits) {
-      this.addToOutput("🚪 There's nowhere to go from here.");
-      return;
-    }
+    const exits = typeof room.exits === "function" ? room.exits(this) : room.exits;
+    const destination = exits?.[dir];
 
-    const exits = typeof room.exits === "function" ? room.exits(this.getState?.()) : room.exits;
-
-    if (exits[direction]) {
-      this.enterRoom(exits[direction]);
+    if (destination) {
+      this.setCurrentRoom(destination);
+      this.addToOutput(`You head ${dir} to ${destination}.`);
     } else {
-      this.addToOutput(`🚫 You can't go ${direction} from here.`);
+      this.addToOutput(`You can't go ${dir} from here.`);
     }
   }
 

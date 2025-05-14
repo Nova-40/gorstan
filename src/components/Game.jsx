@@ -9,6 +9,7 @@ import AylaButton from "../components/AylaButton";
 import { rooms } from "../engine/rooms";
 import GameEngine from "../engine/GameEngine";
 import MovementPanel from "../components/MovementPanel";
+import TeletypeConsole from "../components/TeletypeConsole";
 
 export default function Game({ startRoom = "controlnexus", playerName }) {
   const engineRef = useRef(null);
@@ -51,9 +52,15 @@ export default function Game({ startRoom = "controlnexus", playerName }) {
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col items-center p-4">
+      {currentRoom === "introreset" && (
+        <div className="fixed inset-0 bg-black text-red-500 flex items-center justify-center text-4xl font-bold z-50">
+          MULTIVERSE RESETTING...
+        </div>
+      )}
+
       <div className="flex justify-between items-center w-full max-w-7xl mb-2 text-sm text-blue-400 italic font-handwriting">
         <div>
-          <span>Good day, {playerNameState}. Enjoy the game — Read The Gorstan Chronicles</span>
+          <span>GOOD DAY, [Player]! Enjoy your stay — and don’t forget to read The Gorstan Chronicles.</span>
           <a
             href="https://www.thegorstanchronicles.com/book-showcase"
             target="_blank"
@@ -72,10 +79,16 @@ export default function Game({ startRoom = "controlnexus", playerName }) {
             <RoomGuard roomId={currentRoom} playerName={playerNameState} devMode={devMode} />
           )}
 
-          <div className="bg-gray-900 p-4 rounded shadow text-green-300 min-h-[120px]">
-            {output.map((line, i) => (
-              <div key={i}>{line}</div>
-            ))}
+          <div className="bg-gray-900 p-4 rounded shadow text-green-300 max-h-32 overflow-y-auto text-sm font-mono">
+            <TeletypeConsole
+              lines={output.slice(-4)}
+              speed={30}
+              delayBetween={200}
+              className="text-green-300"
+              cursor={true}
+              instant={false}
+              onComplete={() => outputEndRef.current?.scrollIntoView({ behavior: "smooth" })}
+            />
             <div ref={outputEndRef} />
           </div>
 
@@ -86,13 +99,9 @@ export default function Game({ startRoom = "controlnexus", playerName }) {
             className="w-full p-2 rounded bg-gray-800 text-white border border-green-500"
             placeholder="Enter a command..."
           />
-
-          
         </div>
 
         <div className="w-full lg:w-64 space-y-4">
-          
-          
           <AylaButton engineRef={engineRef} addToOutput={addToOutput} />
           <MovementPanel engineRef={engineRef} />
         </div>

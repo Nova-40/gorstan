@@ -1,23 +1,22 @@
-
 // TeletypeIntro_Upgraded.jsx
 // MIT License
 // Copyright (c) 2025 Geoff Webster
-// Gorstan v2.1.1
+// Gorstan v2.1.4 – now with TeletypeConsole for main console support
 
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import TeletypeConsole from "./TeletypeConsole"; // Add this line if you're using TeletypeConsole in shared UI
 
 /**
  * TeletypeIntro Component
- * Displays an introductory sequence with a teletype-style animation (char-by-char) and presents choices to the player.
- *
- * Props:
- * - onChoice (function): Callback function to handle the player's choice.
- * - playerName (string): The name of the player to personalise the intro.
+ * Displays a splash screen image for 3 seconds, then runs the teletype intro.
+ * Supports intro skip and fade-out transition for returning players.
  */
 export default function TeletypeIntro({ onChoice, playerName }) {
+  const hasPlayedBefore = localStorage.getItem("gorstanIntroPlayed") === "true";
+
   const baseLines = [
-    `GOOD DAY, ${playerName}!`,
+    `GOOD DAY, ${playerName}! Enjoy your stay — and don’t forget to read The Gorstan Chronicles.`,
     "You’re walking home from work, coffee in hand.",
     "The sun hangs low, casting long, golden shadows across the pavement.",
     "You’re tired — the kind of tired that settles in your bones — but home is close.",
@@ -31,72 +30,115 @@ export default function TeletypeIntro({ onChoice, playerName }) {
     "Your instincts scream:"
   ];
 
+  const [showStarter, setShowStarter] = useState(true);
   const [lines, setLines] = useState([]);
-  const [currentLine, setCurrentLine] = useState("");
-  const [lineIndex, setLineIndex] = useState(0);
-  const [charIndex, setCharIndex] = useState(0);
-  const [showChoices, setShowChoices] = useState(false);
+  const [currentLine, setCur] = useState("");
+  const [lineIdx, setLineIdx] = useState(0);
+  const [charIdx, setCharIdx] = useState(0);
+  const [showChoices, setChoices] = useState(false);
+  const [showSkip, setShowSkip] = useState(false);
+  const [isSkipping, setIsSkipping] = useState(false);
+  const [fadingOut, setFadingOut] = useState(false);
 
   useEffect(() => {
-    if (lineIndex < baseLines.length) {
-      if (charIndex < baseLines[lineIndex].length) {
-        const timeout = setTimeout(() => {
-          setCurrentLine((prev) => prev + baseLines[lineIndex][charIndex]);
-          setCharIndex(charIndex + 1);
-        }, 40);
-        return () => clearTimeout(timeout);
-      } else {
-        // Full line typed, add to lines and move to next
-        const timeout = setTimeout(() => {
-          setLines((prev) => [...prev, baseLines[lineIndex]]);
-          setCurrentLine("");
-          setCharIndex(0);
-          setLineIndex(lineIndex + 1);
-        }, 500);
-        return () => clearTimeout(timeout);
-      }
-    } else if (!showChoices) {
-      const timeout = setTimeout(() => {
-        setShowChoices(true);
-      }, 800);
-      return () => clearTimeout(timeout);
+    const splashTimer = setTimeout(() => setShowStarter(false), 3000);
+    return () => clearTimeout(splashTimer);
+  }, []);
+
+  useEffect(() => {
+    if (!showStarter && hasPlayedBefore) {
+      const timer = setTimeout(() => setShowSkip(true), 2000);
+      return () => clearTimeout(timer);
     }
-  }, [charIndex, lineIndex]);
+  }, [hasPlayedBefore, showStarter]);
+
+  useEffect(() => {
+    if (!isSkipping) return;
+    const skipMsg = "You’ve heard this story before. You know how it starts. Let’s skip to where it matters.";
+    if (charIdx < skipMsg.length) {
+      const t = setTimeout(() => {
+        setCur((p) => p + skipMsg[charIdx]);
+        setCharIdx(charIdx + 1);
+      }, 40);
+      return () => clearTimeout(t);
+    }
+    if (!fadingOut) {
+      setFadingOut(true);
+      setTimeout(() => {
+        localStorage.setItem("gorstanIntroPlayed", "true");
+        onChoice("skip");
+      }, 1200);
+    }
+  }, [isSkipping, charIdx, fadingOut, onChoice]);
+
+  useEffect(() => {
+    if (isSkipping || showStarter) return;
+    if (lineIdx < baseLines.length) {
+      if (charIdx < baseLines[lineIdx].length) {
+        const t = setTimeout(() => {
+          setCur((p) => p + baseLines[lineIdx][charIdx]);
+          setCharIdx(charIdx + 1);
+        }, 40);
+        return () => clearTimeout(t);
+      }
+      const t = setTimeout(() => {
+        setLines((p) => [...p, baseLines[lineIdx]]);
+        setCur("");
+        setCharIdx(0);
+        setLineIdx(lineIdx + 1);
+      }, 500);
+      return () => clearTimeout(t);
+    }
+    if (!showChoices) {
+      const t = setTimeout(() => {
+        setChoices(true);
+        localStorage.setItem("gorstanIntroPlayed", "true");
+      }, 800);
+      return () => clearTimeout(t);
+    }
+  }, [charIdx, lineIdx, isSkipping, showStarter, showChoices]);
 
   return (
-    <div className="min-h-screen p-4 font-mono bg-black text-green-400 text-lg leading-relaxed">
-      {lines.map((line, i) => (
-        <p key={i} className="mb-2">{line}</p>
-      ))}
-      {currentLine && (
-        <p className="mb-2">
-          {currentLine}
-          <span className="animate-pulse">▊</span>
-        </p>
+    <div className="min-h-screen p-4 font-mono bg-black text-green-400 text-lg leading-relaxed relative overflow-hidden">
+      {showStarter ? (
+        <img
+          src="/images/starterframe.png"
+          alt="Gorstan Title"
+          className="absolute inset-0 object-cover w-full h-full z-40"
+        />
+      ) : (
+        <>
+          <TeletypeConsole
+            lines={[...lines, currentLine]}
+            speed={40}
+            delayBetween={500}
+            className="mb-2"
+            cursor={!showChoices}
+            instant={false}
+          />
+          {showChoices && !isSkipping && (
+            <div className="mt-6 space-x-4">
+              <button className="bg-green-700 hover:bg-green-900 text-white py-2 px-4 rounded" onClick={() => onChoice("jump")}>Jump!</button>
+              <button className="bg-yellow-600 hover:bg-yellow-800 text-white py-2 px-4 rounded" onClick={() => onChoice("sip")}>Sip Coffee</button>
+              <button className="bg-red-700 hover:bg-red-900 text-white py-2 px-4 rounded" onClick={() => onChoice("wait")}>Wait</button>
+            </div>
+          )}
+          {showSkip && !showChoices && !isSkipping && (
+            <button
+              onClick={() => {
+                setLines([]);
+                setCur("");
+                setCharIdx(0);
+                setIsSkipping(true);
+              }}
+              className="absolute bottom-4 right-4 px-3 py-1 border border-yellow-300 text-yellow-300 text-sm rounded hover:bg-yellow-500 hover:text-black transition-colors"
+            >
+              Skip Intro
+            </button>
+          )}
+        </>
       )}
-
-      {showChoices && (
-        <div className="mt-6 space-x-4">
-          <button
-            className="bg-green-700 hover:bg-green-900 text-white py-2 px-4 rounded"
-            onClick={() => onChoice("jump")}
-          >
-            Jump!
-          </button>
-          <button
-            className="bg-yellow-600 hover:bg-yellow-800 text-white py-2 px-4 rounded"
-            onClick={() => onChoice("sip")}
-          >
-            Sip Coffee
-          </button>
-          <button
-            className="bg-red-700 hover:bg-red-900 text-white py-2 px-4 rounded"
-            onClick={() => onChoice("wait")}
-          >
-            Wait
-          </button>
-        </div>
-      )}
+      {fadingOut && <div className="absolute inset-0 bg-black animate-fadeOut pointer-events-none z-50"></div>}
     </div>
   );
 }

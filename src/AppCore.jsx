@@ -76,6 +76,10 @@ export default function AppCore() {
           }, 2500);
         }, 1500);
         break;
+      case "skip":
+        setStartingRoom("controlnexus");
+        setPhase("game");
+        break;
       default:
         console.warn(`Unhandled choice: ${choice}`);
         break;
@@ -97,4 +101,5 @@ export default function AppCore() {
     </div>
   );
 }
+
 

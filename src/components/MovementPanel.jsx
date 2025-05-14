@@ -36,16 +36,8 @@ export default function MovementPanel({
    * @param {string} command - The command to process.
    */
   const handleMove = (command) => {
-    if (engineRef?.current?.processCommand) {
-      try {
-        engineRef.current.processCommand(command);
-      } catch (err) {
-        console.error(`❌ Error processing command "${command}":`, err);
-      }
-    } else {
-      console.warn("⚠️ GameEngine reference is not available.");
-    }
-  };
+  engineRef?.current?.moveToDirection?.(command);
+};
 
   /**
    * Toggles fullscreen mode for the application.
