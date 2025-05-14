@@ -33,8 +33,8 @@ export function getNpcDialogue(npcId, context = {}) {
     // Return the dialogue or a fallback message
     return dialogue || `The NPC ${npcId} has nothing to say right now.`;
   } catch (err) {
-    console.error('❌ Error retrieving NPC dialogue:', err);
-    return 'An error occurred while retrieving dialogue.';
+    console.error('❌ Error retrieving NPC dialogueue:', err);
+    return 'An error occurred while retrieving dialogueue.';
   }
 }
 
@@ -81,8 +81,8 @@ export function getMoodDialogue(npcName, moodState = 'neutral') {
     }
     return entry[moodState] || entry['neutral'];
   } catch (err) {
-    console.error('❌ Error retrieving NPC dialogue:', err);
-    return 'An error occurred while retrieving dialogue.';
+    console.error('❌ Error retrieving NPC dialogueue:', err);
+    return 'An error occurred while retrieving dialogueue.';
   }
 }
 
@@ -97,7 +97,7 @@ export function getSarcasmDialogue(sarcasmLevel) {
     if (sarcasmLevel >= 5) return npcDialogueMap.ayla.midSarcasm;
     return npcDialogueMap.ayla.lowSarcasm;
   } catch (err) {
-    console.error('❌ Error retrieving Ayla sarcasm dialogue:', err);
+    console.error('❌ Error retrieving Ayla sarcasm dialogueue:', err);
     return 'Ayla seems speechless for once.';
   }
 }

@@ -8,7 +8,7 @@
 // It includes functionality for handling commands like "talk", "use", and "look".
 
 import { inventory } from './inventory';
-import { dialogueMemory } from './dialogueMemory';
+import { dialogueMemory } from './dialogueueMemory';
 
 
 class NPC {
@@ -82,7 +82,7 @@ class NPC {
 // Define NPCs and their dialogues
 export const npcs = {
   librarian: new NPC('Librarian', [
-    'Welcome, traveler. Knowledge demands a price.',
+    'Welcome, traveller. Knowledge demands a price.',
     'Have you found the blueprint?',
     'Use what you have wisely.',
   ]),

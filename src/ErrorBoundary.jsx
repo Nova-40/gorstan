@@ -44,7 +44,7 @@ class ErrorBoundary extends React.Component {
     if (this.state.hasError) {
       // Render fallback UI when an error occurs
       return (
-        <div style={{ textAlign: 'center', padding: '2rem', backgroundColor: '#2e2e2e', color: '#ffffff' }}>
+        <div style={{ textAlign: 'centre', padding: '2rem', backgroundColor: '#2e2e2e', color: '#ffffff' }}>
           <h1>🚨 Reality distortion detected.</h1>
           <p>Gorstan cannot stabilize this timeline. Please refresh the page or try again later.</p>
           {this.state.error && (
@@ -64,7 +64,7 @@ class ErrorBoundary extends React.Component {
               border: 'none',
               borderRadius: '4px',
               cursor: 'pointer',
-              transition: 'background-color 200ms ease-in-out',
+              transition: 'background-colour 200ms ease-in-out',
             }}
           >
             Try Again

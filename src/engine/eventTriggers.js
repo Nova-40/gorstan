@@ -6,7 +6,7 @@
 // This module handles room-specific events and interactions when the player enters a room.
 // It dynamically generates descriptions and hints based on the room and the player's story progression.
 
-import { dialogueMemory } from './dialogueMemory';
+import { dialogueMemory } from './dialogueueMemory';
 
 // Room-specific events and descriptions
 const ROOM_EVENTS = {

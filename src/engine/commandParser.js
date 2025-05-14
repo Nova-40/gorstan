@@ -7,7 +7,7 @@ import { inventory } from './inventory';
 import { talkToNPC } from './npcs';
 import { rooms } from './rooms';
 import { onEnterRoom } from './eventTriggers';
-import { dialogueMemory } from './dialogueMemory';
+import { dialogueMemory } from './dialogueueMemory';
 
 /**
  * Parses and executes a player command.

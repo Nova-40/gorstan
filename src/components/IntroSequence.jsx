@@ -78,7 +78,7 @@ export default function IntroSequence({ onComplete }) {
   }, [messages.length, onComplete, isCompleted]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white text-lg relative">
+    <div className="flex flex-col items-centre justify-centre min-h-screen bg-black text-white text-lg relative">
       {/* Display the current message */}
       <p className="animate-fade-in">{messages[index]}</p>
 
@@ -89,7 +89,7 @@ export default function IntroSequence({ onComplete }) {
             setIsCompleted(true); // Prevent multiple calls to onComplete
             onComplete();
           }}
-          className="absolute bottom-4 right-4 text-sm underline text-yellow-300 hover:text-yellow-500 transition-colors"
+          className="absolute bottom-4 right-4 text-sm underline text-yellow-300 hover:text-yellow-500 transition-colours"
           aria-label="Skip the intro sequence"
         >
           Skip Intro

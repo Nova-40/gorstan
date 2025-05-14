@@ -20,7 +20,7 @@ const SASS_REMARKS = [
 const MOTIVATIONAL_MESSAGES = [
   "You're closer than you think. Keep going!",
   "Even the darkest paths lead somewhere. Trust yourself.",
-  "You're doing better than you realize. Don't give up.",
+  "You're doing better than you realise. Don't give up.",
   "Every step forward is progress. Even the small ones.",
   "Remember: the journey matters as much as the destination.",
   "You've got this. Ayla believes in you.",

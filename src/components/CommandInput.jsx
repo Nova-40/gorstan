@@ -35,7 +35,7 @@ export default function CommandInput({ command, setCommand, onSubmit }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex gap-2 mt-2 items-center"
+      className="flex gap-2 mt-2 items-centre"
       aria-label="Command Input Form"
     >
       {/* Input Field for Commands */}

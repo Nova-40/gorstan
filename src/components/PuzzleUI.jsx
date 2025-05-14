@@ -21,7 +21,7 @@ export default function PuzzleUI({ puzzle, onSolve }) {
   // If no puzzle is provided, render a fallback message
   if (!puzzle) {
     return (
-      <div className="flex items-center justify-center bg-gray-800 p-6 rounded shadow-md">
+      <div className="flex items-centre justify-centre bg-gray-800 p-6 rounded shadow-md">
         <p className="text-gray-500 italic">(No puzzle available)</p>
       </div>
     );
@@ -47,12 +47,12 @@ export default function PuzzleUI({ puzzle, onSolve }) {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center bg-gray-800 p-6 rounded shadow-md mb-4">
+    <div className="flex flex-col items-centre justify-centre bg-gray-800 p-6 rounded shadow-md mb-4">
       {/* Puzzle Title */}
       <h2 className="text-2xl font-bold text-yellow-300 mb-4">Puzzle:</h2>
 
       {/* Puzzle Description */}
-      <p className="text-green-400 mb-6 text-center">{puzzle.description}</p>
+      <p className="text-green-400 mb-6 text-centre">{puzzle.description}</p>
 
       {/* Puzzle Options */}
       {puzzle.options && puzzle.options.length > 0 ? (

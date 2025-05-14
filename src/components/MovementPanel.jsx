@@ -29,7 +29,7 @@ import { rooms } from "../engine/rooms";
 export default function MovementPanel({
   engineRef,
   iconSize = 18,
-  buttonClassName = "p-2",
+  buttonClassName = "p-1 w-8 h-8 flex items-center justify-center text-green-100 text-xs",
 }) {
   /**
    * Handles movement and action commands.
@@ -73,66 +73,69 @@ export default function MovementPanel({
 
   // Define movement directions
   const directions = [
-    { cmd: "north", icon: <ArrowUp size={iconSize} />, label: "North", active: !!exits?.north },
-    { cmd: "south", icon: <ArrowDown size={iconSize} />, label: "South", active: !!exits?.south },
-    { cmd: "west", icon: <ArrowLeft size={iconSize} />, label: "West", active: !!exits?.west },
-    { cmd: "east", icon: <ArrowRight size={iconSize} />, label: "East", active: !!exits?.east },
+    { cmd: "north", icon: <ArrowUp size={iconSize} />, label: "⬆️", active: !!exits?.north },
+    { cmd: "south", icon: <ArrowDown size={iconSize} />, label: "⬇️", active: !!exits?.south },
+    { cmd: "west", icon: <ArrowLeft size={iconSize} />, label: "⬅️", active: !!exits?.west },
+    { cmd: "east", icon: <ArrowRight size={iconSize} />, label: "➡️", active: !!exits?.east },
   ];
 
   // Define quick actions
   const actions = [
+    { cmd: "throw coffee", icon: <span className="text-lg">☕</span>, label: "Throw Coffee" },
     { cmd: "look", icon: <Eye size={iconSize} />, label: "Look" },
     { cmd: "wait", icon: <Timer size={iconSize} />, label: "Wait" },
     { cmd: "jump", icon: <ArrowBigUpDash size={iconSize} />, label: "Jump" },
   ];
 
   return (
-    <div className="bg-gray-800 p-3 rounded-xl border border-green-500 shadow-lg">
+    <div className="bg-gray-800 p-2 rounded-xl border border-green-500 shadow-md">
       {/* Panel Title */}
-      <h2 className="text-white text-md font-semibold mb-3 font-sans">Quick Actions</h2>
+      <div className="border border-green-500 rounded-lg p-2">
+        <h2 className="text-white text-md font-semibold mb-3 font-sans">Quick Actions</h2>
 
-      {/* Movement and Action Buttons */}
-      <div className="flex flex-wrap justify-center gap-2 items-center">
-        {/* Direction Buttons */}
-        {directions.map(({ cmd, icon, label, active }) => (
+        {/* Movement and Action Buttons */}
+        <div className="flex flex-wrap justify-center gap-2 items-center">
+          {/* Direction Buttons */}
+          {directions.map(({ cmd, icon, label, active }) => (
+            <button
+              key={cmd}
+              onClick={() => active && handleMove(cmd)}
+              className={`rounded ${
+                active
+                  ? "bg-gray-700 hover:bg-green-600"
+                  : "bg-gray-600 opacity-50 cursor-not-allowed"
+              } ${buttonClassName}`}
+              title={label}
+              aria-label={label}
+              disabled={!active}
+            >
+              {icon}
+            </button>
+          ))}
+
+          {/* Quick Action Buttons */}
+          {actions.map(({ cmd, icon, label }) => (
+            <button
+              key={cmd}
+              onClick={() => handleMove(cmd)}
+              className={`rounded bg-gray-700 hover:bg-blue-600 ${buttonClassName}`}
+              title={label}
+              aria-label={label}
+            >
+              {icon}
+            </button>
+          ))}
+
+          {/* Fullscreen Toggle */}
           <button
-            key={cmd}
-            onClick={() => active && handleMove(cmd)}
-            className={`rounded ${
-              active
-                ? "bg-gray-700 hover:bg-green-600"
-                : "bg-gray-600 opacity-50 cursor-not-allowed"
-            } ${buttonClassName}`}
-            title={label}
-            aria-label={label}
-            disabled={!active}
+            onClick={toggleFullscreen}
+            className={`rounded bg-gray-700 hover:bg-yellow-600 ${buttonClassName}`}
+            title="Toggle Fullscreen"
+            aria-label="Toggle Fullscreen"
           >
-            {icon}
+            ⛶
           </button>
-        ))}
-
-        {/* Quick Action Buttons */}
-        {actions.map(({ cmd, icon, label }) => (
-          <button
-            key={cmd}
-            onClick={() => handleMove(cmd)}
-            className={`rounded bg-gray-700 hover:bg-blue-600 ${buttonClassName}`}
-            title={label}
-            aria-label={label}
-          >
-            {icon}
-          </button>
-        ))}
-
-        {/* Fullscreen Toggle Button */}
-        <button
-          onClick={toggleFullscreen}
-          className={`rounded bg-gray-700 hover:bg-yellow-600 ml-2 ${buttonClassName}`}
-          title="Toggle Fullscreen"
-          aria-label="Toggle Fullscreen"
-        >
-          ⛶
-        </button>
+        </div>
       </div>
     </div>
   );

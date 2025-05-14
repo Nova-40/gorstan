@@ -46,11 +46,11 @@ if (!rootElement) {
 
     // Display a fallback error message in the root element
     rootElement.innerHTML = `
-      <div style="text-align: center; padding: 2rem; background-color: #2e2e2e; color: #ffffff; font-family: Arial, sans-serif;">
+      <div style="text-align: center; padding: 2rem; background-colour: #2e2e2e; colour: #ffffff; font-family: Arial, sans-serif;">
         <h1>🚨 Rendering Error</h1>
         <p>The application encountered an error while rendering.</p>
         <p>Please refresh the page or contact support if the issue persists.</p>
-        <pre style="text-align: left; margin-top: 1rem; color: #ff4d4d;">${err.toString()}</pre>
+        <pre style="text-align: left; margin-top: 1rem; colour: #ff4d4d;">${err.toString()}</pre>
       </div>
     `;
   }

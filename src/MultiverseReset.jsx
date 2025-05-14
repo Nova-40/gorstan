@@ -49,7 +49,7 @@ export default function MultiverseReset({ onComplete }) {
   }, [onComplete]);
 
   return (
-    <div className="flex flex-col items-center justify-end h-full overflow-hidden text-green-400 font-mono">
+    <div className="flex flex-col items-centre justify-end h-full overflow-hidden text-green-400 font-mono">
       {/* Render each line with optional falling animation */}
       {lines.map((line, idx) => (
         <div
@@ -64,7 +64,7 @@ export default function MultiverseReset({ onComplete }) {
 
       {/* Add a visual indicator for the reset process */}
       {falling && (
-        <div className="mt-4 text-center text-yellow-400">
+        <div className="mt-4 text-centre text-yellow-400">
           <p>🌌 Multiverse Reset Complete 🌌</p>
         </div>
       )}

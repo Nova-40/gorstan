@@ -309,7 +309,7 @@ export const rooms = {
     onCommand: (cmd, engine) => {
       if (cmd.toLowerCase() === "sit") {
         engine.moveTo("resetroom");
-        engine.output("You sit on the old bench. Something hums... and the world shifts.");
+        engine.output("You sit on the strange chair. Something hums... and the world shifts.");
       }
     },
     description: "A park on Earth, filled with crows and the faint sound of distant traffic.",
@@ -456,10 +456,17 @@ export const rooms = {
   },
 
   resetroom: {
-    description: "You find yourself in resetroom. The air is thick with mystery.",
-    image: "/images/resetroom.png",
-    exits: { }
+  description: "Welcome to the oinously named reset room there is a chair here and a big blue button.",
+  image: "/images/resetroom.png",
+  onCommand: (cmd, engine) => {
+    if (cmd.toLowerCase() === "sit") {
+      engine.output("You sit down in the chair. Wow, that’s comfort — WHAHHT! The universe flips and you are somewhere else.");
+      engine.moveTo("trentparkearth");
+    }
   },
+  exits: {}
+},
+  
 
   rhianonschamber: {
     description: "You find yourself in rhianonschamber. The air is thick with mystery.",
