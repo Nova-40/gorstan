@@ -1,14 +1,11 @@
+// Gorstan v2.2.2 – All modules validated and standardized
 // /src/engine/characters/al.js
 // MIT License
 // Copyright (c) 2025 Geoff Webster
-// Gorstan v2.0.0
-
 // Al Character Module
 // This module defines the behavior and interactions for the character Al.
 // Al is known for his cryptic lyrics, occasional musical advice, and enigmatic charm.
-
 import alLyricsData from '../../../public/alLyrics.json';
-
 // Constants for fallback messages and help responses
 const FALLBACK_MESSAGE = "[Al] (silence... perhaps he's tuning his instrument.)";
 const HELP_RESPONSES = [
@@ -17,7 +14,6 @@ const HELP_RESPONSES = [
   "[Al] I've given you all the notes. Now play your own song.",
   "[Al] (a knowing smile, but no words this time.)",
 ];
-
 class Al {
   constructor() {
     try {
@@ -28,7 +24,6 @@ class Al {
       this.lyrics = []; // Fallback to an empty lyrics array
     }
   }
-
   /**
    * Retrieves a random lyric from Al.
    * @returns {string} - A random lyric or a default silent response if no lyrics are available.
@@ -45,7 +40,6 @@ class Al {
       return FALLBACK_MESSAGE;
     }
   }
-
   /**
    * Offers cryptic or musical help to the player.
    * The help becomes more poetic or dismissive after repeated requests.
@@ -61,7 +55,6 @@ class Al {
       return HELP_RESPONSES[HELP_RESPONSES.length - 1];
     }
   }
-
   /**
    * Provides a custom response based on the player's inventory or story progress.
    * @param {object} gameState - The current game state, including inventory and story progress.
@@ -71,7 +64,6 @@ class Al {
     try {
       const inventory = Array.isArray(gameState.inventory) ? gameState.inventory : [];
       const storyStage = typeof gameState.storyStage === 'number' ? gameState.storyStage : 1;
-
       if (inventory.includes('blueprint')) {
         return "[Al] Ah, the blueprint. A map to chaos, or perhaps to clarity. Use it wisely.";
       }
@@ -84,7 +76,6 @@ class Al {
       return FALLBACK_MESSAGE;
     }
   }
-
   /**
    * Resets Al's help count, typically used after a story reset.
    */
@@ -97,5 +88,4 @@ class Al {
     }
   }
 }
-
 export const al = new Al();

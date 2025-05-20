@@ -1,6 +1,16 @@
 /* MIT License */
 /* Copyright (c) 2025 Geoff Webster */
-/* Gorstan v2.0.0 */
+/* Gorstan v2.1.2 */
+
+/*
+  index.css
+  Gorstan Global Stylesheet
+  Version 2.1.2
+
+  - Improved for clarity, maintainability, and accessibility.
+  - Responsive, robust, and visually consistent.
+  - All classes and selectors are documented for intended use.
+*/
 
 /* Root variables for consistent theming */
 :root {
@@ -23,10 +33,13 @@ a {
   font-weight: 500; /* Slightly bold for emphasis */
   color: #646cff; /* Primary link color */
   text-decoration: inherit; /* Inherit text decoration */
+  transition: color 0.2s;
 }
 
-a:hover {
-  color: #535bf2; /* Darken link color on hover */
+a:hover,
+a:focus-visible {
+  color: #535bf2; /* Darken link color on hover/focus */
+  outline: none;
 }
 
 /* Body styling */
@@ -36,6 +49,7 @@ body {
   place-items: center; /* Center content vertically and horizontally */
   min-width: 320px; /* Ensure minimum width for small devices */
   min-height: 100vh; /* Full viewport height */
+  background-color: var(--background-color, #242424);
 }
 
 /* Heading styling */
@@ -53,18 +67,28 @@ button {
   font-weight: 500; /* Slightly bold for emphasis */
   font-family: inherit; /* Inherit font family */
   background-color: #1a1a1a; /* Dark background for buttons */
+  color: #fff;
   cursor: pointer; /* Pointer cursor on hover */
-  transition: border-color 0.25s, transform 0.2s; /* Smooth hover effects */
+  transition: border-color 0.25s, transform 0.2s, background-color 0.2s;
 }
 
-button:hover {
-  border-color: #646cff; /* Highlight border on hover */
-  transform: scale(1.05); /* Slightly enlarge button on hover */
-}
-
-button:focus,
+button:hover,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color; /* Focus outline for accessibility */
+  border-color: #646cff; /* Highlight border on hover/focus */
+  transform: scale(1.05); /* Slightly enlarge button on hover/focus */
+  outline: none;
+  background-color: #2323a3;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: #444;
+}
+
+/* Accessibility: Focus ring for keyboard navigation */
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
 }
 
 /* Light mode styling */
@@ -74,12 +98,14 @@ button:focus-visible {
     background-color: #ffffff; /* Light background color */
   }
 
-  a:hover {
+  a:hover,
+  a:focus-visible {
     color: #747bff; /* Adjust link hover color for light mode */
   }
 
   button {
     background-color: #f9f9f9; /* Light button background */
+    color: #213547;
   }
 }
 
@@ -129,4 +155,30 @@ body.erebos-loading::after {
     opacity: 1; /* Full opacity */
     transform: scale(1); /* Normal size */
   }
+}
+
+/* Defensive: Responsive design for smaller screens */
+@media (max-width: 600px) {
+  h1 {
+    font-size: 2em;
+  }
+  button {
+    font-size: 0.95em;
+    padding: 0.5em 1em;
+  }
+}
+
+/* Error message styling for global errors */
+.global-error {
+  color: #ff4d4d;
+  background-color: #2e2e2e;
+  padding: 1rem;
+  border-radius: 4px;
+  margin: 1rem 0;
+  font-weight: bold;
+  text-align: center;
+  border: 1px solid #ff4d4d33;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }

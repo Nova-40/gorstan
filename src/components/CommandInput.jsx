@@ -1,15 +1,12 @@
+// Gorstan v2.2.2 – All modules validated and standardized
 // CommandInput.jsx
 // MIT License
 // Copyright (c) 2025 Geoff Webster
-// Gorstan v2.1.0
-
 // This component provides a text input field for the player to type commands
 // and a submit button to process those commands. It is designed to be reusable
 // and integrates with the parent component via props.
-
 import React from "react";
 import PropTypes from "prop-types";
-
 /**
  * CommandInput Component
  * A reusable input form for entering and submitting commands in the game.
@@ -27,28 +24,53 @@ export default function CommandInput({ command, setCommand, onSubmit }) {
    */
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (command.trim()) {
-      onSubmit();
+    try {
+      if (typeof onSubmit !== "function") {
+        throw new Error("onSubmit prop is not a function.");
+      }
+      if (typeof setCommand !== "function") {
+        throw new Error("setCommand prop is not a function.");
+      }
+      if (typeof command !== "string") {
+        throw new Error("command prop is not a string.");
+      }
+      if (command.trim()) {
+        onSubmit();
+      }
+    } catch (err) {
+      // Defensive: log error and show a fallback message
+      console.error("❌ CommandInput: Error handling submit.", err);
+      alert("There was a problem submitting your command. See console for details.");
     }
   };
-
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex gap-2 mt-2 items-centre"
+      className="flex gap-2 mt-2 items-center"
       aria-label="Command Input Form"
+      autoComplete="off"
     >
       {/* Input Field for Commands */}
       <input
         type="text"
         className="flex-1 bg-gray-800 text-white p-2 rounded border border-green-500 focus:outline-none focus:ring-2 focus:ring-green-400"
-        value={command}
-        onChange={(e) => setCommand(e.target.value)}
+        value={typeof command === "string" ? command : ""}
+        onChange={(e) => {
+          try {
+            if (typeof setCommand === "function") {
+              setCommand(e.target.value);
+            } else {
+              throw new Error("setCommand prop is not a function.");
+            }
+          } catch (err) {
+            console.error("❌ CommandInput: Error updating command.", err);
+          }
+        }}
         placeholder="Type a command..."
         autoFocus
         aria-label="Command Input"
+        spellCheck={false}
       />
-
       {/* Submit Button */}
       <button
         type="submit"
@@ -60,8 +82,7 @@ export default function CommandInput({ command, setCommand, onSubmit }) {
     </form>
   );
 }
-
-// PropTypes for type checking
+// PropTypes for type checking and documentation
 CommandInput.propTypes = {
   command: PropTypes.string.isRequired, // The current command input value
   setCommand: PropTypes.func.isRequired, // Function to update the command state

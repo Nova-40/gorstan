@@ -1,154 +1,73 @@
-// GameEngine.js
-// Gorstan Game Engine – Core logic handler
-// MIT License – 2025 Geoff Webster
-// Gorstan v2.1.5
+// MIT License
+// Gorstan Game v2.3.2
+// © 2025 Geoff Webster
+// GameEngine.js – Core game state and transition handler.
 
 import { rooms } from "./rooms";
+import { storyProgress } from "./storyProgress";
+import { NPCs } from "./npcs";
 
+/**
+ * The main engine class for managing the game state, room transitions, and interactions.
+ */
 export default class GameEngine {
-  constructor({ startRoom, setCurrentRoom, addToOutput, getState, updateScore, setInventory }) {
-    this.startRoom = startRoom;
+  constructor({ startRoom, setCurrentRoom, addToOutput, getState, updateScore, playSound }) {
+    this.room = startRoom;
     this.setCurrentRoom = setCurrentRoom;
     this.addToOutput = addToOutput;
     this.getState = getState;
     this.updateScore = updateScore || (() => {});
-    this.setInventory = setInventory;
+    this.playSound = playSound || (() => {}); // Optional sound trigger
 
-    this.currentRoom = startRoom;
-    this.buttonPressCount = 0;
-    this.resetTimeout = null;
+    this.debugMode = false;
   }
 
-  start() {
-    try {
-      this.enterRoom(this.currentRoom);
-    } catch (err) {
-      console.error("❌ Error starting the game engine:", err);
-      this.addToOutput("🚨 Critical error: Unable to start the game.");
-    }
+  /**
+   * Enables debug features like trap visibility.
+   */
+  enableDebug() {
+    this.debugMode = true;
+    this.enableTrapMode(true);
+    this.addToOutput("🛠️ DEBUG MODE ENABLED");
   }
 
-  enterRoom(roomId) {
-    const room = rooms[roomId];
-    if (!room) {
-      console.error(`⚠️ Unknown room: "${roomId}".`);
-      this.addToOutput(`⚠️ Unknown room: ${roomId}`);
+  /**
+   * Lists active traps for debugging.
+   */
+  listTraps() {
+    if (!this.debugMode) {
+      this.addToOutput("🔒 Trap listing only available in debug mode.");
       return;
     }
+    const traps = this.getState().traps || [];
+    if (traps.length === 0) {
+      this.addToOutput("✅ No traps detected.");
+    } else {
+      this.addToOutput("⚠️ Active trap rooms: " + traps.join(", "));
+    }
+  }
 
-    this.currentRoom = roomId;
+  /**
+   * Transitions to a new room, updating state and triggering room effects.
+   */
+  enterRoom(roomId) {
+    if (!rooms[roomId]) {
+      this.addToOutput(`❌ Unknown room: ${roomId}`);
+      return;
+    }
+    this.room = roomId;
     this.setCurrentRoom(roomId);
 
-    if (typeof room.onEnter === "function") {
-      try {
-        room.onEnter(this);
-      } catch (err) {
-        console.error(`❌ Error in onEnter for room "${roomId}":`, err);
-        this.addToOutput(`⚠️ Something went wrong when entering ${roomId}.`);
-      }
-    } else {
-      this.addToOutput(room.description || `You enter ${roomId}.`);
+    // Optional onEnter handler
+    if (typeof rooms[roomId].onEnter === "function") {
+      rooms[roomId].onEnter(this);
     }
   }
 
-  handleCommand(command) {
-    const trimmed = command.trim().toLowerCase();
-    if (!trimmed) return;
-
-    const room = rooms[this.currentRoom];
-    if (room?.onCommand) {
-      try {
-        room.onCommand(trimmed, this);
-      } catch (err) {
-        console.error("❌ Command error:", err);
-        this.addToOutput("⚠️ Something went wrong while processing your command.");
-      }
-      return;
-    }
-
-    // Special internal command
-    if (trimmed === "press button") {
-      this.handleResetButtonPress();
-      return;
-    }
-
-    this.addToOutput(`🗨️ You said: "${command}"`);
-  }
-
-  handleResetButtonPress() {
-    this.buttonPressCount++;
-
-    if (this.buttonPressCount === 1) {
-      this.enterRoom("buttonpressed");
-      this.addToOutput("You press the button. A low hum fills the room...");
-
-      this.resetTimeout = setTimeout(() => {
-        this.enterRoom("resetroom");
-        this.addToOutput("You're back in the reset room. The button pulses faintly.");
-        this.buttonPressCount = 0;
-      }, 6000);
-
-    } else if (this.buttonPressCount === 2) {
-      clearTimeout(this.resetTimeout);
-      this.addToOutput("⚠️ MULTIVERSE RESETTING ⚠️");
-      this.enterRoom("introreset");
-      this.buttonPressCount = 0;
-    }
-  }
-
-  output(text) {
-    this.addToOutput(text);
-  }
-
-  moveTo(roomId) {
-    this.enterRoom(roomId);
-  }
-
-  moveToDirection(dir) {
-    const room = rooms[this.currentRoom];
-    const exits = typeof room.exits === "function" ? room.exits(this) : room.exits;
-    const destination = exits?.[dir];
-
-    if (destination) {
-      this.setCurrentRoom(destination);
-      this.addToOutput(`You head ${dir} to ${destination}.`);
-    } else {
-      this.addToOutput(`You can't go ${dir} from here.`);
-    }
-  }
-
-  setFlag(flag) {
-    this.storyFlags.add(flag);
-  }
-
-  getFlag(flag) {
-    return this.storyFlags.has(flag);
-  }
-
-  hasItem(itemId) {
-    return this.inventory.includes(itemId);
-  }
-
-  addItem(itemId) {
-    if (!this.inventory.includes(itemId)) {
-      this.inventory.push(itemId);
-      this.setInventory([...this.inventory]);
-      this.addToOutput(`You picked up ${itemId}.`);
-    }
-  }
-
-  removeItem(itemId) {
-    this.inventory = this.inventory.filter((item) => item !== itemId);
-    this.setInventory([...this.inventory]);
-  }
-
-  increaseScore(points) {
-    try {
-      this.updateScore(points);
-      this.addToOutput(`🎯 Score increased by ${points}!`);
-    } catch (err) {
-      console.error("❌ Error updating score:", err);
-      this.addToOutput("⚠️ Unable to update score.");
-    }
+  /**
+   * Sends a message to the console.
+   */
+  say(message) {
+    this.addToOutput(message);
   }
 }

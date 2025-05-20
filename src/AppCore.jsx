@@ -1,105 +1,78 @@
-// AppCore.jsx
-// Core component for the Gorstan React application.
-// MIT License Copyright (c) 2025 Geoff Webster
-// Gorstan v2.1.0 – updated intro flow
+// MIT License
+// Gorstan Game v2.3.2
+// © 2025 Geoff Webster
+// AppCore.jsx – Core orchestrator for Gorstan game logic and state flow.
 
-import { useEffect, useState } from "react";
-import Game from "./components/Game";
-import ErrorBoundary from "./components/ErrorBoundary";
+import { useState, useEffect } from "react";
 import WelcomeScreen from "./components/WelcomeScreen";
 import TeletypeIntro from "./components/TeletypeIntro";
 import PlayerNameCapture from "./components/PlayerNameCapture";
-
-/**
- * Transitional splash after the player gets hit by the truck.
- */
-const SplatScreen = () => (
-  <div className="min-h-screen flex flex-col items-centre justify-centre bg-black text-green-400 font-mono space-y-4">
-    <p className="text-3xl">⚠️ SPLAT ⚠️</p>
-    <p>Multiverse rebooting...</p>
-  </div>
-);
-
-/**
- * Brief screen for the “Sip Coffee” branch before the inevitable truck.
- */
-const SipScreen = () => (
-  <div className="min-h-screen flex flex-col items-centre justify-centre bg-black text-green-400 font-mono space-y-4">
-    <p>You take a sip. It's... different.</p>
-    <p>Gorstan coffee.</p>
-  </div>
-);
+import StarterFrame from "./components/StarterFrame";
+import Game from "./components/Game";
+import SoundSystem from "./components/SoundSystem"; // NEW
+import { ResetSystem } from "./engine/resetSystem";
+import { handleIntroChoice, handleNameEntry } from "./engine/introLogic";
+import { storyProgress } from "./engine/storyProgress";
 
 export default function AppCore() {
-  // --- State Management ---
-  const [phase, setPhase] = useState("welcome"); // Current phase of the game
-  const [startingRoom, setStartingRoom] = useState("controlnexus"); // Default starting room
+  const [screen, setScreen] = useState("welcome");
   const [playerName, setPlayerName] = useState("");
+  const [startRoom, setStartRoom] = useState("controlnexus");
+  const [isMuted, setIsMuted] = useState(() => {
+    try {
+      return localStorage.getItem("muted") === "true";
+    } catch (err) {
+      return false;
+    }
+  });
+
+  const playSound = (name) => {
+    if (isMuted) return;
+    const audio = new Audio(`/sounds/${name}.mp3`);
+    audio.play().catch((e) => console.warn("🔇 Sound play failed:", e));
+  };
+
+  const toggleMute = () => {
+    const next = !isMuted;
+    setIsMuted(next);
+    try {
+      localStorage.setItem("muted", String(next));
+    } catch (_) {}
+  };
 
   useEffect(() => {
-    window.gameState = null; // Reset global game state
-  }, []);
-
-  const handleBegin = () => {
-    setPhase("nameCapture");
-  };
-
-  const handleNameEntered = (name) => {
-    if (!name || name.trim().length === 0) {
-      alert("Please enter a valid name.");
-      return;
-    }
-    setPlayerName(name.trim());
-    setPhase("intro");
-  };
-
-  const handleIntroChoice = (choice) => {
-    switch (choice) {
-      case "jump":
-        setStartingRoom("controlnexus");
-        setPhase("game");
-        break;
-      case "wait":
-        setPhase("splat");
-        setTimeout(() => {
-          setStartingRoom("introreset");
-          setPhase("game");
-        }, 2500);
-        break;
-      case "sip":
-        setPhase("sip");
-        setTimeout(() => {
-          setPhase("splat");
-          setTimeout(() => {
-            setStartingRoom("introreset");
-            setPhase("game");
-          }, 2500);
-        }, 1500);
-        break;
-      case "skip":
-        setStartingRoom("controlnexus");
-        setPhase("game");
-        break;
-      default:
-        console.warn(`Unhandled choice: ${choice}`);
-        break;
-    }
-  };
+    if (screen === "reset") ResetSystem();
+  }, [screen]);
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      {phase === "welcome" && <WelcomeScreen onBegin={handleBegin} />}
-      {phase === "nameCapture" && <PlayerNameCapture onNameEntered={handleNameEntered} />}
-      {phase === "intro" && <TeletypeIntro playerName={playerName} onChoice={handleIntroChoice} />}
-      {phase === "sip" && <SipScreen />}
-      {phase === "splat" && <SplatScreen />}
-      {phase === "game" && (
-        <ErrorBoundary>
-          <Game startRoom={startingRoom} playerName={playerName} />
-        </ErrorBoundary>
-      )}
-    </div>
+    <>
+      <SoundSystem muted={isMuted} toggleMute={toggleMute} />
+      {
+        screen === "welcome" && <WelcomeScreen onBegin={() => setScreen("name")} />
+      }
+      {
+        screen === "name" && (
+          <PlayerNameCapture
+            onNameEntered={(name) => handleNameEntry(name, setPlayerName, setScreen)}
+          />
+        )
+      }
+      {
+        screen === "intro" && (
+          <TeletypeIntro
+            playerName={playerName}
+            onChoice={(choice) => handleIntroChoice(choice, setScreen, setStartRoom)}
+          />
+        )
+      }
+      {
+        screen === "starter" && <StarterFrame onContinue={() => setScreen("game")} />
+      }
+      {
+        screen === "game" && (
+          <Game startRoom={startRoom} playerName={playerName} playSound={playSound} />
+        )
+      }
+    </>
   );
 }
-
-

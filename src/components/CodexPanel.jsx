@@ -1,6 +1,6 @@
+// Gorstan v2.2.2 – All modules validated and standardized
 import React from "react";
 import PropTypes from "prop-types";
-
 /**
  * CodexPanel Component
  * This component displays a list of codex entries, providing players with lore or important information.
@@ -15,12 +15,10 @@ export default function CodexPanel({ codex }) {
     if (!codex || !Array.isArray(codex)) {
       throw new Error("Invalid codex data. Please provide a valid array of entries.");
     }
-
     return (
       <div className="border border-green-700 p-4 rounded shadow-md bg-gray-900">
         {/* Codex Title */}
         <div className="text-white text-md font-semibold mb-2 font-sans">Codex</div>
-
         {/* Codex Entries */}
         <ul className="list-disc list-inside text-sm text-green-400">
           {codex.length > 0 ? (
@@ -48,7 +46,6 @@ export default function CodexPanel({ codex }) {
     );
   }
 }
-
 // PropTypes for type-checking
 CodexPanel.propTypes = {
   codex: PropTypes.arrayOf(

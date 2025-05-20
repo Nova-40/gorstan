@@ -1,6 +1,6 @@
+// Gorstan v2.2.2 – All modules validated and standardized
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-
 /**
  * AylaButton Component
  * This component provides a text input and button interface for the player to ask Ayla for help or advice.
@@ -12,7 +12,6 @@ import PropTypes from "prop-types";
 export default function AylaButton({ onAsk }) {
   const [query, setQuery] = useState(""); // Tracks the current query input
   const [error, setError] = useState(null); // Tracks any errors during query submission
-
   /**
    * Handles the submission of the query.
    */
@@ -29,12 +28,10 @@ export default function AylaButton({ onAsk }) {
       setError(err.message); // Display the error message to the user
     }
   };
-
   return (
     <div className="border border-green-700 p-2 rounded shadow-md bg-gray-900">
       {/* Title */}
       <div className="text-white text-md font-semibold mb-1 font-sans">Ask Ayla</div>
-
       {/* Input and Button */}
       <div className="flex gap-2">
         <input
@@ -51,13 +48,11 @@ export default function AylaButton({ onAsk }) {
   Ask
 </button>
       </div>
-
       {/* Error Message */}
       {error && <p className="text-red-500 mt-2 text-sm">{error}</p>}
     </div>
   );
 }
-
 // PropTypes for type-checking
 AylaButton.propTypes = {
   onAsk: PropTypes.func.isRequired, // Callback function triggered when the player submits a query

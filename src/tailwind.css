@@ -1,6 +1,16 @@
 /* MIT License */
 /* Copyright (c) 2025 Geoff Webster */
-/* Gorstan v2.0.0 */
+/* Gorstan v2.1.2 */
+
+/*
+  tailwind.css
+  Gorstan Tailwind & Custom Utility Stylesheet
+  Version 2.1.2
+
+  - Improved for clarity, maintainability, and accessibility.
+  - Responsive, robust, and visually consistent.
+  - All custom classes and layers are documented for intended use.
+*/
 
 /* Import custom fonts for the application */
 @import url('https://fonts.googleapis.com/css2?family=Caveat&display=swap'); /* Handwriting-style font for special effects */
@@ -10,80 +20,63 @@
 @import "tailwindcss";
 
 /* Tailwind layers AFTER imports */
-@tailwind base; /* Base styles (e.g., resets and global styles) */
-@tailwind components; /* Component-level styles */
-@tailwind utilities; /* Utility classes for rapid styling */
+@tailwind base;        /* Base styles (e.g., resets and global styles) */
+@tailwind components;  /* Component-level styles */
+@tailwind utilities;   /* Utility classes for rapid styling */
 
-/* Custom Tailwind extensions */
+/* --- Custom Tailwind Extensions --- */
 
-/* Extend the theme with custom fonts */
+/* Extend the theme with custom fonts and base styles */
 @layer base {
   body {
     font-family: 'Roboto', sans-serif; /* Default font for the application */
-    background-color: #121212; /* Dark background for better contrast */
-    color: #ffffff; /* Default text color */
+    background-color: #121212;         /* Dark background for better contrast */
+    color: #ffffff;                    /* Default text color */
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Caveat', cursive; /* Use Caveat font for headings */
+    font-family: 'Caveat', cursive;    /* Use Caveat font for headings */
   }
 }
 
-/* Custom utility classes for animations */
+/* --- Custom Utility Classes for Animations and Effects --- */
 @layer utilities {
   /* Glow effect for interactive elements */
   .glow {
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.3);
     transition: box-shadow 0.3s ease-in-out;
   }
-
-  .glow:hover {
+  .glow:hover, .glow:focus-visible {
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.7), 0 0 30px rgba(255, 255, 255, 0.5);
+    outline: none;
   }
 
   /* Fade-in animation */
   .fade-in {
     animation: fadeIn 1s ease-in-out;
   }
-
   /* Fade-out animation */
   .fade-out {
     animation: fadeOut 1s ease-in-out;
   }
-
-  /* Keyframe for fade-in */
+  /* Keyframes for fade-in and fade-out */
   @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
+    from { opacity: 0; }
+    to   { opacity: 1; }
   }
-
-  /* Keyframe for fade-out */
   @keyframes fadeOut {
-    from {
-      opacity: 1;
-    }
-    to {
-      opacity: 0;
-    }
+    from { opacity: 1; }
+    to   { opacity: 0; }
   }
 
   /* Bounce animation for special effects */
   .bounce {
     animation: bounce 1s infinite;
   }
-
   /* Keyframe for bounce */
   @keyframes bounce {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-10px); }
   }
 
   /* Custom utility for a radial gradient background */
@@ -97,23 +90,36 @@
   }
 }
 
-/* Error trapping and fallback styles */
+/* --- Error Trapping and Fallback Styles --- */
 @layer components {
   .error-message {
     background-color: #2e2e2e; /* Dark background for contrast */
-    color: #ff4d4d; /* Bright red for error text */
-    padding: 1rem; /* Add padding around the message */
-    border-radius: 8px; /* Rounded corners */
-    text-align: center; /* Center-align the message */
-    font-weight: bold; /* Emphasize the text */
+    color: #ff4d4d;            /* Bright red for error text */
+    padding: 1rem;             /* Add padding around the message */
+    border-radius: 8px;        /* Rounded corners */
+    text-align: center;        /* Center-align the message */
+    font-weight: bold;         /* Emphasize the text */
+    margin: 1rem auto;
+    max-width: 600px;
+    border: 1px solid #ff4d4d33;
   }
 
   .error-message a {
-    color: #ffffff; /* Link color in error messages */
-    text-decoration: underline; /* Underline links for clarity */
+    color: #ffffff;            /* Link color in error messages */
+    text-decoration: underline;/* Underline links for clarity */
   }
 
-  .error-message a:hover {
-    color: #ff4d4d; /* Change link color on hover */
+  .error-message a:hover,
+  .error-message a:focus-visible {
+    color: #ff4d4d;            /* Change link color on hover/focus */
+    outline: none;
+  }
+}
+
+/* --- Defensive: Accessibility and Reduced Motion --- */
+@media (prefers-reduced-motion: reduce) {
+  .fade-in, .fade-out, .bounce, .glow {
+    animation: none !important;
+    transition: none !important;
   }
 }

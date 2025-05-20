@@ -1,13 +1,10 @@
+// Gorstan v2.2.2 – All modules validated and standardized
 // /src/engine/characters/morthos.js
 // MIT License Copyright (c) 2025 Geoff Webster
-// Gorstan v2.0.0
-
 // Morthos Character Module
 // This module defines the behavior and interactions for the character Morthos.
 // Morthos is known for his sharp insults and occasional offers of cryptic help.
-
 import morthosInsultsData from '../../../public/MorthosInsults.json';
-
 // Constants for fallback messages and help responses
 const FALLBACK_INSULT = "[Morthos] (silent glare of contempt)";
 const HELP_RESPONSES = [
@@ -16,7 +13,6 @@ const HELP_RESPONSES = [
   "[Morthos] You again? Pathetic. Figure it out yourself, mortal.",
   "[Morthos] (silent disdain)",
 ];
-
 class Morthos {
   constructor() {
     try {
@@ -28,7 +24,6 @@ class Morthos {
       this.insults = []; // Fallback to an empty insults array
     }
   }
-
   /**
    * Retrieves a random insult from Morthos.
    * @returns {string} - A random insult or a default silent glare if no insults are available.
@@ -45,7 +40,6 @@ class Morthos {
       return FALLBACK_INSULT;
     }
   }
-
   /**
    * Offers cryptic help to the player.
    * The help becomes more sarcastic or dismissive after repeated requests.
@@ -62,5 +56,4 @@ class Morthos {
     }
   }
 }
-
 export default Morthos;

@@ -1,8 +1,15 @@
 // /src/engine/storyProgress.js
 // MIT License
+// Copyright (c) 2025 Geoff Webster
 // Gorstan v2.3.2 – Story Progress Tracking System
 
+/**
+ * Central tracker for narrative progress, used by engine modules.
+ * Tracks key flags, player milestones, cycles, and persistent meta states.
+ */
+
 export const storyProgress = {
+  // --- Game Phase Flags ---
   intro: {
     playerNamed: false,
     jumped: false,
@@ -11,6 +18,8 @@ export const storyProgress = {
     drankCoffee: false,
     sawLavenderRabbit: false,
   },
+
+  // --- Major Event Triggers ---
   events: {
     metChef: false,
     visitedWarehouse: false,
@@ -21,36 +30,64 @@ export const storyProgress = {
     unlockedPolly: false,
     glitchTriggered: false,
   },
-  visitedRooms: new Set(),
-  previousRoom: null,
+
+  // --- Room Memory System ---
+  visitedRooms: new Set(), // use `addRoomVisit(roomId)` utility to update
+  previousRoom: null, // for `stepback` command support
+
+  // --- Scoring and Cycles ---
   score: 0,
   resetCycles: 0,
   tunnelUnlocked: false,
   scoringDisabled: false,
+
+  // --- Traits System ---
   traits: {
     curious: false,
     ambitious: false,
-    seeker: false,
+    seeker: false, // unlocked when curious + ambitious
     cautious: false,
     glitchSensitive: false,
   },
+
+  // --- NPC Relationships ---
   npcState: {
-    Ayla: { mood: "neutral", summoned: 0, interactions: [] },
-    Polly: { suspicionLevel: 0, liedAboutTrap: false, praisedPlayer: false },
-    Morthos: { trust: 0, memory: [] },
+    Ayla: {
+      mood: "neutral",
+      summoned: 0,
+      interactions: [],
+    },
+    Polly: {
+      suspicionLevel: 0,
+      liedAboutTrap: false,
+      praisedPlayer: false,
+    },
+    Morthos: {
+      trust: 0,
+      memory: [],
+    },
   },
+
+  // --- Persistent Game State ---
   godMode: false,
   debugMode: false,
   tunnelForceUnlocked: false,
-  permanentResetDisabled: false,
+  permanentResetDisabled: false, // set true if player types "Gorstan" during countdown
+
+  // --- Mystery Trail ---
   mysteryFragmentsFound: 0,
   trailCompleted: false,
+
+  // --- Meta Inventory (retained across resets) ---
   metaInventory: [],
+
+  // --- Utility Functions ---
   addRoomVisit(roomId) {
     if (!this.visitedRooms.has(roomId)) {
       this.visitedRooms.add(roomId);
     }
   },
+
   resetProgress(keepMeta = true) {
     this.intro = {
       playerNamed: false,
@@ -88,6 +125,7 @@ export const storyProgress = {
     };
     this.tunnelUnlocked = false;
     this.permanentResetDisabled = false;
+
     if (!keepMeta) {
       this.metaInventory = [];
       this.godMode = false;

@@ -1,72 +1,35 @@
-// WelcomeScreen.jsx
-// Welcome screen for the Gorstan React application.
-// MIT License Copyright (c) 2025 Geoff Webster
-// Gorstan v2.1.1 – prop alignment update
+// /src/components/WelcomeScreen.jsx
+// MIT License © 2025 Geoff Webster
+// Welcome screen component for Gorstan
 
 import React from "react";
-import PropTypes from "prop-types";
 
-/**
- * WelcomeScreen Component
- * Displays the welcome screen for the Gorstan application.
- * Includes a button to start the intro sequence and links to external resources.
- *
- * Props:
- * - onBegin (function): Function to handle starting the intro sequence.
- */
 export default function WelcomeScreen({ onBegin }) {
-  /**
-   * Renders the links section.
-   * @returns {JSX.Element} The links section.
-   */
-  const renderLinks = () => (
-    <div className="mt-6 text-center text-sm space-y-2">
-      <p>
-        Explore the world of Gorstan in book form:
-        <a
-          href="https://www.thegorstanchronicles.com/book-showcase"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-yellow-400 underline hover:text-yellow-300 ml-1"
-        >
-          Visit the showcase
-        </a>
-      </p>
-      <p>
-        Like the game? Buy the author a coffee:
-        <a
-          href="https://www.buymeacoffee.com/gorstan"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-yellow-400 underline hover:text-yellow-300 ml-1"
-        >
-          Donate
-        </a>
-      </p>
-    </div>
-  );
+  const handleBegin = () => {
+    try {
+      if (typeof onBegin === "function") {
+        onBegin();
+      } else {
+        throw new Error("onBegin prop is not a function.");
+      }
+    } catch (err) {
+      console.error("❌ WelcomeScreen: Error in onBegin callback.", err);
+      alert("Unable to start the adventure. Please try again.");
+    }
+  };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center text-center bg-black text-white p-4">
-      <h1 className="text-4xl font-bold mb-6">Welcome to Gorstan</h1>
-      <p className="mb-8 text-center max-w-lg">
-        Embark on an interdimensional journey where every choice shapes the fate of multiple realities. Ready to begin?
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-black to-gray-900 text-white px-6 py-10">
+      <h1 className="text-4xl font-bold mb-6">🌀 Welcome to Gorstan</h1>
+      <p className="text-lg mb-8 text-center max-w-xl">
+        Reality is questionable. Coffee is warm. Step forward, if you dare...
       </p>
       <button
-        onClick={onBegin}
-        className="bg-green-700 hover:bg-green-800 text-white text-sm py-1 px-4 rounded mt-4"
-        aria-label="Begin the adventure"
+        onClick={handleBegin}
+        className="bg-green-500 hover:bg-green-600 text-black font-bold py-2 px-4 rounded shadow"
       >
         Enter Gorstan
       </button>
-
-      {/* Links Section */}
-      {renderLinks()}
     </div>
   );
 }
-
-// PropTypes for type-checking
-WelcomeScreen.propTypes = {
-  onBegin: PropTypes.func.isRequired, // Function to handle starting the intro sequence
-};

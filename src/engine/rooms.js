@@ -1,625 +1,996 @@
-// /src/engine/rooms.js
-// MIT License Copyright (c) 2025 Geoff Webster
-// Gorstan v2.1.5
-
-// Utility function for error logging
-const logError = (message, err) => console.error(`❌ ${message}`, err);
-
-// Rooms Configuration
-// This file defines the rooms in the Gorstan game world.
-// Each room includes a description, exits to other rooms, optional images, and interactive items.
-
+// Auto-generated rooms.js from spreadsheet
 export const rooms = {
-  // --- Intro Phase ---
-  introstreet1: {
-    description: "A dimly lit street stretches before you, shrouded in an eerie silence. The air hums with an unnatural energy, and shadows seem to shift just beyond your vision. You feel an unsettling presence watching you.",
-    image: "/images/introstreet1.png",
-    exits: () => ({ north: "introstreet2" }),
-    onEnter: (engine) => {
-      if (!engine || typeof engine.enterRoom !== "function") {
-        logError("Invalid engine object in introstreet1 onEnter.");
-        return;
-      }
-      console.log("✅ onEnter for introstreet1 triggered");
-      setTimeout(() => {
-        console.log("⏳ transitioning to introstreet2");
-        engine.enterRoom("introstreet2");
-      }, 4000);
-    },
-    items: null,
-  },
+  "room1": {
+  "title": "introstart",
+  "description": "introstart lies deep within Intro, a space that waits, watching, as though expecting something only you can bring.",
+  "image": "/images/introstart.png",
+  "exits": {
 
-  introstreet2: {
-    description: "The street ahead is bathed in the harsh glare of headlights. A truck barrels toward you, its horn blaring like a warning from another world. The ground trembles beneath your feet as you face a split-second decision: 'jump' or 'wait'.",
-    image: "/images/introstreet2.png",
-    onEnter: (engine) => {
-      if (!engine || typeof engine.output !== "function") {
-        logError("Invalid engine object in introstreet2 onEnter.");
-        return;
-      }
-      setTimeout(() => {
-        if (!engine.storyFlags.has("jumped") && !engine.storyFlags.has("waited")) {
-          engine.output("The truck is almost here. You need to do something!");
-        }
-      }, 3000);
-    },
-    exits: (state) => {
-      const exits = {};
-      const flags = state?.storyFlags || new Set();
-      if (flags.has("jumped")) exits.east = "introjump";
-      if (flags.has("waited")) exits.restart = "introsplat";
-      if (flags.has("secretDoorUnlocked")) exits.north = "introstreetclear";
-      return exits;
-    },
-    items: null,
   },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into introstart.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Intro",
+    "trap": false,
+    "trap_level": null,
+    "npc": null
+  }
+},
+  "room2": {
+  "title": "introjump",
+  "description": "introjump lies deep within Intro, a space that waits, watching, as though expecting something only you can bring.",
+  "image": "/images/introjump.png",
+  "exits": {
 
-  introstreetclear: {
-    description: "You find yourself in a quiet corner of the street, untouched by the chaos. The air is still, and for a moment, you feel a fleeting sense of safety. The distant hum of the city seems almost comforting.",
-    image: "/images/introstreetclear.png",
-    exits: { south: "findlaterscornercafe", north: "dalesapartment" },
-    onEnter: null,
-    items: null,
   },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into introjump.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Intro",
+    "trap": false,
+    "trap_level": null,
+    "npc": null
+  }
+},
+  "room3": {
+  "title": "introreset",
+  "description": "introreset lies deep within Intro, a space that waits, watching, as though expecting something only you can bring.",
+  "image": "/images/introreset.png",
+  "exits": {
 
-  introjump: {
-    description: "You leap into the unknown, and the world around you dissolves into a swirling vortex of light and static. Time and space blur as you fall through a portal to somewhere... else.",
-    image: "/images/introjump.png",
-    exits: { down: "controlnexus" },
-    onEnter: null,
-    items: null,
   },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into introreset.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Intro",
+    "trap": false,
+    "trap_level": null,
+    "npc": null
+  }
+},
+  "room4": {
+  "title": "introsplat",
+  "description": "introsplat lies deep within Intro, a space that waits, watching, as though expecting something only you can bring.",
+  "image": "/images/introsplat.png",
+  "exits": {
 
-  introsplat: {
-    description: "Darkness envelops you. The air is cold and still, and the only light comes from a faintly glowing terminal in the void. You feel weightless, as if suspended in nothingness.",
-    exits: { reset: "introreset" },
-    onEnter: (engine) => {
-      if (!engine || typeof engine.output !== "function") {
-        logError("Invalid engine object in introsplat onEnter.");
-        return;
-      }
-      const lines = [
-        "Reality is a construct…",
-        "Calibrating your consciousness…",
-        "Deploying the Gorstan protocol…",
-        "Warning: truck detected.",
-        "Brace for impact…",
-        "Multiverse resetting...",
-      ];
-      lines.forEach((line, i) => {
-        setTimeout(() => engine.output(line), i * 1600);
-      });
-      setTimeout(() => engine.move("reset"), lines.length * 1600 + 1000);
-    },
-    image: null,
-    items: null,
   },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into introsplat.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Intro",
+    "trap": false,
+    "trap_level": null,
+    "npc": null
+  }
+},
+  "room5": {
+  "title": "introstreet1",
+  "description": "introstreet1 lies deep within Intro, a space that waits, watching, as though expecting something only you can bring.",
+  "image": "/images/introstreet1.png",
+  "exits": {
 
-  introreset: {
-    description: "A mechanical voice echoes around you: 'Please hold on. Multiverse is now resetting...' The world flickers and shifts, as if reality itself is being rewritten.",
-    image: "/images/introreset.png",
-    exits: { enter: "controlnexus" },
-    onEnter: null,
-    items: null,
   },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into introstreet1.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Intro",
+    "trap": false,
+    "trap_level": null,
+    "npc": null
+  }
+},
+  "room6": {
+  "title": "introstreet2",
+  "description": "introstreet2 lies deep within Intro, a space that waits, watching, as though expecting something only you can bring.",
+  "image": "/images/introstreet2.png",
+  "exits": {
 
-  // --- Post Briefcase Unlock ---
-  hiddenstore: {
-    description: "You step into a forgotten shop hidden beneath Central Park. Dusty shelves are lined with strange artifacts, each radiating an aura of mystery. The air is thick with the scent of old wood and secrets.",
-    image: "/images/glitchroom.png",
-    exits: { up: "centralpark", down: "glitchrealm" },
-    onEnter: null,
-    items: null,
   },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into introstreet2.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Intro",
+    "trap": false,
+    "trap_level": null,
+    "npc": null
+  }
+},
+  "room7": {
+  "title": "introafter",
+  "description": "introafter lies deep within Intro, a space that waits, watching, as though expecting something only you can bring.",
+  "image": "/images/introstreetclear.png",
+  "exits": {
+    "north": "room"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into introafter.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Intro",
+    "trap": false,
+    "trap_level": null,
+    "npc": null
+  }
+},
+  "room8": {
+  "title": "Another Control Room",
+  "description": "Another Control Room lies deep within Off Multiverse, where the machinery of the multiverse pulses beneath the surface, humming in a language older than stars.",
+  "image": "/images/controlnexus.png",
+  "exits": {
+    "east": "room"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Another Control Room.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Off Multiverse",
+    "trap": false,
+    "trap_level": null,
+    "npc": null
+  }
+},
+  "room9": {
+  "title": "Control Room 1",
+  "description": "Control Room 1 lies deep within Off Multiverse, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
+  "image": "/images/controlnexusreturned.png",
+  "exits": {
+    "east": "room10",
+    "west": "room9",
+    "center": "room7"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Control Room 1.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Off Multiverse",
+    "trap": true,
+    "trap_level": "Easy",
+    "npc": null
+  }
+},
+  "room10": {
+  "title": "Control Room 2",
+  "description": "Control Room 2 lies deep within Off Multiverse, where the machinery of the multiverse pulses beneath the surface, humming in a language older than stars.",
+  "image": "/images/controlroom.png",
+  "exits": {
+    "west": "room10",
+    "south": "room49",
+    "center": "room7"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Control Room 2.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Off Multiverse",
+    "trap": false,
+    "trap_level": null,
+    "npc": null
+  }
+},
+  "room11": {
+  "title": "Danger - Hidden Lab",
+  "description": "Danger - Hidden Lab lies deep within Off Multiverse, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
+  "image": "/images/hiddenlab.png",
+  "exits": {
+    "up": "room",
+    "center": "room7",
+    "south": "room25"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Danger - Hidden Lab.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Off Multiverse",
+    "trap": true,
+    "trap_level": "Easy",
+    "npc": null
+  }
+},
+  "room12": {
+  "title": "Cafe office",
+  "description": "The Cafe Office retains a faint hum of normality. Chairs are askew, coffee cups cold. This is where lives used to happen\u2014until something rewrote the script.",
+  "image": "/images/cafeoffice.png",
+  "exits": {
+    "east": "room14"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Cafe office.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "London",
+    "trap": true,
+    "trap_level": "Easy",
+    "npc": null
+  }
+},
+  "room13": {
+  "title": "Dale's Apartment",
+  "description": "Dale's Apartment lies deep within London, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
+  "image": "/images/dalesapartment.png",
+  "exits": {
+    "south": "room16",
+    "north": "room14",
+    "east": "room15"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Dale's Apartment.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "London",
+    "trap": true,
+    "trap_level": "Medium",
+    "npc": null
+  }
+},
+  "room14": {
+  "title": "Findlaters Corner Coffee Shop",
+  "description": "Findlaters Corner Coffee Shop just by London Bridge, a space that waits, watching, as though expecting something only you can bring.",
+  "image": "/images/findlaterscornercafe.png",
+  "exits": {
+    "west": "room12",
+    "south": "room13",
+    "north": "room15",
+    "east": "room16"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Findlaters Corner Coffee Shop.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "London",
+    "trap": false,
+    "trap_level": null,
+    "npc": null
+  }
+},
+  "room15": {
+  "title": "St Katherines Dock",
+  "description": "St Katherines Dock lies near Tower Bridge, London, a space that waits, watching, as though expecting something only you can bring.",
+  "image": "/images/stkatherinesdock.png",
+  "exits": {
+    "portal": "room19",
+    "south": "room14",
+    "north": "room13",
+    "west": "room16"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into St Katherines Dock.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "London",
+    "trap": false,
+    "trap_level": null,
+    "npc": null
+  }
+},
+  "room16": {
+  "title": "Trent Park",
+  "description": "Trent Park stretches around you in unsettling silence. Everything here seems to wait, as if the park itself is holding its breath for your next move.",
+  "image": "/images/trentparkearth.png",
+  "exits": {
+    "east": "room15",
+    "west": "room14"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Trent Park.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "London",
+    "trap": false,
+    "trap_level": null,
+    "npc": null
+  }
+},
+  "room17": {
+  "title": "Aevira Warehouse",
+  "description": "Aevirawarehouse stretches around you in unsettling silence. Everything here seems to wait, as if the room itself is holding its breath for your next move.",
+  "image": "/images/aevirawarehouse.png",
+  "exits": {
+    "west": "room19",
+    "back": "room"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Aevira Warehouse.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "New York",
+    "trap": true,
+    "trap_level": "Medium",
+    "npc": null
+  }
+},
+  "room18": {
+  "title": "Burger Joint",
+  "description": "Burgerjoint retains a faint hum of normality. Chairs are askew, coffee cups cold. This is where lives used to happen\u2014until something rewrote the script.",
+  "image": "/images/burgerjoint.png",
+  "exits": {
+    "north": "room19",
+    "west": "room20"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Burger Joint.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "New York",
+    "trap": false,
+    "trap_level": null,
+    "npc": null
+  }
+},
+  "room19": {
+  "title": "Central Park",
+  "description": "Central Park lies deep within New York, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
+  "image": "/images/centralpark.png",
+  "exits": {
+    "portal": "room15",
+    "south": "room18",
+    "east": "room17"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Central Park.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "New York",
+    "trap": true,
+    "trap_level": "Medium",
+    "npc": null
+  }
+},
+  "room20": {
+  "title": "Store Room",
+  "description": "Store Room lies deep within New York, a space that waits, watching, as though expecting something only you can bring.",
+  "image": "/images/greasystoreroom.png",
+  "exits": {
+    "east": "room18"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Store Room.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "New York",
+    "trap": false,
+    "trap_level": null,
+    "npc": null
+  }
+},
+  "room21": {
+  "title": "Lattice",
+  "description": "Lattice lies deep within Lattice, a space that waits, watching, as though expecting something only you can bring.",
+  "image": "/images/latticeroom.png",
+  "exits": {
+    "down": "room8",
+    "up": "room19",
+    "north": "room23"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Lattice.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Lattice",
+    "trap": false,
+    "trap_level": null,
+    "npc": null
+  }
+},
+  "room22": {
+  "title": "Lattice Library",
+  "description": "Lattice Library lies deep within Lattice, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
+  "image": "/images/libraryarchivist.png",
+  "exits": {
+    "center": "room25"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Lattice Library.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Lattice",
+    "trap": true,
+    "trap_level": "Hard",
+    "npc": null
+  }
+},
+  "room23": {
+  "title": "Lattice observation entrance",
+  "description": "Lattice observation entrance lies deep within Lattice, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
+  "image": "/images/lucidveil.png",
+  "exits": {
+    "south": "room21",
+    "north": "room24"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Lattice observation entrance.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Lattice",
+    "trap": true,
+    "trap_level": "Hard",
+    "npc": null
+  }
+},
+  "room24": {
+  "title": "Lattice Observatory",
+  "description": "Lattice Observatory lies deep within Lattice, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
+  "image": "/images/observationsuite.png",
+  "exits": {
+    "center": "room22"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Lattice Observatory.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Lattice",
+    "trap": true,
+    "trap_level": "Hard",
+    "npc": null
+  }
+},
+  "room25": {
+  "title": "Libraryofnine",
+  "description": "The Libraryofnine is heavy with the scent of ink and dust. Ancient tomes line every surface, many older than this world\u2014or yours. A presence watches you, unseen but knowing.",
+  "image": null,
+  "exits": {
 
-  glitchrealm: {
-    description: "Reality feels fragile here, as if the world could shatter at any moment. The air shimmers with glitches, and the ground beneath your feet seems to flicker in and out of existence.",
-    image: "/images/glitchrealm.png",
-    onEnter: (engine) => {
-      if (!engine || typeof engine.output !== "function") {
-        logError("Invalid engine object in glitchrealm onEnter.");
-        return;
-      }
-      engine.output("You feel the world glitch around you. Something isn’t right here.");
-    },
-    exits: { up: "hiddenstore" },
-    items: null,
   },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Libraryofnine.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Lattice",
+    "trap": false,
+    "trap_level": null,
+    "npc": null
+  }
+},
+  "room26": {
+  "title": "Forgotton Chamber",
+  "description": "Forgotton Chamber lies deep within Maze, a fragmented corridor of unreliable space, shifting when unobserved.",
+  "image": "/images/forgottenchamber.png",
+  "exits": {
 
-  // --- Control Layer ---
-  controlnexus: {
-    description: "A vast control room hums with potential energy. Buttons flash in rhythmic patterns, and shimmering portals line the walls. The air is charged with the promise of infinite possibilities.",
-    image: "/images/controlnexus.png",
-    exits: { east: "controlnexusreturned" },
-    onEnter: null,
-    items: null,
   },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Forgotton Chamber.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Maze",
+    "trap": false,
+    "trap_level": "Hard",
+    "npc": null
+  }
+},
+  "room27": {
+  "title": "Maze Room",
+  "description": "Maze Room lies deep within Maze, a fragmented corridor of unreliable space, shifting when unobserved.",
+  "image": "/images/maze1.png",
+  "exits": {
 
-  hiddenlab: {
-    description: "Flickering lights illuminate scattered notes and broken equipment. This forgotten research facility feels like a place where great discoveries—and terrible mistakes—were made.",
-    image: "/images/hiddenlab.png",
-    exits: { west: "controlnexus", down: "arbitercore" },
-    onEnter: null,
-    items: null,
   },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Maze Room.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Maze",
+    "trap": false,
+    "trap_level": "Hard",
+    "npc": null
+  }
+},
+  "room28": {
+  "title": "Another Maze Room",
+  "description": "Another Maze Room lies deep within Maze, a fragmented corridor of unreliable space, shifting when unobserved.",
+  "image": "/images/maze2.png",
+  "exits": {
 
-  // --- New York Phase ---
-  centralpark: {
-    description: "An overgrown park stretches before you, its ancient benches covered in moss. Dimensional ripples shimmer in the air, hinting at the secrets hidden beneath the surface.",
-    image: "/images/centralpark.png",
-    exits: (state) => {
-      const exits = { south: "controlnexus", east: "burgerjoint", west: "aevirawarehouse" };
-      const flags = state?.storyFlags || new Set();
-      if (flags.has("coffeeThrown")) {
-        exits.down = "hiddenstore";
-      }
-      return exits;
-    },
-    onEnter: null,
-    items: null,
   },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Another Maze Room.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Maze",
+    "trap": false,
+    "trap_level": "Hard",
+    "npc": null
+  }
+},
+  "room29": {
+  "title": "Still a Maze Room",
+  "description": "Still a Maze Room lies deep within Maze, a fragmented corridor of unreliable space, shifting when unobserved.",
+  "image": "/images/maze3.png",
+  "exits": {
 
-  burgerjoint: {
-    onCommand: (cmd, engine) => {
-      const state = engine.getFlag("chefTalk") || 0;
-      if (cmd.toLowerCase().includes("talk")) {
-        if (state === 0) {
-          engine.output("The chef nods. 'Go help yourself from the store room, mate.'");
-          engine.setFlag("chefTalk", 1);
-        } else if (state === 1) {
-          engine.output("He grins. 'They're expecting you at the warehouse now.'");
-          engine.setFlag("chefTalk", 2);
-        } else {
-          engine.output("'What are you still doing here? They’re waiting.'");
-        }
-      }
-    },
-    description: "The smell of grease and burnt coffee fills the air. A chef stands behind the counter, his eyes sharp and knowing. This is no ordinary burger joint.",
-    image: "/images/burgerjoint.png",
-    onEnter: (engine) => {
-      if (!engine.storyFlags.has("chefSpoken")) {
-        engine.output("The chef eyes you. 'Can I help you with something?' he asks.");
-      }
-    },
-    exits: { west: "centralpark", storage: "greasystoreroom" },
-    items: null,
   },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Still a Maze Room.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Maze",
+    "trap": false,
+    "trap_level": "Hard",
+    "npc": null
+  }
+},
+  "room30": {
+  "title": "Polly's Room",
+  "description": "Polly's Room lies deep within Maze, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
+  "image": "/images/pollysbay.png",
+  "exits": {
+    "south": "room27",
+    "north": "room31"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Polly's Room.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Maze",
+    "trap": true,
+    "trap_level": "Very Hard",
+    "npc": null
+  }
+},
+  "room31": {
+  "title": "Ancientvault",
+  "description": "Ancientvault stretches around you in unsettling silence. Everything here seems to wait, as if the room itself is holding its breath for your next move.",
+  "image": "/images/ancientvault.png",
+  "exits": {
 
-  greasystoreroom: {
-    items: ["briefcase"],
-    description: "Shelves of junk line the walls, but among the clutter, you spot a crumpled napkin and a shiny gold coin. The air smells faintly of grease and secrets.",
-    image: "/images/greasystoreroom.png",
-    exits: { out: "burgerjoint" },
-    onEnter: null,
-    items: {
-      greasyNapkin: {
-        name: "Greasy Napkin",
-        description: "A crumpled, greasy napkin with a quantum sketch on it.",
-        canPickup: true,
-        onPickup: (engine) => {
-          if (!engine || typeof engine.output !== "function") {
-            logError("Invalid engine object in greasyNapkin onPickup.");
-            return;
-          }
-          engine.output("You pick up the napkin. It’s oddly precise.");
-        },
-      },
-      goldcoin: {
-        name: "Gold Coin",
-        description: "A shiny coin from another time.",
-        canPickup: true,
-      },
-    },
   },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Ancientvault.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Off Gorstan",
+    "trap": true,
+    "trap_level": "Very Hard",
+    "npc": null
+  }
+},
+  "room32": {
+  "title": "Arbitercore",
+  "description": "Arbitercore stretches around you in unsettling silence. Everything here seems to wait, as if the room itself is holding its breath for your next move.",
+  "image": "/images/arbitercore.png",
+  "exits": {
+    "north": "room32"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Arbitercore.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Off Gorstan",
+    "trap": true,
+    "trap_level": "Very Hard",
+    "npc": null
+  }
+},
+  "room33": {
+  "title": "Ancients Library",
+  "description": "Ancients Library lies deep within Off Gorstan, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
+  "image": "/images/hiddenlibrary.png",
+  "exits": {
+    "north": "room49"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Ancients Library.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Off Gorstan",
+    "trap": true,
+    "trap_level": "Very Hard",
+    "npc": null
+  }
+},
+  "room34": {
+  "title": "Ancients Room",
+  "description": "Ancients Room lies deep within Off Gorstan, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
+  "image": "/images/primeconfluence.png",
+  "exits": {
 
-  // --- Arbiter Phase ---
-  arbitercore: {
-    description: "A silence here cuts deep. Something dormant... judges.",
-    image: "/images/arbitercore.png",
-    onEnter: (engine) => {
-      if (!engine || typeof engine.output !== "function") {
-        logError("Invalid engine object in arbitercore onEnter.");
-        return;
-      }
-      engine.output("The Arbiter's presence is overwhelming. You feel as though you're being weighed.");
-    },
-    exits: { up: "hiddenlab" },
-    items: null,
   },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Ancients Room.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Off Gorstan",
+    "trap": true,
+    "trap_level": "Very Hard",
+    "npc": null
+  }
+},
+  "room35": {
+  "title": "Failure",
+  "description": "Failure lies deep within Glitch, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
+  "image": "/images/fallback.png",
+  "exits": {
+    "center": "room"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Failure.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Glitch",
+    "trap": true,
+    "trap_level": "Hard",
+    "npc": null
+  }
+},
+  "room36": {
+  "title": "Issues Detected",
+  "description": "Issues Detected lies deep within Glitch, a fragmented corridor of unreliable space, shifting when unobserved.",
+  "image": "/images/glitchrealm.png",
+  "exits": {
+    "south": "room35",
+    "north": "room37"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Issues Detected.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Glitch",
+    "trap": false,
+    "trap_level": null,
+    "npc": null
+  }
+},
+  "room37": {
+  "title": "More Issues",
+  "description": "More Issues lies deep within Glitch, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
+  "image": "/images/glitchroom.png",
+  "exits": {
+    "south": "room36",
+    "north": "room38"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into More Issues.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Glitch",
+    "trap": true,
+    "trap_level": "very hard",
+    "npc": null
+  }
+},
+  "room38": {
+  "title": "Glitching universe",
+  "description": "Glitching universe lies deep within Glitch, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
+  "image": "/images/hallucinationroom.png",
+  "exits": {
 
-  // --- Crossing Phase ---
-  crossing: {
-    description: "This place doesn’t belong to any one timeline. It watches you pass.",
-    image: "/images/crossing.png",
-    exits: { east: "controlnexus", west: "pollysbay" },
-    onEnter: null,
-    items: null,
   },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Glitching universe.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Glitch",
+    "trap": true,
+    "trap_level": "very hard",
+    "npc": null
+  }
+},
+  "room39": {
+  "title": "Elfhame",
+  "description": "Elfhame lies deep within Elfhame, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
+  "image": "/images/elfhame.png",
+  "exits": {
+    "north": "room",
+    "south": "room",
+    "east": "room"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Elfhame.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Elfhame",
+    "trap": true,
+    "trap_level": "special",
+    "npc": null
+  }
+},
+  "room40": {
+  "title": "Fae Lake",
+  "description": "Fae Lake lies deep within Elfhame, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
+  "image": "/images/faelake.png",
+  "exits": {
+    "north": "room41",
+    "south": "room39"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Fae Lake.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Elfhame",
+    "trap": true,
+    "trap_level": "special",
+    "npc": null
+  }
+},
+  "room41": {
+  "title": "Fae Lake north shore",
+  "description": "Fae Lake north shore lies deep within Elfhame, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
+  "image": "/images/faelake2.png",
+  "exits": {
+    "north": "room44"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Fae Lake north shore.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Elfhame",
+    "trap": true,
+    "trap_level": "special",
+    "npc": null
+  }
+},
+  "room42": {
+  "title": "Fae Palace Rhianons room",
+  "description": "Fae Palace Rhianons room lies deep within Elfhame, bathed in an enchantment too perfect to trust. Time doesn\u2019t flow here \u2014 it glides.",
+  "image": "/images/rhianonschamber.png",
+  "exits": {
+    "west": "room44"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Fae Palace Rhianons room.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Elfhame",
+    "trap": false,
+    "trap_level": null,
+    "npc": null
+  }
+},
+  "room43": {
+  "title": "Fae Palace dungeons",
+  "description": "Fae Palace dungeons lies deep within Elfhame, bathed in an enchantment too perfect to trust. Time doesn\u2019t flow here \u2014 it glides.",
+  "image": "/images/storagechamber.png",
+  "exits": {
+    "up": "room44"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Fae Palace dungeons.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Elfhame",
+    "trap": false,
+    "trap_level": null,
+    "npc": null
+  }
+},
+  "room44": {
+  "title": "Fae Palace Main Hall",
+  "description": "Fae Palace Main Hall lies deep within Elfhame, bathed in an enchantment too perfect to trust. Time doesn\u2019t flow here \u2014 it glides.",
+  "image": "/images/faepalace.png",
+  "exits": {
+    "west": "room39",
+    "south": "room41",
+    "east": "room42",
+    "down": "room"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Fae Palace Main Hall.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Elfhame",
+    "trap": false,
+    "trap_level": null,
+    "npc": null
+  }
+},
+  "room45": {
+  "title": "Carronspire",
+  "description": "Carronspire stretches around you in unsettling silence. Everything here seems to wait, as if the room itself is holding its breath for your next move.",
+  "image": "/images/carronspire.png",
+  "exits": {
+    "portal": "room",
+    "north": "room46",
+    "center": "room50"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Carronspire.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Gorstan",
+    "trap": false,
+    "trap_level": null,
+    "npc": null
+  }
+},
+  "room46": {
+  "title": "Torridon",
+  "description": "Torridon lies deep within Gorstan, a space that waits, watching, as though expecting something only you can bring.",
+  "image": "/images/torridonafter.png",
+  "exits": {
+    "north": "room14",
+    "south": "room",
+    "east": "room"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Torridon.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Gorstan",
+    "trap": false,
+    "trap_level": null,
+    "npc": null
+  }
+},
+  "room47": {
+  "title": "Torridon in the past",
+  "description": "Torridon in the past lies deep within Gorstan, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
+  "image": "/images/torridonbefore.png",
+  "exits": {
+    "north": "room14",
+    "south": "room",
+    "east": "room"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Torridon in the past.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Gorstan",
+    "trap": true,
+    "trap_level": null,
+    "npc": null
+  }
+},
+  "room48": {
+  "title": "Torridon Inn",
+  "description": "Torridon Inn lies deep within Gorstan, a space that waits, watching, as though expecting something only you can bring.",
+  "image": "/images/torridoninn.png",
+  "exits": {
+    "west": "room"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Torridon Inn.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Gorstan",
+    "trap": false,
+    "trap_level": null,
+    "npc": null
+  }
+},
+  "room49": {
+  "title": "Reset room",
+  "description": "In Resetroom, the machinery of the multiverse hums beneath your feet. A single misstep could undo timelines or birth new ones. This is not a place for idle curiosity.",
+  "image": "/images/resetroom.png",
+  "exits": {
+    "north": "room10"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Reset room.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Off Multiverse",
+    "trap": false,
+    "trap_level": null,
+    "npc": null
+  }
+},
+  "room50": {
+  "title": "prewelcome screen",
+  "description": "prewelcome screen lies deep within preWelcome, a space that waits, watching, as though expecting something only you can bring.",
+  "image": "/images/Starterframe",
+  "exits": {
 
-  pollysbay: {
-    description: "You step onto cracked tiles. The walls flicker with projection static. This is not a seaside bay, no matter what the appearance is. This place is too clean.",
-    image: "/images/pollysbay.png",
-    exits: { east: "crossing", south: "findlaterscornercafe" },
-    onEnter: null,
-    items: null,
   },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into prewelcome screen.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "preWelcome",
+    "trap": false,
+    "trap_level": null,
+    "npc": null
+  }
+},
+  "room51": {
+  "title": "Secret Tunnel",
+  "description": "Secret Tunnel lies deep within Multiple zones, a space that waits, watching, as though expecting something only you can bring.",
+  "image": "/images/secrettunnel.png",
+  "exits": {
 
-  // --- Findlaters Café Phase ---
-  findlaterscornercafe: {
-    description: "The smell of coffee and pastries fills the air. A quiet hum of conversation surrounds you.",
-    image: "/images/findlaterscornercafe.png",
-    onEnter: (engine) => {
-      if (!engine.storyFlags.has("hadFlatWhite")) {
-        engine.output("The barista smiles. 'Flat white? It's the best in town.'");
-      }
-    },
-    exits: { north: "pollysbay", west: "centralpark" },
-    items: null,
   },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Secret Tunnel.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "Multiple zones",
+    "trap": false,
+    "trap_level": "random",
+    "npc": null
+  }
+},
+  "room52": {
+  "title": "The Crossing",
+  "description": "The Crossing lies deep within internal-reset, a space that waits, watching, as though expecting something only you can bring.",
+  "image": "/images/crossing2.png",
+  "exits": {
+    "north": "room14",
+    "south": "room",
+    "east": "room"
+  },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into The Crossing.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "internal-reset",
+    "trap": false,
+    "trap_level": null,
+    "npc": null
+  }
+},
+  "room53": {
+  "title": "Stanton Harcourt",
+  "description": "Stanton Harcourt lies deep within StantonHarcourt, a space that waits, watching, as though expecting something only you can bring.",
+  "image": "/images/stantonharcourt.png",
+  "exits": {
 
-  // --- Dale's Apartment ---
-  dalesapartment: {
-    items: ["runbag"],
-    description: "A small, cluttered apartment. Papers and books are scattered everywhere.",
-    image: "/images/dalesapartment.png",
-    exits: { south: "introstreetclear" },
-    items: {
-      runbag: {
-        name: "Runbag",
-        description: "A sturdy bag filled with essentials for a quick escape.",
-        canPickup: true,
-        onPickup: (engine) => {
-          if (!engine || typeof engine.output !== "function") {
-            logError("Invalid engine object in runbag onPickup.");
-            return;
-          }
-          engine.output("You pick up the runbag. It feels like it’s been waiting for you.");
-        },
-      },
-    },
   },
-
-  // --- Observation Deck ---
-  observationdeck: {
-    description: "You peer through reinforced glass. The stars are wrong.",
-    image: "/images/observationdeck.png",
-    exits: { down: "controlnexus" },
-    onEnter: null,
-    items: null,
-  },
-
-  // --- Aevira Warehouse ---
-  aevirawarehouse: {
-    onEnter: (engine) => {
-      if (!engine.hasItem("briefcase")) {
-        engine.output("A security guard stops you. 'Oi! You ain't cleared!' He panics and pushes you back to Central Park.");
-        engine.moveTo("centralpark");
-      } else {
-        engine.output("The guards see the briefcase. 'Right this way.' You step in and feel the weight of expectation.");
-        engine.triggerBriefcasePuzzle?.();
-      }
-    },
-    description: "Stacks of crates and machinery hum faintly. This place feels abandoned, but not empty.",
-    image: "/images/aevirawarehouse.png",
-    exits: { north: "centralpark" },
-    items: {
-      faeCrownShard: {
-        name: "Fae Crown Shard",
-        description: "A shimmering fragment from a long-lost monarchy.",
-        canPickup: true,
-        onPickup: (engine) => {
-          if (!engine || typeof engine.output !== "function") {
-            logError("Invalid engine object in faeCrownShard onPickup.");
-            return;
-          }
-          engine.output("You pick up the shard. It glows faintly in your hand.");
-        },
-      },
-    },
-  },
-
-  // --- Rhiannon's Chamber ---
-  rhiannonschamber: {
-    description: "Glyphs pulse across the walls. A mirror in the centre shows not your reflection, but possibilities.",
-    image: "/images/rhiannonschamber.png",
-    exits: {},
-    onEnter: null,
-    items: null,
-  },
-
-  // --- Torridon Phase ---
-  torridonbefore: {
-    description: "The village before the storm. The air is tense with anticipation.",
-    image: "/images/torridonbefore.png",
-    exits: { east: "carronspire" },
-    onEnter: null,
-    items: null,
-  },
-  torridonafter: {
-    description: "A quiet village after the storm. The air feels heavy with loss.",
-    image: "/images/torridonafter.png",
-    exits: { west: "torridonbefore", east: "ancientvault" },
-    onEnter: null,
-    items: null,
-  },
-  torridoninn: {
-    description: "A cozy inn with a roaring fire and the smell of fresh bread.",
-    image: "/images/torridoninn.png",
-    exits: { north: "torridonbefore", south: "stkatherinesdock" },
-    onEnter: null,
-    items: null,
-  },
-
-  // --- Trent Park ---
-  trentparkearth: {
-    onCommand: (cmd, engine) => {
-      if (cmd.toLowerCase() === "sit") {
-        engine.moveTo("resetroom");
-        engine.output("You sit on the strange chair. Something hums... and the world shifts.");
-      }
-    },
-    description: "A park on Earth, filled with crows and the faint sound of distant traffic.",
-    image: "/images/trentparkearth.png",
-    exits: { north: "centralpark", south: "stkatherinesdock" },
-    onEnter: null,
-    items: null,
-  },
-
-  ancientvault: {
-    description: "You find yourself in ancientvault. The air is thick with mystery.",
-    image: "/images/ancientvault.png",
-    exits: { secret: "arbitercore" },
-    onEnter: null,
-    items: null,
-  },
-
-  cafeoffice: {
-    description: "You find yourself in cafeoffice. The air is thick with mystery.",
-    image: "/images/cafeoffice.png",
-    exits: { north: "findlaterscornercafe", secret: "torridonbefore" },
-    onEnter: null,
-    items: null,
-  },
-
-  carronspire: {
-    description: "You find yourself in carronspire. The air is thick with mystery.",
-    image: "/images/carronspire.png",
-    exits: { secret: "latticeroom" },
-    onEnter: null,
-    items: null,
-  },
-
-  controlnexusreturned: {
-    description: "You find yourself in another strange room full of ancient tech. The air is thick with mystery.",
-    image: "/images/controlnexusreturned.png",
-    exits: { west: "controlnexus", east: "controlroom" },
-    onEnter: null,
-    items: null,
-  },
-
-  controlroom: {
-    description: "You enter the control room. Lights blink in patterns you can’t decipher. Something important happened here—and may again.",
-    image: "/images/controlroom.png",
-    exits: { north: "resetroom", west: "controlnexusreturned", secret: "observationsuite" },
-    onEnter: null,
-    items: null,
-  },
-
-  crossing2: {
-    description: "You find yourself in crossing2. The air is thick with mystery.",
-    image: "/images/crossing2.png",
-    exits: { south: "centralpark" },
-    onEnter: null,
-    items: null,
-  },
-
-  elfhame: {
-    description: "This is Elfhame—where bargains are whispered, time moves sideways, and no path is ever quite the same twice.",
-    image: "/images/elfhame.png",
-    exits: { east: "faelake", south: "faelake2" },
-    onEnter: null,
-    items: null,
-  },
-
-  faelake: {
-    description: "The lake glows with an otherworldly sheen. Ripples drift across the surface without wind, as if something just slipped beneath.",
-    image: "/images/faelake.png",
-    exits: { east: "rhiannonschamber" },
-    onEnter: null,
-    items: null,
-  },
-
-  faelake2: {
-    description: "Some of the stones on the shore here seem to call your name, they want you to pick them up.",
-    image: "/images/faelake2.png",
-    exits: { west: "faelake" },
-    onEnter: null,
-    items: null,
-  },
-
-  fallback: {
-    description: "You find yourself in fallback. That means something is very wrong.",
-    image: "/images/fallback.png",
-    exits: { south: "centralpark" },
-    onEnter: null,
-    items: null,
-  },
-
-  forgottenchamber: {
-    description: "You find yourself in forgottenchamber. You can feel it sucking memories from your brain.",
-    image: "/images/forgottenchamber.png",
-    exits: { down: "maze1" },
-    onEnter: null,
-    items: null,
-  },
-
-  glitchroom: {
-    description: "You find yourself in glitchroom. Odd it doesn't seem to be working.",
-    image: "/images/glitchroom.png",
-    exits: { south: "centralpark" },
-    onEnter: null,
-    items: null,
-  },
-
-  hallucinationroom: {
-    description: "Is this room named for its concept aligned to the Beatles Lucy in the Sky song? Thats just odd!.",
-    image: "/images/hallucinationroom.png",
-    exits: { south: "centralpark" },
-    onEnter: null,
-    items: null,
-  },
-
-  hiddenlibrary: {
-    description: "You find yourself in the library. Every domain, kingdom, phylum and other taxonomy aspects, on every planet, in every multiverse, in every instance, is recorded here.",
-    image: "/images/hiddenlibrary.png",
-    exits: { east: "libraryarchivist" },
-    onEnter: null,
-    items: null,
-  },
-
-  introstart: {
-    description: "You find yourself in introstart. The air is thick with mystery.",
-    image: "/images/introstart.png",
-    exits: { south: "centralpark" },
-    onEnter: null,
-    items: null,
-  },
-
-  latticeroom: {
-    description: "You find yourself in latticeroom. The air is thick with mystery.",
-    image: "/images/latticeroom.png",
-    exits: { secret: "lucidveil" },
-    onEnter: null,
-    items: null,
-  },
-
-  libraryarchivist: {
-    description: "You find yourself in libraryarchivist. The air is thick with mystery.",
-    image: "/images/libraryarchivist.png",
-    exits: { south: "centralpark" },
-    onEnter: null,
-    items: null,
-  },
-
-  lucidveil: {
-    description: "You find yourself in lucidveil. The air is thick with mystery.",
-    image: "/images/lucidveil.png",
-    exits: { west: "stantonharcourt" },
-    onEnter: null,
-    items: null,
-  },
-
-  maze1: {
-    description: "You find yourself in maze1. The air is thick with mystery.",
-    image: "/images/maze1.png",
-    exits: { forward: "maze2", loop: "maze3" },
-    onEnter: null,
-    items: null,
-  },
-
-  maze2: {
-    description: "You find yourself in maze2. The air is thick with mystery.",
-    image: "/images/maze2.png",
-    exits: { forward: "maze3", loop: "maze1" },
-    onEnter: null,
-    items: null,
-  },
-
-  maze3: {
-    description: "You find yourself in maze3. The air is thick with mystery.",
-    image: "/images/maze3.png",
-    exits: { forward: "maze1", out1: "secrettunnel", out2: "elfhame", out3: "glitchroom" },
-    onEnter: null,
-    items: null,
-  },
-
-  observationsuite: {
-    description: "You find yourself in observationsuite. The air is thick with mystery.",
-    image: "/images/observationsuite.png",
-    exits: { east: "primeconfluence", secret: "resetroom" },
-    onEnter: null,
-    items: null,
-  },
-
-  primeconfluence: {
-    description: "You find yourself in primeconfluence. The air is thick with mystery.",
-    image: "/images/primeconfluence.png",
-    exits: {},
-    onEnter: null,
-    items: null,
-  },
-
-  resetroom: {
-    description: "Welcome to the oinously named reset room there is a chair here and a big blue button.",
-    image: "/images/resetroom.png",
-    onCommand: (cmd, engine) => {
-      if (cmd.toLowerCase() === "sit") {
-        engine.output("You sit down in the chair. Wow, that’s comfort — WHAHHT! The universe flips and you are somewhere else.");
-        engine.moveTo("trentparkearth");
-      }
-    },
-    exits: {},
-    items: null,
-  },
-
-  buttonpressed: {
-    description: "A glowing message pulses above: **DON'T PRESS THIS BUTTON AGAIN**. The room vibrates with unstable energy.",
-    image: "/images/buttonpressed_768x512.png", // adjust path if needed
-    exits: {}, // no manual exits; handled via engine logic
-    onEnter: null,
-    items: null,
-  },
-
-  rhianonschamber: {
-    description: "You find yourself in rhianonschamber. The air is thick with mystery.",
-    image: "/images/rhianonschamber.png",
-    exits: { south: "centralpark" },
-    onEnter: null,
-    items: null,
-  },
-
-  secrettunnel: {
-    description: "You find yourself in secrettunnel. The air is thick with mystery.",
-    image: "/images/secrettunnel.png",
-    exits: { exit1: "centralpark", exit2: "trentparkearth", exit3: "pollysbay", exit4: "resetroom", exit5: "elfhame", exit6: "maze1" },
-    onEnter: null,
-    items: null,
-  },
-
-  stkatherinesdock: {
-    description: "You find yourself in St. Katherine's Dock. The air is thick with mystery.",
-    image: "/images/stkatherinesdock.png",
-    exits: { west: "centralpark" },
-    onCommand: (cmd, engine) => {
-      if (cmd.toLowerCase().includes("portal")) {
-        if (engine.hasItem("runbag")) {
-          engine.output("The portal hums and opens toward Central Park.");
-          engine.moveTo("centralpark");
-        } else {
-          engine.output("The portal flickers but remains shut. Something’s missing.");
-        }
-      }
-    },
-    items: null,
-  },
-
-  storagechamber: {
-    description: "You find yourself in a storage chamber. The air is thick with mystery.",
-    image: "/images/storagechamber.png",
-    exits: { south: "centralpark" },
-    onEnter: null,
-    items: null,
-  },
-
-  // --- Additional Rooms ---
-  // Add more rooms here following the same structure
-
-  // Example:
-  // roomName: {
-  //   description: "Room description here.",
-  //   image: "/path/to/image.png",
-  //   exits: { direction: "targetRoom" },
-  //   onEnter: (engine) => { /* custom logic */ },
-  //   items: null,
-  // },
+  "items": [  ],
+  "onEnter": "(engine) => { engine.addToOutput('You step into Stanton Harcourt.'); }",
+  "onSay": null,
+  "onItemUse": null,
+  "meta": {
+    "zone": "StantonHarcourt",
+    "trap": false,
+    "trap_level": null,
+    "npc": null
+  }
+},
 };

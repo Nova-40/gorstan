@@ -1,6 +1,16 @@
 /* MIT License */
 /* Copyright (c) 2025 Geoff Webster */
-/* Gorstan v2.0.0 */
+/* Gorstan v2.1.2 */
+
+/*
+  AppCore.css
+  Gorstan Core Animation Stylesheet
+  Version 2.1.2
+
+  - Improved for clarity, maintainability, and accessibility.
+  - All animation classes are documented for intended use.
+  - Responsive and robust for a variety of UI elements.
+*/
 
 /* Keyframe animation for limited bounce effect */
 @keyframes bounceLimited {
@@ -106,7 +116,7 @@
   animation: fadeOut 1s ease-out; /* Fade out over 1 second */
 }
 
-/* Responsive design for animations */
+/* Defensive: Responsive design for animations and accessibility */
 @media (prefers-reduced-motion: reduce) {
   .splat-bounce,
   .animate-fall,
@@ -114,6 +124,15 @@
   .pulse,
   .fade-in,
   .fade-out {
-    animation: none; /* Disable animations for users who prefer reduced motion */
+    animation: none !important; /* Disable animations for users who prefer reduced motion */
   }
+}
+
+/* Error message animation (optional for future use) */
+@keyframes errorFlash {
+  0%, 100% { background-color: #2e2e2e; }
+  50% { background-color: #ff4d4d; }
+}
+.error-animate {
+  animation: errorFlash 0.8s 2;
 }

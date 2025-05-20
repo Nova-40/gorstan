@@ -1,128 +1,150 @@
 /* MIT License */
 /* Copyright (c) 2025 Geoff Webster */
-/* Gorstan v2.0.0 */
+/* Gorstan v2.1.2 */
+
+/* 
+  App.css
+  Gorstan UI Stylesheet
+  Version 2.1.2
+
+  - Improved for clarity, maintainability, and accessibility.
+  - Responsive, robust, and visually consistent.
+  - All classes and IDs are documented for intended use.
+*/
 
 /* Root container styling */
 #root {
   max-width: 1280px; /* Restrict maximum width for better readability */
   margin: 0 auto; /* Center the content horizontally */
-  padding: 2rem; /* Add padding around the content */
-  text-align: center; /* Center-align text */
-  background-color: #121212; /* Dark background for better contrast */
-  color: #ffffff; /* Default text color */
-  font-family: 'Arial', sans-serif; /* Set a clean, readable font */
+  padding: 2rem;
+  text-align: center;
+  background-color: #121212;
+  color: #fff;
+  font-family: 'Arial', sans-serif;
+  min-height: 100vh; /* Ensure full viewport height */
+  box-sizing: border-box;
 }
 
 /* Logo styling */
 .logo {
-  height: 6em; /* Set a fixed height for the logo */
-  padding: 1.5em; /* Add padding around the logo */
-  will-change: filter; /* Optimize for hover effects */
-  transition: filter 300ms ease-in-out; /* Smooth transition for hover effects */
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms ease-in-out;
+  display: inline-block;
 }
 
 /* Logo hover effect */
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa); /* Add a glowing effect */
+  filter: drop-shadow(0 0 2em #646cffaa);
 }
 
 /* React-specific logo hover effect */
 .logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa); /* React logo-specific glow */
+  filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
 /* Keyframe animation for spinning logo */
 @keyframes logo-spin {
-  from {
-    transform: rotate(0deg); /* Start at 0 degrees */
-  }
-  to {
-    transform: rotate(360deg); /* Complete a full rotation */
-  }
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
 
 /* Apply spinning animation to the second logo if motion preference allows */
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear; /* Infinite spin with a 20s duration */
+    animation: logo-spin infinite 20s linear;
   }
 }
 
 /* Card styling */
 .card {
-  padding: 2em; /* Add padding inside the card */
-  background-color: #1e1e1e; /* Dark background for the card */
-  border-radius: 8px; /* Rounded corners */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
-  transition: transform 200ms ease-in-out, box-shadow 200ms ease-in-out; /* Smooth hover effects */
+  padding: 2em;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: transform 200ms ease-in-out, box-shadow 200ms ease-in-out;
+  margin: 1.5em auto;
+  max-width: 600px;
+  word-break: break-word;
 }
 
 /* Card hover effect */
 .card:hover {
-  transform: translateY(-5px); /* Slight lift on hover */
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.3);
 }
 
 /* Documentation link styling */
 .read-the-docs {
-  color: #888; /* Subtle text color */
-  font-size: 0.9rem; /* Slightly smaller font size */
-  text-decoration: none; /* Remove underline */
-  transition: color 200ms ease-in-out; /* Smooth color transition */
+  color: #888;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: color 200ms ease-in-out;
 }
 
-/* Documentation link hover effect */
 .read-the-docs:hover {
-  color: #ffffff; /* Brighten text color on hover */
+  color: #fff;
 }
 
 /* Responsive design for smaller screens */
 @media (max-width: 768px) {
   #root {
-    padding: 1rem; /* Reduce padding for smaller screens */
+    padding: 1rem;
   }
-
   .logo {
-    height: 4em; /* Reduce logo size */
-    padding: 1em; /* Adjust padding */
+    height: 4em;
+    padding: 1em;
   }
-
   .card {
-    padding: 1.5em; /* Adjust card padding */
+    padding: 1.5em;
+    max-width: 98vw;
   }
 }
 
 /* Error message styling */
 .error-message {
-  color: #ff4d4d; /* Bright red for error text */
-  background-color: #2e2e2e; /* Dark background for contrast */
-  padding: 1rem; /* Add padding around the message */
-  border-radius: 4px; /* Rounded corners */
-  margin: 1rem 0; /* Add spacing above and below */
-  font-weight: bold; /* Emphasize the text */
-  text-align: center; /* Center-align the message */
+  color: #ff4d4d;
+  background-color: #2e2e2e;
+  padding: 1rem;
+  border-radius: 4px;
+  margin: 1rem 0;
+  font-weight: bold;
+  text-align: center;
+  border: 1px solid #ff4d4d33;
 }
 
 /* Button styling */
 .button {
-  padding: 0.75rem 1.5rem; /* Add padding for a comfortable click area */
-  background-color: #646cff; /* Primary button color */
-  color: #ffffff; /* Button text color */
-  border: none; /* Remove default border */
-  border-radius: 4px; /* Rounded corners */
-  cursor: pointer; /* Pointer cursor on hover */
-  transition: background-color 200ms ease-in-out, transform 200ms ease-in-out; /* Smooth hover effects */
+  padding: 0.75rem 1.5rem;
+  background-color: #646cff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 200ms ease-in-out, transform 200ms ease-in-out;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0.5em 0.25em;
+  outline: none;
 }
 
-/* Button hover effect */
-.button:hover {
-  background-color: #535bf2; /* Darken button color on hover */
-  transform: scale(1.05); /* Slightly enlarge button on hover */
+.button:hover,
+.button:focus-visible {
+  background-color: #535bf2;
+  transform: scale(1.05);
 }
 
 /* Disabled button styling */
 .button:disabled {
-  background-color: #444; /* Gray background for disabled state */
-  cursor: not-allowed; /* Show not-allowed cursor */
-  opacity: 0.6; /* Reduce opacity */
+  background-color: #444;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Accessibility: Focus ring for keyboard navigation */
+.button:focus-visible,
+.card:focus-visible {
+  outline: 2px solid #61dafb;
+  outline-offset: 2px;
 }
