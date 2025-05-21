@@ -1,91 +1,125 @@
-// Gorstan v2.2.2 – All modules validated and standardized
-// TeletypeIntro.jsx – Safeguarded True Teletype
-import { useEffect, useState } from "react";
+// TeletypeIntro.jsx
+// Enhanced intro sequence with teletype pacing, sound effects, and a visual timeline.
+// MIT License © 2025 Geoff Webster
+// Gorstan v2.4.2 – rich narrative moment-of-choice experience
+
+import { useEffect, useRef, useState } from "react";
+import TeletypeConsole from "./TeletypeConsole";
+import teletypeSound from "/public/intro.mp3"; // must exist
+
+const TIMEOUT_MS = 10000;
+const WARNING_MS = 7000;
+
 export default function TeletypeIntro({ playerName = "Player", onChoice }) {
-  const fullIntro = [
-    `Good day, ${playerName}...`,
-    "You’re walking home from work, coffee in hand.",
-    "The sun is setting, casting long shadows on the pavement.",
-    "You’re tired, but you’re almost home.",
-    "You take a sip of your coffee, savouring the warmth.",
-    "The world is quiet, the kind of quiet that makes you feel safe.",
-    "You think about the day’s events, the strange things you’ve seen.",
-    "A lavender rabbit with ghost-pale eyes, watching you as if it already knew the ending to your story.",
-    "The light is green.",
-    "WAIT — WHAT’S THAT?",
-    "A BIG YELLOW TRUCK barreling toward you...",
-    "Your instincts scream:"
-  ];
-  const [lineIndex, setLineIndex] = useState(0);
-  const [charIndex, setCharIndex] = useState(0);
-  const [linesShown, setLinesShown] = useState([]);
-  const [currentLine, setCurrentLine] = useState("");
+  if (typeof onChoice !== "function") {
+    console.error("TeletypeIntro: onChoice is not a function.");
+    onChoice = () => {};
+  }
+
   const [showChoices, setShowChoices] = useState(false);
+  const [showCountdown, setShowCountdown] = useState(false);
+  const [secondsLeft, setSecondsLeft] = useState((TIMEOUT_MS - WARNING_MS) / 1000);
+  const [progress, setProgress] = useState(0);
+  const audioRef = useRef(null);
+  const timerRef = useRef(null);
+  const countdownRef = useRef(null);
+  const progressRef = useRef(null);
+
   useEffect(() => {
-    if (lineIndex < fullIntro.length) {
-      const line = fullIntro[lineIndex];
-      const isEndOfLine = charIndex >= line.length;
-      const timer = setTimeout(() => {
-        if (isEndOfLine) {
-          setLinesShown((prev) => [...prev, line]);
-          setLineIndex((prev) => prev + 1);
-          setCharIndex(0);
-          setCurrentLine("");
-        } else {
-          setCurrentLine(line.slice(0, charIndex + 1));
-          setCharIndex((prev) => prev + 1);
+    // Subtle countdown warning
+    countdownRef.current = setTimeout(() => {
+      setShowCountdown(true);
+    }, WARNING_MS);
+
+    // Final timeout triggers fallback
+    timerRef.current = setTimeout(() => {
+      onChoice("wait");
+    }, TIMEOUT_MS);
+
+    // Timeline progress
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        const newVal = Math.min(prev + 100 / (TIMEOUT_MS / 100), 100);
+        return newVal;
+      });
+    }, 100);
+
+    return () => {
+      clearTimeout(timerRef.current);
+      clearTimeout(countdownRef.current);
+      clearInterval(interval);
+    };
+  }, [onChoice]);
+
+  useEffect(() => {
+    if (!showCountdown) return;
+    const int = setInterval(() => {
+      setSecondsLeft((s) => {
+        if (s <= 1) {
+          clearInterval(int);
+          return 0;
         }
-      }, 30);
-      return () => clearTimeout(timer);
-    } else if (!showChoices) {
-      const delay = setTimeout(() => {
-        setShowChoices(true);
-        const splatTimeout = setTimeout(() => {
-          localStorage.setItem("hesitated", "true");
-          onChoice("timeout");
-        }, 10000);
-        return () => clearTimeout(splatTimeout);
-      }, 800);
-      return () => clearTimeout(delay);
+        return s - 1;
+      });
+    }, 1000);
+    return () => clearInterval(int);
+  }, [showCountdown]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = 0.15;
+      audioRef.current.loop = true;
+      audioRef.current.play().catch(() => {});
     }
-  }, [charIndex, lineIndex, showChoices]);
+  }, []);
+
+  function handleClick(choice) {
+    clearTimeout(timerRef.current);
+    clearTimeout(countdownRef.current);
+    onChoice(choice);
+  }
+
   return (
-    <div className="p-6 font-mono text-green-400 space-y-1" role="dialog" aria-label="Intro">
-      {linesShown.map((line, i) => (
-        <p key={i}>{line}</p>
-      ))}
-      {!showChoices && (
-        <>
-          <p>{currentLine}</p>
-          {linesShown.length === 0 && currentLine && (
-            <div className="mt-4">
-              <button
-                onClick={() => {
-                  setLinesShown([...fullIntro]);
-                  setLineIndex(fullIntro.length);
-                  setShowChoices(true);
-                }}
-                className="bg-gray-700 px-4 py-2 rounded text-white hover:bg-gray-600"
-              >
-                Skip Intro
-              </button>
-            </div>
-          )}
-        </>
-      )}
+    <div className="space-y-6">
+      <audio ref={audioRef} src={teletypeSound} preload="auto" />
+      <TeletypeConsole
+        textLines={[
+          `Good day, ${playerName}.`,
+          "You hear your own breath. It's too loud.",
+          "The air tingles with static.",
+          "You clutch your Gorstan coffee. It's warm. Familiar.",
+          "You stand at the kerb.",
+          "Something is wrong.",
+          "A BIG YELLOW TRUCK hurtles toward you.",
+          "Time stretches like rubber.",
+          "You smell ozone. A bell chimes...",
+          "Your instincts scream:",
+          "⏳ Choose — now."
+        ]}
+        charDelay={50}
+        onCompleteLastLine={() => setShowChoices(true)}
+      />
+
       {showChoices && (
-        <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:gap-4">
-          <button onClick={() => onChoice("jump")} className="bg-green-700 px-4 py-2 rounded text-white hover:bg-green-600">
-            Jump
-          </button>
-          <button onClick={() => onChoice("wait")} className="bg-yellow-600 px-4 py-2 rounded text-white hover:bg-yellow-500">
-            Wait
-          </button>
-          <button onClick={() => onChoice("sip")} className="bg-blue-600 px-4 py-2 rounded text-white hover:bg-blue-500">
-            Sip Coffee
-          </button>
+        <div className="flex flex-col items-start gap-3">
+          <button onClick={() => handleClick("jump")} className="btn-primary">Jump</button>
+          <button onClick={() => handleClick("wait")} className="btn-secondary">Wait</button>
+          <button onClick={() => handleClick("sipcoffee")} className="btn-accent">Sip Coffee</button>
         </div>
       )}
+
+      {showCountdown && (
+        <p className="text-yellow-400 font-mono text-sm mt-4">
+          ⏳ Make your choice... {secondsLeft}s
+        </p>
+      )}
+
+      <div className="mt-4 w-full max-w-lg h-2 bg-gray-800 rounded overflow-hidden">
+        <div
+          className="h-full bg-yellow-400 transition-all duration-100 ease-linear"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
     </div>
   );
 }
