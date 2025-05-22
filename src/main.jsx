@@ -11,6 +11,8 @@ import "./tailwind.css"; // Global styles (e.g., Tailwind CSS or custom styles)
  * Ensures the root element exists and handles errors gracefully.
  * All errors are trapped and reported for robust integration.
  */
+
+const fallbackMessage = "Something went wrong while loading the Gorstan application.";
 const rootElement = document.getElementById("root");
 if (!rootElement) {
   // Log an error and stop rendering if the root element is missing
@@ -51,3 +53,5 @@ if (!rootElement) {
     `;
   }
 }
+
+export default { rootElement, fallbackMessage };

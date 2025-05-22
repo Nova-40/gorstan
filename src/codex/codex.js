@@ -38,3 +38,5 @@ export function unlock(id) {
 export function getDiscovered() {
   return Object.values(codexEntries).filter(e => e.discovered);
 }
+
+export default { codexEntries };

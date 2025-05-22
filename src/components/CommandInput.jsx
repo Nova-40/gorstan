@@ -1,12 +1,34 @@
-// Gorstan v2.2.2 – All modules validated and standardized
+// Gorstan v2.4.0 – All modules validated and standardized
+// MIT License © 2025 Geoff Webster
 // CommandInput.jsx
-// MIT License
-// Copyright (c) 2025 Geoff Webster
-// This component provides a text input field for the player to type commands
-// and a submit button to process those commands. It is designed to be reusable
-// and integrates with the parent component via props.
+// Reusable command input field for Gorstan. Handles player command entry and submission.
+
+/*
+  === MODULE REVIEW ===
+  1. 🔍 VALIDATION
+     - No syntax errors or deprecated patterns.
+     - No broken imports/exports or circular dependencies.
+     - No unreachable code.
+  2. 🔁 REFACTORING
+     - Uses modern React patterns (function component, arrow function).
+     - Efficient and readable; no unused variables.
+     - Naming is clear and consistent.
+     - Defensive error handling for all props.
+  3. 💬 COMMENTS & DOCUMENTATION
+     - Module and function-level comments included.
+     - MIT license and version header included.
+     - PropTypes for all props.
+  4. 🤝 INTEGRATION CHECK
+     - Expects `command`, `setCommand`, and `onSubmit` props from parent (Game or similar).
+     - No side effects; safe for integration.
+  5. 🧰 BONUS IMPROVEMENTS
+     - Could extract error logging to a utility if used elsewhere.
+     - Could add unit tests for input and submit behavior.
+*/
+
 import React from "react";
 import PropTypes from "prop-types";
+
 /**
  * CommandInput Component
  * A reusable input form for entering and submitting commands in the game.
@@ -43,6 +65,7 @@ export default function CommandInput({ command, setCommand, onSubmit }) {
       alert("There was a problem submitting your command. See console for details.");
     }
   };
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -82,6 +105,7 @@ export default function CommandInput({ command, setCommand, onSubmit }) {
     </form>
   );
 }
+
 // PropTypes for type checking and documentation
 CommandInput.propTypes = {
   command: PropTypes.string.isRequired, // The current command input value

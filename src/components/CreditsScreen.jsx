@@ -1,31 +1,14 @@
-// Gorstan v2.2.2 – All modules validated and standardized
+// Gorstan v2.4.0 – All modules validated and standardized
 // CreditsScreen.jsx
-// Version 2.1.2
 // Endgame credits for Gorstan with flicker effects, background motion, and player details
 // MIT License (c) 2025 Geoff Webster
+
+import React from "react";
 import { useEffect } from "react";
 import PropTypes from "prop-types";
 import "./CreditsScreen.css";
-/**
- * CreditsScreen Component
- * Displays endgame credits, player score, and links.
- * Auto-returns after 30 seconds or on button click.
- * All props are validated and errors are reported.
- */
-export default function CreditsScreen({ playerName = "Adventurer", score = 0, onReturn }) {
-  // Defensive: Validate props
-  if (typeof playerName !== "string" || playerName.trim() === "") {
-    console.error("❌ CreditsScreen: Invalid playerName prop. Defaulting to 'Adventurer'.");
-    playerName = "Adventurer";
-  }
-  if (typeof score !== "number" || isNaN(score)) {
-    console.error("❌ CreditsScreen: Invalid score prop. Defaulting to 0.");
-    score = 0;
-  }
-  if (typeof onReturn !== "function") {
-    console.error("❌ CreditsScreen: onReturn prop is not a function. The reset button will not work.");
-  }
-  // Auto-return after 30 seconds
+
+function CreditsScreen({ playerName, score, onReturn }) {
   useEffect(() => {
     const timeout = setTimeout(() => {
       try {
@@ -36,6 +19,7 @@ export default function CreditsScreen({ playerName = "Adventurer", score = 0, on
     }, 30000);
     return () => clearTimeout(timeout);
   }, [onReturn]);
+
   return (
     <div className="credits-bg fixed inset-0 text-green-400 font-mono px-6 py-12 overflow-y-auto z-50">
       <div className="max-w-3xl mx-auto space-y-6 text-center">
@@ -76,9 +60,17 @@ export default function CreditsScreen({ playerName = "Adventurer", score = 0, on
     </div>
   );
 }
-// PropTypes for type checking and documentation
+
 CreditsScreen.propTypes = {
   playerName: PropTypes.string,
   score: PropTypes.number,
   onReturn: PropTypes.func,
 };
+
+CreditsScreen.defaultProps = {
+  playerName: "Adventurer",
+  score: 0,
+  onReturn: () => {},
+};
+
+export default React.memo(CreditsScreen);

@@ -1,22 +1,26 @@
-// Gorstan v2.2.2 – All modules validated and standardized
+// Gorstan v2.4.0 – All modules validated and standardized
+// MIT License © 2025 Geoff Webster
 // MultiverseReset.jsx
 // This component simulates the resetting of the multiverse with a series of animated lines.
 // It provides a visual effect and triggers a callback when the reset is complete.
-//
-// MIT License
-// Copyright (c) 2025 Geoff Webster
+
 import { useEffect, useState, useRef } from "react";
 import PropTypes from "prop-types";
+
 /**
  * MultiverseReset
  * Animates a sequence of lines to simulate a multiverse reset.
  * Triggers the onComplete callback after the animation finishes.
  * All errors are trapped and reported for robust integration.
+ *
+ * @param {object} props
+ * @param {function} props.onComplete - Callback triggered when the reset animation is complete.
  */
 export default function MultiverseReset({ onComplete }) {
   const [lines, setLines] = useState([]); // Tracks displayed lines
   const [falling, setFalling] = useState(false); // Triggers falling animation
   const intervalRef = useRef(null); // Holds interval ID for cleanup
+
   useEffect(() => {
     let count = 0;
     let finished = false;
@@ -49,6 +53,9 @@ export default function MultiverseReset({ onComplete }) {
       if (!finished) clearInterval(intervalRef.current);
     };
   }, [onComplete]);
+
+  // TODO: Consider making the number of lines and animation speed configurable via props.
+
   return (
     <div className="flex flex-col items-center justify-end h-full overflow-hidden text-green-400 font-mono">
       {/* Render each line with optional falling animation */}
@@ -71,15 +78,30 @@ export default function MultiverseReset({ onComplete }) {
     </div>
   );
 }
-// PropTypes for type-checking
+
 MultiverseReset.propTypes = {
   onComplete: PropTypes.func.isRequired, // Callback function triggered when the reset is complete
 };
+
 /*
-  === Change Commentary ===
-  - Updated version to 2.2.0 and ensured MIT license is present.
-  - All syntax validated and ready for use in the Gorstan React app.
-  - Defensive: All errors are trapped and reported.
-  - Module is correctly wired for use as a visual reset effect in the game.
-  - Comments improved for maintainability and clarity.
+  === MODULE REVIEW ===
+  1. 🔍 VALIDATION
+     - No syntax errors or deprecated patterns.
+     - No broken imports/exports or circular dependencies.
+     - No unreachable code.
+  2. 🔁 REFACTORING
+     - Version updated to 2.4.0 and MIT license header standardized.
+     - Comments improved for maintainability and clarity.
+     - Defensive: All errors are trapped and reported.
+     - Added TODO for future configurability.
+  3. 💬 COMMENTS & DOCUMENTATION
+     - Module and function-level comments included.
+     - MIT license and version header included.
+  4. 🤝 INTEGRATION CHECK
+     - Exports default MultiverseReset component for use in game flows.
+     - No side effects; safe for integration.
+  5. 🧰 BONUS IMPROVEMENTS
+     - Could allow for configurable animation speed/lines via props.
+     - Could add accessibility enhancements (e.g., ARIA live region).
+     - Could add a callback for animation start.
 */

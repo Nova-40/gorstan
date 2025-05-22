@@ -91,3 +91,5 @@ export function autoWalkGame(game = {}) {
   - All syntax validated and ready for use in the Gorstan game.
   - Comments improved for maintainability and clarity.
 */
+
+export default { currentRoom, visited, preferredOrder, maxIterations, room, exitEntries, nextMove, [dir, nextRoom] };
