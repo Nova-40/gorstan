@@ -16,8 +16,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Caveat&display=swap'); /* Handwriting-style font for special effects */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap'); /* Clean, modern font for general text */
 
-/* Import TailwindCSS core */
-@import "tailwindcss";
 
 /* Tailwind layers AFTER imports */
 @tailwind base;        /* Base styles (e.g., resets and global styles) */

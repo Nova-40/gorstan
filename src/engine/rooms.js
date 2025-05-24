@@ -1,1081 +1,696 @@
-// Gorstan v2.4.0 – All modules validated and standardized
-// MIT License © 2025 Geoff Webster
-// rooms.js – Auto-generated room definitions for Gorstan
-// Provides room metadata, descriptions, exits, and event hooks for the game engine.
-
-/*
-  === MODULE REVIEW ===
-  1. 🔍 VALIDATION
-     - No syntax errors or deprecated patterns.
-     - No broken imports/exports or circular dependencies.
-     - No unreachable code.
-     - All room objects are valid JS objects.
-     - All event hooks are present as stringified functions (see below for improvement).
-  2. 🔁 REFACTORING
-     - Consider converting stringified functions (e.g., "onEnter": "(engine) => {...}") to actual functions for runtime safety and maintainability.
-     - Room keys and structure are consistent.
-     - Naming conventions are clear and descriptive.
-     - No unused variables or unreachable code.
-  3. 💬 COMMENTS & DOCUMENTATION
-     - Module-level and property-level comments added.
-     - MIT license and version header included.
-  4. 🤝 INTEGRATION CHECK
-     - Exports a single `rooms` object for use in the engine.
-     - Room event hooks (onEnter, onSay, onItemUse) are expected to be parsed or replaced at runtime.
-     - Room meta fields are consistent for engine logic.
-  5. 🧰 BONUS IMPROVEMENTS
-     - Utility: Add a function to convert stringified event handlers to real functions at runtime.
-     - Utility: Add a function to get all rooms in a given zone or with a given property.
-     - Performance: Consider lazy-loading room descriptions or images for very large worlds.
-     - Testing: Add unit tests to validate room structure and event handler parsing.
-     - Error Handling: Add validation to ensure all exits point to valid room keys.
-
-  === TODO ===
-  - [ ] If not already handled elsewhere, add a loader that parses stringified event handlers into executable functions.
-  - [ ] Add a validator utility to check for orphaned exits or missing images.
-  - [ ] Add a function to retrieve all rooms by zone or trap level for UI/analytics.
-*/
-
-// Utility: Convert stringified event handlers to real functions (call after import if needed)
-export function parseRoomEventHandlers(roomsObj) {
-  for (const key in roomsObj) {
-    const room = roomsObj[key];
-    ["onEnter", "onSay", "onItemUse"].forEach(fnKey => {
-      if (typeof room[fnKey] === "string" && room[fnKey].startsWith("(")) {
-        try {
-          // eslint-disable-next-line no-eval
-          room[fnKey] = eval(room[fnKey]);
-        } catch (err) {
-          console.warn(`rooms.js: Failed to parse ${fnKey} for room "${key}":`, err);
-          room[fnKey] = null;
-        }
-      }
-    });
-  }
-  return roomsObj;
-}
-
-// Utility: Get all rooms in a given zone
-export function getRoomsByZone(zone) {
-  return Object.values(rooms).filter(room => room.meta?.zone === zone);
-}
-
-// Utility: Validate all exits point to valid rooms
-export function validateRoomExits(roomsObj) {
-  const keys = new Set(Object.keys(roomsObj));
-  const errors = [];
-  for (const [roomKey, room] of Object.entries(roomsObj)) {
-    for (const exit of Object.values(room.exits || {})) {
-      if (!keys.has(exit)) {
-        errors.push(`Room "${roomKey}" has exit to missing room "${exit}"`);
-      }
-    }
-  }
-  return errors;
-}
-
-// Export the rooms object (auto-generated)
 export const rooms = {
-  "room1": {
-  "title": "introstart",
-  "description": "introstart lies deep within Intro, a space that waits, watching, as though expecting something only you can bring.",
-  "image": "/images/introstart.png",
-  "exits": {
-
-  },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into introstart.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "1": {
+    "id": 1,
+    "title": "introstart",
     "zone": "Intro",
+    "zoneNumber": 1,
     "trap": false,
-    "trap_level": null,
-    "npc": null
-  }
-},
-  "room2": {
-  "title": "introjump",
-  "description": "introjump lies deep within Intro, a space that waits, watching, as though expecting something only you can bring.",
-  "image": "/images/introjump.png",
-  "exits": {
-
+    "trapLevel": null,
+    "npc": null,
+    "image": "/images/introstart.png",
+    "description": "introstart hums with the tension of impending choice. You sense your path diverging before your feet even move.",
+    "exits": {}
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into introjump.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "2": {
+    "id": 2,
+    "title": "introjump",
     "zone": "Intro",
+    "zoneNumber": 1,
     "trap": false,
-    "trap_level": null,
-    "npc": null
-  }
-},
-  "room3": {
-  "title": "introreset",
-  "description": "introreset lies deep within Intro, a space that waits, watching, as though expecting something only you can bring.",
-  "image": "/images/introreset.png",
-  "exits": {
-
+    "trapLevel": null,
+    "npc": null,
+    "image": "/images/introjump.png",
+    "description": "introjump hums with the tension of impending choice. You sense your path diverging before your feet even move.",
+    "exits": {}
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into introreset.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "3": {
+    "id": 3,
+    "title": "introreset",
     "zone": "Intro",
+    "zoneNumber": 1,
     "trap": false,
-    "trap_level": null,
-    "npc": null
-  }
-},
-  "room4": {
-  "title": "introsplat",
-  "description": "introsplat lies deep within Intro, a space that waits, watching, as though expecting something only you can bring.",
-  "image": "/images/introsplat.png",
-  "exits": {
-
+    "trapLevel": null,
+    "npc": null,
+    "image": "/images/introreset.png",
+    "description": "introreset hums with the tension of impending choice. You sense your path diverging before your feet even move.",
+    "exits": {}
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into introsplat.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "4": {
+    "id": 4,
+    "title": "introsplat",
     "zone": "Intro",
+    "zoneNumber": 1,
     "trap": false,
-    "trap_level": null,
-    "npc": null
-  }
-},
-  "room5": {
-  "title": "introstreet1",
-  "description": "introstreet1 lies deep within Intro, a space that waits, watching, as though expecting something only you can bring.",
-  "image": "/images/introstreet1.png",
-  "exits": {
-
+    "trapLevel": null,
+    "npc": null,
+    "image": "/images/introsplat.png",
+    "description": "introsplat hums with the tension of impending choice. You sense your path diverging before your feet even move.",
+    "exits": {}
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into introstreet1.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "5": {
+    "id": 5,
+    "title": "introstreet1",
     "zone": "Intro",
+    "zoneNumber": 1,
     "trap": false,
-    "trap_level": null,
-    "npc": null
-  }
-},
-  "room6": {
-  "title": "introstreet2",
-  "description": "introstreet2 lies deep within Intro, a space that waits, watching, as though expecting something only you can bring.",
-  "image": "/images/introstreet2.png",
-  "exits": {
-
+    "trapLevel": null,
+    "npc": null,
+    "image": "/images/introstreet1.png",
+    "description": "introstreet1 hums with the tension of impending choice. You sense your path diverging before your feet even move.",
+    "exits": {}
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into introstreet2.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "6": {
+    "id": 6,
+    "title": "introstreet2",
     "zone": "Intro",
+    "zoneNumber": 1,
     "trap": false,
-    "trap_level": null,
-    "npc": null
-  }
-},
-  "room7": {
-  "title": "introafter",
-  "description": "introafter lies deep within Intro, a space that waits, watching, as though expecting something only you can bring.",
-  "image": "/images/introstreetclear.png",
-  "exits": {
-    "north": "room"
+    "trapLevel": null,
+    "npc": null,
+    "image": "/images/introstreet2.png",
+    "description": "introstreet2 hums with the tension of impending choice. You sense your path diverging before your feet even move.",
+    "exits": {}
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into introafter.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "7": {
+    "id": 7,
+    "title": "introafter",
     "zone": "Intro",
+    "zoneNumber": 1,
     "trap": false,
-    "trap_level": null,
-    "npc": null
-  }
-},
-  "room8": {
-  "title": "Another Control Room",
-  "description": "Another Control Room lies deep within Off Multiverse, where the machinery of the multiverse pulses beneath the surface, humming in a language older than stars.",
-  "image": "/images/controlnexus.png",
-  "exits": {
-    "east": "room"
+    "trapLevel": null,
+    "npc": null,
+    "image": "/images/introstreetclear.png",
+    "description": "introafter hums with the tension of impending choice. You sense your path diverging before your feet even move.",
+    "exits": {}
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Another Control Room.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "8": {
+    "id": 8,
+    "title": "Another Control Room",
     "zone": "Off Multiverse",
+    "zoneNumber": 2,
     "trap": false,
-    "trap_level": null,
-    "npc": null
-  }
-},
-  "room9": {
-  "title": "Control Room 1",
-  "description": "Control Room 1 lies deep within Off Multiverse, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
-  "image": "/images/controlnexusreturned.png",
-  "exits": {
-    "east": "room10",
-    "west": "room9",
-    "center": "room7"
+    "trapLevel": null,
+    "npc": null,
+    "image": "/images/controlnexus.png",
+    "description": "Another Control Room bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {}
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Control Room 1.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "9": {
+    "id": 9,
+    "title": "Control Room 1",
     "zone": "Off Multiverse",
+    "zoneNumber": 2,
     "trap": true,
-    "trap_level": "Easy",
-    "npc": null
-  }
-},
-  "room10": {
-  "title": "Control Room 2",
-  "description": "Control Room 2 lies deep within Off Multiverse, where the machinery of the multiverse pulses beneath the surface, humming in a language older than stars.",
-  "image": "/images/controlroom.png",
-  "exits": {
-    "west": "room10",
-    "south": "room49",
-    "center": "room7"
+    "trapLevel": "Easy",
+    "npc": null,
+    "image": "/images/controlnexusreturned.png",
+    "description": "Control Room 1 bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {
+      "E": 10
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Control Room 2.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "10": {
+    "id": 10,
+    "title": "Control Room 2",
     "zone": "Off Multiverse",
+    "zoneNumber": 2,
     "trap": false,
-    "trap_level": null,
-    "npc": null
-  }
-},
-  "room11": {
-  "title": "Danger - Hidden Lab",
-  "description": "Danger - Hidden Lab lies deep within Off Multiverse, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
-  "image": "/images/hiddenlab.png",
-  "exits": {
-    "up": "room",
-    "center": "room7",
-    "south": "room25"
+    "trapLevel": null,
+    "npc": null,
+    "image": "/images/controlroom.png",
+    "description": "Control Room 2 bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {
+      "W": 10
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Danger - Hidden Lab.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "11": {
+    "id": 11,
+    "title": "Danger - Hidden Lab",
     "zone": "Off Multiverse",
+    "zoneNumber": 2,
     "trap": true,
-    "trap_level": "Easy",
-    "npc": null
-  }
-},
-  "room12": {
-  "title": "Cafe office",
-  "description": "The Cafe Office retains a faint hum of normality. Chairs are askew, coffee cups cold. This is where lives used to happen\u2014until something rewrote the script.",
-  "image": "/images/cafeoffice.png",
-  "exits": {
-    "east": "room14"
+    "trapLevel": "Easy",
+    "npc": null,
+    "image": "/images/hiddenlab.png",
+    "description": "Danger - Hidden Lab bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {}
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Cafe office.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "12": {
+    "id": 12,
+    "title": "Caf\u00e9 office",
     "zone": "London",
+    "zoneNumber": 3,
     "trap": true,
-    "trap_level": "Easy",
-    "npc": null
-  }
-},
-  "room13": {
-  "title": "Dale's Apartment",
-  "description": "Dale's Apartment lies deep within London, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
-  "image": "/images/dalesapartment.png",
-  "exits": {
-    "south": "room16",
-    "north": "room14",
-    "east": "room15"
+    "trapLevel": "Easy",
+    "npc": null,
+    "image": "/images/cafeoffice.png",
+    "description": "Caf\u00e9 office stands skewed in time, touched by both the familiar hum of the city and something foreign \u2014 folded and spliced into place.",
+    "exits": {
+      "E": 14
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Dale's Apartment.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "13": {
+    "id": 13,
+    "title": "Dale's Apartment ",
     "zone": "London",
+    "zoneNumber": 3,
     "trap": true,
-    "trap_level": "Medium",
-    "npc": null
-  }
-},
-  "room14": {
-  "title": "Findlaters Corner Coffee Shop",
-  "description": "Findlaters Corner Coffee Shop just by London Bridge, a space that waits, watching, as though expecting something only you can bring.",
-  "image": "/images/findlaterscornercafe.png",
-  "exits": {
-    "west": "room12",
-    "south": "room13",
-    "north": "room15",
-    "east": "room16"
+    "trapLevel": "Medium",
+    "npc": "Polly",
+    "image": "/images/dalesapartment.png",
+    "description": "Dale's Apartment stands skewed in time, touched by both the familiar hum of the city and something foreign \u2014 folded and spliced into place.",
+    "exits": {
+      "S": 16
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Findlaters Corner Coffee Shop.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "14": {
+    "id": 14,
+    "title": "Findlaters Corner Coffee Shop",
     "zone": "London",
+    "zoneNumber": 3,
     "trap": false,
-    "trap_level": null,
-    "npc": null
-  }
-},
-  "room15": {
-  "title": "St Katherines Dock",
-  "description": "St Katherines Dock lies near Tower Bridge, London, a space that waits, watching, as though expecting something only you can bring.",
-  "image": "/images/stkatherinesdock.png",
-  "exits": {
-    "portal": "room19",
-    "south": "room14",
-    "north": "room13",
-    "west": "room16"
+    "trapLevel": null,
+    "npc": null,
+    "image": "/images/findlaterscornercafe.png",
+    "description": "Findlaters Corner Coffee Shop stands skewed in time, touched by both the familiar hum of the city and something foreign \u2014 folded and spliced into place.",
+    "exits": {
+      "W": 12
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into St Katherines Dock.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "15": {
+    "id": 15,
+    "title": "St Katherines Dock",
     "zone": "London",
+    "zoneNumber": 3,
     "trap": false,
-    "trap_level": null,
-    "npc": null
-  }
-},
-  "room16": {
-  "title": "Trent Park",
-  "description": "Trent Park stretches around you in unsettling silence. Everything here seems to wait, as if the park itself is holding its breath for your next move.",
-  "image": "/images/trentparkearth.png",
-  "exits": {
-    "east": "room15",
-    "west": "room14"
+    "trapLevel": null,
+    "npc": "Al, Morthos",
+    "image": "/images/stkatherinesdock.png",
+    "description": "St Katherines Dock stands skewed in time, touched by both the familiar hum of the city and something foreign \u2014 folded and spliced into place.",
+    "exits": {
+      "P": 19
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Trent Park.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "16": {
+    "id": 16,
+    "title": "Trent Park",
     "zone": "London",
+    "zoneNumber": 3,
     "trap": false,
-    "trap_level": null,
-    "npc": null
-  }
-},
-  "room17": {
-  "title": "Aevira Warehouse",
-  "description": "Aevirawarehouse stretches around you in unsettling silence. Everything here seems to wait, as if the room itself is holding its breath for your next move.",
-  "image": "/images/aevirawarehouse.png",
-  "exits": {
-    "west": "room19",
-    "back": "room"
+    "trapLevel": null,
+    "npc": "Al",
+    "image": "/images/trentparkearth.png",
+    "description": "Trent Park stands skewed in time, touched by both the familiar hum of the city and something foreign \u2014 folded and spliced into place.",
+    "exits": {}
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Aevira Warehouse.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "17": {
+    "id": 17,
+    "title": "Aevira Warehouse",
     "zone": "New York",
+    "zoneNumber": 4,
     "trap": true,
-    "trap_level": "Medium",
-    "npc": null
-  }
-},
-  "room18": {
-  "title": "Burger Joint",
-  "description": "Burgerjoint retains a faint hum of normality. Chairs are askew, coffee cups cold. This is where lives used to happen\u2014until something rewrote the script.",
-  "image": "/images/burgerjoint.png",
-  "exits": {
-    "north": "room19",
-    "west": "room20"
+    "trapLevel": "Medium",
+    "npc": null,
+    "image": "/images/aevirawarehouse.png",
+    "description": "Aevira Warehouse bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {
+      "W": 19
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Burger Joint.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "18": {
+    "id": 18,
+    "title": "Burger Joint",
     "zone": "New York",
+    "zoneNumber": 4,
     "trap": false,
-    "trap_level": null,
-    "npc": null
-  }
-},
-  "room19": {
-  "title": "Central Park",
-  "description": "Central Park lies deep within New York, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
-  "image": "/images/centralpark.png",
-  "exits": {
-    "portal": "room15",
-    "south": "room18",
-    "east": "room17"
+    "trapLevel": null,
+    "npc": "Chef",
+    "image": "/images/burgerjoint.png",
+    "description": "Burger Joint bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {
+      "N": 19
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Central Park.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "19": {
+    "id": 19,
+    "title": "Central Park",
     "zone": "New York",
+    "zoneNumber": 4,
     "trap": true,
-    "trap_level": "Medium",
-    "npc": null
-  }
-},
-  "room20": {
-  "title": "Store Room",
-  "description": "Store Room lies deep within New York, a space that waits, watching, as though expecting something only you can bring.",
-  "image": "/images/greasystoreroom.png",
-  "exits": {
-    "east": "room18"
+    "trapLevel": "Medium",
+    "npc": null,
+    "image": "/images/centralpark.png",
+    "description": "Central Park bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {
+      "P": 15
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Store Room.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "20": {
+    "id": 20,
+    "title": "Store Room",
     "zone": "New York",
+    "zoneNumber": 4,
     "trap": false,
-    "trap_level": null,
-    "npc": null
-  }
-},
-  "room21": {
-  "title": "Lattice",
-  "description": "Lattice lies deep within Lattice, a space that waits, watching, as though expecting something only you can bring.",
-  "image": "/images/latticeroom.png",
-  "exits": {
-    "down": "room8",
-    "up": "room19",
-    "north": "room23"
+    "trapLevel": null,
+    "npc": null,
+    "image": "/images/greasystoreroom.png",
+    "description": "Store Room bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {
+      "E": 18
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Lattice.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "21": {
+    "id": 21,
+    "title": "Lattice",
     "zone": "Lattice",
+    "zoneNumber": 5,
     "trap": false,
-    "trap_level": null,
-    "npc": null
-  }
-},
-  "room22": {
-  "title": "Lattice Library",
-  "description": "Lattice Library lies deep within Lattice, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
-  "image": "/images/libraryarchivist.png",
-  "exits": {
-    "center": "room25"
+    "trapLevel": "Ayla",
+    "npc": null,
+    "image": "/images/latticeroom.png",
+    "description": "Lattice bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {
+      "D": 8
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Lattice Library.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "22": {
+    "id": 22,
+    "title": "Lattice Library",
     "zone": "Lattice",
+    "zoneNumber": 5,
     "trap": true,
-    "trap_level": "Hard",
-    "npc": null
-  }
-},
-  "room23": {
-  "title": "Lattice observation entrance",
-  "description": "Lattice observation entrance lies deep within Lattice, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
-  "image": "/images/lucidveil.png",
-  "exits": {
-    "south": "room21",
-    "north": "room24"
+    "trapLevel": "Hard",
+    "npc": "The Archivist",
+    "image": "/images/libraryarchivist.png",
+    "description": "Lattice Library bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {
+      "C": 25
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Lattice observation entrance.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "23": {
+    "id": 23,
+    "title": "Lattice observation entrance",
     "zone": "Lattice",
+    "zoneNumber": 5,
     "trap": true,
-    "trap_level": "Hard",
-    "npc": null
-  }
-},
-  "room24": {
-  "title": "Lattice Observatory",
-  "description": "Lattice Observatory lies deep within Lattice, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
-  "image": "/images/observationsuite.png",
-  "exits": {
-    "center": "room22"
+    "trapLevel": "Hard",
+    "npc": null,
+    "image": "/images/lucidveil.png",
+    "description": "Lattice observation entrance bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {
+      "S": 21
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Lattice Observatory.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "24": {
+    "id": 24,
+    "title": "Lattice Observatory",
     "zone": "Lattice",
+    "zoneNumber": 5,
     "trap": true,
-    "trap_level": "Hard",
-    "npc": null
-  }
-},
-  "room25": {
-  "title": "Libraryofnine",
-  "description": "The Libraryofnine is heavy with the scent of ink and dust. Ancient tomes line every surface, many older than this world\u2014or yours. A presence watches you, unseen but knowing.",
-  "image": null,
-  "exits": {
-
+    "trapLevel": "Hard",
+    "npc": null,
+    "image": "/images/observationsuite.png",
+    "description": "Lattice Observatory bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {}
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Libraryofnine.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "25": {
+    "id": 25,
+    "title": "Libraryofnine",
     "zone": "Lattice",
+    "zoneNumber": 5,
     "trap": false,
-    "trap_level": null,
-    "npc": null
-  }
-},
-  "room26": {
-  "title": "Forgotton Chamber",
-  "description": "Forgotton Chamber lies deep within Maze, a fragmented corridor of unreliable space, shifting when unobserved.",
-  "image": "/images/forgottenchamber.png",
-  "exits": {
-
+    "trapLevel": null,
+    "npc": "The Archivist",
+    "image": "",
+    "description": "Libraryofnine bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {}
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Forgotton Chamber.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "26": {
+    "id": 26,
+    "title": "Forgotton Chamber",
     "zone": "Maze",
+    "zoneNumber": 6,
     "trap": false,
-    "trap_level": "Hard",
-    "npc": null
-  }
-},
-  "room27": {
-  "title": "Maze Room",
-  "description": "Maze Room lies deep within Maze, a fragmented corridor of unreliable space, shifting when unobserved.",
-  "image": "/images/maze1.png",
-  "exits": {
-
+    "trapLevel": "Hard",
+    "npc": null,
+    "image": "/images/forgottenchamber.png",
+    "description": "Forgotton Chamber defies memory. Each turn forgets the last, every wall slightly wrong, like a dream you can't retell.",
+    "exits": {}
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Maze Room.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "27": {
+    "id": 27,
+    "title": "Maze Room",
     "zone": "Maze",
+    "zoneNumber": 6,
     "trap": false,
-    "trap_level": "Hard",
-    "npc": null
-  }
-},
-  "room28": {
-  "title": "Another Maze Room",
-  "description": "Another Maze Room lies deep within Maze, a fragmented corridor of unreliable space, shifting when unobserved.",
-  "image": "/images/maze2.png",
-  "exits": {
-
+    "trapLevel": "Hard",
+    "npc": null,
+    "image": "/images/maze1.png",
+    "description": "Maze Room defies memory. Each turn forgets the last, every wall slightly wrong, like a dream you can't retell.",
+    "exits": {}
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Another Maze Room.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "28": {
+    "id": 28,
+    "title": "Another Maze Room",
     "zone": "Maze",
+    "zoneNumber": 6,
     "trap": false,
-    "trap_level": "Hard",
-    "npc": null
-  }
-},
-  "room29": {
-  "title": "Still a Maze Room",
-  "description": "Still a Maze Room lies deep within Maze, a fragmented corridor of unreliable space, shifting when unobserved.",
-  "image": "/images/maze3.png",
-  "exits": {
-
+    "trapLevel": "Hard",
+    "npc": null,
+    "image": "/images/maze2.png",
+    "description": "Another Maze Room defies memory. Each turn forgets the last, every wall slightly wrong, like a dream you can't retell.",
+    "exits": {}
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Still a Maze Room.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "29": {
+    "id": 29,
+    "title": "Still a Maze Room",
     "zone": "Maze",
+    "zoneNumber": 6,
     "trap": false,
-    "trap_level": "Hard",
-    "npc": null
-  }
-},
-  "room30": {
-  "title": "Polly's Room",
-  "description": "Polly's Room lies deep within Maze, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
-  "image": "/images/pollysbay.png",
-  "exits": {
-    "south": "room27",
-    "north": "room31"
+    "trapLevel": "Hard",
+    "npc": null,
+    "image": "/images/maze3.png",
+    "description": "Still a Maze Room defies memory. Each turn forgets the last, every wall slightly wrong, like a dream you can't retell.",
+    "exits": {}
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Polly's Room.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "30": {
+    "id": 30,
+    "title": "Polly's Room",
     "zone": "Maze",
+    "zoneNumber": 6,
     "trap": true,
-    "trap_level": "Very Hard",
-    "npc": null
-  }
-},
-  "room31": {
-  "title": "Ancientvault",
-  "description": "Ancientvault stretches around you in unsettling silence. Everything here seems to wait, as if the room itself is holding its breath for your next move.",
-  "image": "/images/ancientvault.png",
-  "exits": {
-
+    "trapLevel": "Very Hard",
+    "npc": "Polly",
+    "image": "/images/pollysbay.png",
+    "description": "Polly's Room defies memory. Each turn forgets the last, every wall slightly wrong, like a dream you can't retell.",
+    "exits": {
+      "S": 27
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Ancientvault.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "31": {
+    "id": 31,
+    "title": "Ancientvault",
     "zone": "Off Gorstan",
+    "zoneNumber": 7,
     "trap": true,
-    "trap_level": "Very Hard",
-    "npc": null
-  }
-},
-  "room32": {
-  "title": "Arbitercore",
-  "description": "Arbitercore stretches around you in unsettling silence. Everything here seems to wait, as if the room itself is holding its breath for your next move.",
-  "image": "/images/arbitercore.png",
-  "exits": {
-    "north": "room32"
+    "trapLevel": "Very Hard",
+    "npc": null,
+    "image": "/images/ancientvault.png",
+    "description": "Ancientvault bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {}
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Arbitercore.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "32": {
+    "id": 32,
+    "title": "Arbitercore",
     "zone": "Off Gorstan",
+    "zoneNumber": 7,
     "trap": true,
-    "trap_level": "Very Hard",
-    "npc": null
-  }
-},
-  "room33": {
-  "title": "Ancients Library",
-  "description": "Ancients Library lies deep within Off Gorstan, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
-  "image": "/images/hiddenlibrary.png",
-  "exits": {
-    "north": "room49"
+    "trapLevel": "Very Hard",
+    "npc": null,
+    "image": "/images/arbitercore.png",
+    "description": "Arbitercore bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {
+      "N": 32
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Ancients Library.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "33": {
+    "id": 33,
+    "title": "Ancients Library",
     "zone": "Off Gorstan",
+    "zoneNumber": 7,
     "trap": true,
-    "trap_level": "Very Hard",
-    "npc": null
-  }
-},
-  "room34": {
-  "title": "Ancients Room",
-  "description": "Ancients Room lies deep within Off Gorstan, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
-  "image": "/images/primeconfluence.png",
-  "exits": {
-
+    "trapLevel": "Very Hard",
+    "npc": "The Archivist",
+    "image": "/images/hiddenlibrary.png",
+    "description": "Ancients Library bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {
+      "N": 49
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Ancients Room.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "34": {
+    "id": 34,
+    "title": "Ancients Room",
     "zone": "Off Gorstan",
+    "zoneNumber": 7,
     "trap": true,
-    "trap_level": "Very Hard",
-    "npc": null
-  }
-},
-  "room35": {
-  "title": "Failure",
-  "description": "Failure lies deep within Glitch, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
-  "image": "/images/fallback.png",
-  "exits": {
-    "center": "room"
+    "trapLevel": "Very Hard",
+    "npc": null,
+    "image": "/images/primeconfluence.png",
+    "description": "Ancients Room bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {}
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Failure.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "35": {
+    "id": 35,
+    "title": "Failure",
     "zone": "Glitch",
+    "zoneNumber": 9,
     "trap": true,
-    "trap_level": "Hard",
-    "npc": null
-  }
-},
-  "room36": {
-  "title": "Issues Detected",
-  "description": "Issues Detected lies deep within Glitch, a fragmented corridor of unreliable space, shifting when unobserved.",
-  "image": "/images/glitchrealm.png",
-  "exits": {
-    "south": "room35",
-    "north": "room37"
+    "trapLevel": "Hard",
+    "npc": null,
+    "image": "/images/fallback.png",
+    "description": "Failure bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {}
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Issues Detected.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "36": {
+    "id": 36,
+    "title": "Issues Detected",
     "zone": "Glitch",
+    "zoneNumber": 9,
     "trap": false,
-    "trap_level": null,
-    "npc": null
-  }
-},
-  "room37": {
-  "title": "More Issues",
-  "description": "More Issues lies deep within Glitch, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
-  "image": "/images/glitchroom.png",
-  "exits": {
-    "south": "room36",
-    "north": "room38"
+    "trapLevel": null,
+    "npc": null,
+    "image": "/images/glitchrealm.png",
+    "description": "Issues Detected bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {
+      "S": 35
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into More Issues.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "37": {
+    "id": 37,
+    "title": "More Issues",
     "zone": "Glitch",
+    "zoneNumber": 9,
     "trap": true,
-    "trap_level": "very hard",
-    "npc": null
-  }
-},
-  "room38": {
-  "title": "Glitching universe",
-  "description": "Glitching universe lies deep within Glitch, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
-  "image": "/images/hallucinationroom.png",
-  "exits": {
-
+    "trapLevel": "very hard",
+    "npc": null,
+    "image": "/images/glitchroom.png",
+    "description": "More Issues bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {
+      "S": 36
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Glitching universe.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "38": {
+    "id": 38,
+    "title": "Glitching universe",
     "zone": "Glitch",
+    "zoneNumber": 9,
     "trap": true,
-    "trap_level": "very hard",
-    "npc": null
-  }
-},
-  "room39": {
-  "title": "Elfhame",
-  "description": "Elfhame lies deep within Elfhame, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
-  "image": "/images/elfhame.png",
-  "exits": {
-    "north": "room",
-    "south": "room",
-    "east": "room"
+    "trapLevel": "very hard",
+    "npc": null,
+    "image": "/images/hallucinationroom.png",
+    "description": "Glitching universe bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {}
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Elfhame.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "39": {
+    "id": 39,
+    "title": "Elfhame",
     "zone": "Elfhame",
+    "zoneNumber": 8,
     "trap": true,
-    "trap_level": "special",
-    "npc": null
-  }
-},
-  "room40": {
-  "title": "Fae Lake",
-  "description": "Fae Lake lies deep within Elfhame, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
-  "image": "/images/faelake.png",
-  "exits": {
-    "north": "room41",
-    "south": "room39"
+    "trapLevel": "special",
+    "npc": null,
+    "image": "/images/elfhame.png",
+    "description": "Elfhame bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {}
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Fae Lake.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "40": {
+    "id": 40,
+    "title": "Fae Lake",
     "zone": "Elfhame",
+    "zoneNumber": 8,
     "trap": true,
-    "trap_level": "special",
-    "npc": null
-  }
-},
-  "room41": {
-  "title": "Fae Lake north shore",
-  "description": "Fae Lake north shore lies deep within Elfhame, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
-  "image": "/images/faelake2.png",
-  "exits": {
-    "north": "room44"
+    "trapLevel": "special",
+    "npc": null,
+    "image": "/images/faelake.png",
+    "description": "Fae Lake bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {
+      "N": 41
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Fae Lake north shore.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "41": {
+    "id": 41,
+    "title": "Fae Lake north shore",
     "zone": "Elfhame",
+    "zoneNumber": 8,
     "trap": true,
-    "trap_level": "special",
-    "npc": null
-  }
-},
-  "room42": {
-  "title": "Fae Palace Rhianons room",
-  "description": "Fae Palace Rhianons room lies deep within Elfhame, bathed in an enchantment too perfect to trust. Time doesn\u2019t flow here \u2014 it glides.",
-  "image": "/images/rhianonschamber.png",
-  "exits": {
-    "west": "room44"
+    "trapLevel": "special",
+    "npc": null,
+    "image": "/images/faelake2.png",
+    "description": "Fae Lake north shore bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {
+      "N": 44
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Fae Palace Rhianons room.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "42": {
+    "id": 42,
+    "title": "Fae Palace Rhianons room",
     "zone": "Elfhame",
+    "zoneNumber": 8,
     "trap": false,
-    "trap_level": null,
-    "npc": null
-  }
-},
-  "room43": {
-  "title": "Fae Palace dungeons",
-  "description": "Fae Palace dungeons lies deep within Elfhame, bathed in an enchantment too perfect to trust. Time doesn\u2019t flow here \u2014 it glides.",
-  "image": "/images/storagechamber.png",
-  "exits": {
-    "up": "room44"
+    "trapLevel": null,
+    "npc": null,
+    "image": "/images/rhianonschamber.png",
+    "description": "Fae Palace Rhianons room bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {
+      "W": 44
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Fae Palace dungeons.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "43": {
+    "id": 43,
+    "title": "Fae Palace dungeons",
     "zone": "Elfhame",
+    "zoneNumber": 8,
     "trap": false,
-    "trap_level": null,
-    "npc": null
-  }
-},
-  "room44": {
-  "title": "Fae Palace Main Hall",
-  "description": "Fae Palace Main Hall lies deep within Elfhame, bathed in an enchantment too perfect to trust. Time doesn\u2019t flow here \u2014 it glides.",
-  "image": "/images/faepalace.png",
-  "exits": {
-    "west": "room39",
-    "south": "room41",
-    "east": "room42",
-    "down": "room"
+    "trapLevel": null,
+    "npc": null,
+    "image": "/images/storagechamber.png",
+    "description": "Fae Palace dungeons bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {
+      "U": 44
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Fae Palace Main Hall.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "44": {
+    "id": 44,
+    "title": "Fae Palace Main Hall",
     "zone": "Elfhame",
+    "zoneNumber": 8,
     "trap": false,
-    "trap_level": null,
-    "npc": null
-  }
-},
-  "room45": {
-  "title": "Carronspire",
-  "description": "Carronspire stretches around you in unsettling silence. Everything here seems to wait, as if the room itself is holding its breath for your next move.",
-  "image": "/images/carronspire.png",
-  "exits": {
-    "portal": "room",
-    "north": "room46",
-    "center": "room50"
+    "trapLevel": null,
+    "npc": null,
+    "image": "/images/faepalace.png",
+    "description": "Fae Palace Main Hall bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {
+      "W": 39
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Carronspire.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "45": {
+    "id": 45,
+    "title": "Carronspire",
     "zone": "Gorstan",
+    "zoneNumber": 10,
     "trap": false,
-    "trap_level": null,
-    "npc": null
-  }
-},
-  "room46": {
-  "title": "Torridon",
-  "description": "Torridon lies deep within Gorstan, a space that waits, watching, as though expecting something only you can bring.",
-  "image": "/images/torridonafter.png",
-  "exits": {
-    "north": "room14",
-    "south": "room",
-    "east": "room"
+    "trapLevel": null,
+    "npc": null,
+    "image": "/images/carronspire.png",
+    "description": "Carronspire bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {}
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Torridon.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "46": {
+    "id": 46,
+    "title": "Torridon ",
     "zone": "Gorstan",
+    "zoneNumber": 10,
     "trap": false,
-    "trap_level": null,
-    "npc": null
-  }
-},
-  "room47": {
-  "title": "Torridon in the past",
-  "description": "Torridon in the past lies deep within Gorstan, a place where reality coils and folds unpredictably. Each moment feels borrowed, and the walls carry secrets best left unspoken.",
-  "image": "/images/torridonbefore.png",
-  "exits": {
-    "north": "room14",
-    "south": "room",
-    "east": "room"
+    "trapLevel": null,
+    "npc": null,
+    "image": "/images/torridonafter.png",
+    "description": "Torridon bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {
+      "N": 14
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Torridon in the past.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "47": {
+    "id": 47,
+    "title": "Torridon in the past",
     "zone": "Gorstan",
+    "zoneNumber": 10,
     "trap": true,
-    "trap_level": null,
-    "npc": null
-  }
-},
-  "room48": {
-  "title": "Torridon Inn",
-  "description": "Torridon Inn lies deep within Gorstan, a space that waits, watching, as though expecting something only you can bring.",
-  "image": "/images/torridoninn.png",
-  "exits": {
-    "west": "room"
+    "trapLevel": null,
+    "npc": null,
+    "image": "/images/torridonbefore.png",
+    "description": "Torridon in the past bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {
+      "N": 14
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Torridon Inn.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "48": {
+    "id": 48,
+    "title": "Torridon Inn",
     "zone": "Gorstan",
+    "zoneNumber": 10,
     "trap": false,
-    "trap_level": null,
-    "npc": null
-  }
-},
-  "room49": {
-  "title": "Reset room",
-  "description": "In Resetroom, the machinery of the multiverse hums beneath your feet. A single misstep could undo timelines or birth new ones. This is not a place for idle curiosity.",
-  "image": "/images/resetroom.png",
-  "exits": {
-    "north": "room10"
+    "trapLevel": null,
+    "npc": null,
+    "image": "/images/torridoninn.png",
+    "description": "Torridon Inn bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {}
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Reset room.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "49": {
+    "id": 49,
+    "title": "Reset room",
     "zone": "Off Multiverse",
+    "zoneNumber": 11,
     "trap": false,
-    "trap_level": null,
-    "npc": null
-  }
-},
-  "room50": {
-  "title": "prewelcome screen",
-  "description": "prewelcome screen lies deep within preWelcome, a space that waits, watching, as though expecting something only you can bring.",
-  "image": "/images/Starterframe",
-  "exits": {
-
+    "trapLevel": null,
+    "npc": null,
+    "image": "/images/resetroom.png",
+    "description": "Reset room bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {
+      "chair": 16
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into prewelcome screen.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "50": {
+    "id": 50,
+    "title": "prewelcome screen",
     "zone": "preWelcome",
+    "zoneNumber": 11,
     "trap": false,
-    "trap_level": null,
-    "npc": null
-  }
-},
-  "room51": {
-  "title": "Secret Tunnel",
-  "description": "Secret Tunnel lies deep within Multiple zones, a space that waits, watching, as though expecting something only you can bring.",
-  "image": "/images/secrettunnel.png",
-  "exits": {
-
+    "trapLevel": "extra hard",
+    "npc": null,
+    "image": "/images/Starterframe",
+    "description": "prewelcome screen bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {}
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Secret Tunnel.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "51": {
+    "id": 51,
+    "title": "Secret Tunnel",
     "zone": "Multiple zones",
+    "zoneNumber": null,
     "trap": false,
-    "trap_level": "random",
-    "npc": null
-  }
-},
-  "room52": {
-  "title": "The Crossing",
-  "description": "The Crossing lies deep within internal-reset, a space that waits, watching, as though expecting something only you can bring.",
-  "image": "/images/crossing2.png",
-  "exits": {
-    "north": "room14",
-    "south": "room",
-    "east": "room"
+    "trapLevel": "random",
+    "npc": null,
+    "image": "/images/secrettunnel.png",
+    "description": "Secret Tunnel bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {
+      "N": 24,
+      "S": 26,
+      "E": 38
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into The Crossing.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "52": {
+    "id": 52,
+    "title": "The Crossing",
     "zone": "internal-reset",
+    "zoneNumber": null,
     "trap": false,
-    "trap_level": null,
-    "npc": null
-  }
-},
-  "room53": {
-  "title": "Stanton Harcourt",
-  "description": "Stanton Harcourt lies deep within StantonHarcourt, a space that waits, watching, as though expecting something only you can bring.",
-  "image": "/images/stantonharcourt.png",
-  "exits": {
-
+    "trapLevel": null,
+    "npc": null,
+    "image": "/images/crossing2.png",
+    "description": "The Crossing bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {
+      "N": 14
+    }
   },
-  "items": [  ],
-  "onEnter": "(engine) => { engine.addToOutput('You step into Stanton Harcourt.'); }",
-  "onSay": null,
-  "onItemUse": null,
-  "meta": {
+  "53": {
+    "id": 53,
+    "title": "Stanton Harcourt",
     "zone": "StantonHarcourt",
+    "zoneNumber": null,
     "trap": false,
-    "trap_level": null,
-    "npc": null
+    "trapLevel": null,
+    "npc": null,
+    "image": "/images/stantonharcourt.png",
+    "description": "Stanton Harcourt bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last.",
+    "exits": {}
   }
-},
 };
-
-/*
-  === CHANGE SUMMARY ===
-  - Added MIT license and version header.
-  - Added module-level and property-level comments.
-  - Added utility functions: parseRoomEventHandlers, getRoomsByZone, validateRoomExits.
-  - No changes to the auto-generated room data structure.
-  - All improvements are non-breaking and additive.
-*/
