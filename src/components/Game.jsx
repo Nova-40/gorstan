@@ -13,12 +13,14 @@ import TeletypeConsole from "../components/TeletypeConsole";
 import CreditsScreen from "../components/CreditsScreen";
 import CommandInput from "../components/CommandInput";
 
+const roomIdByTitle = (title) =>
+  Object.keys(rooms).find((id) => rooms[id].title === title);
+
 export default function Game({ startRoom = "controlnexus", playerName }) {
   const outputEndRef = useRef(null);
 
   const [output, setOutput] = useState([]);
   const [command, setCommand] = useState("");
-  const [currentRoom, setCurrentRoom] = useState(startRoom);
   const [stage, setStage] = useState("game");
   const [playerNameState, setPlayerNameState] = useState(playerName || "Player");
   const [inventory, setInventory] = useState(["coffee"]);
@@ -26,6 +28,9 @@ export default function Game({ startRoom = "controlnexus", playerName }) {
   const [score, setScore] = useState(0);
   const [devMode, setDevMode] = useState(false);
   const [creditsVisible, setCreditsVisible] = useState(false);
+
+  const resolvedRoomId = roomIdByTitle(startRoom);
+  const [currentRoom, setCurrentRoom] = useState(resolvedRoomId || null);
 
   const addToOutput = (text) => setOutput((prev) => [...prev, text]);
 
@@ -35,7 +40,7 @@ export default function Game({ startRoom = "controlnexus", playerName }) {
     return () => window.removeEventListener("showCredits", handler);
   }, []);
 
-  if (!rooms[startRoom]) {
+  if (!resolvedRoomId) {
     return <div className="text-red-500 p-4">❌ Invalid starting room: {startRoom}</div>;
   }
 
@@ -45,7 +50,7 @@ export default function Game({ startRoom = "controlnexus", playerName }) {
       {creditsVisible && <CreditsScreen onClose={() => setCreditsVisible(false)} />}
       <GameEngine
         playerName={playerNameState}
-        startingRoom={startRoom}
+        startingRoom={resolvedRoomId}
         setCurrentRoom={setCurrentRoom}
         addToOutput={addToOutput}
         inventory={inventory}
