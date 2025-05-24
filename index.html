@@ -3,46 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <title>Welcome to Gorstan</title>
-    <meta name="description" content="Gorstan - A text adventure game built with React and Vite." />
-    <meta property="og:title" content="Gorstan - A Text Adventure Game" />
-    <meta property="og:description" content="Embark on an epic text adventure in the world of Gorstan." />
-    <meta property="og:image" content="/vite.svg" />
-    <meta property="og:url" content="https://www.gorstan.com" />
-    <meta name="twitter:card" content="summary_large_image" />
+    <title>Gorstan</title>
   </head>
-  <body>
-    <!-- Root element for React -->
-    <div id="root">
-      <div style="text-align: center; margin-top: 2rem;">Loading Gorstan...</div>
-    </div>
-
-    <!-- Fallback for browsers with JavaScript disabled -->
-    <noscript>
-      <div style="text-align: center; margin-top: 2rem; color: red;">
-        <h1>🚨 JavaScript Disabled</h1>
-        <p>This application requires JavaScript to run. Please enable JavaScript in your browser settings.</p>
-      </div>
-    </noscript>
-
-    <!-- Main application script -->
+  <body class="bg-black text-green-400 font-mono">
+    <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-
-    <!-- Fallback for script loading errors -->
-    <script>
-      window.addEventListener("error", (event) => {
-        const root = document.getElementById("root");
-        if (root) {
-          root.innerHTML = `
-            <div style="text-align: center; margin-top: 2rem; color: red;">
-              <h1>🚨 Critical Error</h1>
-              <p>The application failed to load. Please try refreshing the page or contact support if the issue persists.</p>
-              <p>Error Details: ${event.message}</p>
-            </div>
-          `;
-        }
-      });
-    </script>
   </body>
 </html>
