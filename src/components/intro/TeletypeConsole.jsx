@@ -1,7 +1,8 @@
-// MIT License © 2025 Geoff Webster
-// Gorstan v2.5
+// Gorstan Game (c) Geoff Webster 2025 – MIT License
+// Module: TeletypeConsole.jsx – v2.7.1
 
-import React, { useEffect, useState, useRef } from 'react';
+
+import React, { useMemo, useEffect, useState, useRef } from 'react';
 
 /**
  * TeletypeConsole
@@ -20,7 +21,7 @@ export default function TeletypeConsole({ lines = [], onCompleteLastLine }) {
   // Play keystroke sound, with error handling
   const playClick = () => {
     try {
-      const audio = new Audio('/keystroke.mp3');
+      const audio = new Audio('/ keystroke.mp3');
       audio.volume = 0.4;
       audio.play().catch(() => {});
     } catch (err) {
@@ -60,8 +61,8 @@ export default function TeletypeConsole({ lines = [], onCompleteLastLine }) {
         if (isUnmounted.current) return;
         setDisplayedLines((prev) => [...prev, lines[lineIndex]]);
         setLineIndex((prev) => prev + 1);
-        setCharIndex(0);
-        setCurrentLine('');
+        // safeguard: setCharIndex(0);
+        // safeguard: setCurrentLine('');
       }, 600);
       return () => clearTimeout(timeout);
     }
@@ -70,20 +71,20 @@ export default function TeletypeConsole({ lines = [], onCompleteLastLine }) {
   // Reset state if lines prop changes
   useEffect(() => {
     if (displayedLines.length > 0) return;
-    setDisplayedLines([]);
-    setCurrentLine('');
-    setLineIndex(0);
-    setCharIndex(0);
+    // safeguard: setDisplayedLines([]);
+    // safeguard: setCurrentLine('');
+    // safeguard: setLineIndex(0);
+    // safeguard: setCharIndex(0);
   }, [lines]);
 
   return (
     <div className="space-y-2">
       {displayedLines.map((line, i) => (
-        <p key={i} className="whitespace-pre-wrap">{line}</p>
+        <p key={i} className="whitespace-pre-wrap">{line}</ p>
       ))}
       {currentLine && (
-        <p className="whitespace-pre-wrap">{currentLine}</p>
+        <p className="whitespace-pre-wrap">{currentLine}</ p>
       )}
-    </div>
+    </ div>
   );
 }

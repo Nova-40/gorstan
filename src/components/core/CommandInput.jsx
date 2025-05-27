@@ -1,5 +1,6 @@
-// MIT License © 2025 Geoff Webster
-// Gorstan v2.5
+// Gorstan Game (c) Geoff Webster 2025 – MIT License
+// Module: CommandInput.jsx – v2.7.1
+
 
 // CommandInput.jsx – Cleaned, single input version
 // MIT License © 2025 Geoff Webster
@@ -25,7 +26,7 @@ export default function CommandInput({ command, setCommand, onSubmit }) {
         onChange={(e) => setCommand(e.target.value)}
         onKeyDown={handleKeyPress}
       />
-    </div>
+    </ div>
   );
 }
 

@@ -1,5 +1,6 @@
-// main.jsx — Gorstan Game Entry Point (v2.5)
-// MIT License © 2025 Geoff Webster
+// Gorstan Game (c) Geoff Webster 2025 – MIT License
+// Module: main.jsx – v2.7.1
+
 
 import React from "react";
 import ReactDOM from "react-dom/client";

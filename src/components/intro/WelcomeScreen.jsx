@@ -1,6 +1,5 @@
-
-// MIT License © 2025 Geoff Webster
-// Gorstan v2.5 — Elegant Welcome Screen Design
+// Gorstan Game (c) Geoff Webster 2025 – MIT License
+// Module: WelcomeScreen.jsx – v2.7.2
 
 import React from "react";
 
@@ -21,9 +20,36 @@ export default function WelcomeScreen({ onContinue }) {
         <div>
           <h2 className="text-md font-semibold text-green-300 mb-2">📚 Books by Geoff Webster</h2>
           <ul className="space-y-1 text-base">
-            <li><a href="https://www.amazon.co.uk/dp/B0BXYZBOOK1" className="hover:text-green-200 transition">• The Last Veil</a></li>
-            <li><a href="https://www.amazon.co.uk/dp/B0BXYZBOOK2" className="hover:text-green-200 transition">• Quantum Lattice</a></li>
-            <li><a href="https://www.amazon.co.uk/dp/B0BXYZBOOK3" className="hover:text-green-200 transition">• Findlater's Corner</a></li>
+            <li>
+              <a
+                href="https://www.amazon.co.uk/dp/B0BXYZBOOK1"
+                className="hover:text-green-200 transition"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                • The Last Veil
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.amazon.co.uk/dp/B0BXYZBOOK2"
+                className="hover:text-green-200 transition"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                • Quantum Lattice
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.amazon.co.uk/dp/B0BXYZBOOK3"
+                className="hover:text-green-200 transition"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                • Findlater's Corner
+              </a>
+            </li>
           </ul>
         </div>
 

@@ -1,6 +1,6 @@
-// MIT License © 2025 Geoff Webster
-// Gorstan v2.5
-// StarterFrame.jsx — Renders the intro choice buttons (Jump, Wait, Sip)
+// Gorstan Game (c) Geoff Webster 2025 – MIT License
+// Module: StarterFrame.jsx – v2.7.2
+
 
 import React from "react";
 import { handleIntroChoice } from "../../engine/core/introLogic";

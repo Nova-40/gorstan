@@ -1,6 +1,5 @@
-// MIT License © 2025 Geoff Webster
-// Gorstan v2.6
-// AppCore.jsx — Orchestrates full intro and game flow
+// Gorstan Game (c) Geoff Webster 2025 – MIT License
+// Module: AppCore.jsx – v2.7.2
 
 import React, { useState, useEffect } from "react";
 import WelcomeScreen from "../intro/WelcomeScreen.jsx";
@@ -40,18 +39,15 @@ function NameCaptureScreen({ onSubmit }) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-black text-green-400 p-6 font-mono space-y-4">
-      <h2 className="text-2xl">What is your name?</h2>
+    <div className="p-4">
       <input
         type="text"
-        className="bg-gray-800 text-green-400 border border-green-400 rounded p-2"
         value={nameInput}
         onChange={(e) => setNameInput(e.target.value)}
         placeholder="Enter your name"
-        onKeyDown={e => { if (e.key === "Enter") handleContinue(); }}
-        autoFocus
+        className="border p-2 rounded mr-2"
       />
-      <div className="space-x-4">
+      <div className="space-x-4 mt-4">
         <button
           onClick={handleContinue}
           className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
@@ -96,23 +92,19 @@ function AppCore() {
 
   // Handles name submission and step transitions
   const handleNameSubmit = (name) => {
-    console.log("[handleNameSubmit] name submitted:", name);
-    try { debugger; } catch (e) {}
-    setPlayerName(name);
     try {
+      setPlayerName(name);
       localStorage.setItem("playerName", name);
     } catch {
-      // Ignore localStorage errors
+      setPlayerName(name);
     }
     if (name === "__INSTRUCTIONS__") {
-      console.log("[handleNameSubmit] setting step: instructions");
-    setStep("instructions");
+      setStep("instructions");
       try {
         localStorage.setItem("step", "instructions");
       } catch {}
     } else {
-      console.log("[handleNameSubmit] setting step: teletype");
-    setStep("teletype");
+      setStep("teletype");
       try {
         localStorage.setItem("step", "teletype");
       } catch {}
@@ -120,32 +112,24 @@ function AppCore() {
   };
 
   // Render the appropriate screen based on current step
-  return (
-    <>
-      {step === "welcome" && (
-        <WelcomeScreen
-          onContinue={() => setStep("name")}
-        />
-      )}
-      {step === "name" && <NameCaptureScreen onSubmit={handleNameSubmit} />}
-      {step === "teletype" && (
-        <TeletypeIntro
-          playerName={playerName}
-          onChoice={() => setStep("starter")}
-        />
-      )}
-      {step === "starter" && (
-        <StarterFrame
-          playerName={playerName}
-          onBegin={() => setStep("game")}
-        />
-      )}
-      {step === "game" && <Game />}
-      {step === "instructions" && (
-        <InstructionsScreen onReturn={() => setStep("welcome")} />
-      )}
-    </>
-  );
+  switch (step) {
+    case "welcome":
+      return <WelcomeScreen onContinue={() => setStep("name")} />;
+    case "name":
+      return <NameCaptureScreen onSubmit={handleNameSubmit} />;
+    case "instructions":
+      return <InstructionsScreen onReturn={() => setStep("name")} />;
+    case "teletype":
+      return <TeletypeIntro playerName={playerName} onChoice={() => setStep("controlnexus")} />;
+    case "controlnexus":
+      return <Game startRoom="controlnexus" />;
+    case "starter":
+      return <StarterFrame playerName={playerName} onBegin={() => setStep("game")} />;
+    case "game":
+      return <Game />;
+    default:
+      return <div className="text-red-500 p-4">Unknown step: {step}</div>;
+  }
 }
 
 export default AppCore;

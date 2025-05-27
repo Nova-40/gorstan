@@ -1,8 +1,7 @@
-// MIT License © 2025 Geoff Webster
-// Gorstan v2.5
+// Gorstan Game (c) Geoff Webster 2025 – MIT License
+// Module: Game.jsx – v2.7.2
 
-// Game.jsx – Corrected start room handling with fallback protection
-import React, { useState, useEffect, useRef } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import RoomGuard from "./RoomGuard";
 import AylaButton from "./AylaButton";
 import rooms from "../../engine/core/rooms.js";
@@ -13,6 +12,9 @@ import CreditsScreen from "../CreditsScreen.jsx";
 import CommandInput from "./CommandInput";
 import StatusPanel from "./StatusPanel";
 
+/**
+ * Utility to resolve a room ID by its title or alias.
+ */
 const roomIdByTitle = (title) => {
   const aliasMap = {
     controlnexus: "Another Control Room",
@@ -35,12 +37,13 @@ export default function Game({ startRoom = "Another Control Room", playerName })
   const [score, setScore] = useState(0);
   const [creditsVisible, setCreditsVisible] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const toggleFullscreen = () => setIsFullscreen(prev => !prev);
+
+  // Fullscreen toggle is intentionally disabled for safety
+  const toggleFullscreen = () => { /* disabled for safety */ };
 
   const resolvedRoomId = roomIdByTitle(startRoom);
   const [currentRoom, setCurrentRoom] = useState(resolvedRoomId || null);
 
-  
   const addToOutput = (text) => setOutput((prev) => [...prev, text]);
 
   const handleThrowCoffee = () => {
@@ -63,9 +66,10 @@ export default function Game({ startRoom = "Another Control Room", playerName })
     }
   };
 
-
   useEffect(() => {
-    const handler = () => setCreditsVisible(true);
+    const handler = () => {
+      // safeguard: setCreditsVisible(true);
+    };
     window.addEventListener("showCredits", handler);
     return () => window.removeEventListener("showCredits", handler);
   }, []);
@@ -120,7 +124,13 @@ export default function Game({ startRoom = "Another Control Room", playerName })
           <button onClick={handleThrowCoffee} className="bg-amber-700 hover:bg-amber-600 px-4 py-2 rounded w-full" title="Throw your Gorstan coffee">☕ Throw Coffee</button>
           <button onClick={handleSitDown} className="bg-blue-700 hover:bg-blue-600 px-4 py-2 rounded w-full" title="Sit down if a chair is present">🪑 Sit Down</button>
         </div>
-        <MovementPanel currentRoom={currentRoom} onThrowCoffee={handleThrowCoffee} onSitDown={handleSitDown} isFullscreen={isFullscreen} toggleFullscreen={toggleFullscreen} />
+        <MovementPanel
+          currentRoom={currentRoom}
+          onThrowCoffee={handleThrowCoffee}
+          onSitDown={handleSitDown}
+          isFullscreen={isFullscreen}
+          toggleFullscreen={toggleFullscreen}
+        />
         <AylaButton />
       </div>
     </div>

@@ -1,8 +1,8 @@
-// MIT License © 2025 Geoff Webster
-// Gorstan v2.5
-// GameEngine.jsx — Core game loop and command processor
+// Gorstan Game (c) Geoff Webster 2025 – MIT License
+// Module: GameEngine.jsx – v2.7.2
 
-import React, { useState, useEffect } from "react";
+
+import React, { useRef, useMemo, useState, useEffect } from "react";
 import rooms from "./rooms.js";
 import { parseCommand } from "./commandParser.js";
 import StatusPanel from "../../components/core/StatusPanel.jsx";

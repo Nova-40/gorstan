@@ -1,5 +1,6 @@
-// MIT License © 2025 Geoff Webster
-// Gorstan v2.5
+// Gorstan Game (c) Geoff Webster 2025 – MIT License
+// Module: StatusPanel.jsx – v2.7.2
+
 
 import React from 'react';
 

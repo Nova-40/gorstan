@@ -1,9 +1,10 @@
 // Gorstan Game (c) Geoff Webster 2025 – MIT License
-// Module: RoomGuard.jsx – v2.4.1
+// Module: RoomGuard.jsx – v2.7.2
+
 
 import React from "react";
 import PropTypes from "prop-types";
-import rooms from "../../engine/core/rooms.js"; // ✅ Use default import
+import rooms from "../../engine/core/rooms.js"; // Fixed import path
 
 export default function RoomGuard({ currentRoom, playerName = "Player", devMode = false }) {
   const room = rooms?.[currentRoom];

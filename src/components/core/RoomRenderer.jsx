@@ -1,44 +1,66 @@
-// MIT License © 2025 Geoff Webster
-// Gorstan Game v2.4.x
-// RoomRenderer.jsx — Displays current room content and navigation
+// Gorstan Game (c) Geoff Webster 2025 – MIT License
+// Module: TeletypeIntro.jsx – v2.7.2
 
-import React from "react";
 
-export default function RoomRenderer({ room, onMove }) {
-  if (!room) {
-    return (
-      <div className="text-center text-red-500 p-4">
-        <p>No Room Selected</p>
-        <p>Please select a valid room to continue.</p>
-      </div>
-    );
-  }
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import TeletypeConsole from './TeletypeConsole';
 
-  const { title, image, description, exits } = room;
+export default function TeletypeIntro({ playerName, onChoice }) {
+  const [showChoices, setShowChoices] = useState(false);
+  const [lastLineComplete, setLastLineComplete] = useState(false);
+  const playerLabel = playerName || localStorage.getItem("playerName") || "traveller";
+  const audioRef = useRef(null);
+
+  const lines = useMemo(() => [
+    `Good day, ${playerLabel}.`,
+    "You stand at the kerb. The city hums as reality pretends to behave.",
+    "The air is thick with the smell of rain and diesel.",
+    "You reflect on the strange events of the day.",
+    "A lavender rabbit with white eyes that seemed to look into your soul.",
+    "Steam rises. You sip your coffee. It tastes like the end of something.",
+    "The crossing is green and you step off the kerb.",
+    "Suddenly—",
+    "A BIG YELLOW TRUCK comes out of nowhere heading for you at a rate of knots.",
+    "The world slows down.",
+    "You have a choice to make.",
+    "Your instincts scream:"
+  ], [playerLabel]);
+
+  useEffect(() => {
+    audioRef.current = new Audio("/keystroke.mp3");
+    audioRef.current.volume = 0.5;
+  }, []);
+
+  useEffect(() => {
+    if (!showChoices && lastLineComplete) {
+      setShowChoices(true);
+    }
+  }, [lastLineComplete, showChoices]);
+
+  const playTypeSound = () => {
+    if (audioRef.current) {
+      audioRef.current.play().catch(() => {});
+    }
+  };
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4 bg-black text-green-400 font-mono rounded-lg border border-green-600 shadow-lg space-y-4">
-      <h2 className="text-2xl underline">{title}</h2>
-      {image && (
-        <div className="flex justify-center">
-          <img src={image} alt={title} className="rounded-xl max-h-80 object-contain" />
-        </div>
-      )}
-      <p className="text-base leading-relaxed">{description}</p>
-      {exits && Object.keys(exits).length > 0 && (
-        <div className="pt-4 space-y-2">
-          <p className="text-green-300">Available directions:</p>
-          <div className="flex flex-wrap gap-2">
-            {Object.entries(exits).map(([direction, target]) => (
-              <button
-                key={direction}
-                onClick={() => onMove(direction)}
-                className="bg-green-800 hover:bg-green-600 text-white font-bold py-1 px-3 rounded"
-              >
-                {direction}
-              </button>
-            ))}
-          </div>
+    <div className="bg-black text-green-400 min-h-screen flex items-center justify-center p-6 font-mono">
+      <TeletypeConsole
+        lines={lines}
+        onChar={playTypeSound}
+        onCompleteLastLine={() => setLastLineComplete(true)}
+      />
+      {showChoices && (
+        <div className="absolute bottom-10 space-x-4">
+          <button onClick={() => onChoice("jump")} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
+            Jump
+          </button>
+          <button onClick={() => onChoice("wait")} className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded">
+            Wait
+          </button>
+          <button onClick={() => onChoice("sip")} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+            Sip Coffee
+          </button>
         </div>
       )}
     </div>

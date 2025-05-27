@@ -1,6 +1,6 @@
-// MIT License © 2025 Geoff Webster
-// Gorstan v2.5
-// CreditsScreen.jsx — Display contributors, lore, and project gratitude
+// Gorstan Game (c) Geoff Webster 2025 – MIT License
+// Module: CreditsScreen.jsx – v2.7.2
+
 
 import React from "react";
 
@@ -10,10 +10,10 @@ export default function CreditsScreen({ onBack }) {
       <h1 className="text-3xl mb-4">🎬 Credits</h1>
       <div className="max-w-xl text-center space-y-3">
         <p><strong>Created by:</strong> Geoff Webster</p>
-        <p><strong>Engine Design & Lore:</strong> Gorstan Chronicles v2.5</p>
+        <p><strong>Engine Design &amp; Lore:</strong> Gorstan Chronicles v2.5</p>
         <p><strong>Artwork:</strong> AI-assisted + curated assets</p>
-        <p><strong>Sound & FX:</strong> Custom + public domain (where used)</p>
-        <p><strong>Code Assist:</strong> ChatGPT & Copilot</p>
+        <p><strong>Sound &amp; FX:</strong> Custom + public domain (where used)</p>
+        <p><strong>Code Assist:</strong> ChatGPT &amp; Copilot</p>
         <p className="text-sm mt-4 italic text-green-300">
           Thank you for travelling through the Lattice.
         </p>
