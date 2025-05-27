@@ -1,12 +1,9 @@
-// MIT License © 2025 Geoff Webster
-// Gorstan v2.5
-
-// RoomGuard.jsx – Refactored for numeric room keys
-// MIT License © 2025 Geoff Webster
+// Gorstan Game (c) Geoff Webster 2025 – MIT License
+// Module: RoomGuard.jsx – v2.4.1
 
 import React from "react";
 import PropTypes from "prop-types";
-import { rooms } from "../../engine/core/rooms.js";
+import rooms from "../../engine/core/rooms.js"; // ✅ Use default import
 
 export default function RoomGuard({ currentRoom, playerName = "Player", devMode = false }) {
   const room = rooms?.[currentRoom];
@@ -35,7 +32,9 @@ export default function RoomGuard({ currentRoom, playerName = "Player", devMode 
       <p className="mb-2">{room.description}</p>
 
       {room.npc && (
-        <div className="text-green-400 italic mt-2">Someone is here: <strong>{room.npc}</strong></div>
+        <div className="text-green-400 italic mt-2">
+          Someone is here: <strong>{room.npc}</strong>
+        </div>
       )}
 
       {room.trap && (
@@ -46,8 +45,10 @@ export default function RoomGuard({ currentRoom, playerName = "Player", devMode 
 
       {devMode && (
         <div className="text-xs text-green-500 mt-4 border-t pt-2 border-green-800">
-          <strong>Room ID:</strong> {room.id}<br />
-          <strong>Zone:</strong> {room.zone} (#{room.zoneNumber})<br />
+          <strong>Room ID:</strong> {room.id}
+          <br />
+          <strong>Zone:</strong> {room.zone} (#{room.zoneNumber})
+          <br />
           <strong>Exits:</strong>{" "}
           {Object.entries(room.exits || {}).map(([dir, id]) => (
             <span key={dir}>{dir} → {id}{"  "}</span>
@@ -63,3 +64,4 @@ RoomGuard.propTypes = {
   playerName: PropTypes.string,
   devMode: PropTypes.bool,
 };
+

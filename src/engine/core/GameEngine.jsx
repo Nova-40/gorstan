@@ -3,7 +3,7 @@
 // GameEngine.jsx — Core game loop and command processor
 
 import React, { useState, useEffect } from "react";
-import { rooms } from "./rooms.js";
+import rooms from "./rooms.js";
 import { parseCommand } from "./commandParser.js";
 import StatusPanel from "../../components/core/StatusPanel.jsx";
 

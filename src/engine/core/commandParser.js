@@ -1,3 +1,6 @@
+// Gorstan Game (c) Geoff Webster 2025 – MIT License
+// Module: commandParser.js – v2.4.1
+
 // MIT License © 2025 Geoff Webster
 // Gorstan v2.5
 
@@ -27,7 +30,26 @@ export function parseCommand(command, engine) {
   const trimmed = command.trim().toLowerCase();
   if (!trimmed) return false;
 
-  // NPC parser first
+  // OS-based monitor logic injection
+
+  if ((trimmed === "look at monitors" || trimmed === "look monitors") && engine.getCurrentRoom()?.id?.includes("control")) {
+    if (!engine.storyProgress.aylaMonitorTriggered) {
+      engine.storyProgress.aylaMonitorTriggered = true;
+      const platform = navigator.platform;
+      let osMessage;
+      if (/Win/.test(platform)) osMessage = "So... still using Windows? Brave. Or just stubborn.";
+      else if (/Mac/.test(platform)) osMessage = "A Mac. Beautiful machine. Shame about the ports.";
+      else if (/Linux/.test(platform)) osMessage = "Linux detected. You must like doing things the hard way.";
+      else osMessage = "I don’t recognise your system. That’s... concerning.";
+
+      engine.output(`The monitor flickers. Then bursts into life. Static... then a sharp voice cuts through:\n\nAyla: "${osMessage}"`);
+    } else {
+      engine.output("The monitor glows faintly. Ayla has already spoken.");
+    }
+    return true;
+  }
+
+// NPC parser first
   const npcCmd = extractNPCCommand(command);
   if (npcCmd) {
     const id = npcCmd.name.charAt(0).toUpperCase() + npcCmd.name.slice(1);

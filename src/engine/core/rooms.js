@@ -1,6 +1,7 @@
-// MIT License © 2025 Geoff Webster
-// Gorstan v2.5
-export const rooms = {
+// Gorstan Game (c) Geoff Webster 2025 – MIT License
+// Module: rooms.js – v2.4.1
+
+const rooms = {
   "1": {
     "id": 1,
     "title": "introstart",
@@ -696,3 +697,5 @@ export const rooms = {
     "exits": {}
   }
 };
+
+export default rooms;

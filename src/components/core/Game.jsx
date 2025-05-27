@@ -5,7 +5,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import RoomGuard from "./RoomGuard";
 import AylaButton from "./AylaButton";
-import { rooms } from "../../engine/core/rooms.js";
+import rooms from "../../engine/core/rooms.js";
 import GameEngine from "../../engine/core/GameEngine.jsx";
 import MovementPanel from "./MovementPanel";
 import TeletypeConsole from "../intro/TeletypeConsole.jsx";
