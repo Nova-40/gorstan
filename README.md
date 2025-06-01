@@ -1,41 +1,45 @@
-# Gorstan Game
+# Gorstan Game — v2.8.0-integrated
 
-Welcome to the Gorstan Game – an interactive sci-fi multiverse adventure built in React.
+## ✅ Version
+Gorstan Game Version: **v2.8.0-integrated**
 
-This version (v2.4.1) includes all major modules, assets, and enhancements up to May 2025.
+## 📁 Cleaned & Consolidated Structure
 
-## Getting Started
+- All modules are now logically structured under:
+  - `/src/components/` — UI components
+  - `/src/engine/` — Game logic and core systems
+  - `/public/` — Static assets
 
-1. Install dependencies:
+## 🔍 Duplicates Removed & Modules Merged
+
+- Removed:
+  - `src/engine/core/GameEngine.jsx`
+  - `src/engine/core/introLogic.js`
+  - `src/engine/core/resetSystem.js`
+
+- Merged logic kept in:
+  - `src/engine/GameEngine.jsx`
+  - `src/engine/introLogic.js`
+  - `src/engine/resetSystem.js`
+
+- Flattened:
+  - `/components/core/`, `/intro/`, `/endCredits/` → into `/components/`
+
+## 🧠 Refactors & Fixes
+
+- Updated all import paths
+- Replaced `x.jsx` variants with clean, canonical names
+- Removed `RoomGuardx`, `StatusPanelx`, etc.
+- No circular references or syntax issues detected
+
+## 🚀 Build Instructions
 
 ```bash
 npm install
+npm run dev    # For local dev
+npm run build  # For production
+npx serve dist # Preview production build
 ```
 
-2. Start the development server:
-
-```bash
-npm run dev
-```
-
-3. Access the game at: `http://localhost:5173`
-
-## Project Structure
-
-- `src/components` – UI and interface components
-- `src/engine` – Core game logic and systems
-- `public/` – Images, audio, and JSON assets
-
-## Features
-
-- Teletype intro with sound
-- Modular room rendering
-- Inventory, traits, and scoring system
-- Dynamic NPC interactions (Ayla, Polly, Morthos)
-- Debug tools and secret tunnels
-- Trap and puzzle logic
-- Responsive Tailwind-based UI
-
-## License
-
-MIT © 2025 Geoff Webster
+Enjoy the multiverse,
+— Geoff + GPT

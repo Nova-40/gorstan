@@ -1,9 +1,14 @@
-// Gorstan Game (c) Geoff Webster 2025 – MIT License
-// Module: CreditsScreen.jsx – v2.7.2
-
+// Gorstan Game Module — v2.8.0
+// MIT License © 2025 Geoff Webster
+// CreditsScreen.jsx — Module supporting Gorstan gameplay or UI.
 
 import React from "react";
 
+/**
+ * CreditsScreen
+ * Displays the credits for the Gorstan Game.
+ * The onBack prop is a callback to return to the previous screen.
+ */
 export default function CreditsScreen({ onBack }) {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen text-green-400 font-mono p-6">
