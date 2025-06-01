@@ -10,7 +10,7 @@
 
 import React from "react";
 import ReactDOM from "react-dom/client";
-import AppCore from "./components/AppCore"; // Fixed import path for AppCore
+import AppCore from "./AppCore"; // Fixed import path for AppCore
 import "./tailwind.css";
 
 // Entry point: renders the main AppCore component inside #root

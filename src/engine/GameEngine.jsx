@@ -1,110 +1,94 @@
-// File: src/engine/GameEngine.jsx
-// MIT License
-// © 2025 Geoff Webster – Gorstan Game Project
-// Purpose: Manages core gameplay loop and state.
 
+import React, { useReducer, useEffect } from "react";
+import RoomRenderer from "../components/RoomRenderer";
+import rooms from "./rooms";
+import { getIntroResult } from "./introLogic";
+import { storyFlagsReducer, initialStoryState } from "./storyProgress";
+import MovementPanel from "../components/MovementPanel";
+import StatusPanel from "../components/StatusPanel";
+import AylaButton from "../components/AylaButton";
 
-// MIT License © 2025 Geoff Webster
-// Gorstan v2.8.0
-// GameEngine.jsx — Core game loop and command processor.
+const gameReducer = (state, action) => {
+  switch (action.type) {
+    case "INIT":
+      return {
+        ...state,
+        ...getIntroResult(action.payload.choice, state)
+      };
+    case "MOVE":
+      return {
+        ...state,
+        room: action.payload.room,
+        checkTrap: true,
+      };
+    case "UPDATE_INVENTORY":
+      return {
+        ...state,
+        inventory: action.payload,
+      };
+    case "LOG":
+      return {
+        ...state,
+        log: [...state.log, action.payload]
+      };
+    default:
+      return state;
+  }
+};
 
-import React, { useState } from "react";
-import rooms from "../engine/rooms";
-import { parseCommand } from "../engine/commandParser";
-import StatusPanel from "../components/StatusPanel"; 
+const GameEngine = ({ introChoice }) => {
+  const [state, dispatch] = useReducer(gameReducer, {
+    room: "placeholder",
+    inventory: [],
+    traits: [],
+    score: 0,
+    flags: {},
+    log: []
+  });
 
-/**
- * GameEngine
- * Manages the main gameplay loop, command parsing, and player state.
- */
-export default function GameEngine({ playerName, startingRoom }) {
-  const [currentRoom, setCurrentRoom] = useState(startingRoom);
-  const [command, setCommand] = useState("");
-  const [commandLog, setCommandLog] = useState([]);
-  const [score, setScore] = useState(0);
-  const [inventory, setInventory] = useState(["coffee"]);
-  const [godMode, setGodMode] = useState(false);
+  const [storyState, storyDispatch] = useReducer(storyFlagsReducer, initialStoryState);
 
-  // Only Geoff can toggle god mode
-  const godModeEligible = playerName?.toLowerCase() === "geoff";
+  useEffect(() => {
+    dispatch({ type: "INIT", payload: { choice: introChoice } });
+  }, [introChoice]);
 
-  // Adds a message to the command log
-  const addToOutput = (msg) => {
-    setCommandLog((prev) => [...prev, msg]);
-  };
+  const currentRoom = rooms[state.room];
 
-  // Handles command input and parsing
-  const handleCommand = () => {
-    const cmd = command.trim().toLowerCase();
-    if (!cmd) return;
-
-    // Special god mode toggle for Geoff
-    if (cmd === "horan" && godModeEligible) {
-      const status = !godMode;
-      setGodMode(status);
-      addToOutput(`🛡️ God Mode ${status ? "ENABLED" : "DISABLED"}`);
-      setCommand("");
-      return;
-    }
-
-    // Parse and execute the command using the core parser
-    parseCommand(cmd, {
-      playerName,
-      currentRoom,
-      setCurrentRoom,
-      inventory,
-      setInventory,
-      addToOutput,
-      score,
-      setScore,
-      godMode
-    });
-
-    setCommand("");
-  };
-
-  // Defensive: show warning if no room is selected
-  const room = rooms[currentRoom];
-  if (!room) {
+  if (!currentRoom) {
     return (
-      <div className="p-4 text-red-500 text-center font-mono">
-        ⚠️ No Room Selected<br />
+      <div className="text-red-500 font-mono p-4">
+        ❌ No Room Selected<br />
         Please select a valid room to continue.
       </div>
     );
   }
 
+  useEffect(() => {
+  if (state.checkTrap && currentRoom) {
+    import("./trapSystem").then(module => {
+      module.checkForTrap(state.room, state, dispatch);
+    });
+  }
+}, [state.checkTrap, currentRoom]);
+
   return (
-    <div>
-      <StatusPanel score={score} inventory={inventory} />
-      {room.image && (
-        <img
-          src={room.image}
-          alt="Room visual"
-          className="w-full max-w-3xl mx-auto border border-green-600 rounded mb-2"
-        />
-      )}
-      <div className="bg-black border border-green-500 p-3 rounded mb-4 text-sm text-green-200 max-h-64 overflow-y-auto">
-        {commandLog.map((msg, index) => (
-          <div key={index} className="mb-1">&gt; {msg}</div>
-        ))}
+    <main className="min-h-screen bg-black text-green-400 font-mono p-4">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+        <div className="lg:col-span-3">
+          <RoomRenderer room={currentRoom} state={state} dispatch={dispatch} />
+          <MovementPanel currentRoom={currentRoom} dispatch={dispatch} />
+        </div>
+        <div className="lg:col-span-1 space-y-4">
+          <StatusPanel state={state} />
+          <AylaButton />
+        </div>
       </div>
-      <div className="flex gap-2">
-        <input
-          type="text"
-          className="flex-1 bg-black border border-green-500 text-green-200 px-3 py-2 rounded"
-          value={command}
-          placeholder="Type a command..."
-          onChange={(e) => setCommand(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleCommand()}
-        />
-        <button
-          onClick={handleCommand}
-          className="border border-green-500 px-4 rounded hover:bg-green-700"
-        >
-          ➤
-        </button>
-      </div>
-    </div>
+    
+
+
+
+    </main>
   );
-}
+};
+
+export default GameEngine;

@@ -1,14 +1,9 @@
 // File: src/components/InstructionsScreen.jsx
 // MIT License
 // © 2025 Geoff Webster – Gorstan Game Project
-// Purpose: Module supporting Gorstan gameplay or UI.
+// Purpose: Instructions overlay screen
 
-
-// Gorstan Game Module — v2.8.0
-// MIT License © 2025 Geoff Webster
-// InstructionsScreen.jsx — Module supporting Gorstan gameplay or UI.
-
-import React from "react";
+import React, { useEffect } from "react";
 
 /**
  * InstructionsScreen
@@ -16,8 +11,15 @@ import React from "react";
  * The onReturn prop is a callback to return to the previous screen.
  */
 export default function InstructionsScreen({ onReturn }) {
+  useEffect(() => {
+    console.log("GORSTAN GAME v2.8.0 – InstructionsScreen mounted");
+  }, []);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black text-green-400 font-mono px-6 py-8">
+    <div
+      className="min-h-screen flex items-center justify-center bg-black text-green-400 font-mono px-6 py-8"
+      data-testid="instructions-screen"
+    >
       <div className="w-full max-w-2xl border border-green-700 rounded-md p-8 shadow-[0_0_10px_#00ffcc] text-center space-y-6">
         <h1 className="text-4xl font-bold">📜 Instructions</h1>
         <p className="text-base leading-relaxed">
@@ -34,6 +36,7 @@ export default function InstructionsScreen({ onReturn }) {
         <button
           onClick={onReturn}
           className="bg-green-700 hover:bg-green-600 text-white px-4 py-2 rounded shadow-md transition"
+          aria-label="Return to simulation"
         >
           ⬅ Return to Simulation
         </button>

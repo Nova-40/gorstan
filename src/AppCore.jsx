@@ -1,11 +1,11 @@
 // Gorstan Game Module — v2.8.0
 import React, { useState } from "react";
-import WelcomeScreen from "./WelcomeScreen";
-import PlayerNameCapture from "./PlayerNameCapture";
-import TeletypeIntro from "./TeletypeIntro";
-import StarterFrame from "./StarterFrame";
-import GameEngine from "../engine/GameEngine";
-import rooms from "../engine/rooms";
+import WelcomeScreen from "./components/WelcomeScreen";
+import PlayerNameCapture from "./components/PlayerNameCapture";
+import TeletypeIntro from "./components/TeletypeIntro";
+import StarterFrame from "./components/StarterFrame";
+import GameEngine from "./engine/GameEngine";
+import rooms from "./engine/rooms";
 
 export default function AppCore() {
   const [playerName, setPlayerName] = useState("");

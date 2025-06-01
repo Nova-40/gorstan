@@ -1,38 +1,56 @@
-// File: src/engine/core/dialogueEngine.js
-// MIT License
-// © 2025 Geoff Webster – Gorstan Game Project
-// Purpose: Module supporting Gorstan gameplay or UI.
 
+// dialogueEngine.js — v2.8.2
+// Handles NPC dialogue with memory, mood, and topic parsing
 
-// Gorstan Game (c) Geoff Webster 2025 – MIT License
-// Module: dialogueEngine.js – v2.4.1
+const npcState = {};
 
-// MIT License © 2025 Geoff Webster
-// Gorstan Game v2.4.x
-// dialogueEngine.js – Handles NPC memory, mood, and contextual responses
+export const getNPCState = (npcId) => {
+  if (!npcState[npcId]) {
+    npcState[npcId] = {
+      mood: 0,
+      trust: 0,
+      history: [],
+      responses: []
+    };
+  }
+  return npcState[npcId];
+};
 
-export const npcMemory = {};
+export const handleDialogue = (npcId, input, playerState) => {
+  const state = getNPCState(npcId);
+  const cleanInput = input.trim().toLowerCase();
 
-export function rememberInteraction(npc, key, value) {
-  if (!npcMemory[npc]) npcMemory[npc] = {};
-  npcMemory[npc][key] = value;
-}
+  const keywords = cleanInput.split(" ");
+  const topic = keywords.includes("about") ? keywords[keywords.indexOf("about") + 1] : keywords[keywords.length - 1];
 
-export function getMemory(npc, key) {
-  return npcMemory[npc]?.[key];
-}
+  let reply = "I don't have much to say about that.";
 
-export function getAylaResponse(topic, roomId = "", progress = {}) {
-  const memory = npcMemory["ayla"] || {};
-  if (topic.includes("dale")) {
-    return memory.metDale
-      ? "You already know what you need about Dale. You just haven’t accepted it."
-      : "Dale? You'll know him when you're ready.";
+  if (npcId === "morthos") {
+    if (topic === "coffee") {
+      reply = state.trust > 1
+        ? "Ah, the sacred brew. You're learning."
+        : "You may not be ready for what the coffee reveals.";
+    } else if (topic === "dale") {
+      reply = playerState.flags?.daleSeen
+        ? "He's been through here. But not unchanged."
+        : "Dale? The name stirs something, but I can't place it.";
+    }
   }
 
-  if (roomId === "controlroom" && !progress.coffeeThrown) {
-    return "The coffee may not be drinkable… have you tried throwing it?";
+  if (state.history.length > 5) {
+    state.mood++;
   }
 
-  return "I'm still processing that. Try again in another context.";
-}
+  if (state.mood >= 3) {
+    reply += " (Morthos looks annoyed by your persistence.)";
+  }
+
+  state.history.push({ input, reply });
+  state.responses.push(reply);
+
+  return {
+    reply,
+    mood: state.mood,
+    trust: state.trust
+  };
+};

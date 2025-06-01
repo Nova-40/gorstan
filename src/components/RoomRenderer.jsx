@@ -1,45 +1,66 @@
-// File: src/components/RoomRenderer.jsx
-// MIT License
-// © 2025 Geoff Webster – Gorstan Game Project
-// Purpose: Renders the current room and its contents.
 
+import React, { useEffect, useState } from "react";
 
+const RoomRenderer = ({ room, state, dispatch }) => {
+  const [visited, setVisited] = useState({});
 
-// Gorstan Game Module — v2.8.0
-// MIT License © 2025 Geoff Webster
-// RoomRenderer.jsx — Renders the current room and its contents safely
+  useEffect(() => {
+    if (!visited[room.id]) {
+      setVisited((prev) => ({ ...prev, [room.id]: true }));
+    }
+  }, [room.id, visited]);
 
-import React from "react";
-import PropTypes from "prop-types";
+  const isDebug = state?.flags?.debug;
 
-export default function RoomRenderer({ room }) {
-  // Defensive: If no room is provided, show a warning
-  if (!room) {
-    return (
-      <div className="text-red-500 text-center font-mono p-4">
-        ⚠️ No Room Selected<br />
-        Please select a valid room to continue.
-      </div>
-    );
-  }
+  const getRoomDescription = () => {
+    if (visited[room.id] && room.altDescription) {
+      return room.altDescription;
+    }
+    return room.description;
+  };
 
-  // Convert RegExp or other non-renderable values to string for safety
-  const safeDescription = String(room.description || "");
-  const safeTitle = String(room.title || "Unknown");
-  const safeZone = String(room.zone || "");
+  const getVisibleExits = () => {
+    if (!room.exits) return {};
+    if (isDebug || state.flags?.showAllExits) return room.exits;
 
-  // You could add more fields here as needed, always using String() for safety
+    const visibleExits = {};
+    for (const [dir, destination] of Object.entries(room.exits)) {
+      if (!room.hiddenExits || !room.hiddenExits.includes(dir)) {
+        visibleExits[dir] = destination;
+      }
+    }
+    return visibleExits;
+  };
 
   return (
-    <div className="p-4 text-green-200 font-mono">
-      <h2 className="text-xl font-bold mb-2">{safeTitle}</h2>
-      <p className="italic text-sm text-green-400 mb-2">Zone: {safeZone}</p>
-      <p className="mb-4 whitespace-pre-wrap">{safeDescription}</p>
-      {/* Add more room details here if needed */}
+    <div className="border-2 border-green-500 p-4 mb-4 transition-opacity duration-700 ease-in-out">
+      <h2 className="text-2xl mb-2">{room.name}</h2>
+      <p className="mb-4 whitespace-pre-line">{getRoomDescription()}</p>
+
+      {room.image && (
+        <img
+          src={`/images/${room.image}`}
+          alt={`${room.name}`}
+          className="w-full h-auto rounded-lg shadow-md mb-4 transition-opacity duration-1000 ease-in-out"
+        />
+      )}
+
+      <div className="text-sm text-green-300">
+        <strong>Exits:</strong>{" "}
+        {Object.entries(getVisibleExits()).map(([dir], index) => (
+          <span key={index} className="mr-2">
+            {dir}
+          </span>
+        ))}
+      </div>
+
+      {isDebug && (
+        <div className="text-yellow-300 mt-2 text-xs">
+          <strong>[Debug Info]</strong>: Room ID = {room.id}, Items = {room.items?.join(", ") || "None"}
+        </div>
+      )}
     </div>
   );
-}
-
-RoomRenderer.propTypes = {
-  room: PropTypes.object,
 };
+
+export default RoomRenderer;

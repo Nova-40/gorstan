@@ -1,89 +1,87 @@
-// Gorstan Game Module — v2.8.0
-// MIT License © 2025 Geoff Webster
-// TeletypeIntro.jsx — Displays animated teletype narrative text.
 
-import React, { useState, useEffect, useRef, useMemo } from "react";
-import TeletypeConsole from "./TeletypeConsole.jsx"; // Fixed import path for consistency
+import React, { useState, useEffect } from "react";
 
-/**
- * TeletypeIntro
- * Animated narrative intro with teletype effect and sound.
- * Shows choices after the last line is complete.
- */
-export default function TeletypeIntro({ playerName, onChoice }) {
-  const [showChoices, setShowChoices] = useState(false);
-  const [lastLineComplete, setLastLineComplete] = useState(false);
-  const playerLabel = playerName || localStorage.getItem("playerName") || "traveller";
-  const audioRef = useRef(null);
+const introText = [
+  "Good day.",
+  "You're heading home.",
+  "You grab a coffee.",
+  "You cross the road on green.",
+  "BIG YELLOW TRUCK comes out of nowhere heading for you at a rate of knots..."
+];
 
-  // Memoize lines to avoid unnecessary recalculation
-  const lines = useMemo(
-    () => [
-      `Good day, ${playerLabel}.`,
-      "You stand at the kerb. The city hums as reality pretends to behave.",
-      "The air is thick with the smell of rain and diesel.",
-      "You reflect on the strange events of the day.",
-      "A lavender rabbit with white eyes that seemed to look into your soul.",
-      "Steam rises. You sip your coffee. It tastes like the end of something.",
-      "The crossing is green and you step off the kerb.",
-      "Suddenly—",
-      "A BIG YELLOW TRUCK comes out of nowhere heading for you at a rate of knots.",
-      "The world slows down.",
-      "You have a choice to make.",
-      "Your instincts scream:"
-    ],
-    [playerLabel]
-  );
+const TeletypeIntro = ({ onJump, onWait, onSip, skipIntro = false }) => {
+  const [currentLine, setCurrentLine] = useState(0);
+  const [ready, setReady] = useState(false);
+  const [showButtons, setShowButtons] = useState(false);
 
-  // Set up the audio for teletype sound effect (runs once)
   useEffect(() => {
-    audioRef.current = new Audio("/keystroke.mp3");
-    audioRef.current.volume = 0.5;
-  }, []);
-
-  // Show choices when the last line is complete
-  useEffect(() => {
-    if (!showChoices && lastLineComplete) {
-      setShowChoices(true);
+    if (skipIntro) {
+      setShowButtons(true);
+      return;
     }
-  }, [lastLineComplete, showChoices]);
 
-  // Play the typewriter sound on each character
-  const playTypeSound = () => {
-    if (audioRef.current) {
-      audioRef.current.play().catch(() => {});
+    if (currentLine < introText.length) {
+      const timeout = setTimeout(() => {
+        setCurrentLine(currentLine + 1);
+      }, 1200); // Delay between lines
+      return () => clearTimeout(timeout);
+    } else {
+      setReady(true);
+      setTimeout(() => setShowButtons(true), 1000);
+    }
+  }, [currentLine, skipIntro]);
+
+  const [sipUsed, setSipUsed] = useState(false);
+
+  const handleSip = () => {
+    if (!sipUsed) {
+      setSipUsed(true);
+      onSip();
     }
   };
 
   return (
-    <div className="bg-black text-green-400 min-h-screen flex items-center justify-center p-6 font-mono">
-      <TeletypeConsole
-        lines={lines}
-        onChar={playTypeSound}
-        onCompleteLastLine={() => setLastLineComplete(true)}
-      />
-      {showChoices && (
-        <div className="absolute bottom-10 space-x-4">
-          <button
-            onClick={() => onChoice("jump")}
-            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
-          >
-            Jump
-          </button>
-          <button
-            onClick={() => onChoice("wait")}
-            className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded"
-          >
-            Wait
-          </button>
-          <button
-            onClick={() => onChoice("sip")}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-          >
-            Sip Coffee
-          </button>
-        </div>
-      )}
-    </div>
+    <main className="min-h-screen bg-black text-green-400 font-mono flex flex-col items-center justify-center p-4 text-center">
+      <div className="max-w-screen-sm">
+        {skipIntro ? (
+          <p className="mb-4">[Intro skipped]</p>
+        ) : (
+          introText.slice(0, currentLine).map((line, i) => (
+            <p key={i} className="mb-2 animate-pulse">{line}</p>
+          ))
+        )}
+
+        {showButtons && (
+          <div className="mt-6 flex flex-col gap-3 items-center">
+            <button
+              onClick={onJump}
+              className="bg-green-700 hover:bg-green-600 text-white px-6 py-2 rounded-2xl transition-shadow duration-200 shadow-lg hover:shadow-green-500"
+              aria-label="Jump"
+            >
+              Jump
+            </button>
+            <button
+              onClick={onWait}
+              className="bg-green-700 hover:bg-green-600 text-white px-6 py-2 rounded-2xl transition-shadow duration-200 shadow-lg hover:shadow-green-500"
+              aria-label="Wait"
+            >
+              Wait
+            </button>
+            <button
+              onClick={handleSip}
+              disabled={sipUsed}
+              className={`${
+                sipUsed ? "opacity-50 cursor-not-allowed" : "hover:shadow-green-500"
+              } bg-green-700 hover:bg-green-600 text-white px-6 py-2 rounded-2xl transition-shadow duration-200 shadow-lg`}
+              aria-label="Sip Coffee"
+            >
+              Sip Coffee
+            </button>
+          </div>
+        )}
+      </div>
+    </main>
   );
-}
+};
+
+export default TeletypeIntro;

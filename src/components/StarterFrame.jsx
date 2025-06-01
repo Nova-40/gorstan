@@ -1,13 +1,12 @@
 // Gorstan Game Module — v2.8.0
-import React from "react";
-import { handleIntroChoice } from "../engine/introLogic";
+// MIT License © 2025 Geoff Webster
+// StarterFrame.jsx — Part of the Gorstan Interactive Narrative
 
-export default function StarterFrame({
-  setStartGame,
-  setStartingRoom,
-  setScore,
-  setInventory
-}) {
+import React from "react";
+
+
+export default function StarterFrame({ setStartGame, setStartingRoom }) {
+  const handleIntroChoice = useIntroLogic(setStartGame, setStartingRoom);
   return (
     <div className="text-center mt-10 space-y-4">
       <p>Choose your path:</p>

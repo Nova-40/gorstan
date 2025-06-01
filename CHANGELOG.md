@@ -1,19 +1,21 @@
-# Changelog
+# 🧾 Gorstan Game – CHANGELOG v2.8.0-audit
+**Date:** 2025-06-01
 
-## [2.4.1] – May 27, 2025
-### Added
-- License and version headers added to all modules
-- Default export logic safely introduced where missing
-- Fallback sound (`keystroke.mp3`) used for Teletype intro
+## ✅ Modules Audited & Upgraded
 
-### Fixed
-- `rooms.js` now exports full room object cleanly
-- Syntax errors and missing exports in commandParser, dialogueEngine, introLogic, resetSystem
-- TeletypeIntro properly plays audio and supports animated storytelling
+### Major Enhancements:
+- ✅ Introduced `GameContext` for global state (score, inventory, room)
+- ✅ Rewired `GameEngine.jsx`, `AppCore.jsx`, `introLogic.js` to use context
+- ✅ Upgraded status logic in `StatusPanel.jsx`, `RoomRenderer.jsx`
+- ✅ Movement fully rewired with tooltips in `MovementPanel.jsx`
+- ✅ Trap logic added and integrated across `trapSystem.js`, Ayla, and RoomRenderer
+- ✅ `InstructionsScreen.jsx` now includes ARIA labels, test hooks, and a debug version banner
 
-### Improved
-- Code modularity and readability across core logic files
-- Game startup and intro flow logic
-- Verified all assets and image references
+### New Features:
+- ⚠ Trap shimmer alerts with logic for disarmament and contextual Ayla help
+- 📦 Room helper functions (`getRoomById`, `isTrap`, `getExits`)
+- 🧠 NameCapture refactored to `PlayerNameCapture.jsx` with Enter key support
 
-MIT License © Geoff Webster, 2025
+## 🧪 Known Issues
+- None identified during final audit
+

@@ -1,93 +1,48 @@
-// Gorstan Game Module — v2.8.0
-// MIT License © 2025 Geoff Webster
-// inventory.js — Handles item tracking and inventory mechanics.
 
-const playerInventory = new Set();
+// inventory.js — v2.8.2
+// Manages player inventory: caps, item properties, inspection, and spill mechanics
 
-/**
- * Normalizes and validates item name input.
- * @param {string} itemName
- * @returns {string|null} - Normalized item name or null if invalid.
- */
-function validateItem(itemName) {
-  if (typeof itemName !== 'string') return null;
-  const normalized = itemName.trim().toLowerCase();
-  return normalized || null;
-}
+const MAX_ITEMS = 12;
+let spilledItems = [];
 
-/**
- * Logs inventory actions for debugging.
- * @param {string} action
- * @param {string} item
- */
-function log(action, item) {
-  // Could be replaced with a more robust logger if needed
-  console.log(`[Inventory] ${action}: ${item}`);
-}
+const itemDescriptions = {
+  coffee: "A steaming cup of Gorstan coffee. Somehow still hot.",
+  map: "A sketch of the facility layout, drawn by a nervous hand.",
+  foldedNote: "The note reads: 'It begins at the café... but ends in the lattice.'",
+  goldCoin: "A shiny coin. Looks valuable but feels... hollow.",
+  dirtyNapkin: "A grease-stained napkin with quantum schematics sketched on it."
+};
 
-/**
- * Adds an item to the player's inventory.
- * If inventory exceeds 12 items, all items are spilled (cleared).
- * @param {string} item
- * @returns {object} Result object (success, error, or spill info)
- */
-export function addItem(item) {
-  if (playerInventory.size >= 12) {
-    const spilled = Array.from(playerInventory);
-    playerInventory.clear();
-    return { spilled, message: 'Pocket overload! Items spilled.' };
+const itemTypes = {
+  coffee: "useful",
+  map: "useful",
+  foldedNote: "clue",
+  goldCoin: "junk",
+  dirtyNapkin: "treasure"
+};
+
+export const addItem = (inventory, item, dispatch) => {
+  const updated = [...inventory, item];
+
+  if (updated.length > MAX_ITEMS) {
+    spilledItems = [...updated];
+    dispatch({ type: "LOG", payload: "🎒 Your pockets overflow! Items spill to the floor..." });
+    return [];
   }
-  const valid = validateItem(item);
-  if (valid) {
-    playerInventory.add(valid);
-    log("Added", valid);
-    return { success: true };
-  }
-  return { error: "Invalid item" };
-}
 
-/**
- * Removes an item from the player's inventory.
- * @param {string} item
- */
-export function removeItem(item) {
-  const valid = validateItem(item);
-  if (valid && playerInventory.has(valid)) {
-    playerInventory.delete(valid);
-    log("Removed", valid);
-  }
-}
+  return updated;
+};
 
-/**
- * Checks if the player has a specific item.
- * @param {string} item
- * @returns {boolean}
- */
-export function hasItem(item) {
-  const valid = validateItem(item);
-  return valid ? playerInventory.has(valid) : false;
-}
+export const inspectItem = (item) => {
+  return itemDescriptions[item] || "It's unremarkable.";
+};
 
-/**
- * Returns an array of all items in the player's inventory.
- * @returns {Array}
- */
-export function getInventory() {
-  return Array.from(playerInventory);
-}
+export const getItemType = (item) => {
+  return itemTypes[item] || "unknown";
+};
 
-/**
- * Clears the player's inventory.
- */
-export function clearInventory() {
-  playerInventory.clear();
-}
+export const getSpilledItems = () => spilledItems;
 
-/*
-Review summary:
-- ✅ Syntax is correct and all logic is preserved.
-- ✅ No unused or broken imports.
-- ✅ Structure is clear and consistent.
-- ✅ Comments clarify intent and behaviour.
-- ✅ Module is ready for build and production integration.
-*/
+export const resetSpill = () => {
+  spilledItems = [];
+};
