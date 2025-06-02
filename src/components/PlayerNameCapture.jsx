@@ -5,14 +5,14 @@ const PlayerNameCapture = ({ onNameSubmit, onShowInstructions }) => {
   const [name, setName] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = () => {
+  const handleSubmit = (skip = false) => {
     if (!name.trim()) {
       setError("Please enter your name.");
       return;
     }
     setError("");
     localStorage.setItem("playerName", name);
-    onNameSubmit(name);
+    onNameSubmit(name, skip);
   };
 
   return (
