@@ -1,6 +1,8 @@
 
 // storyProgress.js — v2.8.2
 // Manages player traits, flags, and milestone events using reducer pattern
+// storyProgress.js — v2.8.2
+// Manages player traits, flags, and milestone events using reducer pattern
 
 export const initialStoryState = {
   traits: [],
@@ -61,3 +63,26 @@ export const storyFlagsReducer = (state, action) => {
 export const hasTrait = (state, trait) => state.traits.includes(trait);
 export const getFlag = (state, key) => state.flags[key] || false;
 export const isMilestoneComplete = (state, milestone) => state.milestones.includes(milestone);
+
+// storyProgress.js — trait management functions (insert at the bottom)
+
+export const gainTrait = (trait, state, dispatch) => {
+  if (!state.traits.includes(trait)) {
+    dispatch({ type: "GAIN_TRAIT", payload: trait });
+  }
+};
+
+export const checkTraitUnlocks = (state, dispatch) => {
+  import("./traits").then(module => {
+    module.default.forEach(trait => {
+      if (trait.unlockCondition && trait.unlockCondition(state)) {
+        gainTrait(trait.name, state, dispatch);
+      }
+    });
+  });
+};
+
+// Reset function for storyProgress — used in AppCore to restart state
+export const reset = () => {
+  console.log("Story progress reset."); // Extend as needed
+};
