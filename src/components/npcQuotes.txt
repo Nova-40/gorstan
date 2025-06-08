@@ -1,0 +1,5 @@
+Ayla (if player has Lorekeeper and asks about ethics):
+"You read the Accord? Not many do. Most skip straight to the choices."
+
+Polly (if player has Lorekeeper and ethics scroll):
+"Oh, you're fluent in morality now? Cute."

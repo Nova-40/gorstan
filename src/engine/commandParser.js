@@ -142,6 +142,27 @@ export const parseCommand = (command, state, dispatch) => {
     return;
   }
 
+    // === Sit in Chair Command ===
+   if (
+    normalized === "sit in chair" ||
+    (normalized.includes("sit") && normalized.includes("chair")) ||
+    normalized === "use chair"
+  ) {
+    const currentRoom = state?.room && state.rooms
+      ? state.rooms[state.room]
+      : state?.currentRoom && state.rooms
+        ? state.rooms[state.currentRoom]
+        : null;
+
+    const chair = currentRoom?.objects?.chair;
+    if (chair && chair.interact) {
+      dispatch({ type: "LOG", payload: chair.interact });
+    } else {
+      dispatch({ type: "LOG", payload: "There is nowhere obvious to sit." });
+    }
+    return;
+  }
+
   // === Future Parser Extensions ===
   // TODO: Add natural language breakdown support, e.g., "throw [item] at [target]"
 

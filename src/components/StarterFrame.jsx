@@ -25,7 +25,7 @@ function useIntroLogic(setStartGame, setStartingRoom) {
         setStartGame(true);
         break;
       case "wait":
-        setStartingRoom("introreset");
+        setStartingRoom("introReset");
         setStartGame(true);
         break;
       case "sip":

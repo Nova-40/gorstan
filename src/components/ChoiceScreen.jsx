@@ -1,3 +1,4 @@
+// Gorstan Game Module — v3.0.0
 // File: src/components/ChoiceScreen.jsx
 // MIT License
 // © 2025 Geoff Webster – Gorstan Game Project

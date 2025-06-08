@@ -1,3 +1,4 @@
+// Gorstan Game Module — v3.0.0
 
 // puzzleEngine.js — logic for evaluating puzzle steps and applying outcomes
 import puzzles from "./puzzles";

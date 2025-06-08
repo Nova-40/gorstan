@@ -1,3 +1,4 @@
+// Gorstan Game Module — v3.0.0
 
 // storyProgress.js — v2.8.2
 // Manages player traits, flags, and milestone events using reducer pattern

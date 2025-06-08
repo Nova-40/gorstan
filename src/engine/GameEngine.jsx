@@ -1,140 +1,135 @@
-// Gorstan Game Module — v2.8.3
+// Gorstan Game Module — v2.9.1
 // MIT License © 2025 Geoff Webster
-// GameEngine.jsx — Main reducer-driven engine for Gorstan gameplay
+// GameEngine.jsx — Main gameplay engine after intro sequence
 
-import React, { useReducer, useEffect } from "react";
+import React, { useEffect, useContext, useRef, useState } from "react";
 import RoomRenderer from "../components/RoomRenderer";
+import QuickActions from "../components/QuickActions.jsx";
+import CommandInput from "../components/CommandInput";
+import LogHistory from "../components/LogHistory";
+import { GameContext } from "./GameContext";
 import rooms from "./rooms";
-import { getIntroResult } from "./introLogic";
-import { storyFlagsReducer, initialStoryState } from "./storyProgress";
-import MovementPanel from "../components/MovementPanel";
-import StatusPanel from "../components/StatusPanel";
-import AylaButton from "../components/AylaButton";
-
-/**
- * Reducer for main game state.
- * Handles room changes, inventory, traits, score, flags, and log.
- * @param {Object} state - Current game state.
- * @param {Object} action - Action object with type and payload.
- * @returns {Object} New game state.
- */
-const gameReducer = (state, action) => {
-  switch (action.type) {
-    case "INIT":
-      // Sets up initial state based on intro choice
-      return {
-        ...state,
-        ...getIntroResult(action.payload.choice, state)
-      };
-    case "MOVE":
-      // Moves player to a new room and triggers trap check
-      return {
-        ...state,
-        room: action.payload.room,
-        checkTrap: true,
-      };
-    case "UPDATE_INVENTORY":
-      return {
-        ...state,
-        inventory: action.payload,
-      };
-    case "LOG":
-      return {
-        ...state,
-        log: [...state.log, action.payload]
-      };
-    // TODO: Add more action types as Gorstan expands
-    default:
-      return state;
-  }
-};
+import { parseCommand } from "./commandParser";
 
 /**
  * GameEngine
- * Main gameplay engine for Gorstan. Manages state, room rendering, and panels.
+ * Main interactive engine for Gorstan after intro sequence.
+ * Handles room rendering, command parsing, and game state.
+ *
  * @component
  * @param {Object} props
- * @param {string} props.introChoice - The player's intro choice (used for initial state).
+ * @param {string} props.playerName - The player's name.
+ * @param {string} [props.introChoice="jump"] - The intro choice ("jump", "wait", "sip").
+ * @param {Function} props.onError - Error handler callback.
  * @returns {JSX.Element}
  */
-const GameEngine = ({ introChoice }) => {
-  // === State: Main game state ===
-  const [state, dispatch] = useReducer(gameReducer, {
-    room: "placeholder",
-    inventory: [],
-    traits: [],
-    score: 0,
-    flags: {},
-    log: []
-  });
+const GameEngine = ({ playerName, introChoice = "jump", onError }) => {
+  // === State and Context ===
+  const { state, dispatch } = useContext(GameContext);
+  const [command, setCommand] = useState("");
+  const engineRef = useRef();
 
-  // === State: Story flags (side reducer for narrative progress) ===
-  const [storyState, storyDispatch] = useReducer(storyFlagsReducer, initialStoryState);
-
-  // === Effect: Initialize game state on introChoice change ===
+  /**
+   * Setup engineRef with imperative game actions for parser or external calls.
+   * (Not currently used outside, but ready for future extensibility.)
+   */
   useEffect(() => {
-    dispatch({ type: "INIT", payload: { choice: introChoice } });
-  }, [introChoice]);
+    engineRef.current = {
+      move: (direction) => {
+        const exits = rooms[state.currentRoom]?.exits || {};
+        const targetRoom = exits[direction];
+        if (targetRoom && rooms[targetRoom]) {
+          dispatch({ type: "SET_ROOM", payload: targetRoom });
+          dispatch({ type: "LOG", payload: `You move ${direction}.` });
+        } else {
+          dispatch({ type: "LOG", payload: "You can't go that way." });
+        }
+      },
+      say: (text) => {
+        dispatch({ type: "LOG", payload: `You say: "${text}"` });
+      },
+      log: (text) => {
+        dispatch({ type: "LOG", payload: text });
+      },
+      getState: () => state,
+      dispatch,
+    };
+  }, []);
 
-  // === Room Lookup ===
-  const currentRoom = rooms[state.room];
+  /**
+   * Game start logic.
+   * On first mount, sets up player name and marks game as started.
+   * Relies on AppCore to set the initial room.
+   */
+  useEffect(() => {
+    if (!state.started) {
+      try {
+        dispatch({ type: "SET_PLAYER_NAME", payload: playerName });
+        dispatch({ type: "LOG", payload: `Welcome, ${playerName}` });
+        dispatch({ type: "MARK_GAME_STARTED" });
+      } catch (err) {
+        console.error("[GameEngine] Error in game start logic:", err);
+        if (typeof onError === "function") onError(err);
+      }
+    }
+  }, [state.started, playerName, dispatch, onError]);
 
-  // Defensive: Fallback UI if room is invalid
+  /**
+   * Handles player command submission.
+   * Logs the command, parses it, and clears the input.
+   * @param {string} cmd - The command entered by the player.
+   */
+  const handleCommandSubmit = (cmd) => {
+    if (!cmd || typeof cmd !== "string") return;
+    dispatch({ type: "LOG", payload: `> ${cmd}` });
+    try {
+      parseCommand(cmd, state, dispatch);
+    } catch (err) {
+      dispatch({ type: "LOG", payload: "An error occurred while processing your command." });
+      console.error("[GameEngine] Command parse error:", err);
+      if (typeof onError === "function") onError(err);
+    }
+    setCommand("");
+  };
+
+  // Defensive: fallback to a safe room if state is broken
+  const currentRoom = rooms[state.currentRoom];
+
   if (!currentRoom) {
+    // Defensive fallback UI for missing room
+    console.warn("[GameEngine] currentRoom not found:", state.currentRoom);
     return (
-      <div className="text-red-500 font-mono p-4">
-        ❌ No Room Selected<br />
-        Please select a valid room to continue.
+      <div className="text-red-400 bg-black p-6" role="alert">
+        ⚠️ Room "{state.currentRoom}" not found. Please check rooms.js or room ID.
       </div>
     );
   }
 
-  // === Effect: Trap check on room change ===
-  useEffect(() => {
-    if (state.checkTrap && currentRoom) {
-      import("./trapSystem")
-        .then(module => {
-          if (typeof module.checkForTrap === "function") {
-            module.checkForTrap(state.room, state, dispatch);
-          } else {
-            // eslint-disable-next-line no-console
-            console.error("trapSystem.checkForTrap not found.");
-          }
-        })
-        .catch(err => {
-          // eslint-disable-next-line no-console
-          console.error("Failed to load trapSystem:", err);
-        });
-    }
-    // TODO: Consider resetting checkTrap after trap check if needed
-  }, [state.checkTrap, currentRoom, state.room, state, dispatch]);
-
-  // === Main UI Layout ===
+  // === Render ===
   return (
-    <main className="min-h-screen bg-black text-green-400 font-mono p-4">
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-        <div className="lg:col-span-3">
-          <RoomRenderer room={currentRoom} state={state} dispatch={dispatch} />
-          <MovementPanel currentRoom={currentRoom} dispatch={dispatch} />
-        </div>
-        <div className="lg:col-span-1 space-y-4">
-          <StatusPanel state={state} />
-          <AylaButton />
-        </div>
+    <div className="p-4 text-green-200 font-mono bg-black min-h-screen">
+      {/* Room display */}
+      
+        <QuickActions currentRoom={rooms[state.currentRoom]} state={state} dispatch={dispatch} />
+<RoomRenderer room={currentRoom} state={state} />
+
+      <div className="mt-4 flex flex-col gap-3 items-center">
+        {/* Optional: MovementPanel can be added here if needed */}
+        {/* <MovementPanel exits={currentRoom.exits} onMove={...} /> */}
+
+
+        {/* Command input */}
+        <CommandInput
+          command={command}
+          setCommand={setCommand}
+          onSubmit={handleCommandSubmit}
+        />
+
+        {/* Log/history display */}
+        <LogHistory log={state.log || []} />
       </div>
-    </main>
+    </div>
   );
 };
 
 export default GameEngine;
-
-/*
-Review summary:
-- ✅ Syntax is correct and all logic is preserved.
-- ✅ JSDoc comments for reducer, component, props, and effects.
-- ✅ Defensive error handling for invalid rooms and dynamic imports.
-- ✅ No dead code or unused imports.
-- ✅ Structure is modular and ready for integration.
-- 💄 UI/UX: Tailwind classes for layout, accessible error fallback.
-- 🧪 TODO: Reset checkTrap after trap check if needed; expand reducer for more actions.
-*/

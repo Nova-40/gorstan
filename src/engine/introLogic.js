@@ -10,7 +10,7 @@
 export const handleJump = (currentState) => {
   return {
     ...currentState,
-    room: "controlnexus",
+    room: "room9",
     score: (currentState.score || 0) + 10,
     inventory: [...(currentState.inventory || []), "coffee"],
     log: "Player jumped into the portal. Score +10. Coffee added."
@@ -27,7 +27,7 @@ export const handleWait = (currentState) => {
   const updatedInventory = (currentState.inventory || []).filter(item => item !== "coffee");
   return {
     ...currentState,
-    room: "introreset",
+    room: "introReset",
     score: (currentState.score || 0) - 10,
     inventory: updatedInventory,
     log: "Player waited and got SPLAT. Score -10. Coffee lost."
@@ -51,7 +51,7 @@ export const handleSip = (currentState) => {
 
   return {
     ...currentState,
-    room: "quantumlattice",
+    room: "room21", // quantumlattice room
     score: (currentState.score || 0) + 40,
     inventory: [...(currentState.inventory || []), "coffee"],
     flags: { ...currentState.flags, hasSipped: true },

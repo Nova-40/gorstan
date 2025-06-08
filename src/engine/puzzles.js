@@ -1,3 +1,4 @@
+// Gorstan Game Module — v3.0.0
 
 // puzzles.js — defines all puzzles in the game
 
