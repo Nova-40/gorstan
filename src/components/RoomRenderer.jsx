@@ -1,13 +1,10 @@
-// Gorstan Game Module — v2.9.0
-// MIT License © 2025 Geoff Webster
-// RoomRenderer.jsx — Renders a room with highlighted interactive elements, centred layout
-// Gorstan Game Module — v2.9.1
+// Gorstan Game Module — v3.1.2
 // MIT License © 2025 Geoff Webster
 // RoomRenderer.jsx — Renders a room and QA tools side-by-side, centred
 
 import React from "react";
 import PropTypes from "prop-types";
-import CombinedActions from "./CombinedActions"; // Replace with your combined Movement + QA tool module
+import CombinedActions from "./CombinedActions";
 
 function highlightDescription(description) {
   if (typeof description !== "string") return "";
@@ -34,26 +31,27 @@ const RoomRenderer = ({ room, state }) => {
 
   return (
     <div className="flex flex-row justify-center gap-8 items-start">
-  <div className="flex flex-col items-center text-center">
-    <h1 className="text-2xl font-bold text-green-400 mb-2">{room.name}</h1>
-    {room.image && (
-      <img
-        src={`/images/${room.image}`}
-        alt={room.name}
-        style={{ width: '400px', border: '2px solid lime' }}
-      />
-    )}
-    <p
-      className="text-green-200 mt-4 max-w-xl"
-      dangerouslySetInnerHTML={{ __html: highlightDescription(room.description) }}
-    />
-  </div>
+      <div className="flex flex-col items-center text-center">
+        <h1 className="text-2xl font-bold text-green-400 mb-2">{name}</h1>
+        {image && (
+          <img
+            src={`/images/${image}`}
+            alt={name}
+            style={{ width: '400px', border: '2px solid lime' }}
+          />
+        )}
+        <p
+          className="text-green-200 mt-4 max-w-xl"
+          dangerouslySetInnerHTML={{ __html: highlightDescription(finalDesc) }}
+        />
+      </div>
 
-  <CombinedActions exits={room.exits || {}} state={state} onCommand={(cmd) => {
-    // Dispatch command logic here (can also call engineRef.current.move or parseCommand directly)
-    console.log("Quick Action Triggered:", cmd);
-  }} />
-</div>)}
+      <CombinedActions exits={room.exits || {}} state={state} onCommand={(cmd) => {
+        console.log("Quick Action Triggered:", cmd);
+      }} />
+    </div>
+  );
+};
 
 RoomRenderer.propTypes = {
   room: PropTypes.shape({
@@ -67,3 +65,4 @@ RoomRenderer.propTypes = {
 };
 
 export default RoomRenderer;
+

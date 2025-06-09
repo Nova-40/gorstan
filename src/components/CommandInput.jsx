@@ -48,7 +48,7 @@ export default function CommandInput({ command, setCommand, onSubmit }) {
   return (
     <div className="mt-4 px-4">
       <input
-        className="w-full px-4 py-2 rounded bg-black text-green-400 border border-green-700 placeholder-green-600"
+        className="w-2/3 mx-auto mt-4 p-2 text-green-300 bg-black border border-green-500 rounded text-center"
         type="text"
         placeholder="Type a command..."
         value={command}

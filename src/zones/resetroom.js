@@ -1,5 +1,5 @@
 // Gorstan Game Module — v3.0.0
-const resetroom = {
+const resetRoom = {
   room49: {
     id: "room49",
     name: "Reset Room",
@@ -21,4 +21,4 @@ const resetroom = {
   }
 };
 
-export default resetroom;
+export default resetRoom;

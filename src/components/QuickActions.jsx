@@ -1,158 +1,87 @@
-// Gorstan Game Module — v2.9.2
+// Gorstan Game Module — v3.1.0
 // MIT License © 2025 Geoff Webster
-// QuickActions.jsx — Handles directional movement and quick actions for Gorstan UI
+// QuickActions.jsx — Consolidated quick action buttons including movement, item use, and helper triggers
 
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  Eye,
-  Backpack,
-  Coffee,
-  Undo2,
-  RefreshCcwDot,
-  MessageSquare,
-  RedoDot,
-  ArrowUp,
-  ArrowDown,
-  ArrowLeft,
-  ArrowRight,
-  MoveUp,
-  MoveDown,
-  Armchair
-} from "lucide-react";
+import { ArrowBigUp, ArrowBigDown, ArrowBigLeft, ArrowBigRight, Coffee, Heart, KeyRound, BookOpenText, RefreshCcwDot } from "lucide-react";
 
-/**
- * Directional movement button definitions.
- */
-const directions = [
-  { icon: ArrowUp, direction: "north", tooltip: "Go North" },
-  { icon: ArrowDown, direction: "south", tooltip: "Go South" },
-  { icon: ArrowLeft, direction: "west", tooltip: "Go West" },
-  { icon: ArrowRight, direction: "east", tooltip: "Go East" },
-  { icon: MoveUp, direction: "up", tooltip: "Go Up" },
-  { icon: MoveDown, direction: "down", tooltip: "Go Down" }
-];
-
-/**
- * Quick action button definitions.
- */
-const actions = [
-  {
-    id: "look",
-    icon: <Eye size={20} />,
-    tooltip: "Look Around",
-    condition: () => true,
-    handler: (dispatch) => dispatch?.({ type: "LOOK_AROUND" })
-  },
-  {
-    id: "inventory",
-    icon: <Backpack size={20} />,
-    tooltip: "Check Inventory",
-    condition: () => true,
-    handler: (dispatch) => dispatch?.({ type: "SHOW_INVENTORY" })
-  },
-  {
-    id: "throwCoffee",
-    icon: <Coffee size={20} />,
-    tooltip: "Throw Gorstan Coffee",
-    condition: (state) => state?.inventory?.includes("coffee"),
-    handler: (dispatch) => {
-      dispatch?.({ type: "THROW_COFFEE" });
-      dispatch?.({
-        type: "LOG",
-        payload: "You throw your Gorstan coffee with unexpected force."
-      });
-    }
-  },
-  {
-    id: "stepback",
-    icon: <Undo2 size={20} />,
-    tooltip: "Step Back to Previous Room",
-    condition: () => true,
-    handler: (dispatch) => dispatch?.({ type: "STEP_BACK" })
-  },
-  {
-    id: "reset",
-    icon: <RefreshCcwDot size={20} />,
-    tooltip: "Reset the Universe",
-    condition: (state) => state?.room === "resetroom" && !state?.resetDisabled,
-    handler: (dispatch) => dispatch?.({ type: "BEGIN_RESET_SEQUENCE" })
-  },
-  {
-    id: "askAyla",
-    icon: <MessageSquare size={20} />,
-    tooltip: "Ask Ayla for Help",
-    condition: () => true,
-    handler: (dispatch) => dispatch?.({ type: "SUMMON_AYLA" })
-  },
-  {
-    id: "jump",
-    icon: <RedoDot size={20} />,
-    tooltip: "Jump into the Unknown",
-    condition: (state) => state?.canJump,
-    handler: (dispatch) => dispatch?.({ type: "JUMP_PORTAL" })
-  },
-  {
-    id: "sitChair",
-    icon: <Armchair size={20} />,
-    tooltip: "Sit in Chair",
-    condition: (state) => state?.currentRoom === "resetroom",
-    handler: (dispatch) => {
-      dispatch?.({ type: "LOG", payload: "You sit in the chair. Reality shifts." });
-      dispatch?.({ type: "SET_ROOM", payload: "trentpark" });
-      dispatch?.({ type: "SCORE", payload: 10 });
-    }
-  }
-];
+const directionIcons = {
+  north: <ArrowBigUp size={18} />, south: <ArrowBigDown size={18} />,
+  west: <ArrowBigLeft size={18} />, east: <ArrowBigRight size={18} />,
+  up: <ArrowBigUp size={18} />, down: <ArrowBigDown size={18} />
+};
 
 const QuickActions = ({ currentRoom, state, dispatch }) => {
-  if (!currentRoom) return null;
+  if (!currentRoom || typeof currentRoom !== "object") return null;
+
+  const handleMove = (dir) => dispatch({ type: "MOVE", payload: dir });
+  const handleThrowCoffee = () => dispatch({ type: "THROW_COFFEE" });
+  const handleStatus = () => dispatch({ type: "TOGGLE_STATUS_PANEL" });
+  const handleHelp = () => dispatch({ type: "ASK_NPC", payload: { npc: "ayla", topic: "help" } });
+
+  const exits = currentRoom.exits || {};
+  const hasCoffee = state?.inventory?.includes("coffee");
+  const hasKey = state?.inventory?.includes("briefcase") || state?.inventory?.includes("key");
 
   return (
-    <div className="flex flex-col items-center space-y-4 p-2">
-      {/* Quick Action Buttons */}
-      <div className="flex flex-wrap justify-center gap-2">
-        {actions
-          .filter(action => action.condition(state))
-          .map(action => (
-            <button
-              key={action.id}
-              onClick={() => action.handler(dispatch, state)}
-              title={typeof action.tooltip === "function" ? action.tooltip(state) : action.tooltip}
-              className="rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-500 px-3 py-2 text-white text-xs"
-            >
-              {action.icon}
-            </button>
-          ))}
-      </div>
+    <div className="grid grid-cols-3 gap-2 text-xs text-white p-2 w-52">
+      {Object.keys(exits).map((dir) => (
+        <button
+          key={dir}
+          onClick={() => handleMove(dir)}
+          className={`flex items-center justify-center p-2 border rounded ${exits[dir] ? "bg-green-600" : "bg-gray-700 cursor-not-allowed"}`}
+          disabled={!exits[dir]}
+          title={`Go ${dir}`}
+        >
+          {directionIcons[dir] || dir.toUpperCase()}
+        </button>
+      ))}
 
-      {/* Directional Movement Buttons */}
-      <div className="flex flex-wrap justify-center gap-2 mt-2">
-        {directions.map(({ icon: Icon, direction, tooltip }) => {
-          const isActive = currentRoom.exits?.[direction];
-          return (
-            <button
-              key={direction}
-              onClick={() => isActive && dispatch?.({ type: "MOVE", payload: direction })}
-              className={`rounded px-2 py-1 text-xs border ${
-                isActive ? "bg-green-700 hover:bg-green-600 border-green-500" : "bg-gray-700 border-gray-500 opacity-40"
-              }`}
-              disabled={!isActive}
-              title={tooltip}
-            >
-              <Icon size={20} />
-            </button>
-          );
-        })}
-      </div>
+      {hasCoffee && (
+        <button
+          onClick={handleThrowCoffee}
+          className="col-span-3 flex items-center justify-center p-2 bg-yellow-800 hover:bg-yellow-700 border rounded"
+          title="Throw Gorstan Coffee"
+        >
+          <Coffee size={16} className="mr-1" /> Throw Coffee
+        </button>
+      )}
+
+      <button
+        onClick={handleStatus}
+        className="col-span-3 flex items-center justify-center p-2 bg-blue-700 hover:bg-blue-600 border rounded"
+        title="Status Panel"
+      >
+        <Heart size={16} className="mr-1" /> Stats
+      </button>
+
+      <button
+        onClick={handleHelp}
+        className="col-span-3 flex items-center justify-center p-2 bg-purple-700 hover:bg-purple-600 border rounded"
+        title="Ask Ayla for help"
+      >
+        <BookOpenText size={16} className="mr-1" /> Ask Ayla
+      </button>
+
+      {hasKey && (
+        <button
+          onClick={() => dispatch({ type: "USE_ITEM", payload: "briefcase" })}
+          className="col-span-3 flex items-center justify-center p-2 bg-gray-700 hover:bg-gray-600 border rounded"
+          title="Use Key Item"
+        >
+          <KeyRound size={16} className="mr-1" /> Use Key
+        </button>
+      )}
     </div>
   );
 };
 
 QuickActions.propTypes = {
-  currentRoom: PropTypes.object,
-  state: PropTypes.object,
+  currentRoom: PropTypes.object.isRequired,
+  state: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired
 };
 
 export default QuickActions;
+

@@ -1,59 +1,56 @@
 // Gorstan Game Module — v3.0.0
 import React, { useContext, useEffect, useState } from 'react';
 import { GameContext } from '../engine/GameContext';
+// Gorstan Game Module — v3.1.0
+// MIT License © 2025 Geoff Webster
+// StatusPanel.jsx — Slide-out player status panel with real-time trait/health tracking
 
-const StatBar = ({ label, value, icon }) => {
-  const percentage = Math.max(0, Math.min(100, value));
-  let barColor = 'bg-green-500';
-  if (percentage < 50) barColor = 'bg-yellow-400';
-  if (percentage < 25) barColor = 'bg-red-500 animate-pulse';
+import React from "react";
+import PropTypes from "prop-types";
+
+const StatusPanel = ({ stats, traits, isVisible }) => {
+  if (!isVisible) return null;
 
   return (
-    <div className="mb-2">
-      <div className="flex justify-between text-sm font-medium">
-        <span>{icon} {label}</span>
-        <span>{percentage}%</span>
+    <div className="fixed top-0 right-0 w-64 h-full bg-gray-900 text-green-200 p-4 shadow-lg z-50 overflow-y-auto border-l border-green-600">
+      <h2 className="text-xl font-bold mb-4">Player Status</h2>
+
+      <div className="mb-4">
+        <h3 className="text-green-400 font-semibold mb-1">Vitals</h3>
+        <ul className="text-sm space-y-1">
+          <li>Health: {stats.health}</li>
+          <li>Energy: {stats.energy}</li>
+          <li>Mood: {stats.mood}</li>
+        </ul>
       </div>
-      <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-        <div
-          className={`h-full transition-all duration-300 ${barColor}`}
-          style={{ width: `${percentage}%` }}
-        />
+
+      <div>
+        <h3 className="text-green-400 font-semibold mb-1">Traits</h3>
+        <ul className="text-sm list-disc ml-5">
+          {traits.map((trait) => (
+            <li key={trait.name} title={trait.description}>
+              {trait.name}
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
 };
 
-const StatusPanel = () => {
-  const { state } = useContext(GameContext);
-  const { health = 100, energy = 100, mood = 100 } = state;
-  const [flashColor, setFlashColor] = useState("green");
-
-  useEffect(() => {
-    const minStat = Math.min(health, energy, mood);
-    let color = "green";
-    if (minStat < 25) color = "red";
-    else if (minStat < 50) color = "amber";
-
-    setFlashColor(color);
-    const timeout = setTimeout(() => setFlashColor("green"), 1500);
-    return () => clearTimeout(timeout);
-  }, [health, energy, mood]);
-
-  const borderStyles = {
-    green: "border-green-500",
-    amber: "border-yellow-400 animate-pulse",
-    red: "border-red-500 animate-pulse",
-  };
-
-  return (
-    <div className={`fixed right-2 top-20 w-48 p-4 bg-white shadow-lg rounded-xl z-50 text-xs border-2 transition-all duration-300 ${borderStyles[flashColor]}`}>
-      <h2 className="text-sm font-bold mb-2 text-center">📊 Status</h2>
-      <StatBar label="Health" value={health} icon="❤️" />
-      <StatBar label="Energy" value={energy} icon="⚡" />
-      <StatBar label="Mood" value={mood} icon="😐" />
-    </div>
-  );
+StatusPanel.propTypes = {
+  stats: PropTypes.shape({
+    health: PropTypes.number,
+    energy: PropTypes.number,
+    mood: PropTypes.number
+  }).isRequired,
+  traits: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      description: PropTypes.string
+    })
+  ).isRequired,
+  isVisible: PropTypes.bool.isRequired
 };
 
 export default StatusPanel;

@@ -1,4 +1,4 @@
-// Gorstan Game Module — v2.8.3
+// Gorstan Game Module — v3.2.0
 // MIT License © 2025 Geoff Webster
 // GameContext.jsx — React context for shared game state across components
 
@@ -25,6 +25,14 @@ export const initialState = {
   debugMode: false,
   godMode: false,
   skipInstructions: false,
+  showStatus: false,
+  showDebugHelp: false,
+  stats: {
+    health: 100,
+    energy: 100,
+    mood: 100
+  },
+  log: []
 };
 
 /**
@@ -48,34 +56,59 @@ export function gameReducer(state, action) {
       return { ...state, currentRoom: action.payload };
     case "SET_SKIP_INSTRUCTIONS":
       return { ...state, skipInstructions: action.payload };
-      case 'MOVE': {
-  const currentRoom = rooms[state.currentRoom];
-  const nextRoomId = currentRoom?.exits?.[action.payload];
-  if (nextRoomId && rooms[nextRoomId]) {
-    return {
-      ...state,
-      currentRoom: nextRoomId,
-      log: [...state.log || [], `You move ${action.payload}.`],
-      previousRoom: state.currentRoom
-    };
-  } else {
-    return {
-      ...state,
-      log: [...state.log || [], "You can't go that way."]
-    };
-  }
-}
-
+    case "MOVE": {
+      const currentRoom = rooms[state.currentRoom];
+      const nextRoomId = currentRoom?.exits?.[action.payload];
+      if (nextRoomId && rooms[nextRoomId]) {
+        return {
+          ...state,
+          currentRoom: nextRoomId,
+          log: [...state.log || [], `You move ${action.payload}.`],
+          previousRoom: state.currentRoom
+        };
+      } else {
+        return {
+          ...state,
+          log: [...state.log || [], "You can't go that way."]
+        };
+      }
+    }
     case "SCORE":
       return { ...state, score: state.score + (action.payload || 0) };
-
     case "THROW_COFFEE":
       return {
         ...state,
         inventory: state.inventory.filter(item => item !== "coffee"),
         log: [...state.log || [], "You throw your Gorstan coffee with unexpected force."]
       };
-
+    case "TOGGLE_STATUS_PANEL":
+      return {
+        ...state,
+        showStatus: !state.showStatus
+      };
+    case "TOGGLE_DEBUG_HELP":
+      return {
+        ...state,
+        showDebugHelp: !state.showDebugHelp
+      };
+    case "ADJUST_STATS":
+      return {
+        ...state,
+        stats: {
+          ...state.stats,
+          ...Object.fromEntries(
+            Object.entries(action.payload || {}).map(([key, val]) => [
+              key,
+              Math.max(0, (state.stats?.[key] || 0) + val)
+            ])
+          )
+        }
+      };
+    case "LOG":
+      return {
+        ...state,
+        log: [...state.log || [], action.payload]
+      };
     default:
       return state;
   }
@@ -124,14 +157,3 @@ export const useGameContext = () => {
   }
   return context;
 };
-
-/*
-Review summary:
-- ✅ Syntax is correct and all logic is preserved.
-- ✅ Only one context/provider/hook pattern is used (no duplicate/legacy code).
-- ✅ JSDoc comments for context, provider, reducer, hook, and props.
-- ✅ Defensive error handling for context usage.
-- ✅ No dead code or unused imports.
-- ✅ Structure is modular and ready for integration.
-- 🧪 TODO: Add persistence or middleware if session continuity is desired.
-*/

@@ -1,5 +1,5 @@
 // Gorstan Game Module — v3.0.0
-const rooms = {
+const introRooms = {
   introStart: {
     id: "introStart",
     name: "Intro Start",
@@ -72,4 +72,4 @@ const rooms = {
   },
 };
 
-export default rooms;
+export default introRooms;

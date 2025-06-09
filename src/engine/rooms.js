@@ -16,6 +16,7 @@ import offgorstanRooms from "../zones/offgorstanRooms.js";
 import offmultiverseRooms from "../zones/offmultiverseRooms.js";
 import prewelcomeRooms from "../zones/prewelcomeRooms.js";
 import stantonharcourtRooms from "../zones/stantonharcourtRooms.js";
+import resetRoom from '../zones/resetRoom.js';
 
 // 🧩 Combine all rooms
 const allRooms = {
@@ -32,7 +33,7 @@ const allRooms = {
   ...offmultiverseRooms,
   ...prewelcomeRooms,
   ...stantonharcourtRooms,
-  ...resetroomRooms
+  ...resetRoom
 };
 
 // ✅ Validate Room Structure
