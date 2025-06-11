@@ -1,24 +1,19 @@
-// Gorstan Game Module — v3.0.0
-// File: src/components/ChoiceScreen.jsx
-// MIT License
-// © 2025 Geoff Webster – Gorstan Game Project
-// Purpose: Module supporting Gorstan gameplay or UI.
+// Gorstan Game Module — v3.1.1
+// MIT License © 2025 Geoff Webster
+// ChoiceScreen.jsx — Presents the player with three urgent choices at the game's start
 
-
-
-// Gorstan - ChoiceScreen.jsx (c) Geoff Webster 2025 – MIT License
-// Version: v2.8.3
+import React from "react";
+import PropTypes from "prop-types";
 
 /**
  * ChoiceScreen
  * Presents the player with three urgent choices at the game's start.
+ *
  * @component
  * @param {Object} props
  * @param {function} props.onChoose - Callback invoked with the chosen action ("jump", "wait", "sip").
  * @returns {JSX.Element|null}
  */
-import React from "react";
-
 const ChoiceScreen = ({ onChoose }) => {
   // Defensive: Ensure onChoose is a function before rendering
   if (typeof onChoose !== "function") {
@@ -36,7 +31,7 @@ const ChoiceScreen = ({ onChoose }) => {
 
   /**
    * Handles the player's choice button click.
-   * @param {string} choice - The action chosen by the player.
+   * @param {string} choice - The action chosen by the player ("jump", "wait", "sip").
    */
   const handleChoice = (choice) => {
     try {
@@ -83,6 +78,11 @@ const ChoiceScreen = ({ onChoose }) => {
       </div>
     </div>
   );
+};
+
+ChoiceScreen.propTypes = {
+  /** Callback invoked with the chosen action ("jump", "wait", or "sip"). */
+  onChoose: PropTypes.func.isRequired,
 };
 
 export default ChoiceScreen;

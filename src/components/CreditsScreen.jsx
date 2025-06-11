@@ -1,19 +1,24 @@
-// Gorstan Game Module — v2.8.3
+// Gorstan Game Module — v3.1.1
 // MIT License © 2025 Geoff Webster
 // CreditsScreen.jsx — Displays credits for the Gorstan Game.
+
+import React from "react";
+import PropTypes from "prop-types";
 
 /**
  * CreditsScreen
  * Displays the credits for the Gorstan Game.
+ *
  * @component
  * @param {Object} props
  * @param {function} props.onBack - Callback to return to the previous screen.
  * @returns {JSX.Element|null}
  */
-import React from "react";
-
-export default function CreditsScreen({ onBack }) {
-  // Defensive: Ensure onBack is a function before rendering the button
+const CreditsScreen = ({ onBack }) => {
+  /**
+   * Handles the "Return" button click.
+   * Calls the onBack callback if provided, with defensive error handling.
+   */
   const handleBack = () => {
     if (typeof onBack === "function") {
       try {
@@ -59,7 +64,14 @@ export default function CreditsScreen({ onBack }) {
       </button>
     </div>
   );
-}
+};
+
+CreditsScreen.propTypes = {
+  /** Callback to return to the previous screen */
+  onBack: PropTypes.func.isRequired,
+};
+
+export default CreditsScreen;
 
 /*
 Review summary:

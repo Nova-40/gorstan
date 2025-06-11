@@ -1,10 +1,11 @@
+// Gorstan Game Module — v3.0.0
 // File: src/main.jsx
 // MIT License
 // © 2025 Geoff Webster – Gorstan Game Project
 // Purpose: Module supporting Gorstan gameplay or UI.
 
 
-// Gorstan Game Module — v2.8.3
+// Gorstan Game Module — v3.0.0
 // MIT License © 2025 Geoff Webster
 // main.jsx — Entry point for Gorstan Game React app.
 

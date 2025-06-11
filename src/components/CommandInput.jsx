@@ -1,4 +1,4 @@
-// Gorstan Game Module — v3.0.0
+// Gorstan Game Module — v3.0.1
 // File: src/components/CommandInput.jsx
 // MIT License
 // © 2025 Geoff Webster – Gorstan Game Project
@@ -26,7 +26,7 @@ import PropTypes from "prop-types";
  * @param {function} props.onSubmit - Callback invoked with the command when Enter is pressed.
  * @returns {JSX.Element}
  */
-export default function CommandInput({ command, setCommand, onSubmit }) {
+const CommandInput = ({ command, setCommand, onSubmit }) => {
   /**
    * Handles key press events on the input.
    * Submits the command if Enter is pressed and input is not empty.
@@ -60,7 +60,7 @@ export default function CommandInput({ command, setCommand, onSubmit }) {
       />
     </div>
   );
-}
+};
 
 CommandInput.propTypes = {
   /** The current command string */
@@ -70,6 +70,8 @@ CommandInput.propTypes = {
   /** Callback invoked with the command when Enter is pressed */
   onSubmit: PropTypes.func.isRequired,
 };
+
+export default CommandInput;
 
 /*
 Review summary:

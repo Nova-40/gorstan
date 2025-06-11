@@ -1,4 +1,5 @@
-// Gorstan Game Module — v2.8.3
+// Gorstan Game Module — v3.0.0
+// Gorstan Game Module — v3.0.0
 // MIT License © 2025 Geoff Webster
 // inventory.js — Manages player inventory: caps, item properties, inspection, and spill mechanics
 
@@ -106,3 +107,12 @@ Review summary:
 - ✅ Structure is modular and ready for integration.
 - ✅ No UI code in this module (logic only).
 */
+
+/**
+ * Returns the description of an item by ID
+ * @param {string} itemId
+ * @returns {string|null}
+ */
+export function getItemDescription(itemId) {
+  return itemDescriptions[itemId] || null;
+}

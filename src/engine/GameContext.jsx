@@ -1,4 +1,5 @@
-// Gorstan Game Module — v3.2.0
+// Gorstan Game Module — v3.0.0
+// Gorstan Game Module — v3.0.0
 // MIT License © 2025 Geoff Webster
 // GameContext.jsx — React context for shared game state across components
 

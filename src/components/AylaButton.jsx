@@ -1,8 +1,9 @@
-// Gorstan Game Module — v2.8.3
+// Gorstan Game Module — v3.1.1
 // MIT License © 2025 Geoff Webster
 // AylaButton.jsx — Interactive button for summoning Ayla's contextual help/mood
 
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 
 /**
  * Mood levels for Ayla's responses.
@@ -20,8 +21,12 @@ const moodLevels = [
 /**
  * AylaButton
  * Renders a button that, when clicked, displays Ayla's mood-based response.
+ * Optionally triggers a callback for contextual help.
+ *
+ * @component
  * @param {Object} props
  * @param {function} [props.onAsk] - Optional callback triggered when Ayla is asked for help.
+ * @returns {JSX.Element}
  */
 const AylaButton = ({ onAsk }) => {
   // Tracks how many times the player has asked Ayla for help.
@@ -78,6 +83,11 @@ const AylaButton = ({ onAsk }) => {
       )}
     </div>
   );
+};
+
+AylaButton.propTypes = {
+  /** Optional callback triggered when Ayla is asked for help. */
+  onAsk: PropTypes.func,
 };
 
 export default AylaButton;

@@ -1,4 +1,5 @@
-// Gorstan Game Module — v2.8.3
+// Gorstan Game Module — v3.0.0
+// Gorstan Game Module — v3.0.0
 // MIT License © 2025 Geoff Webster
 // PortalFall.jsx — Animated portal fall transition for Gorstan gameplay UI.
 

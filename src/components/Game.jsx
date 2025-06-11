@@ -1,4 +1,4 @@
-// Gorstan Game Module — v2.8.3
+// Gorstan Game Module — v3.1.1
 // MIT License © 2025 Geoff Webster
 // Game.jsx — Main orchestrator for Gorstan game flow and state
 
@@ -17,7 +17,7 @@ import { handleJump, handleWait, handleSip } from "../engine/introLogic";
  * @component
  * @returns {JSX.Element|null}
  */
-export default function Game() {
+const Game = () => {
   /**
    * @type {["welcome"|"name"|"teletype"|"game", Function]} stage - Current UI stage and setter.
    */
@@ -134,7 +134,9 @@ export default function Game() {
       </div>
     </div>
   );
-}
+};
+
+export default Game;
 
 /*
 Review summary:

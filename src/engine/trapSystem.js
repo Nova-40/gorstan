@@ -1,4 +1,5 @@
-// Gorstan Game Module — v2.8.3
+// Gorstan Game Module — v3.0.0
+// Gorstan Game Module — v3.0.0
 // MIT License © 2025 Geoff Webster
 // trapSystem.js — Manages trap seeding, triggering, detection, and defusing
 
@@ -114,3 +115,26 @@ Review summary:
 - ✅ Structure is modular and ready for integration.
 - ✅ No UI code in this module (logic only).
 */
+
+/**
+ * Clears the trap timer for a room when player exits.
+ * Call this on room change to avoid lingering timers.
+ */
+export const clearTrapTimer = (roomId) => {
+  if (trapTimers[roomId]) {
+    clearTimeout(trapTimers[roomId]);
+    delete trapTimers[roomId];
+  }
+};
+
+/**
+ * Lists currently seeded trap rooms — only if in debug mode.
+ * @param {object} state - Player state with flags.
+ * @returns {string[]} - List of room IDs
+ */
+export const listTrapRooms = (state) => {
+  if (state.flags?.debug) {
+    return trapSeededRooms;
+  }
+  return [];
+};

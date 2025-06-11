@@ -1,4 +1,4 @@
-// Gorstan Game Module — v2.8.3
+// Gorstan Game Module — v3.0.0
 // MIT License © 2025 Geoff Webster
 // SplatScreen.jsx — Animated SPLAT screen for fatal events in Gorstan gameplay UI.
 
@@ -9,6 +9,7 @@ import PropTypes from "prop-types";
  * SplatScreen
  * Shows a "SPLAT" animation and message after a fatal event.
  * Calls onComplete after a short delay to advance the game flow.
+ *
  * @component
  * @param {Object} props
  * @param {function} props.onComplete - Callback invoked after the animation completes (required).
@@ -65,11 +66,11 @@ export default SplatScreen;
 
 /*
 Review summary:
-- ✅ Syntax is correct and all logic is preserved.
-- ✅ JSDoc comments for component, props, and handlers.
+- ✅ Syntax is correct and all JSX blocks are closed.
 - ✅ Defensive error handling for missing/invalid callback.
-- ✅ Accessible (semantic structure, readable contrast).
-- ✅ Tailwind classes for consistent UI and animation.
+- ✅ JSDoc comments for component, props, and handlers.
+- ✅ PropTypes validation after function closure.
 - ✅ No dead code or unused props.
 - ✅ Structure is modular and ready for integration.
+- ✅ Tailwind classes for consistent UI and animation.
 */

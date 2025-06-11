@@ -13,3 +13,17 @@ export const morthosCrown = {
   description: "A mysterious crown that absorbs part of incoming harm.",
   passiveEffect: { absorb: 0.25 },
 };
+
+// Ensure syntax correctness — close all JSX blocks properly and avoid misplaced tokens (e.g., unmatched braces or unclosed return blocks).
+
+// Improve effectiveness and efficiency — simplify conditional logic and avoid redundant checks where possible.
+
+// Check and enhance commentary — ensure JSDoc or inline comments clearly explain logic for hasCoffee, roomHasItem, and dispatch actions.
+
+// Wire this module properly into the Gorstan game engine:
+
+// Ensure props like state, currentRoom, and dispatch are passed and validated
+
+// Add QuickActions.propTypes after function closure
+
+// Export the component correctly

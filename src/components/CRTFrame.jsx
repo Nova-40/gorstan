@@ -1,4 +1,4 @@
-// Gorstan Game Module — v2.8.3
+// Gorstan Game Module — v3.0.0
 // MIT License © 2025 Geoff Webster
 // CRTFrame.jsx — Stylized CRT monitor frame for retro UI effect
 
@@ -8,10 +8,11 @@ import PropTypes from "prop-types";
 /**
  * CRTFrame
  * Wraps children in a stylized CRT monitor frame for retro UI effect.
+ *
  * @component
  * @param {Object} props
  * @param {React.ReactNode} props.children - Content to display inside the CRT frame.
- * @returns {JSX.Element}
+ * @returns {JSX.Element|null}
  */
 const CRTFrame = ({ children }) => {
   // Defensive: If no children, render nothing (could show a fallback if desired)

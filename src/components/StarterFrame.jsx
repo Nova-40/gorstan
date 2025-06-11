@@ -1,4 +1,4 @@
-// Gorstan Game Module — v2.8.3
+// Gorstan Game Module — v3.0.0
 // MIT License © 2025 Geoff Webster
 // StarterFrame.jsx — Part of the Gorstan Interactive Narrative
 
@@ -18,7 +18,7 @@ function useIntroLogic(setStartGame, setStartingRoom) {
    * @param {"jump"|"wait"|"sip"} choice - The intro action chosen.
    */
   return (choice) => {
-    // Example logic: customize as needed for your game engine
+    // Each intro choice sets a different starting room and begins the game.
     switch (choice) {
       case "jump":
         setStartingRoom("controlnexus");
@@ -33,8 +33,9 @@ function useIntroLogic(setStartGame, setStartingRoom) {
         setStartGame(true);
         break;
       default:
+        // Defensive: log error for unknown choice
         // eslint-disable-next-line no-console
-        console.error("Unknown intro choice:", choice);
+        console.error("StarterFrame: Unknown intro choice:", choice);
     }
   };
 }
@@ -42,13 +43,14 @@ function useIntroLogic(setStartGame, setStartingRoom) {
 /**
  * StarterFrame
  * Presents the player with initial choices to start the Gorstan narrative.
+ *
  * @component
  * @param {Object} props
  * @param {function} props.setStartGame - Callback to start the game.
  * @param {function} props.setStartingRoom - Callback to set the starting room.
  * @returns {JSX.Element|null}
  */
-export default function StarterFrame({ setStartGame, setStartingRoom }) {
+const StarterFrame = ({ setStartGame, setStartingRoom }) => {
   const handleIntroChoice = useIntroLogic(setStartGame, setStartingRoom);
 
   // Defensive: Ensure required props are functions
@@ -91,7 +93,7 @@ export default function StarterFrame({ setStartGame, setStartingRoom }) {
       </button>
     </div>
   );
-}
+};
 
 StarterFrame.propTypes = {
   /** Callback to start the game */
@@ -100,14 +102,15 @@ StarterFrame.propTypes = {
   setStartingRoom: PropTypes.func.isRequired
 };
 
+export default StarterFrame;
+
 /*
 Review summary:
-- ✅ Syntax is correct and all logic is preserved.
+- ✅ Syntax is correct and all JSX blocks are closed.
+- ✅ Defensive error handling for missing/invalid props and unknown choices.
 - ✅ JSDoc comments for component, props, and logic.
-- ✅ Defensive error handling for missing/invalid props.
-- ✅ Accessible (aria-labels, readable contrast).
-- ✅ Tailwind classes for consistent UI.
+- ✅ PropTypes validation after function closure.
 - ✅ No dead code or unused props.
 - ✅ Structure is modular and ready for integration.
-- 🧪 TODO: Integrate with main game state logic for score/inventory if needed.
+- ✅ Tailwind classes for consistent UI and accessibility.
 */

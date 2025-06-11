@@ -1,4 +1,5 @@
-// Gorstan Game Module — v2.8.3
+// Gorstan Game Module — v3.0.0
+// Gorstan Game Module — v3.0.0
 // MIT License © 2025 Geoff Webster
 // introLogic.js — Handles transitions from intro choices: Jump, Wait, Sip Coffee
 

@@ -1,4 +1,5 @@
-// Gorstan Game Module — v2.8.3
+// Gorstan Game Module — v3.0.0
+// Gorstan Game Module — v3.0.0
 // MIT License © 2025 Geoff Webster
 // dialogueEngine.js — Handles NPC dialogue with memory, mood, and topic parsing
 
@@ -38,6 +39,9 @@ export const getNPCState = (npcId) => {
  * @param {Object} playerState - The current player state (flags, etc).
  * @returns {{reply: string, mood: number, trust: number}}
  */
+import aylaMemory from './aylaMemory.js';
+import { getAylaResponse } from './aylaTopics.js';
+
 export const handleDialogue = (npcId, input, playerState) => {
   const state = getNPCState(npcId);
   if (!state || typeof input !== "string") {
@@ -60,6 +64,21 @@ export const handleDialogue = (npcId, input, playerState) => {
   let reply = "I don't have much to say about that.";
 
   // === NPC-specific dialogue logic ===
+  if (npcId === "ayla") {
+    aylaMemory.addQuestion(input);
+    const baseReply = getAylaResponse(input);
+    const level = aylaMemory.frustrationLevel;
+    const moodMod =
+      level >= 4 ? " (with a sigh)" :
+      level >= 2 ? " (dryly)" : "";
+
+    return {
+      reply: baseReply + moodMod,
+      mood: -level,
+      trust: 10 - level
+    };
+  }
+
   if (npcId === "morthos") {
     if (topic === "coffee") {
       reply = state.trust > 1

@@ -1,4 +1,5 @@
-// Gorstan Game Module — v3.1.1
+// Gorstan Game Module — v3.0.0
+// Gorstan Game Module — v3.0.0
 // MIT License © 2025 Geoff Webster
 // GameEngine.jsx — Main gameplay engine after intro sequence
 

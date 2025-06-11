@@ -83,6 +83,15 @@ export const checkTraitUnlocks = (state, dispatch) => {
   });
 };
 
+export const hasFlag = (state, flag) => {
+  return state.flags?.includes(flag);
+};
+
+export const setFlag = (dispatch, flag) => {
+  dispatch({ type: 'SET_FLAG', payload: flag });
+};
+
+
 // Reset function for storyProgress — used in AppCore to restart state
 export const reset = () => {
   console.log("Story progress reset."); // Extend as needed
