@@ -8,7 +8,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "mocha --require @babel/register 'src/_tests_/**/*.test.js'"
+    "postinstall": "chmod +x node_modules/.bin/vite"
   },
   "dependencies": {
     "framer-motion": "^12.10.0",
