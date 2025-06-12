@@ -33,10 +33,9 @@
     "tailwindcss": "^3.4.1",
     "vite": "^6.3.5"
   },
-
   "engines": {
-  "node": "18.x"
-},
+    "node": "18.x"
+  },
   "author": "Geoff Webster",
   "license": "MIT"
 }
