@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npx vite build",
+  "buildCommand": "npm run predeploy",
   "outputDirectory": "dist",
   "framework": null
 }
