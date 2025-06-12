@@ -5,7 +5,6 @@
 import elfhameRooms from "../zones/elfhameRooms.js";
 import glitchRooms from "../zones/glitchRooms.js";
 import gorstanRooms from "../zones/gorstanRooms.js";
-import internalResetRooms from "../zones/resetroom.js";
 import introRooms from "../zones/introRooms.js";
 import latticeRooms from "../zones/latticeRooms.js";
 import londonRooms from "../zones/londonRooms.js";
