@@ -4,13 +4,13 @@
   "description": "Interactive game for Gorstan",
   "type": "module",
   "main": "index.js",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "test": "mocha --require @babel/register 'src/_tests_/**/*.test.js'",
-    "predeploy": "chmod +x node_modules/@esbuild/linux-x64/bin/esbuild && vite build"
-  },
+"scripts": {
+  "preinstall": "chmod +x node_modules/@esbuild/linux-x64/bin/esbuild",
+  "dev": "vite",
+  "build": "vite build",
+  "preview": "vite preview",
+  "test": "mocha --require @babel/register 'src/_tests_/**/*.test.js'" },
+  
   "dependencies": {
     "framer-motion": "^12.10.0",
     "lucide-react": "^0.507.0",
