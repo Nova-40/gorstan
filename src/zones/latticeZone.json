@@ -1,0 +1,138 @@
+{
+  "zone": "latticeZone",
+  "rooms": [
+    {
+      "id": "latticespire",
+      "name": "Lattice Spire",
+      "description": [
+        "You sense alignment."
+      ],
+      "exits": {
+        "west": "introstart"
+      },
+      "image": "latticespire.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "portalExit": true,
+      "puzzleRequired": true,
+      "trap": {
+        "type": "adaptive",
+        "level": 5,
+        "disarmable": false,
+        "message": "You feel something is not right here...",
+        "lethal": true
+      }
+    },
+    {
+      "id": "lattice",
+      "name": "Lattice",
+      "description": [
+        "Lattice bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last."
+      ],
+      "exits": {
+        "down": "anothercontrolroom",
+        "up": "centralpark",
+        "north": "latticeobservationentrance"
+      },
+      "image": "latticeroom.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "trap": {
+        "type": "adaptive",
+        "level": 5,
+        "disarmable": false,
+        "message": "You feel something is not right here...",
+        "lethal": true
+      }
+    },
+    {
+      "id": "latticelibrary",
+      "name": "Lattice Library",
+      "description": [
+        "Lattice Library bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last."
+      ],
+      "exits": {
+        "coffee": "libraryofnine"
+      },
+      "image": "libraryarchivist.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "trap": {
+        "type": "generic",
+        "level": 3,
+        "disarmable": true,
+        "message": "You sense a threat nearby.",
+        "lethal": true
+      },
+      "npc": "The Archivist",
+      "coffeeExit": true
+    },
+    {
+      "id": "latticeobservationentrance",
+      "name": "Lattice observation entrance",
+      "description": [
+        "Lattice observation entrance bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last."
+      ],
+      "exits": {
+        "south": "lattice",
+        "north": "latticeobservatory"
+      },
+      "image": "lucidveil.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "trap": {
+        "type": "generic",
+        "level": 3,
+        "disarmable": true,
+        "message": "You sense a threat nearby.",
+        "lethal": true
+      }
+    },
+    {
+      "id": "latticeobservatory",
+      "name": "Lattice Observatory",
+      "description": [
+        "Lattice Observatory bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last."
+      ],
+      "exits": {
+        "coffee": "latticelibrary"
+      },
+      "image": "observationsuite.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "trap": {
+        "type": "generic",
+        "level": 3,
+        "disarmable": true,
+        "message": "You sense a threat nearby.",
+        "lethal": true
+      },
+      "coffeeExit": true
+    },
+    {
+      "id": "libraryofnine",
+      "name": "Libraryofnine",
+      "description": [
+        "Libraryofnine bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last."
+      ],
+      "exits": {},
+      "image": "nan",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "npc": "The Archivist",
+      "trap": {
+        "type": "adaptive",
+        "level": 5,
+        "disarmable": false,
+        "message": "You feel something is not right here...",
+        "lethal": true
+      }
+    }
+  ]
+}

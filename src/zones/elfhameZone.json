@@ -1,0 +1,133 @@
+{
+  "zone": "elfhameZone",
+  "rooms": [
+    {
+      "id": "faeglade",
+      "name": "Fae Glade",
+      "description": [
+        "Whispers ride the wind."
+      ],
+      "exits": {
+        "west": "introstart"
+      },
+      "image": "faeglade.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "portalExit": true,
+      "puzzleRequired": true
+    },
+    {
+      "id": "elfhame",
+      "name": "Elfhame",
+      "description": [
+        "Elfhame bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last."
+      ],
+      "exits": {
+        "north": "faelakenorthshore",
+        "south": "faelake",
+        "east": "faepalacemainhall"
+      },
+      "image": "elfhame.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "trap": {
+        "type": "generic",
+        "level": 1,
+        "disarmable": true,
+        "message": "You sense a threat nearby.",
+        "lethal": true
+      }
+    },
+    {
+      "id": "faelake",
+      "name": "Fae Lake",
+      "description": [
+        "Fae Lake bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last."
+      ],
+      "exits": {
+        "north": "faelakenorthshore",
+        "south": "elfhame"
+      },
+      "image": "faelake.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "trap": {
+        "type": "generic",
+        "level": 1,
+        "disarmable": true,
+        "message": "You sense a threat nearby.",
+        "lethal": true
+      }
+    },
+    {
+      "id": "faelakenorthshore",
+      "name": "Fae Lake north shore",
+      "description": [
+        "Fae Lake north shore bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last."
+      ],
+      "exits": {
+        "north": "faepalacemainhall"
+      },
+      "image": "faelake2.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "trap": {
+        "type": "generic",
+        "level": 1,
+        "disarmable": true,
+        "message": "You sense a threat nearby.",
+        "lethal": true
+      }
+    },
+    {
+      "id": "faepalacerhianonsroom",
+      "name": "Fae Palace Rhianons room",
+      "description": [
+        "Fae Palace Rhianons room bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last."
+      ],
+      "exits": {
+        "west": "faepalacemainhall",
+        "mirror": "failure"
+      },
+      "image": "rhianonschamber.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {}
+    },
+    {
+      "id": "faepalacedungeons",
+      "name": "Fae Palace dungeons",
+      "description": [
+        "Fae Palace dungeons bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last."
+      ],
+      "exits": {
+        "up": "faepalacemainhall"
+      },
+      "image": "storagechamber.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {}
+    },
+    {
+      "id": "faepalacemainhall",
+      "name": "Fae Palace Main Hall",
+      "description": [
+        "Fae Palace Main Hall bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last."
+      ],
+      "exits": {
+        "west": "elfhame",
+        "south": "faelakenorthshore",
+        "east": "faepalacerhianonsroom",
+        "down": "faepalacedungeons"
+      },
+      "image": "faepalace.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {}
+    }
+  ]
+}

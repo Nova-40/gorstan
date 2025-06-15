@@ -1,34 +1,27 @@
-// Gorstan Game Module — v3.0.0
-import rooms from "./rooms";
+/**
+ * File: src/engine/commandParser.js
+ * Gorstan Game – v3.0.5
+ * MIT License
+ * © 2025 Geoff Webster – Gorstan Game Project
+ *
+ * Purpose: Module logic for Gorstan game (description TBD).
+ */
 
-import { listTrapRooms } from './trapSystem.js';
 
-import { getItemDescription } from './inventory.js';
 
-import { attemptPuzzleStep } from './puzzleEngine.js';
+// commandParser.js – Parses player commands
+import { getRoomById } from './rooms';
 
-export function parseCommand(input, gameState, setModalContent) {
-  const trimmed = input.trim().toLowerCase();
+export function parseCommand(command, playerState) {
+  const currentRoom = getRoomById(playerState.currentRoomId);
 
-  if (trimmed === "/rooms") {
-    if (!gameState.debugMode) {
-      return "Access denied. Debug mode required.";
-    }
-
-    const roomList = Object.entries(rooms)
-      .filter(([id]) => id !== "stantonharcourt")
-      .map(([id, data]) => `• ${id} – ${data.name || "(Unnamed Room)"}`)
-      .sort()
-      .join("\n");
-
-    setModalContent({
-      title: "Accessible Rooms",
-      content: `📜 Room List (excluding Stanton Harcourt):\n\n${roomList}`
-    });
-
-    return null;
+  if (command === "look") {
+    return currentRoom.description.join(" ");
   }
 
-  // Add more commands as needed
-  return `Unknown command: ${input}`;
+  if (command === "north" && currentRoom.exits.north) {
+    return { moveTo: currentRoom.exits.north };
+  }
+
+  return "Nothing happens.";
 }

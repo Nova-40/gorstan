@@ -1,121 +1,71 @@
-// Gorstan Game Module — v3.0.0
-// Gorstan Game Module — v3.0.0
-// MIT License © 2025 Geoff Webster
-// GameEngine.jsx — Main gameplay engine after intro sequence
-
-import React, { useEffect, useContext, useRef, useState } from "react";
-import RoomRenderer from "../components/RoomRenderer";
-import QuickActions from "../components/QuickActions.jsx";
-import CommandInput from "../components/CommandInput";
-import LogHistory from "../components/LogHistory";
-import MovementPanel from "../components/MovementPanel";
-import { GameContext } from "./GameContext";
-import rooms from "./rooms";
-import { parseCommand } from "./commandParser";
-
 /**
- * GameEngine
- * Main interactive engine for Gorstan after intro sequence.
- * Handles room rendering, command parsing, and game state.
+ * File: src/engine/GameEngine.jsx
+ * Gorstan Game – v3.1.0
+ * MIT License
+ * © 2025 Geoff Webster – Gorstan Game Project
  *
- * @component
- * @param {Object} props
- * @param {string} props.playerName - The player's name.
- * @param {string} [props.introChoice="jump"] - The intro choice ("jump", "wait", "sip").
- * @param {Function} props.onError - Error handler callback.
- * @returns {JSX.Element}
+ * Purpose: Central game logic loop, routing commands, managing state transitions, and handling rooms.
  */
-const GameEngine = ({ playerName, introChoice = "jump", onError }) => {
-  // === State and Context ===
-  const { state, dispatch } = useContext(GameContext);
-  const [command, setCommand] = useState("");
-  const engineRef = useRef();
 
-  /**
-   * Setup engineRef with imperative game actions for parser or external calls.
-   */
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import getRoomById from '../engine/roomUtils';
+
+const GameEngine = ({ rooms }) => {
+  const [currentRoomId, setCurrentRoomId] = useState('introstart');
+  const [room, setRoom] = useState(null);
+
   useEffect(() => {
-    engineRef.current = {
-      move: (direction) => {
-        const exits = rooms[state.currentRoom]?.exits || {};
-        const targetRoom = exits[direction];
-        if (targetRoom && rooms[targetRoom]) {
-          dispatch({ type: "SET_ROOM", payload: targetRoom });
-          dispatch({ type: "LOG", payload: `You move ${direction}.` });
-        } else {
-          dispatch({ type: "LOG", payload: "You can't go that way." });
-        }
-      },
-      say: (text) => {
-        dispatch({ type: "LOG", payload: `You say: \"${text}\"` });
-      },
-      log: (text) => {
-        dispatch({ type: "LOG", payload: text });
-      },
-      getState: () => state,
-      dispatch,
-    };
-  }, []);
-
-  /**
-   * Game start logic.
-   */
-  useEffect(() => {
-    if (!state.started) {
-      try {
-        dispatch({ type: "SET_PLAYER_NAME", payload: playerName });
-        dispatch({ type: "LOG", payload: `Welcome, ${playerName}` });
-        dispatch({ type: "MARK_GAME_STARTED" });
-      } catch (err) {
-        console.error("[GameEngine] Error in game start logic:", err);
-        if (typeof onError === "function") onError(err);
-      }
+    const foundRoom = getRoomById(currentRoomId, rooms);
+    if (foundRoom) {
+      setRoom(foundRoom);
+    } else {
+      console.warn('Room not found:', currentRoomId);
+      setRoom({ name: 'Unknown Zone', description: ['This room does not exist. The multiverse may be unstable.'] });
     }
-  }, [state.started, playerName, dispatch, onError]);
+  }, [currentRoomId, rooms]);
 
-  /**
-   * Handles player command submission.
-   */
-  const handleCommandSubmit = (cmd) => {
-    if (!cmd || typeof cmd !== "string") return;
-    dispatch({ type: "LOG", payload: `> ${cmd}` });
-    try {
-      parseCommand(cmd, state, dispatch);
-    } catch (err) {
-      dispatch({ type: "LOG", payload: "An error occurred while processing your command." });
-      console.error("[GameEngine] Command parse error:", err);
-      if (typeof onError === "function") onError(err);
-    }
-    setCommand("");
-  };
-
-  // Defensive: fallback to a safe room if state is broken
-  const currentRoom = rooms[state.currentRoom];
-
-  if (!currentRoom) {
-    return (
-      <div className="text-red-400 bg-black p-6" role="alert">
-        ⚠️ Room "{state.currentRoom}" not found. Please check rooms.js or room ID.
-      </div>
-    );
+  if (!room) {
+    return <div className="text-red-500 p-4">Loading room data...</div>;
   }
 
-  // === Render ===
   return (
-    <div className="p-4 text-green-200 font-mono bg-black min-h-screen">
-      <RoomRenderer room={currentRoom} state={state} />
-      <MovementPanel currentRoom={currentRoom} dispatch={dispatch} />
-      <QuickActions currentRoom={currentRoom} state={state} dispatch={dispatch} />
-      <div className="mt-4 flex flex-col gap-3 items-center">
-        <CommandInput
-          command={command}
-          setCommand={setCommand}
-          onSubmit={handleCommandSubmit}
-        />
-        <LogHistory log={state.log || []} />
-      </div>
+    <div className="p-4">
+      <h1 className="text-xl font-bold mb-2">{room.name}</h1>
+      {room.description.map((line, i) => (
+        <p key={i}>{line}</p>
+      ))}
+
+      {room.exits && (
+        <div className="mt-4">
+          <h2 className="font-semibold">Exits:</h2>
+          <ul className="list-disc list-inside">
+            {room.exits.map((exit, i) => (
+              <li key={i}>
+                <button
+                  onClick={() => setCurrentRoomId(exit.target)}
+                  className="underline text-blue-600 hover:text-blue-800"
+                >
+                  {exit.label || exit.direction || exit.target}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {room.trap && (
+        <div className="text-red-600 mt-4">
+          ⚠️ Trap Active: {room.trap.description || 'Be careful.'}
+        </div>
+      )}
     </div>
   );
 };
 
+GameEngine.propTypes = {
+  rooms: PropTypes.array.isRequired,
+};
+
 export default GameEngine;
+

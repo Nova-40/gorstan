@@ -1,0 +1,29 @@
+{
+  "zone": "stantonharcourtZone",
+  "rooms": [
+    {
+      "id": "villagegreen",
+      "name": "Village Green",
+      "description": [
+        "Peace and protest."
+      ],
+      "exits": {},
+      "image": "villagegreen.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {}
+    },
+    {
+      "id": "stantonharcourt",
+      "name": "Stanton Harcourt",
+      "description": [
+        "Stanton Harcourt bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last."
+      ],
+      "exits": {},
+      "image": "stantonharcourt.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {}
+    }
+  ]
+}

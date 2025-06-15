@@ -1,0 +1,130 @@
+{
+  "zone": "introZone",
+  "rooms": [
+    {
+      "id": "crossing",
+      "name": "Crossing",
+      "description": [
+        "A road, a decision."
+      ],
+      "exits": {
+        "west": "introstart"
+      },
+      "image": "crossing.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "portalExit": true,
+      "puzzleRequired": true,
+      "trap": {
+        "type": "adaptive",
+        "level": 1,
+        "disarmable": true,
+        "message": "You feel something is not right here...",
+        "lethal": false
+      }
+    },
+    {
+      "id": "introstart",
+      "name": "introstart",
+      "description": [
+        "introstart hums with the tension of impending choice. You sense your path diverging before your feet even move."
+      ],
+      "exits": {
+        "to_mazeZone": "windingpath",
+        "to_londonZone": "findlaters",
+        "to_glitchZone": "datavoid",
+        "to_gorstanZone": "gorstanvillage",
+        "to_offmultiverseZone": "shatteredrealm",
+        "to_offgorstanZone": "echochamber",
+        "to_elfhameZone": "faeglade",
+        "to_introZone": "crossing",
+        "to_prewelcomeZone": "introstart",
+        "to_newyorkZone": "manhattanhub",
+        "to_multiplezonesZone": "secrettunnel",
+        "to_latticeZone": "latticespire",
+        "to_multiZone": "liminalhub",
+        "to_resetZone": "resetchamber",
+        "to_internal-resetZone": "thecrossing"
+      },
+      "image": "introstart.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {}
+    },
+    {
+      "id": "introjump",
+      "name": "introjump",
+      "description": [
+        "introjump hums with the tension of impending choice. You sense your path diverging before your feet even move."
+      ],
+      "exits": {},
+      "image": "introjump.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {}
+    },
+    {
+      "id": "introreset",
+      "name": "introreset",
+      "description": [
+        "introreset hums with the tension of impending choice. You sense your path diverging before your feet even move."
+      ],
+      "exits": {},
+      "image": "introreset.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {}
+    },
+    {
+      "id": "introsplat",
+      "name": "introsplat",
+      "description": [
+        "introsplat hums with the tension of impending choice. You sense your path diverging before your feet even move."
+      ],
+      "exits": {},
+      "image": "introsplat.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {}
+    },
+    {
+      "id": "introstreet1",
+      "name": "introstreet1",
+      "description": [
+        "introstreet1 hums with the tension of impending choice. You sense your path diverging before your feet even move."
+      ],
+      "exits": {},
+      "image": "introstreet1.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {}
+    },
+    {
+      "id": "introstreet2",
+      "name": "introstreet2",
+      "description": [
+        "introstreet2 hums with the tension of impending choice. You sense your path diverging before your feet even move."
+      ],
+      "exits": {},
+      "image": "introstreet2.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {}
+    },
+    {
+      "id": "introafter",
+      "name": "introafter",
+      "description": [
+        "introafter hums with the tension of impending choice. You sense your path diverging before your feet even move."
+      ],
+      "exits": {
+        "north": "trentpark"
+      },
+      "image": "introstreetclear.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {}
+    }
+  ]
+}

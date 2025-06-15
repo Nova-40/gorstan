@@ -1,0 +1,118 @@
+{
+  "zone": "newyorkZone",
+  "rooms": [
+    {
+      "id": "manhattanhub",
+      "name": "Manhattan Hub",
+      "description": [
+        "Buzz and steel."
+      ],
+      "exits": {
+        "west": "introstart"
+      },
+      "image": "manhattanhub.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "portalExit": true,
+      "puzzleRequired": true,
+      "trap": {
+        "type": "adaptive",
+        "level": 2,
+        "disarmable": true,
+        "message": "You feel something is not right here...",
+        "lethal": false
+      }
+    },
+    {
+      "id": "aevirawarehouse",
+      "name": "Aevira Warehouse",
+      "description": [
+        "Aevira Warehouse bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last."
+      ],
+      "exits": {
+        "west": "centralpark",
+        "bc": "lattice"
+      },
+      "image": "aevirawarehouse.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "trap": {
+        "type": "generic",
+        "level": 2,
+        "disarmable": true,
+        "message": "You sense a threat nearby.",
+        "lethal": true
+      }
+    },
+    {
+      "id": "burgerjoint",
+      "name": "Burger Joint",
+      "description": [
+        "Burger Joint bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last."
+      ],
+      "exits": {
+        "north": "centralpark",
+        "west": "storeroom"
+      },
+      "image": "burgerjoint.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "npc": "Chef",
+      "trap": {
+        "type": "adaptive",
+        "level": 2,
+        "disarmable": true,
+        "message": "You feel something is not right here...",
+        "lethal": false
+      }
+    },
+    {
+      "id": "centralpark",
+      "name": "Central Park",
+      "description": [
+        "Central Park bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last."
+      ],
+      "exits": {
+        "portal": "stkatherinesdock",
+        "south": "burgerjoint",
+        "east": "aevirawarehouse"
+      },
+      "image": "centralpark.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "trap": {
+        "type": "generic",
+        "level": 2,
+        "disarmable": true,
+        "message": "You sense a threat nearby.",
+        "lethal": true
+      },
+      "portalExit": true
+    },
+    {
+      "id": "storeroom",
+      "name": "Store Room",
+      "description": [
+        "Store Room bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last."
+      ],
+      "exits": {
+        "east": "burgerjoint"
+      },
+      "image": "greasystoreroom.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "trap": {
+        "type": "adaptive",
+        "level": 2,
+        "disarmable": true,
+        "message": "You feel something is not right here...",
+        "lethal": false
+      }
+    }
+  ]
+}

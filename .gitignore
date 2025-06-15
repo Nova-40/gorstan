@@ -26,6 +26,7 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
+*.Identifier
 
 # Optional build outputs
 *.zip

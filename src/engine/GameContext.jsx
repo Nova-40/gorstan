@@ -55,6 +55,8 @@ export function gameReducer(state, action) {
       return { ...state, debugMode: true, godMode: true };
     case "SET_ROOM":
       return { ...state, currentRoom: action.payload };
+    case "ADD_ITEM":
+      return { ...state, inventory: [...(state.inventory || []), action.payload] };
     case "SET_SKIP_INSTRUCTIONS":
       return { ...state, skipInstructions: action.payload };
     case "MOVE": {

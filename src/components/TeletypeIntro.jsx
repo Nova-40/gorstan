@@ -1,24 +1,10 @@
-// Gorstan Game Module — v3.1.0
+// Gorstan Game Module — v3.1.2
 // MIT License © 2025 Geoff Webster
-// TeletypeIntro.jsx – Character-by-character teletype with blinking cursor and restored story
+// TeletypeIntro.jsx – Character-by-character teletype with blinking cursor and evolving animations
 
 import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 
-/**
- * TeletypeIntro
- * Renders a teletype intro sequence with a blinking cursor and timed options.
- *
- * @component
- * @param {Object} props
- * @param {string} props.playerName - The player's name for personalisation.
- * @param {Function} props.onJump - Handler for "Jump into the void".
- * @param {Function} props.onWait - Handler for "Wait and see".
- * @param {Function} props.onSip - Handler for "Sip your coffee".
- * @param {Function} props.onSkip - Handler for skipping the intro.
- * @param {number} props.resetCount - How many times the player has reset.
- * @returns {JSX.Element}
- */
 const TeletypeIntro = ({ playerName = "Player", onJump, onWait, onSip, onSkip, resetCount = 0 }) => {
   const countdownRefs = useRef([]);
 
@@ -50,7 +36,6 @@ const TeletypeIntro = ({ playerName = "Player", onJump, onWait, onSip, onSkip, r
         "This is your loop now."
       ];
     }
-    // Original first-time story
     return [
       `Good day, ${playerName}.`,
       "You stand at the kerb. The city hums as reality pretends to behave.",
@@ -68,7 +53,6 @@ const TeletypeIntro = ({ playerName = "Player", onJump, onWait, onSip, onSkip, r
   };
 
   const fullStory = getStory();
-
   const [lineIndex, setLineIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState([]);
@@ -76,6 +60,9 @@ const TeletypeIntro = ({ playerName = "Player", onJump, onWait, onSip, onSkip, r
   const [showOptions, setShowOptions] = useState(false);
   const [timerStarted, setTimerStarted] = useState(false);
   const [countdownText, setCountdownText] = useState('');
+
+  const bgClass = resetCount >= 6 ? 'glitch-bg' : resetCount >= 3 ? 'flicker-bg' : resetCount >= 1 ? 'pulse-bg' : '';
+  const buttonClass = resetCount >= 6 ? 'animate-jitter' : resetCount >= 3 ? 'animate-flicker' : 'hover:scale-105';
 
   useEffect(() => {
     if (lineIndex < fullStory.length) {
@@ -98,7 +85,6 @@ const TeletypeIntro = ({ playerName = "Player", onJump, onWait, onSip, onSkip, r
       const finalDelay = setTimeout(() => {
         setShowOptions(true);
         setTimerStarted(true);
-
         countdownRefs.current.push(setTimeout(() => setCountdownText('3'), 12000));
         countdownRefs.current.push(setTimeout(() => setCountdownText('2'), 13000));
         countdownRefs.current.push(setTimeout(() => setCountdownText('1'), 14000));
@@ -120,9 +106,17 @@ const TeletypeIntro = ({ playerName = "Player", onJump, onWait, onSip, onSkip, r
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center bg-black text-green-400 font-mono p-6 text-lg transition duration-700"
-      style={{ animation: showOptions ? 'pulseBg 2s infinite' : 'none' }}
+      className={`min-h-screen flex flex-col items-center justify-center bg-black text-green-400 font-mono p-6 text-lg transition duration-700 ${bgClass}`}
     >
+      <div className="absolute top-4 right-4">
+        <button
+          onClick={() => handleChoice(onSkip)}
+          className="bg-gray-600 text-white px-3 py-1 rounded text-sm hover:bg-gray-700"
+        >
+          Skip intro
+        </button>
+      </div>
+
       <div className="w-full max-w-xl space-y-2 flex flex-col items-center justify-center text-center">
         {displayedText.map((line, idx) => (
           <div key={idx}>{line}</div>
@@ -141,34 +135,27 @@ const TeletypeIntro = ({ playerName = "Player", onJump, onWait, onSip, onSkip, r
       </div>
 
       {showOptions && timerStarted && (
-        <div className="mt-8 flex flex-col space-y-4 w-full max-w-xs animate-fade-in">
+        <div className="mt-8 flex flex-row space-x-4 animate-fade-in">
           <button
             onClick={() => handleChoice(onJump)}
-            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow"
-            type="button"
+            className={`bg-green-600 text-white px-3 py-1 rounded shadow text-sm ${buttonClass}`}
+            title="Leap before you're hit"
           >
-            Jump into the void
-          </button>
-          <button
-            onClick={() => handleChoice(onWait)}
-            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow"
-            type="button"
-          >
-            Wait and see
+            Jump
           </button>
           <button
             onClick={() => handleChoice(onSip)}
-            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow"
-            type="button"
+            className={`bg-green-600 text-white px-3 py-1 rounded shadow text-sm ${buttonClass}`}
+            title="Pause to drink your Gorstan brew"
           >
-            Sip your coffee
+            Sip
           </button>
           <button
-            onClick={() => handleChoice(onSkip)}
-            className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded shadow"
-            type="button"
+            onClick={() => handleChoice(onWait)}
+            className={`bg-green-600 text-white px-3 py-1 rounded shadow text-sm ${buttonClass}`}
+            title="Do absolutely nothing and let fate decide"
           >
-            Skip intro
+            Wait
           </button>
         </div>
       )}
@@ -195,7 +182,23 @@ if (typeof window !== "undefined" && !document.getElementById("pulseBgStyle")) {
       0%, 100% { background-color: #000; }
       50% { background-color: #061d12; }
     }
+    .pulse-bg { animation: pulseBg 3s infinite; }
+    .flicker-bg { animation: flicker 1.5s infinite alternate; }
+    .glitch-bg { animation: glitch 2s infinite steps(1); }
+    .animate-jitter { animation: jitter 0.2s infinite alternate; }
+    .animate-flicker { animation: flicker 0.5s infinite alternate; }
+    @keyframes flicker {
+      0% { opacity: 0.8; }
+      100% { opacity: 1; }
+    }
+    @keyframes glitch {
+      0% { background-position: 0 0; }
+      100% { background-position: 5px 5px; }
+    }
+    @keyframes jitter {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(1px, -1px); }
+    }
   `;
   document.head.appendChild(style);
 }
-

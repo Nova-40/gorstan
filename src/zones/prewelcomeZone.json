@@ -1,0 +1,35 @@
+{
+  "zone": "prewelcomeZone",
+  "rooms": [
+    {
+      "id": "introstart",
+      "name": "Intro Start",
+      "description": [
+        "The world waits."
+      ],
+      "exits": {
+        "west": "introstart"
+      },
+      "image": "introstart.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "portalExit": true,
+      "puzzleRequired": true
+    },
+    {
+      "id": "prewelcomescreen",
+      "name": "prewelcome screen",
+      "description": [
+        "prewelcome screen bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last."
+      ],
+      "exits": {
+        "puzzle": "stantonharcourt"
+      },
+      "image": "Starterframe",
+      "items": [],
+      "traitsRequired": [],
+      "events": {}
+    }
+  ]
+}

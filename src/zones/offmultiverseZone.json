@@ -1,0 +1,144 @@
+{
+  "zone": "offmultiverseZone",
+  "rooms": [
+    {
+      "id": "shatteredrealm",
+      "name": "Shattered Realm",
+      "description": [
+        "All splinters meet here."
+      ],
+      "exits": {
+        "west": "introstart"
+      },
+      "image": "shatteredrealm.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "portalExit": true,
+      "puzzleRequired": true,
+      "trap": {
+        "type": "adaptive",
+        "level": 4,
+        "disarmable": true,
+        "message": "You feel something is not right here...",
+        "lethal": true
+      }
+    },
+    {
+      "id": "anothercontrolroom",
+      "name": "Another Control Room",
+      "description": [
+        "Another Control Room bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last."
+      ],
+      "exits": {
+        "east": "controlroom1"
+      },
+      "image": "controlnexus.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "trap": {
+        "type": "adaptive",
+        "level": 4,
+        "disarmable": true,
+        "message": "You feel something is not right here...",
+        "lethal": true
+      }
+    },
+    {
+      "id": "controlroom1",
+      "name": "Control Room 1",
+      "description": [
+        "Control Room 1 bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last."
+      ],
+      "exits": {
+        "east": "controlroom2",
+        "west": "controlroom1",
+        "coffee": "introafter"
+      },
+      "image": "controlnexusreturned.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "trap": {
+        "type": "generic",
+        "level": 1,
+        "disarmable": true,
+        "message": "You sense a threat nearby.",
+        "lethal": true
+      },
+      "coffeeExit": true
+    },
+    {
+      "id": "controlroom2",
+      "name": "Control Room 2",
+      "description": [
+        "Control Room 2 bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last."
+      ],
+      "exits": {
+        "west": "controlroom2",
+        "south": "resetroom",
+        "coffee": "introafter"
+      },
+      "image": "controlroom.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "coffeeExit": true,
+      "trap": {
+        "type": "adaptive",
+        "level": 4,
+        "disarmable": true,
+        "message": "You feel something is not right here...",
+        "lethal": true
+      }
+    },
+    {
+      "id": "danger-hiddenlab",
+      "name": "Danger - Hidden Lab",
+      "description": [
+        "Danger - Hidden Lab bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last."
+      ],
+      "exits": {
+        "up": "resetroom",
+        "coffee": "introafter",
+        "south": "libraryofnine"
+      },
+      "image": "hiddenlab.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "trap": {
+        "type": "generic",
+        "level": 1,
+        "disarmable": true,
+        "message": "You sense a threat nearby.",
+        "lethal": true
+      },
+      "coffeeExit": true
+    },
+    {
+      "id": "resetroom",
+      "name": "Reset room",
+      "description": [
+        "Reset room bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last."
+      ],
+      "exits": {
+        "chair": "trentpark",
+        "north": "controlroom2"
+      },
+      "image": "resetroom.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "chairExit": true,
+      "trap": {
+        "type": "adaptive",
+        "level": 4,
+        "disarmable": true,
+        "message": "You feel something is not right here...",
+        "lethal": true
+      }
+    }
+  ]
+}

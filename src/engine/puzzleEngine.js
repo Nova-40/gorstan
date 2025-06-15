@@ -1,3 +1,13 @@
+/**
+ * File: src/engine/puzzleEngine.js
+ * Gorstan Game – v3.0.5
+ * MIT License
+ * © 2025 Geoff Webster – Gorstan Game Project
+ *
+ * Purpose: Controls puzzle generation, validation, and rewards including Z-notation puzzles.
+ */
+
+
 // Gorstan Game Module — v3.0.0
 
 // puzzleEngine.js — logic for evaluating puzzle steps and applying outcomes

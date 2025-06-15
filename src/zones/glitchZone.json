@@ -1,0 +1,115 @@
+{
+  "zone": "glitchZone",
+  "rooms": [
+    {
+      "id": "datavoid",
+      "name": "Data Void",
+      "description": [
+        "Reality flickers here."
+      ],
+      "exits": {
+        "west": "introstart"
+      },
+      "image": "datavoid.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "portalExit": true,
+      "puzzleRequired": true,
+      "trap": {
+        "type": "adaptive",
+        "level": 1,
+        "disarmable": true,
+        "message": "You feel something is not right here...",
+        "lethal": false
+      }
+    },
+    {
+      "id": "failure",
+      "name": "Failure",
+      "description": [
+        "Failure bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last."
+      ],
+      "exits": {
+        "coffee": "issuesdetected"
+      },
+      "image": "fallback.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "trap": {
+        "type": "generic",
+        "level": 3,
+        "disarmable": true,
+        "message": "You sense a threat nearby.",
+        "lethal": true
+      },
+      "coffeeExit": true
+    },
+    {
+      "id": "issuesdetected",
+      "name": "Issues Detected",
+      "description": [
+        "Issues Detected bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last."
+      ],
+      "exits": {
+        "south": "failure",
+        "north": "moreissues"
+      },
+      "image": "glitchrealm.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "trap": {
+        "type": "adaptive",
+        "level": 1,
+        "disarmable": true,
+        "message": "You feel something is not right here...",
+        "lethal": false
+      }
+    },
+    {
+      "id": "moreissues",
+      "name": "More Issues",
+      "description": [
+        "More Issues bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last."
+      ],
+      "exits": {
+        "south": "issuesdetected",
+        "north": "glitchinguniverse"
+      },
+      "image": "glitchroom.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "trap": {
+        "type": "generic",
+        "level": 4,
+        "disarmable": true,
+        "message": "You sense a threat nearby.",
+        "lethal": true
+      }
+    },
+    {
+      "id": "glitchinguniverse",
+      "name": "Glitching universe",
+      "description": [
+        "Glitching universe bears the marks of unseen hands. You are not the first to arrive \u2014 and likely not the last."
+      ],
+      "exits": {
+        "solved": "torridon"
+      },
+      "image": "hallucinationroom.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "trap": {
+        "type": "generic",
+        "level": 4,
+        "disarmable": true,
+        "message": "You sense a threat nearby.",
+        "lethal": true
+      }
+    }
+  ]
+}

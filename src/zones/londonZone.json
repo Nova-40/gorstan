@@ -1,0 +1,148 @@
+{
+  "zone": "londonZone",
+  "rooms": [
+    {
+      "id": "findlaters",
+      "name": "Findlater\u2019s Caf\u00e9",
+      "description": [
+        "Coffee and conspiracy."
+      ],
+      "exits": {
+        "west": "introstart"
+      },
+      "image": "findlaters.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "portalExit": true,
+      "puzzleRequired": true,
+      "trap": {
+        "type": "adaptive",
+        "level": 2,
+        "disarmable": true,
+        "message": "You feel something is not right here...",
+        "lethal": false
+      }
+    },
+    {
+      "id": "caf\u00e9office",
+      "name": "Caf\u00e9 office",
+      "description": [
+        "Caf\u00e9 office stands skewed in time, touched by both the familiar hum of the city and something foreign \u2014 folded and spliced into place."
+      ],
+      "exits": {
+        "east": "findlaterscornercoffeeshop"
+      },
+      "image": "cafeoffice.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "trap": {
+        "type": "generic",
+        "level": 1,
+        "disarmable": true,
+        "message": "You sense a threat nearby.",
+        "lethal": true
+      }
+    },
+    {
+      "id": "dale'sapartment",
+      "name": "Dale's Apartment",
+      "description": [
+        "Dale's Apartment stands skewed in time, touched by both the familiar hum of the city and something foreign \u2014 folded and spliced into place."
+      ],
+      "exits": {
+        "south": "trentpark",
+        "north": "findlaterscornercoffeeshop",
+        "east": "stkatherinesdock"
+      },
+      "image": "dalesapartment.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "trap": {
+        "type": "generic",
+        "level": 2,
+        "disarmable": true,
+        "message": "You sense a threat nearby.",
+        "lethal": true
+      },
+      "npc": "Polly"
+    },
+    {
+      "id": "findlaterscornercoffeeshop",
+      "name": "Findlaters Corner Coffee Shop",
+      "description": [
+        "Findlaters Corner Coffee Shop stands skewed in time, touched by both the familiar hum of the city and something foreign \u2014 folded and spliced into place."
+      ],
+      "exits": {
+        "west": "caf\u00e9office",
+        "south": "dale'sapartment",
+        "north": "stkatherinesdock",
+        "east": "trentpark"
+      },
+      "image": "findlaterscornercafe.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "trap": {
+        "type": "adaptive",
+        "level": 2,
+        "disarmable": true,
+        "message": "You feel something is not right here...",
+        "lethal": false
+      }
+    },
+    {
+      "id": "stkatherinesdock",
+      "name": "St Katherines Dock",
+      "description": [
+        "St Katherines Dock stands skewed in time, touched by both the familiar hum of the city and something foreign \u2014 folded and spliced into place."
+      ],
+      "exits": {
+        "portal": "centralpark",
+        "south": "findlaterscornercoffeeshop",
+        "north": "dale'sapartment",
+        "west": "trentpark"
+      },
+      "image": "stkatherinesdock.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "npc": "Al, Morthos",
+      "portalExit": true,
+      "trap": {
+        "type": "adaptive",
+        "level": 2,
+        "disarmable": true,
+        "message": "You feel something is not right here...",
+        "lethal": false
+      }
+    },
+    {
+      "id": "trentpark",
+      "name": "Trent Park",
+      "description": [
+        "Trent Park stands skewed in time, touched by both the familiar hum of the city and something foreign \u2014 folded and spliced into place."
+      ],
+      "exits": {
+        "chair": "resetroom",
+        "east": "stkatherinesdock",
+        "west": "findlaterscornercoffeeshop"
+      },
+      "image": "trentparkearth.png",
+      "items": [],
+      "traitsRequired": [],
+      "events": {},
+      "npc": "Al",
+      "chairExit": true,
+      "trap": {
+        "type": "adaptive",
+        "level": 2,
+        "disarmable": true,
+        "message": "You feel something is not right here...",
+        "lethal": false
+      }
+    }
+  ]
+}
