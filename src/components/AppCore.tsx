@@ -1530,73 +1530,8 @@ const handleBackout = useCallback((): void => {
     }
   }, [readyForTransition, transitionType, roomMap, transitionTargetRoom, transitionInventory, dispatch]);
 
-  // Enhanced guard rails with proper type checking
-  if (!state.currentRoomId || !state.roomMap || !state.roomMap[state.currentRoomId]) {
-  if (import.meta.env.DEV) {
-      console.log('Guard rails:', {
-        currentRoomId: state.currentRoomId,
-        roomMapLoaded: Boolean(state.roomMap),
-        roomExists: Boolean(state.roomMap?.[state.currentRoomId])
-      });
-    }
-    return <div className="appcore-loading">Loading game world...</div>;
-  }
-
-  // Enhanced teleport rendering with proper typing
-  if (teleportType === 'fractal') {
-    return <TeleportManager teleportType="fractal" onComplete={handleTeleportComplete} />;
-  }
-  if (teleportType === 'trek') {
-    return <TeleportManager teleportType="trek" onComplete={handleTeleportComplete} />;
-  }
-
-  // Enhanced stage-based rendering with proper typing
-  if (transitionType === 'jump') {
-    console.log('[AppCore] Rendering JumpTransition');
-    return <JumpTransition onComplete={() => {
-      console.log('[AppCore] JumpTransition completed');
-      setReadyForTransition(true);
-    }} />;
-  }
-  if (transitionType === 'sip') {
-    console.log('[AppCore] Rendering SipTransition');
-    return <SipTransition onComplete={() => {
-      console.log('[AppCore] SipTransition completed');
-      setReadyForTransition(true);
-    }} />;
-  }
-  if (transitionType === 'wait') {
-    console.log('[AppCore] Rendering WaitTransition');
-    return <WaitTransition onComplete={() => {
-      console.log('[AppCore] WaitTransition completed');
-      setReadyForTransition(true);
-    }} />;
-  }
-  if (transitionType === 'dramatic_wait') {
-    console.log('[AppCore] Rendering DramaticWaitTransition');
-    return <DramaticWaitTransition onComplete={() => {
-      console.log('[AppCore] DramaticWaitTransition completed');
-      setReadyForTransition(true);
-    }} />;
-  }
-  if (stage === 'splash') {
-    return <SplashScreen onComplete={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'welcome' })} />;
-  }
-  if (stage === 'welcome') {
-    return (
-      <WelcomeScreen 
-        onBegin={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'nameCapture' })} 
-        onLoadGame={() => dispatch({ type: 'LOAD_SAVED_GAME' })} 
-        onStartDemo={() => {
-          // Set demo-specific player name and skip nameCapture
-          dispatch({ type: 'SET_PLAYER_NAME', payload: 'Demo Player' });
-          dispatch({ type: 'ADVANCE_STAGE', payload: 'demo' });
-        }}
-      />
-    );
-  }
   // Demo mode effect - must be called unconditionally to follow Rules of Hooks
-  React.useEffect(() => {
+  useEffect(() => {
     if (stage === 'demo') {
       // Initialize demo mode - start the game with demo route
       dispatch({ type: 'ADVANCE_STAGE', payload: 'game' });
@@ -1613,59 +1548,6 @@ const handleBackout = useCallback((): void => {
       return () => clearTimeout(demoTimer);
     }
   }, [stage, dispatch, startDemoMode]);
-
-  if (stage === 'demo') {
-    
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-black text-green-400">
-        <div className="text-center space-y-4">
-          <div className="animate-spin w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full mx-auto"></div>
-          <h2 className="text-2xl font-bold">Starting Demo Experience...</h2>
-          <p className="text-lg">Ayla is preparing your guided tour</p>
-        </div>
-      </div>
-    );
-  }
-  if (stage === 'nameCapture') {
-    return (
-      <PlayerNameCapture 
-        onNameSubmit={(name: string) => { 
-          dispatch({ type: 'SET_PLAYER_NAME', payload: name }); 
-          dispatch({ type: 'ADVANCE_STAGE', payload: 'intro' }); 
-        }} 
-      />
-    );
-  }
-  if (stage === 'intro') {
-    return (
-      <TeletypeIntro 
-        playerName={playerName} 
-        onComplete={(data: IntroCompletionData) => { 
-          console.log('[AppCore] Intro completed with data:', data);
-          if (data.targetRoom) {
-            console.log('[AppCore] Setting transition target room:', data.targetRoom);
-            setTransitionTargetRoom(data.targetRoom);
-          }
-          if (data.inventoryBonus) {
-            console.log('[AppCore] Setting transition inventory:', data.inventoryBonus);
-            setTransitionInventory(data.inventoryBonus);
-          }
-          const targetStage = `transition_${data.route}` as GameStage;
-          console.log('[AppCore] Advancing to transition stage:', targetStage);
-          setTimeout(() => {
-            dispatch({ 
-              type: 'ADVANCE_STAGE', 
-              payload: targetStage
-            });
-          }, 750); 
-        }} 
-      />
-    );
-  }
-
-  if (!room) {
-    return <div className="appcore-loading">Loading room context...</div>;
-  }
 
   // Enhanced modal content rendering with proper typing
   const renderModalContent = useStableCallback((): React.ReactNode => {
@@ -1762,6 +1644,124 @@ const handleBackout = useCallback((): void => {
         return null;
     }
   }, [modal, inventory, room, selectedNPC, isGroupConversation, playerName, state, npcsInRoom, closeModal, handlePickUpItems, dispatch, roomMap, currentRoomId]);
+
+  // Enhanced guard rails with proper type checking
+  if (!state.currentRoomId || !state.roomMap || !state.roomMap[state.currentRoomId]) {
+  if (import.meta.env.DEV) {
+      console.log('Guard rails:', {
+        currentRoomId: state.currentRoomId,
+        roomMapLoaded: Boolean(state.roomMap),
+        roomExists: Boolean(state.roomMap?.[state.currentRoomId])
+      });
+    }
+    return <div className="appcore-loading">Loading game world...</div>;
+  }
+
+  // Enhanced teleport rendering with proper typing
+  if (teleportType === 'fractal') {
+    return <TeleportManager teleportType="fractal" onComplete={handleTeleportComplete} />;
+  }
+  if (teleportType === 'trek') {
+    return <TeleportManager teleportType="trek" onComplete={handleTeleportComplete} />;
+  }
+
+  // Enhanced stage-based rendering with proper typing
+  if (transitionType === 'jump') {
+    console.log('[AppCore] Rendering JumpTransition');
+    return <JumpTransition onComplete={() => {
+      console.log('[AppCore] JumpTransition completed');
+      setReadyForTransition(true);
+    }} />;
+  }
+  if (transitionType === 'sip') {
+    console.log('[AppCore] Rendering SipTransition');
+    return <SipTransition onComplete={() => {
+      console.log('[AppCore] SipTransition completed');
+      setReadyForTransition(true);
+    }} />;
+  }
+  if (transitionType === 'wait') {
+    console.log('[AppCore] Rendering WaitTransition');
+    return <WaitTransition onComplete={() => {
+      console.log('[AppCore] WaitTransition completed');
+      setReadyForTransition(true);
+    }} />;
+  }
+  if (transitionType === 'dramatic_wait') {
+    console.log('[AppCore] Rendering DramaticWaitTransition');
+    return <DramaticWaitTransition onComplete={() => {
+      console.log('[AppCore] DramaticWaitTransition completed');
+      setReadyForTransition(true);
+    }} />;
+  }
+  if (stage === 'splash') {
+    return <SplashScreen onComplete={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'welcome' })} />;
+  }
+  if (stage === 'welcome') {
+    return (
+      <WelcomeScreen 
+        onBegin={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'nameCapture' })} 
+        onLoadGame={() => dispatch({ type: 'LOAD_SAVED_GAME' })} 
+        onStartDemo={() => {
+          // Set demo-specific player name and skip nameCapture
+          dispatch({ type: 'SET_PLAYER_NAME', payload: 'Demo Player' });
+          dispatch({ type: 'ADVANCE_STAGE', payload: 'demo' });
+        }}
+      />
+    );
+  }
+  if (stage === 'demo') {
+    
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-black text-green-400">
+        <div className="text-center space-y-4">
+          <div className="animate-spin w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full mx-auto"></div>
+          <h2 className="text-2xl font-bold">Starting Demo Experience...</h2>
+          <p className="text-lg">Ayla is preparing your guided tour</p>
+        </div>
+      </div>
+    );
+  }
+  if (stage === 'nameCapture') {
+    return (
+      <PlayerNameCapture 
+        onNameSubmit={(name: string) => { 
+          dispatch({ type: 'SET_PLAYER_NAME', payload: name }); 
+          dispatch({ type: 'ADVANCE_STAGE', payload: 'intro' }); 
+        }} 
+      />
+    );
+  }
+  if (stage === 'intro') {
+    return (
+      <TeletypeIntro 
+        playerName={playerName} 
+        onComplete={(data: IntroCompletionData) => { 
+          console.log('[AppCore] Intro completed with data:', data);
+          if (data.targetRoom) {
+            console.log('[AppCore] Setting transition target room:', data.targetRoom);
+            setTransitionTargetRoom(data.targetRoom);
+          }
+          if (data.inventoryBonus) {
+            console.log('[AppCore] Setting transition inventory:', data.inventoryBonus);
+            setTransitionInventory(data.inventoryBonus);
+          }
+          const targetStage = `transition_${data.route}` as GameStage;
+          console.log('[AppCore] Advancing to transition stage:', targetStage);
+          setTimeout(() => {
+            dispatch({ 
+              type: 'ADVANCE_STAGE', 
+              payload: targetStage
+            });
+          }, 750); 
+        }} 
+      />
+    );
+  }
+
+  if (!room) {
+    return <div className="appcore-loading">Loading room context...</div>;
+  }
 
   return (
     <div className="appcore-grid">
