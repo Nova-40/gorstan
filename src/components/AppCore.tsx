@@ -15,16 +15,21 @@
 */
 
 // src/components/AppCore.tsx
-// Gorstan Game Beta 2
+// Gorstan Game Beta 3
 // Gorstan and characters (c) Geoff Webster 2025
 // Main game controller UI and logic routing.
 
 import '../styles/GameUI.css';
 import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
+import { lazyFeature } from '../utils/lazyLoading';
+import { useStableCallback } from '../utils/performanceOptimization';
 
 import CommandInput from './CommandInput';
-import DramaticWaitTransition from './animations/DramaticWaitTransition';
-import JumpTransition from './animations/JumpTransition';
+// Lazy load heavy transition components
+const DramaticWaitTransition = lazyFeature(() => import('./animations/DramaticWaitTransition'));
+const JumpTransition = lazyFeature(() => import('./animations/JumpTransition'));
+const SipTransition = lazyFeature(() => import('./animations/SipTransition'));
+const WaitTransition = lazyFeature(() => import('./animations/WaitTransition'));
 import MultiverseRebootSequence from './MultiverseRebootSequence';
 import PlayerNameCapture from './PlayerNameCapture';
 import PlayerStatsPanel from './PlayerStatsPanel';
@@ -33,16 +38,14 @@ import InventoryPanel from './InventoryPanel';
 import DebugPanel from './DebugPanel';
 import RoomRenderer from './RoomRenderer';
 import RoomTransition from './animations/RoomTransition';
-import SipTransition from './animations/SipTransition';
 import SplashScreen from './SplashScreen';
 import TeletypeIntro from './TeletypeIntro';
 import TerminalConsole from './TerminalConsole';
-import WaitTransition from './animations/WaitTransition';
 import WelcomeScreen from './WelcomeScreen';
 import TeleportManager from './animations/TeleportManager';
 import QuickActionsPanel from './QuickActionsPanel';
+import CombatActionsPanel from '../ui/QuickActionsPanel';
 import BlueButtonWarningModal from './BlueButtonWarningModal';
-import { handleAskAyla as askAylaEngine } from '../logic/askAylaEngine';
 
 import { useFlags } from '../hooks/useFlags';
 import { useGameState } from '../state/gameState';
@@ -63,24 +66,26 @@ import { getAllRoomsAsObject } from '../utils/roomLoader';
 import { getFallbackRooms } from '../utils/roomLoaderFallback';
 import { performanceMonitor } from '../utils/performanceMonitor';
 import { onRoomEntry, periodicConversationCheck } from '../npc/triggers';
-import { getTrapByRoom, disarmTrap } from '../engine/trapController';
-import { canPlayerDisarmTrap } from '../engine/trapDetection';
+import { getTrapByRoom } from '../engine/trapController';
 
 import { UseItemModal } from "./UseItemModal";
 import { InventoryModal } from "./InventoryModal";
 import ModalOverlay from './ModalOverlay';
 import PickUpItemModal from './PickUpItemModal';
 import SaveGameModal from './SaveGameModal';
+import { SaveManager } from '../services/SaveManager';
 import NPCConsole from './NPCConsole';
 import EnhancedNPCConsole from './EnhancedNPCConsole';
-import NPCSelectionModal from './NPCSelectionModal';
+import Modal from './Modal';
+import AylaHintPopup from './AylaHintPopup';
 import { npcReact } from '../engine/npcEngine';
 import { npcRegistry } from '../npcs/npcMemory';
-import Modal from './Modal';
-import TrapManagementModal from './TrapManagementModal';
-import AylaHintPopup from './AylaHintPopup';
-import UnifiedAIPopup from './UnifiedAIPopup';
-import AIMonitorDisplay from './AIMonitorDisplay';
+// Lazy load AI components and modals
+const UnifiedAIPopup = lazyFeature(() => import('./UnifiedAIPopup'));
+const AIMonitorDisplay = lazyFeature(() => import('./AIMonitorDisplay'));
+const TrapManagementModal = lazyFeature(() => import('./TrapManagementModal'));
+const NPCSelectionModal = lazyFeature(() => import('./NPCSelectionModal'));
+const PerformanceDashboard = lazyFeature(() => import('./PerformanceDashboard'));
 import { AylaHintSystem } from '../services/aylaHintSystem';
 import type { AylaHintResponse } from '../services/aylaHintSystem';
 import { unifiedAI } from '../services/unifiedAI';
@@ -89,15 +94,15 @@ import { aiUsageMonitor } from '../services/aiUsageMonitor';
 import type { GameplayUpdate } from '../services/aiUsageMonitor';
 import { npcAI } from '../services/npcAI';
 import { itemDescriptions } from '../data/itemDescriptions';
-import PerformanceDashboard from './PerformanceDashboard';
 
 import type { Room } from '../types/Room';
 import type { NPC, NPCMood } from '../types/NPCTypes';
+import type { GameTransition } from '../types/GameTypes';
 
 /**
  * Enhanced type definitions for better type safety
  */
-type GameStage = 'splash' | 'welcome' | 'nameCapture' | 'intro' | 'game' | 
+type GameStage = 'splash' | 'welcome' | 'nameCapture' | 'intro' | 'demo' | 'game' | 
   'transition_jump' | 'transition_sip' | 'transition_wait' | 'transition_dramatic_wait';
 
 type OpenModalType = 'inventory' | 'useItem' | 'look' | 'pickUp' | 'saveGame' | 'npcConsole' | 'npcSelection' | 'trapManagement' | null;
@@ -167,9 +172,7 @@ const AppCore: React.FC = () => {
   const [currentHint, setCurrentHint] = useState<AylaHintResponse | null>(null);
   const [currentGuidance, setCurrentGuidance] = useState<AIGuidanceResponse | null>(null);
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
-  const [failedCommands, setFailedCommands] = useState<string[]>([]);
   const [roomEntryTime, setRoomEntryTime] = useState<number>(Date.now());
-  const hintCheckIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [aylaHintSystem] = useState(() => new AylaHintSystem());
 
   // AI Usage Monitoring state
@@ -177,7 +180,7 @@ const AppCore: React.FC = () => {
   const [showAIMonitor, setShowAIMonitor] = useState<boolean>(false);
   const [npcBehaviors, setNpcBehaviors] = useState<Record<string, string>>({});
 
-  // Save game state
+  // Save game state - Enhanced with migration support
   const [saveSlots, setSaveSlots] = useState<Array<{
     id: string;
     name: string;
@@ -196,7 +199,7 @@ const AppCore: React.FC = () => {
   const [roomHistory, setRoomHistory] = useState<string[]>([]);
   const [showPerformanceDashboard, setShowPerformanceDashboard] = useState<boolean>(false);
 
-  const handleRoomChange = (newRoomId: string) => {
+  const handleRoomChange = useStableCallback((newRoomId: string) => {
     console.log('[AppCore] handleRoomChange called with:', newRoomId);
     if (newRoomId !== currentRoomId) {
       // Store current room in history before moving
@@ -229,7 +232,7 @@ const AppCore: React.FC = () => {
         dispatch({ type: "MOVE_TO_ROOM", payload: newRoomId });
       }
     }
-  };
+  }, [state.currentRoomId, setTeleportType, dispatch]);
 
 const handleBackout = useCallback((): void => {
     const count = roomHistory.length;
@@ -300,8 +303,8 @@ const handleBackout = useCallback((): void => {
 
   // Initialize hooks with proper typing
   useOptimizedEffects(state, dispatch, room);
-  const { handleWendell } = useWendellLogic(state, dispatch, room, loadModule);
-  const { handleLibrarian } = useLibrarianLogic(state, dispatch, room, loadModule);
+  useWendellLogic(state, dispatch, room, loadModule);
+  useLibrarianLogic(state, dispatch, room, loadModule);
   
   // Enhanced modal management with proper typing
   const openModal = useCallback((name: OpenModalType): void => setModal(name), []);
@@ -315,66 +318,140 @@ const handleBackout = useCallback((): void => {
     openModal('trapManagement');
   }, [openModal]);
 
-  // Save game functions
-  const loadSaveSlots = useCallback(() => {
+  // Enhanced save game functions with migration support
+  const loadSaveSlots = useCallback(async () => {
     try {
+      // Load traditional save slots for compatibility
       const saved = localStorage.getItem('gorstan_save_slots');
       if (saved) {
         setSaveSlots(JSON.parse(saved));
       }
+
+      // Check for save files that need migration
+      const saveSlotInfos = await SaveManager.listSlots();
+      setSaveSlots(saveSlotInfos.map(slot => ({
+        id: slot.slot.toString(),
+        name: slot.playerName,
+        playerName: slot.playerName,
+        currentRoom: 'Unknown', // Would need to be extracted from gameState if needed
+        timestamp: Date.parse(slot.timestamp),
+        score: 0, // Would need to be extracted from gameState if needed  
+        playTime: 0 // Would need to be extracted from gameState if needed
+      })));
     } catch (error) {
       console.error('Failed to load save slots:', error);
     }
-  }, []);
+  }, [dispatch]);
 
-  const handleSave = useCallback((slotId: string, slotName: string) => {
-    const saveData = {
-      id: slotId,
-      name: slotName,
-      playerName: state.player.name || 'Player',
-      currentRoom: state.currentRoomId,
-      timestamp: Date.now(),
-      score: state.player.score || 0,
-      playTime: state.metadata?.playTime || 0,
-      gameState: {
-        stage: state.stage,
-        player: state.player,
-        currentRoomId: state.currentRoomId,
-        flags: state.flags,
-        roomVisitCount: state.roomVisitCount,
-        history: state.history.slice(-50), // Keep last 50 messages
-        metadata: state.metadata
-      }
-    };
-
+  const handleSave = useCallback(async (slotId: string, slotName: string) => {
     try {
-      // Save the game data
-      localStorage.setItem(`gorstan_save_${slotId}`, JSON.stringify(saveData));
+      // Create enhanced save file structure
+      const saveFile = {
+        version: 7, // Current version
+        playerName: state.player.name || 'Player',
+        progress: {
+          questsCompleted: 0, // Calculate based on game state
+          achievementsUnlocked: (state.metadata?.achievements || []).length,
+          totalScore: state.player.score || 0,
+          totalPlayTime: state.metadata?.playTime ?? 0,
+          roomsVisited: Object.keys(state.flags || {}).filter(key => key.startsWith('visited_')).length || 1,
+          secretsFound: Object.keys(state.flags || {}).filter(key => key.startsWith('secret_')).length || 0,
+          characterInteractions: Object.keys(state.flags || {}).filter(key => key.startsWith('met_')).length || 0,
+          storylineProgress: {
+            currentRoom: state.currentRoomId,
+            flags: state.flags,
+            inventory: state.player.inventory,
+            achievements: state.metadata?.achievements || []
+          }
+        },
+        timestamp: new Date().toISOString(),
+        gameState: {
+          ...state,
+          progress: {
+            questsCompleted: 0, // Calculate based on game state
+            achievementsUnlocked: (state.metadata?.achievements || []).length,
+            totalScore: state.player.score || 0,
+            totalPlayTime: state.metadata?.playTime ?? 0,
+            roomsVisited: Object.keys(state.flags || {}).filter(key => key.startsWith('visited_')).length || 1,
+            secretsFound: Object.keys(state.flags || {}).filter(key => key.startsWith('secret_')).length || 0,
+            characterInteractions: Object.keys(state.flags || {}).filter(key => key.startsWith('met_')).length || 0,
+            storylineProgress: {
+              currentRoom: state.currentRoomId,
+              flags: state.flags,
+              inventory: state.player.inventory,
+              achievements: state.metadata?.achievements || []
+            }
+          },
+          transition: state.transition as GameTransition | undefined, // Type assertion for compatibility
+          settings: {
+            difficulty: (state.settings?.difficulty as 'easy' | 'normal' | 'hard' | 'nightmare') || 'normal',
+            autoSave: state.settings?.autoSave ?? true,
+            autoSaveInterval: state.settings?.autoSaveInterval ?? 60,
+            soundEnabled: state.settings?.soundEnabled ?? true,
+            musicEnabled: state.settings?.musicEnabled ?? true,
+            animationsEnabled: state.settings?.animationsEnabled ?? true,
+            textSpeed: state.settings?.textSpeed ?? 50,
+            fontSize: (state.settings?.fontSize as 'small' | 'medium' | 'large') || 'medium',
+            theme: (state.settings?.theme as 'light' | 'dark' | 'auto') || 'auto',
+            debugMode: state.settings?.debugMode ?? false,
+            fullscreen: state.settings?.fullscreen ?? false,
+            cheatMode: state.settings?.cheatMode ?? false
+          },
+          metadata: {
+            version: state.metadata?.version || '3.8.8',
+            playTime: state.metadata?.playTime ?? 0,
+            lastSaved: typeof state.metadata?.lastSaved === 'string' ? Date.now() : (state.metadata?.lastSaved ?? null),
+            resetCount: state.metadata?.resetCount ?? 0,
+            achievements: state.metadata?.achievements ?? []
+          }
+        },
+        metadata: {
+          saveVersion: 7,
+          gameVersion: '3.8.8',
+          features: [
+            'save_migration_v7',
+            'backward_compatibility',
+            'data_integrity_checking'
+          ],
+          compatibility: {
+            minGameVersion: '3.8.0',
+            maxGameVersion: '9.9.9'
+          }
+        }
+      };
+
+      // Use enhanced SaveManager with migration support
+      const result = await SaveManager.save(parseInt(slotId), saveFile);
       
-      // Update save slots list
-      const newSlots = saveSlots.filter(slot => slot.id !== slotId);
-      newSlots.push({
-        id: slotId,
-        name: slotName,
-        playerName: saveData.playerName,
-        currentRoom: saveData.currentRoom,
-        timestamp: saveData.timestamp,
-        score: saveData.score,
-        playTime: saveData.playTime
-      });
+      if (result.success) {
+        // Update traditional save slots for UI compatibility
+        const newSlots = saveSlots.filter(slot => slot.id !== slotId);
+        newSlots.push({
+          id: slotId,
+          name: slotName,
+          playerName: saveFile.playerName,
+          currentRoom: saveFile.progress.storylineProgress?.currentRoom || state.currentRoomId,
+          timestamp: Date.now(),
+          score: saveFile.progress.totalScore,
+          playTime: state.metadata?.playTime || 0
+        });
+        
+        setSaveSlots(newSlots);
+        localStorage.setItem('gorstan_save_slots', JSON.stringify(newSlots));
+        
+        dispatch({ 
+          type: 'RECORD_MESSAGE', 
+          payload: { 
+            id: `save-success-${Date.now()}`, 
+            text: `Game saved as "${slotName}" with migration support`, 
+            type: 'system', 
+            timestamp: Date.now() 
+          } 
+        });
+      } else {
+        throw new Error(result.message);
+      }
       
-      setSaveSlots(newSlots);
-      localStorage.setItem('gorstan_save_slots', JSON.stringify(newSlots));
-      
-      dispatch({ 
-        type: 'RECORD_MESSAGE', 
-        payload: { 
-          id: `save-success-${Date.now()}`, 
-          text: `Game saved as "${slotName}"`, 
-          type: 'system', 
-          timestamp: Date.now() 
-        } 
-      });
       closeModal();
     } catch (error) {
       console.error('Failed to save game:', error);
@@ -382,7 +459,7 @@ const handleBackout = useCallback((): void => {
         type: 'RECORD_MESSAGE', 
         payload: { 
           id: `save-error-${Date.now()}`, 
-          text: 'Failed to save game - storage may be full', 
+          text: `Failed to save game: ${error}`, 
           type: 'error', 
           timestamp: Date.now() 
         } 
@@ -390,32 +467,48 @@ const handleBackout = useCallback((): void => {
     }
   }, [state, saveSlots, dispatch, closeModal]);
 
-  const handleLoad = useCallback((slotId: string) => {
+  const handleLoad = useCallback(async (slotId: string) => {
     try {
-      const savedData = localStorage.getItem(`gorstan_save_${slotId}`);
-      if (savedData) {
-        const saveData = JSON.parse(savedData);
-        
-        // Update the game state with loaded data
-        dispatch({ type: 'ADVANCE_STAGE', payload: saveData.gameState.stage });
-        dispatch({ type: 'SET_PLAYER_NAME', payload: saveData.gameState.player.name });
-        dispatch({ type: 'MOVE_TO_ROOM', payload: saveData.gameState.currentRoomId });
-        
-        // Restore flags
-        Object.entries(saveData.gameState.flags).forEach(([flag, value]) => {
-          dispatch({ type: 'SET_FLAG', payload: { flag, value } });
-        });
+      // Use enhanced SaveManager with automatic migration
+      const saveFile = await SaveManager.load(parseInt(slotId));
+      
+      if (saveFile) {
+        // Load the save data
+        if (saveFile.gameState) {
+          const gameState = saveFile.gameState;
+          
+          dispatch({ type: 'ADVANCE_STAGE', payload: gameState.stage });
+          dispatch({ type: 'SET_PLAYER_NAME', payload: gameState.player.name });
+          dispatch({ type: 'MOVE_TO_ROOM', payload: gameState.currentRoomId });
+          
+          // Restore flags
+          Object.entries(gameState.flags || {}).forEach(([flag, value]) => {
+            dispatch({ type: 'SET_FLAG', payload: { flag, value } });
+          });
+          
+          // Restore other state if available
+          if (gameState.player.inventory) {
+            gameState.player.inventory.forEach((item: string) => {
+              dispatch({ type: 'ADD_TO_INVENTORY', payload: item });
+            });
+          }
+        }
         
         dispatch({ 
           type: 'RECORD_MESSAGE', 
           payload: { 
             id: `load-success-${Date.now()}`, 
-            text: `Game loaded: "${saveData.name}"`, 
+            text: `Game loaded: "${saveFile.playerName}" (v${saveFile.version})`, 
             type: 'system', 
             timestamp: Date.now() 
           } 
         });
+        
+        // Refresh save slots to reflect any migrations
+        await loadSaveSlots();
         closeModal();
+      } else {
+        throw new Error('Save file not found or corrupted');
       }
     } catch (error) {
       console.error('Failed to load game:', error);
@@ -423,13 +516,13 @@ const handleBackout = useCallback((): void => {
         type: 'RECORD_MESSAGE', 
         payload: { 
           id: `load-error-${Date.now()}`, 
-          text: 'Failed to load game - save data may be corrupted', 
+          text: `Failed to load game: ${error}`, 
           type: 'error', 
           timestamp: Date.now() 
         } 
       });
     }
-  }, [dispatch, closeModal]);
+  }, [dispatch, closeModal, loadSaveSlots]);
 
   const handleDeleteSave = useCallback((slotId: string) => {
     try {
@@ -563,33 +656,6 @@ const handleBackout = useCallback((): void => {
     }
   }, [npcsInRoom, openModal]);
 
-  const handleAskAyla = useCallback(() => {
-    // Check if NPCs are present in the room
-    if (npcsInRoom.length > 0) {
-      // NPCs present - always show selection modal (includes option to talk to Ayla)
-      openModal('npcSelection');
-    } else {
-      // No NPCs present - show Ayla directly
-      const aylaHelper: NPC = {
-        id: 'ayla',
-        name: 'Ayla',
-        location: 'universal',
-        description: 'Your helpful guide through the game',
-        portrait: '/images/Ayla.png',
-        mood: 'helpful' as NPCMood,
-        memory: {
-          interactions: 0,
-          lastInteraction: Date.now(),
-          playerActions: [],
-          relationship: 50,
-          knownFacts: []
-        }
-      };
-      setSelectedNPC(aylaHelper);
-      openModal('npcConsole');
-    }
-  }, [npcsInRoom, openModal]);
-
   const handleTalkToAyla = useCallback(() => {
     // Switch from NPC selection to talking to Ayla directly
     const aylaHelper: NPC = {
@@ -659,6 +725,15 @@ const handleBackout = useCallback((): void => {
       }
     }
   }, [state.flags?.openNPCConsole, npcsInRoom, handleOpenNPCConsole, dispatch]);
+
+  // Monitor for save menu flag
+  useEffect(() => {
+    if (state.flags?.openSaveMenu) {
+      openModal('saveGame');
+      // Clear the flag
+      dispatch({ type: 'SET_FLAG', payload: { flag: 'openSaveMenu', value: null } });
+    }
+  }, [state.flags?.openSaveMenu, openModal, dispatch]);
 
   // Auto-trigger NPC modal when NPCs are detected in room - REMOVED
   // Now using Ask Ayla button for NPC interaction initiation
@@ -800,7 +875,7 @@ const handleBackout = useCallback((): void => {
   }, [room, npcsInRoom, openModal, closeModal]);
 
   // Enhanced hint checking function with unified AI
-  const checkForHints = useCallback(async (cmd: string, lowerCmd: string) => {
+  const checkForHints = useCallback(async (cmd: string, _lowerCmd: string) => {
     if (!aylaHintSystem || currentHint || currentGuidance) return;
 
     // Check if this was a failed command (we can check this by looking at recent messages)
@@ -861,7 +936,6 @@ const handleBackout = useCallback((): void => {
   // Enhanced command handler with better type safety
   const handleCommand = useCallback((cmd: string): void => {
     const lowerCmd: string = cmd.toLowerCase().trim();
-    let commandSuccess: boolean = false;
 
     // Track command for hint system
     setCommandHistory(prev => [...prev.slice(-9), cmd]); // Keep last 10 commands
@@ -1024,6 +1098,79 @@ const handleBackout = useCallback((): void => {
       setTeleportCallback(() => () => {});
     }
   }, [teleportCallback]);
+
+  // Demo mode automation - executes predefined commands to showcase gameplay
+  const startDemoMode = useCallback((): void => {
+    const demoCommands = [
+      { command: 'look', delay: 1000 },
+      { command: 'north', delay: 2000 },
+      { command: 'look', delay: 1500 },
+      { command: 'examine statue', delay: 2000 },
+      { command: 'talk to ayla', delay: 2500 },
+      { command: 'south', delay: 1500 },
+      { command: 'east', delay: 1500 },
+      { command: 'look', delay: 1500 },
+      { command: 'take key', delay: 2000 },
+      { command: 'west', delay: 1000 },
+      { command: 'north', delay: 1000 },
+      { command: 'use key', delay: 2000 },
+      { command: 'inventory', delay: 1500 },
+      { command: 'help', delay: 2000 }
+    ];
+
+    let currentCommandIndex = 0;
+    
+    const executeDemoCommand = () => {
+      if (currentCommandIndex >= demoCommands.length) {
+        // Demo completed - show completion message
+        dispatch({ 
+          type: 'ADD_MESSAGE', 
+          payload: { 
+            id: Date.now().toString(), 
+            text: "🎮 Demo complete! Ayla: \"You've seen a glimpse of what Gorstan offers. Ready to explore on your own?\"",
+            type: 'system',
+            timestamp: Date.now()
+          }
+        });
+        return;
+      }
+
+      const { command, delay } = demoCommands[currentCommandIndex];
+      
+      // Add demo command to message log
+      dispatch({ 
+        type: 'ADD_MESSAGE', 
+        payload: { 
+          id: Date.now().toString(), 
+          text: `🤖 Demo: ${command}`,
+          type: 'input',
+          timestamp: Date.now()
+        }
+      });
+
+      // Execute the command after a brief delay
+      setTimeout(() => {
+        handleCommand(command);
+        currentCommandIndex++;
+        
+        // Schedule next command
+        setTimeout(executeDemoCommand, delay);
+      }, 500);
+    };
+
+    // Start the demo sequence
+    dispatch({ 
+      type: 'ADD_MESSAGE', 
+      payload: { 
+        id: Date.now().toString(), 
+        text: "🎭 Ayla: \"Welcome to your guided tour of Gorstan! Watch as I demonstrate the core gameplay...\"",
+        type: 'system',
+        timestamp: Date.now()
+      }
+    });
+    
+    setTimeout(executeDemoCommand, 2000);
+  }, [handleCommand, dispatch]);
 
   // Enhanced system controls with proper error handling and typing
   const toggleFullscreen = useCallback((): void => {
@@ -1440,7 +1587,43 @@ const handleBackout = useCallback((): void => {
       <WelcomeScreen 
         onBegin={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'nameCapture' })} 
         onLoadGame={() => dispatch({ type: 'LOAD_SAVED_GAME' })} 
+        onStartDemo={() => {
+          // Set demo-specific player name and skip nameCapture
+          dispatch({ type: 'SET_PLAYER_NAME', payload: 'Demo Player' });
+          dispatch({ type: 'ADVANCE_STAGE', payload: 'demo' });
+        }}
       />
+    );
+  }
+  // Demo mode effect - must be called unconditionally to follow Rules of Hooks
+  React.useEffect(() => {
+    if (stage === 'demo') {
+      // Initialize demo mode - start the game with demo route
+      dispatch({ type: 'ADVANCE_STAGE', payload: 'game' });
+      
+      // Set demo-specific initial state
+      dispatch({ type: 'SET_CURRENT_ROOM', payload: 'gorstanhub' });
+      
+      // After a brief delay, start the demo automation
+      const demoTimer = setTimeout(() => {
+        // Start automated demo commands
+        startDemoMode();
+      }, 2000);
+      
+      return () => clearTimeout(demoTimer);
+    }
+  }, [stage, dispatch, startDemoMode]);
+
+  if (stage === 'demo') {
+    
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-black text-green-400">
+        <div className="text-center space-y-4">
+          <div className="animate-spin w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full mx-auto"></div>
+          <h2 className="text-2xl font-bold">Starting Demo Experience...</h2>
+          <p className="text-lg">Ayla is preparing your guided tour</p>
+        </div>
+      </div>
     );
   }
   if (stage === 'nameCapture') {
@@ -1485,7 +1668,7 @@ const handleBackout = useCallback((): void => {
   }
 
   // Enhanced modal content rendering with proper typing
-  const renderModalContent = (): React.ReactNode => {
+  const renderModalContent = useStableCallback((): React.ReactNode => {
     switch (modal) {
       case 'inventory': 
         return <InventoryModal items={inventory} onClose={closeModal} />;
@@ -1578,7 +1761,7 @@ const handleBackout = useCallback((): void => {
       default: 
         return null;
     }
-  };
+  }, [modal, inventory, room, selectedNPC, isGroupConversation, playerName, state, npcsInRoom, closeModal, handlePickUpItems, dispatch, roomMap, currentRoomId]);
 
   return (
     <div className="appcore-grid">
@@ -1682,6 +1865,9 @@ const handleBackout = useCallback((): void => {
       
       {hasFlag('showDebugPanel') && <DebugPanel />}
 
+      {/* Combat Actions Panel - only show during combat */}
+      <CombatActionsPanel />
+
       {/* Enhanced modal overlay with proper typing */}
       <ModalOverlay isOpen={Boolean(modal)} onClose={closeModal}>
         {renderModalContent()}
@@ -1729,7 +1915,7 @@ const handleBackout = useCallback((): void => {
 
       {/* Performance Dashboard */}
       <PerformanceDashboard
-        isVisible={showPerformanceDashboard}
+        isOpen={showPerformanceDashboard}
         onClose={() => setShowPerformanceDashboard(false)}
       />
 
