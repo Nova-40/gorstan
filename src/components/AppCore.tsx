@@ -1101,19 +1101,17 @@ const handleBackout = useCallback((): void => {
 
   // Demo mode automation - executes predefined commands to showcase gameplay
   const startDemoMode = useCallback((): void => {
+    console.log('[AppCore] startDemoMode called - beginning demo automation');
     const demoCommands = [
       { command: 'look', delay: 1000 },
-      { command: 'north', delay: 2000 },
+      { command: 'west', delay: 2000 },
       { command: 'look', delay: 1500 },
-      { command: 'examine statue', delay: 2000 },
-      { command: 'talk to ayla', delay: 2500 },
-      { command: 'south', delay: 1500 },
+      { command: 'examine tactical_display', delay: 2000 },
       { command: 'east', delay: 1500 },
+      { command: 'sit', delay: 2000 },
       { command: 'look', delay: 1500 },
-      { command: 'take key', delay: 2000 },
-      { command: 'west', delay: 1000 },
-      { command: 'north', delay: 1000 },
-      { command: 'use key', delay: 2000 },
+      { command: 'examine console', delay: 2000 },
+      { command: 'status', delay: 1500 },
       { command: 'inventory', delay: 1500 },
       { command: 'help', delay: 2000 }
     ];
@@ -1533,19 +1531,24 @@ const handleBackout = useCallback((): void => {
   // Demo mode effect - must be called unconditionally to follow Rules of Hooks
   useEffect(() => {
     if (stage === 'demo') {
+      console.log('[AppCore] Demo mode effect triggered - starting demo sequence');
       // Initialize demo mode - start the game with demo route
       dispatch({ type: 'ADVANCE_STAGE', payload: 'game' });
       
-      // Set demo-specific initial state
-      dispatch({ type: 'SET_CURRENT_ROOM', payload: 'gorstanhub' });
+      // Keep demo in the current room (controlnexus)
+      // dispatch({ type: 'SET_CURRENT_ROOM', payload: 'gorstanhub' });
       
       // After a brief delay, start the demo automation
       const demoTimer = setTimeout(() => {
+        console.log('[AppCore] Demo timer fired - calling startDemoMode');
         // Start automated demo commands
         startDemoMode();
       }, 2000);
       
-      return () => clearTimeout(demoTimer);
+      return () => {
+        console.log('[AppCore] Demo effect cleanup - clearing timer');
+        clearTimeout(demoTimer);
+      };
     }
   }, [stage, dispatch, startDemoMode]);
 
