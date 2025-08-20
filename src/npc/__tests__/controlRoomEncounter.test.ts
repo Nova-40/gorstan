@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 /*
   Gorstan – Copyright © 2025 Geoff Webster. All Rights Reserved.
   
@@ -27,7 +28,7 @@ import {
 import { getAllianceMemory, recordCooperation, recordBetrayal } from '../allianceMemory';
 
 // Mock game state module
-jest.mock('../../state/gameState', () => ({
+vi.mock('../../state/gameState', () => ({
   getGameState: () => ({
     flags: {}
   })

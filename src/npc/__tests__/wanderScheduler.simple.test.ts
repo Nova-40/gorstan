@@ -1,3 +1,4 @@
+import { vi, Mock } from 'vitest';
 /*
   Gorstan – Copyright © 2025 Geoff Webster. All Rights Reserved.
   
@@ -21,10 +22,10 @@ import { WanderScheduler, WanderSchedulerConfig } from '../wanderScheduler';
 
 describe('WanderScheduler - Core Functionality', () => {
   let scheduler: WanderScheduler;
-  let mockMoveCallback: jest.Mock;
+  let mockMoveCallback: Mock;
 
   beforeEach(() => {
-    mockMoveCallback = jest.fn().mockResolvedValue(undefined);
+    mockMoveCallback = vi.fn().mockResolvedValue(undefined);
     scheduler = new WanderScheduler({
       baseTickMs: 1000,
       jitterRangeMs: [0, 0]

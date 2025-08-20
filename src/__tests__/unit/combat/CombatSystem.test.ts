@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 /// <reference types="jest" />
 
 /**
@@ -9,16 +10,16 @@ import { CombatState, Element, Faction } from '../../../types/enums';
 import type { Actor, CombatAction } from '../../../types/combat';
 
 // Mock audio and visual effects
-jest.mock('../../../vfx/cues', () => ({
-  showCombatCue: jest.fn(),
+vi.mock('../../../vfx/cues', () => ({
+  showCombatCue: vi.fn(),
   COMBAT_CUES: {},
 }));
 
-jest.mock('../../../audio/sfx', () => ({
+vi.mock('../../../audio/sfx', () => ({
   combatAudio: {
-    playHit: jest.fn(),
-    playMiss: jest.fn(),
-    playBlock: jest.fn(),
+    playHit: vi.fn(),
+    playMiss: vi.fn(),
+    playBlock: vi.fn(),
   },
 }));
 

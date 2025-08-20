@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 /*
   Gorstan – Copyright © 2025 Geoff Webster. All Rights Reserved.
   
@@ -26,15 +27,15 @@ import { NPCErrorHandler, NPCErrorType, NPCErrorSeverity } from '../errorHandlin
 beforeAll(() => {
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
-    value: jest.fn().mockImplementation(query => ({
+    value: vi.fn().mockImplementation(query => ({
       matches: false,
       media: query,
       onchange: null,
-      addListener: jest.fn(),
-      removeListener: jest.fn(),
-      addEventListener: jest.fn(),
-      removeEventListener: jest.fn(),
-      dispatchEvent: jest.fn(),
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
     })),
   });
 });
@@ -49,16 +50,16 @@ describe('NPC Wandering System Integration (Core Components)', () => {
     errorHandler = new NPCErrorHandler();
     movementExecutor = new MovementExecutor();
 
-    jest.spyOn(console, 'log').mockImplementation();
-    jest.spyOn(console, 'warn').mockImplementation();
-    jest.spyOn(console, 'error').mockImplementation();
+    vi.spyOn(console, 'log').mockImplementation();
+    vi.spyOn(console, 'warn').mockImplementation();
+    vi.spyOn(console, 'error').mockImplementation();
   });
 
   afterEach(() => {
     performanceOptimizer.cleanup();
     errorHandler.cleanup();
     
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe('Component Initialization', () => {
@@ -111,7 +112,7 @@ describe('NPC Wandering System Integration (Core Components)', () => {
     });
 
     test('should implement circuit breaker pattern', async () => {
-      const failingOperation = jest.fn().mockRejectedValue(new Error('Operation failed'));
+      const failingOperation = vi.fn().mockRejectedValue(new Error('Operation failed'));
       
       for (let i = 0; i < 6; i++) {
         try {
@@ -127,7 +128,7 @@ describe('NPC Wandering System Integration (Core Components)', () => {
 
     test('should retry failed operations', async () => {
       let attempts = 0;
-      const retryOperation = jest.fn().mockImplementation(async () => {
+      const retryOperation = vi.fn().mockImplementation(async () => {
         attempts++;
         if (attempts < 3) {
           throw new Error('Temporary failure');
@@ -167,8 +168,8 @@ describe('NPC Wandering System Integration (Core Components)', () => {
   describe('Movement Execution Integration', () => {
     test('should start and stop movement execution', () => {
       // Mock the movement executor to avoid browser dependencies
-      jest.spyOn(movementExecutor, 'start').mockImplementation(() => {});
-      jest.spyOn(movementExecutor, 'stop').mockImplementation(() => {});
+      vi.spyOn(movementExecutor, 'start').mockImplementation(() => {});
+      vi.spyOn(movementExecutor, 'stop').mockImplementation(() => {});
 
       movementExecutor.start();
       expect(movementExecutor.start).toHaveBeenCalled();
@@ -290,7 +291,7 @@ describe('NPC Wandering System Integration (Core Components)', () => {
   describe('System Resilience', () => {
     test('should recover from temporary failures', async () => {
       let failureCount = 0;
-      const unreliableOperation = jest.fn().mockImplementation(async () => {
+      const unreliableOperation = vi.fn().mockImplementation(async () => {
         failureCount++;
         if (failureCount <= 2) {
           throw new Error('Temporary failure');

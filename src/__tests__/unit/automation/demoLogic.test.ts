@@ -1,9 +1,10 @@
-/// <reference types="jest" />
+/// <reference types="vitest" />
 
 /**
  * Unit tests for demo mode automation logic
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { STAGES } from '../../../state/gameState';
 
 describe('Demo Mode Automation Logic', () => {
@@ -162,16 +163,16 @@ describe('Demo Mode Automation Logic', () => {
 
   describe('Demo Timing Logic', () => {
     beforeEach(() => {
-      jest.useFakeTimers();
+      vi.useFakeTimers();
     });
 
     afterEach(() => {
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
 
     it('should handle command execution timing', () => {
-      const mockExecuteCommand = jest.fn();
-      const mockScheduleNext = jest.fn();
+      const mockExecuteCommand = vi.fn();
+      const mockScheduleNext = vi.fn();
       
       // Simulate demo command execution with timing
       setTimeout(() => {
@@ -180,37 +181,37 @@ describe('Demo Mode Automation Logic', () => {
       }, 500); // Initial execution delay
 
       // Advance past initial delay
-      jest.advanceTimersByTime(500);
+      vi.advanceTimersByTime(500);
       expect(mockExecuteCommand).toHaveBeenCalledWith('look');
 
       // Advance past next command delay
-      jest.advanceTimersByTime(1000);
+      vi.advanceTimersByTime(1000);
       expect(mockScheduleNext).toHaveBeenCalled();
     });
 
     it('should handle demo startup delay', () => {
-      const mockStartDemo = jest.fn();
+      const mockStartDemo = vi.fn();
       
       // Demo should start after welcome message delay
       setTimeout(mockStartDemo, 2000);
       
-      jest.advanceTimersByTime(1999);
+      vi.advanceTimersByTime(1999);
       expect(mockStartDemo).not.toHaveBeenCalled();
       
-      jest.advanceTimersByTime(1);
+      vi.advanceTimersByTime(1);
       expect(mockStartDemo).toHaveBeenCalled();
     });
 
     it('should handle auto-demo timeout', () => {
-      const mockAutoStartDemo = jest.fn();
+      const mockAutoStartDemo = vi.fn();
       
       // Auto-demo should start after 1 minute on welcome screen
       setTimeout(mockAutoStartDemo, 60000);
       
-      jest.advanceTimersByTime(59999);
+      vi.advanceTimersByTime(59999);
       expect(mockAutoStartDemo).not.toHaveBeenCalled();
       
-      jest.advanceTimersByTime(1);
+      vi.advanceTimersByTime(1);
       expect(mockAutoStartDemo).toHaveBeenCalled();
     });
   });
@@ -280,7 +281,7 @@ describe('Demo Mode Automation Logic', () => {
     });
 
     it('should handle command execution errors', () => {
-      const mockHandleCommand = jest.fn().mockImplementation(() => {
+      const mockHandleCommand = vi.fn().mockImplementation(() => {
         throw new Error('Command execution failed');
       });
 

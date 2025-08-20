@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 /// <reference types="jest" />
 
 /**
@@ -141,48 +142,48 @@ describe('Demo Mode Functionality Validation', () => {
 
   describe('Demo Auto-Start Functionality', () => {
     beforeEach(() => {
-      jest.useFakeTimers();
+      vi.useFakeTimers();
     });
 
     afterEach(() => {
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
 
     it('should handle auto-demo timing', () => {
-      const mockAutoDemo = jest.fn();
+      const mockAutoDemo = vi.fn();
       
       // Auto-demo triggers after 1 minute
       setTimeout(mockAutoDemo, 60000);
       
-      jest.advanceTimersByTime(59999);
+      vi.advanceTimersByTime(59999);
       expect(mockAutoDemo).not.toHaveBeenCalled();
       
-      jest.advanceTimersByTime(1);
+      vi.advanceTimersByTime(1);
       expect(mockAutoDemo).toHaveBeenCalled();
     });
 
     it('should handle demo startup sequence timing', () => {
-      const mockStartSequence = jest.fn();
+      const mockStartSequence = vi.fn();
       
       // Demo starts after welcome message (2 seconds)
       setTimeout(mockStartSequence, 2000);
       
-      jest.advanceTimersByTime(1999);
+      vi.advanceTimersByTime(1999);
       expect(mockStartSequence).not.toHaveBeenCalled();
       
-      jest.advanceTimersByTime(1);
+      vi.advanceTimersByTime(1);
       expect(mockStartSequence).toHaveBeenCalled();
     });
 
     it('should handle command execution timing', () => {
-      const mockExecuteCommand = jest.fn();
+      const mockExecuteCommand = vi.fn();
       
       // Commands execute with 500ms initial delay
       setTimeout(() => {
         mockExecuteCommand('look');
       }, 500);
       
-      jest.advanceTimersByTime(500);
+      vi.advanceTimersByTime(500);
       expect(mockExecuteCommand).toHaveBeenCalledWith('look');
     });
   });
@@ -210,9 +211,9 @@ describe('Demo Mode Functionality Validation', () => {
 
     it('should support demo mode props interface', () => {
       const demoProps = {
-        onBegin: jest.fn(),
-        onLoadGame: jest.fn(),
-        onStartDemo: jest.fn()
+        onBegin: vi.fn(),
+        onLoadGame: vi.fn(),
+        onStartDemo: vi.fn()
       };
 
       expect(typeof demoProps.onStartDemo).toBe('function');

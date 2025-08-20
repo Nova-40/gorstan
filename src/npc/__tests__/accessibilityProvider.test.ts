@@ -18,6 +18,7 @@
 // Tests for NPC Accessibility Provider
 // Gorstan Game Beta 1 - Code Licence MIT
 
+import { describe, test, expect, vi, Mock } from 'vitest';
 import { 
   NPCAccessibilityProvider,
   getAccessibilityProvider,
@@ -26,27 +27,27 @@ import {
 
 // Mock DOM methods for testing
 const mockDiv = {
-  setAttribute: jest.fn(),
+  setAttribute: vi.fn(),
   style: { cssText: '' },
   textContent: '',
-  remove: jest.fn()
+  remove: vi.fn()
 };
 
 const mockBody = {
-  appendChild: jest.fn(),
-  removeChild: jest.fn(),
+  appendChild: vi.fn(),
+  removeChild: vi.fn(),
   classList: {
-    add: jest.fn(),
-    remove: jest.fn(),
-    toggle: jest.fn(),
-    contains: jest.fn().mockReturnValue(false)
+    add: vi.fn(),
+    remove: vi.fn(),
+    toggle: vi.fn(),
+    contains: vi.fn().mockReturnValue(false)
   }
 };
 
 const mockDocumentElement = {
   style: {
-    setProperty: jest.fn(),
-    removeProperty: jest.fn()
+    setProperty: vi.fn(),
+    removeProperty: vi.fn()
   }
 };
 
@@ -55,19 +56,19 @@ describe('NPCAccessibilityProvider', () => {
 
   beforeEach(() => {
     // Reset and setup fresh mocks for each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     
     // Mock createElement to return our mock div
-    jest.spyOn(document, 'createElement').mockReturnValue(mockDiv as any);
+    vi.spyOn(document, 'createElement').mockReturnValue(mockDiv as any);
     
     // Mock document.body methods
     if (document.body) {
-      jest.spyOn(document.body, 'appendChild').mockImplementation(jest.fn());
-      jest.spyOn(document.body, 'removeChild').mockImplementation(jest.fn());
+      vi.spyOn(document.body, 'appendChild').mockImplementation(vi.fn());
+      vi.spyOn(document.body, 'removeChild').mockImplementation(vi.fn());
     }
     
     // Mock querySelectorAll
-    jest.spyOn(document, 'querySelectorAll').mockReturnValue([] as any);
+    vi.spyOn(document, 'querySelectorAll').mockReturnValue([] as any);
     
     resetAccessibilityProvider();
     provider = new NPCAccessibilityProvider();
@@ -105,7 +106,7 @@ describe('NPCAccessibilityProvider', () => {
 
     test('should detect system preferences', () => {
       // Mock prefers-reduced-motion
-      (window.matchMedia as jest.Mock).mockImplementation((query) => {
+      (window.matchMedia as Mock).mockImplementation((query: string) => {
         if (query === '(prefers-reduced-motion: reduce)') {
           return { matches: true };
         }
@@ -154,7 +155,7 @@ describe('NPCAccessibilityProvider', () => {
       provider.enable();
       
       // Mock classList methods properly
-      const toggleSpy = jest.spyOn(document.body.classList, 'toggle');
+      const toggleSpy = vi.spyOn(document.body.classList, 'toggle');
       
       provider.updateSettings({
         highContrast: true,

@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 /*
   Gorstan – Copyright © 2025 Geoff Webster. All Rights Reserved.
   
@@ -33,16 +34,16 @@ describe('NPCErrorHandler', () => {
   beforeEach(() => {
     resetErrorHandler();
     errorHandler = new NPCErrorHandler();
-    jest.clearAllMocks();
-    jest.spyOn(console, 'error').mockImplementation();
-    jest.spyOn(console, 'warn').mockImplementation();
-    jest.spyOn(console, 'log').mockImplementation();
+    vi.clearAllMocks();
+    vi.spyOn(console, 'error').mockImplementation();
+    vi.spyOn(console, 'warn').mockImplementation();
+    vi.spyOn(console, 'log').mockImplementation();
   });
 
   afterEach(() => {
     errorHandler.cleanup();
     resetErrorHandler();
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe('Error Reporting', () => {
@@ -193,7 +194,7 @@ describe('NPCErrorHandler', () => {
 
   describe('Circuit Breaker', () => {
     test('should execute operations through circuit breaker', async () => {
-      const operation = jest.fn().mockResolvedValue('success');
+      const operation = vi.fn().mockResolvedValue('success');
       
       const result = await errorHandler.executeWithProtection(operation);
       
@@ -202,7 +203,7 @@ describe('NPCErrorHandler', () => {
     });
 
     test('should open circuit after failures', async () => {
-      const failingOperation = jest.fn().mockRejectedValue(new Error('Operation failed'));
+      const failingOperation = vi.fn().mockRejectedValue(new Error('Operation failed'));
       
       // Try multiple times to trigger circuit breaker
       for (let i = 0; i < 6; i++) {
@@ -221,7 +222,7 @@ describe('NPCErrorHandler', () => {
   describe('Retry Mechanism', () => {
     test('should retry failed operations', async () => {
       let attempts = 0;
-      const retryOperation = jest.fn().mockImplementation(() => {
+      const retryOperation = vi.fn().mockImplementation(() => {
         attempts++;
         if (attempts < 3) {
           throw new Error('Temporary failure');
@@ -236,7 +237,7 @@ describe('NPCErrorHandler', () => {
     });
 
     test('should fail after max retries', async () => {
-      const alwaysFailingOperation = jest.fn().mockRejectedValue(new Error('Always fails'));
+      const alwaysFailingOperation = vi.fn().mockRejectedValue(new Error('Always fails'));
       
       await expect(
         errorHandler.executeWithRetry(alwaysFailingOperation, 2, 10)
@@ -252,8 +253,8 @@ describe('NPCErrorHandler', () => {
         type: NPCErrorType.MOVEMENT_FAILED,
         maxRetries: 5,
         retryDelayMs: 100,
-        shouldRetry: jest.fn().mockReturnValue(true),
-        fallbackAction: jest.fn().mockResolvedValue(true)
+        shouldRetry: vi.fn().mockReturnValue(true),
+        fallbackAction: vi.fn().mockResolvedValue(true)
       };
 
       errorHandler.addRecoveryStrategy(customStrategy);
@@ -348,15 +349,15 @@ describe('NPCErrorHandler', () => {
 
 describe('Safe Wrapper Utility', () => {
   beforeEach(() => {
-    jest.spyOn(console, 'error').mockImplementation();
+    vi.spyOn(console, 'error').mockImplementation();
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   test('should wrap synchronous functions safely', () => {
-    const originalFn = jest.fn((x: number) => x * 2);
+    const originalFn = vi.fn((x: number) => x * 2);
     const safeFn = createSafeWrapper(originalFn, NPCErrorType.UNKNOWN_ERROR);
     
     const result = safeFn(5);
@@ -365,7 +366,7 @@ describe('Safe Wrapper Utility', () => {
   });
 
   test('should catch synchronous function errors', () => {
-    const throwingFn = jest.fn(() => {
+    const throwingFn = vi.fn(() => {
       throw new Error('Sync error');
     });
     const safeFn = createSafeWrapper(throwingFn, NPCErrorType.UNKNOWN_ERROR);
@@ -379,7 +380,7 @@ describe('Safe Wrapper Utility', () => {
   });
 
   test('should wrap asynchronous functions safely', async () => {
-    const asyncFn = jest.fn().mockResolvedValue('async result');
+    const asyncFn = vi.fn().mockResolvedValue('async result');
     const safeAsyncFn = createSafeWrapper(asyncFn, NPCErrorType.UNKNOWN_ERROR);
     
     const result = await safeAsyncFn();
@@ -388,7 +389,7 @@ describe('Safe Wrapper Utility', () => {
   });
 
   test('should catch asynchronous function errors', async () => {
-    const throwingAsyncFn = jest.fn().mockRejectedValue(new Error('Async error'));
+    const throwingAsyncFn = vi.fn().mockRejectedValue(new Error('Async error'));
     const safeAsyncFn = createSafeWrapper(throwingAsyncFn, NPCErrorType.UNKNOWN_ERROR);
     
     await expect(safeAsyncFn()).rejects.toThrow('Async error');
@@ -400,7 +401,7 @@ describe('Safe Wrapper Utility', () => {
   });
 
   test('should preserve function context and arguments', () => {
-    const originalFn = jest.fn(function(this: any, a: number, b: string) {
+    const originalFn = vi.fn(function(this: any, a: number, b: string) {
       return `${this?.name || 'unknown'}: ${a} ${b}`;
     });
     

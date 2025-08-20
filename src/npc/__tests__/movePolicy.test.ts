@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 /*
   Gorstan – Copyright © 2025 Geoff Webster. All Rights Reserved.
   
@@ -312,7 +313,7 @@ describe('MovePolicy', () => {
       };
 
       // Mock calculateDistance to return appropriate values
-      const calculateDistanceSpy = jest.spyOn(require('../movePolicy'), 'calculateDistance')
+      const calculateDistanceSpy = vi.spyOn(require('../movePolicy'), 'calculateDistance')
         .mockImplementation((...args: unknown[]) => {
           const [from, to] = args as [string, string, NPCMoveContext];
           console.log(`calculateDistance called with: ${from} -> ${to}`);

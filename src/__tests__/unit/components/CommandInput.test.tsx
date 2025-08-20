@@ -1,4 +1,4 @@
-/// <reference types="jest" />
+/// <reference types="vitest" />
 
 /**
  * Tests for CommandInput component
@@ -6,22 +6,23 @@
 
 import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
+import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import CommandInput from '../../../components/CommandInput';
 
 // Mock the sound utility since it's not critical for testing
-jest.mock('../../../utils/soundUtils', () => ({
-  playSound: jest.fn(),
+vi.mock('../../../utils/soundUtils', () => ({
+  playSound: vi.fn(),
 }));
 
 describe('CommandInput Component', () => {
-  const mockOnCommand = jest.fn();
+  const mockOnCommand = vi.fn();
   const defaultProps = {
     playerName: 'TestPlayer',
     onCommand: mockOnCommand,
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('Rendering', () => {
@@ -113,7 +114,7 @@ describe('CommandInput Component', () => {
       
       const form = screen.getByRole('textbox').closest('form');
       const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
-      const preventDefault = jest.fn();
+      const preventDefault = vi.fn();
       Object.defineProperty(submitEvent, 'preventDefault', { value: preventDefault });
       
       if (form) {
