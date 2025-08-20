@@ -42,6 +42,7 @@ import SplashScreen from './SplashScreen';
 import TeletypeIntro from './TeletypeIntro';
 import TerminalConsole from './TerminalConsole';
 import WelcomeScreen from './WelcomeScreen';
+import { RouteSelectScreen } from './RouteSelectScreen';
 import TeleportManager from './animations/TeleportManager';
 import QuickActionsPanel from './QuickActionsPanel';
 import CombatActionsPanel from '../ui/QuickActionsPanel';
@@ -102,7 +103,7 @@ import type { GameTransition } from '../types/GameTypes';
 /**
  * Enhanced type definitions for better type safety
  */
-type GameStage = 'splash' | 'welcome' | 'nameCapture' | 'intro' | 'demo' | 'game' | 
+type GameStage = 'splash' | 'welcome' | 'nameCapture' | 'routeSelect' | 'intro' | 'demo' | 'game' | 
   'transition_jump' | 'transition_sip' | 'transition_wait' | 'transition_dramatic_wait';
 
 type OpenModalType = 'inventory' | 'useItem' | 'look' | 'pickUp' | 'saveGame' | 'npcConsole' | 'npcSelection' | 'trapManagement' | null;
@@ -1730,8 +1731,24 @@ const handleBackout = useCallback((): void => {
       <PlayerNameCapture 
         onNameSubmit={(name: string) => { 
           dispatch({ type: 'SET_PLAYER_NAME', payload: name }); 
-          dispatch({ type: 'ADVANCE_STAGE', payload: 'intro' }); 
+          dispatch({ type: 'ADVANCE_STAGE', payload: 'routeSelect' }); 
         }} 
+      />
+    );
+  }
+  if (stage === 'routeSelect') {
+    return (
+      <RouteSelectScreen 
+        onRouteSelect={(routeId) => {
+          dispatch({ type: 'SET_ROUTE', payload: routeId });
+          // Different paths based on route selection
+          if (routeId === 'demo') {
+            dispatch({ type: 'ADVANCE_STAGE', payload: 'demo' });
+          } else {
+            dispatch({ type: 'ADVANCE_STAGE', payload: 'intro' });
+          }
+        }}
+        onCancel={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'welcome' })}
       />
     );
   }

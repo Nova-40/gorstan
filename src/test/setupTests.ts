@@ -1,7 +1,11 @@
 import "@testing-library/jest-dom"; // adds jest-dom matchers to Vitest
-import { beforeAll, afterAll } from "vitest";
+import { beforeAll, afterAll, vi } from "vitest";
 // If Gorstan needs fetch in jsdom:
 import "whatwg-fetch";
+import { setupRoomRegistryMock } from "./mockRoomRegistry";
+
+// Setup room registry mock for all tests
+setupRoomRegistryMock();
 
 // Example: globally silence console noise in tests (tweak as needed)
 const originalError = console.error;
