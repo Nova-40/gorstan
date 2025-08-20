@@ -60,6 +60,7 @@ export const STAGES = {
   NAME_CAPTURE: 'nameCapture',
   INTRO: 'intro',
   GAME: 'game',
+  DEMO: 'demo',
   END: 'end',
 } as const;
 
