@@ -1,0 +1,66 @@
+# Dependabot configuration for Gorstan Game
+# This file configures automated dependency updates for security and maintenance
+
+version: 2
+updates:
+  # Enable version updates for npm (package.json)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "Nova-40"
+    commit-message:
+      prefix: "npm"
+      prefix-development: "npm-dev"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "automated"
+    # Group related updates together
+    groups:
+      react-ecosystem:
+        patterns:
+          - "react*"
+          - "@types/react*"
+          - "react-dom*"
+      testing-dependencies:
+        patterns:
+          - "*jest*"
+          - "*vitest*"
+          - "@testing-library/*"
+          - "*test*"
+      build-tools:
+        patterns:
+          - "vite*"
+          - "typescript*"
+          - "eslint*"
+          - "prettier*"
+          - "@vitejs/*"
+      ui-dependencies:
+        patterns:
+          - "tailwindcss*"
+          - "lucide-react*"
+          - "@tailwindcss/*"
+
+  # Enable version updates for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      day: "monday"
+      time: "09:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "Nova-40"
+    commit-message:
+      prefix: "actions"
+      include: "scope"
+    labels:
+      - "github-actions"
+      - "automated"
