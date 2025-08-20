@@ -299,3 +299,35 @@ export const NPC_ENGINE_CONFIG = {
     detailed_stats: false
   }
 } as const;
+
+// Wandering Shadows - magical entities that appear in rooms
+export const wanderingShadows = [
+  {
+    id: 'shadow_whisper',
+    name: 'Whispering Shadow',
+    description: 'A dark, ethereal form that whispers forgotten secrets',
+    power: 'low',
+    behavior: 'passive'
+  },
+  {
+    id: 'shadow_dance',
+    name: 'Dancing Shadow',
+    description: 'A shadow that moves with hypnotic, fluid motions',
+    power: 'medium',
+    behavior: 'neutral'
+  },
+  {
+    id: 'shadow_void',
+    name: 'Void Shadow',
+    description: 'A consuming darkness that seems to absorb light itself',
+    power: 'high',
+    behavior: 'aggressive'
+  },
+  {
+    id: 'shadow_memory',
+    name: 'Memory Shadow',
+    description: 'A shadow that reflects glimpses of forgotten memories',
+    power: 'medium',
+    behavior: 'helpful'
+  }
+];

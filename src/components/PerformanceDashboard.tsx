@@ -22,11 +22,11 @@ import { gameStateOptimizer } from '../utils/gameStateOptimizer';
 import { getCacheStatus, getLoadingMetrics } from '../utils/optimizedRoomLoader';
 
 interface PerformanceDashboardProps {
-  isVisible: boolean;
+  isOpen: boolean;
   onClose: () => void;
 }
 
-const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ isVisible, onClose }) => {
+const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ isOpen, onClose }) => {
   const [metrics, setMetrics] = useState(performanceMonitor.getMetrics());
   const [optimizerMetrics, setOptimizerMetrics] = useState(gameStateOptimizer.getMetrics());
   const [roomCacheStatus, setRoomCacheStatus] = useState(getCacheStatus());
@@ -35,7 +35,7 @@ const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ isVisible, 
 
   // Update metrics every second
   useEffect(() => {
-    if (!isVisible) return;
+    if (!isOpen) return;
 
     const interval = setInterval(() => {
       setMetrics(performanceMonitor.getMetrics());
@@ -46,7 +46,7 @@ const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ isVisible, 
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isVisible]);
+  }, [isOpen]);
 
   const generateReport = useCallback(() => {
     const report = performanceMonitor.generateReport();
@@ -69,7 +69,7 @@ const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ isVisible, 
     setWarnings([]);
   }, []);
 
-  if (!isVisible) return null;
+  if (!isOpen) return null;
 
   const summary = performanceMonitor.getPerformanceSummary();
   const statusColor = summary.status === 'good' ? 'text-green-400' : 

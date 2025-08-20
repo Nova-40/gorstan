@@ -50,9 +50,9 @@ describe('NPC Wandering System Integration (Core Components)', () => {
     errorHandler = new NPCErrorHandler();
     movementExecutor = new MovementExecutor();
 
-    vi.spyOn(console, 'log').mockImplementation();
-    vi.spyOn(console, 'warn').mockImplementation();
-    vi.spyOn(console, 'error').mockImplementation();
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   afterEach(() => {

@@ -35,9 +35,9 @@ describe('NPCErrorHandler', () => {
     resetErrorHandler();
     errorHandler = new NPCErrorHandler();
     vi.clearAllMocks();
-    vi.spyOn(console, 'error').mockImplementation();
-    vi.spyOn(console, 'warn').mockImplementation();
-    vi.spyOn(console, 'log').mockImplementation();
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.spyOn(console, 'log').mockImplementation(() => {});
   });
 
   afterEach(() => {
@@ -349,7 +349,7 @@ describe('NPCErrorHandler', () => {
 
 describe('Safe Wrapper Utility', () => {
   beforeEach(() => {
-    vi.spyOn(console, 'error').mockImplementation();
+    vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   afterEach(() => {

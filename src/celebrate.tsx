@@ -1,4 +1,6 @@
 // Celebrate module for managing celebrations in the game
+import React from 'react';
+import { useSeasonalController } from './seasonal/useSeasonalController';
 
 export interface Celebration {
   id: string;
@@ -8,6 +10,15 @@ export interface Celebration {
   endDate: Date;
   isActive: () => boolean;
 }
+
+interface CelebrationControllerProps {
+  children: React.ReactNode;
+}
+
+export const CelebrationController: React.FC<CelebrationControllerProps> = ({ children }) => {
+  useSeasonalController();
+  return <>{children}</>;
+};
 
 export class CelebrationManager {
   private celebrations: Celebration[] = [];
