@@ -185,7 +185,6 @@ describe('NPC Integration Tests', () => {
       const performanceMultiplier = errorHandler.getPerformanceMultiplier();
       expect(performanceMultiplier).toBeLessThan(1.0);
     }, 10000); // Increase timeout to 10 seconds
-    });
   });
 
   describe('Movement Execution Integration', () => {
