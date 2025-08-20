@@ -16,7 +16,7 @@
 
 // src/components/WelcomeScreen.tsx
 import React, { useState, useEffect, useCallback } from "react";
-import { getVersionString } from "../config/version";
+import { getVersionString, getShortVersion } from "../config/version";
 
 interface WelcomeScreenProps {
   onBegin: () => void;
@@ -240,10 +240,10 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
             className="w-[72px] h-[72px] rounded-full shadow-md"
           />
           Welcome to Gorstan
-          <span className="text-lg text-yellow-400 ml-2">(Beta 3)</span>
+          <span className="text-lg text-yellow-400 ml-2">({getShortVersion()})</span>
         </h1>
         <div className="text-sm text-green-300 mb-2 font-mono">
-          build: Beta 3 | 12 | 2025-08-18
+          {getVersionString()}
         </div>
         <p className="text-md md:text-lg text-center max-w-2xl mb-6">
           A multiverse simulation of coffee, consequence, and quantum possibility. Tread carefully. The rabbit is watching.
