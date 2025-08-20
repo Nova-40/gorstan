@@ -481,15 +481,20 @@ export interface Quest {
   id: string;
   name: string;
   description: string;
-  objectives: string[];
-  rewards: {
+  steps: Array<{
+    id: string;
+    description: string;
+    completed: boolean;
+  }>;
+  objectives?: string[];
+  rewards?: {
     experience: number;
     items: string[];
     flags: string[];
   };
-  prerequisites: string[];
-  isComplete: boolean;
-  isActive: boolean;
+  prerequisites?: string[];
+  isComplete?: boolean;
+  isActive?: boolean;
   onComplete: (gameState: any) => void;
 }
 
