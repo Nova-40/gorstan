@@ -1,3 +1,4 @@
+import { vi, Mock } from 'vitest';
 /*
   Gorstan – Copyright © 2025 Geoff Webster. All Rights Reserved.
   
@@ -20,19 +21,19 @@
 import { WanderScheduler, WanderSchedulerConfig } from '../wanderScheduler';
 
 // Mock timers
-jest.useFakeTimers();
+vi.useFakeTimers();
 
 describe('WanderScheduler', () => {
-  let mockMoveCallback: jest.Mock;
+  let mockMoveCallback: Mock;
   
   beforeEach(() => {
-    jest.clearAllTimers();
-    jest.clearAllMocks();
-    mockMoveCallback = jest.fn().mockResolvedValue(undefined);
+    vi.clearAllTimers();
+    vi.clearAllMocks();
+    mockMoveCallback = vi.fn().mockResolvedValue(undefined);
   });
 
   afterEach(() => {
-    jest.clearAllTimers();
+    vi.clearAllTimers();
   });
 
   describe('Basic Operations', () => {
@@ -78,7 +79,7 @@ describe('WanderScheduler', () => {
       scheduler.start();
       
       // Advance time by more than one tick to trigger moves
-      jest.advanceTimersByTime(150);
+      vi.advanceTimersByTime(150);
       
       // Process all pending microtasks
       await Promise.resolve();
@@ -94,7 +95,7 @@ describe('WanderScheduler', () => {
       
       // Advance another tick
       mockMoveCallback.mockClear();
-      jest.advanceTimersByTime(100);
+      vi.advanceTimersByTime(100);
       await Promise.resolve();
       
       // Should move again
@@ -120,7 +121,7 @@ describe('WanderScheduler', () => {
       expect(scheduler.getStats().pausedNPCs).toBe(1);
       
       // Advance time - should not move
-      jest.advanceTimersByTime(150);
+      vi.advanceTimersByTime(150);
       await Promise.resolve();
       expect(mockMoveCallback).not.toHaveBeenCalled();
       
@@ -129,7 +130,7 @@ describe('WanderScheduler', () => {
       expect(scheduler.getStats().pausedNPCs).toBe(0);
       
       // Advance time - should move
-      jest.advanceTimersByTime(100); // Exactly one tick
+      vi.advanceTimersByTime(100); // Exactly one tick
       await Promise.resolve();
       expect(mockMoveCallback).toHaveBeenCalledTimes(1);
     });
@@ -142,8 +143,8 @@ describe('WanderScheduler', () => {
       
       const scheduler = new WanderScheduler(config);
       
-      const callback1 = jest.fn().mockResolvedValue(undefined);
-      const callback2 = jest.fn().mockResolvedValue(undefined);
+      const callback1 = vi.fn().mockResolvedValue(undefined);
+      const callback2 = vi.fn().mockResolvedValue(undefined);
       
       scheduler.registerNPC('npc1', callback1);
       scheduler.registerNPC('npc2', callback2);
@@ -152,7 +153,7 @@ describe('WanderScheduler', () => {
       // Pause only npc1
       scheduler.pause({ npcIds: ['npc1'], reason: 'test selective pause' });
       
-      jest.advanceTimersByTime(100);
+      vi.advanceTimersByTime(100);
       await Promise.resolve();
       
       // Only npc2 should move
@@ -165,7 +166,7 @@ describe('WanderScheduler', () => {
       callback1.mockClear();
       callback2.mockClear();
       
-      jest.advanceTimersByTime(100);
+      vi.advanceTimersByTime(100);
       await Promise.resolve();
       
       // Both should move now
@@ -202,21 +203,21 @@ describe('WanderScheduler', () => {
         jitterRangeMs: [0, 0]
       };
       
-      const failingCallback = jest.fn().mockRejectedValue(new Error('Move failed'));
+      const failingCallback = vi.fn().mockRejectedValue(new Error('Move failed'));
       const scheduler = new WanderScheduler(config);
       
       scheduler.registerNPC('failing-npc', failingCallback);
       scheduler.start();
       
       // Should not throw
-      jest.advanceTimersByTime(100);
+      vi.advanceTimersByTime(100);
       await Promise.resolve();
       
       expect(failingCallback).toHaveBeenCalledTimes(1);
       
       // Should try again on next tick (with backoff)
       failingCallback.mockClear();
-      jest.advanceTimersByTime(200); // More time to handle backoff
+      vi.advanceTimersByTime(200); // More time to handle backoff
       await Promise.resolve();
       
       expect(failingCallback).toHaveBeenCalledTimes(1);

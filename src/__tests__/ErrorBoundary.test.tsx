@@ -1,4 +1,4 @@
-import { describe, test, expect, vi } from 'vitest';
+import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ErrorBoundary } from '../ui/ErrorBoundary';
 import { render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';

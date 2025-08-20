@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 /*
   Gorstan – Copyright © 2025 Geoff Webster. All Rights Reserved.
   
@@ -147,9 +148,9 @@ describe('NPCPerformanceOptimizer', () => {
     test('should batch movement operations', async () => {
       const processedBatches: any[] = [];
       const mockBatchProcessor = {
-        add: jest.fn(),
-        flush: jest.fn(),
-        clear: jest.fn(),
+        add: vi.fn(),
+        flush: vi.fn(),
+        clear: vi.fn(),
         getStats: () => ({ queueSize: 0, batchSize: 5, intervalMs: 200, isScheduled: false })
       };
 

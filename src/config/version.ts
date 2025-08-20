@@ -5,7 +5,7 @@
 */
 
 export const BUILD_VERSION = "Beta 3";
-export const BUILD_NUMBER = "25";
+export const BUILD_NUMBER = "26";
 export const BUILD_DATE = "2025-08-20";
 export const BUILD_TIMESTAMP = "2025-08-20T08:00:00.000Z";
 export const COMMIT_HASH = import.meta.env.VITE_NETLIFY_DEPLOY_ID?.slice(0, 7) || 'dev';

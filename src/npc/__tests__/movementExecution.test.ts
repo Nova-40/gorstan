@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 /*
   Gorstan – Copyright © 2025 Geoff Webster. All Rights Reserved.
   
@@ -28,7 +29,7 @@ import {
 import { resetNPCPresenceProvider } from '../npcPresence';
 
 // Mock the timer functions
-jest.useFakeTimers();
+vi.useFakeTimers();
 
 describe('MovementExecutor', () => {
   let executor: MovementExecutor;
@@ -37,13 +38,13 @@ describe('MovementExecutor', () => {
     resetMovementExecutor();
     resetNPCPresenceProvider();
     executor = getMovementExecutor();
-    jest.clearAllTimers();
+    vi.clearAllTimers();
   });
 
   afterEach(() => {
     executor.stop();
     executor.clear();
-    jest.clearAllTimers();
+    vi.clearAllTimers();
   });
 
   describe('Basic Operations', () => {

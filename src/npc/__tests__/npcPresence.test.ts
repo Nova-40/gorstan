@@ -1,3 +1,4 @@
+import { vi, Mock } from 'vitest';
 /*
   Gorstan – Copyright © 2025 Geoff Webster. All Rights Reserved.
   
@@ -27,12 +28,12 @@ import {
 
 describe('NPCPresenceProvider', () => {
   let provider: NPCPresenceProvider;
-  let mockListener: jest.Mock<void, [NPCPresenceUpdate]>;
+  let mockListener: Mock<void, [NPCPresenceUpdate]>;
 
   beforeEach(() => {
     resetNPCPresenceProvider();
     provider = getNPCPresenceProvider();
-    mockListener = jest.fn();
+    mockListener = vi.fn();
   });
 
   afterEach(() => {
@@ -268,7 +269,7 @@ describe('NPCPresenceProvider', () => {
       provider.addListener(mockListener);
       expect(provider.getStats().listeners).toBe(1);
 
-      const listener2 = jest.fn();
+      const listener2 = vi.fn();
       provider.addListener(listener2);
       expect(provider.getStats().listeners).toBe(2);
 
@@ -280,7 +281,7 @@ describe('NPCPresenceProvider', () => {
     });
 
     test('should handle listener errors gracefully', () => {
-      const errorListener = jest.fn().mockImplementation(() => {
+      const errorListener = vi.fn().mockImplementation(() => {
         throw new Error('Listener error');
       });
 
