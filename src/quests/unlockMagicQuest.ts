@@ -7,7 +7,7 @@ import { Quest } from '../types/GameTypes';
 
 const unlockMagicQuest: Quest = {
   id: 'unlockMagic',
-  title: 'The Path to Magic',
+  name: 'The Path to Magic',
   description: 'Discover the ancient secrets of magic and unlock your potential.',
   steps: [
     {

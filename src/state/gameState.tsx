@@ -24,7 +24,7 @@ import React, { createContext, useContext, useReducer, Dispatch } from 'react';
 import { processCommand } from '../engine/commandParser';
 import { unlockAchievement } from '../logic/achievementEngine';
 import { Room } from '../types/Room';
-import { Player, GameAction, GameMessage, MiniquestState } from '../types/GameTypes';
+import { Player, GameAction, GameMessage, MiniquestState, Quest } from '../types/GameTypes';
 import type { NPC } from '../types/NPCTypes';
 import type { ConversationThread } from '../types/dialogue';
 import { conversationsReducer } from '../reducers/conversations';
@@ -1128,6 +1128,21 @@ export interface LocalGameState {
   visitedRooms?: string[];
   achievements?: string[];
   resetCount?: number;
+  // Combat system
+  combat?: {
+    inCombat: boolean;
+    player: any;
+    enemy?: any;
+    turn: number;
+  };
+  // Quest system
+  quests?: Quest[];
+  // Magic system
+  magic?: {
+    mana: number;
+    maxMana: number;
+    spells: string[];
+  };
 }
 
 // Export the Dispatch type for use in other modules.
