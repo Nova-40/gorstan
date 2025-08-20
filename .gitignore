@@ -18,8 +18,8 @@ pnpm-debug.log*
 .env.test.local
 .env.production.local
 
-# Netlify
-.netlify
+# Vercel
+.vercel
 
 # OS & editor files
 .DS_Store
@@ -59,6 +59,8 @@ jspm_packages/
 
 # Optional eslint cache
 .eslintcache
+
+.vercel
 
 # Local Netlify folder
 .netlify
