@@ -26,7 +26,7 @@ export default defineConfig({
     },
   },
   build: {
-    // Increase chunk size warning limit for Netlify
+    // Increase chunk size warning limit for Vercel
     chunkSizeWarningLimit: 1000,
     // Enable sourcemaps for production debugging
     sourcemap: false,

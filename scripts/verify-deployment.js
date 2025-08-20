@@ -19,7 +19,7 @@ console.log(`🔍 Checking deployment for version ${expectedVersion}...`);
 
 // Check the live site
 const options = {
-  hostname: 'gorstan-game.netlify.app',
+  hostname: 'gorstan-game.vercel.app',
   port: 443,
   path: '/',
   method: 'GET',
@@ -56,7 +56,7 @@ const req = https.request(options, (res) => {
         
         if (currentAssetHash === localAssetHash) {
           console.log(`✅ SUCCESS: Latest version ${expectedVersion} is deployed!`);
-          console.log(`🌐 Live at: https://gorstan-game.netlify.app`);
+          console.log(`🌐 Live at: https://gorstan-game.vercel.app`);
           process.exit(0);
         } else {
           console.log(`❌ MISMATCH: Deployment may be outdated`);

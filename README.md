@@ -26,7 +26,7 @@
 - **State Management**: Context + useReducer (NO Redux/Zustand)
 - **Performance**: React.memo, useCallback, useMemo throughout
 - **Build Target**: ES2020, terser minification, manual chunks
-- **Deployment**: Netlify (SPA routing, security headers, asset caching)
+- **Deployment**: Vercel (SPA routing, security headers, asset caching)
 
 ### State Architecture
 ```typescript
@@ -110,20 +110,14 @@ components/
 
 ## DEPLOYMENT CONFIGURATION
 
-### Netlify Setup (`netlify.toml`)
-```toml
-[build]
-  command = "npm run build"
-  publish = "dist"
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-[[headers]]
-  for = "/*"
-  [headers.values]
+### Vercel Setup (`vercel.json`)
+```json
+{
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
         { "key": "X-Content-Type-Options", "value": "nosniff" },
         { "key": "X-Frame-Options", "value": "DENY" },
         { "key": "X-XSS-Protection", "value": "1; mode=block" }
@@ -260,7 +254,7 @@ src/
    - `public/images/` + `public/audio/` (assets)
 
 4. **Configuration Files**
-   - `vite.config.ts`, `netlify.toml`, `tailwind.config.mjs`
+   - `vite.config.ts`, `vercel.json`, `tailwind.config.mjs`
    - `tsconfig.json`, `package.json` (dependencies)
 
 5. **Component Architecture**

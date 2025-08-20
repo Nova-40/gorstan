@@ -34,4 +34,4 @@ jobs:
           echo "✅ Build successful!"
           echo "📋 To deploy manually:"
           echo "   npm run deploy:manual"
-          echo "🌐 Target: https://gorstan-game.netlify.app"
+          echo "🌐 Target: https://gorstan-game.vercel.app"
