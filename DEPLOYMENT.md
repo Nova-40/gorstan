@@ -2,7 +2,7 @@
 
 ## 🚀 Manual Deployment (Recommended)
 
-Since GitHub Actions requires additional Vercel API secrets, we use manual deployment:
+Since GitHub Actions requires additional Netlify API secrets, we use manual deployment:
 
 ### Quick Deploy
 ```bash
@@ -24,14 +24,14 @@ npm run verify:deployment
 | Command | Description |
 |---------|-------------|
 | `npm run build` | Build the application |
-| `npm run deploy:manual` | Build and deploy to Vercel |
+| `npm run deploy:manual` | Build and deploy to Netlify |
 | `npm run deploy:force` | Bump version + deploy |
 | `npm run verify:deployment` | Check if latest version is live |
 | `npm run version:bump` | Increment build version |
 
 ## 🌐 Live Site
 
-**Primary URL:** https://gorstan-game.vercel.app
+**Primary URL:** https://gorstan-game.netlify.app
 
 ## 📋 Deployment Checklist
 
@@ -40,7 +40,7 @@ npm run verify:deployment
 3. ✅ Build with `npm run build`
 4. ✅ Deploy with `npm run deploy:manual`
 5. ✅ Verify with `npm run verify:deployment`
-6. ✅ Check live site at https://gorstan-game.vercel.app
+6. ✅ Check live site at https://gorstan-game.netlify.app
 
 ## 🔍 Version Tracking
 
@@ -53,7 +53,7 @@ The welcome screen shows version info in:
 
 **If deployment seems stuck:**
 1. Wait 2-3 minutes for propagation
-2. Check asset hash: `curl -s "https://gorstan-game.vercel.app" | grep "index-"`
+2. Check asset hash: `curl -s "https://gorstan-game.netlify.app" | grep "index-"`
 3. Force fresh deployment: `npm run deploy:force`
 
 **If version doesn't update:**

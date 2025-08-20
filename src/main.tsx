@@ -26,8 +26,6 @@ import App from './App';
 import React from 'react';
 
 import { createRoot } from 'react-dom/client';
-import { SpeedInsights } from '@vercel/speed-insights/react';
-import { Analytics } from '@vercel/analytics/react';
 
 
 
@@ -79,7 +77,5 @@ const root = createRoot(rootElement);
 root.render(
   <>
     <App />
-    <SpeedInsights />
-    <Analytics />
   </>
 );

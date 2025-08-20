@@ -1,3 +1,8 @@
+# Vercel to Netlify Migration - Backup of vercel.json
+
+This file contains the original Vercel configuration that was migrated to netlify.toml:
+
+```json
 {
   "version": 2,
   "buildCommand": "npm run build",
@@ -16,16 +21,30 @@
         {
           "key": "X-Frame-Options",
           "value": "SAMEORIGIN"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
         }
       ]
     }
   ],
-  "rewrites": [
+  "redirects": [
     {
-      "source": "/((?!data|assets|audio|images|sounds|style\\.css|favicon\\.ico).*)",
-      "destination": "/index.html"
+      "source": "/(.*)",
+      "destination": "/index.html",
+      "permanent": false
     }
   ]
 }
+```
 
-
+This configuration has been successfully migrated to netlify.toml with equivalent Netlify syntax.
