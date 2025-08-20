@@ -1,0 +1,22 @@
+{
+  "entry": [
+    "src/main.tsx",
+    "src/workers/**/*.ts",
+    "vite.config.ts"
+  ],
+  "project": [
+    "src/**/*.{ts,tsx}",
+    "!src/**/*.test.{ts,tsx}",
+    "!src/**/*.spec.{ts,tsx}"
+  ],
+  "ignore": [
+    "public/**",
+    "dist/**",
+    "node_modules/**",
+    "**/*.d.ts"
+  ],
+  "ignoreExportsUsedInFile": true,
+  "ignoreDependencies": [
+    "@types/*"
+  ]
+}
