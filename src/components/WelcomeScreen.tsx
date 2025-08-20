@@ -21,9 +21,10 @@ import { getVersionString } from "../config/version";
 interface WelcomeScreenProps {
   onBegin: () => void;
   onLoadGame: () => void;
+  onStartDemo?: () => void;
 }
 
-const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame }) => {
+const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onStartDemo }) => {
   // Log version info to console for debugging
   React.useEffect(() => {
     console.log(`%c🎮 Gorstan Game - ${getVersionString()}`, 'color: #10b981; font-weight: bold;');
@@ -90,6 +91,16 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame }) =>
             >
               Load Saved Game
             </button>
+            
+            {onStartDemo && (
+              <button
+                onClick={onStartDemo}
+                className="bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-3 rounded-xl text-lg shadow-md transition-all min-w-[180px]"
+                type="button"
+              >
+                Quick Demo
+              </button>
+            )}
           </div>
           <div></div>
         </div>

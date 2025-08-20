@@ -28,7 +28,7 @@ import {
 
 describe('NPCPresenceProvider', () => {
   let provider: NPCPresenceProvider;
-  let mockListener: Mock<void, [NPCPresenceUpdate]>;
+  let mockListener: Mock;
 
   beforeEach(() => {
     resetNPCPresenceProvider();

@@ -476,6 +476,38 @@ export interface GameStateWithFlags extends GameState {
   flags: GameFlags;
 }
 
+// Quest System
+export interface Quest {
+  id: string;
+  name: string;
+  description: string;
+  objectives: string[];
+  rewards: {
+    experience: number;
+    items: string[];
+    flags: string[];
+  };
+  prerequisites: string[];
+  isComplete: boolean;
+  isActive: boolean;
+  onComplete: (gameState: any) => void;
+}
+
+// LocalGameState - extended game state for local operations
+export interface LocalGameState extends GameState {
+  combat?: {
+    inCombat: boolean;
+    player: any;
+    enemy?: any;
+    turn: number;
+  };
+  quests?: Quest[];
+  magic?: {
+    mana: number;
+    maxMana: number;
+    spells: string[];
+  };
+}
 
 // --- MERGED FROM src/GameTypes.ts ---
 // src/GameTypes.ts
