@@ -73,6 +73,7 @@ interface QuickActionsPanelProps {
   onTalkToNPC: (npc?: any) => void; // Function to handle NPC conversation
   hasActiveTraps: boolean; // Whether current room has active traps
   onDisarmTrap: () => void; // Function to handle trap disarming
+  isDemoActive?: boolean; // Whether demo mode is currently active
 }
 
 /**
@@ -114,6 +115,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
   onTalkToNPC,
   hasActiveTraps,
   onDisarmTrap,
+  isDemoActive = false,
 }) => {
   // State hooks properly placed inside component
   const [isSitting, setIsSitting] = useState<boolean>(false);
@@ -359,9 +361,10 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
       <IconButton 
         key="inventory"
         icon={<Backpack />} 
-        title="Inventory" 
-        onClick={onShowInventory}
+        title={isDemoActive ? "Inventory (disabled during demo)" : "Inventory"} 
+        onClick={isDemoActive ? () => {} : onShowInventory}
         aria-label="Open inventory"
+        disabled={isDemoActive}
       />
       <IconButton 
         key="press"

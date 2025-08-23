@@ -105,6 +105,8 @@ export interface Player {
   reputation?: Record<string, number>;
   currentRoom?: string;
   visitedRooms?: string[];
+  achievements?: string[];
+  completedMiniquests?: string[];
   playTime?: number;
   lastSave?: string;
 }

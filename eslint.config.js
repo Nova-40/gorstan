@@ -4,6 +4,7 @@
 // Gorstan and characters (c) Geoff Webster 2025
 
 import js from '@eslint/js';
+import globals from 'globals';
 import tseslint from '@typescript-eslint/eslint-plugin';
 import tsparser from '@typescript-eslint/parser';
 import reactPlugin from 'eslint-plugin-react';
@@ -12,42 +13,21 @@ import reactHooksPlugin from 'eslint-plugin-react-hooks';
 export default [
   js.configs.recommended,
   {
-    files: ['src/**/*.{ts,tsx,js,jsx}'],
+    files: ['**/*.{js,jsx,ts,tsx}'],
     languageOptions: {
+      ecmaVersion: 2023,
+      sourceType: 'module',
       parser: tsparser,
       parserOptions: {
-        ecmaVersion: 2022,
-        sourceType: 'module',
         ecmaFeatures: {
           jsx: true,
         },
+        project: './tsconfig.json',
       },
       globals: {
-        console: 'readonly',
-        process: 'readonly',
-        Buffer: 'readonly',
-        window: 'readonly',
-        document: 'readonly',
-        localStorage: 'readonly',
-        sessionStorage: 'readonly',
-        setTimeout: 'readonly',
-        clearTimeout: 'readonly',
-        setInterval: 'readonly',
-        clearInterval: 'readonly',
-        HTMLAudioElement: 'readonly',
-        HTMLElement: 'readonly',
-        HTMLDivElement: 'readonly',
-        EventListener: 'readonly',
-        CustomEvent: 'readonly',
-        KeyboardEvent: 'readonly',
-        Audio: 'readonly',
-        React: 'readonly',
-        GameState: 'readonly',
-        require: 'readonly',
-        NodeJS: 'readonly',
-        describe: 'readonly',
-        test: 'readonly',
-        expect: 'readonly',
+        ...globals.browser,
+        ...globals.es2021,
+        ...globals.node,
       },
     },
     plugins: {
@@ -95,6 +75,30 @@ export default [
     files: ['src/**/*.d.ts'],
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
+    },
+  },
+  {
+    // Test files configuration
+    files: ['**/*.{test,spec}.{js,jsx,ts,tsx}', 'src/test/**/*.{js,jsx,ts,tsx}'],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.es2021,
+        ...globals.node,
+        describe: 'readonly',
+        test: 'readonly',
+        it: 'readonly',
+        expect: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+        beforeAll: 'readonly',
+        afterAll: 'readonly',
+        vi: 'readonly',
+      },
+    },
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
     },
   },
 ];

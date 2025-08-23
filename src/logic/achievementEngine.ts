@@ -105,6 +105,18 @@ export function unlockAchievement(id: string): void {
         }
       });
     }
+
+    // Trigger notification for immediate feedback
+    const event = new CustomEvent('gorstan-notification', {
+      detail: {
+        type: 'achievement',
+        title: `Achievement Unlocked!`,
+        description: achievement.label,
+        points: 50,
+        duration: 6000 // Show longer for achievements
+      }
+    });
+    window.dispatchEvent(event);
   }
 }
 
@@ -184,3 +196,6 @@ export function getAchievementStats(unlockedIds: string[] = []): { total: number
 
   return { total, unlocked, percentage };
 }
+
+// Export the achievement definitions for use in UI components
+export const achievements = achievementDefinitions;

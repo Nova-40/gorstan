@@ -358,7 +358,7 @@ const PuzzleInterface: React.FC<PuzzleInterfaceProps> = ({
                       w-12 h-12 rounded-lg border-2 transition-all duration-200
                       ${isActive
                         ? 'bg-blue-500 border-blue-600 text-white shadow-md'
-                        : 'bg-white border-gray-300 hover:border-gray-400'
+                        : 'bg-gray-800 border-gray-300 hover:border-gray-400'
                       }
                     `}
                   >
@@ -395,7 +395,7 @@ const PuzzleInterface: React.FC<PuzzleInterfaceProps> = ({
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
-          className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden"
+          className="bg-gray-800 rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden"
         >
           {}
           <div className={`p-6 border-b ${difficultyStyles.bg} ${difficultyStyles.border}`}>
@@ -571,7 +571,7 @@ const PuzzleInterface: React.FC<PuzzleInterfaceProps> = ({
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="absolute bottom-20 left-6 bg-white border border-gray-200 rounded-lg shadow-lg p-4 max-w-md"
+                  className="absolute bottom-20 left-6 bg-gray-800 border border-gray-200 rounded-lg shadow-lg p-4 max-w-md"
                 >
                   <h5 className="font-medium text-gray-800 mb-2">Available Hints:</h5>
                   <div className="space-y-2">

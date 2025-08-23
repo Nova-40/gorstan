@@ -15,8 +15,12 @@
 */
 
 // src/components/WelcomeScreen.tsx
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { getVersionString } from "../config/version";
+import RadialCountdown from "../ui/RadialCountdown";
+import { attachWelcomeIdleAutostart, detachWelcomeIdleAutostart } from "../engine/idleAutostart";
+import { startDemo } from "../demo/demoRouter";
+import "../ui/theme.css";
 
 interface WelcomeScreenProps {
   onBegin: () => void;
@@ -25,13 +29,63 @@ interface WelcomeScreenProps {
 }
 
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onStartDemo }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [showIdleCountdown, setShowIdleCountdown] = React.useState(false);
+  const [idleTimeRemaining, setIdleTimeRemaining] = React.useState(150); // 2.5 minutes
+
+  // Set up idle autostart system
+  useEffect(() => {
+    const handleIdleCountdownReset = (event: CustomEvent) => {
+      const { total, remaining } = event.detail;
+      const timeRemainingSeconds = remaining / 1000;
+      setIdleTimeRemaining(timeRemainingSeconds);
+      
+      // Show countdown when we have less than total time and more than 0
+      setShowIdleCountdown(remaining < total && remaining > 0);
+    };
+
+    const handleDemoStart = () => {
+      console.log("[WelcomeScreen] Demo starting - hiding countdown");
+      setShowIdleCountdown(false);
+      
+      // Trigger the demo UI if we have a handler
+      if (onStartDemo) {
+        onStartDemo();
+      }
+    };
+
+    // Listen for idle countdown events
+    window.addEventListener('idle-countdown-reset', handleIdleCountdownReset as EventListener);
+    window.addEventListener('demo-start', handleDemoStart);
+
+    // Attach the idle autostart system
+    attachWelcomeIdleAutostart();
+
+    return () => {
+      window.removeEventListener('idle-countdown-reset', handleIdleCountdownReset as EventListener);
+      window.removeEventListener('demo-start', handleDemoStart);
+      detachWelcomeIdleAutostart();
+    };
+  }, [onStartDemo]);
+
   // Log version info to console for debugging
   React.useEffect(() => {
     console.log(`%c🎮 Gorstan Game - ${getVersionString()}`, 'color: #10b981; font-weight: bold;');
   }, []);
 
   return (
-    <div className="relative flex flex-col items-center justify-center min-h-[80vh] w-full max-w-4xl mx-auto px-4 border bg-gradient-to-b from-slate-900 to-black text-green-400 border-2 border-green-500 p-6 m-4 rounded-xl">
+    <div ref={containerRef} className="relative flex flex-col items-center justify-center min-h-[80vh] w-full max-w-4xl mx-auto px-4 border bg-gradient-to-b from-slate-900 to-black text-green-400 border-2 border-green-500 p-6 m-4 rounded-xl">
+      
+      {/* Idle Countdown in top-right corner */}
+      {showIdleCountdown && (
+        <div className="absolute top-4 right-4 z-10">
+          <RadialCountdown
+            totalMs={150000}
+            className="radial-countdown-container"
+          />
+        </div>
+      )}
+
       <h1 className="text-4xl md:text-6xl font-bold mb-4 text-center flex items-center justify-center gap-4">
         <img
           src={"/images/gorstanicon.png"}

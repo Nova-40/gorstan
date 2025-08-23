@@ -39,7 +39,7 @@ const Modal: React.FC<ModalProps> = ({ visible, onClose, timeout = 4000, childre
 
   // Memoized modal content to prevent unnecessary re-renders
   const modalContent = useMemo(() => (
-    <div className="bg-white text-black max-w-lg w-full rounded-2xl shadow-lg p-6 relative min-w-[300px]">
+    <div className="bg-gray-800 text-white max-w-lg w-full rounded-2xl shadow-lg p-6 relative min-w-[300px]">
       <div className="flex justify-between items-start">
         {title && <h2 className="text-xl font-bold mb-4">{title}</h2>}
         <div className="flex items-center space-x-2">

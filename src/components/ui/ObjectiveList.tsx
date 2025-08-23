@@ -37,7 +37,7 @@ export function ObjectiveList({
   const totalCount = objectives.length;
 
   return (
-    <div className={cn('bg-white rounded-lg shadow-sm border border-neutral-200', className)}>
+    <div className={cn('bg-gray-800 rounded-lg shadow-sm border border-neutral-200', className)}>
       {/* Header */}
       <div className="p-4 border-b border-neutral-200">
         <div className="flex items-center justify-between">

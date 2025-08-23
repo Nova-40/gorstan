@@ -6,8 +6,8 @@ import tsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig({
   plugins: [react(), tsconfigPaths()],
   test: {
-    environment: "jsdom",
-    setupFiles: ["./src/test/setupTests.ts"],
+    environment: "happy-dom",
+    setupFiles: ["./src/setupTests.ts"],
     globals: true,                // allows Jest-like global expect, describe, it
     css: true,                    // allow CSS imports in components
     restoreMocks: true,

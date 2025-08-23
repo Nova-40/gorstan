@@ -89,8 +89,8 @@ export const CelebrationTest: React.FC = () => {
       <h3 className="font-bold text-green-800">🎉 Celebration System Test Results</h3>
       
       {}
-      <div className="bg-white p-3 rounded border">
-        <h4 className="font-semibold text-gray-800">Celebration Index</h4>
+      <div className="bg-gray-800 p-3 rounded border">
+        <h4 className="font-semibold text-gray-200">Celebration Index</h4>
         {index ? (
           <div className="text-sm text-gray-600">
             <p>Generated: {new Date(index.generated).toLocaleString()}</p>
@@ -104,8 +104,8 @@ export const CelebrationTest: React.FC = () => {
       </div>
 
       {/* Active Celebrations */}
-      <div className="bg-white p-3 rounded border">
-        <h4 className="font-semibold text-gray-800">Active Celebrations Today</h4>
+      <div className="bg-gray-800 p-3 rounded border">
+        <h4 className="font-semibold text-gray-200">Active Celebrations Today</h4>
         {activeCelebrations.length > 0 ? (
           <ul className="text-sm text-gray-600">
             {activeCelebrations.map(celebration => (
@@ -120,8 +120,8 @@ export const CelebrationTest: React.FC = () => {
       </div>
 
       {/* Test Lookup */}
-      <div className="bg-white p-3 rounded border">
-        <h4 className="font-semibold text-gray-800">Test Lookup (Christmas 2025)</h4>
+      <div className="bg-gray-800 p-3 rounded border">
+        <h4 className="font-semibold text-gray-200">Test Lookup (Christmas 2025)</h4>
         {testCelebration ? (
           <div className="text-sm text-gray-600">
             <p><strong>Label:</strong> {testCelebration.label}</p>

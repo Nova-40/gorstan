@@ -88,7 +88,7 @@ export function Toast({
   return (
     <div
       className={cn(
-        'max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden',
+        'max-w-sm w-full bg-gray-800 shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden',
         'transform transition-all duration-150 ease-out',
         'translate-x-0 opacity-100 scale-100',
         toastVariants[type]
