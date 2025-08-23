@@ -1,0 +1,328 @@
+/*
+  Gorstan – Copyright © 2025 Geoff Webster. All Rights Reserved.
+  
+  Trials Game Screens - Start and Game Over styling
+*/
+
+/* Start Screen */
+.trials-start-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  color: #e0e6ed;
+  font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace;
+  padding: 20px;
+}
+
+.start-content {
+  max-width: 800px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  border: 2px solid #00ff88;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.start-content h1 {
+  font-size: 3rem;
+  color: #00ff88;
+  margin-bottom: 20px;
+  text-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+}
+
+.start-content p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  color: #c0c6cd;
+}
+
+.start-content ul {
+  text-align: left;
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background: rgba(0, 255, 136, 0.05);
+  border-radius: 10px;
+  border: 1px solid rgba(0, 255, 136, 0.2);
+}
+
+.start-content li {
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+.start-content strong {
+  color: #00ff88;
+}
+
+.start-controls {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin: 30px 0;
+}
+
+.start-btn {
+  background: linear-gradient(135deg, #00ff88, #00d4aa);
+  color: #000000;
+  border: none;
+  padding: 15px 30px;
+  font-size: 1.3rem;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+}
+
+.start-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 255, 136, 0.5);
+}
+
+.quit-btn {
+  background: rgba(255, 71, 87, 0.2);
+  color: #ff4757;
+  border: 2px solid #ff4757;
+  padding: 15px 30px;
+  font-size: 1.3rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.quit-btn:hover {
+  background: rgba(255, 71, 87, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 71, 87, 0.3);
+}
+
+.controls-info {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(0, 255, 136, 0.3);
+}
+
+.controls-info h3 {
+  color: #00ff88;
+  margin-bottom: 15px;
+  font-size: 1.4rem;
+}
+
+.controls-grid {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 8px 20px;
+  justify-content: center;
+  max-width: 400px;
+  margin: 0 auto;
+  font-size: 0.95rem;
+}
+
+.controls-grid span:nth-child(odd) {
+  background: rgba(0, 255, 136, 0.2);
+  border: 1px solid #00ff88;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: #00ff88;
+  font-weight: bold;
+  text-align: center;
+}
+
+.controls-grid span:nth-child(even) {
+  color: #a0a6ad;
+  text-align: left;
+}
+
+/* Game Over Screen */
+.trials-game-over {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #2d1b69 0%, #1a1a2e 50%, #000000 100%);
+  color: #e0e6ed;
+  font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace;
+  padding: 20px;
+}
+
+.game-over-content {
+  max-width: 600px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
+  border: 2px solid #ff4757;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+}
+
+.game-over-content h1 {
+  font-size: 2.5rem;
+  color: #ff4757;
+  margin-bottom: 30px;
+  text-shadow: 0 0 15px rgba(255, 71, 87, 0.5);
+}
+
+.final-stats {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 25px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.final-stats .stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.final-stats .stat:last-child {
+  margin-bottom: 0;
+}
+
+.final-stats .stat span:first-child {
+  color: #a0a6ad;
+}
+
+.final-stats .stat span:last-child {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.achievements-earned {
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 25px;
+}
+
+.achievements-earned h3 {
+  color: #ffd700;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+}
+
+.achievement {
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  color: #ffd700;
+  font-size: 1rem;
+}
+
+.achievement:last-child {
+  margin-bottom: 0;
+}
+
+.game-over-actions {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.retry-btn {
+  background: linear-gradient(135deg, #5352ed, #3742fa);
+  color: #ffffff;
+  border: none;
+  padding: 15px 25px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(83, 82, 237, 0.3);
+}
+
+.retry-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(83, 82, 237, 0.5);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .start-content {
+    padding: 25px;
+    margin: 10px;
+  }
+  
+  .start-content h1 {
+    font-size: 2.2rem;
+  }
+  
+  .start-controls {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .controls-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .controls-grid span:nth-child(even) {
+    text-align: center;
+  }
+  
+  .game-over-content {
+    padding: 25px;
+    margin: 10px;
+  }
+  
+  .game-over-content h1 {
+    font-size: 2rem;
+  }
+  
+  .game-over-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .start-btn,
+  .retry-btn,
+  .quit-btn {
+    transition: none;
+  }
+  
+  .start-btn:hover,
+  .retry-btn:hover,
+  .quit-btn:hover {
+    transform: none;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .start-content,
+  .game-over-content {
+    background: #000000;
+    border-color: #ffffff;
+  }
+  
+  .start-content h1,
+  .game-over-content h1 {
+    color: #ffffff;
+  }
+  
+  .controls-grid span:nth-child(odd) {
+    background: #2d2d2d;
+    color: #ffffff;
+    border-color: #2d2d2d;
+  }
+}

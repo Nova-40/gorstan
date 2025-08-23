@@ -218,6 +218,18 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
     case 'ADD_TO_INVENTORY': {
       const item = action.payload as string;
       if (state.player.inventory.includes(item)) return state;
+      
+      // Trigger item collection notification
+      const event = new CustomEvent('gorstan-notification', {
+        detail: {
+          type: 'item_collected',
+          title: 'Item Collected!',
+          description: `Added ${item} to your inventory`,
+          duration: 3000
+        }
+      });
+      window.dispatchEvent(event);
+      
       return {
         ...state,
         player: {
@@ -472,6 +484,8 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
 
         if (result.updates.currentRoomId && result.updates.currentRoomId !== state.currentRoomId) {
           const visitedRooms = newState.player.visitedRooms || [];
+          const isFirstVisit = !visitedRooms.includes(result.updates.currentRoomId);
+          
           newState.previousRoomId = state.currentRoomId;  
           newState.player = {
             ...newState.player,
@@ -481,6 +495,19 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
           };
           const newRoom = newState.roomMap[result.updates.currentRoomId];
           newState.history = addRoomDescriptionToHistory(newState.history, newRoom, result.updates.currentRoomId);
+
+          // Trigger room discovery notification for first visits
+          if (isFirstVisit && newRoom) {
+            const event = new CustomEvent('gorstan-notification', {
+              detail: {
+                type: 'room_discovery',
+                title: 'New Location Discovered!',
+                description: newRoom.title || result.updates.currentRoomId,
+                duration: 4000
+              }
+            });
+            window.dispatchEvent(event);
+          }
         }
       }
 

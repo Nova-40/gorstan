@@ -111,7 +111,7 @@ export class ObjectivesService {
   private formatNodeName(nodeId: string): string {
     // Convert node IDs to readable names
     return nodeId
-      .replace(/^(demo_|runesprint_|catacomb_|faeglade_|clockwork_|trentpark_|nexus_|glitch_|fae_)/, '')
+      .replace(/^(demo_|runesprint_|catacomb_|faeglade_|trials_|trentpark_|nexus_|glitch_|fae_)/, '')
       .replace(/_/g, ' ')
       .replace(/\b\w/g, l => l.toUpperCase());
   }

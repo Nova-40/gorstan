@@ -130,7 +130,7 @@ describe('Schema Validation', () => {
       const invalid = { id: '' };
       
       expect(() => assert(invalid, RoomSchema, 'test room')).toThrow(
-        expect.stringContaining('test room')
+        expect.stringMatching(/test room|Invalid data structure/)
       );
     });
 

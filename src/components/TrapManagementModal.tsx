@@ -244,11 +244,11 @@ const TrapManagementModal: React.FC<TrapManagementModalProps> = ({
   return (
     <Modal visible={isOpen} onClose={onClose} title="⚠️ Trap Management" pinned={true}>
       <div className="trap-management-modal">
-        {/* Timer Display */}
+        {/* Timer Display - Time to disarm the trap */}
         <div className={`timer-display ${managementState.timeRemaining <= 10 ? 'urgent' : ''}`}>
           <Clock size={24} />
           <span className="timer-text">
-            {managementState.timeRemaining}s remaining
+            Disarm time: {managementState.timeRemaining}s remaining
           </span>
           <div className="timer-bar">
             <div 

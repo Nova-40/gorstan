@@ -12,6 +12,8 @@ import { Badge } from './ui/Badge';
 import { RouteBadge } from './ui/RouteBadge';
 import { Countdown } from './ui/Countdown';
 import { cn } from '../utils/cn';
+import { startDemo, demoRoutes } from '../demo/demoRouter';
+import '../ui/theme.css';
 
 interface RouteSelectScreenProps {
   onRouteSelect: (routeId: RouteId) => void;
@@ -49,10 +51,20 @@ export const RouteSelectScreen: React.FC<RouteSelectScreenProps> = ({
     setSelectedRoute(null);
   };
 
+  // Demo route handler
+  const handleDemoStart = (demoRouteId: string) => {
+    console.log(`[RouteSelectScreen] Starting demo route: ${demoRouteId}`);
+    startDemo(demoRouteId);
+    
+    // If we have a route select handler, we might want to notify it
+    // For now, let the demo system handle everything
+  };
+
   // Category selection view
   if (!selectedCategory) {
     return (
       <div className={cn(
+        'choose-adventure-container',
         'route-select-screen',
         'flex flex-col gap-space-6 p-space-6 max-w-4xl mx-auto',
         className
@@ -63,6 +75,56 @@ export const RouteSelectScreen: React.FC<RouteSelectScreenProps> = ({
           </h1>
           <p className="text-body-md text-color-text-secondary">
             Select an adventure type that fits your available time
+          </p>
+        </div>
+
+        {/* Featured Master Showcase */}
+        {demoRoutes.filter(route => route.kind === 'featured').map((route) => (
+          <Card 
+            key={route.id}
+            variant="elevated"
+            className={cn(
+              'featured-showcase cursor-pointer',
+              'hover:shadow-elevation-xl transition-all duration-300',
+              'bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200'
+            )}
+            onClick={() => handleDemoStart(route.id)}
+          >
+            <div className="p-space-8">
+              <div className="flex items-center justify-center gap-space-3 mb-space-4">
+                <Badge variant="success" className="text-sm font-semibold">⭐ FEATURED</Badge>
+                <Badge variant="primary" className="text-sm">~15 minutes</Badge>
+                <Badge variant="info" className="text-sm">Complete Tour</Badge>
+              </div>
+              <div className="text-center">
+                <h2 className="text-heading-lg font-bold text-color-text-primary mb-space-3">
+                  {route.title}
+                </h2>
+                <p className="text-body-lg text-color-text-secondary mb-space-6 max-w-2xl mx-auto">
+                  {route.summary}
+                </p>
+                <Button 
+                  variant="primary" 
+                  size="lg" 
+                  className="px-space-8 py-space-3 text-lg font-semibold"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDemoStart(route.id);
+                  }}
+                >
+                  🎮 Start Master Showcase
+                </Button>
+              </div>
+            </div>
+          </Card>
+        ))}
+
+        <div className="text-center">
+          <h2 className="text-heading-md font-semibold text-color-text-primary mb-space-1">
+            Or Choose by Time Available
+          </h2>
+          <p className="text-body-sm text-color-text-secondary mb-space-4">
+            Select from these focused adventure categories
           </p>
         </div>
 
@@ -112,7 +174,7 @@ export const RouteSelectScreen: React.FC<RouteSelectScreenProps> = ({
                 10-Minute Adventures
               </h3>
               <p className="text-body-sm text-color-text-secondary mb-space-4">
-                Four focused adventures: Rune Sprint, Catacomb Dash, Fae Glade Relay, and Clockwork Crypt.
+                Four focused adventures: Rune Sprint, Catacomb Dash, Fae Glade Relay, and Trials of Gorstan.
                 Perfect for coffee breaks.
               </p>
               <div className="flex items-center gap-space-2 text-color-text-tertiary text-body-xs">
@@ -182,6 +244,99 @@ export const RouteSelectScreen: React.FC<RouteSelectScreenProps> = ({
               </div>
             </div>
           </Card>
+        </div>
+
+        {/* Demo Routes Section */}
+        <div className="border-t border-gray-200 pt-space-6">
+          <div className="text-center mb-space-4">
+            <h2 className="text-heading-md font-semibold text-color-text-primary mb-space-2">
+              Quick Demo Routes
+            </h2>
+            <p className="text-body-sm text-color-text-secondary">
+              Experience Gorstan with curated demo adventures
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-3">
+            {demoRoutes.filter(route => route.kind === 'short').map((route) => (
+              <Card 
+                key={route.id}
+                variant="elevated"
+                className={cn(
+                  'adventure-card demo-short cursor-pointer',
+                  'hover:shadow-elevation-lg transition-all duration-300'
+                )}
+                onClick={() => handleDemoStart(route.id)}
+              >
+                <div className="p-space-4">
+                  <div className="flex items-center gap-space-2 mb-space-2">
+                    <Badge variant="info" className="text-xs">Demo</Badge>
+                    <Badge variant="success" className="text-xs">~10min</Badge>
+                  </div>
+                  <h3 className="text-heading-xs font-semibold text-color-text-primary mb-space-1">
+                    {route.title}
+                  </h3>
+                  <p className="text-body-xs text-color-text-secondary mb-space-3">
+                    {route.summary}
+                  </p>
+                  <Button 
+                    variant="primary" 
+                    size="sm" 
+                    className="adventure-button w-full"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDemoStart(route.id);
+                    }}
+                  >
+                    Start Demo
+                  </Button>
+                </div>
+              </Card>
+            ))}
+          </div>
+          
+          <div className="mt-space-4">
+            <h3 className="text-heading-sm font-medium text-color-text-primary mb-space-3 text-center">
+              Extended Adventures
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-space-3">
+              {demoRoutes.filter(route => route.kind === 'long').map((route) => (
+                <Card 
+                  key={route.id}
+                  variant="elevated"
+                  className={cn(
+                    'adventure-card demo-long cursor-pointer',
+                    'hover:shadow-elevation-lg transition-all duration-300'
+                  )}
+                  onClick={() => handleDemoStart(route.id)}
+                >
+                  <div className="p-space-4">
+                    <div className="flex items-center gap-space-2 mb-space-2">
+                      <Badge variant="secondary" className="text-xs">Adventure</Badge>
+                      <Badge variant="warning" className="text-xs">~30min</Badge>
+                    </div>
+                    <h3 className="text-heading-xs font-semibold text-color-text-primary mb-space-1">
+                      {route.title}
+                    </h3>
+                    <p className="text-body-xs text-color-text-secondary mb-space-3">
+                      {route.summary}
+                    </p>
+                    <Button 
+                      variant="secondary" 
+                      size="sm" 
+                      className="adventure-button w-full"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDemoStart(route.id);
+                      }}
+                    >
+                      Start Adventure
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
         </div>
 
         {onCancel && (

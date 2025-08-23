@@ -139,7 +139,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
             <div
               ref={forwardedRef || modalRef}
               className={cn(
-                'relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all',
+                'relative transform overflow-hidden rounded-lg bg-gray-800 text-left shadow-xl transition-all',
                 'w-full',
                 modalSizes[size],
                 className

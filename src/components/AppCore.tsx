@@ -47,6 +47,8 @@ import TeleportManager from './animations/TeleportManager';
 import QuickActionsPanel from './QuickActionsPanel';
 import CombatActionsPanel from '../ui/QuickActionsPanel';
 import BlueButtonWarningModal from './BlueButtonWarningModal';
+import QuickWinNotifications from './QuickWinNotifications';
+import ProgressDashboard from './ProgressDashboard';
 
 import { useFlags } from '../hooks/useFlags';
 import { useGameState } from '../state/gameState';
@@ -98,12 +100,14 @@ import { itemDescriptions } from '../data/itemDescriptions';
 
 import type { Room } from '../types/Room';
 import type { NPC, NPCMood } from '../types/NPCTypes';
+import { demoController } from '../demo/demoController';
+import { isDemoEnvironment } from '../demo/demoGate';
 import type { GameTransition } from '../types/GameTypes';
 
 /**
  * Enhanced type definitions for better type safety
  */
-type GameStage = 'splash' | 'welcome' | 'nameCapture' | 'routeSelect' | 'intro' | 'demo' | 'game' | 
+type GameStage = 'splash' | 'welcome' | 'nameCapture' | 'routeSelect' | 'intro' | 'demo' | 'game' | 'trialsGame' |
   'transition_jump' | 'transition_sip' | 'transition_wait' | 'transition_dramatic_wait';
 
 type OpenModalType = 'inventory' | 'useItem' | 'look' | 'pickUp' | 'saveGame' | 'npcConsole' | 'npcSelection' | 'trapManagement' | null;
@@ -199,6 +203,10 @@ const AppCore: React.FC = () => {
   const [roomFallbackAttempted, setRoomFallbackAttempted] = useState<boolean>(false);
   const [roomHistory, setRoomHistory] = useState<string[]>([]);
   const [showPerformanceDashboard, setShowPerformanceDashboard] = useState<boolean>(false);
+
+  // Demo system state
+  const [isDemoActive, setIsDemoActive] = useState<boolean>(false);
+  const [isDemo] = useState<boolean>(isDemoEnvironment());
 
   const handleRoomChange = useStableCallback((newRoomId: string) => {
     console.log('[AppCore] handleRoomChange called with:', newRoomId);
@@ -308,7 +316,14 @@ const handleBackout = useCallback((): void => {
   useLibrarianLogic(state, dispatch, room, loadModule);
   
   // Enhanced modal management with proper typing
-  const openModal = useCallback((name: OpenModalType): void => setModal(name), []);
+  const openModal = useCallback((name: OpenModalType): void => {
+    // Prevent modal opening during demo mode to avoid interrupting the scripted sequence
+    if (isDemoActive) {
+      console.log('Modal opening blocked during demo mode:', name);
+      return;
+    }
+    setModal(name);
+  }, [isDemoActive]);
   const closeModal = useCallback((): void => {
     setModal(null);
     setIsGroupConversation(false); // Reset group conversation state
@@ -571,6 +586,29 @@ const handleBackout = useCallback((): void => {
     return unsubscribe;
   }, [currentRoomId, state]);
 
+  // Demo system initialization
+  useEffect(() => {
+    if (isDemo && dispatch) {
+      console.log('[AppCore] Initializing demo system');
+      demoController.setDispatch(dispatch);
+      
+      // Set up teleport trigger function for demo
+      const teleportTrigger = (teleportType: 'fractal' | 'trek', callback: () => void) => {
+        setTeleportType(teleportType);
+        setTeleportCallback(() => callback);
+      };
+      demoController.setTeleportTrigger(teleportTrigger);
+      
+      // Check URL parameters for auto-start demo
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('demo') === 'auto' && stage === 'game') {
+        console.log('[AppCore] Auto-starting demo mode');
+        setIsDemoActive(true);
+        demoController.startDemo();
+      }
+    }
+  }, [isDemo, dispatch, stage]);
+
   // NPC AI Behavior Generation
   useEffect(() => {
     const generateNPCBehaviors = async () => {
@@ -807,10 +845,25 @@ const handleBackout = useCallback((): void => {
           });
         }
       }
+      if (e.key === 'Escape' && isDemoActive) {
+        // Skip demo with ESC key
+        e.preventDefault();
+        demoController.skipDemo();
+        setIsDemoActive(false);
+        dispatch({ 
+          type: 'RECORD_MESSAGE', 
+          payload: { 
+            id: `demo-skip-${Date.now()}`, 
+            text: '🎬 Demo skipped. You now have full control.', 
+            type: 'system', 
+            timestamp: Date.now() 
+          } 
+        });
+      }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [modal, closeModal, openModal, npcsInRoom, handleOpenNPCConsole, stage, dispatch]);
+  }, [modal, closeModal, openModal, npcsInRoom, handleOpenNPCConsole, stage, dispatch, isDemoActive]);
 
   // Enhanced cleanup effect with proper typing
   useEffect(() => {
@@ -1042,6 +1095,89 @@ const handleBackout = useCallback((): void => {
       if (room) setPreviousRoom(room);
     }
 
+    // Demo system commands - only available in demo environment
+    if (isDemo) {
+      if (lowerCmd === 'start demo' || lowerCmd === 'demo start') {
+        if (!isDemoActive) {
+          setIsDemoActive(true);
+          demoController.startDemo();
+          dispatch({ 
+            type: 'ADD_MESSAGE', 
+            payload: { 
+              id: Date.now().toString(), 
+              text: '🎬 Starting scripted demo mode...', 
+              type: 'system', 
+              timestamp: Date.now() 
+            } 
+          });
+        } else {
+          dispatch({ 
+            type: 'ADD_MESSAGE', 
+            payload: { 
+              id: Date.now().toString(), 
+              text: '🎬 Demo is already running. Press ESC to skip.', 
+              type: 'system', 
+              timestamp: Date.now() 
+            } 
+          });
+        }
+        return;
+      }
+      
+      if (lowerCmd === 'stop demo' || lowerCmd === 'demo stop' || lowerCmd === 'skip demo') {
+        if (isDemoActive) {
+          demoController.skipDemo();
+          setIsDemoActive(false);
+          dispatch({ 
+            type: 'ADD_MESSAGE', 
+            payload: { 
+              id: Date.now().toString(), 
+              text: '🎬 Demo stopped. You now have full control.', 
+              type: 'system', 
+              timestamp: Date.now() 
+            } 
+          });
+        } else {
+          dispatch({ 
+            type: 'ADD_MESSAGE', 
+            payload: { 
+              id: Date.now().toString(), 
+              text: '🎬 No demo is currently running.', 
+              type: 'info', 
+              timestamp: Date.now() 
+            } 
+          });
+        }
+        return;
+      }
+      
+      if (lowerCmd === 'next demo' || lowerCmd === 'demo next') {
+        if (isDemoActive) {
+          demoController.skipToNext();
+          dispatch({ 
+            type: 'ADD_MESSAGE', 
+            payload: { 
+              id: Date.now().toString(), 
+              text: '🎬 Skipping to next demo step...', 
+              type: 'system', 
+              timestamp: Date.now() 
+            } 
+          });
+        } else {
+          dispatch({ 
+            type: 'ADD_MESSAGE', 
+            payload: { 
+              id: Date.now().toString(), 
+              text: '🎬 No demo is currently running.', 
+              type: 'info', 
+              timestamp: Date.now() 
+            } 
+          });
+        }
+        return;
+      }
+    }
+
     dispatch({ type: 'COMMAND_INPUT', payload: cmd });
 
     // Track command execution for AI monitoring
@@ -1052,7 +1188,7 @@ const handleBackout = useCallback((): void => {
 
     // Check for hint opportunities after command processing
     checkForHints(cmd, lowerCmd);
-  }, [npcsInRoom, room, inventory, dispatch, handleLookAround, openModal, currentRoomId]);
+  }, [npcsInRoom, room, inventory, dispatch, handleLookAround, openModal, currentRoomId, isDemo, isDemoActive]);
 
   // Enhanced pickup handler with proper type safety and Dominic special logic
   const handlePickUpItems = useCallback((selectedItems: string[]): void => {
@@ -1726,6 +1862,33 @@ const handleBackout = useCallback((): void => {
       </div>
     );
   }
+  if (stage === 'trialsGame') {
+    const TrialsGame = React.lazy(() => import('./TrialsGame'));
+    
+    return (
+      <React.Suspense fallback={
+        <div className="flex items-center justify-center min-h-screen bg-black text-purple-400">
+          <div className="text-center space-y-4">
+            <div className="animate-spin w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full mx-auto"></div>
+            <h2 className="text-2xl font-bold">Loading Trials of Gorstan...</h2>
+            <p className="text-lg">Preparing your interactive adventure</p>
+          </div>
+        </div>
+      }>
+        <TrialsGame
+          onComplete={() => {
+            console.log('[AppCore] Trials completed successfully!');
+            dispatch({ type: 'ADVANCE_STAGE', payload: 'routeSelect' });
+          }}
+          onQuit={() => {
+            console.log('[AppCore] Player quit the trials');
+            dispatch({ type: 'ADVANCE_STAGE', payload: 'routeSelect' });
+          }}
+          autoStart={true}
+        />
+      </React.Suspense>
+    );
+  }
   if (stage === 'nameCapture') {
     return (
       <PlayerNameCapture 
@@ -1744,6 +1907,9 @@ const handleBackout = useCallback((): void => {
           // Different paths based on route selection
           if (routeId === 'demo') {
             dispatch({ type: 'ADVANCE_STAGE', payload: 'demo' });
+          } else if (routeId === 'short10_trialsofgorstan') {
+            // Special handling for Trials of Gorstan interactive interface
+            dispatch({ type: 'ADVANCE_STAGE', payload: 'trialsGame' });
           } else {
             dispatch({ type: 'ADVANCE_STAGE', payload: 'intro' });
           }
@@ -1785,6 +1951,13 @@ const handleBackout = useCallback((): void => {
 
   return (
     <div className="appcore-grid">
+      {/* Demo mode indicator */}
+      {isDemoActive && (
+        <div className="fixed top-0 left-0 right-0 z-50 bg-purple-900 text-white text-center py-2 px-4 font-bold">
+          🎬 DEMO MODE ACTIVE - Press ESC to skip • Use "stop demo" to exit
+        </div>
+      )}
+      
       <MultiverseRebootSequence />
       <RoomTransition 
         isActive={roomTransitionActive && transitionInfo.shouldAnimate} 
@@ -1799,6 +1972,10 @@ const handleBackout = useCallback((): void => {
 
       <div className="quad quad-1">
         <RoomRenderer />
+        {/* Compact Progress Display in corner */}
+        <div className="absolute top-2 left-2">
+          <ProgressDashboard compact={true} className="w-48" />
+        </div>
       </div>
       
       <div className="quad quad-2">
@@ -1831,6 +2008,7 @@ const handleBackout = useCallback((): void => {
           isFullscreen={isFullscreen}
           soundOn={soundOn}
           onToggleSound={toggleSound}
+          isDemoActive={isDemoActive}
           onJump={() => {
             const currentRoom = state.roomMap[state.currentRoomId];
             const jumpRoomId = currentRoom?.exits?.jump;
@@ -1949,6 +2127,9 @@ const handleBackout = useCallback((): void => {
       )}
 
       {/* Celebration System Active */}
+
+      {/* Quick Win Notifications System */}
+      <QuickWinNotifications />
     </div>
   );
 };

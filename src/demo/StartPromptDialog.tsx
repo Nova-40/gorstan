@@ -91,7 +91,7 @@ export const StartPromptDialog: React.FC<StartPromptDialogProps> = ({
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-          className="bg-gradient-to-b from-slate-800 to-slate-900 border border-slate-600 rounded-lg shadow-2xl max-w-md w-full p-6"
+          className="bg-gray-800 border border-gray-600 rounded-lg shadow-2xl max-w-md w-full p-6"
           onClick={e => e.stopPropagation()}
         >
           <div className="text-center space-y-4">

@@ -15,7 +15,7 @@ function DemoHud({ tip, progress }: { tip?: string; progress?: number }) {
         exit={{ opacity: 0, y: 20 }}
         className="demo-hud fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 max-w-md"
       >
-        <div className="bg-black bg-opacity-80 text-white px-6 py-3 rounded-lg text-sm backdrop-blur-sm border border-cyan-400/30">
+        <div className="bg-gray-800 bg-opacity-80 text-white px-6 py-3 rounded-lg text-sm backdrop-blur-sm border border-cyan-400/30">
           <div className="flex items-center gap-3">
             <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
             <span>{tip}</span>
@@ -46,7 +46,7 @@ function MicroTutorial({ text, position }: { text: string; position: { x: number
       className="fixed z-50 pointer-events-none"
       style={{ left: position.x, top: position.y }}
     >
-      <div className="bg-indigo-900 text-white px-3 py-2 rounded-lg text-xs border border-cyan-400/50 max-w-48">
+      <div className="bg-gray-800 text-white px-3 py-2 rounded-lg text-xs border border-cyan-400/50 max-w-48">
         {text}
         <div className="absolute -bottom-1 left-4 w-2 h-2 bg-indigo-900 rotate-45 border-r border-b border-cyan-400/50"></div>
       </div>

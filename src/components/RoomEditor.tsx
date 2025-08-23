@@ -456,7 +456,7 @@ function TypeScriptOutput({
           {copied ? '✓ Copied!' : '📋 Copy'}
         </button>
       </div>
-      <pre className="bg-white border rounded p-3 text-sm overflow-x-auto">
+      <pre className="bg-gray-800 border rounded p-3 text-sm overflow-x-auto">
         <code>{code}</code>
       </pre>
     </div>
@@ -481,7 +481,7 @@ function CoreInfoSection({
 
 // JSX return block or main return
   return (
-    <div className="core-info-section bg-white border rounded-lg p-4">
+    <div className="core-info-section bg-gray-800 border rounded-lg p-4">
       <h3 className="font-semibold text-gray-800 mb-4">Core Information</h3>
       <div className="space-y-4">
         <div>
@@ -577,7 +577,7 @@ function ImagePreviewSection({
 
 // JSX return block or main return
   return (
-    <div className="image-preview-section bg-white border rounded-lg p-4">
+    <div className="image-preview-section bg-gray-800 border rounded-lg p-4">
       <h3 className="font-semibold text-gray-800 mb-4">Image Preview</h3>
       <div className="space-y-3">
         <div>
@@ -634,7 +634,7 @@ function NarrativeSection({
 }) {
 // JSX return block or main return
   return (
-    <div className="narrative-section bg-white border rounded-lg p-4">
+    <div className="narrative-section bg-gray-800 border rounded-lg p-4">
       <h3 className="font-semibold text-gray-800 mb-4">Narrative Content</h3>
       <div className="space-y-4">
         <div>
@@ -680,7 +680,7 @@ function ItemsAndNPCsSection({
 }) {
 // JSX return block or main return
   return (
-    <div className="items-npcs-section bg-white border rounded-lg p-4">
+    <div className="items-npcs-section bg-gray-800 border rounded-lg p-4">
       <h3 className="font-semibold text-gray-800 mb-4">Content & Characters</h3>
       <div className="space-y-4">
         <div>
@@ -792,7 +792,7 @@ function ExitsSection({
 
 // JSX return block or main return
   return (
-    <div className="exits-section bg-white border rounded-lg p-4">
+    <div className="exits-section bg-gray-800 border rounded-lg p-4">
       <h3 className="font-semibold text-gray-800 mb-4">
         Room Exits ({Object.keys(room.exits).length})
       </h3>
@@ -872,7 +872,7 @@ function TrapsAndEventsSection({
 
 // JSX return block or main return
   return (
-    <div className="traps-events-section bg-white border rounded-lg p-4">
+    <div className="traps-events-section bg-gray-800 border rounded-lg p-4">
       <div className="flex justify-between items-center mb-4">
         <h3 className="font-semibold text-gray-800">
           Traps & Logic ({(room.traps || []).length})

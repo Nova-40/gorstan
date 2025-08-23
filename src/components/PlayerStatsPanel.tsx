@@ -19,11 +19,15 @@
 
 import './PlayerStatsPanel.css';
 
-import React from 'react';
+import React, { useState } from 'react';
 
-import { Heart, Star, Trophy } from 'lucide-react';
+import { Heart, Star, Trophy, Package, Share2, Calendar, BarChart3 } from 'lucide-react';
 
 import { useGameState } from '../state/gameState';
+import ProgressDashboard from './ProgressDashboard';
+import CollectionDisplay from './CollectionDisplay';
+import ChallengeSystem from './ChallengeSystem';
+import SocialSharing from './SocialSharing';
 
 
 
@@ -36,6 +40,7 @@ import { useGameState } from '../state/gameState';
 const PlayerStatsPanel: React.FC = () => {
   const { state } = useGameState();
   const { player } = state;
+  const [activeModal, setActiveModal] = useState<'progress' | 'collection' | 'challenges' | 'sharing' | null>(null);
 
   const healthPercentage = (player.health / (player.maxHealth || 100)) * 100;
   const healthColor = healthPercentage > 70 ? '#00ff00' :
@@ -105,6 +110,147 @@ const PlayerStatsPanel: React.FC = () => {
           {player.visitedRooms?.length || 0}
         </span>
       </div>
+
+      {/* Enhanced Feature Buttons */}
+      <div className="feature-buttons" style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+        <button
+          onClick={() => setActiveModal('progress')}
+          className="feature-button"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            padding: '6px 8px',
+            backgroundColor: '#374151',
+            border: '1px solid #4B5563',
+            borderRadius: '4px',
+            color: '#D1D5DB',
+            fontSize: '12px',
+            cursor: 'pointer',
+            transition: 'all 0.2s',
+            width: '100%'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#4B5563';
+            e.currentTarget.style.borderColor = '#6B7280';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#374151';
+            e.currentTarget.style.borderColor = '#4B5563';
+          }}
+        >
+          <BarChart3 size={14} />
+          Progress Dashboard
+        </button>
+
+        <button
+          onClick={() => setActiveModal('collection')}
+          className="feature-button"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            padding: '6px 8px',
+            backgroundColor: '#374151',
+            border: '1px solid #4B5563',
+            borderRadius: '4px',
+            color: '#D1D5DB',
+            fontSize: '12px',
+            cursor: 'pointer',
+            transition: 'all 0.2s',
+            width: '100%'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#4B5563';
+            e.currentTarget.style.borderColor = '#6B7280';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#374151';
+            e.currentTarget.style.borderColor = '#4B5563';
+          }}
+        >
+          <Package size={14} />
+          Collection ({(player.inventory?.length || 0)})
+        </button>
+
+        <button
+          onClick={() => setActiveModal('challenges')}
+          className="feature-button"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            padding: '6px 8px',
+            backgroundColor: '#374151',
+            border: '1px solid #4B5563',
+            borderRadius: '4px',
+            color: '#D1D5DB',
+            fontSize: '12px',
+            cursor: 'pointer',
+            transition: 'all 0.2s',
+            width: '100%'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#4B5563';
+            e.currentTarget.style.borderColor = '#6B7280';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#374151';
+            e.currentTarget.style.borderColor = '#4B5563';
+          }}
+        >
+          <Calendar size={14} />
+          Challenges
+        </button>
+
+        <button
+          onClick={() => setActiveModal('sharing')}
+          className="feature-button"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            padding: '6px 8px',
+            backgroundColor: '#374151',
+            border: '1px solid #4B5563',
+            borderRadius: '4px',
+            color: '#D1D5DB',
+            fontSize: '12px',
+            cursor: 'pointer',
+            transition: 'all 0.2s',
+            width: '100%'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#4B5563';
+            e.currentTarget.style.borderColor = '#6B7280';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#374151';
+            e.currentTarget.style.borderColor = '#4B5563';
+          }}
+        >
+          <Share2 size={14} />
+          Share Journey
+        </button>
+      </div>
+
+      {/* Modals */}
+      <ProgressDashboard 
+        isOpen={activeModal === 'progress'} 
+        onClose={() => setActiveModal(null)} 
+      />
+      <CollectionDisplay 
+        isOpen={activeModal === 'collection'} 
+        onClose={() => setActiveModal(null)} 
+      />
+      <ChallengeSystem 
+        isOpen={activeModal === 'challenges'} 
+        onClose={() => setActiveModal(null)} 
+      />
+      <SocialSharing 
+        isOpen={activeModal === 'sharing'} 
+        onClose={() => setActiveModal(null)} 
+      />
     </div>
   );
 };

@@ -46,8 +46,8 @@
   --color-gorstan-700: #1e40af;
 
   /* Neutral Palette */
-  --color-neutral-0: #ffffff;
-  --color-neutral-50: #f9fafb;
+  --color-neutral-0: #2d2d2d;
+  --color-neutral-50: #3a3a3a;
   --color-neutral-100: #f3f4f6;
   --color-neutral-200: #e5e7eb;
   --color-neutral-300: #d1d5db;
@@ -60,16 +60,16 @@
   --color-neutral-950: #030712;
 
   /* Dark mode overrides */
-  --color-bg-primary: var(--color-neutral-0);
-  --color-bg-secondary: var(--color-neutral-50);
-  --color-bg-elevated: var(--color-neutral-0);
+  --color-bg-primary: #2d2d2d;
+  --color-bg-secondary: #3a3a3a;
+  --color-bg-elevated: #2d2d2d;
   --color-bg-overlay: rgba(0, 0, 0, 0.75);
   --color-bg-game: #121212; /* Immersive dark background */
   
-  --color-text-primary: var(--color-neutral-900);
-  --color-text-secondary: var(--color-neutral-600);
-  --color-text-tertiary: var(--color-neutral-400);
-  --color-text-inverse: var(--color-neutral-0);
+  --color-text-primary: #e0e0e0;
+  --color-text-secondary: #b0b0b0;
+  --color-text-tertiary: #888888;
+  --color-text-inverse: #2d2d2d;
 
   --color-border-primary: var(--color-neutral-200);
   --color-border-secondary: var(--color-neutral-100);
