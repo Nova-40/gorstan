@@ -1,0 +1,17 @@
+Area,Current Grade,Target Grade,Issues,Proposed Solution,Implementation Priority,Beta3 Status
+Navigation,C,A,"Multiple transition methods, no unified teleport system","Create teleportManager.ts with zone-specific overlays",High,Not Started
+Feedback,C,A,"Inconsistent console output, missing typing indicators","ConsoleTerminal with teletype + braille cursor",High,Not Started
+Onboarding,D,A,"No guided flow, overwhelming for new players","60-second guided intro with skip option",Medium,Not Started
+Narrative Flow,B,A,"Good room descriptions but pacing issues","Improved teletype timing with punctuation pauses",Medium,Not Started
+Accessibility,D,A,"Missing focus rings, incomplete keyboard paths","Full a11y audit + keyboard navigation + screen reader",High,Not Started
+Performance,C,A,"No preloading, stutters on room changes","Asset preloading + lazy loading + performance monitoring",High,Not Started
+Visual Consistency,D,A,"No design tokens, mixed UI patterns","Design tokens + unified component system",High,Not Started
+Audio/FX,C,A,"Basic sounds, no zone-specific effects","soundManager.ts with zone-specific teleport SFX",Medium,Not Started
+Error Handling,C,A,"Basic error boundaries, needs user-friendly messages","Enhanced error UI + AI fallbacks + offline mode",Low,Not Started
+Save/Progress,B,A,"Functional save system, could be more seamless","Auto-save + resume with recap + progress indicators",Low,Not Started
+Dev Ergonomics,C,A,"Improved with QA fixes, still has linting issues","Complete ESLint fixes + TypeScript strict mode",Medium,Not Started
+Console Teletype,F,A,"No teletype effect, instant text only","35-45ms per char + punctuation pauses + skip option",High,Not Started
+Braille Cursor,F,A,"No braille cursor in console","⣿ blinking cursor following text + reduced-motion respect",High,Not Started
+Teleport Overlays,F,A,"No visual feedback during transitions","Fractal overlay (glitchrealm) + Trek-style (elsewhere)",High,Not Started
+NPC Consciousness,D,A,"NPCs feel robotic, no conversation memory","npcAiRouter with typing indicators + short-term memory",High,Not Started
+Satisfaction Checklist,F,A,"No player retention features","Clear goals + reward loops + friction removal",Medium,Not Started
