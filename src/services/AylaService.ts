@@ -338,7 +338,9 @@ export class AylaService {
       fallbacks.push("The fae magic is making language more poetic than precise. What else might I clarify?");
     }
     
-    return fallbacks[Math.floor(Math.random() * fallbacks.length)];
+  if (fallbacks.length === 0) return '';
+  const idx = Math.floor(Math.random() * fallbacks.length);
+  return fallbacks[idx] ?? fallbacks[0] ?? '';
   }
 
   /**
@@ -423,8 +425,10 @@ export class AylaService {
     return conversationContexts.get(sessionId)!;
   }
 
-  private selectResponse(responses: string[]): string {
-    return responses[Math.floor(Math.random() * responses.length)];
+  private selectResponse(responses: string[] | undefined): string {
+    if (!responses || responses.length === 0) return '';
+    const idx = Math.floor(Math.random() * responses.length);
+    return responses[idx] ?? responses[0] ?? '';
   }
 
   private getFlagValue(state: GameState, flagKey: string): boolean {
@@ -454,23 +458,34 @@ export class AylaService {
   }
 
   private levenshteinDistance(str1: string, str2: string): number {
-    const matrix = Array(str2.length + 1).fill(null).map(() => Array(str1.length + 1).fill(null));
-    
-    for (let i = 0; i <= str1.length; i++) matrix[0][i] = i;
-    for (let j = 0; j <= str2.length; j++) matrix[j][0] = j;
-    
-    for (let j = 1; j <= str2.length; j++) {
-      for (let i = 1; i <= str1.length; i++) {
-        const indicator = str1[i - 1] === str2[j - 1] ? 0 : 1;
-        matrix[j][i] = Math.min(
-          matrix[j][i - 1] + 1,
-          matrix[j - 1][i] + 1,
-          matrix[j - 1][i - 1] + indicator
-        );
+    if (str1 === str2) return 0;
+    if (str1.length === 0) return str2.length;
+    if (str2.length === 0) return str1.length;
+    const len1 = str1.length;
+    const len2 = str2.length;
+    const matrix: number[][] = Array.from({ length: len2 + 1 }, () => {
+      const row = new Array<number>(len1 + 1);
+      // Fill with 0 temporarily
+      for (let k = 0; k <= len1; k++) row[k] = 0;
+      return row;
+    });
+    const firstRow = matrix[0];
+    for (let i = 0; i <= len1; i++) firstRow[i] = i;
+    for (let j = 0; j <= len2; j++) {
+      matrix[j][0] = j;
+    }
+    for (let j = 1; j <= len2; j++) {
+      const currentRow = matrix[j];
+      const prevRow = matrix[j - 1];
+      for (let i = 1; i <= len1; i++) {
+        const cost = str1[i - 1] === str2[j - 1] ? 0 : 1;
+        const deletion = prevRow[i] + 1;
+        const insertion = currentRow[i - 1] + 1;
+        const substitution = prevRow[i - 1] + cost;
+        currentRow[i] = Math.min(deletion, insertion, substitution);
       }
     }
-    
-    return matrix[str2.length][str1.length];
+    return matrix[len2][len1];
   }
 
   /**

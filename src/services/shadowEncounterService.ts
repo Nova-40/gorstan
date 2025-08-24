@@ -51,7 +51,7 @@ class ShadowEncounterService {
       activeEntities: new Map(),
       discoveredEntities: [],
       interactionHistory: [],
-      difficultySettings: DIFFICULTY_CONFIGS.normal,
+  difficultySettings: (DIFFICULTY_CONFIGS.normal ?? Object.values(DIFFICULTY_CONFIGS)[0])!,
       quantumEffects: new Map(),
       playerFearLevel: 0,
       adaptiveDifficulty: {
@@ -406,7 +406,7 @@ class ShadowEncounterService {
         stressChange,
         entityResponse,
         experienceGained,
-        artifactEffectiveness: artifactIds.length > 0 ? effectiveness : undefined
+        ...(artifactIds.length > 0 ? { artifactEffectiveness: effectiveness } : {})
       }
     };
   }
@@ -496,7 +496,7 @@ class ShadowEncounterService {
       details: {
         roomId: encounter.roomId,
         outcome,
-        experienceGained: encounter.rewards?.experienceGained
+        ...(encounter.rewards?.experienceGained !== undefined ? { experienceGained: encounter.rewards.experienceGained } : {})
       }
     });
   }

@@ -93,7 +93,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
           className="w-[72px] h-[72px] rounded-full shadow-md"
         />
         Welcome to Gorstan
-        <span className="text-lg text-yellow-400 ml-2">(Beta 2)</span>
+  <span className="text-lg text-yellow-400 ml-2">(Beta 3)</span>
       </h1>
       <p className="text-md md:text-lg text-center max-w-2xl mb-6">
         A multiverse simulation of coffee, consequence, and quantum possibility. Tread carefully. The rabbit is watching.

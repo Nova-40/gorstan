@@ -129,13 +129,13 @@ export class UnifiedAIIntelligence {
           priority: aylaHint.urgency as any,
           content: enhancedHint,
           source: 'ayla',
-          followUp: aylaHint.followUp,
+          ...(aylaHint.followUp ? { followUp: aylaHint.followUp } : {}),
           metadata: {
             confidence: 0.8,
             reasoning: 'Ayla guidance enhanced with miniquest awareness',
             category: aylaHint.hintType
           }
-        };
+        } as AIGuidanceResponse;
       }
     }
 
@@ -144,13 +144,13 @@ export class UnifiedAIIntelligence {
       priority: aylaHint.urgency as any,
       content: aylaHint.hintText,
       source: 'ayla',
-      followUp: aylaHint.followUp,
+      ...(aylaHint.followUp ? { followUp: aylaHint.followUp } : {}),
       metadata: {
         confidence: 0.7,
         reasoning: 'Standard Ayla guidance',
         category: aylaHint.hintType
       }
-    };
+    } as AIGuidanceResponse;
   }
 
   /**
@@ -172,25 +172,21 @@ export class UnifiedAIIntelligence {
 
       if (recommendations && recommendations.length > 0) {
         const topRecommendation = recommendations[0];
-        
-        // Frame miniquest guidance through Ayla's personality
-        const aylaFramedGuidance = await this.frameMiniquestInAylaVoice(
-          topRecommendation, 
-          context
-        );
-
-        return {
-          type: 'miniquest',
-          priority: topRecommendation.confidence > 0.8 ? 'high' : 'medium',
-          content: aylaFramedGuidance,
-          source: 'miniquest_ai',
-          actionSuggestions: [`miniquests attempt ${topRecommendation.questId}`, 'miniquests list'],
-          metadata: {
-            confidence: topRecommendation.confidence,
-            reasoning: topRecommendation.reasoning,
-            category: 'quest_guidance'
-          }
-        };
+        if (topRecommendation) {
+          const aylaFramedGuidance = await this.frameMiniquestInAylaVoice(topRecommendation, context);
+          return {
+            type: 'miniquest',
+            priority: topRecommendation.confidence > 0.8 ? 'high' : 'medium',
+            content: aylaFramedGuidance,
+            source: 'miniquest_ai',
+            actionSuggestions: [`miniquests attempt ${topRecommendation.questId}`, 'miniquests list'],
+            metadata: {
+              confidence: topRecommendation.confidence,
+              reasoning: topRecommendation.reasoning,
+              category: 'quest_guidance'
+            }
+          } as AIGuidanceResponse;
+        }
       }
 
       return null;
@@ -335,7 +331,7 @@ Ayla's guidance:`;
       return bConfidence - aConfidence;
     });
 
-    return responses[0];
+  return responses[0] ?? null;
   }
 
   /**

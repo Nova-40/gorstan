@@ -176,22 +176,23 @@ export class DynamicContentGenerator {
     if (applicableRules.length === 0) return null;
 
     // Sort by priority and select the best rule
-    const selectedRule = applicableRules.sort((a, b) => b.priority - a.priority)[0];
+  const selectedRule = applicableRules.sort((a, b) => b.priority - a.priority)[0];
+  if (!selectedRule) return null;
 
-    // Check cooldown and usage limits
-    if (!this.canUseRule(selectedRule)) return null;
+  // Check cooldown and usage limits
+  if (!this.canUseRule(selectedRule)) return null;
 
     try {
       // Generate content using AI
-      const content = await this.generateAIContent(selectedRule, gameState, currentRoom, recentCommands);
+  const content = await this.generateAIContent(selectedRule, gameState, currentRoom, recentCommands);
       
       if (!content) return null;
 
       // Create generated content record
       const generatedContent: GeneratedContent = {
         id: `content_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        ruleId: selectedRule.id,
-        type: selectedRule.type,
+  ruleId: selectedRule.id,
+  type: selectedRule.type,
         content,
         timestamp: Date.now(),
         roomId: currentRoom.id,
@@ -208,7 +209,7 @@ export class DynamicContentGenerator {
       };
 
       // Record usage
-      this.recordRuleUsage(selectedRule.id);
+  this.recordRuleUsage(selectedRule.id);
       this.storeGeneratedContent(currentRoom.id, generatedContent);
 
       return generatedContent;

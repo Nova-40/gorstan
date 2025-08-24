@@ -15,7 +15,7 @@
 */
 
 // src/main.tsx
-// Gorstan Game Beta 2
+// Gorstan Game Beta 3
 // Gorstan and characters (c) Geoff Webster 2025
 // Game module.
 
@@ -53,9 +53,9 @@ if (!rootElement) {
 
   document.body.innerHTML = `
     <div style="
-      font-family: 'Courier New', monospace;
-      background: #000;
-      color: #00ff00;
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      background: #0B0F0E;
+      color: #39FF14;
       padding: 20px;
       height: 100vh;
       display: flex;
