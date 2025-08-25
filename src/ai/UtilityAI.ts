@@ -14,6 +14,7 @@ import { CombatSystem } from '../combat/CombatSystem';
 interface BehaviorScore {
   behavior: string;
   score: number;
+  // target is only present for behaviors that act on an opponent
   target?: Actor;
 }
 
@@ -22,6 +23,7 @@ interface AIContext {
   actor: Actor;
   allies: Actor[];
   enemies: Actor[];
+  // Player may be absent in some simulation contexts
   player?: Actor;
 }
 
@@ -60,10 +62,11 @@ export class UtilityAI {
 
     // Sort by score and execute best behavior
     scoredBehaviors.sort((a, b) => b.score - a.score);
-    const chosenBehavior = scoredBehaviors[0];
-
-    this.executeBehavior(chosenBehavior, context);
-    this.lastDecisionTime.set(actor.id, now);
+    const chosenBehavior = scoredBehaviors.length > 0 ? scoredBehaviors[0] : undefined;
+    if (chosenBehavior) {
+      this.executeBehavior(chosenBehavior, context);
+      this.lastDecisionTime.set(actor.id, now);
+    }
   }
 
   /** Build AI decision context */
@@ -76,7 +79,7 @@ export class UtilityAI {
     );
     const player = enemies.find(a => a.id === 'player');
 
-    return { actor, allies, enemies, player };
+  return player ? { actor, allies, enemies, player } : { actor, allies, enemies };
   }
 
   /** Get behaviors for AI archetype */
@@ -140,7 +143,7 @@ export class UtilityAI {
         score = 0;
     }
 
-    return { behavior, score, target };
+  return target ? { behavior, score, target } : { behavior, score };
   }
 
   /** Score melee attack behavior */
