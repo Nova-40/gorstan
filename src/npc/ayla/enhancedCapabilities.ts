@@ -5,6 +5,7 @@
 import type { GameAction } from '../../types/GameTypes';
 import type { LocalGameState } from '../../state/gameState';
 import type { Dispatch } from 'react';
+import { pickRandomOrFallback } from '../../utils/random';
 
 interface AylaAnalysis {
   playerStuckLevel: number;
@@ -198,7 +199,8 @@ export class EnhancedAylaConversation {
       return "I notice you seem quite frustrated. Would you like me to provide a more direct hint, or would you prefer to keep exploring on your own?";
     }
     
-    return metaResponses[Math.floor(Math.random() * metaResponses.length)];
+  const first = metaResponses[0] ?? '';
+  return pickRandomOrFallback(metaResponses, first);
   }
   
   // Generate mediation responses for NPC conflicts
@@ -212,7 +214,8 @@ export class EnhancedAylaConversation {
         "*calmly* Al, Morthos - your rivalry is entertaining but not particularly educational right now."
       ];
       
-      return mediationResponses[Math.floor(Math.random() * mediationResponses.length)];
+  const firstMed = mediationResponses[0] ?? '';
+  return pickRandomOrFallback(mediationResponses, firstMed);
     }
     
     return "It seems there's some tension here. Perhaps I can help clarify things for everyone.";
@@ -245,7 +248,8 @@ export class EnhancedAylaConversation {
       "Sometimes the solution requires thinking differently about the problem."
     ];
     
-    return hints[Math.floor(Math.random() * hints.length)];
+  const firstHint = hints[0] ?? '';
+  return pickRandomOrFallback(hints, firstHint);
   }
   
   // Generate lore responses
@@ -258,7 +262,8 @@ export class EnhancedAylaConversation {
       "Every NPC you meet has their own story, their own motivations. Even I am part of this larger narrative."
     ];
     
-    return loreResponses[Math.floor(Math.random() * loreResponses.length)];
+  const firstLore = loreResponses[0] ?? '';
+  return pickRandomOrFallback(loreResponses, firstLore);
   }
   
   // Generate general guidance responses
@@ -290,7 +295,8 @@ export class EnhancedAylaConversation {
       "I appreciate your curiosity. It's one of the most valuable traits an explorer can have."
     ];
     
-    return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+  const firstDefault = defaultResponses[0] ?? '';
+  return pickRandomOrFallback(defaultResponses, firstDefault);
   }
   
   // Record interaction for learning and improvement
@@ -360,7 +366,8 @@ export class EnhancedAylaConversation {
       "I'm curious about your perspective on what you've experienced here."
     ];
     
-    return casualStarters[Math.floor(Math.random() * casualStarters.length)];
+  const firstStarter = casualStarters[0] ?? '';
+  return pickRandomOrFallback(casualStarters, firstStarter);
   }
 }
 

@@ -21,7 +21,8 @@ import type { GameState } from '../../state/gameState';
 import { getAylaEdgeCaseResponse } from '../../utils/aylaBrain';
 import { bookLoreService } from '../../services/bookLore';
 import { bookStoreService } from '../../services/bookStore';
-import { applyAylaPersonality, getAylaCTAIntroduction } from './personality';
+import { applyAylaPersonality, getAylaCTAIntroduction } from './personality';  
+import { pickRandomOrFallback } from '../../utils/random';
 import { aylaService } from '../../services/AylaService';
 
 /**
@@ -82,8 +83,8 @@ function handleBookQuery(input: string): string | null {
   for (const pattern of bookPatterns) {
     const match = query.match(pattern);
     if (match) {
-      const bookQuery = match[1];
-      const response = bookLoreService.getAylaResponse(bookQuery);
+  const bookQuery = match[1] ?? '';
+  const response = bookQuery ? bookLoreService.getAylaResponse(bookQuery) : null;
       
       if (response) {
         return applyAylaPersonality(
@@ -144,7 +145,8 @@ function getGenericBookResponse(): string {
     "Reading opens so many doors. What literary adventures have you been on recently?"
   ];
 
-  const response = responses[Math.floor(Math.random() * responses.length)];
+  const first = responses[0] ?? '';
+  const response = pickRandomOrFallback(responses, first) ?? first;
   return applyAylaPersonality(response, 'book-discussion');
 }
 
@@ -183,7 +185,8 @@ function getCoreAylaResponse(input: string, state: GameState): string {
     "Your curiosity is admirable, even when it leads to areas I can't illuminate. Keep asking!"
   ];
   
-  return contextualFallbacks[Math.floor(Math.random() * contextualFallbacks.length)];
+  const firstFallback = contextualFallbacks[0] ?? "I'm not sure.";
+  return pickRandomOrFallback(contextualFallbacks, firstFallback) ?? firstFallback;
 }
 
 /**

@@ -183,7 +183,8 @@ export function applyAylaPersonality(
  */
 export function getAylaGreeting(): string {
   const greetings = AYLA_PERSONALITY.conversationPatterns.greetingVariations;
-  return greetings[Math.floor(Math.random() * greetings.length)];
+  const first = greetings[0] ?? '';
+  return greetings.length === 0 ? '' : greetings[Math.floor(Math.random() * greetings.length)] ?? first;
 }
 
 /**
@@ -191,7 +192,8 @@ export function getAylaGreeting(): string {
  */
 export function getAylaCTAIntroduction(): string {
   const intros = AYLA_PERSONALITY.conversationPatterns.ctaIntroductions;
-  return intros[Math.floor(Math.random() * intros.length)];
+  const first = intros[0] ?? '';
+  return intros.length === 0 ? '' : intros[Math.floor(Math.random() * intros.length)] ?? first;
 }
 
 /**

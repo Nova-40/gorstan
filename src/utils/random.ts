@@ -41,6 +41,23 @@ export function pickRandom<T>(arr: T[]): T {
   return val;
 }
 
+// --- Function: pickRandomOrNull<T> ---
+// Returns null if array empty instead of throwing
+export function pickRandomOrNull<T>(arr: T[]): T | null {
+  if (arr.length === 0) return null;
+  const idx = randomInt(0, arr.length);
+  return arr[idx] === undefined ? null : arr[idx];
+}
+
+// --- Function: pickRandomOrFallback<T> ---
+// Provides a caller-specified fallback when array empty or undefined element chosen
+export function pickRandomOrFallback<T>(arr: T[], fallback: T): T {
+  if (arr.length === 0) return fallback;
+  const idx = randomInt(0, arr.length);
+  const val = arr[idx];
+  return val === undefined ? fallback : val;
+}
+
 
 
 // --- Function: chance ---
