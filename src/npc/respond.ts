@@ -346,7 +346,9 @@ function addMemoryReferences(response: string, memorySummary: any, persona: NPCP
  * Choose a random synonym from a list
  */
 function chooseSynonym(options: string[]): string {
-  return options[Math.floor(Math.random() * options.length)];
+  if (options.length === 0) return '';
+  const idx = Math.floor(Math.random() * options.length);
+  return options[idx] ?? options[0] ?? '';
 }
 
 /**

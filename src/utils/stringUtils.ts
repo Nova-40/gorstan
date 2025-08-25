@@ -96,8 +96,7 @@ export function escapeHtml(str: string): string {
     '"': '&quot;',
     "'": '&#39;',
   };
-  
-  return str.replace(/[&<>"']/g, char => escapeMap[char]);
+  return str.replace(/[&<>"']/g, char => escapeMap[char] || char);
 }
 
 /**
@@ -111,8 +110,7 @@ export function unescapeHtml(str: string): string {
     '&quot;': '"',
     '&#39;': "'",
   };
-  
-  return str.replace(/&(amp|lt|gt|quot|#39);/g, entity => unescapeMap[entity]);
+  return str.replace(/&(amp|lt|gt|quot|#39);/g, entity => unescapeMap[entity] || entity);
 }
 
 /**
@@ -247,31 +245,24 @@ export function similarity(str1: string, str2: string): number {
 }
 
 function levenshteinDistance(str1: string, str2: string): number {
-  const matrix: number[][] = [];
-  
-  for (let i = 0; i <= str2.length; i++) {
-    matrix[i] = [i];
-  }
-  
-  for (let j = 0; j <= str1.length; j++) {
-    matrix[0][j] = j;
-  }
-  
-  for (let i = 1; i <= str2.length; i++) {
-    for (let j = 1; j <= str1.length; j++) {
+  const rows = str2.length + 1;
+  const cols = str1.length + 1;
+  const matrix: number[][] = Array.from({ length: rows }, () => Array<number>(cols).fill(0));
+  for (let i = 0; i < rows; i++) matrix[i]![0] = i;
+  for (let j = 0; j < cols; j++) matrix[0]![j] = j;
+  for (let i = 1; i < rows; i++) {
+    for (let j = 1; j < cols; j++) {
       if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
-        matrix[i][j] = matrix[i - 1][j - 1];
+        matrix[i]![j] = matrix[i - 1]![j - 1]!;
       } else {
-        matrix[i][j] = Math.min(
-          matrix[i - 1][j - 1] + 1,
-          matrix[i][j - 1] + 1,
-          matrix[i - 1][j] + 1
-        );
+        const substitution = matrix[i - 1]![j - 1]! + 1;
+        const insertion = matrix[i]![j - 1]! + 1;
+        const deletion = matrix[i - 1]![j]! + 1;
+        matrix[i]![j] = Math.min(substitution, insertion, deletion);
       }
     }
   }
-  
-  return matrix[str2.length][str1.length];
+  return matrix[rows - 1]![cols - 1]!;
 }
 
 /**
@@ -279,18 +270,17 @@ function levenshteinDistance(str1: string, str2: string): number {
  */
 export function findBestMatch(target: string, candidates: string[]): { match: string; score: number } | null {
   if (candidates.length === 0) return null;
-  
-  let bestMatch = candidates[0];
-  let bestScore = similarity(target.toLowerCase(), candidates[0].toLowerCase());
-  
+  const first = candidates[0]!;
+  let bestMatch: string = first;
+  let bestScore = similarity(target.toLowerCase(), first.toLowerCase());
   for (let i = 1; i < candidates.length; i++) {
-    const score = similarity(target.toLowerCase(), candidates[i].toLowerCase());
+    const c = candidates[i]!;
+    const score = similarity(target.toLowerCase(), c.toLowerCase());
     if (score > bestScore) {
       bestScore = score;
-      bestMatch = candidates[i];
+      bestMatch = c;
     }
   }
-  
   return { match: bestMatch, score: bestScore };
 }
 

@@ -605,8 +605,8 @@ export class MovementExecutor {
     return {
       currentRoom,
       npcId,
-      homeRoom: config.homeRoom,
-      roamRadius: config.roamRadius,
+      homeRoom: config.homeRoom ?? '',
+      roamRadius: config.roamRadius ?? 0,
       allowedAdjacency,
       avoidRooms: config.avoidRooms || [],
       preferRooms: config.preferRooms || [],

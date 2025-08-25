@@ -57,7 +57,7 @@ const TeleportManager: React.FC<{
     console.log('[TeleportManager] Skipping animation due to prefers-reduced-motion');
     
     return (
-      <div className="fixed inset-0 z-50 bg-black flex items-center justify-center text-white text-xl">
+      <div className="fixed inset-0 z-50 bg-background flex items-center justify-center text-console text-xl font-mono">
         Transitioning...
       </div>
     );

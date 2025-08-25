@@ -151,6 +151,7 @@ function scheduleNPCReply(
       const styledResponse = stylize(responseText, voice);
 
       // Send the reply
+      const sendOpts = topic ? { topic, visibleToPlayer: state.overhearNPCBanter ?? true } : { visibleToPlayer: state.overhearNPCBanter ?? true };
       sendNPCMessage(
         { kind: "NPC", id: to.id }, 
         { kind: "NPC", id: from.id }, 
@@ -158,10 +159,7 @@ function scheduleNPCReply(
         state, 
         dispatch, 
         roomId, 
-        {
-          topic, 
-          visibleToPlayer: state.overhearNPCBanter ?? true
-        }
+        sendOpts
       );
 
     } finally {

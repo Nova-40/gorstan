@@ -142,10 +142,10 @@ function decideRandomAdjacent(
   );
   
   const candidates = preferred.length > 0 ? preferred : validMoves;
-  const targetRoom = candidates[Math.floor(Math.random() * candidates.length)];
+  const targetRoom = candidates[Math.floor(Math.random() * candidates.length)] ?? candidates[0];
   
   return {
-    targetRoom,
+    targetRoom: targetRoom ?? null,
     reason: preferred.length > 0 ? 'Random adjacent (preferred)' : 'Random adjacent',
     confidence: 0.7,
     isLegal: true,
@@ -181,15 +181,14 @@ function decidePatrol(
   } else {
     // On patrol route - move to next point
     const nextIndex = (currentIndex + 1) % policy.patrolRoute.length;
-    const nextRoom = policy.patrolRoute[nextIndex];
-    
-    if (isMoveLegal(context.currentRoom, nextRoom, context)) {
+  const nextRoom = policy.patrolRoute[nextIndex];
+  if (nextRoom && isMoveLegal(context.currentRoom, nextRoom, context)) {
       return {
-        targetRoom: nextRoom,
+    targetRoom: nextRoom ?? null,
         reason: `Patrol to point ${nextIndex + 1}/${policy.patrolRoute.length}`,
         confidence: 0.9,
         isLegal: true,
-        requiresTeleport: !context.allowedAdjacency.includes(nextRoom)
+    requiresTeleport: nextRoom ? !context.allowedAdjacency.includes(nextRoom) : false
       };
     }
   }
@@ -233,7 +232,7 @@ function decidePlayerSeek(
   if (pathToPlayer && pathToPlayer.length > 1) {
     const nextStep = pathToPlayer[1]; // First step toward player
     
-    if (isMoveLegal(context.currentRoom, nextStep, context)) {
+  if (nextStep && isMoveLegal(context.currentRoom, nextStep, context)) {
       return {
         targetRoom: nextStep,
         reason: 'Seek player (pathfinding)',
@@ -271,10 +270,10 @@ function decidePlayerAvoid(
   });
 
   if (avoidMoves.length > 0) {
-    const targetRoom = avoidMoves[Math.floor(Math.random() * avoidMoves.length)];
+    const targetRoom = avoidMoves[Math.floor(Math.random() * avoidMoves.length)] ?? avoidMoves[0];
     return {
-      targetRoom,
-      reason: `Avoid player (distance ${currentDistance} -> ${calculateDistance(targetRoom, context.playerRoomId, context)})`,
+      targetRoom: targetRoom ?? null,
+      reason: targetRoom ? `Avoid player (distance ${currentDistance} -> ${calculateDistance(targetRoom, context.playerRoomId, context)})` : 'Avoid player (no distance gain)',
       confidence: 0.8,
       isLegal: true,
       requiresTeleport: false
@@ -315,7 +314,7 @@ function decideHomeBias(
     if (pathToHome && pathToHome.length > 1) {
       const nextStep = pathToHome[1];
       
-      if (isMoveLegal(context.currentRoom, nextStep, context)) {
+  if (nextStep && isMoveLegal(context.currentRoom, nextStep, context)) {
         return {
           targetRoom: nextStep,
           reason: `Return to home (${currentDistance} rooms away)`,
@@ -396,7 +395,7 @@ function findEscapeRoom(context: NPCMoveContext): string | null {
   // Try adjacent rooms first
   const validAdjacent = getValidAdjacentMoves(context);
   if (validAdjacent.length > 0) {
-    return validAdjacent[0];
+  return validAdjacent[0] ?? null;
   }
 
   // Try home room

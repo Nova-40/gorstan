@@ -34,8 +34,11 @@ export function randomFloat(min: number, max: number): number {
 
 // --- Function: pickRandom<T> ---
 export function pickRandom<T>(arr: T[]): T {
-  if (!arr.length) throw new Error('Cannot pick random element from empty array');
-  return arr[randomInt(0, arr.length)];
+  if (arr.length === 0) throw new Error('Cannot pick random element from empty array');
+  const idx = randomInt(0, arr.length);
+  const val = arr[idx];
+  if (val === undefined) throw new Error('Random selection returned undefined');
+  return val;
 }
 
 
@@ -50,9 +53,12 @@ export function chance(probability: number): boolean {
 // --- Function: shuffle<T> ---
 export function shuffle<T>(arr: T[]): T[] {
   for (let i = arr.length - 1; i > 0; i--) {
-// Variable declaration
     const j = randomInt(0, i + 1);
-    [arr[i], arr[j]] = [arr[j], arr[i]];
+    if (j === i) continue;
+    const a = arr[i];
+    const b = arr[j];
+    arr[i] = b as T;
+    arr[j] = a as T;
   }
   return arr;
 }

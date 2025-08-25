@@ -440,15 +440,12 @@ export class NPCErrorHandler {
     this.currentDegradationLevel = level;
     
     const degradation = DEGRADATION_LEVELS[level];
-    
+    if (!degradation) return;
     console.warn(`[NPCErrorHandler] Degradation level changed: ${oldLevel} -> ${level} (${degradation.name})`);
     console.warn(`[NPCErrorHandler] ${degradation.description}`);
-    
     if (degradation.disabledFeatures.length > 0) {
       console.warn(`[NPCErrorHandler] Disabled features: ${degradation.disabledFeatures.join(', ')}`);
     }
-
-    // Apply degradation settings
     this.broadcastDegradationChange(degradation);
   }
 
@@ -521,12 +518,14 @@ export class NPCErrorHandler {
   }
 
   isFeatureEnabled(feature: string): boolean {
-    const degradation = DEGRADATION_LEVELS[this.currentDegradationLevel];
-    return !degradation.disabledFeatures.includes(feature) && !degradation.disabledFeatures.includes('all');
+  const degradation = DEGRADATION_LEVELS[this.currentDegradationLevel];
+  if (!degradation) return true;
+  return !degradation.disabledFeatures.includes(feature) && !degradation.disabledFeatures.includes('all');
   }
 
   getPerformanceMultiplier(): number {
-    return DEGRADATION_LEVELS[this.currentDegradationLevel].performanceMultiplier;
+  const level = DEGRADATION_LEVELS[this.currentDegradationLevel];
+  return level ? level.performanceMultiplier : 1;
   }
 
   // ===== CONFIGURATION =====

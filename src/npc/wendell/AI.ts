@@ -89,7 +89,7 @@ export class WendellAI {
   
   private craftResponse(responseType: string, topic: string, context: ConversationContext): WendellResponse {
     const templates = this.getResponseTemplates(responseType);
-    const template = templates[Math.floor(Math.random() * templates.length)];
+  const template = templates[Math.floor(Math.random() * templates.length)] ?? templates[0] ?? "";
     
     let response: WendellResponse = {
       text: template,
@@ -141,7 +141,8 @@ export class WendellAI {
       ]
     };
     
-    return templates[responseType] || templates.teaching;
+  const chosen = templates[responseType];
+  return (chosen && chosen.length > 0 ? chosen : templates.teaching) as string[];
   }
   
   private getTone(responseType: string): WendellResponse['tone'] {
@@ -177,7 +178,9 @@ export class WendellAI {
     
     const knowledge = knowledgeMap[topic] || [];
     if (knowledge.length > 0 && context.trust_level >= 4) {
-      response.knowledge_shared = [knowledge[Math.floor(Math.random() * knowledge.length)]];
+  const idx = Math.floor(Math.random() * knowledge.length);
+  const item = knowledge[idx];
+  if (item) response.knowledge_shared = [item];
     }
     
     return response;

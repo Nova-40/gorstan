@@ -424,18 +424,30 @@ export class NPCAccessibilityProvider {
     if (typeof window === 'undefined') return;
 
     // Detect prefers-reduced-motion
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      this.settings.reduceMotion = true;
+    try {
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        this.settings.reduceMotion = true;
+      }
+    } catch (e) {
+      // Ignore errors in test environment
     }
 
     // Detect prefers-contrast
-    if (window.matchMedia('(prefers-contrast: high)').matches) {
-      this.settings.highContrast = true;
+    try {
+      if (window.matchMedia && window.matchMedia('(prefers-contrast: high)').matches) {
+        this.settings.highContrast = true;
+      }
+    } catch (e) {
+      // Ignore errors in test environment
     }
 
     // Detect screen reader
-    if (window.speechSynthesis || (window as any).navigator?.userAgent?.includes('NVDA')) {
-      this.settings.screenReaderEnabled = true;
+    try {
+      if (window.speechSynthesis || (window as any).navigator?.userAgent?.includes('NVDA')) {
+        this.settings.screenReaderEnabled = true;
+      }
+    } catch (e) {
+      // Ignore errors in test environment
     }
   }
 

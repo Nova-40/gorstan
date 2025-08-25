@@ -92,7 +92,7 @@ export function addMemoryEvent(npcId: string, event: string): void {
 // --- Enhanced: Set mood/trust/goal for NPC ---
 export function setNPCMood(npcId: string, mood: NPCMemoryState['mood']): void {
   initNPC(npcId);
-  npcMemoryStore.get(npcId)!.mood = mood;
+  npcMemoryStore.get(npcId)!.mood = mood ?? 'neutral';
 }
 export function setNPCTrust(npcId: string, trust: number): void {
   initNPC(npcId);
@@ -125,7 +125,8 @@ export function getNextRoomForGoal(npcId: string, state: any): string | null {
       if (entry.time >= hhmm) return entry.room;
     }
     // If past all times, loop to first
-    return memory.schedule[0].room;
+  const first = memory.schedule[0];
+  return first ? first.room : null;
   }
   // Add more goal types as needed
   return null;
@@ -214,7 +215,7 @@ export function getLastInteraction(npcId: string): NPCInteractionRecord | null {
 // Variable declaration
   const memory = npcMemoryStore.get(npcId);
   if (!memory || memory.interactions.length === 0) return null;
-  return memory.interactions[memory.interactions.length - 1];
+  return memory.interactions[memory.interactions.length - 1] ?? null;
 }
 
 

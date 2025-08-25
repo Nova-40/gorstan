@@ -27,8 +27,8 @@ beforeAll(() => {
   if (typeof globalThis.requestAnimationFrame === 'undefined') {
     globalThis.requestAnimationFrame = vi.fn((cb) => {
       const id = setTimeout(cb, 16); // 60fps timing
-      return id;
-    });
+      return Number(id);
+    }) as any;
   }
 
   // Mock cancelAnimationFrame

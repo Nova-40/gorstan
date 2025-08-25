@@ -240,11 +240,12 @@ export class AylaService {
     
     // Sort by score and return best match if above threshold
     scores.sort((a, b) => b.score - a.score);
-    if (scores.length > 0 && scores[0].score >= 5) {
+    const first = scores[0];
+    if (first && first.score >= 5) {
       return {
-        confidence: Math.min(scores[0].score / 20, 0.9),
-        response: this.selectResponse(scores[0].responses),
-        topic: scores[0].topic
+        confidence: Math.min(first.score / 20, 0.9),
+        response: this.selectResponse(first.responses),
+        topic: first.topic
       };
     }
     
@@ -458,34 +459,30 @@ export class AylaService {
   }
 
   private levenshteinDistance(str1: string, str2: string): number {
+    // Optimised two-row implementation avoiding multi-dimensional undefined indexing
     if (str1 === str2) return 0;
-    if (str1.length === 0) return str2.length;
-    if (str2.length === 0) return str1.length;
     const len1 = str1.length;
     const len2 = str2.length;
-    const matrix: number[][] = Array.from({ length: len2 + 1 }, () => {
-      const row = new Array<number>(len1 + 1);
-      // Fill with 0 temporarily
-      for (let k = 0; k <= len1; k++) row[k] = 0;
-      return row;
-    });
-    const firstRow = matrix[0];
-    for (let i = 0; i <= len1; i++) firstRow[i] = i;
-    for (let j = 0; j <= len2; j++) {
-      matrix[j][0] = j;
-    }
-    for (let j = 1; j <= len2; j++) {
-      const currentRow = matrix[j];
-      const prevRow = matrix[j - 1];
-      for (let i = 1; i <= len1; i++) {
-        const cost = str1[i - 1] === str2[j - 1] ? 0 : 1;
-        const deletion = prevRow[i] + 1;
-        const insertion = currentRow[i - 1] + 1;
-        const substitution = prevRow[i - 1] + cost;
-        currentRow[i] = Math.min(deletion, insertion, substitution);
+    if (len1 === 0) return len2;
+    if (len2 === 0) return len1;
+  let prev: number[] = new Array(len2 + 1);
+  let curr: number[] = new Array(len2 + 1);
+  for (let j = 0; j <= len2; j++) prev[j] = j;
+    for (let i = 1; i <= len1; i++) {
+      curr[0] = i;
+      const c1 = str1[i - 1];
+      for (let j = 1; j <= len2; j++) {
+        const cost = c1 === str2[j - 1] ? 0 : 1;
+    // All indices are within bounds due to loop constraints
+    const deletion = prev[j]! + 1;
+    const insertion = curr[j - 1]! + 1;
+    const substitution = prev[j - 1]! + cost;
+    curr[j] = Math.min(deletion, insertion, substitution);
       }
+      // swap rows
+      [prev, curr] = [curr, prev];
     }
-    return matrix[len2][len1];
+  return prev[len2]!;
   }
 
   /**

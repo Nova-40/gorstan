@@ -1853,9 +1853,9 @@ const handleBackout = useCallback((): void => {
   if (stage === 'demo') {
     
     return (
-      <div className="flex items-center justify-center min-h-screen bg-black text-green-400">
+      <div className="flex items-center justify-center min-h-screen bg-background text-console">
         <div className="text-center space-y-4">
-          <div className="animate-spin w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full mx-auto"></div>
+          <div className="animate-spin w-12 h-12 border-4 border-console border-t-transparent rounded-full mx-auto"></div>
           <h2 className="text-2xl font-bold">Starting Demo Experience...</h2>
           <p className="text-lg">Ayla is preparing your guided tour</p>
         </div>
@@ -1867,9 +1867,9 @@ const handleBackout = useCallback((): void => {
     
     return (
       <React.Suspense fallback={
-        <div className="flex items-center justify-center min-h-screen bg-black text-purple-400">
+        <div className="flex items-center justify-center min-h-screen bg-background text-console">
           <div className="text-center space-y-4">
-            <div className="animate-spin w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full mx-auto"></div>
+            <div className="animate-spin w-12 h-12 border-4 border-console border-t-transparent rounded-full mx-auto"></div>
             <h2 className="text-2xl font-bold">Loading Trials of Gorstan...</h2>
             <p className="text-lg">Preparing your interactive adventure</p>
           </div>
@@ -1953,7 +1953,7 @@ const handleBackout = useCallback((): void => {
     <div className="appcore-grid">
       {/* Demo mode indicator */}
       {isDemoActive && (
-        <div className="fixed top-0 left-0 right-0 z-50 bg-purple-900 text-white text-center py-2 px-4 font-bold">
+        <div className="fixed top-0 left-0 right-0 z-50 bg-warning text-background text-center py-2 px-4 font-bold">
           🎬 DEMO MODE ACTIVE - Press ESC to skip • Use "stop demo" to exit
         </div>
       )}

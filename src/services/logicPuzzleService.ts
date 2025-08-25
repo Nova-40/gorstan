@@ -142,6 +142,9 @@ export class LogicPuzzleService {
     // Generate sequence parameters
     const start = rng.nextInt(1, 50);
     const operation = this.selectOperation(difficulty, rng);
+    if (!operation) {
+      throw new Error('Failed to select sequence operation');
+    }
     const length = Math.max(5, scaling.steps + rng.nextInt(-2, 3));
     const gapCount = Math.min(Math.floor(length / 3), scaling.complexity);
 
@@ -165,13 +168,13 @@ export class LogicPuzzleService {
       category: 'exploration',
       difficulty,
       title: `${operation.name} Sequence`,
-      description: `Complete the sequence by identifying the ${operation.type} pattern`,
+  description: `Complete the sequence by identifying the ${operation.type} pattern`,
       
       puzzle: {
         data: puzzleData,
         solution: gaps.map(idx => sequence[idx]),
-        hints: this.generateSequenceHints(operation, sequence, gaps),
-        explanation: `This sequence follows a ${operation.type} pattern: ${operation.rule}`
+  hints: this.generateSequenceHints(operation, sequence, gaps),
+  explanation: `This sequence follows a ${operation.type} pattern: ${operation.rule}`
       },
       
       generation: {
@@ -183,10 +186,14 @@ export class LogicPuzzleService {
       
       progression: {
         prerequisites: {},
-        rewards: {
-          experience: scaling.complexity * 10,
-          quantumResonance: options.quantumIntegration ? scaling.complexity * 2 : undefined
-        }
+        rewards: options.quantumIntegration
+          ? {
+              experience: scaling.complexity * 10,
+              quantumResonance: scaling.complexity * 2
+            }
+          : {
+              experience: scaling.complexity * 10
+            }
       },
       
       analytics: {
@@ -238,7 +245,7 @@ export class LogicPuzzleService {
         target: this.generateQuantumTarget(artifactCount, elements)
       },
       artifactChanneling: {
-        primaryArtifact: requiredArtifacts[0],
+  primaryArtifact: requiredArtifacts[0] ?? 'unknown_artifact',
         supportingArtifacts: requiredArtifacts.slice(1),
         resonancePattern
       }
@@ -452,7 +459,7 @@ export class LogicPuzzleService {
       valid: validation.valid,
       result,
       completed,
-      score: session.result?.score
+      score: session.result ? session.result.score : 0
     };
   }
 
@@ -486,7 +493,9 @@ export class LogicPuzzleService {
       });
     }
 
-    return puzzle.puzzle.hints[hintIndex];
+  const value = puzzle.puzzle.hints[hintIndex];
+  if (value === undefined) throw new Error('Hint retrieval returned undefined');
+  return value;
   }
 
   // Adaptive Difficulty System
@@ -697,7 +706,9 @@ export class LogicPuzzleService {
         { type: 'fibonacci', name: 'Fibonacci', rule: 'a(n) = a(n-1) + a(n-2)', generate: (start: number, length: number) => {
           const seq = [start, start + 1];
           for (let i = 2; i < length; i++) {
-            seq.push(seq[i-1] + seq[i-2]);
+            const a = seq[i-1] ?? 0;
+            const b = seq[i-2] ?? 0;
+            seq.push(a + b);
           }
           return seq;
         }}
@@ -745,12 +756,13 @@ export class LogicPuzzleService {
   }
 
   private selectRandomArtifacts(count: number, rng: RandomGenerator): string[] {
-    const artifacts = ['flame_crystal', 'frost_lens', 'earth_core', 'wind_charm', 'void_shard', 'light_prism', 'shadow_orb'];
+  const artifacts: string[] = ['flame_crystal', 'frost_lens', 'earth_core', 'wind_charm', 'void_shard', 'light_prism', 'shadow_orb'];
     const selected: string[] = [];
     
     while (selected.length < count && selected.length < artifacts.length) {
-      const artifact = artifacts[Math.floor(rng.next() * artifacts.length)];
-      if (!selected.includes(artifact)) {
+      const idx = Math.floor(rng.next() * artifacts.length);
+      const artifact = artifacts[idx];
+      if (artifact && !selected.includes(artifact)) {
         selected.push(artifact);
       }
     }
@@ -784,7 +796,8 @@ export class LogicPuzzleService {
 
   private selectInteractionType(_artifactId: string, rng: RandomGenerator): string {
     const types = ['analyze', 'resonate', 'channel', 'combine'];
-    return types[Math.floor(rng.next() * types.length)];
+  const idx = Math.floor(rng.next() * types.length);
+  return types[idx] ?? 'analyze';
   }
 
   private generateInteractionEffect(_artifactId: string, rng: RandomGenerator): string {
@@ -794,7 +807,8 @@ export class LogicPuzzleService {
       'Enhances elemental harmony',
       'Amplifies quantum entanglement'
     ];
-    return effects[Math.floor(rng.next() * effects.length)];
+  const idx = Math.floor(rng.next() * effects.length);
+  return effects[idx] ?? 'Stabilizes quantum field';
   }
 
   private generateOptimalGateSequence(puzzleData: QuantumPuzzle, difficulty: PuzzleDifficulty): string[] {
@@ -804,7 +818,8 @@ export class LogicPuzzleService {
     
     const sequence: string[] = [];
     for (let i = 0; i < Math.min(complexity, gates.length); i++) {
-      sequence.push(gates[i % gates.length]);
+  const gate = gates[i % gates.length];
+  if (gate) sequence.push(gate);
     }
     
     return sequence;
@@ -839,7 +854,7 @@ export class LogicPuzzleService {
   private generateResonanceOutcome(_interaction: QuantumInteraction, _artifactState: unknown): string { return 'success'; }
   private recalculateDifficultyLevel(_difficulty: AdaptiveDifficulty): void {}
   private updateRecommendations(_difficulty: AdaptiveDifficulty): void {}
-  private selectOptimalPuzzle(puzzles: LogicPuzzle[], _difficulty: AdaptiveDifficulty): LogicPuzzle { return puzzles[0]; }
+  private selectOptimalPuzzle(puzzles: LogicPuzzle[], _difficulty: AdaptiveDifficulty): LogicPuzzle { return puzzles[0] ?? (this.puzzles.values().next().value as LogicPuzzle); }
 
   // Event System
   public addEventListener(listener: (event: PuzzleEvent) => void): void {

@@ -23,9 +23,8 @@ const FractalTeleportOverlay: React.FC<{ onComplete: () => void }> = ({ onComple
   }, [onComplete]);
 
   return (
-    <div className="fixed inset-0 z-50 bg-black animate-fractal-blink flex items-center justify-center text-white text-xl">
-      <div className="fractal-tunnel">✨ Glitching the fabric…</div>
-      <audio autoPlay src="/audio/teleport-fractal.wav" />
+        <div className="fixed inset-0 z-50 bg-background animate-fractal-blink flex items-center justify-center text-console text-xl font-mono">
+      <div>Transitioning through Gorstan's Nexus...</div>
     </div>
   );
 };

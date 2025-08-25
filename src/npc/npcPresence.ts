@@ -192,8 +192,8 @@ export class NPCPresenceProvider {
     state.currentRoom = toRoom;
     state.lastMoveTime = Date.now();
     state.isMoving = false;
-    state.moveStartTime = undefined;
-    state.targetRoom = undefined;
+  delete state.moveStartTime;
+  delete state.targetRoom;
 
     this.emitUpdate({
       type: 'npc_entered',
@@ -224,8 +224,8 @@ export class NPCPresenceProvider {
     }
 
     state.isMoving = false;
-    state.moveStartTime = undefined;
-    state.targetRoom = undefined;
+  delete state.moveStartTime;
+  delete state.targetRoom;
 
     this.emitUpdate({
       type: 'npc_stopped',
@@ -260,12 +260,19 @@ export class NPCPresenceProvider {
     const npcSet = this.roomOccupancy.get(roomId) || new Set();
     const capacity = this.roomCapacities.get(roomId);
     
+    if (capacity !== undefined) {
+      return {
+        roomId,
+        npcIds: Array.from(npcSet),
+        capacity,
+        isFull: npcSet.size >= capacity
+      };
+    }
     return {
       roomId,
       npcIds: Array.from(npcSet),
-      capacity,
-      isFull: capacity ? npcSet.size >= capacity : false
-    };
+      isFull: false
+    } as RoomOccupancy;
   }
 
   /**

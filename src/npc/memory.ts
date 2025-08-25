@@ -22,13 +22,13 @@ export interface ConversationTurn {
   timestamp: number;
   speaker: 'player' | 'npc';
   message: string;
-  npcId?: string;
+  npcId?: string; // only present for NPC turns
   roomId?: string;
   context?: {
     intent?: string;
     entities?: string[];
     emotional_state?: string;
-  };
+  } | undefined; // allow explicit omission under exactOptionalPropertyTypes
 }
 
 export interface EpisodicMemory {
@@ -121,8 +121,8 @@ export function addConversationTurn(
     timestamp: Date.now(),
     speaker,
     message,
-    npcId: speaker === 'npc' ? npcId : undefined,
-    context
+    ...(speaker === 'npc' ? { npcId } : {}),
+    ...(context ? { context } : {})
   };
   
   memory.conversationBuffer.push(turn);

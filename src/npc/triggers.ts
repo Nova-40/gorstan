@@ -46,13 +46,13 @@ export function maybeStartBanter(state: LocalGameState, dispatch: any, roomId: s
   const banters = getRoomBanter(roomId);
   if (banters.length === 0) return;
 
-  const banter = banters[Math.floor(Math.random() * banters.length)];
+  const banter = banters[Math.floor(Math.random() * banters.length)]!;
   
   // Randomly choose who starts
   if (Math.random() < 0.5) {
-    morthosToAl(banter.morthos, ctx);
+  morthosToAl(banter.morthos, ctx);
   } else {
-    alToMorthos(banter.al, ctx);
+  alToMorthos(banter.al, ctx);
   }
 }
 

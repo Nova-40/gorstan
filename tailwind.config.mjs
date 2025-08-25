@@ -1,76 +1,96 @@
-// TailwindCSS Configuration File
-// This file customizes the TailwindCSS framework for the Gorstan project.
-// It extends the default theme with custom fonts, colors, spacing, animations, and plugins to enhance the game's styling and interactivity.
-
+// TailwindCSS Configuration - Generated from tokens.json
 import forms from '@tailwindcss/forms';
 import typography from '@tailwindcss/typography';
 import aspectRatio from '@tailwindcss/aspect-ratio';
+import tokens from './tokens.json' with { type: 'json' };
 
 export default {
-  // Specify the files Tailwind should scan for class names
   content: [
-    './index.html', // Include the main HTML file
-    './src/**/*.{js,ts,jsx,tsx}', // Include all JavaScript, TypeScript, and JSX/TSX files in the src directory
+    './index.html',
+    './src/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {
-      // Extend the default font families
-      fontFamily: {
-        handwriting: ['Caveat', 'cursive'], // Handwriting-style font for special effects
-        sans: ['Roboto', 'sans-serif'], // Clean, modern sans-serif font for general text
-      },
-      // Extend the default color palette with custom colors
+      // Token-based colors
       colors: {
-        'ayla-yellow': '#f9d29d', // Custom yellow for Ayla-related elements
-        'player-gray': '#d1d5db', // Neutral gray for player UI elements
-        'gorstan-blue': '#1e3a8a', // Custom blue for Gorstan branding
-        'danger-red': '#ef4444', // Bright red for warnings and errors
-        'success-green': '#10b981', // Green for success messages
-        'dark-bg': '#121212', // Dark background for immersive gameplay
+        background: tokens.colors.background,
+        surface: tokens.colors.surface,
+        text: tokens.colors.text,
+        console: tokens.colors.console,
+        // Zone colors
+        'zone-glitch': tokens.colors.zones.glitch,
+        'zone-nexus': tokens.colors.zones.nexus,
+        'zone-elfhame': tokens.colors.zones.elfhame,
+        'zone-maze': tokens.colors.zones.maze,
+        // Semantic colors
+        success: tokens.colors.semantic.success,
+        warning: tokens.colors.semantic.warning,
+        error: tokens.colors.semantic.error,
+        info: tokens.colors.semantic.info,
       },
-      // Add custom box shadows
-      boxShadow: {
-        glow: '0 0 10px rgba(255, 255, 255, 0.5)', // Glowing shadow effect for interactive elements
-        intense: '0 0 20px rgba(255, 255, 255, 0.8)', // Intense glow for special effects
+      
+      // Token-based spacing
+      spacing: tokens.spacing,
+      
+      // Token-based border radius
+      borderRadius: tokens.radius,
+      
+      // Token-based font family
+      fontFamily: tokens.typography.fontFamily,
+      
+      // Min touch target sizes
+      minHeight: {
+        'hit-target': tokens.targets.minHit,
       },
-      // Add custom spacing values
-      spacing: {
-        '128': '32rem', // Large spacing for wide layouts
-        '144': '36rem', // Extra-large spacing
-        '160': '40rem', // Additional custom spacing
+      minWidth: {
+        'hit-target': tokens.targets.minHit,
       },
-      // Add custom border radius values
-      borderRadius: {
-        xl: '1.5rem', // Large border radius for rounded elements
-        '2xl': '2rem', // Extra-large border radius
+      
+      // Focus ring styles
+      ringWidth: {
+        'focus': tokens.accessibility.focusRingWidth,
       },
-      // Add custom animations
+      
+      // Animations
       animation: {
-        fadeIn: 'fadeIn 1s ease-in-out', // Fade-in animation
-        fadeOut: 'fadeOut 1s ease-in-out', // Fade-out animation
-        bounce: 'bounce 1s infinite', // Bounce animation
-        pulseGlow: 'pulseGlow 1.5s infinite alternate ease-in-out', // Pulsing glow animation
+        'blink': `blink ${tokens.animation.blinkDuration}ms infinite`,
+        'typewriter': 'typewriter',
+        'fade-in': 'fadeIn 300ms ease-out',
+        'fade-out': 'fadeOut 300ms ease-out',
+        'teleport-fractal': 'teleportFractal 600ms ease-in-out',
+        'teleport-trek': 'teleportTrek 600ms ease-in-out',
       },
-      // Define custom keyframes for animations
+      
+      // Keyframes
       keyframes: {
+        blink: {
+          '0%, 50%': { opacity: '1' },
+          '51%, 100%': { opacity: '0' },
+        },
         fadeIn: {
-          from: { opacity: 0 },
-          to: { opacity: 1 },
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
         },
         fadeOut: {
-          from: { opacity: 1 },
-          to: { opacity: 0 },
+          '0%': { opacity: '1' },
+          '100%': { opacity: '0' },
         },
-        pulseGlow: {
-          '0%': { boxShadow: '0 0 10px rgba(255, 255, 255, 0.5)' },
-          '100%': { boxShadow: '0 0 20px rgba(255, 255, 255, 0.8)' },
+        teleportFractal: {
+          '0%': { transform: 'scale(1)', filter: 'hue-rotate(0deg)' },
+          '50%': { transform: 'scale(1.1)', filter: 'hue-rotate(180deg)' },
+          '100%': { transform: 'scale(1)', filter: 'hue-rotate(360deg)' },
+        },
+        teleportTrek: {
+          '0%': { transform: 'scale(1)', opacity: '1' },
+          '50%': { transform: 'scale(0.8)', opacity: '0.3' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
         },
       },
     },
   },
   plugins: [
-    forms, // Tailwind Forms plugin for better form styling
-    typography, // Typography plugin for rich text styling
-    aspectRatio, // Aspect Ratio plugin for responsive media
+    forms,
+    typography,
+    aspectRatio,
   ],
 };

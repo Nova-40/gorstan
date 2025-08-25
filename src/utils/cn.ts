@@ -1,18 +1,8 @@
-/**
- * Class Name Utility
- * Combines class names conditionally
- */
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
-type ClassValue = string | number | boolean | undefined | null | ClassValue[];
-
-/**
- * Simple utility function to conditionally combine class names
- */
-export function cn(...inputs: ClassValue[]): string {
-  return inputs
-    .flat()
-    .filter(Boolean)
-    .join(' ');
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
 }
 
 /**

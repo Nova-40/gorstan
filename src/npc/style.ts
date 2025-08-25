@@ -55,13 +55,14 @@ export function stylize(text: string, voice: Voice): string {
   }
   
   // Add characteristic tics occasionally (20% chance)
-  if (voice.tics && Math.random() < 0.2) {
+  if (voice.tics && voice.tics.length > 0 && Math.random() < 0.2) {
     const tic = voice.tics[Math.floor(Math.random() * voice.tics.length)];
-    // Add tic at end if it's an action, at beginning if it's a word
-    if (tic.startsWith("*")) {
-      styled += ` ${tic}`;
-    } else {
-      styled = `${tic} ${styled}`;
+    if (tic) {
+      if (tic.startsWith("*")) {
+        styled += ` ${tic}`;
+      } else {
+        styled = `${tic} ${styled}`;
+      }
     }
   }
   
@@ -82,7 +83,8 @@ export function generateNPCResponse(
     return getGenericResponse(toNpcId, topic);
   }
   
-  return responses[Math.floor(Math.random() * responses.length)];
+  const idx = Math.floor(Math.random() * responses.length);
+  return responses[idx] ?? responses[0] ?? "...";
 }
 
 function getNPCPairResponses(from: string, to: string, topic?: string): string[] {
@@ -173,5 +175,6 @@ function getGenericResponse(npcId: string, topic?: string): string {
   };
   
   const responses = genericsByNPC[npcId]?.[topic || 'banter'] || ["..."];
-  return responses[Math.floor(Math.random() * responses.length)];
+  const idx = Math.floor(Math.random() * responses.length);
+  return responses[idx] ?? "...";
 }

@@ -45,35 +45,36 @@
   --color-gorstan-500: #1e3a8a; /* Location accent */
   --color-gorstan-700: #1e40af;
 
-  /* Neutral Palette */
-  --color-neutral-0: #2d2d2d;
-  --color-neutral-50: #3a3a3a;
-  --color-neutral-100: #f3f4f6;
-  --color-neutral-200: #e5e7eb;
-  --color-neutral-300: #d1d5db;
-  --color-neutral-400: #9ca3af;
-  --color-neutral-500: #6b7280;
-  --color-neutral-600: #4b5563;
-  --color-neutral-700: #374151;
-  --color-neutral-800: #1f2937;
-  --color-neutral-900: #111827;
-  --color-neutral-950: #030712;
+  /* Terminal Theme Palette - Black backgrounds, green text */
+  --color-neutral-0: #0B0F0E;    /* Primary background */
+  --color-neutral-50: #111615;   /* Surface background */
+  --color-neutral-100: #1a201f;
+  --color-neutral-200: #232a29;
+  --color-neutral-300: #2c3433;
+  --color-neutral-400: #4a5553;
+  --color-neutral-500: #687673;
+  --color-neutral-600: #869693;
+  --color-neutral-700: #A7B0A5;  /* Muted green text */
+  --color-neutral-800: #c2ccc2;
+  --color-neutral-900: #dde7dd;
+  --color-neutral-950: #f8fbf8;
 
-  /* Dark mode overrides */
-  --color-bg-primary: #2d2d2d;
-  --color-bg-secondary: #3a3a3a;
-  --color-bg-elevated: #2d2d2d;
-  --color-bg-overlay: rgba(0, 0, 0, 0.75);
-  --color-bg-game: #121212; /* Immersive dark background */
+  /* Terminal Color System */
+  --color-bg-primary: #0B0F0E;      /* Main background - deep black */
+  --color-bg-secondary: #111615;    /* Surface background - dark gray */
+  --color-bg-elevated: #0B0F0E;     /* Elevated surfaces */
+  --color-bg-overlay: rgba(11, 15, 14, 0.95);  /* Overlay with transparency */
+  --color-bg-game: #0B0F0E;         /* Game area background */
   
-  --color-text-primary: #e0e0e0;
-  --color-text-secondary: #b0b0b0;
-  --color-text-tertiary: #888888;
-  --color-text-inverse: #2d2d2d;
+  --color-text-primary: #39FF14;    /* Bright console green */
+  --color-text-secondary: #A7B0A5;  /* Muted green */
+  --color-text-tertiary: #687673;   /* Darker green */
+  --color-text-inverse: #0B0F0E;    /* Inverse text on light backgrounds */
+  --color-text-console: #39FF14;    /* Terminal console text */
 
-  --color-border-primary: var(--color-neutral-200);
-  --color-border-secondary: var(--color-neutral-100);
-  --color-border-focus: var(--color-primary-500);
+  --color-border-primary: #39FF14;    /* Bright green borders */
+  --color-border-secondary: #A7B0A5; /* Muted green borders */
+  --color-border-focus: #39FF14;      /* Focus state */
 
   /* == SPACING == */
   /* 4/8px base grid */
@@ -172,21 +173,22 @@
   --z-toast: 1080;
 }
 
-/* Dark mode adjustments */
+/* Dark mode adjustments - Terminal theme always applies */
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-bg-primary: var(--color-neutral-900);
-    --color-bg-secondary: var(--color-neutral-800);
-    --color-bg-elevated: var(--color-neutral-800);
-    --color-bg-overlay: rgba(0, 0, 0, 0.9);
+    /* Terminal theme overrides - maintain consistency */
+    --color-bg-primary: #0B0F0E;
+    --color-bg-secondary: #111615;
+    --color-bg-elevated: #0B0F0E;
+    --color-bg-overlay: rgba(11, 15, 14, 0.95);
     
-    --color-text-primary: var(--color-neutral-50);
-    --color-text-secondary: var(--color-neutral-300);
-    --color-text-tertiary: var(--color-neutral-400);
-    --color-text-inverse: var(--color-neutral-900);
+    --color-text-primary: #39FF14;
+    --color-text-secondary: #A7B0A5;
+    --color-text-tertiary: #687673;
+    --color-text-inverse: #0B0F0E;
 
-    --color-border-primary: var(--color-neutral-700);
-    --color-border-secondary: var(--color-neutral-800);
+    --color-border-primary: #39FF14;
+    --color-border-secondary: #A7B0A5;
   }
 }
 
