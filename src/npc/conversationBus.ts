@@ -62,11 +62,11 @@ export function sendNPCMessage(
   } as ConversationThread;
 
   const exchange: NPCExchange = {
-    from, 
+    from,
     to,
     text: rawText,
     ts: Date.now(),
-    topic: opts.topic,
+    ...(opts.topic ? { topic: opts.topic } : {}),
     visibleToPlayer: opts.visibleToPlayer ?? (state.overhearNPCBanter ?? true)
   };
 

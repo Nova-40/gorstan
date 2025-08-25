@@ -288,11 +288,16 @@ export function isPuzzleSolutionRequest(utterance: string, entities: string[]): 
     urgencyLevel += 0.4;
   }
   
-  return {
-    isPuzzleRequest: hasSolutionKeyword && Boolean(specificPuzzle),
-    specificPuzzle,
-    urgencyLevel: Math.min(1, urgencyLevel)
-  };
+  return specificPuzzle
+    ? {
+        isPuzzleRequest: hasSolutionKeyword && Boolean(specificPuzzle),
+        specificPuzzle,
+        urgencyLevel: Math.min(1, urgencyLevel)
+      }
+    : {
+        isPuzzleRequest: false,
+        urgencyLevel: Math.min(1, urgencyLevel)
+      };
 }
 
 /**
@@ -300,8 +305,8 @@ export function isPuzzleSolutionRequest(utterance: string, entities: string[]): 
  */
 export function disambiguateIntent(results: IntentResult[], context: any): IntentResult {
   // If we have a clear winner, return it
-  if (results.length === 1 || results[0].confidence > 0.8) {
-    return results[0];
+  if (results.length === 1 || (results[0] && results[0].confidence > 0.8)) {
+    return results[0]!;
   }
   
   // Context-based disambiguation
@@ -326,8 +331,8 @@ export function disambiguateIntent(results: IntentResult[], context: any): Inten
     
     // Re-sort and return best
     sorted.sort((a, b) => b.confidence - a.confidence);
-    return sorted[0];
+    return sorted[0]!;
   }
-  
-  return results[0];
+
+  return results[0]!;
 }
