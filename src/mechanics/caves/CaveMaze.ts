@@ -55,9 +55,9 @@ export class CaveMaze {
     // Initialize with all walls
     const tiles: CaveTile[][] = [];
     for (let y = 0; y < height; y++) {
-      tiles[y] = [];
+      const row: CaveTile[] = [];
       for (let x = 0; x < width; x++) {
-        tiles[y][x] = {
+        row[x] = {
           x,
           y,
           type: 'wall',
@@ -65,6 +65,7 @@ export class CaveMaze {
           illuminated: false
         };
       }
+      tiles[y] = row;
     }
 
     // Generate maze using recursive backtracking
@@ -72,11 +73,19 @@ export class CaveMaze {
     
     // Set entrance
     const entrance = { x: 1, y: 1 };
-    tiles[entrance.y][entrance.x].type = 'entrance';
+    const entranceRow = tiles[entrance.y];
+    if (entranceRow) {
+      const entranceTile = entranceRow[entrance.x];
+      if (entranceTile) entranceTile.type = 'entrance';
+    }
     
     // Place artifact in a dead end
     const artifactLocation = this.findGoodArtifactLocation(tiles, width, height);
-    tiles[artifactLocation.y][artifactLocation.x].type = 'artifact';
+    const artifactRow = tiles[artifactLocation.y];
+    if (artifactRow) {
+      const artifactTile = artifactRow[artifactLocation.x];
+      if (artifactTile) artifactTile.type = 'artifact';
+    }
     
     return {
       width,
@@ -91,8 +100,12 @@ export class CaveMaze {
     // Seeded random number generator
     const random = this.seededRandom();
     
-    tiles[y][x].type = 'floor';
-    tiles[y][x].visited = true;
+    const baseRow = tiles[y];
+    const baseTile = baseRow ? baseRow[x] : undefined;
+    if (baseTile) {
+      baseTile.type = 'floor';
+      baseTile.visited = true;
+    }
     
     // Define directions (up, right, down, left)
     const directions = [
@@ -105,7 +118,12 @@ export class CaveMaze {
     // Shuffle directions for randomness
     for (let i = directions.length - 1; i > 0; i--) {
       const j = Math.floor(random() * (i + 1));
-      [directions[i], directions[j]] = [directions[j], directions[i]];
+      const di = directions[i];
+      const dj = directions[j];
+      if (di && dj) {
+        directions[i] = dj;
+        directions[j] = di;
+      }
     }
     
     // Try each direction
@@ -115,9 +133,12 @@ export class CaveMaze {
       
       // Check bounds
       if (newX > 0 && newX < width - 1 && newY > 0 && newY < height - 1) {
-        if (!tiles[newY][newX].visited) {
-          // Carve path between current and new cell
-          tiles[y + dir.dy / 2][x + dir.dx / 2].type = 'floor';
+        const targetRow = tiles[newY];
+        const targetTile = targetRow ? targetRow[newX] : undefined;
+        if (targetTile && !targetTile.visited) {
+          const betweenRow = tiles[y + dir.dy / 2];
+          const betweenTile = betweenRow ? betweenRow[x + dir.dx / 2] : undefined;
+            if (betweenTile) betweenTile.type = 'floor';
           this.carveMaze(tiles, newX, newY, width, height);
         }
       }
@@ -138,7 +159,9 @@ export class CaveMaze {
     // Find all floor tiles
     for (let y = 1; y < height - 1; y++) {
       for (let x = 1; x < width - 1; x++) {
-        if (tiles[y][x].type === 'floor') {
+  const row = tiles[y];
+  const tile = row ? row[x] : undefined;
+  if (tile && tile.type === 'floor') {
           floorTiles.push({ x, y });
         }
       }
@@ -163,7 +186,9 @@ export class CaveMaze {
       
       adjacent.forEach(adj => {
         if (adj.x >= 0 && adj.x < width && adj.y >= 0 && adj.y < height) {
-          if (tiles[adj.y][adj.x].type === 'floor') {
+          const adjRow = tiles[adj.y];
+          const adjTile = adjRow ? adjRow[adj.x] : undefined;
+          if (adjTile && adjTile.type === 'floor') {
             adjacentFloors++;
           }
         }
@@ -178,7 +203,7 @@ export class CaveMaze {
       }
     });
     
-    return bestLocation;
+  return bestLocation || { x: 1, y: 1 }; // Fallback (should not happen)
   }
 
   private displayCaveIntro(): void {
@@ -238,24 +263,30 @@ export class CaveMaze {
     });
     
     if (validMoves.length > 0) {
-      const move = validMoves[Math.floor(Math.random() * validMoves.length)];
-      this.playerPos.x += move.dx;
-      this.playerPos.y += move.dy;
-      
-      // Illuminate current position
-      this.maze.tiles[this.playerPos.y][this.playerPos.x].illuminated = true;
+      const moveIdx = Math.floor(Math.random() * validMoves.length);
+      const move = validMoves[moveIdx];
+      if (move) {
+        this.playerPos.x += move.dx;
+        this.playerPos.y += move.dy;
+        // Illuminate current position (guard nested indexing)
+        const row = this.maze.tiles[this.playerPos.y];
+        const tile = row ? row[this.playerPos.x] : undefined;
+        if (tile) tile.illuminated = true;
+      }
       
       // Generate exploration flavor text
-      const explorationTexts = [
-        `Moving ${move.desc} through a narrow passage...`,
-        `The ${move.desc} tunnel opens into a wider chamber...`,
-        `Following a ${move.desc} corridor deeper into the cave...`,
-        `Stone carvings line the ${move.desc} wall...`,
-        `A cool breeze flows from the ${move.desc}...`
-      ];
-      
-      const text = explorationTexts[Math.floor(Math.random() * explorationTexts.length)];
-      console.log(`[CaveMaze] ${text}`);
+      if (move) {
+        const explorationTexts = [
+          `Moving ${move.desc} through a narrow passage...`,
+          `The ${move.desc} tunnel opens into a wider chamber...`,
+          `Following a ${move.desc} corridor deeper into the cave...`,
+          `Stone carvings line the ${move.desc} wall...`,
+          `A cool breeze flows from the ${move.desc}...`
+        ];
+        const textIdx = Math.floor(Math.random() * explorationTexts.length);
+        const text = explorationTexts[textIdx];
+        if (text) console.log(`[CaveMaze] ${text}`);
+      }
     } else {
       console.log('[CaveMaze] Dead end - backtracking...');
       // Simple backtrack logic
@@ -268,8 +299,9 @@ export class CaveMaze {
       return false;
     }
     
-    const tile = this.maze.tiles[y][x];
-    return tile.type === 'floor' || tile.type === 'entrance' || tile.type === 'artifact';
+  const row = this.maze.tiles[y];
+  const tile = row ? row[x] : undefined;
+  return !!tile && (tile.type === 'floor' || tile.type === 'entrance' || tile.type === 'artifact');
   }
 
   private checkArtifactDiscovery(): boolean {
