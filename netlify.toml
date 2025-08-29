@@ -3,7 +3,8 @@
   publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "18"
+  # Align Netlify runtime with package.json engines (node 20.x)
+  NODE_VERSION = "20"
 
 [[headers]]
   for = "/*"
