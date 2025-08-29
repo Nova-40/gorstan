@@ -159,7 +159,8 @@ export const EXP_THRESHOLDS = [
 /** Calculate current level from experience */
 export function getLevel(experience: number): number {
   for (let i = EXP_THRESHOLDS.length - 1; i >= 0; i--) {
-    if (experience >= EXP_THRESHOLDS[i]) {
+    const threshold = EXP_THRESHOLDS[i];
+    if (threshold !== undefined && experience >= threshold) {
       return i;
     }
   }

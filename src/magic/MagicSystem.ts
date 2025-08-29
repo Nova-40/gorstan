@@ -81,8 +81,9 @@ export class MagicSystem {
       actor: caster,
       spell,
       startTime: Date.now(),
-      target
-    };
+      // Only include target if provided to satisfy exactOptionalPropertyTypes
+      ...(target ? { target } : {})
+    } as CastState;
 
     this.activeCasts.push(castState);
 
@@ -119,7 +120,8 @@ export class MagicSystem {
     // Update existing or add new cooldown
     const existingIndex = actorCooldowns.findIndex(cd => cd.spellId === spellId);
     if (existingIndex >= 0) {
-      actorCooldowns[existingIndex].remainingMs = durationMs;
+      const existing = actorCooldowns[existingIndex];
+      if (existing) existing.remainingMs = durationMs;
     } else {
       actorCooldowns.push({ spellId, remainingMs: durationMs });
     }
@@ -132,8 +134,8 @@ export class MagicSystem {
     for (const [, actorCooldowns] of this.cooldowns) {
       for (let i = actorCooldowns.length - 1; i >= 0; i--) {
         const cooldown = actorCooldowns[i];
+        if (!cooldown) continue;
         cooldown.remainingMs -= deltaTime;
-
         if (cooldown.remainingMs <= 0) {
           actorCooldowns.splice(i, 1);
         }
@@ -147,10 +149,10 @@ export class MagicSystem {
 
     for (let i = this.activeCasts.length - 1; i >= 0; i--) {
       const castState = this.activeCasts[i];
+      if (!castState) continue;
+      const channelMs = castState.spell.cast?.channelMs ?? 1000;
       const elapsed = currentTime - castState.startTime;
-
-      if (elapsed >= (castState.spell.cast.channelMs || 1000)) {
-        // Complete the cast
+      if (elapsed >= channelMs) {
         this.completeCast(castState);
         this.activeCasts.splice(i, 1);
       }
@@ -180,7 +182,9 @@ export class MagicSystem {
     const castIndex = this.activeCasts.findIndex(cs => cs.actor.id === actorId);
     if (castIndex >= 0) {
       const castState = this.activeCasts[castIndex];
-      castState.actor.state = CombatState.Idle;
+      if (castState) {
+        castState.actor.state = CombatState.Idle;
+      }
       this.activeCasts.splice(castIndex, 1);
       return true;
     }

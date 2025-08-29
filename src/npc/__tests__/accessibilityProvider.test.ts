@@ -18,7 +18,7 @@
 // Tests for NPC Accessibility Provider
 // Gorstan Game Beta 1 - Code Licence MIT
 
-import { describe, test, expect, vi, Mock } from 'vitest';
+import { describe, test, expect, vi, Mock, beforeAll } from 'vitest';
 import { 
   NPCAccessibilityProvider,
   getAccessibilityProvider,
@@ -50,6 +50,22 @@ const mockDocumentElement = {
     removeProperty: vi.fn()
   }
 };
+
+// Provide a stub matchMedia if JSDOM environment doesn't supply one
+beforeAll(() => {
+  if (!window.matchMedia) {
+    (window as any).matchMedia = vi.fn().mockImplementation((query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: vi.fn(), // deprecated
+      removeListener: vi.fn(), // deprecated
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn()
+    }));
+  }
+});
 
 describe('NPCAccessibilityProvider', () => {
   let provider: NPCAccessibilityProvider;

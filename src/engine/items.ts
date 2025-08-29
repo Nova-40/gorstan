@@ -1075,11 +1075,13 @@ export function getItemValue(
 
   
   if (modifiers) {
-    if (item.category && modifiers[item.category]) {
-      value *= modifiers[item.category];
+    if (item.category) {
+      const catMod = modifiers[item.category];
+      if (typeof catMod === 'number') value *= catMod;
     }
-    if (item.rarity && modifiers[item.rarity]) {
-      value *= modifiers[item.rarity];
+    if (item.rarity) {
+      const rarMod = modifiers[item.rarity];
+      if (typeof rarMod === 'number') value *= rarMod;
     }
   }
 

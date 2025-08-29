@@ -79,7 +79,7 @@ export function ObjectiveList({
               key={objective.id}
               objective={objective}
               compact={compact}
-              onClick={onObjectiveClick}
+              {...(onObjectiveClick && { onClick: onObjectiveClick })}
             />
           ))
         )}

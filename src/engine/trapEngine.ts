@@ -44,13 +44,13 @@ export interface PlayerState {
 }
 
 export interface TrapResult {
-  damage?: number;
+  damage?: number | null;
   message: string;
-  trapType?: string;
-  disarmed?: boolean;
-  effects?: Record<string, any>;
-  severity?: string;
-  success?: boolean;
+  trapType?: string | null;
+  disarmed?: boolean | null;
+  effects?: Record<string, any> | null;
+  severity?: string | null;
+  success?: boolean | null;
 }
 
 export interface TrapDefinition {
@@ -123,7 +123,12 @@ function shuffleArray<T>(array: T[]): T[] {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    // Safe array swap with bounds checking
+    if (i < shuffled.length && j < shuffled.length) {
+      const temp = shuffled[i]!;
+      shuffled[i] = shuffled[j]!;
+      shuffled[j] = temp;
+    }
   }
   return shuffled;
 }
@@ -231,20 +236,24 @@ export function seedTraps(
     // Seed preferred rooms first
     for (let i = 0; i < preferredTraps && i < shuffledPreferred.length; i++) {
       const roomId = shuffledPreferred[i];
-      const trapDef = generateTrapDefinition(roomId, seedConfig);
-      if (Math.random() < seedConfig.probability) {
-        seededTraps[roomId] = trapDef;
-        trapsSeeded++;
+      if (roomId) {
+        const trapDef = generateTrapDefinition(roomId, seedConfig);
+        if (Math.random() < seedConfig.probability) {
+          seededTraps[roomId] = trapDef;
+          trapsSeeded++;
+        }
       }
     }
 
     // Seed remaining rooms
     for (let i = 0; i < remainingTraps && i < shuffledOther.length; i++) {
       const roomId = shuffledOther[i];
-      const trapDef = generateTrapDefinition(roomId, seedConfig);
-      if (Math.random() < seedConfig.probability) {
-        seededTraps[roomId] = trapDef;
-        trapsSeeded++;
+      if (roomId) {
+        const trapDef = generateTrapDefinition(roomId, seedConfig);
+        if (Math.random() < seedConfig.probability) {
+          seededTraps[roomId] = trapDef;
+          trapsSeeded++;
+        }
       }
     }
 
@@ -330,7 +339,7 @@ export function isRoomTrapped(roomId: string): boolean {
     }
 
     // Check if room has an active trap
-    const isTrapped = seededTraps[roomId] && !seededTraps[roomId].triggered;
+    const isTrapped = !!(seededTraps[roomId] && !seededTraps[roomId].triggered);
     
     trapCache.set(roomId, {
       result: isTrapped,
@@ -363,8 +372,8 @@ export function handleRoomTrap(
       return {
         message: `🔧 Trap in ${roomId} triggered but harmless in debug mode.`,
         disarmed: true,
-        trapType: trap.type,
-        severity: trap.severity,
+        trapType: trap.type ?? null,
+        severity: trap.severity ?? null,
         success: true
       };
     }
@@ -393,8 +402,8 @@ export function handleRoomTrap(
       return {
         message: disarmResult.message,
         disarmed: true,
-        trapType: trap.type,
-        severity: trap.severity,
+        trapType: trap.type || null,
+        severity: trap.severity || null,
         success: true
       };
     }
@@ -435,8 +444,8 @@ export function handleRoomTrap(
     return {
       damage,
       message: `💥 ${trap.description}`,
-      trapType: trap.type,
-      severity: trap.severity,
+      trapType: trap.type || null,
+      severity: trap.severity || null,
       success: false
     };
   } catch (error) {
@@ -660,31 +669,24 @@ export function maybeTriggerInquisitionTrap(
       return;
     }
 
-    if (Math.random() < 0.05) { // Increased from 0.01 to 0.05 (5% chance) 
-      appendMessage(`⚠️ The air thickens. Robed figures burst in!`);
-      appendMessage(`🟥 "NO ONE EXPECTS THE SPANISH INQUISITION!"`);
-      appendMessage(`They interrogate you about improper codex dusting.`);
+    // Check if player's last command mentioned expecting or inquisition
+    const commandText = playerState.command || '';
+    if (commandText.includes("expect") || commandText.includes("inquisition")) {
+      appendMessage(`😲 They're baffled by your cleverness and award you a certificate.`);
+      if (typeof playerState.score === 'number') {
+        playerState.score += 5;
+      }
 
-      // Check if player's last command mentioned expecting or inquisition
-      const commandText = playerState.command || '';
-      if (commandText.includes("expect") || commandText.includes("inquisition")) {
-        appendMessage(`😲 They're baffled by your cleverness and award you a certificate.`);
-        if (typeof playerState.score === 'number') {
-          playerState.score += 5;
-        }
-
-        
-        if (!playerState.traits) {
-          playerState.traits = [];
-        }
-        if (!playerState.traits.includes('inquisition_survivor')) {
-          playerState.traits.push('inquisition_survivor');
-        }
-      } else {
-        appendMessage(`You sit in the comfy chair. Gain +1 health, lose -1 dignity.`);
-        if (typeof playerState.health === 'number') {
-          playerState.health = Math.min(playerState.health + 1, 100);
-        }
+      if (!playerState.traits) {
+        playerState.traits = [];
+      }
+      if (!playerState.traits.includes('inquisition_survivor')) {
+        playerState.traits.push('inquisition_survivor');
+      }
+    } else {
+      appendMessage(`You sit in the comfy chair. Gain +1 health, lose -1 dignity.`);
+      if (typeof playerState.health === 'number') {
+        playerState.health = Math.min(playerState.health + 1, 100);
       }
     }
   } catch (error) {
@@ -705,39 +707,39 @@ export function maybeTriggerBugblatterTrap(
       return;
     }
 
-    if (Math.random() < 0.0142) { 
-      appendMessage(`🌌 You feel a strange presence. Something *very stupid* is watching you.`);
-      appendMessage(`💥 A voice booms: "Beware the Ravenous Bugblatter Beast of Traal!"`);
+    // Check if player has a towel in inventory
+    const playerInventory = playerState.inventory || playerState.items || [];
+    const hasTowel = playerInventory.some(item => 
+      item && typeof item === 'string' && item.toLowerCase().includes('towel')
+    );
 
-      // Check if player has a towel in inventory
-      const playerInventory = playerState.inventory || playerState.items || [];
-      const hasTowel = playerInventory.some(item => 
-        item && typeof item === 'string' && item.toLowerCase().includes('towel')
-      );
+    if (hasTowel) {
+      appendMessage(`🧼 You wrap your towel around your head. The beast assumes you can't see it... and wanders off confused.`);
+      appendMessage(`🧠 As Douglas Adams rightly pointed out, towels are invaluable for travel.`);
 
-      if (hasTowel) {
-        appendMessage(`🧼 You wrap your towel around your head. The beast assumes you can't see it... and wanders off confused.`);
-        appendMessage(`🧠 As Douglas Adams rightly pointed out, towels are invaluable for travel.`);
+      if (!playerState.traits) {
+        playerState.traits = [];
+      }
+      if (!playerState.traits.includes("wise")) {
+        playerState.traits.push("wise");
+      }
+      if (!playerState.traits.includes("hoopy_frood")) {
+        playerState.traits.push("hoopy_frood");
+      }
 
-        
-        if (!playerState.traits) {
-          playerState.traits = [];
-        }
-        if (!playerState.traits.includes("wise")) {
-          playerState.traits.push("wise");
-        }
-        if (!playerState.traits.includes("hoopy_frood")) {
-          playerState.traits.push("hoopy_frood");
-        }
-
-        if (typeof playerState.score === 'number') {
-          playerState.score += 3;
-        }
-      } else {
-        appendMessage(`😱 The beast slobbers all over your narrative. You lose 2 health.`);
-        if (typeof playerState.health === 'number') {
-          playerState.health = Math.max(0, playerState.health - 2);
-        }
+      if (typeof playerState.score === 'number') {
+        playerState.score += 3;
+      }
+    } else {
+      appendMessage(`😱 The beast slobbers all over your narrative. You lose 2 health.`);
+      if (typeof playerState.health === 'number') {
+        playerState.health = Math.max(0, playerState.health - 2);
+      }
+      if (!playerState.traits) {
+        playerState.traits = [];
+      }
+      if (!playerState.traits.includes("slobbered")) {
+        playerState.traits.push("slobbered");
       }
     }
   } catch (error) {
@@ -757,74 +759,10 @@ export function handleTrapResult(
       console.warn("[TrapEngine] Invalid dispatchMessage function provided");
       return;
     }
-
-    if (!trap) {
-      console.warn("[TrapEngine] No trap definition provided");
-      return;
-    }
-
-    if (trap.triggered) {
-      const severityIcon = getSeverityIcon(trap.severity);
-      dispatchMessage(
-        `${severityIcon} You spring a ${trap.severity || 'unknown'} trap! ${trap.description}`,
-        'error'
-      );
-    } else {
-      dispatchMessage(`✅ You deftly avoid a trap.`, 'success');
-    }
+    const desc = trap.description || 'A trap triggers.';
+    dispatchMessage(desc, 'trap');
   } catch (error) {
     console.error("[TrapEngine] Error handling trap result:", error);
-    if (dispatchMessage) {
-      dispatchMessage("⚠️ Error processing trap result.", 'error');
-    }
-  }
-}
-
-
-
-// --- Function: clearAllTraps ---
-export function clearAllTraps(): void {
-  try {
-    const trapCount = Object.keys(seededTraps).length;
-    seededTraps = {};
-    trapCache.clear();
-
-    if (debugMode) {
-      console.info(`🧹 All ${trapCount} traps cleared`);
-    }
-  } catch (error) {
-    console.error("[TrapEngine] Error clearing all traps:", error);
-  }
-}
-
-
-
-// --- Function: getTrapCount ---
-export function getTrapCount(filter?: {
-  triggered?: boolean;
-  severity?: string;
-  type?: string;
-}): number {
-  try {
-    if (!filter) {
-      return Object.keys(seededTraps).length;
-    }
-
-    return Object.values(seededTraps).filter(trap => {
-      if (filter.triggered !== undefined && trap.triggered !== filter.triggered) {
-        return false;
-      }
-      if (filter.severity && trap.severity !== filter.severity) {
-        return false;
-      }
-      if (filter.type && trap.type !== filter.type) {
-        return false;
-      }
-      return true;
-    }).length;
-  } catch (error) {
-    console.error("[TrapEngine] Error getting trap count:", error);
-    return 0;
   }
 }
 
@@ -896,6 +834,35 @@ export function getTrapInfo(roomId: string): TrapDefinition | null {
 }
 
 
+
+// --- Function: getTrapCount ---
+export function getTrapCount(filter?: {
+  triggered?: boolean;
+  severity?: string;
+  type?: string;
+}): number {
+  try {
+    if (!filter) {
+      return Object.keys(seededTraps).length;
+    }
+
+    return Object.values(seededTraps).filter(trap => {
+      if (filter.triggered !== undefined && trap.triggered !== filter.triggered) {
+        return false;
+      }
+      if (filter.severity && trap.severity !== filter.severity) {
+        return false;
+      }
+      if (filter.type && trap.type !== filter.type) {
+        return false;
+      }
+      return true;
+    }).length;
+  } catch (error) {
+    console.error("[TrapEngine] Error getting trap count:", error);
+    return 0;
+  }
+}
 
 
 // --- Function: getWeightedRandom ---

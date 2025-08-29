@@ -98,7 +98,7 @@ export const CelebrationController: React.FC<CelebrationControllerProps> = ({ ch
       
       setState({
         activeCelebrations: filteredCelebrations,
-        currentCelebration,
+        currentCelebration: currentCelebration ?? null,
         isLoading: false,
         error: null
       });

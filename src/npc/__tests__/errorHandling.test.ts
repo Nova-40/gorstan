@@ -77,14 +77,14 @@ describe('NPCErrorHandler', () => {
       
       const recentErrors = errorHandler.getRecentErrors();
       expect(recentErrors.length).toBe(1);
-      expect(recentErrors[0].id).toMatch(/npc_error_\d+_[a-z0-9]+/);
+  expect(recentErrors[0]?.id).toMatch(/npc_error_\d+_[a-z0-9]+/);
     });
 
     test('should include stack traces', async () => {
       await errorHandler.reportError(NPCErrorType.UNKNOWN_ERROR, 'Test error');
       
       const recentErrors = errorHandler.getRecentErrors();
-      expect(recentErrors[0].stackTrace).toBeTruthy();
+  expect(recentErrors[0]?.stackTrace).toBeTruthy();
     });
   });
 

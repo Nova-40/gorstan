@@ -37,7 +37,9 @@ export function safeObjectIteration<T extends Record<string, unknown>, R>(
   const entries = typedEntries(obj);
   
   for (let i = 0; i < entries.length; i++) {
-    const [key, value] = entries[i];
+    const tuple = entries[i];
+    if (!tuple) continue;
+    const [key, value] = tuple;
     try {
       const result = callback(key, value, i);
       results.push(result);

@@ -495,19 +495,21 @@ function evaluateValue(actual: any, expected: any, operator?: string): boolean {
 
 // --- Function: getRoomZone ---
 function getRoomZone(roomId: string, room: Room): string {
-  
+  if (!roomId) return 'neutral';
   if (roomId.includes('Zone_')) {
-    return roomId.split('Zone_')[0].toLowerCase();
+    const base = roomId.split('Zone_')[0];
+    return base ? base.toLowerCase() : 'neutral';
   }
 
-  
-  if (room.title?.toLowerCase().includes('puzzle')) return 'puzzle_heavy';
-  
+  const title = room.title?.toLowerCase();
+  if (title && title.includes('puzzle')) return 'puzzle_heavy';
+
   // Handle description as either string or string array
-  const description = Array.isArray(room.description) 
-    ? room.description.join(' ').toLowerCase()
-    : (room.description?.toLowerCase() || '');
-    
+  const descriptionSource = Array.isArray(room.description)
+    ? room.description.join(' ')
+    : room.description || '';
+  const description = descriptionSource.toLowerCase();
+
   if (description.includes('dark')) return 'dark';
   if (description.includes('stable')) return 'stable';
   if (roomId.includes('glitch')) return 'surreal';

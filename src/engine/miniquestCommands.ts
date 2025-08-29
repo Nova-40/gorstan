@@ -54,7 +54,7 @@ function createGameMessage(
     text,
     type,
     timestamp: Date.now(),
-    speaker
+    ...(speaker && { speaker })
   };
 }
 
@@ -266,7 +266,7 @@ export function isMiniquestCommand(command: string): boolean {
 // Variable declaration
   const verb = commandWords[0];
 
-  return ['miniquest', 'miniquests', 'attempt', 'quests', 'objectives'].includes(verb);
+  return !!verb && ['miniquest', 'miniquests', 'attempt', 'quests', 'objectives'].includes(verb);
 }
 
 

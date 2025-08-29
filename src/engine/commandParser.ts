@@ -194,7 +194,8 @@ export function processCommand({
       };
     }
 
-    case 'look': {
+  case 'look':
+  case 'inspect': {
       const descriptionLines = Array.isArray(currentRoom.description)
         ? currentRoom.description
         : [currentRoom.description];
@@ -446,7 +447,7 @@ export function processCommand({
         
         return { 
           messages, 
-          updates: crossingResult.updates 
+          ...(crossingResult.updates && { updates: crossingResult.updates })
         };
       }
       

@@ -26,15 +26,24 @@ export class TrialsController {
       // Phase 1-3: The trials
       for (let i = 0; i < this.phases.length; i++) {
         this.currentPhase = i;
-        demoProgress.currentPhase = this.phases[i].name;
+        const phaseDef = this.phases[i];
+        if (!phaseDef) {
+          console.warn('[TrialsController] Missing phase definition at index', i, 'skipping');
+          continue;
+        }
+        demoProgress.currentPhase = phaseDef.name;
         demoProgress.phaseStartTime = Date.now();
         
-        console.log(`[TrialsController] Starting Phase ${i + 1}: ${this.phases[i].name}`);
+        console.log(`[TrialsController] Starting Phase ${i + 1}: ${phaseDef.name}`);
         
-        const phaseController = new this.phases[i].controller();
-        await phaseController.run();
-        
-        console.log(`[TrialsController] Completed Phase ${i + 1}: ${this.phases[i].name}`);
+        try {
+          const phaseController = new phaseDef.controller();
+          await phaseController.run();
+          console.log(`[TrialsController] Completed Phase ${i + 1}: ${phaseDef.name}`);
+        } catch (err) {
+          console.error('[TrialsController] Error during phase', phaseDef.name, err);
+          throw err;
+        }
       }
       
       // Stream reset sequence
@@ -63,7 +72,8 @@ export class TrialsController {
 
   getCurrentPhase(): string {
     if (this.currentPhase < this.phases.length) {
-      return this.phases[this.currentPhase].name;
+      const phaseDef = this.phases[this.currentPhase];
+      if (phaseDef) return phaseDef.name;
     }
     return 'Complete';
   }

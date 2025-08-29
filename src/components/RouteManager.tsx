@@ -98,12 +98,11 @@ function routeManagerReducer(state: RouteManagerState, action: RouteManagerActio
 
     case 'EXIT_ROUTE':
       return {
-        ...state,
         currentRoute: null,
         progress: null,
         isActive: false,
         isLoading: false,
-        timeRemaining: undefined,
+        error: state.error
       };
 
     case 'SET_ERROR':
@@ -184,7 +183,11 @@ export const RouteManagerProvider: React.FC<RouteManagerProviderProps> = ({
         }
       }
 
-      dispatch({ type: 'ROUTE_LOADED', route, progress: savedProgress || undefined });
+      dispatch({
+        type: 'ROUTE_LOADED',
+        route,
+        ...(savedProgress && { progress: savedProgress })
+      });
       onRouteStart?.(route);
     } catch (error) {
       dispatch({ type: 'SET_ERROR', error: error instanceof Error ? error.message : 'Unknown error' });

@@ -362,6 +362,14 @@ export const RouteSelectScreen: React.FC<RouteSelectScreenProps> = ({
   if (selectedCategory === 'demo' || selectedCategory === 'full') {
     // Single route categories - auto-select
     const route = categoryRoutes[0];
+    if (!route) {
+      return (
+        <div className={cn('p-6 text-center text-red-400', className)}>
+          No route available in this category.
+          <Button className="mt-4" onClick={handleBackToCategories}>Back</Button>
+        </div>
+      );
+    }
     return (
       <div className={cn(
         'route-select-screen',

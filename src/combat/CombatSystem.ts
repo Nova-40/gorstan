@@ -85,7 +85,7 @@ export class CombatSystem {
     this.actionQueue.push({
       actor,
       action,
-      targetId,
+      ...(targetId && { targetId }),
       queueTime: Date.now()
     });
 
@@ -254,6 +254,9 @@ export class CombatSystem {
 
     for (let i = this.actionQueue.length - 1; i >= 0; i--) {
       const queuedAction = this.actionQueue[i];
+      if (!queuedAction) {
+        continue; // Defensive: should not happen, satisfies noUncheckedIndexedAccess
+      }
       const timeElapsed = currentTime - queuedAction.queueTime;
       const action = queuedAction.action;
 
@@ -280,7 +283,7 @@ export class CombatSystem {
       }
 
       // Action complete
-      queuedAction.actor.state = CombatState.Idle;
+  queuedAction.actor.state = CombatState.Idle;
       this.actionQueue.splice(i, 1);
     }
   }
@@ -297,14 +300,17 @@ export class CombatSystem {
     // Apply action effects to self
     if (action.effects) {
       for (const effectTemplate of action.effects) {
+        // Provide required fields with safe defaults to satisfy Status interface
+        const noop = () => {};
         const statusFactory = () => ({
           id: effectTemplate.id!,
-          durationMs: effectTemplate.durationMs!,
-          stacks: effectTemplate.stacks,
-          onTick: effectTemplate.onTick,
-          onApply: effectTemplate.onApply,
-          onRemove: effectTemplate.onRemove,
-          data: effectTemplate.data
+          // Ensure duration always defined; fall back to 0 meaning immediate expiry if absent
+          durationMs: effectTemplate.durationMs ?? 0,
+          stacks: effectTemplate.stacks ?? 1,
+          onTick: effectTemplate.onTick ?? noop,
+          onApply: effectTemplate.onApply ?? noop,
+          onRemove: effectTemplate.onRemove ?? noop,
+          data: effectTemplate.data ?? {}
         });
         statusSystem.applyStatus(actor, statusFactory);
       }
@@ -406,9 +412,18 @@ export class CombatSystem {
       inCombat: this.activeCombat,
       player: this.player,
       enemies: this.enemies,
-      round: 1, // TODO: implement proper round tracking
+      round: this.calculateRound(),
       actionQueue: this.actionQueue
     };
+  }
+
+  /** Derived round: every 5s or every 4 queued actions (whichever higher) */
+  private calculateRound(): number {
+    if (!this.activeCombat) return 0;
+    const elapsed = Date.now() - this.combatStartTime;
+    const timeRound = Math.floor(elapsed / 5000) + 1;
+    const actionRound = Math.floor(this.actionQueue.length / 4) + 1;
+    return Math.max(timeRound, actionRound);
   }
 
   /** Queue an action by name and return result */

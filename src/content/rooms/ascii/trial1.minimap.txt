@@ -1,0 +1,14 @@
+# Trial I: Antechamber
+# Simple 3-room linear progression
+
+###
+#@#  (Entry)
+###
+
+=A=
+@B=  (Gate Hall - switches A, B, C)
+=C=
+
+###
+@@>  (Exit)
+###

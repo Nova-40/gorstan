@@ -87,33 +87,35 @@ export function wanderNPC(npcId: string, state: LocalGameState) {
   const adjacentRoomIds = Object.values(currentRoom.exits || {}).filter(Boolean) as string[];
   
   // Start with adjacent rooms, then expand if none available
-  let validRooms: Room[] = adjacentRoomIds
+  let validRooms = adjacentRoomIds
     .map(id => roomMap[id])
-    .filter(room => 
-      room &&
-      typeof room === 'object' &&
-      room.id !== npc.currentRoom && // Don't stay in same room
-      !room.id.includes('trap') &&
-      !room.id.includes('cutscene') &&
-      !room.id.includes('puzzle') &&
-      !room.id.includes('boss') &&
-      room.zone !== 'private' // Avoid private rooms
-    );
+    .filter((room): room is Room => {
+      if (!room || typeof room !== 'object') return false;
+      return !!(
+        room.id !== npc.currentRoom &&
+        !room.id.includes('trap') &&
+        !room.id.includes('cutscene') &&
+        !room.id.includes('puzzle') &&
+        !room.id.includes('boss') &&
+        room.zone !== 'private'
+      );
+    });
 
   // If no adjacent rooms, fall back to zone-based movement
   if (validRooms.length === 0) {
     const biasZones: string[] = npc.biasZones || [];
-    validRooms = Object.values(roomMap).filter(room => 
-      room &&
-      typeof room === 'object' &&
-      room.id !== npc.currentRoom &&
-      !room.id.includes('trap') &&
-      !room.id.includes('cutscene') &&
-      !room.id.includes('puzzle') &&
-      !room.id.includes('boss') &&
-      room.zone !== 'private' &&
-      (biasZones.length === 0 || (room.zone && biasZones.includes(room.zone)))
-    );
+    validRooms = Object.values(roomMap).filter((room): room is Room => {
+      if (!room || typeof room !== 'object') return false;
+      return !!(
+        room.id !== npc.currentRoom &&
+        !room.id.includes('trap') &&
+        !room.id.includes('cutscene') &&
+        !room.id.includes('puzzle') &&
+        !room.id.includes('boss') &&
+        room.zone !== 'private' &&
+        (biasZones.length === 0 || (room.zone && biasZones.includes(room.zone)))
+      );
+    });
   }
 
   // Zone bias logic for adjacent rooms

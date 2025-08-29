@@ -57,7 +57,7 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
   const realNpcs = npcs.filter(npc => npc.id !== 'group_conversation' && npc.id !== 'group_chat');
 
   // Get primary NPC from real NPCs only
-  const primaryNpc = realNpcs.find(npc => npc.id === activeNpcId) || realNpcs[0];
+  const primaryNpc: NPC | undefined = realNpcs.find(npc => npc.id === activeNpcId) || realNpcs[0];
 
   // Check if player is redacted
   const isPlayerRedacted = state.flags?.playerIsRedacted || false;
@@ -472,10 +472,10 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
     }
     
     // Default fallback to truly random selection
-    const fallbackNpcs = realNpcs.map(npc => npc.id);
-    const randomNpc = fallbackNpcs[Math.floor(Math.random() * fallbackNpcs.length)];
-    console.log(`[Enhanced NPC Console] 🎯 Fallback random selection chose: ${randomNpc}`);
-    return randomNpc;
+  const fallbackNpcs = realNpcs.map(npc => npc.id);
+  const randomNpc = fallbackNpcs.length ? fallbackNpcs[Math.floor(Math.random() * fallbackNpcs.length)] : undefined;
+  console.log(`[Enhanced NPC Console] 🎯 Fallback random selection chose: ${randomNpc}`);
+  return randomNpc || (realNpcs[0]?.id ?? 'ayla');
   };
 
   const handleGroupResponse = async (playerMessage: string) => {
@@ -716,12 +716,12 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
         
         // Update history
         const newHistory = [...npcHistory, selectedResponse].slice(-3); // Keep last 3 responses
-        setResponseHistory(prev => ({
-          ...prev,
-          [npcId]: newHistory
-        }));
+          setResponseHistory(prev => ({
+            ...prev,
+            [npcId]: newHistory.filter((r): r is string => typeof r === 'string')
+          }));
         
-        return selectedResponse;
+          return selectedResponse || '';
       };
       
       switch (npcId) {
@@ -969,7 +969,7 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
         '*sparks fly* *laughs darkly* The bureaucrat speaks of protocols while the multiverse crumbles around us. Choose wisdom over paperwork.',
         '*clank* *voice drips with sarcasm* Yes, by all means, fill out Form 27-B while reality itself demands immediate action.'
       ];
-      return responses[Math.floor(Math.random() * responses.length)];
+  return responses.length ? responses[Math.floor(Math.random() * responses.length)]! : '';
     }
     
     if (reactingNpcId === 'al' && originalNpcId === 'morthos') {
@@ -978,7 +978,7 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
         '*shuffles papers pointedly* While my colleague speaks of transcending boundaries, I deal with the practical matter of preventing reality cascades.',
         '*voice tight with professional disagreement* Chaos masquerading as wisdom has cost us three research stations this quarter alone.'
       ];
-      return responses[Math.floor(Math.random() * responses.length)];
+  return responses.length ? responses[Math.floor(Math.random() * responses.length)]! : '';
     }
     
     return '*observes the exchange with interest*';

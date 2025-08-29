@@ -396,17 +396,20 @@ export class QuantumMagicService {
       title: 'Quantum Synergy Activated!',
       description: `${artifacts.map(a => a.name).join(' + ')} are resonating together!`,
       rarity: 'rare',
-      element: artifacts[0].element,
+      element: artifacts[0]?.element || 'void',
     };
 
     this.gameState.pendingDiscoveries.push(discovery);
 
     // Gain synergy experience
-    this.gainExperience({
-      source: 'synergy_activated',
-      amount: experienceValues.discovery.synergy,
-      artifactId: artifacts[0].id,
-    });
+    const firstArtifact = artifacts[0];
+    if (firstArtifact) {
+      this.gainExperience({
+        source: 'synergy_activated',
+        amount: experienceValues.discovery.synergy,
+        artifactId: firstArtifact.id,
+      });
+    }
 
     this.callbacks.onSynergyActivated?.(artifacts);
   }

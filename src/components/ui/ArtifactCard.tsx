@@ -125,7 +125,7 @@ export const ArtifactCard: React.FC<ArtifactCardProps> = ({
               'w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold',
               elementColors[artifact.element]
             )}>
-              {artifact.element[0].toUpperCase()}
+              {(artifact.element && artifact.element[0] ? artifact.element[0].toUpperCase() : '?')}
             </div>
             <div>
               <h3 className="text-heading-sm font-semibold text-color-text-primary">

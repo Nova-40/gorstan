@@ -336,8 +336,9 @@ export function getRandomIdleLine(npcName: string): string | null {
       return null;
     }
 
-    const randomIndex = Math.floor(Math.random() * lines.length);
-    return lines[randomIndex].text;
+  const randomIndex = Math.floor(Math.random() * lines.length);
+  const line = lines[randomIndex];
+  return line ? line.text : null;
   } catch (error) {
     console.error('[NPCIdleLines] Error getting random idle line:', error);
     return null;
@@ -414,6 +415,9 @@ export async function getContextualIdleLine(context: IdleLineContext): Promise<s
     }
 
     const selectedLine = availableLines[Math.floor(Math.random() * availableLines.length)];
+    if (!selectedLine) {
+      return null;
+    }
 
     
     if (!recentlyUsedLines.has(npcName)) {
@@ -440,21 +444,21 @@ export async function getContextualIdleLine(context: IdleLineContext): Promise<s
 
 async function buildEnhancedContext(context: IdleLineContext): Promise<IdleLineContext> {
   try {
-    const npcState = context.npcState || null;
+  const npcState = context.npcState || null;
+
+    const normalizedState = npcState ? {
+      ...(npcState.mood !== undefined ? { mood: npcState.mood } : {}),
+      ...(npcState.relationship !== undefined ? { relationship: npcState.relationship } : {}),
+      ...(npcState.trustLevel !== undefined ? { trustLevel: npcState.trustLevel } : {}),
+      ...(npcState.queryCount !== undefined ? { queryCount: npcState.queryCount } : {}),
+      ...(Array.isArray(npcState.memory) ? { memory: npcState.memory.map((mem: any) =>
+        typeof mem === 'string' ? mem : (mem?.id ?? mem?.toString?.() ?? '')
+      ).filter(Boolean) } : {})
+    } : context.npcState;
 
     return {
       ...context,
-      npcState: npcState ? {
-        mood: npcState.mood,
-        relationship: npcState.relationship,
-        trustLevel: npcState.trustLevel,
-        queryCount: npcState.queryCount,
-        memory: Array.isArray(npcState.memory)
-          ? npcState.memory.map((mem: any) =>
-              typeof mem === 'string' ? mem : (mem?.id ?? mem?.toString?.() ?? '')
-            )
-          : undefined
-      } : context.npcState
+      npcState: (normalizedState ?? {}) as any
     };
   } catch (error) {
     console.error('[NPCIdleLines] Error building enhanced context:', error);
@@ -547,7 +551,10 @@ function selectWeightedLine(lines: IdleLine[]): IdleLine {
     }
 
     
-    return lines[lines.length - 1];
+  const last = lines[lines.length - 1];
+  if (last) return last;
+  // At this point lines.length === 0 already handled earlier, but add fallback
+  return { text: '...', weight: 1 } as IdleLine;
   } catch (error) {
     console.error('[NPCIdleLines] Error selecting weighted line:', error);
     return lines[0] || { text: "...", weight: 1 };

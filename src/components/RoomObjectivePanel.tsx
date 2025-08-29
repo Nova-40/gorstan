@@ -8,7 +8,7 @@ type RoomObjectivePanelProps = {
 const RoomObjectivePanel: React.FC<RoomObjectivePanelProps> = ({ objectives }) => {
   useEffect(() => {
     objectives.forEach((objective) => {
-      if (objective.isCompleted) {
+  if (objective.completed) {
         console.log(`Objective completed: ${objective.description}`);
       }
     });
@@ -19,7 +19,7 @@ const RoomObjectivePanel: React.FC<RoomObjectivePanelProps> = ({ objectives }) =
       <h2 className="text-lg font-bold mb-2">Room Objectives</h2>
       <ul>
         {objectives.map((objective) => (
-          <li key={objective.id} className={objective.isCompleted ? 'line-through text-gray-500' : ''}>
+          <li key={objective.id} className={objective.completed ? 'line-through text-gray-500' : ''}>
             {objective.description}
           </li>
         ))}

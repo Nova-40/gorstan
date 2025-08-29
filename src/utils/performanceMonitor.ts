@@ -309,21 +309,21 @@ THRESHOLDS:
   }
 }
 
-// Global performance monitor instance
+// Global performance monitor instance (manual start only to avoid test leaks)
 export const performanceMonitor = new PerformanceMonitor();
 
-// Automatic monitoring in development
-if (import.meta.env.DEV) {
+// Expose helper commands only when explicitly enabled by developer
+if (import.meta.env.DEV && (window as any).__ENABLE_PERF_MONITOR) {
   performanceMonitor.startMonitoring();
-  
-  // Add global performance commands for debugging
   (window as any).gorstan = {
     ...(window as any).gorstan,
     performance: {
+      start: () => performanceMonitor.startMonitoring(),
+      stop: () => performanceMonitor.stopMonitoring(),
       getMetrics: () => performanceMonitor.getMetrics(),
       getReport: () => console.log(performanceMonitor.generateReport()),
       clearWarnings: () => performanceMonitor.clearWarnings(),
-      setSummary: () => console.log(performanceMonitor.getPerformanceSummary())
+      summary: () => console.log(performanceMonitor.getPerformanceSummary())
     }
   };
 }

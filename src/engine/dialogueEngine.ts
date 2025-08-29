@@ -374,16 +374,15 @@ export function getDialogue(npc: string, state: DialogueState): string {
     for (const context of contexts) {
       const dialogue = findMatchingDialogue(dialogueSet[context], state);
       if (dialogue) {
-        
+        // One-time usage tracking
         if (dialogue.oneTime) {
           markDialogueAsUsed(npc, dialogue.id, state);
         }
-
-        
+        // Auto-apply single response effects (safe because length === 1)
         if (dialogue.responses && dialogue.responses.length === 1) {
-          applyDialogueEffects(dialogue.responses[0].effects || [], state);
+          const onlyResponse = dialogue.responses[0]!; // length guard above
+          applyDialogueEffects(onlyResponse.effects || [], state);
         }
-
         return dialogue.text;
       }
     }
@@ -419,10 +418,10 @@ function findMatchingDialogue(
   });
 
   if (validDialogues.length === 0) return null;
-
   // Sort by priority (highest first)
   validDialogues.sort((a: DialogueNode, b: DialogueNode) => (b.priority || 0) - (a.priority || 0));
-  return validDialogues[0];
+  const top = validDialogues[0]!; // guarded by length check
+  return top;
 }
 
 
@@ -552,7 +551,7 @@ function handleUnknownNPC(npc: string, state: DialogueState): string {
   ];
   
   const responseIndex = Math.floor(Math.random() * unknownResponses.length);
-  return unknownResponses[responseIndex];
+  return unknownResponses[responseIndex] ?? unknownResponses[0] ?? `${npc} remains silent.`;
 }
 
 
@@ -588,7 +587,7 @@ function getFallbackDialogue(npc: string, state: DialogueState): string {
   ];
   
   const responseIndex = Math.floor(Math.random() * responses.length);
-  return responses[responseIndex];
+  return responses[responseIndex] ?? responses[0] ?? `${npc} has nothing to add.`;
 }
 
 

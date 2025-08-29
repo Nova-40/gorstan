@@ -311,7 +311,10 @@ export class BatchProcessor<T, R> {
       this.batch.push(item);
       
       const resolverIndex = this.resolvers.length;
-      this.resolvers.push((results: R[]) => resolve(results[resolverIndex]));
+      this.resolvers.push((results: R[]) => {
+        const value = results[resolverIndex];
+        resolve(value as R);
+      });
       this.rejecters.push(reject);
 
       if (this.batch.length >= this.batchSize) {
@@ -340,7 +343,7 @@ export class BatchProcessor<T, R> {
 
     try {
       const results = await this.processor(currentBatch);
-      currentResolvers.forEach((resolve, _index) => {
+      currentResolvers.forEach((resolve) => {
         resolve(results);
       });
     } catch (error) {

@@ -76,7 +76,7 @@ const DEFAULT_GAME_STATE: Partial<LocalGameState> = {
   stage: 'game',
   transition: null,
   currentRoomId: 'controlnexus',
-  previousRoomId: undefined,
+  // previousRoomId omitted intentionally (optional)
   history: [],
   flags: {},
   npcsInRoom: [],

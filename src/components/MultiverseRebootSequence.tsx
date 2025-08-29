@@ -68,10 +68,11 @@ const MultiverseRebootSequence: React.FC = () => {
 
     if (currentMessageIndex < rebootSequence.length) {
 // Variable declaration
-      const currentMessage = rebootSequence[currentMessageIndex];
+  const currentMessage = rebootSequence[currentMessageIndex];
+  if (!currentMessage) return; // Defensive guard
 
       timeoutId = setTimeout(() => {
-        setDisplayedMessages(prev => [...prev, currentMessage]);
+  setDisplayedMessages(prev => currentMessage ? [...prev, currentMessage] : prev);
         setCurrentMessageIndex(prev => prev + 1);
 
         
@@ -120,7 +121,7 @@ const MultiverseRebootSequence: React.FC = () => {
 
           }, 1500); 
         }
-      }, currentMessage.delay);
+  }, currentMessage.delay || 0);
     }
 
 // JSX return block or main return

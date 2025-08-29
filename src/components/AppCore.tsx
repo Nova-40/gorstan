@@ -19,8 +19,8 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Main game controller UI and logic routing.
 
-import '../styles/GameUI.css';
 import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
+import '../styles/GameUI.css';
 import { lazyFeature } from '../utils/lazyLoading';
 import { useStableCallback } from '../utils/performanceOptimization';
 
@@ -34,13 +34,16 @@ import MultiverseRebootSequence from './MultiverseRebootSequence';
 import PlayerNameCapture from './PlayerNameCapture';
 import PlayerStatsPanel from './PlayerStatsPanel';
 import PresentNPCsPanel from './PresentNPCsPanel';
+import ObjectivePanel from './ObjectivePanel';
+import { installObjectivesNudger, registerActivity, uninstallObjectivesNudger } from '../core/objectives/nudger';
+import AylaPanel from './AylaPanel';
 import InventoryPanel from './InventoryPanel';
 import DebugPanel from './DebugPanel';
 import RoomRenderer from './RoomRenderer';
 import RoomTransition from './animations/RoomTransition';
 import SplashScreen from './SplashScreen';
 import TeletypeIntro from './TeletypeIntro';
-import TerminalConsole from './TerminalConsole';
+import { ConsoleTerminal } from './game/ConsoleTerminal';
 import WelcomeScreen from './WelcomeScreen';
 import { RouteSelectScreen } from './RouteSelectScreen';
 import TeleportManager from './animations/TeleportManager';
@@ -49,6 +52,7 @@ import CombatActionsPanel from '../ui/QuickActionsPanel';
 import BlueButtonWarningModal from './BlueButtonWarningModal';
 import QuickWinNotifications from './QuickWinNotifications';
 import ProgressDashboard from './ProgressDashboard';
+import { setGameDispatch } from '../utils/dispatchAccess';
 
 import { useFlags } from '../hooks/useFlags';
 import { useGameState } from '../state/gameState';
@@ -66,7 +70,7 @@ import { loadCelebrationIndex } from '../celebrate/index';
 import { initializeWanderingNPCs, handleRoomEntryForWanderingNPCs } from '../engine/wanderingNPCController';
 import { handleRoomEntry } from '../engine/roomEventHandler';
 import { getAllRoomsAsObject } from '../utils/roomLoader';
-import { getFallbackRooms } from '../utils/roomLoaderFallback';
+// Fallback loader removed / deprecated – dynamic room loader handles absence.
 import { performanceMonitor } from '../utils/performanceMonitor';
 import { onRoomEntry, periodicConversationCheck } from '../npc/triggers';
 import { getTrapByRoom } from '../engine/trapController';
@@ -145,11 +149,20 @@ interface Item {
  * - Enhanced type safety throughout
  */
 const AppCore: React.FC = () => {
-  // Performance monitoring for render cycles
-  performanceMonitor.markRenderStart();
-  
   // Enhanced state with proper typing
   const { state, dispatch } = useGameState();
+  performanceMonitor.markRenderStart();
+  // Objectives nudger lifecycle
+  useEffect(() => { installObjectivesNudger(()=>state); return () => uninstallObjectivesNudger(); }, [state]);
+  // Debounced autosave on key state changes
+  useEffect(() => {
+    const t = setTimeout(() => {
+      try { SaveManager.save(0, state as any); } catch {}
+    }, 500);
+    return () => clearTimeout(t);
+  }, [state.currentRoomId, JSON.stringify(state.flags), (state.player?.inventory||[]).length]);
+  // Expose dispatch globally for service modules
+  useEffect(() => { setGameDispatch(dispatch); return () => setGameDispatch(() => ({} as any)); }, [dispatch]);
   const { hasFlag } = useFlags();
   const { loadModule } = useModuleLoader();
 
@@ -437,7 +450,7 @@ const handleBackout = useCallback((): void => {
       };
 
       // Use enhanced SaveManager with migration support
-      const result = await SaveManager.save(parseInt(slotId), saveFile);
+  const result = await SaveManager.save(parseInt(slotId), saveFile as any); // TODO refine SaveFile typing
       
       if (result.success) {
         // Update traditional save slots for UI compatibility
@@ -668,7 +681,7 @@ const handleBackout = useCallback((): void => {
       openModal('npcConsole');
     } else if (npcsInRoom.length === 1) {
       // Single NPC in room
-      setSelectedNPC(npcsInRoom[0]);
+  if (npcsInRoom[0]) setSelectedNPC(npcsInRoom[0]);
       openModal('npcConsole');
     } else if (npcsInRoom.length > 1) {
       // Multiple NPCs - show selection modal
@@ -1038,7 +1051,7 @@ const handleBackout = useCallback((): void => {
       'take': 'pickUp'
     };
     
-    const modalCommand: OpenModalType = modalCommands[lowerCmd];
+  const modalCommand = modalCommands[lowerCmd] as OpenModalType | undefined;
     if (modalCommand) {
       modalCommand === 'look' ? handleLookAround() : openModal(modalCommand);
       return;
@@ -1270,7 +1283,9 @@ const handleBackout = useCallback((): void => {
         return;
       }
 
-      const { command, delay } = demoCommands[currentCommandIndex];
+  const currentDemo = demoCommands[currentCommandIndex];
+  if (!currentDemo) return;
+  const { command, delay } = currentDemo;
       
       // Add demo command to message log
       dispatch({ 
@@ -1359,7 +1374,7 @@ const handleBackout = useCallback((): void => {
   }, [dispatch]);
 
   // Enhanced room transition info with proper typing
-  const transitionInfo = useRoomTransition(previousRoom, room, lastMovementAction);
+  const transitionInfo = useRoomTransition(previousRoom, room ?? null, lastMovementAction);
 
   // Enhanced direction state with proper typing and memoization
   const availableDirections = useMemo(() => {
@@ -1469,18 +1484,7 @@ const handleBackout = useCallback((): void => {
         
         // If no rooms loaded, use fallback
         if (!loadedRoomMap || Object.keys(loadedRoomMap).length === 0) {
-          console.warn('[AppCore] No rooms loaded from main loader, using fallback rooms');
-          loadedRoomMap = getFallbackRooms();
-          
-          dispatch({ 
-            type: 'ADD_MESSAGE', 
-            payload: { 
-              id: Date.now().toString(), 
-              text: "Note: Running in limited mode with basic rooms only. Some features may be unavailable.", 
-              type: "warning", 
-              timestamp: Date.now() 
-            } 
-          });
+          console.warn('[AppCore] No rooms loaded from main loader');
         }
         
         console.log('[AppCore] Loading room map with', Object.keys(loadedRoomMap).length, 'rooms');
@@ -1547,16 +1551,13 @@ const handleBackout = useCallback((): void => {
         
         // Try fallback rooms as last resort
         try {
-          const fallbackRooms = getFallbackRooms();
-          console.warn('[AppCore] Using fallback rooms due to initialization error');
-          dispatch({ type: 'LOAD_ROOM_MAP', payload: fallbackRooms });
-          
+          // No fallback loader present; propagate error state
           dispatch({ 
             type: 'ADD_MESSAGE', 
             payload: { 
               id: Date.now().toString(), 
-              text: "Game loaded in emergency mode with limited rooms. Some features may be unavailable.", 
-              type: "warning", 
+              text: "Critical error: Unable to load room data.", 
+              type: "error", 
               timestamp: Date.now() 
             } 
           });
@@ -1698,7 +1699,7 @@ const handleBackout = useCallback((): void => {
         return (
           <UseItemModal 
             inventory={inventory} 
-            environmentItems={room.environment || []} 
+            environmentItems={room?.environment || []}
             onClose={closeModal} 
             onUse={(item: string, target?: string) => { 
               dispatch({ 
@@ -1713,7 +1714,7 @@ const handleBackout = useCallback((): void => {
         return (
           <PickUpItemModal 
             isOpen={true}
-            items={room.items?.map((item: Item | string) => 
+            items={room?.items?.map((item: Item | string) => 
               typeof item === 'string' ? item : item.name
             ) || []} 
             onClose={closeModal} 
@@ -1736,7 +1737,7 @@ const handleBackout = useCallback((): void => {
           <EnhancedNPCConsole
             isOpen={true}
             npcs={npcsInRoom}
-            activeNpcId={selectedNPC?.id}
+            {...(selectedNPC?.id ? { activeNpcId: selectedNPC.id } : {})}
             isGroupConversation={true}
             onClose={closeModal}
             onSendMessage={handleNPCMessage}
@@ -1962,8 +1963,8 @@ const handleBackout = useCallback((): void => {
       <RoomTransition 
         isActive={roomTransitionActive && transitionInfo.shouldAnimate} 
         transitionType={transitionInfo.transitionType} 
-        fromZone={transitionInfo.fromZone} 
-        toZone={transitionInfo.toZone} 
+        fromZone={transitionInfo.fromZone ?? null} 
+        toZone={transitionInfo.toZone ?? null} 
         onComplete={() => { 
           setRoomTransitionActive(false); 
           setLastMovementAction(''); 
@@ -1979,12 +1980,22 @@ const handleBackout = useCallback((): void => {
       </div>
       
       <div className="quad quad-2">
-        <TerminalConsole messages={state.history} />
+        <ConsoleTerminal 
+          messages={state.history.map(h => ({
+            id: h.id,
+            content: (h as any).text || (h as any).content || '',
+            type: 'system',
+            timestamp: (h as any).timestamp || Date.now(),
+            skipTyping: false
+          }))}
+        />
       </div>
       
       <div className="quad quad-3">
         <PlayerStatsPanel />
         <CommandInput onCommand={handleCommand} playerName={playerName} />
+        <ObjectivePanel />
+        <AylaPanel />
         <PresentNPCsPanel npcs={npcsInRoom} onTalkToNPC={handleOpenNPCConsole} />
       </div>
       

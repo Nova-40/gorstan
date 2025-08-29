@@ -249,13 +249,19 @@ export const ResponsiveGrid: React.FC<ResponsiveGridProps> = ({
     const breakpointOrder: Breakpoint[] = ['xxl', 'xl', 'lg', 'md', 'sm', 'xs'];
     const currentIndex = breakpointOrder.indexOf(currentBreakpoint);
     
+    if (currentIndex === -1) {
+      // Fallback if currentBreakpoint not recognized
+      const defaultVal = columns.md ?? columns.sm ?? columns.xs;
+      return defaultVal ?? 1;
+    }
     for (let i = currentIndex; i < breakpointOrder.length; i++) {
       const bp = breakpointOrder[i];
-      if (columns[bp] !== undefined) {
-        return columns[bp];
+      if (bp && Object.prototype.hasOwnProperty.call(columns, bp)) {
+        const val = columns[bp];
+        if (typeof val === 'number') return val;
       }
     }
-    return 1;
+    return columns.xs ?? 1;
   };
 
   const columnCount = getCurrentColumns();

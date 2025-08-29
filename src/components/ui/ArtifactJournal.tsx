@@ -218,7 +218,7 @@ const ArtifactJournal: React.FC<ArtifactJournalProps> = ({
                   key={bond.artifactId}
                   bond={bond}
                   recentCommunications={communications}
-                  onAddNote={onAddNote ? (note) => onAddNote(bond.artifactId, note) : undefined}
+                  {...(onAddNote && { onAddNote: (note) => onAddNote(bond.artifactId, note) })}
                 />
               );
             })}

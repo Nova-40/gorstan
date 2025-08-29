@@ -481,7 +481,7 @@ class ArtifactArcService {
     };
 
     const messages = artifactMessages[type] || artifactMessages.feeling;
-    let selectedMessage = messages[Math.floor(Math.random() * messages.length)];
+    let selectedMessage = messages?.[Math.floor(Math.random() * messages.length)] || 'The artifact resonates quietly';
 
     // Modify message based on personality
     if (personality.protective > 70 && trigger === 'emergency') {
@@ -490,7 +490,7 @@ class ArtifactArcService {
       selectedMessage = '...' + selectedMessage + '...';
     }
 
-    return selectedMessage;
+    return selectedMessage || 'The artifact whispers softly';
   }
 
   // Evolution System

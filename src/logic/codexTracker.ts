@@ -47,13 +47,14 @@ export interface CodexEntry {
   id: string;
   name: string;
   category: ItemCategory;
-  description?: string;
-  loreDescription?: string;
+  // Mark as string | undefined explicitly for exactOptionalPropertyTypes compatibility
+  description?: string | undefined;
+  loreDescription?: string | undefined;
   discoveredIn: string;
   discoveredAt: number;
   firstEncounter: boolean;
   timesFound: number;
-  significance?: 'mundane' | 'useful' | 'rare' | 'legendary' | 'mysterious';
+  significance?: 'mundane' | 'useful' | 'rare' | 'legendary' | 'mysterious' | undefined;
   relatedQuests?: string[];
   relatedNPCs?: string[];
   tags?: string[];
@@ -124,8 +125,8 @@ export function recordItemDiscovery(
       id: itemId,
       name: itemData?.name || formatItemName(itemId),
       category,
-      description: itemData?.description,
-      loreDescription: itemData?.loreDescription,
+      description: itemData?.description ?? '',
+      loreDescription: itemData?.loreDescription ?? '',
       discoveredIn: roomId,
       discoveredAt: Date.now(),
       firstEncounter: true,

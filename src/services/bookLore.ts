@@ -146,7 +146,7 @@ class BookLoreService {
   getRandomBook(): BookLoreEntry | null {
     if (!this.initialized || this.loreData.books.length === 0) return null;
     const randomIndex = Math.floor(Math.random() * this.loreData.books.length);
-    return this.loreData.books[randomIndex];
+    return this.loreData.books[randomIndex] || null;
   }
 
   /**

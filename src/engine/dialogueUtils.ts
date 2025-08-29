@@ -108,7 +108,7 @@ export function selectWeightedDialogue(
   const totalWeight = validVariations.reduce((sum, variation) => sum + variation.weight, 0);
 
   if (totalWeight === 0) {
-    return validVariations[0].text;
+    return validVariations[0]!.text; // safe due to validVariations length guard
   }
 
   
@@ -121,7 +121,7 @@ export function selectWeightedDialogue(
     }
   }
 
-  return validVariations[validVariations.length - 1].text;
+  return validVariations[validVariations.length - 1]!.text; // fallback
 }
 
 
@@ -228,7 +228,13 @@ export function getDialogueVariationsByMood(
   playerState: DialogueState
 ): DialogueVariation[] {
 
-  const moodVariations: Record<string, DialogueVariation[]> = {
+  const moodVariations: {
+    friendly: DialogueVariation[];
+    neutral: DialogueVariation[];
+    hostile: DialogueVariation[];
+    suspicious: DialogueVariation[];
+    caring: DialogueVariation[];
+  } = {
     friendly: [
       { text: "It's wonderful to see you again!", weight: 3, conditions: [{ type: 'trust', key: 'trust', value: 5, operator: 'greater' }] },
       { text: "Hello there, friend!", weight: 2, conditions: [{ type: 'trust', key: 'trust', value: 3, operator: 'greater' }] },
@@ -260,7 +266,9 @@ export function getDialogueVariationsByMood(
     ]
   };
 
-  return moodVariations[baseMood] || moodVariations.neutral;
+  const mv = (moodVariations as Record<string, DialogueVariation[]>)[baseMood];
+  if (mv) return mv;
+  return moodVariations.neutral; // defined in object literal above
 }
 
 
@@ -290,12 +298,12 @@ export function generateContextualGreeting(
   ];
   
   if (deathCount > 5) {
-    return deathGreetings[deathCount % deathGreetings.length];
+  return deathGreetings[deathCount % deathGreetings.length] ?? deathGreetings[0] ?? "...";
   }
 
   
   if (resetCount > 3) {
-    return resetGreetings[resetCount % resetGreetings.length];
+  return resetGreetings[resetCount % resetGreetings.length] ?? resetGreetings[0] ?? "...";
   }
 
   

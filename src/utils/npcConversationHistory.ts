@@ -116,7 +116,7 @@ export function getLastConversation(
   npcId: string
 ): ConversationEntry | null {
   const history = getNPCConversationHistory(state, npcId);
-  return history.entries.length > 0 ? history.entries[history.entries.length - 1] : null;
+  return history.entries.length > 0 ? (history.entries[history.entries.length - 1] || null) : null;
 }
 
 /**

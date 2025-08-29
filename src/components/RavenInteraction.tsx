@@ -227,13 +227,14 @@ const RavenInteraction: React.FC<RavenInteractionProps> = ({ onComplete, playerN
     // Display entries gradually with glitch effects
     intervalRef.current = setInterval(() => {
       if (displayedEntries < REDACTED_REGISTER.length) {
-        const entry = REDACTED_REGISTER[displayedEntries];
+  const entry = REDACTED_REGISTER[displayedEntries];
+  if (!entry) return; // Safety
         
         // Add some glitch effects randomly
         const isGlitched = Math.random() < 0.2;
         const entryText = isGlitched 
-          ? `🔴 ${entry.name}\n   Known As: ${entry.alias}\n   ███████ ${entry.reason} ███████`
-          : `🔴 ${entry.name}\n   Known As: ${entry.alias}\n   ${entry.reason}`;
+          ? `🔴 ${entry.name}\n   Known As: ${entry.alias}\n   ███████ ${entry.reason ?? 'REDACTED'} ███████`
+          : `🔴 ${entry.name}\n   Known As: ${entry.alias}\n   ${entry.reason ?? 'No reason provided'}`;
 
         dispatch({
           type: 'RECORD_MESSAGE',

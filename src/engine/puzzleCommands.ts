@@ -54,7 +54,7 @@ function createGameMessage(
     text,
     type,
     timestamp: Date.now(),
-    speaker
+    ...(speaker && { speaker })
   };
 }
 
@@ -216,7 +216,7 @@ export function isPuzzleCommand(command: string): boolean {
 // Variable declaration
   const verb = commandWords[0];
 
-  return ['puzzle', 'puzzles', 'solve'].includes(verb);
+  return !!verb && ['puzzle', 'puzzles', 'solve'].includes(verb);
 }
 
 

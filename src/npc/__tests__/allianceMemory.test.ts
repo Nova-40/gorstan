@@ -151,7 +151,7 @@ describe('AllianceMemorySystem', () => {
       
       const relationship = memorySystem.getRelationship('morthos', 'al');
       expect(relationship!.significantEvents.length).toBe(1);
-      expect(relationship!.significantEvents[0].type).toBe('sacrifice');
+  expect(relationship!.significantEvents[0]?.type).toBe('sacrifice');
     });
   });
 
@@ -226,8 +226,8 @@ describe('AllianceMemorySystem', () => {
       const memories = memorySystem.recallMemories('morthos', { location: 'control-room' }, triggers);
       
       expect(memories.length).toBeGreaterThan(0);
-      expect(memories[0].sourceEvent.context.location).toBe('control-room');
-      expect(memories[0].triggerReason).toContain('location: control-room');
+  expect(memories[0]?.sourceEvent.context.location).toBe('control-room');
+  expect(memories[0]?.triggerReason).toContain('location: control-room');
     });
 
     test('should recall memories based on NPC presence trigger', () => {
@@ -238,7 +238,7 @@ describe('AllianceMemorySystem', () => {
       const memories = memorySystem.recallMemories('morthos', {}, triggers);
       
       expect(memories.length).toBeGreaterThan(0);
-      expect(memories[0].sourceEvent.context.otherNPCsPresent).toContain('al');
+  expect(memories[0]?.sourceEvent.context.otherNPCsPresent).toContain('al');
     });
 
     test('should calculate relevance scores correctly', () => {
@@ -249,7 +249,7 @@ describe('AllianceMemorySystem', () => {
       const memories = memorySystem.recallMemories('morthos', { location: 'control-room' }, triggers);
       
       expect(memories.length).toBeGreaterThan(0);
-      expect(memories[0].relevanceScore).toBeGreaterThan(0.5);
+  expect(memories[0]?.relevanceScore).toBeGreaterThan(0.5);
     });
 
     test('should generate appropriate dialogue suggestions', () => {
@@ -260,8 +260,8 @@ describe('AllianceMemorySystem', () => {
       const memories = memorySystem.recallMemories('morthos', { location: 'control-room' }, triggers);
       
       expect(memories.length).toBeGreaterThan(0);
-      expect(memories[0].suggestedDialogue).toBeDefined();
-      expect(memories[0].suggestedDialogue!.length).toBeGreaterThan(0);
+  expect(memories[0]?.suggestedDialogue).toBeDefined();
+  expect(memories[0]?.suggestedDialogue!.length).toBeGreaterThan(0);
     });
 
     test('should suggest behavior changes', () => {
@@ -272,8 +272,8 @@ describe('AllianceMemorySystem', () => {
       const memories = memorySystem.recallMemories('morthos', { location: 'lab' }, triggers);
       
       expect(memories.length).toBeGreaterThan(0);
-      expect(memories[0].suggestedBehaviorChange).toBeDefined();
-      expect(memories[0].emotionalImpact).toBe('negative'); // Because of betrayal
+  expect(memories[0]?.suggestedBehaviorChange).toBeDefined();
+  expect(memories[0]?.emotionalImpact).toBe('negative'); // Because of betrayal
     });
   });
 

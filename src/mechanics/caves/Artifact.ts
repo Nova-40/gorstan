@@ -67,9 +67,9 @@ export class Artifact {
       }
     ];
     
-    const chosen = artifacts[Math.floor(Math.random() * artifacts.length)];
-    
-    console.log(`✨ ${chosen.name} ✨`);
+  const chosen = artifacts[Math.floor(Math.random() * artifacts.length)];
+  if (!chosen) return; // safety guard
+  console.log(`✨ ${chosen.name} ✨`);
     console.log('');
     console.log(chosen.description);
     console.log('');

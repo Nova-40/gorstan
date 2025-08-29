@@ -1,0 +1,15 @@
+# Trial II: Mushroom Field (Hexhounds)
+# Complex navigation with safe zones and pursuit mechanics
+
+..~#~..  
+.~@~..   (Edge - safe starting area)
+..C>..   
+
+~~~R~~~
+~~@F~~~  (Field zones: ~ = mushrooms, R = rock, F = field)
+~R~F~R~  (@ = player position)
+
+Cave: C
+Rocks: # (safe zones)
+Wind Vane: W
+Log Lure: L

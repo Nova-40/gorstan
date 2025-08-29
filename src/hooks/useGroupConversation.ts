@@ -10,7 +10,8 @@ interface GroupConversationState {
   hasGroupConversation: boolean;
   groupNpcs: NPC[];
   isCompetitiveGroup: boolean;
-  primaryNpcId?: string;
+  // Mark optional explicitly as string | undefined to satisfy exactOptionalPropertyTypes
+  primaryNpcId?: string | undefined;
   conversationType: 'single' | 'group' | 'competitive';
 }
 
@@ -37,11 +38,12 @@ export function useGroupConversation(): GroupConversationState {
     
     // Single NPC conversation
     if (relevantNpcs.length <= 1) {
+      const singlePrimary = relevantNpcs[0]?.id;
       return {
         hasGroupConversation: false,
         groupNpcs: relevantNpcs,
         isCompetitiveGroup: false,
-        primaryNpcId: relevantNpcs[0]?.id,
+        primaryNpcId: singlePrimary === undefined ? undefined : singlePrimary,
         conversationType: 'single'
       };
     }
@@ -53,7 +55,7 @@ export function useGroupConversation(): GroupConversationState {
     );
     
     // Determine primary NPC for group conversations
-    let primaryNpcId: string | undefined;
+  let primaryNpcId: string | undefined;
     
     if (isCompetitive) {
       // In competitive groups, prioritize based on context
@@ -120,7 +122,7 @@ export function useConversationContext(npcIds: string[]): {
 export function useConversationTriggers(): {
   shouldTriggerGroupGreeting: boolean;
   shouldShowCompetitiveDialogue: boolean;
-  triggerReason?: string;
+  triggerReason?: string | undefined;
 } {
   const { state } = useGameState();
   const groupState = useGroupConversation();
@@ -147,7 +149,7 @@ export function useConversationTriggers(): {
     return {
       shouldTriggerGroupGreeting,
       shouldShowCompetitiveDialogue,
-      triggerReason
+      triggerReason: triggerReason === undefined ? undefined : triggerReason
     };
   }, [groupState, state.currentRoomId]);
 }

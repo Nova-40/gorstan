@@ -1,0 +1,19 @@
+{
+  "_zoneDefaults": {
+    "nexus": "/images/introZone_controlroom.png",
+    "glitch": "/images/glitchrealm-zoneravenroom.png",
+    "elfhame": "/images/elfhame-default.png",
+    "maze": "/images/introZone_crossing.png",
+    "default": "/images/default-room.png"
+  },
+  "images": {
+    "artifactChamber": "/images/artifactChamber.png",
+    "controlnexus": "/images/introZone_controlnexus.gif",
+    "controlroom": "/images/introZone_controlroom.png",
+    "crossing": "/images/introZone_crossing.png",
+    "glitchrealm": "/images/glitchrealm-zoneravenroom.png",
+    "gorstanhub": "/images/gorstanZone_gorstanhub.png",
+    "liminalhub": "/images/liminalhub.png",
+    "londonhub": "/images/londonZone_londonhub.png"
+  }
+}

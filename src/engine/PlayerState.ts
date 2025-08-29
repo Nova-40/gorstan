@@ -143,8 +143,6 @@ export const initialGameState: GameState = {
 
   
   isTransitioning: false,
-  targetRoom: undefined,
-  lastCommand: undefined
 };
 
   
@@ -192,7 +190,6 @@ export function gameStateReducer(state: GameState, action: GameAction): GameStat
             ? state.visitedRooms
             : [...state.visitedRooms, action.payload],
           isTransitioning: false, 
-          targetRoom: undefined,
           lastSave: Date.now()
         };
 
@@ -275,11 +272,14 @@ export function gameStateReducer(state: GameState, action: GameAction): GameStat
         };
 
       case 'SET_TRANSITIONING':
-        return {
+        const result = {
           ...state,
           isTransitioning: action.payload.isTransitioning,
-          targetRoom: action.payload.targetRoom
         };
+        if (action.payload.targetRoom !== undefined) {
+          result.targetRoom = action.payload.targetRoom;
+        }
+        return result;
 
       case 'UPDATE_NPC_RELATIONSHIP':
         const clampedValue = Math.max(-100, Math.min(100, action.payload.value));
@@ -431,7 +431,6 @@ export function mergeLoadedState(
     
     sessionStart: Date.now(),
     isTransitioning: false,
-    targetRoom: undefined,
     lastSave: Date.now()
   };
 

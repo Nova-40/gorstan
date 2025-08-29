@@ -196,7 +196,7 @@ class ShadowEncounterService {
       }
     }
 
-    return eligibleEntities[0]; // Fallback
+    return eligibleEntities[0] || null; // Fallback
   }
 
   private spawnEntity(entityTemplate: ShadowEntity): void {

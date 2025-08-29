@@ -234,7 +234,7 @@ function getWendellStalkerMessage(intensity: number): string {
   else category = 'high';
   
   const categoryMessages = messages[category];
-  return categoryMessages[Math.floor(Math.random() * categoryMessages.length)];
+  return categoryMessages[Math.floor(Math.random() * categoryMessages.length)] || 'A strange presence watches from the shadows.';
 }
 
 // Get escalating Polly stalker messages
@@ -263,7 +263,7 @@ function getPollyStalkerMessage(intensity: number): string {
   else category = 'high';
   
   const categoryMessages = messages[category];
-  return categoryMessages[Math.floor(Math.random() * categoryMessages.length)];
+  return categoryMessages[Math.floor(Math.random() * categoryMessages.length)] || 'Polly watches with hollow eyes.';
 }
 
 // Handle Polly's escalating behavior

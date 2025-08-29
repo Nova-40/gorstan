@@ -139,5 +139,5 @@ export function getAylaResponse(input: string, state: GameState): string {
     "Your question makes me consider new connections. Unfortunately, none formed."
   ];
   
-  return fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
+  return fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)] || 'I notice something interesting, but cannot form a complete response.';
 }

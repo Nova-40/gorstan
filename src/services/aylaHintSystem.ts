@@ -310,7 +310,7 @@ Respond with just the hint text, in Ayla's voice with appropriate cosmic imagery
     };
 
     const categoryHints = scriptedHints[stuckState.category as keyof typeof scriptedHints] || scriptedHints.general;
-    const hintText = categoryHints[Math.floor(Math.random() * categoryHints.length)];
+    const hintText = categoryHints[Math.floor(Math.random() * categoryHints.length)] || "I sense you need guidance, but the cosmic threads are unclear.";
 
     return {
       shouldInterrupt: true,

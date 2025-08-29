@@ -1,0 +1,695 @@
+{
+  "controlnexus": {
+    "id": "controlnexus",
+    "title": "Control Nexus",
+    "zone": "default",
+    "enterText": [
+      "You are in the central control nexus. This is the heart of the multiverse navigation system. Strange lights pulse from crystalline structures embedded in the walls."
+    ],
+    "exits": [],
+    "teleportStyle": "trek",
+    "ambient": "/audio/amb/control_loop.ogg",
+    "objectiveHints": [
+      "That suspiciously blue button is begging to be pressed."
+    ],
+    "actions": [
+      {
+        "id": "push-blue",
+        "label": "Push the blue button",
+        "effects": [
+          "flag:set:blue_button_pushed",
+          "say:The hum deepens."
+        ]
+      }
+    ]
+  },
+  "controlroom": {
+    "id": "controlroom",
+    "title": "Control Room",
+    "zone": "default",
+    "enterText": [
+      "A high-tech control room with banks of monitors and control panels. The air hums with electronic activity."
+    ],
+    "exits": []
+  },
+  "crossing": {
+    "id": "crossing",
+    "title": "The Crossing",
+    "zone": "default",
+    "enterText": [
+      "A mystical crossroads where multiple pathways converge. Energy crackles in the air, and you can sense multiple destinations beckoning."
+    ],
+    "exits": []
+  },
+  "gorstanhub": {
+    "id": "gorstanhub",
+    "title": "Gorstan Hub",
+    "zone": "default",
+    "enterText": [
+      "The central hub of Gorstan, a mystical realm of ancient power. Mist swirls around stone archways leading to various parts of this magical land."
+    ],
+    "exits": []
+  },
+  "londonhub": {
+    "id": "londonhub",
+    "title": "London Hub",
+    "zone": "default",
+    "enterText": [
+      "A bustling intersection in modern London. The familiar sounds of city life surround you - traffic, conversations, and the distant chime of Big Ben."
+    ],
+    "exits": []
+  },
+  "newyorkhub": {
+    "id": "newyorkhub",
+    "title": "New York Hub",
+    "zone": "default",
+    "enterText": [
+      "The heart of Manhattan. Skyscrapers tower above you, yellow cabs honk in the distance, and the energy of the city that never sleeps pulses all around."
+    ],
+    "exits": []
+  },
+  "decipher_fae_glyphs": {
+    "id": "decipher_fae_glyphs",
+    "title": "Decipher the Ancient Glyphs",
+    "zone": "default",
+    "enterText": [
+      "The shifting Fae script on the standing stones holds secrets. Try "
+    ],
+    "exits": []
+  },
+  "commune_with_oaks": {
+    "id": "commune_with_oaks",
+    "title": "Listen to the Ancient Oaks",
+    "zone": "default",
+    "enterText": [
+      "The towering oaks whisper secrets in the wind. Use "
+    ],
+    "exits": []
+  },
+  "scry_other_realms": {
+    "id": "scry_other_realms",
+    "title": "Glimpse Other Realms",
+    "zone": "default",
+    "enterText": [
+      "The lake\\"
+    ],
+    "exits": []
+  },
+  "gather_silver_sand": {
+    "id": "gather_silver_sand",
+    "title": "Collect Harmonic Sand",
+    "zone": "default",
+    "enterText": [
+      "The silver sand chimes underfoot. Gather some with "
+    ],
+    "exits": []
+  },
+  "decipher_reality_symbols": {
+    "id": "decipher_reality_symbols",
+    "title": "Decode the Reality Symbols",
+    "zone": "default",
+    "enterText": [
+      "Strange symbols on the floor glow with cold blue light. Use "
+    ],
+    "exits": []
+  },
+  "listen_to_chains": {
+    "id": "listen_to_chains",
+    "title": "Hear the Starlight Chains",
+    "zone": "default",
+    "enterText": [
+      "Chains of silver and starlight hum with contained power. Use ",
+      "The fountain\\"
+    ],
+    "exits": []
+  },
+  "fountain_wish": {
+    "id": "fountain_wish",
+    "title": "Make a Meaningful Wish",
+    "zone": "default",
+    "enterText": [
+      "The fountain\\"
+    ],
+    "exits": []
+  },
+  "decode_notice_board": {
+    "id": "decode_notice_board",
+    "title": "Uncover Hidden Messages",
+    "zone": "default",
+    "enterText": [
+      "The notice board has cryptic messages between the obvious postings. Use "
+    ],
+    "exits": []
+  },
+  "baker_story_exchange": {
+    "id": "baker_story_exchange",
+    "title": "Share Stories with the Baker",
+    "zone": "default",
+    "enterText": [
+      "The village baker loves to exchange tales. Use ",
+      "The village blacksmith poses riddles about metalwork. Use "
+    ],
+    "exits": []
+  },
+  "blacksmith_riddle": {
+    "id": "blacksmith_riddle",
+    "title": "Solve the Blacksmith\\",
+    "zone": "default",
+    "enterText": [
+      "The village blacksmith poses riddles about metalwork. Use "
+    ],
+    "exits": []
+  },
+  "dominic_philosophy": {
+    "id": "dominic_philosophy",
+    "title": "Discuss Philosophy with Dominic",
+    "zone": "default",
+    "enterText": [
+      "Dominic seems unusually perceptive. Use ",
+      "Everything is arranged with mathematical precision. Use "
+    ],
+    "exits": []
+  },
+  "perfect_alignment_study": {
+    "id": "perfect_alignment_study",
+    "title": "Study the Perfect Alignment",
+    "zone": "default",
+    "enterText": [
+      "Everything is arranged with mathematical precision. Use ",
+      "Dark shapes flit between trees. Use "
+    ],
+    "exits": []
+  },
+  "acknowledge_watchers": {
+    "id": "acknowledge_watchers",
+    "title": "Acknowledge the Hidden Watchers",
+    "zone": "default",
+    "enterText": [
+      "Dark shapes flit between trees. Use ",
+      "This clearing feels like a natural temple. Use "
+    ],
+    "exits": []
+  },
+  "grove_meditation": {
+    "id": "grove_meditation",
+    "title": "Meditate in the Sacred Grove",
+    "zone": "default",
+    "enterText": [
+      "This clearing feels like a natural temple. Use "
+    ],
+    "exits": []
+  },
+  "decipher_floating_symbols": {
+    "id": "decipher_floating_symbols",
+    "title": "Decode the Floating Symbols",
+    "zone": "default",
+    "enterText": [
+      "Glowing symbols appear near certain doors. Use ",
+      "The Pathway Guardian appears when you\\"
+    ],
+    "exits": []
+  },
+  "pathway_guardian_wisdom": {
+    "id": "pathway_guardian_wisdom",
+    "title": "Seek the Guardian\\",
+    "zone": "default",
+    "enterText": [
+      "The Pathway Guardian appears when you\\"
+    ],
+    "exits": []
+  },
+  "chamber_shade_riddle": {
+    "id": "chamber_shade_riddle",
+    "title": "Answer the Shade\\",
+    "zone": "default",
+    "enterText": [
+      "The sorrowful apparition poses ancient riddles. Use ",
+      "Faded markings on the wall might be a map or code. Use "
+    ],
+    "exits": []
+  },
+  "decode_stone_markings": {
+    "id": "decode_stone_markings",
+    "title": "Decipher the Stone Code",
+    "zone": "default",
+    "enterText": [
+      "Faded markings on the wall might be a map or code. Use "
+    ],
+    "exits": []
+  },
+  "pond_mystery": {
+    "id": "pond_mystery",
+    "title": "Uncover the Pond\\",
+    "zone": "default",
+    "enterText": [
+      "The warning suggests the pond triggers unknown effects. Use ",
+      "The hanging lanterns wait to be lit. Use "
+    ],
+    "exits": []
+  },
+  "gazebo_illumination": {
+    "id": "gazebo_illumination",
+    "title": "Light the Gazebo Lanterns",
+    "zone": "default",
+    "enterText": [
+      "The hanging lanterns wait to be lit. Use "
+    ],
+    "exits": []
+  },
+  "faepalacerhianonsroom": {
+    "id": "faepalacerhianonsroom",
+    "title": "Rhianon\\",
+    "zone": "default",
+    "enterText": [
+      "You enter the private chamber of Rhianon, one of the most powerful Fae nobles. The room is a study in elegant contrasts - walls of deepest midnight blue are studded with points of light that shift like captured stars, while furniture of pale silver wood seems to glow with its own inner radiance."
+    ],
+    "exits": []
+  },
+  "ravenchamber": {
+    "id": "ravenchamber",
+    "title": "R.A.V.E.N. Chamber",
+    "zone": "default",
+    "enterText": [
+      "You step into a narrow chamber humming with quiet static. Cracked screens line the walls, some looping nonsense glyphs, others frozen mid-boot."
+    ],
+    "exits": []
+  },
+  "anothermazeroom": {
+    "id": "anothermazeroom",
+    "title": "Another Maze Room",
+    "zone": "default",
+    "enterText": [
+      "You are in another room in the maze. It looks much like the others."
+    ],
+    "exits": [
+      {
+        "to": "mazeZone_mazeroom",
+        "label": "go"
+      },
+      {
+        "to": "mazeZone_stillamazeroom",
+        "label": "go"
+      }
+    ]
+  },
+  "mazeroom": {
+    "id": "mazeroom",
+    "title": "Maze Room",
+    "zone": "default",
+    "enterText": [
+      "You are in a nondescript room within the maze. The walls are plain and the air is still."
+    ],
+    "exits": []
+  },
+  "stillamazeroom": {
+    "id": "stillamazeroom",
+    "title": "Still a Maze Room",
+    "zone": "default",
+    "enterText": [
+      "You are in yet another room of the maze. The sameness is almost dizzying."
+    ],
+    "exits": []
+  },
+  "greasystoreroom": {
+    "id": "greasystoreroom",
+    "title": "Burger Joint Storeroom",
+    "zone": "default",
+    "enterText": [
+      "You step into a cramped storeroom behind the burger joint kitchen. The air is thick with the lingering aromas of cooking oil and spices, and everything seems to have a subtle sheen of grease."
+    ],
+    "exits": []
+  },
+  "ancientsroom": {
+    "id": "ancientsroom",
+    "title": "Ancients",
+    "zone": "default",
+    "enterText": [
+      "You enter a quiet chamber set apart from the infinite shelves of the Ancients"
+    ],
+    "exits": []
+  },
+  "glitchrealm": {
+    "id": "glitchrealm",
+    "title": "Glitchrealm",
+    "zone": "glitch",
+    "enterText": [
+      "You phase into Glitchrealm. Reality wobbles appreciatively."
+    ],
+    "exits": [
+      {
+        "to": "controlnexus",
+        "label": "Return to Control Nexus"
+      }
+    ],
+    "teleportStyle": "fractal",
+    "ambient": "/audio/amb/glitch_loop.ogg",
+    "objectiveHints": [
+      "The coin feels heavier here. Try using it."
+    ],
+    "actions": [
+      {
+        "id": "use-coin",
+        "label": "Present the Schr\u00f6dinger Coin",
+        "effects": [
+          "item:remove:schrodinger-coin:1",
+          "lore:unlock:redacted-register",
+          "say:Reality wobbles appreciatively."
+        ]
+      }
+    ]
+  },
+  "artifactChamber": {
+    "id": "artifactChamber",
+    "title": "Artifact Chamber",
+    "zone": "default",
+    "enterText": [
+      "A hidden chamber filled with ancient runes and a glowing pedestal at its center. The artifact rests here, waiting for a worthy challenger."
+    ],
+    "exits": []
+  },
+  "spireCourtyard": {
+    "id": "spireCourtyard",
+    "title": "Spire Courtyard",
+    "zone": "default",
+    "enterText": [
+      "A vast open courtyard at the base of the Spire, surrounded by ancient ruins. The air is thick with tension, as if the world itself is holding its breath."
+    ],
+    "exits": []
+  },
+  "mazeZone_mazeroom": {
+    "id": "mazeZone_mazeroom",
+    "title": "Endless Corridors",
+    "zone": "maze",
+    "enterText": [
+      "Corridors fold into themselves. Your steps echo back."
+    ],
+    "exits": [
+      {
+        "to": "anothermazeroom",
+        "label": "Follow the echo"
+      }
+    ]
+  },
+  "mazeZone_stillamazeroom": {
+    "id": "mazeZone_stillamazeroom",
+    "title": "Endless Corridors",
+    "zone": "maze",
+    "enterText": [
+      "Corridors fold into themselves. Your steps echo back."
+    ],
+    "exits": [
+      {
+        "to": "anothermazeroom",
+        "label": "Follow the echo"
+      }
+    ]
+  },
+  "console-terminus": {
+    "id": "console-terminus",
+    "title": "The Console Terminus",
+    "zone": "default",
+    "enterText": [
+      "The Console Terminus"
+    ],
+    "exits": []
+  },
+  "daily_rooms": {
+    "id": "daily_rooms",
+    "title": "Explorer",
+    "zone": "default",
+    "enterText": [
+      "Visit 3 different rooms"
+    ],
+    "exits": []
+  },
+  "daily_quests": {
+    "id": "daily_quests",
+    "title": "Quest Seeker",
+    "zone": "default",
+    "enterText": [
+      "Complete 2 miniquests"
+    ],
+    "exits": []
+  },
+  "daily_points": {
+    "id": "daily_points",
+    "title": "Point Collector",
+    "zone": "default",
+    "enterText": [
+      "Earn 100 points"
+    ],
+    "exits": []
+  },
+  "speed_demo": {
+    "id": "speed_demo",
+    "title": "Demo Speedrun",
+    "zone": "default",
+    "enterText": [
+      "Complete the demo route in under 5 minutes"
+    ],
+    "exits": []
+  },
+  "score_master": {
+    "id": "score_master",
+    "title": "Score Master",
+    "zone": "default",
+    "enterText": [
+      "Achieve 500 points in a single session"
+    ],
+    "exits": []
+  },
+  "social_butterfly": {
+    "id": "social_butterfly",
+    "title": "Social Butterfly",
+    "zone": "default",
+    "enterText": [
+      "Have conversations with 5 different NPCs"
+    ],
+    "exits": []
+  },
+  "puzzle_genius": {
+    "id": "puzzle_genius",
+    "title": "Puzzle Genius",
+    "zone": "default",
+    "enterText": [
+      "Solve 3 puzzles without using hints"
+    ],
+    "exits": []
+  },
+  "explorer_elite": {
+    "id": "explorer_elite",
+    "title": "Elite Explorer",
+    "zone": "default",
+    "enterText": [
+      "Discover 10 rooms in 15 minutes"
+    ],
+    "exits": []
+  },
+  "power-control-nexus": {
+    "id": "power-control-nexus",
+    "title": "Power the Control Nexus",
+    "zone": "default",
+    "enterText": [
+      "Power the Control Nexus"
+    ],
+    "exits": []
+  },
+  "discover-coin": {
+    "id": "discover-coin",
+    "title": "Discover the Schr\u00f6dinger Coin",
+    "zone": "default",
+    "enterText": [
+      "Discover the Schr\u00f6dinger Coin"
+    ],
+    "exits": []
+  },
+  "use-coin": {
+    "id": "use-coin",
+    "title": "Use the Coin in Glitchrealm",
+    "zone": "default",
+    "enterText": [
+      "Use the Coin in Glitchrealm"
+    ],
+    "exits": []
+  },
+  "unlock-glitchrealm": {
+    "id": "unlock-glitchrealm",
+    "title": "Unlock Glitchrealm lore",
+    "zone": "default",
+    "enterText": [
+      "Unlock Glitchrealm lore"
+    ],
+    "exits": []
+  },
+  "trials-enhanced": {
+    "id": "trials-enhanced",
+    "title": "Enhanced Mushroom Field Trials",
+    "zone": "default",
+    "enterText": [
+      "Experience the intense creature wave mechanics with strategic safety rocks"
+    ],
+    "exits": []
+  },
+  "exploration-tour": {
+    "id": "exploration-tour",
+    "title": "Multiverse Exploration Tour",
+    "zone": "default",
+    "enterText": [
+      "Journey through Gorstan\\"
+    ],
+    "exits": []
+  },
+  "puzzle-showcase": {
+    "id": "puzzle-showcase",
+    "title": "Puzzle and Mystery Showcase",
+    "zone": "default",
+    "enterText": [
+      "Solve intricate puzzles and uncover hidden secrets"
+    ],
+    "exits": []
+  },
+  "social-drama": {
+    "id": "social-drama",
+    "title": "Social Dynamics & Drama",
+    "zone": "default",
+    "enterText": [
+      "Navigate complex NPC relationships and moral choices"
+    ],
+    "exits": []
+  },
+  "master-showcase": {
+    "id": "master-showcase",
+    "title": "\ud83c\udfae Master Showcase",
+    "zone": "default",
+    "enterText": [
+      "\ud83c\udfae Master Showcase"
+    ],
+    "exits": []
+  },
+  "trials-of-gorstan": {
+    "id": "trials-of-gorstan",
+    "title": "Enhanced Trials of Gorstan",
+    "zone": "default",
+    "enterText": [
+      "Enhanced Trials of Gorstan"
+    ],
+    "exits": []
+  },
+  "glade-of-echoes": {
+    "id": "glade-of-echoes",
+    "title": "Glade of Echoes",
+    "zone": "default",
+    "enterText": [
+      "Glade of Echoes"
+    ],
+    "exits": []
+  },
+  "tramlines-of-time": {
+    "id": "tramlines-of-time",
+    "title": "Tramlines of Time",
+    "zone": "default",
+    "enterText": [
+      "Tramlines of Time"
+    ],
+    "exits": []
+  },
+  "ruins-of-stanton": {
+    "id": "ruins-of-stanton",
+    "title": "Ruins of Stanton",
+    "zone": "default",
+    "enterText": [
+      "Ruins of Stanton"
+    ],
+    "exits": []
+  },
+  "the-three-regnants": {
+    "id": "the-three-regnants",
+    "title": "The Three Regnants",
+    "zone": "default",
+    "enterText": [
+      "The Three Regnants"
+    ],
+    "exits": []
+  },
+  "fracture-of-the-nine": {
+    "id": "fracture-of-the-nine",
+    "title": "Fracture of the Nine",
+    "zone": "default",
+    "enterText": [
+      "Fracture of the Nine"
+    ],
+    "exits": []
+  },
+  "dominic-birthday-heist": {
+    "id": "dominic-birthday-heist",
+    "title": "Dominic",
+    "zone": "default",
+    "enterText": [
+      "Dominic"
+    ],
+    "exits": []
+  },
+  "dynamic_healing_opportunity": {
+    "id": "dynamic_healing_opportunity",
+    "title": "Healing Opportunity",
+    "zone": "default",
+    "enterText": [
+      "Healing Opportunity"
+    ],
+    "exits": []
+  },
+  "dynamic_advanced_challenge": {
+    "id": "dynamic_advanced_challenge",
+    "title": "Advanced Challenge",
+    "zone": "default",
+    "enterText": [
+      "Advanced Challenge"
+    ],
+    "exits": []
+  },
+  "goldfishEscape": {
+    "id": "goldfishEscape",
+    "title": "The Goldfish Dilemma",
+    "zone": "default",
+    "enterText": [
+      "The Goldfish Dilemma"
+    ],
+    "exits": []
+  },
+  "libraryDiscovery": {
+    "id": "libraryDiscovery",
+    "title": "Ancient Library",
+    "zone": "default",
+    "enterText": [
+      "Ancient Library"
+    ],
+    "exits": []
+  },
+  "dominicRescuePlan": {
+    "id": "dominicRescuePlan",
+    "title": "Dominic\\",
+    "zone": "default",
+    "enterText": [
+      "Dominic\\"
+    ],
+    "exits": []
+  },
+  "artifactPuzzle": {
+    "id": "artifactPuzzle",
+    "title": "Quantum Lock Puzzle",
+    "zone": "default",
+    "enterText": [
+      "The artifact is protected by a quantum lock. Solve the puzzle to unlock it."
+    ],
+    "exits": []
+  },
+  "liminalhub": {
+    "id": "liminalhub",
+    "title": "The Liminal Hub",
+    "zone": "default",
+    "enterText": [
+      "A vast, circular chamber stretches out before you, its walls shimmering with a pearlescent, shifting light that defies easy description. The floor is a seamless expanse of polished obsidian, reflecting the ethereal glow from above."
+    ],
+    "exits": []
+  }
+}

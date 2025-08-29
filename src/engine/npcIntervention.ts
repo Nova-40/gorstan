@@ -830,15 +830,20 @@ function executeIntervention(
 
     console.log(`[NPCIntervention] ${rule.interventionNPC} intervened (${rule.id}) - suppressed: ${suppressedNPCs.join(', ')}`);
 
-    return {
+    const result: any = {
       occurred: true,
       interventionNPC: rule.interventionNPC,
       suppressedNPCs,
       messages,
-      effectDuration: rule.cooldown,
       ruleId: rule.id,
       timestamp: now
     };
+    
+    if (rule.cooldown !== undefined) {
+      result.effectDuration = rule.cooldown;
+    }
+    
+    return result;
   } catch (error) {
     console.error('[NPCIntervention] Error executing intervention:', error);
     return createEmptyResult();
@@ -1115,13 +1120,18 @@ export function getPotentialInterventions(
       else if (!canTrigger) reason = 'Cooldown/limit reached';
       else if (!conditionsMet) reason = `Conditions not met${conditionError}`;
 
-      return {
+      const result: any = {
         rule,
         canTrigger: isNPCPresent && suppressedNPCs.length > 0 && canTrigger && conditionsMet,
         suppressedCount: suppressedNPCs.length,
-        reason,
         priority: rule.priority
       };
+      
+      if (reason !== undefined) {
+        result.reason = reason;
+      }
+      
+      return result;
     }).sort((a, b) => b.priority - a.priority); 
   } catch (error) {
     console.error('[NPCIntervention] Error getting potential interventions:', error);
@@ -1177,18 +1187,30 @@ export function getInterventionStats(): {
     const intervals: number[] = [];
     if (recentInterventions.length > 1) {
       for (let i = 1; i < recentInterventions.length; i++) {
-        intervals.push(recentInterventions[i].timestamp - recentInterventions[i - 1].timestamp);
+        const current = recentInterventions[i];
+        const previous = recentInterventions[i - 1];
+        if (current && previous) {
+          intervals.push(current.timestamp - previous.timestamp);
+        }
       }
       stats.averageInterval = intervals.reduce((sum, interval) => sum + interval, 0) / intervals.length;
     }
     // Map to expected return type
-    return {
+    const result: any = {
       totalRules: stats.totalRules,
       activeHistory: stats.activeHistory,
-      recentInterventions: stats.recentInterventions,
-      mostActiveRule: stats.mostActiveRule,
-      averageInterval: stats.averageInterval
+      recentInterventions: stats.recentInterventions
     };
+    
+    if (stats.mostActiveRule !== undefined) {
+      result.mostActiveRule = stats.mostActiveRule;
+    }
+    
+    if (stats.averageInterval !== undefined) {
+      result.averageInterval = stats.averageInterval;
+    }
+    
+    return result;
   } catch (error) {
     console.error('[NPCIntervention] Error getting intervention stats:', error);
     return {

@@ -377,14 +377,16 @@ export function validateRoomGraph(roomMap: RoomMap): RoomGraphStats {
  */
 export function validateRoomPath(roomMap: RoomMap, path: string[]): boolean {
   for (let i = 0; i < path.length - 1; i++) {
-    const currentRoom = roomMap[path[i]];
+    const currentId = path[i];
     const nextRoom = path[i + 1];
+    if (!currentId || !nextRoom) return false;
+    const currentRoom = roomMap[currentId];
     
     if (!currentRoom || !currentRoom.exits) {
       return false;
     }
     
-    const hasConnection = Object.values(currentRoom.exits).includes(nextRoom);
+  const hasConnection = Object.values(currentRoom.exits).includes(nextRoom);
     if (!hasConnection) {
       return false;
     }

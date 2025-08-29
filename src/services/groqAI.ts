@@ -472,7 +472,8 @@ class GroqAIService {
   }
 
   private getTodayDate(): string {
-    return new Date().toISOString().split('T')[0];
+    const dateStr = new Date().toISOString().split('T')[0];
+    return dateStr || new Date().getFullYear() + '-01-01';
   }
 
   private resetDailyCountIfNeeded(): void {
@@ -499,6 +500,7 @@ class GroqAIService {
     
     // Get the most recent conversation
     const recentConv = npcConversations[npcConversations.length - 1];
+    if (!recentConv) return '';
     const recentExchanges = recentConv.exchanges.slice(-2);
     
     return recentExchanges.map((exchange: any) => 

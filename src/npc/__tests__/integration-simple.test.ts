@@ -256,7 +256,7 @@ describe('NPC Wandering System Integration (Core Components)', () => {
       // Verify alliance data was processed
       const recentErrors = errorHandler.getRecentErrors();
       expect(recentErrors.length).toBeGreaterThan(0);
-      expect(recentErrors[0].context).toEqual(allianceData);
+  expect(recentErrors[0]?.context).toEqual(allianceData);
     });
 
     test('should handle concurrent alliance operations', async () => {

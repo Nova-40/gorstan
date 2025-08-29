@@ -49,8 +49,19 @@ async function runHeistSaga(): Promise<void> {
     
     function nextPhase() {
       if (phase < phases.length) {
+        const fn = phases[phase];
+        if (typeof fn !== 'function') {
+          console.warn('[DominicBirthdayHeist] Skipping missing phase function at index', phase);
+          phase++;
+          nextPhase();
+          return;
+        }
         setTimeout(() => {
-          phases[phase]().then(() => {
+          Promise.resolve(fn()).then(() => {
+            phase++;
+            nextPhase();
+          }).catch(err => {
+            console.error('[DominicBirthdayHeist] Phase error', err);
             phase++;
             nextPhase();
           });

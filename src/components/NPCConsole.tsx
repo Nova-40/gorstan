@@ -178,9 +178,9 @@ const NPCConsole: React.FC<NPCConsoleProps> = ({
           greetings = personality.redactedGreeting;
         }
         
-        const greeting = greetings[Math.floor(Math.random() * greetings.length)];
-        // Format greeting with player name
-        const formattedGreeting = formatDialogue(greeting, state);
+  const greeting = greetings.length ? greetings[Math.floor(Math.random() * greetings.length)] : '';
+  // Format greeting with player name (guard empty)
+  const formattedGreeting = greeting ? formatDialogue(greeting, state) : '';
         const welcomeMessage: DialogueMessage = {
           id: `greeting-${Date.now()}`,
           speaker: 'npc',

@@ -1,3 +1,5 @@
+import { getRoom } from '../core/rooms/roomsLoader';
+import { executeEffects } from '../utils/roomActions';
 /*
   Gorstan – Copyright © 2025 Geoff Webster. All Rights Reserved.
   
@@ -16,14 +18,14 @@
 
 // Gorstan and characters (c) Geoff Webster 2025
 // Game module.
-import React, { useState, useRef, useCallback, useMemo, useEffect } from "react";
+import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import {
   ArrowUp, ArrowDown, ArrowLeft, ArrowRight,
   Coffee, MousePointerClick, Backpack, Eye,
   Maximize2, Minimize2, Volume2, VolumeX,
-  Grab, Hand, Armchair, Undo, PersonStanding, Bug, Redo, MessageCircle, MessageCircleQuestion, Wrench
-} from "lucide-react";
-import IconButton from "./IconButton";
+  Grab, Hand, Armchair, Undo, PersonStanding, Bug, Redo, MessageCircle, MessageCircleQuestion
+} from 'lucide-react';
+import IconButton from './IconButton';
 
 /**
  * Props interface for the QuickActionsPanel component
@@ -469,6 +471,31 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
         preload="auto"
         aria-hidden="true"
       />
+    </div>
+  );
+  // Room actions (moved inside component return with proper closure)
+  const roomActions = useMemo(() => {
+    const r = getRoom(currentRoomId);
+    return (r?.actions || []) as Array<{ id: string; label: string; effects?: any[] }>;
+  }, [currentRoomId]);
+
+  return (
+    <div 
+      className="quick-actions-panel flex flex-wrap gap-2 justify-center p-4 bg-black/30 backdrop-blur rounded-xl"
+      role="toolbar" aria-label="Game Action Controls">
+      <div className="contents" role="group" aria-label="Movement">{directionButtons}</div>
+      <div className="contents" role="group" aria-label="Game Actions">{coreActionButtons}</div>
+      <div className="contents" role="group" aria-label="System Controls">{systemControlButtons}</div>
+      {roomActions.length > 0 && (
+        <div className="grid grid-cols-2 gap-2 mt-2 w-full" role="group" aria-label="Room Actions">
+          {roomActions.map(a => (
+            <button key={a.id} className="border border-green-700 rounded-xl px-2 py-1 hover:bg-green-900/20" onClick={async ()=>{ await executeEffects(a.effects||[]); }}>
+              {a.label}
+            </button>
+          ))}
+        </div>
+      )}
+      <audio ref={backoutSoundRef} src="/audio/fail.wav" preload="auto" aria-hidden="true" />
     </div>
   );
 };

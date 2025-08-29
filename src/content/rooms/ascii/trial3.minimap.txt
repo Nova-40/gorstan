@@ -1,0 +1,16 @@
+# Trial III: Cave of Reflection
+# Mirror puzzles with echo mechanics
+
+/\
+@   (Antechamber)
+\/
+
+|M|P|S|
+|@|E|G|  (Gallery(M), Pressure(P), Split(S))
+|N|R|G|  (Nexus(N), Reflector(R), Guardian(G))
+
+@ = player
+E = echo position
+M = mirrors
+P = pressure plates
+G = guardian

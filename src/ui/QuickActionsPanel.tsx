@@ -1,3 +1,5 @@
+import { getRoom } from '../core/rooms/roomsLoader';
+import { executeEffects } from '../utils/roomActions';
 /*
   Gorstan – Copyright © 2025 Geoff Webster. All Rights Reserved.
   
@@ -89,6 +91,7 @@ export const CombatActionsPanel: React.FC<QuickActionsPanelProps> = ({
 
   const handleSpellCast = (spellId: string) => {
     const currentRoom = state.roomMap[state.currentRoomId];
+    if (!currentRoom) return; // safety
     const result = processCommand({
       input: `cast ${spellId}`,
       currentRoom,
@@ -123,6 +126,7 @@ export const CombatActionsPanel: React.FC<QuickActionsPanelProps> = ({
 
   const handleMeleeAttack = () => {
     const currentRoom = state.roomMap[state.currentRoomId];
+    if (!currentRoom) return;
     const result = processCommand({
       input: 'melee',
       currentRoom,
@@ -155,6 +159,7 @@ export const CombatActionsPanel: React.FC<QuickActionsPanelProps> = ({
 
   const handleParry = () => {
     const currentRoom = state.roomMap[state.currentRoomId];
+    if (!currentRoom) return;
     const result = processCommand({
       input: 'parry',
       currentRoom,
@@ -187,6 +192,7 @@ export const CombatActionsPanel: React.FC<QuickActionsPanelProps> = ({
 
   const handleDodge = () => {
     const currentRoom = state.roomMap[state.currentRoomId];
+    if (!currentRoom) return;
     const result = processCommand({
       input: 'dodge',
       currentRoom,

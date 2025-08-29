@@ -205,7 +205,7 @@ export class PuzzleEngine {
       return {
         ...result,
         completed: true,
-        rewards: puzzle.rewards
+        ...(puzzle.rewards && { rewards: puzzle.rewards })
       };
     }
 
@@ -419,7 +419,7 @@ export class PuzzleEngine {
   
   private validateGenericPuzzle(puzzle: PuzzleData, solution: any): PuzzleResult {
     
-    if (puzzle.components?.length === 1 && puzzle.components[0].type === 'text_input') {
+    if (puzzle.components?.length === 1 && puzzle.components[0]?.type === 'text_input') {
 // Variable declaration
       const userAnswer = solution[puzzle.components[0].id]?.toLowerCase().trim();
 

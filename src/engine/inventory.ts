@@ -384,6 +384,9 @@ export function removeItem(item: string, quantity: number = 1): InventoryOperati
     }
 
     const inventoryItem = inventory[itemIndex];
+    if (!inventoryItem) {
+      return { type: 'remove', item, success: false, message: 'Item missing in inventory' };
+    }
     if (inventoryItem.stackable && (inventoryItem.quantity || 1) > quantity) {
       // Reduce quantity
       inventoryItem.quantity = (inventoryItem.quantity || 1) - quantity;
@@ -400,9 +403,9 @@ export function removeItem(item: string, quantity: number = 1): InventoryOperati
       return {
         type: 'remove',
         item: inventoryItem,
-        quantity: inventoryItem.quantity || 1,
+        quantity: inventoryItem?.quantity || 1,
         success: true,
-        message: `Removed ${inventoryItem.name} from inventory`
+        message: inventoryItem ? `Removed ${inventoryItem.name} from inventory` : 'Removed item'
       };
     }
   } catch (error) {

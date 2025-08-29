@@ -143,10 +143,10 @@ const validateRoomSchema = ajv.compile(roomSchema);
 // Validation result interface
 export interface ValidationResult {
   valid: boolean;
-  errors?: ErrorObject[];
-  errorMessage?: string;
-  warnings?: string[];
-  suggestions?: string[];
+  errors?: ErrorObject[] | null;
+  errorMessage?: string | null;
+  warnings?: string[] | null;
+  suggestions?: string[] | null;
 }
 
 // Validation context for enhanced checks
@@ -253,8 +253,8 @@ export function validateRoomWithDetails(data: unknown): ValidationResult {
       valid: false,
       errors,
       errorMessage,
-      warnings: warnings.length > 0 ? warnings : undefined,
-      suggestions: suggestions.length > 0 ? suggestions : undefined
+      warnings: warnings.length > 0 ? warnings : null,
+      suggestions: suggestions.length > 0 ? suggestions : null
     };
   } catch (error) {
     console.error('[RoomSchema] Error during validation:', error);

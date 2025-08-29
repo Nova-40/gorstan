@@ -19,12 +19,9 @@
 
 import React, { useState, useEffect } from 'react';
 
-import { Bone, Fish, Bot, UserCircle, ChefHat, Shield, Diamond, Compass, Eye } from 'lucide-react';
-
-
-import { Room, RoomNPC, RoomItem } from '../types/Room';
-
+import { Bone, Fish, Bot, UserCircle, ChefHat, Shield } from 'lucide-react';
 import { useGameState } from '../state/gameState';
+import type { RoomNPC } from '../types/Room';
 
 
 
@@ -68,17 +65,11 @@ const NpcDisplay: React.FC<NpcDisplayProps> = ({ npc }) => {
 
 const RoomRenderer: React.FC = () => {
   const { state, dispatch } = useGameState();
-// Variable declaration
   const room = state.roomMap?.[state.currentRoomId];
-// React state declaration
-  const [looked, setLooked] = useState(false);
   const [lastRoomId, setLastRoomId] = useState<string | null>(null);
 
 // React effect hook
   useEffect(() => {
-    setLooked(false);
-
-    
     if (room && room.id !== lastRoomId) {
       setLastRoomId(room.id);
 
@@ -89,7 +80,7 @@ const RoomRenderer: React.FC = () => {
 
       
 // Variable declaration
-      const entryMessages = [
+  const entryMessages: Array<{ text: string; type: string }> = [
         { text: `--- ${room.title} ---`, type: 'narrative' },
         ...descriptionLines.map(line => ({ text: line, type: 'narrative' }))
       ];
@@ -98,9 +89,7 @@ const RoomRenderer: React.FC = () => {
       if (room.consoleIntro && room.consoleIntro.length > 0) {
         
 // Variable declaration
-        const interpolateText = (text: string): string => {
-          return text.replace(/\{\{PLAYER_NAME\}\}/g, state.player?.name || 'Player');
-        };
+  const interpolateText = (text: string): string => text.replace(/\{\{PLAYER_NAME\}\}/g, state.player?.name || 'Player');
 
 // Variable declaration
         const consoleIntroMessages = [
@@ -118,10 +107,8 @@ const RoomRenderer: React.FC = () => {
       if (roomData.traps && roomData.traps.length > 0 && !state.player?.flags?.trapsDisabled) {
         
 // Variable declaration
-        const activeTrap = roomData.traps.find((trap: any) => !trap.triggered);
-        if (activeTrap) {
-          dispatch({ type: 'TRIGGER_TRAP', payload: activeTrap });
-        }
+  const activeTrap = roomData.traps.find((trap: any) => !trap.triggered);
+  if (activeTrap) dispatch({ type: 'TRIGGER_TRAP', payload: activeTrap });
       }
 
       
@@ -129,13 +116,12 @@ const RoomRenderer: React.FC = () => {
       const entryTimestamp = Date.now();
       entryMessages.forEach((msg, index) => {
 // Variable declaration
-        const message = {
+        dispatch({ type: 'RECORD_MESSAGE', payload: {
           id: `room-entry-${room.id}-${entryTimestamp}-${index}`,
           text: msg.text,
           type: msg.type as any,
-          timestamp: entryTimestamp + index, 
-        };
-        dispatch({ type: 'RECORD_MESSAGE', payload: message });
+          timestamp: entryTimestamp + index,
+        }});
       });
     }
   }, [room?.id, lastRoomId, room, dispatch]);
@@ -153,22 +139,16 @@ const RoomRenderer: React.FC = () => {
   }
 
 // Variable declaration
-  const hasExtraDetails = room.items && room.items.length > 0;
-
-// JSX return block or main return
+  const imagePath = room.image ? `/images/${room.image}` : '/images/default-room.png';
   return (
     <div className="room-container flex flex-col h-full bg-black rounded-lg shadow-inner overflow-hidden border border-green-600">
-      {}
       {room.image ? (
         <div className="room-image-wrapper h-full w-full overflow-hidden">
           <img
-            src={`/images/${room.image}`}
+            src={imagePath}
             alt={room.title}
             className="w-full h-full object-cover"
-            onError={(e) => {
-              console.log(`Failed to load image: /images/${room.image}`);
-              e.currentTarget.style.display = 'none';
-            }}
+            onError={(e) => { console.log(`Failed to load image: ${imagePath}`); (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
           />
         </div>
       ) : (
@@ -179,11 +159,9 @@ const RoomRenderer: React.FC = () => {
           </div>
         </div>
       )}
-
-      {}
       {room.music && (
         <audio autoPlay loop>
-          <source src={room.music} type="audio/mpeg" />
+          <source src={`/audio/${room.music}`} type="audio/mpeg" />
         </audio>
       )}
     </div>

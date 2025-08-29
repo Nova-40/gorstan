@@ -300,8 +300,8 @@ export function removeWendellFromRoom(dispatch: React.Dispatch<GameAction>): voi
       }
     });
 
-    wendellState.isCurrentlyActive = false;
-    wendellState.currentRoomId = undefined;
+  wendellState.isCurrentlyActive = false;
+  (wendellState as any).currentRoomId = undefined;
   }
 }
 

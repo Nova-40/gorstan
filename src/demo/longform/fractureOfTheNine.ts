@@ -62,15 +62,29 @@ async function runFractureSaga(): Promise<void> {
     
     function collectNextShard() {
       if (shardIndex < shards.length) {
+        const shard = shards[shardIndex];
+        if (!shard) {
+          console.warn('[FractureOfTheNine] Missing shard at index', shardIndex, 'skipping');
+          shardIndex++;
+          collectNextShard();
+          return;
+        }
         setTimeout(() => {
-          collectShard(shards[shardIndex]).then(() => {
+          collectShard(shard).then(() => {
+            shardIndex++;
+            collectNextShard();
+          }).catch(err => {
+            console.error('[FractureOfTheNine] Shard collection error', err);
             shardIndex++;
             collectNextShard();
           });
         }, 1500);
       } else {
         setTimeout(() => {
-          assembleShards(shards).then(resolve);
+          assembleShards(shards).then(resolve).catch(err => {
+            console.error('[FractureOfTheNine] Assembly error', err);
+            resolve();
+          });
         }, 2000);
       }
     }

@@ -322,7 +322,10 @@ function presentThreeDoorsPuzzle(dispatch: React.Dispatch<GameAction>): void {
   
 // Variable declaration
   const doors = ['red', 'blue', 'green'];
-  librarianState.correctDoor = doors[Math.floor(Math.random() * doors.length)];
+  const selectedDoor = doors[Math.floor(Math.random() * doors.length)];
+  if (selectedDoor) {
+    librarianState.correctDoor = selectedDoor;
+  }
 }
 
 
@@ -379,7 +382,9 @@ export function handleGuardQuestion(
 // Variable declaration
   const guardResponse = wrongDoors[Math.floor(Math.random() * wrongDoors.length)];
 
-  librarianState.guardResponse = guardResponse;
+  if (guardResponse) {
+    librarianState.guardResponse = guardResponse;
+  }
   librarianState.puzzleStage = 'question_asked';
 
   dispatch({

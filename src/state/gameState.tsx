@@ -86,7 +86,7 @@ export const initialGameState: LocalGameState = {
   },
   history: [],
   currentRoomId: 'controlnexus',
-  previousRoomId: undefined,
+  // previousRoomId intentionally omitted initially – optional under exactOptionalPropertyTypes
   roomMap: {},
   miniquestState: {}, 
   flags: {},
@@ -360,7 +360,7 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
       }
 
       const newRoom = state.roomMap[roomId];
-      const updatedHistory = addRoomDescriptionToHistory(state.history, newRoom, roomId);
+  const updatedHistory = addRoomDescriptionToHistory(state.history, newRoom || null, roomId);
 
       // Trigger room entry events (including Morthos/Al encounter)
       let encounterFlag = false;
@@ -494,7 +494,7 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
               : [...visitedRooms, result.updates.currentRoomId],
           };
           const newRoom = newState.roomMap[result.updates.currentRoomId];
-          newState.history = addRoomDescriptionToHistory(newState.history, newRoom, result.updates.currentRoomId);
+          newState.history = addRoomDescriptionToHistory(newState.history, newRoom || null, result.updates.currentRoomId);
 
           // Trigger room discovery notification for first visits
           if (isFirstVisit && newRoom) {
@@ -527,7 +527,7 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
     case 'LOAD_SAVED_GAME': {
       const newRoomId = 'controlnexus';
       const newRoom = state.roomMap[newRoomId];
-      const updatedHistory = addRoomDescriptionToHistory(state.history, newRoom, newRoomId);
+  const updatedHistory = addRoomDescriptionToHistory(state.history, newRoom || null, newRoomId);
 
       return {
         ...state,
@@ -539,7 +539,7 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
     case 'LOAD_GAME_FROM_STORAGE': {
       const newRoomId = 'controlnexus';
       const newRoom = state.roomMap[newRoomId];
-      const updatedHistory = addRoomDescriptionToHistory(state.history, newRoom, newRoomId);
+  const updatedHistory = addRoomDescriptionToHistory(state.history, newRoom || null, newRoomId);
 
       return {
         ...state,

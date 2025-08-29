@@ -207,13 +207,15 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
               objectives={objectivesProgress?.objectives.slice(0, 3).map(obj => ({
                 id: obj.id,
                 title: obj.label,
-                description: obj.description,
+                ...(obj.description && { description: obj.description }),
                 completed: obj.completed,
                 required: obj.required,
-                progress: obj.progress ? {
-                  current: obj.progress,
-                  total: 100
-                } : undefined
+                ...(obj.progress && { 
+                  progress: {
+                    current: obj.progress,
+                    total: 100
+                  }
+                })
               })) || []}
               compact={true}
               className="text-body-sm"
@@ -280,13 +282,15 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
             objectives={objectivesProgress?.objectives.map(obj => ({
               id: obj.id,
               title: obj.label,
-              description: obj.description,
+              ...(obj.description && { description: obj.description }),
               completed: obj.completed,
               required: obj.required,
-              progress: obj.progress ? {
-                current: obj.progress,
-                total: 100
-              } : undefined
+              ...(obj.progress && { 
+                progress: {
+                  current: obj.progress,
+                  total: 100
+                }
+              })
             })) || []}
             onObjectiveClick={(objective) => {
               if (!objective.completed && !objective.required) {

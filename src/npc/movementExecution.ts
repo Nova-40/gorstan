@@ -558,7 +558,7 @@ export class MovementExecutor {
         // Use the next step in the optimized path
         const nextRoom = optimizedPath[1];
         return {
-          targetRoom: nextRoom,
+          targetRoom: nextRoom || null,
           reason: `Optimized path: ${currentRoom} -> ${nextRoom} (${optimizedPath.length} steps to ${basicDecision.targetRoom})`,
           requiresTeleport: basicDecision.requiresTeleport
         };

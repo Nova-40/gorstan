@@ -354,7 +354,7 @@ export class KeyboardNavigationManager {
     }
     
     if (nextIndex >= 0 && nextIndex < gridItems.length) {
-      gridItems[nextIndex].focus();
+      gridItems[nextIndex]?.focus?.();
       e.preventDefault();
     }
   }
@@ -417,19 +417,19 @@ export class KeyboardNavigationManager {
     
     if (focusableElements.length === 0) return;
     
-    const firstElement = focusableElements[0];
-    const lastElement = focusableElements[focusableElements.length - 1];
+  const firstElement = focusableElements[0];
+  const lastElement = focusableElements[focusableElements.length - 1];
     
     const trapFocus = (e: KeyboardEvent) => {
       if (e.key === 'Tab') {
         if (e.shiftKey) {
           if (document.activeElement === firstElement) {
-            lastElement.focus();
+            lastElement?.focus?.();
             e.preventDefault();
           }
         } else {
           if (document.activeElement === lastElement) {
-            firstElement.focus();
+            firstElement?.focus?.();
             e.preventDefault();
           }
         }
@@ -437,7 +437,7 @@ export class KeyboardNavigationManager {
     };
     
     container.addEventListener('keydown', trapFocus);
-    firstElement.focus();
+  firstElement?.focus?.();
     
     return () => container.removeEventListener('keydown', trapFocus);
   }

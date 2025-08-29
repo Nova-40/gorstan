@@ -220,8 +220,7 @@ class DemoController {
     // Teleport to Control Nexus with Star Trek style
     this.addMessage('✨ Initiating transport sequence...', 'action');
     
-    // TODO: Replace with actual teleportManager.teleport('controlNexus', 'trek');
-    this.changeRoom('controlNexus');
+  try { (await import('../services/teleportManager')).teleportManager.go('controlNexus', { overlay: 'trek' }); } catch { this.changeRoom('controlNexus'); }
     await this.nextStep();
   }
 
@@ -345,8 +344,7 @@ class DemoController {
   private async endDemo(): Promise<void> {
     this.addMessage('🚀 Triggering Star Trek teleport out...', 'action');
     
-    // TODO: Replace with actual teleportManager.teleport(this.originalRoom, 'trek');
-    this.changeRoom(this.originalRoom);
+  try { (await import('../services/teleportManager')).teleportManager.go(this.originalRoom || 'gorstanZone_gorstanhub', { overlay: 'trek', skipCeremony: true, silent: true }); } catch { this.changeRoom(this.originalRoom); }
     
     await this.pause(2000);
     

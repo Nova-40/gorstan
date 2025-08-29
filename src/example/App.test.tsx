@@ -5,14 +5,20 @@ import App from "../App";
 
 describe("App", () => {
   it("renders and responds to interaction", async () => {
+    // userEvent.setup wraps interactions in act automatically
+    const user = userEvent.setup();
     render(<App />);
-    expect(screen.getByText(/gorstan/i)).toBeInTheDocument();
 
-    // Try to find a start button or similar interaction
+    // Wait for initial app title (ensures initial effects settle)
+    await screen.findByText(/gorstan/i);
+
+    // Try to find a start button or similar interaction (optional path)
     const startButtons = screen.queryAllByRole("button", { name: /start/i });
-    if (startButtons.length > 0) {
-      await userEvent.click(startButtons[0]);
-      expect(screen.getByText(/console/i)).toBeInTheDocument();
+    const firstStart = startButtons[0];
+    if (firstStart) {
+      await user.click(firstStart);
+      // Await something that appears after starting to flush follow-up effects
+      await screen.findByText(/console/i);
     }
   });
 });

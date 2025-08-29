@@ -112,9 +112,12 @@ export class TimeboxService {
     const thresholds = [...this.config.warningThresholds].sort((a, b) => b - a);
     
     if (remainingMinutes <= 0) return 'critical';
-    if (thresholds.length >= 3 && remainingMinutes <= thresholds[2]) return 'critical';
-    if (thresholds.length >= 2 && remainingMinutes <= thresholds[1]) return 'urgent';
-    if (thresholds.length >= 1 && remainingMinutes <= thresholds[0]) return 'early';
+    const threshold2 = thresholds[2];
+    const threshold1 = thresholds[1];
+    const threshold0 = thresholds[0];
+    if (thresholds.length >= 3 && threshold2 !== undefined && remainingMinutes <= threshold2) return 'critical';
+    if (thresholds.length >= 2 && threshold1 !== undefined && remainingMinutes <= threshold1) return 'urgent';
+    if (thresholds.length >= 1 && threshold0 !== undefined && remainingMinutes <= threshold0) return 'early';
     
     return 'none';
   }

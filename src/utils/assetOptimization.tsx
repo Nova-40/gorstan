@@ -174,7 +174,7 @@ export const useIntersectionObserver = (
     if (!target) return;
 
     const observer = new IntersectionObserver(
-      ([entry]) => callback(entry.isIntersecting),
+      ([entry]) => { if (entry) callback(entry.isIntersecting); },
       {
         threshold: 0.1,
         rootMargin: '50px',

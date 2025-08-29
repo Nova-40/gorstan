@@ -186,8 +186,8 @@ function seedRoomItems(room: RoomData, context?: SeedingContext): SeedingResult 
           category: (item.category as ItemCategory) || 'misc',
           rarity: (item.rarity as ItemRarity) || 'common',
           spawnChance: rule.chance,
-          spawnRooms: item.spawnRooms,
-          excludeRooms: item.excludeRooms,
+          ...(item.spawnRooms && { spawnRooms: item.spawnRooms }),
+          ...(item.excludeRooms && { excludeRooms: item.excludeRooms }),
           requiredFlags: item.requirements?.map(r => r.target).filter(Boolean) as string[] || [],
           conflictItems: item.conflictItems || []
         });
@@ -258,8 +258,8 @@ function generateRoomItems(roomId: string, context?: SeedingContext): ItemData[]
             category: (item.category as ItemCategory) || 'misc',
             rarity: (item.rarity as ItemRarity) || 'common',
             spawnChance: rule.chance,
-            spawnRooms: item.spawnRooms,
-            excludeRooms: item.excludeRooms,
+            ...(item.spawnRooms && { spawnRooms: item.spawnRooms }),
+            ...(item.excludeRooms && { excludeRooms: item.excludeRooms }),
             requiredFlags: item.requirements?.map(r => r.target).filter(Boolean) as string[] || [],
             conflictItems: item.conflictItems || []
           });
@@ -276,6 +276,10 @@ function generateRoomItems(roomId: string, context?: SeedingContext): ItemData[]
       
       // Get a random item from the registry
       const randomItem = allItems[Math.floor(Math.random() * allItems.length)];
+      if (!randomItem) {
+        continue;
+      }
+      
       const itemData: ItemData = {
         id: randomItem.id,
         name: randomItem.name,
@@ -283,8 +287,8 @@ function generateRoomItems(roomId: string, context?: SeedingContext): ItemData[]
         category: (randomItem.category as ItemCategory) || 'misc',
         rarity: (randomItem.rarity as ItemRarity) || 'common',
         spawnChance: randomItem.spawnChance || SPAWN_CONFIG.baseSpawnChance,
-        spawnRooms: randomItem.spawnRooms,
-        excludeRooms: randomItem.excludeRooms,
+        ...(randomItem.spawnRooms && { spawnRooms: randomItem.spawnRooms }),
+        ...(randomItem.excludeRooms && { excludeRooms: randomItem.excludeRooms }),
         requiredFlags: randomItem.requirements?.map(r => r.target).filter(Boolean) as string[] || [],
         conflictItems: randomItem.conflictItems || []
       };

@@ -28,7 +28,8 @@ export function enterRoom(room: RoomId) {
   const traps = getRoomTraps(room);
   if (!traps.length) return { death: false, cause: null as string | null };
   const lethal = traps.find(t => t.lethal);
-  return { death: !!lethal, cause: lethal?.description ?? traps[0].description };
+  const fallback = traps[0]?.description || 'Unknown trap';
+  return { death: !!lethal, cause: lethal?.description ?? fallback };
 }
 
 import { useEffect } from 'react';

@@ -1043,7 +1043,7 @@ export function runScene(
       messagesAdded,
       actionsExecuted,
       choicesAvailable,
-      nextScenes: nextScenes.length > 0 ? nextScenes : undefined,
+      ...(nextScenes.length > 0 && { nextScenes }),
       stateChanges,
       executionTime
     };
@@ -1372,11 +1372,16 @@ function executeSceneActions(
 
           case 'teleport':
             if (action.target) {
-              context.setGameState(prev => ({
-                ...prev,
-                currentRoom: action.target,
-                flags: { ...prev.flags, teleported: true }
-              }));
+              context.setGameState(prev => {
+                const gameStateUpdate: any = {
+                  ...prev,
+                  flags: { ...prev.flags, teleported: true }
+                };
+                if (action.target !== undefined) {
+                  gameStateUpdate.currentRoom = action.target;
+                }
+                return gameStateUpdate;
+              });
               result.stateChanges[`teleport`] = action.target;
               result.executed++;
             }
@@ -1602,10 +1607,13 @@ function applySceneEffects(effects: Scene['effects'], context: SceneContext, sta
     if (!effects) return;
 
     if (effects.mood) {
-      context.setGameState(prev => ({
-        ...prev,
-        currentMood: effects.mood
-      }));
+      context.setGameState(prev => {
+        const gameStateUpdate: any = { ...prev };
+        if (effects.mood !== undefined) {
+          gameStateUpdate.currentMood = effects.mood;
+        }
+        return gameStateUpdate;
+      });
       stateChanges.mood = effects.mood;
     }
 
@@ -1939,14 +1947,17 @@ export function getSceneInfo(sceneId: string): (Pick<Scene, 'id' | 'title' | 'ca
     const executionData = sceneExecutionHistory.get(sceneId);
         if (!scene) return null;
 
-    return {
-      id: scene.id,
-      title: scene.title,
-      category: scene.category,
-      tags: scene.tags,
-      executionCount: executionData?.count,
-      lastExecuted: executionData?.lastExecuted
+    const result: any = {
+      id: scene.id
     };
+    
+    if (scene.title !== undefined) result.title = scene.title;
+    if (scene.category !== undefined) result.category = scene.category;
+    if (scene.tags !== undefined) result.tags = scene.tags;
+    if (executionData?.count !== undefined) result.executionCount = executionData.count;
+    if (executionData?.lastExecuted !== undefined) result.lastExecuted = executionData.lastExecuted;
+    
+    return result;
   } catch (error) {
     console.error('[SceneEngine] Error getting scene info:', error);
     return null;

@@ -420,7 +420,7 @@ export class NPCAIController {
 
     // 30% chance to call out when player enters cafe
     if (Math.random() < 0.3) {
-      const randomCallout = callouts[Math.floor(Math.random() * callouts.length)];
+      const randomCallout = callouts[Math.floor(Math.random() * callouts.length)] || "Welcome to Pike Coffee! How can I help you today?";
       
       return {
         type: 'callout',
@@ -543,7 +543,7 @@ ${npcProfile.name}'s response:`;
     // Simple AI: prefer rooms the NPC hasn't visited recently
     const state = this.npcStates.get(npcId);
     if (state && Date.now() - state.lastAction > 300000) { // 5 minutes
-      return filteredRooms[Math.floor(Math.random() * filteredRooms.length)];
+      return filteredRooms[Math.floor(Math.random() * filteredRooms.length)] || null;
     }
 
     return null;

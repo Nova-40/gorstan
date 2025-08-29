@@ -178,10 +178,11 @@ const TravelMenu: React.FC<TravelMenuProps> = ({
   const groupedDestinations = currentDestinations.reduce((groups, dest) => {
 // Variable declaration
     const roomInfo = getRoomInfo(dest);
-    if (!groups[roomInfo.zone]) {
-      groups[roomInfo.zone] = [];
+    const zoneKey = roomInfo.zone || 'Unknown';
+    if (!groups[zoneKey]) {
+      groups[zoneKey] = [];
     }
-    groups[roomInfo.zone].push(roomInfo);
+    groups[zoneKey]!.push(roomInfo);
     return groups;
   }, {} as Record<string, RoomInfo[]>);
 
@@ -190,7 +191,7 @@ const TravelMenu: React.FC<TravelMenuProps> = ({
     <>
       <TeleportTransition
         isActive={isAnimating}
-        destinationName={selectedDestinationId ? getRoomInfo(selectedDestinationId).name : undefined}
+        {...(selectedDestinationId ? { destinationName: getRoomInfo(selectedDestinationId).name } : {})}
         onComplete={onAnimationComplete}
       />
       <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">

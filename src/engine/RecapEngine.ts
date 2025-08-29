@@ -42,7 +42,8 @@ export function playRecap(gameState: GameState) {
   const inventory = player?.inventory || [];
 
   // Variable declaration
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)].replace("{playerName}", playerName);
+  const selectedGreeting = greetings[Math.floor(Math.random() * greetings.length)];
+  const greeting = selectedGreeting?.replace("{playerName}", playerName) || `Hello ${playerName}!`;
   pushConsoleMessage(`Ayla: ${greeting}`, 'info');
 
   pushConsoleMessage("Ayla: Previously on Gorstan:", 'info');

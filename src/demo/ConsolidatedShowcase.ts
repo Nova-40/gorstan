@@ -59,6 +59,7 @@ export async function startConsolidatedShowcase(): Promise<void> {
     
     for (let i = 0; i < showcaseSegments.length; i++) {
       const segment = showcaseSegments[i];
+      if (!segment) continue; // Defensive guard
       await runShowcaseSegment(segment, i + 1);
     }
     
@@ -145,6 +146,11 @@ async function runExplorationTour(): Promise<void> {
       }
       
       const zone = zones[zoneIndex];
+      if (!zone) {
+        zoneIndex++;
+        setTimeout(exploreNextZone, 0);
+        return;
+      }
       console.log(`🌟 Entering ${zone.name}...`);
       console.log(`   Theme: ${zone.theme}`);
       console.log(`   Highlight: ${zone.highlight}`);
@@ -213,6 +219,11 @@ async function runPuzzleShowcase(): Promise<void> {
       }
       
       const puzzle = puzzles[puzzleIndex];
+      if (!puzzle) {
+        puzzleIndex++;
+        setTimeout(solveNextPuzzle, 0);
+        return;
+      }
       console.log(`🔍 Puzzle: ${puzzle.name}`);
       console.log(`   Type: ${puzzle.type}`);
       console.log(`   Challenge: ${puzzle.description}`);
@@ -272,6 +283,11 @@ async function runSocialDrama(): Promise<void> {
       }
       
       const scenario = scenarios[scenarioIndex];
+      if (!scenario) {
+        scenarioIndex++;
+        setTimeout(playNextScenario, 0);
+        return;
+      }
       console.log(`🎭 Scenario: ${scenario.title}`);
       console.log(`   Context: ${scenario.context}`);
       console.log(`   Decision: ${scenario.choice}`);

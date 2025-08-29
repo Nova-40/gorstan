@@ -316,7 +316,11 @@ export class AIUsageMonitor {
     
     let totalTime = 0;
     for (let i = 1; i < recentEvents.length; i++) {
-      totalTime += recentEvents[i].timestamp - recentEvents[i-1].timestamp;
+      const currentEvent = recentEvents[i];
+      const previousEvent = recentEvents[i-1];
+      if (currentEvent && previousEvent) {
+        totalTime += currentEvent.timestamp - previousEvent.timestamp;
+      }
     }
     
     return totalTime / (recentEvents.length - 1);

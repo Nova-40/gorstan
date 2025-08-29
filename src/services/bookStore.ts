@@ -274,10 +274,11 @@ class BookStoreService {
    */
   getSnoozeStatus(): { snoozed: boolean; until?: Date } {
     const snoozed = Date.now() < this.state.userSnoozeUntil;
-    return {
-      snoozed,
-      until: snoozed ? new Date(this.state.userSnoozeUntil) : undefined
-    };
+    const result: { snoozed: boolean; until?: Date } = { snoozed };
+    if (snoozed) {
+      result.until = new Date(this.state.userSnoozeUntil);
+    }
+    return result;
   }
 
   /**

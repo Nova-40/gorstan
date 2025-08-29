@@ -107,8 +107,25 @@ export default function RoomEditor({
 // Variable declaration
   const roomIds = Object.keys(rooms);
 // Variable declaration
-  const initialRoom =
-    initialRoomId && rooms[initialRoomId] ? rooms[initialRoomId] : rooms[roomIds[0]];
+  const initialRoomCandidate = ((): RoomData | undefined => {
+    if (initialRoomId) {
+      const byId = rooms[initialRoomId];
+      if (byId) return byId as RoomData;
+    }
+    if (roomIds.length > 0) {
+      const first = roomIds[0];
+      const firstRoom = first ? rooms[first] : undefined;
+      if (firstRoom) return firstRoom as RoomData;
+    }
+    return undefined;
+  })();
+  const initialRoom: RoomData = initialRoomCandidate || {
+    id: 'placeholder',
+    title: 'Placeholder Room',
+    description: 'Auto-created because no rooms were supplied',
+    zone: 'Unknown',
+    exits: {},
+  } as RoomData;
 
   
 // React state declaration
@@ -225,7 +242,14 @@ export default function RoomEditor({
     }
     setIndex(newIndex);
 // Variable declaration
-    const newRoom = rooms[roomIds[newIndex]];
+    const newRoomId = roomIds[newIndex];
+    const newRoom = (newRoomId ? rooms[newRoomId] : undefined) || {
+      id: 'unknown-room',
+      title: 'Unknown Room',
+      description: 'Room data missing',
+      zone: 'Unknown',
+      exits: {},
+    } as RoomData;
     setRoomData({
       ...newRoom,
       exits: newRoom.exits || {},
@@ -858,7 +882,8 @@ function TrapsAndEventsSection({
   const updateTrap = (index: number, updates: Partial<Trap>) => {
 // Variable declaration
     const newTraps = [...(room.traps || [])];
-    newTraps[index] = { ...newTraps[index], ...updates };
+  if (!newTraps[index]) return;
+  newTraps[index] = { ...newTraps[index]!, ...updates };
     onUpdate({ traps: newTraps });
   };
 

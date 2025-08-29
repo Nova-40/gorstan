@@ -129,9 +129,16 @@ describe('Schema Validation', () => {
     test('assert throws descriptive errors', () => {
       const invalid = { id: '' };
       
-      expect(() => assert(invalid, RoomSchema, 'test room')).toThrow(
-        expect.stringMatching(/Invalid data structure.*test room/)
-      );
+      try {
+        assert(invalid, RoomSchema, 'test room');
+        // Should not get here
+        expect(false).toBe(true);
+      } catch (e) {
+        const msg = String(e);
+        expect(msg).toContain('Invalid data structure');
+        expect(msg).toContain('test room');
+        expect(msg).toContain('id');
+      }
     });
 
     test('safeParse returns detailed error messages', () => {

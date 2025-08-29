@@ -17,37 +17,34 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Room navigation and teleportation utilities
 
+
+import { teleportManager } from '../services/teleportManager';
+import { getRoom } from '../core/rooms/roomsLoader';
+import type { TeleportOptions, TeleportOverlay } from '../domain/types';
+import { getGameDispatch } from '../utils/dispatchAccess';
 import { pushConsoleMessage } from '../utils/consoleTools';
 
 /**
  * Teleport player to a specified room
  * @param roomId - The ID of the room to teleport to
  */
-export function teleportToRoom(roomId: string): void {
-  pushConsoleMessage(`Teleporting to ${roomId}...`, 'info');
-  
-  // This would typically dispatch a room change action
-  // For now, we'll use console message as placeholder
-  pushConsoleMessage(`You find yourself in: ${roomId}`, 'success');
+
+export async function teleportToRoom(roomId: string): Promise<void> {
+  const room = getRoom(roomId as any) as any;
+  const overlay: TeleportOverlay = room?.zone === 'glitch' ? 'fractal' : 'trek';
+  const ok = await teleportManager.go(roomId, { overlay } as TeleportOptions);
+  const dispatch = getGameDispatch?.();
+  if (ok && dispatch) dispatch({ type: 'MOVE_TO_ROOM', payload: roomId });
+  else pushConsoleMessage('Teleport failed. Try again.', 'error');
 }
+
 
 /**
  * Navigate to a room with transition effects
  * @param roomId - The ID of the room to navigate to
  * @param transitionType - Type of transition effect
  */
-export function navigateToRoom(roomId: string, transitionType: 'instant' | 'fade' | 'slide' = 'instant'): void {
-  switch (transitionType) {
-    case 'fade':
-      pushConsoleMessage('The world fades to black...', 'info');
-      break;
-    case 'slide':
-      pushConsoleMessage('Reality shifts around you...', 'info');
-      break;
-    default:
-      break;
-  }
-  
+export function navigateToRoom(roomId: string, _transitionType: 'instant' | 'fade' | 'slide' = 'instant'): void {
   teleportToRoom(roomId);
 }
 

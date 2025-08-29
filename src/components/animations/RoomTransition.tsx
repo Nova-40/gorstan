@@ -32,8 +32,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 interface RoomTransitionProps {
   isActive: boolean;
   transitionType: 'zone_change' | 'portal' | 'normal' | 'chair_portal';
-  fromZone?: string;
-  toZone?: string;
+  fromZone?: string | null;
+  toZone?: string | null;
   onComplete: () => void;
 }
 

@@ -59,9 +59,10 @@ export class GameStateManager {
 
   checkForWanderingShadows(): void {
     if (this.magicSystem && this.magicSystem.getSpells().length > 0) {
-      const randomShadow = wanderingShadows[Math.floor(Math.random() * wanderingShadows.length)];
-      console.log(`A ${randomShadow.name} has appeared in the room!`);
-      // Logic to integrate the shadow into the current room can be added here
+      const randomShadow = wanderingShadows.length ? wanderingShadows[Math.floor(Math.random() * wanderingShadows.length)] : undefined;
+      if (randomShadow?.name) {
+        console.log(`A ${randomShadow.name} has appeared in the room!`);
+      }
     }
   }
 

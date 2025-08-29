@@ -187,7 +187,7 @@ class PuzzleController {
       onClose: this.createCloseHandler(),
       onHint: this.createHintHandler(puzzle),
       currentAttempt,
-      timeRemaining
+      ...(timeRemaining !== undefined && { timeRemaining })
     };
   }
 

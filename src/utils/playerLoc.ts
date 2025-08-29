@@ -52,7 +52,7 @@ export function getPlayerLocation(): Promise<PlayerLocation> {
     
     // Simulate async location detection
     setTimeout(() => {
-      resolve(randomLocation);
+      resolve(randomLocation || { city: 'Unknown', country: 'Unknown', timezone: 'UTC' });
     }, 100);
   });
 }
@@ -62,7 +62,7 @@ export function getPlayerLocation(): Promise<PlayerLocation> {
  */
 export function getCurrentWeather(): string {
   const weatherOptions = ['rainy', 'sunny', 'cloudy', 'snowy', 'foggy', 'clear', 'stormy'];
-  return weatherOptions[Math.floor(Math.random() * weatherOptions.length)];
+  return weatherOptions[Math.floor(Math.random() * weatherOptions.length)] || 'clear';
 }
 
 /**

@@ -171,13 +171,19 @@ class MiniquestController {
 // Variable declaration
       const questProgress = roomState?.questProgress?.[quest.id];
 
-      progress[quest.id] = {
+      const progressEntry: any = {
         completed: isCompleted,
         attempts: questProgress?.attempts || 0,
         available: isAvailable || isCompleted,
-        locked: !isAvailable && !isCompleted,
-        lockReason: this.getLockReason(quest, gameState)
+        locked: !isAvailable && !isCompleted
       };
+      
+      const lockReason = this.getLockReason(quest, gameState);
+      if (lockReason !== undefined) {
+        progressEntry.lockReason = lockReason;
+      }
+      
+      progress[quest.id] = progressEntry;
     });
 
     
@@ -192,7 +198,7 @@ class MiniquestController {
 // Variable declaration
     const roomName = this.getRoomDisplayName(roomId, gameState);
 
-    return {
+    const result: any = {
       showMiniquestModal: true,
       miniquests,
       progress,
@@ -200,9 +206,14 @@ class MiniquestController {
       totalScore,
       completedCount,
       availableCount,
-      aiRecommendations,
       aiAnalysis
     };
+    
+    if (aiRecommendations !== undefined) {
+      result.aiRecommendations = aiRecommendations;
+    }
+    
+    return result;
   }
 
   
@@ -290,12 +301,20 @@ class MiniquestController {
         }
       }
 
-      return {
+      const returnResult: any = {
         success: result.success,
-        message: result.message,
-        scoreAwarded: result.scoreAwarded,
-        aiGuidance
+        message: result.message
       };
+      
+      if (result.scoreAwarded !== undefined) {
+        returnResult.scoreAwarded = result.scoreAwarded;
+      }
+      
+      if (aiGuidance !== undefined) {
+        returnResult.aiGuidance = aiGuidance;
+      }
+      
+      return returnResult;
 
     } catch (error) {
       console.error('Error attempting quest:', error);

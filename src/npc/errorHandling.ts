@@ -322,7 +322,7 @@ export class NPCErrorHandler {
       message,
       context,
       timestamp: Date.now(),
-      stackTrace: new Error().stack,
+      ...(new Error().stack && { stackTrace: new Error().stack }),
       npcId: context.npcId,
       roomId: context.roomId,
       attemptCount: context.attemptCount || 0,

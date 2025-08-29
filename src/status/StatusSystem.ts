@@ -172,8 +172,10 @@ export class StatusSystem {
     
     if (existingIndex >= 0) {
       const existing = actor.statuses[existingIndex];
-      
-      if (newStatus.stacks !== undefined && existing.stacks !== undefined) {
+      if (!existing) {
+        actor.statuses.push(newStatus);
+        newStatus.onApply?.(actor);
+      } else if (newStatus.stacks !== undefined && existing.stacks !== undefined) {
         // Stack the effect
         existing.stacks += newStatus.stacks;
         existing.durationMs = Math.max(existing.durationMs, newStatus.durationMs);
@@ -199,7 +201,7 @@ export class StatusSystem {
     const index = actor.statuses.findIndex(s => s.id === statusId);
     if (index >= 0) {
       const status = actor.statuses[index];
-      status.onRemove?.(actor);
+  status?.onRemove?.(actor);
       actor.statuses.splice(index, 1);
     }
   }
@@ -211,8 +213,8 @@ export class StatusSystem {
     // Update durations
     for (let i = actor.statuses.length - 1; i >= 0; i--) {
       const status = actor.statuses[i];
+      if (!status) continue;
       status.durationMs -= deltaTime;
-      
       if (status.durationMs <= 0) {
         status.onRemove?.(actor);
         actor.statuses.splice(i, 1);
@@ -224,6 +226,7 @@ export class StatusSystem {
       this.lastTick = currentTime;
       
       for (const status of actor.statuses) {
+        if (!status) continue;
         status.onTick?.(actor);
       }
     }

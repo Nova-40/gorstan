@@ -19,6 +19,7 @@
 
 import type { LocalGameState } from '../state/gameState';
 import { getPlayerName, formatDialogue } from './playerNameUtils';
+import { pickRandomOrFallback } from './random';
 import { hasDiscussedTopic, shouldVaryResponse, getRelationshipLevel, getNPCConversationHistory } from './npcConversationHistory';
 
 export interface KnowledgeResponse {
@@ -170,7 +171,7 @@ export function getKnowledgeBaseReply(
   state: LocalGameState,
   history?: any
 ): string | null {
-  const playerName = getPlayerName(state);
+  // playerName retained via getPlayerName in responses formatting; direct variable not required here.
   const normalizedInput = playerInput.toLowerCase().trim();
   const npcHistory = getNPCConversationHistory(state, npcId);
   
@@ -195,7 +196,8 @@ export function getKnowledgeBaseReply(
   }
 
   // Return intelligent fallback
-  return selectResponse(universalKnowledge.unknown, state, npcId, 'unknown');
+  const unknownResponse: KnowledgeResponse = universalKnowledge.unknown || { responses: ['I need to think about that.'] };
+  return selectResponse(unknownResponse, state, npcId, 'unknown');
 }
 
 /**
@@ -219,11 +221,13 @@ function selectResponse(
     const availableResponses = responses.filter(r => 
       formatDialogue(r, state) !== lastResponse
     );
-    selectedResponse = availableResponses.length > 0 
-      ? availableResponses[Math.floor(Math.random() * availableResponses.length)]
-      : responses[Math.floor(Math.random() * responses.length)];
+    const firstResp = responses[0] ?? '';
+    selectedResponse = availableResponses.length > 0
+      ? pickRandomOrFallback(availableResponses, availableResponses[0] ?? firstResp) ?? firstResp
+      : pickRandomOrFallback(responses, firstResp) ?? firstResp;
   } else {
-    selectedResponse = responses[Math.floor(Math.random() * responses.length)];
+  const first = responses[0] ?? '';
+  selectedResponse = pickRandomOrFallback(responses, first) ?? first;
   }
 
   return formatDialogue(selectedResponse, state);
@@ -278,5 +282,6 @@ export function getIntelligentFallback(
     `That's a complex question, ${playerName}. Give me time to think about it.`
   ];
 
-  return fallbacks[Math.floor(Math.random() * fallbacks.length)];
+  const first = fallbacks[0] ?? '';
+  return pickRandomOrFallback(fallbacks, first) ?? first;
 }

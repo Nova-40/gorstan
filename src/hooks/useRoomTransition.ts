@@ -40,8 +40,9 @@ interface RoomLike {
 interface TransitionInfo {
   shouldAnimate: boolean;
   transitionType: 'zone_change' | 'portal' | 'normal' | 'chair_portal';
-  fromZone?: string;
-  toZone?: string;
+  // Make zones explicit nullable to satisfy exactOptionalPropertyTypes when assigning undefined
+  fromZone: string | null;
+  toZone: string | null;
 }
 
 export const useRoomTransition = (
@@ -51,7 +52,9 @@ export const useRoomTransition = (
 ): TransitionInfo => {
   const [transitionInfo, setTransitionInfo] = useState<TransitionInfo>({
     shouldAnimate: false,
-    transitionType: 'normal'
+    transitionType: 'normal',
+    fromZone: null,
+    toZone: null
   });
 
 // React effect hook
@@ -59,7 +62,9 @@ export const useRoomTransition = (
     if (!fromRoom || !toRoom) {
       setTransitionInfo({
         shouldAnimate: false,
-        transitionType: 'normal'
+        transitionType: 'normal',
+        fromZone: null,
+        toZone: null
       });
       return;
     }
@@ -68,7 +73,9 @@ export const useRoomTransition = (
     if (fromRoom.id === toRoom.id) {
       setTransitionInfo({
         shouldAnimate: false,
-        transitionType: 'normal'
+        transitionType: 'normal',
+        fromZone: fromRoom.zone ?? null,
+        toZone: toRoom.zone ?? null
       });
       return;
     }
@@ -78,8 +85,8 @@ export const useRoomTransition = (
       setTransitionInfo({
         shouldAnimate: true,
         transitionType: 'chair_portal',
-        fromZone: fromRoom.zone,
-        toZone: toRoom.zone
+        fromZone: fromRoom.zone ?? null,
+        toZone: toRoom.zone ?? null
       });
       return;
     }
@@ -89,8 +96,8 @@ export const useRoomTransition = (
       setTransitionInfo({
         shouldAnimate: true,
         transitionType: 'portal',
-        fromZone: fromRoom.zone,
-        toZone: toRoom.zone
+        fromZone: fromRoom.zone ?? null,
+        toZone: toRoom.zone ?? null
       });
       return;
     }
@@ -100,8 +107,8 @@ export const useRoomTransition = (
       setTransitionInfo({
         shouldAnimate: true,
         transitionType: 'zone_change',
-        fromZone: fromRoom.zone,
-        toZone: toRoom.zone
+        fromZone: fromRoom.zone ?? null,
+        toZone: toRoom.zone ?? null
       });
       return;
     }
@@ -110,8 +117,8 @@ export const useRoomTransition = (
     setTransitionInfo({
       shouldAnimate: true,
       transitionType: 'normal',
-      fromZone: fromRoom.zone,
-      toZone: toRoom.zone
+      fromZone: fromRoom.zone ?? null,
+      toZone: toRoom.zone ?? null
     });
 
   }, [fromRoom, toRoom, triggerAction]);
