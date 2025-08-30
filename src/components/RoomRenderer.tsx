@@ -18,6 +18,7 @@
 // Renders room descriptions and image logic.
 
 import React, { useState, useEffect } from 'react';
+import { getRoomImagePath } from '../core/rooms/roomImages';
 
 import { Bone, Fish, Bot, UserCircle, ChefHat, Shield } from 'lucide-react';
 import { useGameState } from '../state/gameState';
@@ -145,16 +146,27 @@ const RoomRenderer: React.FC = () => {
   // Fall back to existing fallback.png (default-room.png does not exist)
   const resolveImagePath = (img?: string): string => {
     if (!img || img.trim() === '') return '/images/fallback.png';
-    if (img.startsWith('http://') || img.startsWith('https://')) return img; // external
-    if (img.startsWith('/images/')) return img; // already absolute within images
-    if (img.startsWith('images/')) return '/' + img; // missing leading slash
-    // bare filename -> prefix
+    if (img.startsWith('http://') || img.startsWith('https://')) return img;
+    if (img.startsWith('/images/')) return img;
+    if (img.startsWith('images/')) return '/' + img;
     return `/images/${img}`;
   };
-  const imagePath = resolveImagePath(room.image);
+  // Derive a loose zone for fallback mapping
+  const deriveZone = (roomId: string): any => {
+    if (roomId.includes('control') || roomId.startsWith('intro')) return 'nexus';
+    if (roomId.includes('glitch')) return 'glitch';
+    if (roomId.includes('elf')) return 'elfhame';
+    if (roomId.includes('maze')) return 'maze';
+    return 'default';
+  };
+  let imagePath = room.image ? resolveImagePath(room.image) : '';
+  if (!imagePath || imagePath === '/images/fallback.png') {
+    const mapped = getRoomImagePath(room.id, deriveZone(room.id));
+    if (mapped) imagePath = mapped; else imagePath = '/images/fallback.png';
+  }
   return (
     <div className="room-container flex flex-col h-full bg-black rounded-lg shadow-inner overflow-hidden border border-green-600">
-      {room.image ? (
+  {imagePath && imagePath !== '/images/fallback.png' ? (
         <div className="room-image-wrapper h-full w-full overflow-hidden">
           <img
             src={imagePath}
