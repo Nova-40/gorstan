@@ -183,6 +183,14 @@ export const handleBlueButtonPress = (state: LocalGameState): LocalGameState => 
 
 // --- Reducer ---
 export const gameStateReducer = (state: LocalGameState, action: GameAction): LocalGameState => {
+  // Helper to append messages with a cap to prevent unbounded memory / perf degradation
+  const appendHistory = (history: GameMessage[], additions: GameMessage | GameMessage[] | undefined, cap = 400): GameMessage[] => {
+    if (!additions) return history;
+    const addArray = Array.isArray(additions) ? additions : [additions];
+    const combined = [...history, ...addArray];
+    // Keep only the last `cap` entries (bias toward recent activity)
+    return combined.length > cap ? combined.slice(-cap) : combined;
+  };
   switch (action.type) {
     // --- Example action (legacy, retained for compatibility) ---
     case 'DRINK_COFFEE': {
@@ -389,6 +397,10 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
           triggerMorthosAlEncounter: encounterFlag
         },
       };
+    }
+    // Compatibility: legacy CHANGE_ROOM actions funnel through MOVE_TO_ROOM logic
+    case 'CHANGE_ROOM': {
+      return gameStateReducer(state, { type: 'MOVE_TO_ROOM', payload: action.payload });
     }
 
     case 'SET_NPCS_IN_ROOM': {
@@ -760,7 +772,14 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
     case 'RECORD_MESSAGE':
       return {
         ...state,
-        history: [...state.history, action.payload as GameMessage],
+        history: appendHistory(state.history, action.payload as GameMessage),
+      };
+
+    // Allow legacy ADD_MESSAGE actions to behave like RECORD_MESSAGE (numerous callers use ADD_MESSAGE)
+    case 'ADD_MESSAGE':
+      return {
+        ...state,
+        history: appendHistory(state.history, action.payload as GameMessage),
       };
 
     // --- Press Blue Button (multiverse reboot) ---
@@ -1072,14 +1091,12 @@ export const GameStateContext = createContext<{
   dispatch: Dispatch<GameAction>;
 } | undefined>(undefined);
 
-export const GameStateProvider = ({ children }: { children: React.ReactNode }) => {
+export function GameStateProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(gameStateReducer, initialGameState);
-  return (
-    <GameStateContext.Provider value={{ state, dispatch }}>
-      {children}
-    </GameStateContext.Provider>
-  );
-};
+  // Stable memo prevents unnecessary rerenders on HMR when state object identity changes during refresh cycle
+  const value = React.useMemo(() => ({ state, dispatch }), [state, dispatch]);
+  return <GameStateContext.Provider value={value}>{children}</GameStateContext.Provider>;
+}
 
 export const useGameState = () => {
   const context = useContext(GameStateContext);

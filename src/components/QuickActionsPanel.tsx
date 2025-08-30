@@ -76,6 +76,7 @@ interface QuickActionsPanelProps {
   hasActiveTraps: boolean; // Whether current room has active traps
   onDisarmTrap: () => void; // Function to handle trap disarming
   isDemoActive?: boolean; // Whether demo mode is currently active
+  onHelp?: () => void; // Open Ayla help modal
 }
 
 /**
@@ -118,6 +119,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
   hasActiveTraps,
   onDisarmTrap,
   isDemoActive = false,
+  onHelp,
 }) => {
   // State hooks properly placed inside component
   const [isSitting, setIsSitting] = useState<boolean>(false);
@@ -227,110 +229,44 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
    * Prevents unnecessary re-renders when other props change
    */
   const directionButtons = useMemo(() => {
-    // Debug logging to check available directions
-    console.log('[QuickActions] Available directions received:', availableDirections);
-    console.log('[QuickActions] Direction room titles received:', directionRoomTitles);
-    
+    const defs: Array<{dir: keyof typeof availableDirections | 'jump' | 'sit'; icon: React.ReactNode; title: string; onClick?: () => void; dynamic?: boolean}> = [
+      { dir: 'north', icon: <ArrowUp />, title: 'North' },
+      { dir: 'south', icon: <ArrowDown />, title: 'South' },
+      { dir: 'west', icon: <ArrowLeft />, title: 'West' },
+      { dir: 'east', icon: <ArrowRight />, title: 'East' },
+      { dir: 'up', icon: <ArrowUp />, title: 'Up' },
+      { dir: 'down', icon: <ArrowDown />, title: 'Down' },
+      { dir: 'jump', icon: <Redo />, title: 'Jump' },
+      { dir: 'sit', icon: isSitting ? <PersonStanding /> : <Armchair />, title: isSitting ? 'Standing up...' : 'Sit' }
+    ];
     return (
-    <>
-      {availableDirections.north && (
-        <IconButton 
-          key="north"
-          icon={<ArrowUp />}
-          title={`North${directionRoomTitles.north ? ` (${directionRoomTitles.north})` : ''}`} 
-          onClick={() => {
-            console.log('[QuickActions] North button clicked');
-            onMove("north");
-          }}
-          aria-label={`Move north${directionRoomTitles.north ? ` to ${directionRoomTitles.north}` : ''}`}
-        />
-      )}
-      {availableDirections.south && (
-        <IconButton 
-          key="south"
-          icon={<ArrowDown />}
-          title={`South${directionRoomTitles.south ? ` (${directionRoomTitles.south})` : ''}`} 
-          onClick={() => {
-            console.log('[QuickActions] South button clicked');
-            onMove("south");
-          }}
-          aria-label={`Move south${directionRoomTitles.south ? ` to ${directionRoomTitles.south}` : ''}`}
-        />
-      )}
-      {availableDirections.west && (
-        <IconButton 
-          key="west"
-          icon={<ArrowLeft />}
-          title={`West${directionRoomTitles.west ? ` (${directionRoomTitles.west})` : ''}`} 
-          onClick={() => {
-            console.log('[QuickActions] West button clicked');
-            onMove("west");
-          }}
-          aria-label={`Move west${directionRoomTitles.west ? ` to ${directionRoomTitles.west}` : ''}`}
-        />
-      )}
-      {availableDirections.up && (
-        <IconButton 
-          key="up"
-          icon={<ArrowUp />}
-          title={`Up${directionRoomTitles.up ? ` (${directionRoomTitles.up})` : ''}`} 
-          onClick={() => {
-            console.log('[QuickActions] Up button clicked');
-            onMove("up");
-          }}
-          aria-label={`Move up${directionRoomTitles.up ? ` to ${directionRoomTitles.up}` : ''}`}
-        />
-      )}
-      {availableDirections.down && (
-        <IconButton 
-          key="down"
-          icon={<ArrowDown />}
-          title={`Down${directionRoomTitles.down ? ` (${directionRoomTitles.down})` : ''}`} 
-          onClick={() => {
-            console.log('[QuickActions] Down button clicked');
-            onMove("down");
-          }}
-          aria-label={`Move down${directionRoomTitles.down ? ` to ${directionRoomTitles.down}` : ''}`}
-        />
-      )}
-      {availableDirections.east && (
-        <IconButton 
-          key="east"
-          icon={<ArrowRight />}
-          title={`East${directionRoomTitles.east ? ` (${directionRoomTitles.east})` : ''}`} 
-          onClick={() => {
-            console.log('[QuickActions] East button clicked');
-            onMove("east");
-          }}
-          aria-label={`Move east${directionRoomTitles.east ? ` to ${directionRoomTitles.east}` : ''}`}
-        />
-      )}
-      {availableDirections.jump && (
-        <IconButton 
-          key="jump"
-          icon={<Redo />} 
-          title={`Jump${directionRoomTitles.jump ? ` (${directionRoomTitles.jump})` : ''}`} 
-          onClick={() => {
-            console.log('[QuickActions] Jump button clicked');
-            onJump();
-          }}
-          aria-label="Jump to different location"
-        />
-      )}
-      {availableDirections.sit && (
-        <IconButton 
-          key="sit"
-          icon={isSitting ? <PersonStanding /> : <Armchair />} 
-          title={`${isSitting ? 'Standing up...' : 'Sit'}${directionRoomTitles.sit ? ` (${directionRoomTitles.sit})` : ''}`} 
-          onClick={() => {
-            console.log('[QuickActions] Sit button clicked');
-            handleSit();
-          }}
-          disabled={isSitting}
-          aria-label={isSitting ? 'Currently sitting, please wait' : 'Sit down'}
-        />
-      )}
-    </>
+      <>
+        {defs.map(d => {
+          const available = (availableDirections as any)[d.dir] || false;
+          const roomTitle = (directionRoomTitles as any)[d.dir] || '';
+          const description = d.dir === 'sit'
+            ? (isSitting ? 'You are sitting...' : 'Sit / rest')
+            : d.dir === 'jump'
+              ? `Special jump / portal${roomTitle ? ` to ${roomTitle}` : ''}`
+              : `${available ? 'Move' : 'No exit'} ${d.title.toLowerCase()}${available && roomTitle ? ` to ${roomTitle}` : ''}`;
+          const handle = () => {
+            if (!available) return;
+            if (d.dir === 'jump') { onJump(); return; }
+            if (d.dir === 'sit') { handleSit(); return; }
+            onMove(d.dir);
+          };
+          return (
+            <IconButton
+              key={d.dir}
+              icon={d.icon}
+              title={`${d.title}${roomTitle ? ` (${roomTitle})` : ''}`}
+              description={description}
+              onClick={handle}
+              disabled={d.dir === 'sit' ? isSitting : !available}
+            />
+          );
+        })}
+      </>
     );
   }, [availableDirections, directionRoomTitles, onMove, onJump, handleSit, isSitting]);
 
@@ -343,6 +279,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
         key="look"
         icon={<Eye />} 
         title="Look Around" 
+        description="Summarize room, items, NPCs and exits"
         onClick={onLookAround}
         aria-label="Look around the current area"
       />
@@ -350,6 +287,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
         key="pickup"
         icon={<Grab />} 
         title="Pick Up Item" 
+        description="Pick up available items in this room"
         onClick={onPickUp}
         aria-label="Pick up items in the area"
       />
@@ -357,6 +295,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
         key="use"
         icon={<MousePointerClick />} 
         title="Use Item" 
+        description="Use an item or interact with something"
         onClick={onUse}
         aria-label="Use or interact with items"
       />
@@ -364,6 +303,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
         key="inventory"
         icon={<Backpack />} 
         title={isDemoActive ? "Inventory (disabled during demo)" : "Inventory"} 
+        description="Open your inventory"
         onClick={isDemoActive ? () => {} : onShowInventory}
         aria-label="Open inventory"
         disabled={isDemoActive}
@@ -372,6 +312,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
         key="press"
         icon={<Hand />} 
         title={currentRoomId === 'introreset' ? "🟦 BLUE BUTTON" : "Press"} 
+        description={currentRoomId === 'introreset' ? 'Press the mysterious blue button' : 'Press context-sensitive control'}
         onClick={onPress}
         aria-label={currentRoomId === 'introreset' ? "Press the mysterious blue button" : "Press buttons or switches"}
       />
@@ -379,6 +320,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
         key="coffee"
         icon={<Coffee />}
         title="Throw or Drink Coffee (essential game mechanic)" 
+        description="Perform a coffee action (throw / drink)"
         onClick={onCoffee}
         aria-label="Coffee-related actions - because caffeine is life"
       />
@@ -389,14 +331,26 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
           `Talk to ${npcsInRoom.length === 1 ? npcsInRoom[0].name || npcsInRoom[0] : 'NPCs'}` : 
           "Talk to NPC/Help"
         }
+        description={npcsInRoom.length > 0 ? 'Open conversation interface' : 'Open Ayla help / NPC console'}
         onClick={handleTalk}
         aria-label={npcsInRoom.length > 0 ? "Talk to NPCs in the room" : "Talk to NPCs or get help"}
       />
+      {onHelp && (
+        <IconButton
+          key="help"
+          icon={<MessageCircleQuestion />}
+          title="Help / Ask Ayla"
+          description="Open Ayla assistance panel"
+          onClick={onHelp}
+          aria-label="Open Ayla help"
+        />
+      )}
       {hasActiveTraps && (
         <IconButton 
           key="disarm"
           icon={<img src="/images/Caution.png" alt="Trap Warning" style={{ width: 20, height: 20 }} />}
           title="Manage Traps"
+          description="Inspect or disarm traps here"
           onClick={onDisarmTrap}
           aria-label="Manage traps in this area"
         />
@@ -413,6 +367,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
         key="sound"
         icon={soundOn ? <Volume2 /> : <VolumeX />}
         title={soundOn ? "Sound On (Click to Mute)" : "Sound Off (Click to Enable)"}
+        description={soundOn ? 'Mute all game sounds' : 'Enable game sounds'}
         onClick={onToggleSound}
         aria-label={soundOn ? "Mute audio" : "Enable audio"}
       />
@@ -420,13 +375,15 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
         key="fullscreen"
         icon={isFullscreen ? <Minimize2 /> : <Maximize2 />}
         title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+        description={isFullscreen ? 'Leave fullscreen mode' : 'Enter fullscreen for immersion'}
         onClick={onFullscreen}
         aria-label={isFullscreen ? "Exit fullscreen mode" : "Enter fullscreen mode"}
       />
-      <IconButton 
+  <IconButton 
         key="backout"
         icon={<Undo />} 
         title={canBackout ? "Back to Previous Room" : "Cannot go back (no previous room)"} 
+     description={canBackout ? 'Return to the last room visited' : 'No previous room available'}
         onClick={handleBackout} 
         disabled={!canBackout}
         aria-label={canBackout ? "Return to previous room" : "No previous room to return to"}
@@ -436,6 +393,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
           key="debug"
           icon={<Bug />} 
           title="Debug Menu (Developer Access)" 
+          description="Open developer debug tools"
           onClick={onDebugMenu}
           aria-label="Open debug menu"
         />
@@ -471,31 +429,6 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
         preload="auto"
         aria-hidden="true"
       />
-    </div>
-  );
-  // Room actions (moved inside component return with proper closure)
-  const roomActions = useMemo(() => {
-    const r = getRoom(currentRoomId);
-    return (r?.actions || []) as Array<{ id: string; label: string; effects?: any[] }>;
-  }, [currentRoomId]);
-
-  return (
-    <div 
-      className="quick-actions-panel flex flex-wrap gap-2 justify-center p-4 bg-black/30 backdrop-blur rounded-xl"
-      role="toolbar" aria-label="Game Action Controls">
-      <div className="contents" role="group" aria-label="Movement">{directionButtons}</div>
-      <div className="contents" role="group" aria-label="Game Actions">{coreActionButtons}</div>
-      <div className="contents" role="group" aria-label="System Controls">{systemControlButtons}</div>
-      {roomActions.length > 0 && (
-        <div className="grid grid-cols-2 gap-2 mt-2 w-full" role="group" aria-label="Room Actions">
-          {roomActions.map(a => (
-            <button key={a.id} className="border border-green-700 rounded-xl px-2 py-1 hover:bg-green-900/20" onClick={async ()=>{ await executeEffects(a.effects||[]); }}>
-              {a.label}
-            </button>
-          ))}
-        </div>
-      )}
-      <audio ref={backoutSoundRef} src="/audio/fail.wav" preload="auto" aria-hidden="true" />
     </div>
   );
 };

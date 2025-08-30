@@ -16,6 +16,7 @@
 
 // src/components/WelcomeScreen.tsx
 import React, { useState, useEffect, useCallback } from "react";
+import RadialProgressRing from "../ui/RadialProgressRing";
 import { getVersionString, getShortVersion } from "../config/version";
 
 interface WelcomeScreenProps {
@@ -29,9 +30,7 @@ interface AylaGuidanceProps {
   onStartDemo: () => void;
 }
 
-interface RadialProgressRingProps {
-  progress: number;
-}
+// (RadialProgressRing now imported as shared component)
 
 const AylaGuidanceModal: React.FC<AylaGuidanceProps> = ({ onDismiss, onStartDemo }) => {
   return (
@@ -103,48 +102,7 @@ const AylaGuidanceModal: React.FC<AylaGuidanceProps> = ({ onDismiss, onStartDemo
   );
 };
 
-// Radial progress ring component
-const RadialProgressRing: React.FC<RadialProgressRingProps> = ({ progress }) => {
-  const radius = 30;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - (progress / 100) * circumference;
-
-  return (
-    <div className="relative w-20 h-20">
-      <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 70 70">
-        {/* Background ring */}
-        <circle
-          cx="35"
-          cy="35"
-          r={radius}
-          stroke="rgba(34, 197, 94, 0.15)"
-          strokeWidth="3"
-          fill="none"
-        />
-        {/* Progress ring */}
-        <circle
-          cx="35"
-          cy="35"
-          r={radius}
-          stroke="rgb(34, 197, 94)"
-          strokeWidth="4"
-          fill="none"
-          strokeLinecap="round"
-          strokeDasharray={circumference}
-          strokeDashoffset={strokeDashoffset}
-          className="transition-all duration-1000 ease-linear drop-shadow-lg"
-          style={{
-            filter: 'drop-shadow(0 0 6px rgba(34, 197, 94, 0.5))'
-          }}
-        />
-      </svg>
-      {/* Center content */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="w-3 h-3 bg-green-400 rounded-full opacity-90 animate-pulse"></div>
-      </div>
-    </div>
-  );
-};
+// (Inline RadialProgressRing removed in favor of shared component)
 
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onStartDemo }) => {
   const [showAylaGuidance, setShowAylaGuidance] = useState(false);
@@ -312,7 +270,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
         
         {/* Radial progress ring for Ayla timer - more prominent position */}
         <div className="absolute top-6 right-6">
-          <RadialProgressRing progress={timerProgress} />
+          <RadialProgressRing progress={timerProgress / 100} size={80} />
         </div>
       </div>
 

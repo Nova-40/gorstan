@@ -21,118 +21,26 @@ export interface SoundEffect {
 }
 
 /** Sound effect registry */
+// Rewritten to map to existing mp3/wav assets in /public/sounds as placeholders until bespoke SFX exist
 export const SFX_REGISTRY: Record<string, SoundEffect> = {
-  // Combat sounds
-  swordSwing: {
-    src: '/audio/sword_swing.wav',
-    volume: 0.6,
-    playbackRate: 1.0
-  },
-  
-  swordHit: {
-    src: '/audio/sword_hit.wav',
-    volume: 0.7,
-    playbackRate: 1.0
-  },
-  
-  parrySuccess: {
-    src: '/audio/parry_success.wav',
-    volume: 0.8,
-    playbackRate: 1.0
-  },
-  
-  parryFail: {
-    src: '/audio/parry_fail.wav',
-    volume: 0.5,
-    playbackRate: 1.0
-  },
-  
-  dodge: {
-    src: '/audio/dodge.wav',
-    volume: 0.4,
-    playbackRate: 1.2
-  },
-  
-  // Spell casting
-  spellCast: {
-    src: '/audio/spell_cast.wav',
-    volume: 0.6,
-    playbackRate: 1.0
-  },
-  
-  fireBolt: {
-    src: '/audio/fire_bolt.wav',
-    volume: 0.7,
-    playbackRate: 1.0
-  },
-  
-  frostNova: {
-    src: '/audio/frost_nova.wav',
-    volume: 0.6,
-    playbackRate: 1.0
-  },
-  
-  chainLightning: {
-    src: '/audio/chain_lightning.wav',
-    volume: 0.8,
-    playbackRate: 1.0
-  },
-  
-  blink: {
-    src: '/audio/blink.wav',
-    volume: 0.5,
-    playbackRate: 1.1
-  },
-  
-  ward: {
-    src: '/audio/ward.wav',
-    volume: 0.6,
-    playbackRate: 1.0
-  },
-  
-  timeDilation: {
-    src: '/audio/time_dilation.wav',
-    volume: 0.4,
-    playbackRate: 0.8
-  },
-  
-  // Status effects
-  burn: {
-    src: '/audio/burn.wav',
-    volume: 0.3,
-    playbackRate: 1.0
-  },
-  
-  freeze: {
-    src: '/audio/freeze.wav',
-    volume: 0.5,
-    playbackRate: 1.0
-  },
-  
-  shock: {
-    src: '/audio/shock.wav',
-    volume: 0.6,
-    playbackRate: 1.0
-  },
-  
-  // Combat feedback
-  criticalHit: {
-    src: '/audio/critical_hit.wav',
-    volume: 0.9,
-    playbackRate: 1.0
-  },
-  
-  stagger: {
-    src: '/audio/stagger.wav',
-    volume: 0.7,
-    playbackRate: 0.9
-  },
-  
-  riposte: {
-    src: '/audio/riposte.wav',
-    volume: 0.8,
-    playbackRate: 1.0
-  }
+  swordSwing: { src: '/sounds/click.wav', volume: 0.5, playbackRate: 1.2 },
+  swordHit:   { src: '/sounds/splat.mp3', volume: 0.6 },
+  parrySuccess: { src: '/sounds/success.wav', volume: 0.7 },
+  parryFail:  { src: '/sounds/fail.wav', volume: 0.5 },
+  dodge:      { src: '/sounds/click.wav', volume: 0.4, playbackRate: 1.4 },
+  spellCast:  { src: '/sounds/portal.mp3', volume: 0.6 },
+  fireBolt:   { src: '/sounds/portal-oscillate.mp3', volume: 0.7 },
+  frostNova:  { src: '/sounds/quiet-breeze.mp3', volume: 0.6 },
+  chainLightning: { src: '/sounds/multiverse-rumble.mp3', volume: 0.6 },
+  blink:      { src: '/sounds/portal.mp3', volume: 0.5, playbackRate: 1.2 },
+  ward:       { src: '/sounds/typewriter.mp3', volume: 0.4 },
+  timeDilation: { src: '/sounds/deep-pulse-warning.mp3', volume: 0.4 },
+  burn:       { src: '/sounds/grill-fizz.mp3', volume: 0.5 },
+  freeze:     { src: '/sounds/dim-wind-haunting.mp3', volume: 0.5 },
+  shock:      { src: '/sounds/energy-hum-books.mp3', volume: 0.5 },
+  criticalHit:{ src: '/sounds/wilhelm.mp3', volume: 0.7 },
+  stagger:    { src: '/sounds/truckhorn.mp3', volume: 0.5 },
+  riposte:    { src: '/sounds/success.wav', volume: 0.7 }
 };
 
 /** Audio manager for game sounds */

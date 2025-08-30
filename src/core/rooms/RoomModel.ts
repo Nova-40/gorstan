@@ -11,10 +11,10 @@ export interface RoomDef {
   zone: Zone;
   enterText: string[];
   exits: RoomExit[];
-  // Optional content fields
-  teleportStyle?: TeleportStyle;
-  unlocksLore?: string[];
-  objectiveHints?: string[];
-  ambient?: string; // e.g. '/audio/amb/control_loop.ogg'
-  actions?: RoomAction[];
+  // Optional content fields (allow undefined explicitly for exactOptionalPropertyTypes)
+  teleportStyle?: TeleportStyle | undefined;
+  unlocksLore?: string[] | undefined;
+  objectiveHints?: string[] | undefined;
+  ambient?: string | undefined; // e.g. '/audio/amb/control_loop.ogg'
+  actions?: RoomAction[] | undefined;
 }

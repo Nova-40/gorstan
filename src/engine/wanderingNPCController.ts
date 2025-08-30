@@ -27,13 +27,45 @@ import type { Dispatch } from 'react';
 
 
 // --- Function: handleRoomEntryForWanderingNPCs ---
+// Simple log throttle to avoid flooding devtools & slowing browser
+let lastRoomEntryLog = 0;
+let suppressedRoomEntryLogs = 0;
+const LOG_INTERVAL = 4000; // ms
+const MAX_WANDER_LOGS = 150; // rolling buffer cap
+const wanderLogBuffer: string[] = [];
+let wanderLoggingEnabled = true;
+
+function throttledLog(tag: string, ...args: any[]) {
+  const now = Date.now();
+  if (!wanderLoggingEnabled) return;
+  if (now - lastRoomEntryLog > LOG_INTERVAL) {
+    if (suppressedRoomEntryLogs > 0) {
+      // Emit one summary line for suppressed logs
+      console.log(`[WANDER-THROTTLE] Suppressed ${suppressedRoomEntryLogs} verbose NPC logs`);
+      suppressedRoomEntryLogs = 0;
+    }
+    const line = `[${tag}] ${args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' ')}`;
+    wanderLogBuffer.push(line);
+    if (wanderLogBuffer.length > MAX_WANDER_LOGS) wanderLogBuffer.splice(0, wanderLogBuffer.length - MAX_WANDER_LOGS);
+    console.log(line);
+    lastRoomEntryLog = now;
+  } else {
+    suppressedRoomEntryLogs++;
+  }
+}
+
+// Debug helpers (not part of public game API)
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export function __getWanderLogBuffer() { return [...wanderLogBuffer]; }
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export function __setWanderLoggingEnabled(v: boolean) { wanderLoggingEnabled = v; }
+
 export function handleRoomEntryForWanderingNPCs(
   room: Room,
   state: LocalGameState,
   dispatch: Dispatch<GameAction>
 ) {
-  console.log('[handleRoomEntryForWanderingNPCs] Checking room:', room.id);
-  console.log('[handleRoomEntryForWanderingNPCs] NPC registry size:', npcRegistry.size);
+  throttledLog('handleRoomEntryForWanderingNPCs', 'room', room.id, 'registry', npcRegistry.size);
   
   const visibleNPCs: NPC[] = [];
 
@@ -43,7 +75,10 @@ export function handleRoomEntryForWanderingNPCs(
       ? npc.shouldBeVisible(state, room)
       : true;
 
-    console.log(`[handleRoomEntryForWanderingNPCs] NPC ${npcId}: currentRoom=${npc.currentRoom}, targetRoom=${room.id}, isHere=${isHere}, isVisible=${isVisible}`);
+    // Extremely verbose per-NPC detail removed; emit only when NPC present & visible occasionally
+    if (isHere && isVisible) {
+      throttledLog('NPC-PRESENCE', `${npcId} in ${room.id}`);
+    }
 
     if (isHere && isVisible) {
       visibleNPCs.push(npc);
@@ -59,7 +94,7 @@ export function handleRoomEntryForWanderingNPCs(
     }
   }
 
-  console.log('[handleRoomEntryForWanderingNPCs] Found NPCs in room:', visibleNPCs.map(n => n.name));
+  throttledLog('handleRoomEntryForWanderingNPCs', 'visible', visibleNPCs.map(n => n.id).join(','));
 
   dispatch({
     type: 'SET_NPCS_IN_ROOM',
@@ -156,7 +191,7 @@ export function wanderNPC(npcId: string, state: LocalGameState) {
       npc.currentRoom = newRoom.id;
       npc.lastMoved = now;
       
-      console.log(`[WANDER] ${npc.name} moved from ${previousRoom} to ${newRoom.id} (${adjacentRoomIds.includes(newRoom.id) ? 'adjacent' : 'zone-based'}) - ${npcsInTargetRoom.length + 1} NPCs in room`);
+  throttledLog('WANDER', `${npc.name} ${previousRoom}->${newRoom.id}`);
       
       // Trigger room update if player is in the room the NPC left or entered
       if (state.currentRoomId === previousRoom || state.currentRoomId === newRoom.id) {
@@ -170,7 +205,7 @@ export function wanderNPC(npcId: string, state: LocalGameState) {
   }
   
   if (attemptCount >= maxAttempts) {
-    console.log(`[WANDER] ${npc.name} unable to find suitable room after ${maxAttempts} attempts`);
+  throttledLog('WANDER', `${npc.name} no-move after ${maxAttempts}`);
   }
 }
 

@@ -49,7 +49,7 @@ let globalTeleportTrigger: ((teleportType: 'fractal' | 'trek', callback: () => v
 class DemoController {
   private steps = [
     'intro',
-    'controlNexus',
+    'controlnexus',
     'library',
     'glitchrealm', 
     'faeglade',
@@ -188,7 +188,7 @@ class DemoController {
       case 'intro':
         await this.stepIntro();
         break;
-      case 'controlNexus':
+      case 'controlnexus':
         await this.stepControlNexus();
         break;
       case 'library':
@@ -220,7 +220,7 @@ class DemoController {
     // Teleport to Control Nexus with Star Trek style
     this.addMessage('✨ Initiating transport sequence...', 'action');
     
-  try { (await import('../services/teleportManager')).teleportManager.go('controlNexus', { overlay: 'trek' }); } catch { this.changeRoom('controlNexus'); }
+  try { (await import('../services/teleportManager')).teleportManager.go('controlnexus', { overlay: 'trek' }); } catch { this.changeRoom('controlnexus'); }
     await this.nextStep();
   }
 
@@ -262,10 +262,9 @@ class DemoController {
   }
 
   private async stepGlitchrealm(): Promise<void> {
-    this.addMessage('🪑 Using teleport chair for fractal jump...', 'action');
-    
-    // Use proper fractal teleport animation for Glitchrealm
-    this.triggerTeleport('fractal', 'glitchrealm');
+  this.addMessage('🪑 Using teleport chair for fractal jump...', 'action');
+  // Use proper fractal teleport animation for Glitchrealm (id already lowercase)
+  this.triggerTeleport('fractal', 'glitchrealm');
     
     await this.pause(3000); // Wait for fractal animation to complete
     

@@ -153,14 +153,17 @@ const AppCore: React.FC = () => {
   const { state, dispatch } = useGameState();
   performanceMonitor.markRenderStart();
   // Objectives nudger lifecycle
-  useEffect(() => { installObjectivesNudger(()=>state); return () => uninstallObjectivesNudger(); }, [state]);
+  // Install objectives nudger once (internal interval references getState each tick); avoid reinstall every state change
+  useEffect(() => { installObjectivesNudger(()=>state); return () => uninstallObjectivesNudger(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, []);
   // Debounced autosave on key state changes
+  // Lightweight autosave on coarse-grained triggers (room change, inventory count change)
+  const inventoryCount = state.player?.inventory?.length || 0;
   useEffect(() => {
     const t = setTimeout(() => {
       try { SaveManager.save(0, state as any); } catch {}
-    }, 500);
+    }, 800);
     return () => clearTimeout(t);
-  }, [state.currentRoomId, JSON.stringify(state.flags), (state.player?.inventory||[]).length]);
+  }, [state.currentRoomId, inventoryCount]);
   // Expose dispatch globally for service modules
   useEffect(() => { setGameDispatch(dispatch); return () => setGameDispatch(() => ({} as any)); }, [dispatch]);
   const { hasFlag } = useFlags();
@@ -185,6 +188,7 @@ const AppCore: React.FC = () => {
   const lookModalTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [selectedNPC, setSelectedNPC] = useState<NPC | null>(null);
   const [isGroupConversation, setIsGroupConversation] = useState(false);
+  const [showAylaModal, setShowAylaModal] = useState(false);
 
   // Ayla hint system state
   const [currentHint, setCurrentHint] = useState<AylaHintResponse | null>(null);
@@ -192,6 +196,7 @@ const AppCore: React.FC = () => {
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [roomEntryTime, setRoomEntryTime] = useState<number>(Date.now());
   const [aylaHintSystem] = useState(() => new AylaHintSystem());
+  const [ephemeralAyla, setEphemeralAyla] = useState<Array<{ id: string; content: string; expiresAt: number }>>([]);
 
   // AI Usage Monitoring state
   const [gameplayUpdates, setGameplayUpdates] = useState<GameplayUpdate[]>([]);
@@ -1378,7 +1383,7 @@ const handleBackout = useCallback((): void => {
 
   // Enhanced direction state with proper typing and memoization
   const availableDirections = useMemo(() => {
-    const directions = {
+    return {
       north: Boolean(room?.exits?.north),
       south: Boolean(room?.exits?.south),
       east: Boolean(room?.exits?.east),
@@ -1388,15 +1393,6 @@ const handleBackout = useCallback((): void => {
       up: Boolean(room?.exits?.up),
       down: Boolean(room?.exits?.down)
     };
-    
-    // Debug logging to see what's happening
-    console.log('[AppCore] Current stage:', stage);
-    console.log('[AppCore] Current room:', currentRoomId);
-    console.log('[AppCore] Room object:', room);
-    console.log('[AppCore] Room exits:', room?.exits);
-    console.log('[AppCore] Available directions:', directions);
-    
-    return directions;
   }, [room?.exits, currentRoomId, stage]);
 
   
@@ -1456,6 +1452,20 @@ const handleBackout = useCallback((): void => {
     }
   }, [room, previousRoom]);
 
+  // Convert certain Ayla hints into ephemeral console guidance
+  useEffect(() => {
+    if (!currentHint) return;
+    // Only show ephemeral for low/medium urgency; high keeps popup
+    if (currentHint.urgency === 'low' || currentHint.urgency === 'medium') {
+      const id = `ayla-ephemeral-${Date.now()}`;
+      const line = `Ayla (hint): ${currentHint.hintText}` + (currentHint.followUp ? ` ${currentHint.followUp}` : '');
+      const expiresAt = Date.now() + 8000; // 8s lifetime
+      setEphemeralAyla(prev => [...prev.filter(m => m.expiresAt > Date.now()), { id, content: line, expiresAt }]);
+      // Auto-dismiss popup silently if it would show
+      setCurrentHint(null);
+    }
+  }, [currentHint]);
+
   // Periodic conversation check for inter-NPC dialogue
   useEffect(() => {
     if (stage === 'game' && room && room.id) {
@@ -1476,151 +1486,101 @@ const handleBackout = useCallback((): void => {
     }
   }, [stage]);
 
+  // Memoized initial room map reference
+  const initialRoomMapRef = useRef<Record<string, Room> | null>(null);
+
   // Enhanced game initialization with proper error handling and typing
   useEffect(() => {
-    if (!state.roomMap || Object.keys(state.roomMap).length === 0) {
-      try {
-        let loadedRoomMap: Record<string, Room> = getAllRoomsAsObject();
-        
-        // If no rooms loaded, use fallback
-        if (!loadedRoomMap || Object.keys(loadedRoomMap).length === 0) {
-          console.warn('[AppCore] No rooms loaded from main loader');
-        }
-        
-        console.log('[AppCore] Loading room map with', Object.keys(loadedRoomMap).length, 'rooms');
-        dispatch({ type: 'LOAD_ROOM_MAP', payload: loadedRoomMap });
-        initializeAchievementEngine(dispatch);
-        
-        const modulePromises: Promise<any>[] = [];
-        
-        try {
-          initializeScoreManager(dispatch);
-        } catch (error) {
-          console.warn('Failed to load score manager:', error);
-          dispatch({ 
-            type: 'ADD_MESSAGE', 
-            payload: { 
-              id: Date.now().toString(), 
-              text: "Failed to load score manager.", 
-              type: "error", 
-              timestamp: Date.now() 
-            } 
-          });
-        }
+    if (initialRoomMapRef.current) return; // Already loaded
+    try {
+      const loadedRoomMap: Record<string, Room> = getAllRoomsAsObject();
+      if (!loadedRoomMap || Object.keys(loadedRoomMap).length === 0) console.warn('[AppCore] No rooms loaded from main loader');
+      console.log('[AppCore] Loading room map with', Object.keys(loadedRoomMap).length, 'rooms');
+      initialRoomMapRef.current = loadedRoomMap;
+      dispatch({ type: 'LOAD_ROOM_MAP', payload: loadedRoomMap });
+      if (!loadedRoomMap[state.currentRoomId] && loadedRoomMap['controlnexus']) dispatch({ type: 'MOVE_TO_ROOM', payload: 'controlnexus' });
+      initializeAchievementEngine(dispatch);
 
-        try {
-          initializeCodexTracker(dispatch);
-        } catch (error) {
-          console.warn('Failed to load codex tracker:', error);
-          dispatch({ 
-            type: 'ADD_MESSAGE', 
-            payload: { 
-              id: Date.now().toString(), 
-              text: "Failed to load codex tracker.", 
-              type: "error", 
-              timestamp: Date.now() 
-            } 
-          });
-        }
-
-        try {
-          initializeMiniquests();
-        } catch (error) {
-          console.warn('Failed to load miniquest initializer:', error);
-          dispatch({ 
-            type: 'ADD_MESSAGE', 
-            payload: { 
-              id: Date.now().toString(), 
-              text: "Failed to load miniquest initializer.", 
-              type: "error", 
-              timestamp: Date.now() 
-            } 
-          });
-        }
-
-        try {
-          loadCelebrationIndex();
-        } catch (error) {
-          console.warn('Could not load celebration index:', error);
-        }
-        
-        Promise.allSettled(modulePromises);
-        initializeWanderingNPCs(state, dispatch);
-      } catch (error: unknown) {
-        console.error('Game initialization failed:', error);
-        
-        // Try fallback rooms as last resort
-        try {
-          // No fallback loader present; propagate error state
-          dispatch({ 
-            type: 'ADD_MESSAGE', 
-            payload: { 
-              id: Date.now().toString(), 
-              text: "Critical error: Unable to load room data.", 
-              type: "error", 
-              timestamp: Date.now() 
-            } 
-          });
-        } catch (fallbackError) {
-          console.error('Even fallback initialization failed:', fallbackError);
-          dispatch({ 
-            type: 'ADD_MESSAGE', 
-            payload: { 
-              id: Date.now().toString(), 
-              text: "Critical error: Unable to load game data. Please refresh the page.", 
-              type: "error", 
-              timestamp: Date.now() 
-            } 
-          });
-        }
+      // Score manager
+      try { initializeScoreManager(dispatch); } catch (error) {
+        console.warn('Failed to load score manager:', error);
+        dispatch({ type: 'ADD_MESSAGE', payload: { id: Date.now().toString(), text: 'Failed to load score manager.', type: 'error', timestamp: Date.now() } });
       }
+      // Codex tracker
+      try { initializeCodexTracker(dispatch); } catch (error) {
+        console.warn('Failed to load codex tracker:', error);
+        dispatch({ type: 'ADD_MESSAGE', payload: { id: Date.now().toString(), text: 'Failed to load codex tracker.', type: 'error', timestamp: Date.now() } });
+      }
+      // Miniquests
+      try { initializeMiniquests(); } catch (error) {
+        console.warn('Failed to load miniquest initializer:', error);
+        dispatch({ type: 'ADD_MESSAGE', payload: { id: Date.now().toString(), text: 'Failed to load miniquest initializer.', type: 'error', timestamp: Date.now() } });
+      }
+      // Celebrations
+      try { loadCelebrationIndex(); } catch (error) { console.warn('Could not load celebration index:', error); }
+
+      // Optional async modules
+      Promise.allSettled([
+        import('../services/npcAI'),
+        import('../engine/wanderingNPCController')
+      ]).then(() => {
+        try { initializeWanderingNPCs(state, dispatch); } catch (e) { console.warn('Wandering NPC init failed:', e); }
+      });
+    } catch (error) {
+      console.error('[AppCore] Error during room map init:', error);
+      dispatch({ type: 'ADD_MESSAGE', payload: { id: Date.now().toString(), text: 'Critical error: Unable to load room data.', type: 'error', timestamp: Date.now() } });
     }
-  }, [state.roomMap, dispatch, loadModule, state]);
+  }, [dispatch, state.currentRoomId, state]);
 
   // Enhanced room description effect with proper typing
+  // Track descriptions already shown to prevent spamming on every render
+  const shownRoomDescriptionsRef = useRef<Set<string>>(new Set());
   useEffect(() => {
-    if (room?.description && room.description !== lastShownRoomDescription) {
-      dispatch({ 
-        type: 'ADD_MESSAGE', 
-        payload: { 
-          id: Date.now().toString(), 
-          text: room.description, 
-          type: 'system', 
-          timestamp: Date.now() 
-        } 
-      });
-      setLastShownRoomDescription(Array.isArray(room.description) ? room.description.join(' ') : room.description);
-      
-      if (room.id) {
-        handleRoomEntry(room, state, dispatch);
-        handleRoomEntryForWanderingNPCs(room, state, dispatch);
-        // Trigger inter-NPC conversations on room entry
-        onRoomEntry(state, dispatch, room.id, state.previousRoomId);
-        
-        // Check for zone-specific group chat requirements
-        const currentZone = room.zone || '';
-        const npcsInRoom = state.npcsInRoom || [];
-        
-        // Import and use group chat logic for specific zones
-        if (npcsInRoom.length > 1) {
-          import('../npc/groupChatLogic').then(({ GroupChatManager }) => {
-            if (GroupChatManager.shouldForceGroupChat(room.id, currentZone)) {
-              dispatch({ type: 'SET_FLAG', payload: { flag: 'forceGroupChat', value: true } });
-              
-              // Auto-open group conversation for Stanton Harcourt zone
-              if (currentZone === 'stantonZone' || currentZone === 'stantonharcourtZone') {
-                setTimeout(() => {
-                  setIsGroupConversation(true);
-                  setSelectedNPC(npcsInRoom[0] || null);
-                  openModal('npcConsole');
-                }, 2000);
-              }
+    if (!room) return;
+    const currentDescriptionString = Array.isArray(room.description)
+      ? room.description.join(' ')
+      : (room.description || '');
+    // Only emit if new description for this room AND different from last shown global description
+    const key = `${room.id}::${currentDescriptionString}`;
+    if (currentDescriptionString && !shownRoomDescriptionsRef.current.has(key)) {
+      // Suppress during demo automation if we've already printed this room once (prevents console spam in demo stage)
+      const isDemoSuppressed = isDemoActive && shownRoomDescriptionsRef.current.has(room.id);
+      if (!isDemoSuppressed) {
+        dispatch({
+          type: 'ADD_MESSAGE',
+          payload: {
+            id: Date.now().toString(),
+            text: currentDescriptionString,
+            type: 'system',
+            timestamp: Date.now()
+          }
+        });
+      }
+      shownRoomDescriptionsRef.current.add(key);
+      shownRoomDescriptionsRef.current.add(room.id); // mark room seen at least once
+      setLastShownRoomDescription(currentDescriptionString);
+      // Room entry side-effects (only first time per unique description)
+      handleRoomEntry(room, state, dispatch);
+      handleRoomEntryForWanderingNPCs(room, state, dispatch);
+      onRoomEntry(state, dispatch, room.id, state.previousRoomId);
+      const currentZone = room.zone || '';
+      const npcsHere = state.npcsInRoom || [];
+      if (npcsHere.length > 1) {
+        import('../npc/groupChatLogic').then(({ GroupChatManager }) => {
+          if (GroupChatManager.shouldForceGroupChat(room.id, currentZone)) {
+            dispatch({ type: 'SET_FLAG', payload: { flag: 'forceGroupChat', value: true } });
+            if (currentZone === 'stantonZone' || currentZone === 'stantonharcourtZone') {
+              setTimeout(() => {
+                setIsGroupConversation(true);
+                setSelectedNPC(npcsHere[0] || null);
+                openModal('npcConsole');
+              }, 2000);
             }
-          });
-        }
+          }
+        });
       }
     }
-  }, [room, lastShownRoomDescription, dispatch, state]);
+  }, [room, isDemoActive, dispatch, state]);
 
   // Enhanced transition execution effect with proper error handling and typing
   useEffect(() => {
@@ -1666,29 +1626,36 @@ const handleBackout = useCallback((): void => {
     }
   }, [readyForTransition, transitionType, roomMap, transitionTargetRoom, transitionInventory, dispatch]);
 
-  // Demo mode effect - must be called unconditionally to follow Rules of Hooks
+  // Demo mode effect (no stage flip) - starts automation when entering demo stage
+  const demoStartedRef = useRef(false);
   useEffect(() => {
     if (stage === 'demo') {
-      console.log('[AppCore] Demo mode effect triggered - starting demo sequence');
-      // Initialize demo mode - start the game with demo route
-      dispatch({ type: 'ADVANCE_STAGE', payload: 'game' });
-      
-      // Keep demo in the current room (controlnexus)
-      // dispatch({ type: 'SET_CURRENT_ROOM', payload: 'gorstanhub' });
-      
-      // After a brief delay, start the demo automation
-      const demoTimer = setTimeout(() => {
-        console.log('[AppCore] Demo timer fired - calling startDemoMode');
-        // Start automated demo commands
-        startDemoMode();
-      }, 2000);
-      
-      return () => {
-        console.log('[AppCore] Demo effect cleanup - clearing timer');
-        clearTimeout(demoTimer);
-      };
+      if (!demoStartedRef.current) {
+        console.log('[AppCore] Entered demo stage – preparing automated sequence');
+        setIsDemoActive(true);
+        demoStartedRef.current = true;
+        const demoTimer = setTimeout(() => {
+          console.log('[AppCore] Demo timer fired - starting demo automation');
+          startDemoMode();
+        }, 1200);
+        return () => {
+          clearTimeout(demoTimer);
+        };
+      } else {
+        // Debug loop guard
+        if (console && typeof console.debug === 'function') {
+          console.debug('[AppCore] Demo stage already active; skipping re-init');
+        }
+      }
+    } else {
+      // Leaving demo stage resets flag so a future re-entry can replay
+      if (demoStartedRef.current) {
+        console.log('[AppCore] Exiting demo stage – stopping demo mode flag');
+      }
+      setIsDemoActive(false);
+      demoStartedRef.current = false;
     }
-  }, [stage, dispatch, startDemoMode]);
+  }, [stage, startDemoMode]);
 
   // Enhanced modal content rendering with proper typing
   const renderModalContent = useStableCallback((): React.ReactNode => {
@@ -1798,6 +1765,8 @@ const handleBackout = useCallback((): void => {
     return <div className="appcore-loading">Loading game world...</div>;
   }
 
+  // (Removed DemoStage early-return component to keep hook order stable; demo now overlays main UI)
+
   // Enhanced teleport rendering with proper typing
   if (teleportType === 'fractal') {
     return <TeleportManager teleportType="fractal" onComplete={handleTeleportComplete} />;
@@ -1851,34 +1820,7 @@ const handleBackout = useCallback((): void => {
       />
     );
   }
-  if (stage === 'demo') {
-    const [demoReady, setDemoReady] = useState(false);
-    const DemoDirector = useMemo(() => React.lazy(() => import('../demo/DemoDirector')), []);
-    useEffect(() => { const t = setTimeout(() => setDemoReady(true), 800); return () => clearTimeout(t); }, []);
-    return (
-      <React.Suspense fallback={
-        <div className="flex items-center justify-center min-h-screen bg-background text-console">
-          <div className="text-center space-y-4">
-            <div className="animate-spin w-12 h-12 border-4 border-console border-t-transparent rounded-full mx-auto"></div>
-            <h2 className="text-2xl font-bold">Loading Guided Demo...</h2>
-            <p className="text-lg">Preparing interactive tour</p>
-          </div>
-        </div>
-      }>
-        {!demoReady ? (
-          <div className="flex items-center justify-center min-h-screen bg-background text-console">
-            <div className="text-center space-y-4">
-              <div className="animate-spin w-12 h-12 border-4 border-console border-t-transparent rounded-full mx-auto"></div>
-              <h2 className="text-2xl font-bold">Starting Demo Experience...</h2>
-              <p className="text-lg">Ayla is preparing your guided tour</p>
-            </div>
-          </div>
-        ) : (
-          <DemoDirector />
-        )}
-      </React.Suspense>
-    );
-  }
+  // For demo stage we now fall through and render the main UI with demo automation active
   if (stage === 'trialsGame') {
     const TrialsGame = React.lazy(() => import('./TrialsGame'));
     
@@ -2004,14 +1946,12 @@ const handleBackout = useCallback((): void => {
             timestamp: (h as any).timestamp || Date.now(),
             skipTyping: false
           }))}
+          ephemeralAylaMessages={ephemeralAyla}
         />
       </div>
       
       <div className="quad quad-3">
         <PlayerStatsPanel />
-        <CommandInput onCommand={handleCommand} playerName={playerName} />
-        <ObjectivePanel />
-        <AylaPanel />
         <PresentNPCsPanel npcs={npcsInRoom} onTalkToNPC={handleOpenNPCConsole} />
       </div>
       
@@ -2079,7 +2019,14 @@ const handleBackout = useCallback((): void => {
           onTalkToNPC={handleOpenNPCConsole}
           hasActiveTraps={hasActiveTraps}
           onDisarmTrap={handleDisarmTrap}
+          onHelp={() => setShowAylaModal(true)}
         />
+        <div className="mt-4">
+          <CommandInput onCommand={handleCommand} playerName={playerName} />
+        </div>
+        <div className="mt-4">
+          <ObjectivePanel />
+        </div>
       </div>
 
       {hasFlag('showInventory') && (
@@ -2130,12 +2077,13 @@ const handleBackout = useCallback((): void => {
             openModal('npcConsole');
             setCurrentGuidance(null);
           }}
-          onOpenMiniquests={() => {
-            // Trigger miniquest command to open interface
-            handleCommand('miniquests');
-            setCurrentGuidance(null);
-          }}
         />
+      )}
+
+      {showAylaModal && (
+        <ModalOverlay isOpen={showAylaModal} onClose={() => setShowAylaModal(false)}>
+          <AylaPanel />
+        </ModalOverlay>
       )}
 
       {/* Performance Dashboard */}

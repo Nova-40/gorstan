@@ -16,10 +16,11 @@
 
 // src/components/WelcomeScreen.tsx
 import React, { useEffect, useRef } from "react";
-import { getVersionString } from "../config/version";
-import RadialCountdown from "../ui/RadialCountdown";
+import { getVersionString, getShortVersion } from "../config/version";
+import RadialProgressRing from "../ui/RadialProgressRing";
 import { attachWelcomeIdleAutostart, detachWelcomeIdleAutostart } from "../engine/idleAutostart";
 import { startDemo } from "../demo/demoRouter";
+import { useIdleGuidanceTimers } from "../hooks/useIdleGuidanceTimers";
 import "../ui/theme.css";
 
 interface WelcomeScreenProps {
@@ -28,45 +29,63 @@ interface WelcomeScreenProps {
   onStartDemo?: () => void;
 }
 
+interface AylaGuidanceProps { onDismiss: () => void; onStartDemo: () => void; }
+const AylaGuidanceModal: React.FC<AylaGuidanceProps> = ({ onDismiss, onStartDemo }) => (
+  <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+    <div className="bg-gradient-to-br from-indigo-900 to-purple-900 border-2 border-cyan-400 rounded-xl p-6 max-w-2xl w-full text-white shadow-2xl">
+      <div className="flex items-center gap-4 mb-4">
+        <img src="/images/Ayla.png" alt="Ayla" className="w-16 h-16 rounded-full border-2 border-cyan-400" />
+        <div>
+          <h3 className="text-xl font-bold text-cyan-300">Ayla</h3>
+          <p className="text-sm text-gray-300">Your Guide Through the Multiverse</p>
+        </div>
+      </div>
+      <div className="space-y-4 mb-6 text-sm">
+        <p className="text-cyan-200">*A cosmic presence manifests, her voice carrying the weight of infinite realities*</p>
+        <p className="text-white">"Greetings, traveler. I sense you're contemplating your journey through Gorstan. Let me illuminate the paths before you..."</p>
+        <div className="bg-black/30 rounded-lg p-4 space-y-2">
+          <h4 className="text-cyan-300 font-semibold">What You Can Experience:</h4>
+          <ul className="text-gray-200 space-y-1 list-disc pl-4">
+            <li><strong>Explore</strong> – Interconnected realities</li>
+            <li><strong>Interact</strong> – AI NPCs with memory</li>
+            <li><strong>Solve Puzzles</strong> – Logic & observation</li>
+            <li><strong>Shape Reality</strong> – Decisions ripple</li>
+            <li><strong>Discover Lore</strong> – The Lattice & beyond</li>
+          </ul>
+        </div>
+        <div className="bg-black/30 rounded-lg p-4 space-y-2">
+          <h4 className="text-cyan-300 font-semibold">How to Play:</h4>
+          <ul className="text-gray-200 space-y-1 list-disc pl-4">
+            <li>Type commands like <code className="bg-gray-700 px-1 rounded">look</code>, <code className="bg-gray-700 px-1 rounded">north</code>, <code className="bg-gray-700 px-1 rounded">talk to [character]</code></li>
+            <li>Use Quick Actions for common commands</li>
+            <li>Ask Ayla for help anytime</li>
+            <li>Save progress and return</li>
+          </ul>
+        </div>
+        <p className="text-cyan-200 italic">"Unsure where to begin? Try the guided demo first."</p>
+      </div>
+      <div className="flex gap-3 justify-center">
+        <button onClick={onStartDemo} className="bg-cyan-600 hover:bg-cyan-700 text-white px-6 py-2 rounded-lg font-semibold transition-all">Start Demo Experience</button>
+        <button onClick={onDismiss} className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition-all">I'll Explore Alone</button>
+      </div>
+    </div>
+  </div>
+);
+
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onStartDemo }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [showIdleCountdown, setShowIdleCountdown] = React.useState(false);
-  const [idleTimeRemaining, setIdleTimeRemaining] = React.useState(150); // 2.5 minutes
+  const { showDemoCountdown, demoSecondsRemaining, guidanceProgress, showGuidanceModal, resetAll, dismissGuidance } = useIdleGuidanceTimers({
+    demoTotalMs: 150000,
+    guidanceTotalMs: 120000,
+    onDemoTrigger: () => { if (onStartDemo) onStartDemo(); },
+    onGuidanceTrigger: () => { /* modal auto shown by hook */ }
+  });
 
   // Set up idle autostart system
   useEffect(() => {
-    const handleIdleCountdownReset = (event: CustomEvent) => {
-      const { total, remaining } = event.detail;
-      const timeRemainingSeconds = remaining / 1000;
-      setIdleTimeRemaining(timeRemainingSeconds);
-      
-      // Show countdown when we have less than total time and more than 0
-      setShowIdleCountdown(remaining < total && remaining > 0);
-    };
-
-    const handleDemoStart = () => {
-      console.log("[WelcomeScreen] Demo starting - hiding countdown");
-      setShowIdleCountdown(false);
-      
-      // Trigger the demo UI if we have a handler
-      if (onStartDemo) {
-        onStartDemo();
-      }
-    };
-
-    // Listen for idle countdown events
-    window.addEventListener('idle-countdown-reset', handleIdleCountdownReset as EventListener);
-    window.addEventListener('demo-start', handleDemoStart);
-
-    // Attach the idle autostart system
     attachWelcomeIdleAutostart();
-
-    return () => {
-      window.removeEventListener('idle-countdown-reset', handleIdleCountdownReset as EventListener);
-      window.removeEventListener('demo-start', handleDemoStart);
-      detachWelcomeIdleAutostart();
-    };
-  }, [onStartDemo]);
+    return () => { detachWelcomeIdleAutostart(); };
+  }, []);
 
   // Log version info to console for debugging
   React.useEffect(() => {
@@ -74,15 +93,24 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
   }, []);
 
   return (
+    <>
     <div ref={containerRef} className="relative flex flex-col items-center justify-center min-h-[80vh] w-full max-w-4xl mx-auto px-4 border bg-gradient-to-b from-slate-900 to-black text-green-400 border-2 border-green-500 p-6 m-4 rounded-xl">
       
       {/* Idle Countdown in top-right corner */}
-      {showIdleCountdown && (
-        <div className="absolute top-4 right-4 z-10">
-          <RadialCountdown
-            totalMs={150000}
-            className="radial-countdown-container"
+  {showDemoCountdown && (
+        <div className="absolute top-4 right-4 z-10 flex flex-col items-center" aria-live="polite">
+          <RadialProgressRing
+    progress={1 - demoSecondsRemaining / 150}
+            size={90}
+            strokeWidth={5}
+            mode="gradient"
+            gradientColors={["#22c55e", "#f59e0b", "#ef4444"]}
+    label={`Idle demo starts in ${Math.ceil(demoSecondsRemaining)} seconds`}
+    title={`Idle demo starts in ${Math.ceil(demoSecondsRemaining)}s`}
           />
+          <div className="mt-1 text-xs text-green-300 font-mono" role="status">
+    {Math.ceil(demoSecondsRemaining)}s
+          </div>
         </div>
       )}
 
@@ -93,7 +121,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
           className="w-[72px] h-[72px] rounded-full shadow-md"
         />
         Welcome to Gorstan
-  <span className="text-lg text-yellow-400 ml-2">(Beta 3)</span>
+        <span className="text-lg text-yellow-400 ml-2">({getShortVersion()})</span>
       </h1>
       <p className="text-md md:text-lg text-center max-w-2xl mb-6">
         A multiverse simulation of coffee, consequence, and quantum possibility. Tread carefully. The rabbit is watching.
@@ -160,6 +188,13 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
         </div>
       </div>
       
+      {/* Secondary Ayla guidance radial (2 min popup) */}
+    {!showGuidanceModal && (
+        <div className="absolute top-4 left-4 z-10">
+      <RadialProgressRing progress={guidanceProgress} size={70} strokeWidth={4} mode="spectrum" label="Ayla guidance timer" title="Ayla guidance timer" />
+        </div>
+      )}
+
       {/* Build version - visible for deployment verification */}
       <div className="absolute bottom-2 right-2 text-green-300 text-xs opacity-60 select-none font-mono">
         {getVersionString()}
@@ -170,6 +205,13 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
         Gorstan Live
       </div>
     </div>
+    {showGuidanceModal && onStartDemo && (
+      <AylaGuidanceModal 
+        onDismiss={() => { dismissGuidance(); }} 
+        onStartDemo={() => { if (onStartDemo) onStartDemo(); dismissGuidance(); }} 
+      />
+    )}
+    </>
   );
 };
 

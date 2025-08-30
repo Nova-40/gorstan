@@ -101,6 +101,44 @@ export function processCommand({
   let updates: Partial<LocalGameState> = {};
 
   switch (verb) {
+    case 'wander': {
+      // Developer oriented inspection of wandering NPC system
+      if (!gameState.settings?.debugMode) {
+        return { messages: [{ text: 'Wander debug commands require debug mode.', type: 'system' }] };
+      }
+      if (noun === 'logs') {
+        // Dynamically import controller to read buffered logs
+        try {
+          // @ts-ignore - internal export not typed
+          const mod = require('./wanderingNPCController');
+          const buffer: string[] = mod.__getWanderLogBuffer ? mod.__getWanderLogBuffer() : [];
+          if (!buffer.length) return { messages: [{ text: 'No wander logs captured yet.', type: 'system' }] };
+          return { messages: [
+            { text: `--- Last ${buffer.length} Wander Logs ---`, type: 'system' },
+            ...buffer.map(l => ({ text: l, type: 'info' as const }))
+          ]};
+        } catch (e) {
+          return { messages: [{ text: 'Unable to access wander logs.', type: 'error' }] };
+        }
+      }
+      if (noun === 'quiet') {
+        try {
+          const mod = require('./wanderingNPCController');
+          mod.__setWanderLoggingEnabled && mod.__setWanderLoggingEnabled(false);
+          return { messages: [{ text: 'Wandering NPC logging muted.', type: 'system' }] };
+        } catch {}
+      }
+      if (noun === 'loud') {
+        try {
+          const mod = require('./wanderingNPCController');
+          mod.__setWanderLoggingEnabled && mod.__setWanderLoggingEnabled(true);
+          return { messages: [{ text: 'Wandering NPC logging enabled.', type: 'system' }] };
+        } catch {}
+      }
+      return { messages: [
+        { text: 'wander logs | wander quiet | wander loud (debug mode)', type: 'system' }
+      ] };
+    }
     case 'go':
     case 'move': {
       const direction = noun;

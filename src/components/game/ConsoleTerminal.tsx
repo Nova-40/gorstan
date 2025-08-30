@@ -8,6 +8,9 @@ import { cn } from '../../utils/cn';
 import { ANIMATION, PUNCTUATION_DELAYS } from '../../domain/constants';
 import type { ConsoleMessage, ConsoleTerminalProps } from '../../domain/types';
 
+// Ephemeral Ayla message shape (non-typed in domain to keep domain core lean)
+interface EphemeralAylaMessage { id: string; content: string; expiresAt: number }
+
 const BRAILLE_CURSOR = '⣿';
 
 interface TypingState {
@@ -21,8 +24,9 @@ export function ConsoleTerminal({
   messages, 
   onSkipTyping, 
   onComplete, 
-  className 
-}: ConsoleTerminalProps) {
+  className,
+  ephemeralAylaMessages = []
+}: ConsoleTerminalProps & { ephemeralAylaMessages?: EphemeralAylaMessage[] }) {
   const [typingState, setTypingState] = useState<TypingState>({
     messageIndex: 0,
     charIndex: 0,
@@ -182,6 +186,9 @@ export function ConsoleTerminal({
     }
   }, [displayedMessages]);
 
+  const now = Date.now();
+  const activeEphemeral = ephemeralAylaMessages.filter(m => m.expiresAt > now);
+
   return (
     <div
       ref={containerRef}
@@ -198,13 +205,13 @@ export function ConsoleTerminal({
       aria-label="Game console output"
     >
       <div className="space-y-1">
-        {displayedMessages.map((text, index) => {
+  {displayedMessages.map((text, index) => {
           const message = messages[index];
           if (!message) return null;
 
           return (
             <div key={message.id} className={cn(
-              'leading-relaxed',
+              'leading-relaxed transition-opacity',
               message.type === 'system' && 'text-console',
               message.type === 'player' && 'text-text',
               message.type === 'npc' && 'text-info',
@@ -223,6 +230,20 @@ export function ConsoleTerminal({
                   {showCursor ? BRAILLE_CURSOR : ' '}
                 </span>
               )}
+            </div>
+          );
+        })}
+        {activeEphemeral.map(m => {
+          const remaining = m.expiresAt - now;
+          return (
+            <div
+              key={m.id}
+              className={cn(
+                'leading-relaxed text-amber-400/90 italic transition-opacity duration-700',
+                remaining < 1200 && 'opacity-0'
+              )}
+            >
+              {m.content}
             </div>
           );
         })}

@@ -6,7 +6,11 @@
     "enterText": [
       "You are in the central control nexus. This is the heart of the multiverse navigation system. Strange lights pulse from crystalline structures embedded in the walls."
     ],
-    "exits": [],
+    "exits": { "west": "controlroom" },
+    "environment": [
+      { "id": "tactical_display", "name": "tactical display", "description": "A holographic tactical display flickering with multiverse node data." },
+      { "id": "console", "name": "control console", "description": "A sleek console with touch-sensitive panels awaiting input." }
+    ],
     "teleportStyle": "trek",
     "ambient": "/audio/amb/control_loop.ogg",
     "objectiveHints": [
@@ -30,7 +34,11 @@
     "enterText": [
       "A high-tech control room with banks of monitors and control panels. The air hums with electronic activity."
     ],
-    "exits": []
+    "exits": { "east": "controlnexus", "sit": "controlnexus" },
+    "environment": [
+      { "id": "tactical_display", "name": "tactical display", "description": "It shows a branching lattice of possible realities." },
+      { "id": "console", "name": "systems console", "description": "Scrolling diagnostics confirm all subsystems nominal." }
+    ]
   },
   "crossing": {
     "id": "crossing",
