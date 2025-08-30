@@ -1852,15 +1852,31 @@ const handleBackout = useCallback((): void => {
     );
   }
   if (stage === 'demo') {
-    
+    const [demoReady, setDemoReady] = useState(false);
+    const DemoDirector = useMemo(() => React.lazy(() => import('../demo/DemoDirector')), []);
+    useEffect(() => { const t = setTimeout(() => setDemoReady(true), 800); return () => clearTimeout(t); }, []);
     return (
-      <div className="flex items-center justify-center min-h-screen bg-background text-console">
-        <div className="text-center space-y-4">
-          <div className="animate-spin w-12 h-12 border-4 border-console border-t-transparent rounded-full mx-auto"></div>
-          <h2 className="text-2xl font-bold">Starting Demo Experience...</h2>
-          <p className="text-lg">Ayla is preparing your guided tour</p>
+      <React.Suspense fallback={
+        <div className="flex items-center justify-center min-h-screen bg-background text-console">
+          <div className="text-center space-y-4">
+            <div className="animate-spin w-12 h-12 border-4 border-console border-t-transparent rounded-full mx-auto"></div>
+            <h2 className="text-2xl font-bold">Loading Guided Demo...</h2>
+            <p className="text-lg">Preparing interactive tour</p>
+          </div>
         </div>
-      </div>
+      }>
+        {!demoReady ? (
+          <div className="flex items-center justify-center min-h-screen bg-background text-console">
+            <div className="text-center space-y-4">
+              <div className="animate-spin w-12 h-12 border-4 border-console border-t-transparent rounded-full mx-auto"></div>
+              <h2 className="text-2xl font-bold">Starting Demo Experience...</h2>
+              <p className="text-lg">Ayla is preparing your guided tour</p>
+            </div>
+          </div>
+        ) : (
+          <DemoDirector />
+        )}
+      </React.Suspense>
     );
   }
   if (stage === 'trialsGame') {
