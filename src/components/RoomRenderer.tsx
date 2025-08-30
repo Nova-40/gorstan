@@ -138,8 +138,20 @@ const RoomRenderer: React.FC = () => {
     );
   }
 
-// Variable declaration
-  const imagePath = room.image ? `/images/${room.image}` : '/images/default-room.png';
+  // Normalize image path: accept stored values like
+  //   'introZone_controlnexus.png'
+  //   'images/introZone_controlnexus.png'
+  //   '/images/introZone_controlnexus.png'
+  // Fall back to existing fallback.png (default-room.png does not exist)
+  const resolveImagePath = (img?: string): string => {
+    if (!img || img.trim() === '') return '/images/fallback.png';
+    if (img.startsWith('http://') || img.startsWith('https://')) return img; // external
+    if (img.startsWith('/images/')) return img; // already absolute within images
+    if (img.startsWith('images/')) return '/' + img; // missing leading slash
+    // bare filename -> prefix
+    return `/images/${img}`;
+  };
+  const imagePath = resolveImagePath(room.image);
   return (
     <div className="room-container flex flex-col h-full bg-black rounded-lg shadow-inner overflow-hidden border border-green-600">
       {room.image ? (
@@ -148,7 +160,10 @@ const RoomRenderer: React.FC = () => {
             src={imagePath}
             alt={room.title}
             className="w-full h-full object-cover"
-            onError={(e) => { console.log(`Failed to load image: ${imagePath}`); (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+            onError={(e) => {
+              console.warn(`[RoomRenderer] Failed to load image '${imagePath}', swapping to fallback.`);
+              (e.currentTarget as HTMLImageElement).src = '/images/fallback.png';
+            }}
           />
         </div>
       ) : (

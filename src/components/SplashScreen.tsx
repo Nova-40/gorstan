@@ -17,7 +17,7 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Game module.
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 
 
 
@@ -37,20 +37,34 @@ type SplashScreenProps = {
 
 
 const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
-// React effect hook
-  useEffect(() => {
-// Variable declaration
-    const timer = setTimeout(() => {
-      onComplete();
-    }, 4000); 
+  // Keep the latest onComplete in a ref so the timeout isn't reset by re-renders
+  const onCompleteRef = useRef(onComplete);
+  useEffect(() => { onCompleteRef.current = onComplete; }, [onComplete]);
 
-// JSX return block or main return
+  // Run only once – avoids resetting the timer if parent re-renders rapidly
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      try { onCompleteRef.current(); } catch (e) { console.error('Splash completion failed', e); }
+    }, 4000);
     return () => clearTimeout(timer);
-  }, [onComplete]);
+  }, []);
+
+  // Allow user to skip with click / key
+  const handleSkip = useCallback(() => {
+    try { onCompleteRef.current(); } catch (e) { console.error('Splash skip failed', e); }
+  }, []);
 
 // JSX return block or main return
   return (
-    <div className="fixed inset-0 bg-black flex flex-col items-center justify-center z-50">
+    <div
+      className="fixed inset-0 bg-black flex flex-col items-center justify-center z-50 cursor-pointer"
+      role="button"
+      aria-label="Continue"
+      tabIndex={0}
+      onClick={handleSkip}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSkip(); } }}
+      title="Click or press Enter/Space to continue"
+    >
       {}
       <div className="text-center font-mono">
         {}
