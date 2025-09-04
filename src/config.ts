@@ -42,3 +42,27 @@ export const config = {
     forceSeason: import.meta.env.VITE_FORCE_SEASON as null | "easter" | "christmas" | "may13"
   })
 };
+
+// Explicit environment helpers (kept small to avoid accidental tree-shake issues)
+export const IS_DEV = !!import.meta.env.DEV;
+
+// Centralised feature flags (add new flags here – default to false unless stable)
+// Simplified core feature flags (additional legacy flags retained below for backward compatibility)
+export const FEATURES = {
+  DEBUG_MENU_ENABLED: true, // explicitly enabled; still gated at render time by IS_DEV where appropriate
+  DEMO_MODE_ENABLED: true,
+  MINI_QUESTS_ENABLED: true,
+  // Legacy / extended flags (kept so existing code paths don't break; can be consolidated later)
+  MINIQUEST_DEBUG_LAUNCH: true && IS_DEV,
+  TRIALS_DEBUG_LAUNCH: true && IS_DEV,
+} as const;
+
+// Demo runtime tuning constants (guarded by feature flag when used)
+export const DEMO = {
+  INPUT_INTERVAL_MS: 1600,
+  GROQ_TIMEOUT_MS: 1200,
+  MAX_STEPS_PER_DEMO: 120,
+  STRICT_WHITELIST: true,
+} as const;
+
+export type FeatureFlag = keyof typeof FEATURES;
