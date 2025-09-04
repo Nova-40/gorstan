@@ -19,7 +19,8 @@
 
 
 import type { GameState } from '../types/GameTypes';
-import type { Miniquest, MiniquestState, MiniquestResult, MiniquestProgress } from '../types/GameTypes';
+import type { Miniquest, MiniquestState, MiniquestResult } from '../types/GameTypes';
+import { track } from '@/lib/analytics';
 
 
 
@@ -43,6 +44,8 @@ type GameStateWithMiniquests = GameState & {
 class MiniquestEngine {
   private static instance: MiniquestEngine;
   private roomQuests: Map<string, Miniquest[]> = new Map();
+  // Internal debug accessor (non-enumerable externally). Only used by the new debug overlay for read-only listing.
+  public _debugExposeRoomQuests(): Map<string, Miniquest[]> { return this.roomQuests; }
 
   public static getInstance(): MiniquestEngine {
     if (!MiniquestEngine.instance) {
@@ -114,7 +117,7 @@ class MiniquestEngine {
     }
 
     
-    if (quest.triggerAction && triggerAction !== quest.triggerAction) {
+  if (quest.triggerAction && triggerAction !== quest.triggerAction) {
       return {
         success: false,
         message: quest.triggerText || `Try: ${quest.triggerAction}`
@@ -125,6 +128,14 @@ class MiniquestEngine {
 // Variable declaration
     const success = this.calculateSuccess(quest, gameState);
 
+    // Emit mini_start analytics once per attempt (idempotent-ish: only when not already completed)
+    try {
+      const alreadyCompleted = (gameState.miniquestState?.[roomId]?.completedQuests || []).includes(quest.id);
+      if (!alreadyCompleted) {
+        track('mini_start', { questId: quest.id, room: roomId });
+      }
+    } catch { /* ignore analytics errors */ }
+
     if (success) {
       return this.completeQuest(quest, roomId, gameState);
     } else {
@@ -133,7 +144,7 @@ class MiniquestEngine {
   }
 
   
-  private completeQuest(quest: Miniquest, roomId: string, gameState: GameStateWithMiniquests): MiniquestResult {
+  private completeQuest(quest: Miniquest, roomId: string, _gameState: GameStateWithMiniquests): MiniquestResult {
     
     const { applyScoreForEvent } = require('../state/scoreEffects');
 
@@ -156,7 +167,10 @@ class MiniquestEngine {
     const { recordMiniquestCompletion } = require('../logic/codexTracker');
     recordMiniquestCompletion(quest.id, quest.title, roomId);
 
-    return {
+  // Analytics for completion
+  try { track('mini_complete', { questId: quest.id, room: roomId, reward: quest.rewardPoints }); } catch {}
+
+  return {
       success: true,
       message: `🎯 Miniquest completed: ${quest.title}!`,
       scoreAwarded: quest.rewardPoints,
@@ -166,7 +180,7 @@ class MiniquestEngine {
   }
 
   
-  private failQuest(quest: Miniquest, roomId: string, gameState: GameStateWithMiniquests): MiniquestResult {
+  private failQuest(quest: Miniquest, _roomId: string, _gameState: GameStateWithMiniquests): MiniquestResult {
     let message = `You attempt "${quest.title}" but don't succeed this time.`;
 
     if (quest.hint) {

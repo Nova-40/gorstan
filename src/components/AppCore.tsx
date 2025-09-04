@@ -24,8 +24,6 @@ import { useGamepadControls } from '@/hooks/useGamepadControls';
 import { GateProvider, useGate } from '@/state/GateContext';
 import { GameMode } from '@/types/game';
 import LandingScreen from '@/ui/LandingScreen';
-import AttractMode from '@/demo/AttractMode';
-import DemoManager from '@/demo/DemoManager';
 import { BetaCodeDialog, PatreonDialog } from '../ui/UnlockDialogs';
 import { UiEffectsLayer } from './effects/UiEffectsLayer';
 import { TeleportPulseListener } from './effects/TeleportPulseListener';
@@ -1211,6 +1209,49 @@ const handleBackout = useCallback((): void => {
   // Enhanced command handler with better type safety
   const handleCommand = useCallback((cmd: string): void => {
     const lowerCmd: string = cmd.toLowerCase().trim();
+
+    // Demo safe shims: while in demo (new DemoModeService active) restrict risky combat / hostile commands
+    try {
+      const demoActive = (window as any)?.DemoModeService?.isActive?.() || false;
+      if (demoActive) {
+        // Basic neutralisation for combat verbs – convert to a flavour message and short‑circuit
+        if (/^(attack|fight|kill|stab|punch|strike|hit)\b/.test(lowerCmd)) {
+          dispatch({
+            type: 'ADD_MESSAGE',
+            payload: {
+              id: Date.now().toString(),
+              text: '⚔️ Combat disabled in demo build – showcasing exploration & interaction only.',
+              type: 'system',
+              timestamp: Date.now()
+            }
+          });
+          return;
+        }
+        // NPC deep talk limiter – funnel to lightweight greeting so autoplay doesn\'t branch wildly
+        if (/^(talk|ask|question|interrogate)\b/.test(lowerCmd)) {
+          dispatch({
+            type: 'ADD_MESSAGE',
+            payload: {
+              id: Date.now().toString(),
+              text: '💬 NPC conversations are shortened in demo mode.',
+              type: 'system',
+              timestamp: Date.now()
+            }
+          });
+          // Provide a deterministic mild response
+          dispatch({
+            type: 'ADD_MESSAGE',
+            payload: {
+              id: (Date.now()+1).toString(),
+              text: 'NPC nods politely and gestures for you to continue exploring.',
+              type: 'npc',
+              timestamp: Date.now()+1
+            }
+          });
+          return;
+        }
+      }
+    } catch { /* non-fatal */ }
 
     // Track command for hint system
     setCommandHistory(prev => [...prev.slice(-9), cmd]); // Keep last 10 commands
@@ -2580,8 +2621,6 @@ const AppShellInner: React.FC = () => {
   // Safety: if mode says FULL but unlock revoked in storage, relock.
   useEffect(() => { if (mode === GameMode.FULL && !unlock.isUnlocked) setMode(GameMode.LOCKED); }, [mode, unlock.isUnlocked, setMode]);
   switch (mode) {
-    case GameMode.ATTRACT: return <AttractMode onExit={() => setMode(GameMode.LOCKED)} />;
-    case GameMode.DEMO: return <DemoManager onEnd={() => setMode(GameMode.LOCKED)} />;
   case GameMode.FULL: return <FullGameRootImpl />;
     case GameMode.LOCKED:
     default: return <LandingScreen />;
