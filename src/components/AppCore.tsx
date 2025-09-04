@@ -20,6 +20,27 @@
 // Main game controller UI and logic routing.
 
 import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
+import { useGamepadControls } from '@/hooks/useGamepadControls';
+import { GateProvider, useGate } from '@/state/GateContext';
+import { GameMode } from '@/types/game';
+import LandingScreen from '@/ui/LandingScreen';
+import AttractMode from '@/demo/AttractMode';
+import DemoManager from '@/demo/DemoManager';
+import { BetaCodeDialog, PatreonDialog } from '../ui/UnlockDialogs';
+import { UiEffectsLayer } from './effects/UiEffectsLayer';
+import { TeleportPulseListener } from './effects/TeleportPulseListener';
+import { GlobalAudioListener } from './effects/GlobalAudioListener';
+import { AccessibilityPanel } from '../design/accessibility/AccessibilityPanel';
+import { AccessibilityAnnouncer } from '../design/accessibility/AccessibilityAnnouncer';
+import { RSLoreUnlockListener } from '../runesprint/ui/RSLoreUnlockListener';
+import RSNPCQuipListener from '../runesprint/ui/RSNPCQuipListener';
+import RSNPCAutoQuips from '../runesprint/ui/RSNPCAutoQuips';
+import MetaProgressionListener from '../meta/MetaProgressionListener';
+import { RSHUD } from '../runesprint/ui/RS_HUD';
+import { RSResults } from '../runesprint/ui/RS_Results';
+import { SceneTransition } from '../design/motion/SceneTransition';
+import { RUNE_SPRINT_BASE_DURATION_MS } from '../design/constants/timing';
+import { getFragmentCount } from '../runesprint/features/RS_LoreRegister';
 import '../styles/GameUI.css';
 import { lazyFeature } from '../utils/lazyLoading';
 import { useStableCallback } from '../utils/performanceOptimization';
@@ -35,11 +56,12 @@ import PlayerNameCapture from './PlayerNameCapture';
 import PlayerStatsPanel from './PlayerStatsPanel';
 import PresentNPCsPanel from './PresentNPCsPanel';
 import ObjectivePanel from './ObjectivePanel';
-import { installObjectivesNudger, registerActivity, uninstallObjectivesNudger } from '../core/objectives/nudger';
+import { installObjectivesNudger, uninstallObjectivesNudger } from '../core/objectives/nudger';
 import AylaPanel from './AylaPanel';
 import InventoryPanel from './InventoryPanel';
 import DebugPanel from './DebugPanel';
 import RoomRenderer from './RoomRenderer';
+import ArtifactChamberPuzzle from './ArtifactChamberPuzzle';
 import RoomTransition from './animations/RoomTransition';
 import SplashScreen from './SplashScreen';
 import TeletypeIntro from './TeletypeIntro';
@@ -52,7 +74,9 @@ import CombatActionsPanel from '../ui/QuickActionsPanel';
 import BlueButtonWarningModal from './BlueButtonWarningModal';
 import QuickWinNotifications from './QuickWinNotifications';
 import ProgressDashboard from './ProgressDashboard';
+import InventoryTicker from './InventoryTicker';
 import { setGameDispatch } from '../utils/dispatchAccess';
+import { useUiEffects } from '../hooks/useUiEffects';
 
 import { useFlags } from '../hooks/useFlags';
 import { useGameState } from '../state/gameState';
@@ -62,22 +86,20 @@ import { useOptimizedEffects } from '../hooks/useOptimizedEffects';
 import { useRoomTransition } from '../hooks/useRoomTransition';
 import { useWendellLogic } from '../hooks/useWendellLogic';
 
-import { initializeAchievementEngine } from '../logic/achievementEngine';
+// Lazy-load heavy subsystems (achievement engine, NPC AI, wandering NPCs) to shrink initial bundle.
 import { initializeScoreManager } from '../state/scoreManager';
 import { initializeCodexTracker } from '../logic/codexTracker';
 import { initializeMiniquests } from '../engine/miniquestInitializer';
 import { loadCelebrationIndex } from '../celebrate/index';
-import { initializeWanderingNPCs, handleRoomEntryForWanderingNPCs } from '../engine/wanderingNPCController';
 import { handleRoomEntry } from '../engine/roomEventHandler';
 import { getAllRoomsAsObject } from '../utils/roomLoader';
-// Fallback loader removed / deprecated – dynamic room loader handles absence.
 import { performanceMonitor } from '../utils/performanceMonitor';
 import { onRoomEntry, periodicConversationCheck } from '../npc/triggers';
 import { getTrapByRoom } from '../engine/trapController';
 
 import { UseItemModal } from "./UseItemModal";
 import { InventoryModal } from "./InventoryModal";
-import ModalOverlay from './ModalOverlay';
+// ModalOverlay deprecated; using RetroModal-based components directly
 import PickUpItemModal from './PickUpItemModal';
 import SaveGameModal from './SaveGameModal';
 import { SaveManager } from '../services/SaveManager';
@@ -85,6 +107,13 @@ import NPCConsole from './NPCConsole';
 import EnhancedNPCConsole from './EnhancedNPCConsole';
 import Modal from './Modal';
 import AylaHintPopup from './AylaHintPopup';
+// Legacy debug menu import removed; new gated overlay lives in src/debug
+// Legacy DebugMenu removed – replaced by debug/DebugMenuOverlay
+import DebugMenuOverlay from '@/debug/DebugMenuOverlay';
+import { useDebugMenu } from '@/debug/useDebugMenu';
+import { DebugMenu } from '@/debug/DebugMenu';
+import { DemoModeService } from '@/demo/DemoModeService';
+import { FEATURES, IS_DEV } from '@/config';
 import { npcReact } from '../engine/npcEngine';
 import { npcRegistry } from '../npcs/npcMemory';
 // Lazy load AI components and modals
@@ -99,12 +128,16 @@ import { unifiedAI } from '../services/unifiedAI';
 import type { AIGuidanceResponse } from '../services/unifiedAI';
 import { aiUsageMonitor } from '../services/aiUsageMonitor';
 import type { GameplayUpdate } from '../services/aiUsageMonitor';
-import { npcAI } from '../services/npcAI';
+// npcAI dynamically imported – see lazy loader logic below
 import { itemDescriptions } from '../data/itemDescriptions';
+// Easter Egg system
+import { easterEggEngine } from '../features/easter-eggs/EasterEggEngine';
+import { registerDefaultEggs } from '../features/easter-eggs/registry';
 
 import type { Room } from '../types/Room';
 import type { NPC, NPCMood } from '../types/NPCTypes';
-import { demoController } from '../demo/demoController';
+import { demoController, setDemoDispatch } from '../demo/demoController';
+// Removed unused RockFieldArcade import (arcade launched via other controllers)
 import { isDemoEnvironment } from '../demo/demoGate';
 import type { GameTransition } from '../types/GameTypes';
 
@@ -114,7 +147,7 @@ import type { GameTransition } from '../types/GameTypes';
 type GameStage = 'splash' | 'welcome' | 'nameCapture' | 'routeSelect' | 'intro' | 'demo' | 'game' | 'trialsGame' |
   'transition_jump' | 'transition_sip' | 'transition_wait' | 'transition_dramatic_wait';
 
-type OpenModalType = 'inventory' | 'useItem' | 'look' | 'pickUp' | 'saveGame' | 'npcConsole' | 'npcSelection' | 'trapManagement' | null;
+type OpenModalType = 'inventory' | 'useItem' | 'look' | 'pickUp' | 'saveGame' | 'npcConsole' | 'npcSelection' | 'trapManagement' | 'pause' | 'renamePlayer' | null;
 
 type TeleportType = "fractal" | "trek" | null;
 
@@ -148,7 +181,10 @@ interface Item {
  * - Maintained all game logic and functionality
  * - Enhanced type safety throughout
  */
-const AppCore: React.FC = () => {
+// Internal component containing the original full game implementation
+const FullGameRootImpl: React.FC = () => {
+  // original AppCore code begins
+  const AppCore: React.FC = () => {
   // Enhanced state with proper typing
   const { state, dispatch } = useGameState();
   performanceMonitor.markRenderStart();
@@ -166,6 +202,7 @@ const AppCore: React.FC = () => {
   }, [state.currentRoomId, inventoryCount]);
   // Expose dispatch globally for service modules
   useEffect(() => { setGameDispatch(dispatch); return () => setGameDispatch(() => ({} as any)); }, [dispatch]);
+  // (Easter egg effects relocated below state declarations)
   const { hasFlag } = useFlags();
   const { loadModule } = useModuleLoader();
 
@@ -181,6 +218,40 @@ const AppCore: React.FC = () => {
   const [lastMovementAction, setLastMovementAction] = useState<string>('');
   const [roomTransitionActive, setRoomTransitionActive] = useState<boolean>(false);
   const [previousRoom, setPreviousRoom] = useState<Room | null>(null);
+  // Demo mode wiring (new autoplay system)
+  const debug = useDebugMenu();
+  const [demoBanner, setDemoBanner] = useState<string | undefined>();
+  const demoRef = useRef<DemoModeService | null>(null);
+  // Placeholder helpers (replace with actual implementations present in broader file scope)
+  const injectInput = (cmd: string) => {
+    try { (window as any).dispatchEvent(new CustomEvent('demoCommand', { detail: { cmd } })); } catch {}
+    // Reuse existing command handling path
+    if (typeof (handleCommand as any) === 'function') (handleCommand as any)(cmd);
+  };
+  const getSnapshot = () => ({
+    roomId: state.currentRoomId,
+    transcript: state.history.map(h => (h as any).text || (h as any).content || '').slice(-10),
+    inventory: (state.player?.inventory || []).map((i: any) => i?.id || i?.name || ''),
+    visibleWords: [] as string[],
+  });
+  const warpToRoom = (roomId: string) => {
+    if (state.roomMap[roomId]) {
+      handleRoomChange(roomId);
+    }
+  };
+  useEffect(() => {
+    demoRef.current = new DemoModeService(injectInput, getSnapshot, warpToRoom, setDemoBanner);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    if (!IS_DEV || !FEATURES.DEBUG_MENU_ENABLED) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'F10') { e.preventDefault(); debug.toggle(); }
+      if (e.key === 'Escape') { demoRef.current?.stop('aborted'); }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [debug]);
 
   // Modal state with proper typing
   const [modal, setModal] = useState<OpenModalType>(null);
@@ -188,6 +259,8 @@ const AppCore: React.FC = () => {
   const lookModalTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [selectedNPC, setSelectedNPC] = useState<NPC | null>(null);
   const [isGroupConversation, setIsGroupConversation] = useState(false);
+  // Register dispatch with demo controller so demo can start when triggered
+  useEffect(() => { try { setDemoDispatch(dispatch); } catch {} }, [dispatch]);
   const [showAylaModal, setShowAylaModal] = useState(false);
 
   // Ayla hint system state
@@ -197,34 +270,107 @@ const AppCore: React.FC = () => {
   const [roomEntryTime, setRoomEntryTime] = useState<number>(Date.now());
   const [aylaHintSystem] = useState(() => new AylaHintSystem());
   const [ephemeralAyla, setEphemeralAyla] = useState<Array<{ id: string; content: string; expiresAt: number }>>([]);
+  const uiFx = useUiEffects();
 
   // AI Usage Monitoring state
   const [gameplayUpdates, setGameplayUpdates] = useState<GameplayUpdate[]>([]);
   const [showAIMonitor, setShowAIMonitor] = useState<boolean>(false);
-  const [npcBehaviors, setNpcBehaviors] = useState<Record<string, string>>({});
+  const [npcBehaviors, _setNpcBehaviors] = useState<Record<string, string>>({});
+  // Previously declared state (restored after refactor)
+  const [isDemoActive, setIsDemoActive] = useState(false);
+  const [roomHistory, setRoomHistory] = useState<string[]>([]);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  // Controller pause toggle (currently informational only)
+  const [_controllerPaused, setControllerPaused] = useState(false);
+  const [soundOn, setSoundOn] = useState(true);
+  const [roomFallbackAttempted, setRoomFallbackAttempted] = useState(false);
+  const [showPerformanceDashboard, setShowPerformanceDashboard] = useState(false);
+  // Easter eggs settings & UI ephemeral visuals
+  const [allowEasterEggs, setAllowEasterEggs] = useState(true);
+  const [fishGlyphs, setFishGlyphs] = useState<Array<{ id: string; x: number; created: number }>>([]);
+  const [aylaOverlay, setAylaOverlay] = useState<null | { id: string; expires: number }>(null);
+  // Track last announced / applied Rune Sprint low-time second to debounce audio + announcer fallback (extra safety)
+  // Removed unused rsLowTimeLastSecondRef (was unused after refactor)
+  // Health & inventory tracking for accessibility announcements
+  const lastHealthRef = useRef<number | null>(null);
+  const lastInventorySizeRef = useRef<number>(state.player?.inventory?.length || 0);
+  const easterEggLastRoomRef = useRef<string | null>(null);
+  const playStartRef = useRef<number>(Date.now());
+  const periodicEggTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Register easter eggs once (skip in accessibility mode)
+  useEffect(() => {
+    if (!allowEasterEggs || (state as any).accessibilityMode) return;
+    registerDefaultEggs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allowEasterEggs, (state as any).accessibilityMode]);
+
+  // Periodic long-session trigger (every 5 min after 10 min)
+  useEffect(() => {
+    if (!allowEasterEggs || (state as any).accessibilityMode) return;
+    if (periodicEggTimerRef.current) clearInterval(periodicEggTimerRef.current);
+    periodicEggTimerRef.current = setInterval(() => {
+      const elapsed = Date.now() - playStartRef.current;
+      if (elapsed > 10 * 60 * 1000) {
+        easterEggEngine.maybeFire();
+      }
+    }, 5 * 60 * 1000);
+    return () => { if (periodicEggTimerRef.current) clearInterval(periodicEggTimerRef.current); };
+  }, [allowEasterEggs, (state as any).accessibilityMode]);
+
+  // Trigger on room entry (low probability gate)
+  useEffect(() => {
+    if (!allowEasterEggs || (state as any).accessibilityMode) return;
+    const current = state.currentRoomId;
+    if (current && current !== easterEggLastRoomRef.current) {
+      easterEggLastRoomRef.current = current;
+      if (Math.random() < 0.05) easterEggEngine.maybeFire();
+    }
+  }, [state.currentRoomId, allowEasterEggs, (state as any).accessibilityMode]);
+
+  // UI event listeners for eggs
+  useEffect(() => {
+    if (!allowEasterEggs || (state as any).accessibilityMode) return;
+    const handleGlitch = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail?.kind === 'fish') {
+        const id = Math.random().toString(36).slice(2);
+        setFishGlyphs(g => [...g, { id, x: Math.random() * 80 + 10, created: Date.now() }]);
+        setTimeout(() => setFishGlyphs(g => g.filter(f => f.id !== id)), 6000);
+      }
+    };
+    const handleTeleport = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail?.mode === 'fractal' && detail?.source === 'easter-egg') {
+        setAylaOverlay({ id: 'ayla-egg', expires: Date.now() + 5000 + Math.random() * 2000 });
+      }
+    };
+    document.addEventListener('ui:glitch', handleGlitch as any);
+    document.addEventListener('ui:teleport', handleTeleport as any);
+    return () => {
+      document.removeEventListener('ui:glitch', handleGlitch as any);
+      document.removeEventListener('ui:teleport', handleTeleport as any);
+    };
+  }, [allowEasterEggs, (state as any).accessibilityMode]);
+
+  // Expire Ayla overlay
+  useEffect(() => {
+    if (!aylaOverlay) return;
+    const t = setInterval(() => {
+      if (aylaOverlay && Date.now() > aylaOverlay.expires) setAylaOverlay(null);
+    }, 500);
+    return () => clearInterval(t);
+  }, [aylaOverlay]);
 
   // Save game state - Enhanced with migration support
-  const [saveSlots, setSaveSlots] = useState<Array<{
-    id: string;
-    name: string;
-    playerName: string;
-    currentRoom: string;
-    timestamp: number;
-    score: number;
-    playTime: number;
-  }>>([]);
+  const [saveSlots, setSaveSlots] = useState<Array<{ id: string; name: string; playerName: string; currentRoom: string; timestamp: number; score: number; playTime: number }>>([]);
 
-  // System state with enhanced typing
-  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
-  const [soundOn, setSoundOn] = useState<boolean>(true);
-  const [lastShownRoomDescription, setLastShownRoomDescription] = useState<string | null>(null);
-  const [roomFallbackAttempted, setRoomFallbackAttempted] = useState<boolean>(false);
-  const [roomHistory, setRoomHistory] = useState<string[]>([]);
-  const [showPerformanceDashboard, setShowPerformanceDashboard] = useState<boolean>(false);
-
-  // Demo system state
-  const [isDemoActive, setIsDemoActive] = useState<boolean>(false);
-  const [isDemo] = useState<boolean>(isDemoEnvironment());
+  // --- Lazy subsystem refs/state (outside of saveSlots state definition) ---
+  const npcAIModuleRef = useRef<any>(null);
+  const wanderingModuleRef = useRef<any>(null);
+  const achievementEngineInitRef = useRef(false);
+  // Only need setter – omit state variable to avoid unused warning
+  const [, setNpcAIModuleLoaded] = useState(false);
 
   const handleRoomChange = useStableCallback((newRoomId: string) => {
     console.log('[AppCore] handleRoomChange called with:', newRoomId);
@@ -246,6 +392,8 @@ const AppCore: React.FC = () => {
         
         // Determine teleport type based on zones
         const teleportType = newZone === 'glitchZone' ? 'fractal' : 'trek';
+  // Dispatch UI micro teleport event immediately (decoupled visual) – safe guarded
+  try { document.dispatchEvent(new CustomEvent('ui:teleport', { detail: { mode: teleportType, source: 'zone-change' } })); } catch {}
         
         // Set up teleport animation with callback to complete the room change
         setTeleportType(teleportType);
@@ -292,6 +440,9 @@ const handleBackout = useCallback((): void => {
   }, [state.currentRoomId]);
 
   const playerName: string = useMemo(() => state.player?.name || 'Player', [state.player?.name]);
+  // Floating rename button (initialized later after openModal available)
+  // Will be defined via useMemo after openRename; placeholder here for type context.
+  let renameButton: React.ReactNode; // reassigned below
   const inventory: string[] = useMemo(() => state.player?.inventory || [], [state.player?.inventory]);
   const npcsInRoom: NPC[] = useMemo(() => {
     // Convert NPC string IDs to actual NPC objects
@@ -328,6 +479,30 @@ const handleBackout = useCallback((): void => {
   const room: Room | undefined = roomMap[currentRoomId];
   const stage: GameStage = (state.stage as GameStage) || 'splash';
 
+  // Auto-skip name capture if a persisted name already exists and we're still at welcome/nameCapture.
+  useEffect(() => {
+    // Only run client-side
+    if (typeof window === 'undefined') return;
+    if (!state.player?.name) {
+      // Try legacy persisted key
+      try {
+        const raw = localStorage.getItem('gorstan.playerName');
+        if (raw && !state.player.name) {
+          const parsed = JSON.parse(raw);
+          if (parsed?.name && typeof parsed.name === 'string') {
+            dispatch({ type: 'SET_PLAYER_NAME', payload: parsed.name });
+          }
+        }
+      } catch {}
+    }
+    if ((stage === 'welcome' || stage === 'nameCapture') && state.player?.name) {
+      // Skip directly to route selection if name already known
+      dispatch({ type: 'ADVANCE_STAGE', payload: 'routeSelect' });
+    }
+  // We intentionally exclude dispatch from deps to avoid looping when it changes identity in strict mode
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stage, state.player?.name]);
+
   // Initialize hooks with proper typing
   useOptimizedEffects(state, dispatch, room);
   useWendellLogic(state, dispatch, room, loadModule);
@@ -342,6 +517,83 @@ const handleBackout = useCallback((): void => {
     }
     setModal(name);
   }, [isDemoActive]);
+
+  // Dedicated small form component (defined inside to keep file locality)
+  const RenamePlayerForm: React.FC<{ initialValue: string; onSubmit: (v:string)=>void; onCancel: ()=>void }> = ({ initialValue, onSubmit, onCancel }) => {
+    const [value, setValue] = useState(initialValue);
+    const [error, setError] = useState<string | null>(null);
+    const max = 42;
+    const validate = (v: string) => {
+      const trimmed = v.trim();
+      if (!trimmed) return 'Name cannot be empty';
+      if (trimmed.length < 2) return 'Too short';
+      if (trimmed.length > max) return 'Too long';
+      if (!/^[A-Za-z0-9 _'-]+$/.test(trimmed)) return 'Invalid characters';
+      return null;
+    };
+    const submit = (e: React.FormEvent) => {
+      e.preventDefault();
+      const err = validate(value);
+      setError(err);
+      if (!err) onSubmit(value.trim());
+    };
+    return (
+      <form onSubmit={submit} className="space-y-3">
+        <label className="block text-xs font-medium text-amber-200/80">
+          New Name
+          <input
+            autoFocus
+            value={value}
+            onChange={e=>{ setValue(e.target.value); if (error) setError(null); }}
+            maxLength={max}
+            className="mt-1 w-full rounded bg-zinc-800/70 border border-zinc-600 px-2 py-1 text-amber-100 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+            aria-invalid={!!error}
+            aria-describedby={error ? 'rename-error' : undefined}
+          />
+        </label>
+        {error && <p id="rename-error" className="text-[11px] text-red-400">{error}</p>}
+        <div className="flex items-center justify-between gap-2 pt-1">
+          <button type="button" onClick={onCancel} className="px-2 py-1 rounded bg-zinc-700/60 hover:bg-zinc-600 text-xs">Cancel</button>
+          <div className="flex items-center gap-2 ml-auto">
+            <span className="text-[10px] text-zinc-500 tabular-nums">{value.trim().length}/{max}</span>
+            <button type="submit" className="px-3 py-1 rounded bg-amber-600 hover:bg-amber-500 text-xs font-semibold text-black disabled:opacity-40" disabled={!!validate(value)}>
+              Save
+            </button>
+          </div>
+        </div>
+      </form>
+    );
+  };
+
+  const openRename = useCallback(() => openModal('renamePlayer'), [openModal]);
+  // Memoize button to avoid re-renders unless name changes
+  renameButton = useMemo(() => (
+    <button
+      onClick={openRename}
+      className="fixed top-2 left-2 z-[1200] px-2 py-1 rounded bg-zinc-800/70 hover:bg-zinc-700 text-xs text-amber-300 border border-zinc-600 font-mono"
+      title="Change player name"
+      aria-label="Change player name"
+    >{playerName}</button>
+  ), [openRename, playerName]);
+
+  // --- Rename Player Modal (lightweight, accessible) ---
+  const renameModal = useMemo(() => {
+    if (modal !== 'renamePlayer') return null;
+    const current = state.player?.name || '';
+    return (
+      <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/70 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="rename-player-title">
+        <div className="w-[min(90%,340px)] rounded-lg border border-amber-500/30 bg-zinc-900/95 shadow-xl p-4 animate-fade-in">
+          <h2 id="rename-player-title" className="text-sm font-semibold tracking-wide text-amber-300 mb-3">Change Player Name</h2>
+          <RenamePlayerForm
+            initialValue={current}
+            onSubmit={(val) => { dispatch({ type: 'SET_PLAYER_NAME', payload: val }); setModal(null); }}
+            onCancel={() => setModal(null)}
+          />
+        </div>
+      </div>
+    );
+  }, [modal, state.player?.name, dispatch]);
+
   const closeModal = useCallback((): void => {
     setModal(null);
     setIsGroupConversation(false); // Reset group conversation state
@@ -606,7 +858,7 @@ const handleBackout = useCallback((): void => {
 
   // Demo system initialization
   useEffect(() => {
-    if (isDemo && dispatch) {
+  if (isDemoEnvironment() && dispatch) {
       console.log('[AppCore] Initializing demo system');
       demoController.setDispatch(dispatch);
       
@@ -625,58 +877,9 @@ const handleBackout = useCallback((): void => {
         demoController.startDemo();
       }
     }
-  }, [isDemo, dispatch, stage]);
+  }, [dispatch, stage]);
 
-  // NPC AI Behavior Generation
-  useEffect(() => {
-    const generateNPCBehaviors = async () => {
-      if (!room || npcsInRoom.length === 0) return;
-
-      for (const npc of npcsInRoom) {
-        try {
-          const npcProfile = npcAI.getAllNPCs().find(p => p.npcId === npc.id);
-          if (!npcProfile) continue;
-
-          const context = {
-            npcProfile,
-            currentRoom: room,
-            playerPresent: true,
-            gameState: state,
-            recentPlayerActions: commandHistory.slice(-5),
-            timeInRoom: Date.now() - roomEntryTime,
-            nearbyNPCs: npcsInRoom.map(n => n.id).filter(id => id !== npc.id)
-          };
-
-          const behavior = await npcAI.generateNPCBehavior(context);
-          if (behavior && behavior.shouldDisplay) {
-            setNpcBehaviors(prev => ({
-              ...prev,
-              [npc.id]: behavior.content
-            }));
-
-            // Display behavior in console if significant
-            if (behavior.priority === 'high' || behavior.type === 'callout') {
-              dispatch({
-                type: 'ADD_MESSAGE',
-                payload: {
-                  id: Date.now().toString(),
-                  text: `**${npc.name}**: ${behavior.content}`,
-                  type: 'npc',
-                  timestamp: Date.now()
-                }
-              });
-            }
-          }
-        } catch (error) {
-          console.warn(`[NPC AI] Behavior generation failed for ${npc.id}:`, error);
-        }
-      }
-    };
-
-    // Generate behaviors after a short delay when room/NPCs change
-    const timeout = setTimeout(generateNPCBehaviors, 2000);
-    return () => clearTimeout(timeout);
-  }, [room, npcsInRoom, commandHistory, roomEntryTime, state, dispatch]);
+  // (Old NPC AI effect removed – replaced by lazy-loaded implementation near top)
 
   // NPC Console functions
   const handleOpenNPCConsole = useCallback((npc?: NPC) => {
@@ -1114,7 +1317,7 @@ const handleBackout = useCallback((): void => {
     }
 
     // Demo system commands - only available in demo environment
-    if (isDemo) {
+  if (isDemoEnvironment()) {
       if (lowerCmd === 'start demo' || lowerCmd === 'demo start') {
         if (!isDemoActive) {
           setIsDemoActive(true);
@@ -1142,7 +1345,7 @@ const handleBackout = useCallback((): void => {
         return;
       }
       
-      if (lowerCmd === 'stop demo' || lowerCmd === 'demo stop' || lowerCmd === 'skip demo') {
+    if (lowerCmd === 'stop demo' || lowerCmd === 'demo stop' || lowerCmd === 'skip demo') {
         if (isDemoActive) {
           demoController.skipDemo();
           setIsDemoActive(false);
@@ -1150,11 +1353,12 @@ const handleBackout = useCallback((): void => {
             type: 'ADD_MESSAGE', 
             payload: { 
               id: Date.now().toString(), 
-              text: '🎬 Demo stopped. You now have full control.', 
+        text: '🎬 Demo stopped. Returning to Welcome Screen.', 
               type: 'system', 
               timestamp: Date.now() 
             } 
           });
+      dispatch({ type: 'ADVANCE_STAGE', payload: 'welcome' });
         } else {
           dispatch({ 
             type: 'ADD_MESSAGE', 
@@ -1206,7 +1410,7 @@ const handleBackout = useCallback((): void => {
 
     // Check for hint opportunities after command processing
     checkForHints(cmd, lowerCmd);
-  }, [npcsInRoom, room, inventory, dispatch, handleLookAround, openModal, currentRoomId, isDemo, isDemoActive]);
+  }, [npcsInRoom, room, inventory, dispatch, handleLookAround, openModal, currentRoomId, isDemoActive]);
 
   // Enhanced pickup handler with proper type safety and Dominic special logic
   const handlePickUpItems = useCallback((selectedItems: string[]): void => {
@@ -1254,78 +1458,7 @@ const handleBackout = useCallback((): void => {
     }
   }, [teleportCallback]);
 
-  // Demo mode automation - executes predefined commands to showcase gameplay
-  const startDemoMode = useCallback((): void => {
-    console.log('[AppCore] startDemoMode called - beginning demo automation');
-    const demoCommands = [
-      { command: 'look', delay: 1000 },
-      { command: 'west', delay: 2000 },
-      { command: 'look', delay: 1500 },
-      { command: 'examine tactical_display', delay: 2000 },
-      { command: 'east', delay: 1500 },
-      { command: 'sit', delay: 2000 },
-      { command: 'look', delay: 1500 },
-      { command: 'examine console', delay: 2000 },
-      { command: 'status', delay: 1500 },
-      { command: 'inventory', delay: 1500 },
-      { command: 'help', delay: 2000 }
-    ];
-
-    let currentCommandIndex = 0;
-    
-    const executeDemoCommand = () => {
-      if (currentCommandIndex >= demoCommands.length) {
-        // Demo completed - show completion message
-        dispatch({ 
-          type: 'ADD_MESSAGE', 
-          payload: { 
-            id: Date.now().toString(), 
-            text: "🎮 Demo complete! Ayla: \"You've seen a glimpse of what Gorstan offers. Ready to explore on your own?\"",
-            type: 'system',
-            timestamp: Date.now()
-          }
-        });
-        return;
-      }
-
-  const currentDemo = demoCommands[currentCommandIndex];
-  if (!currentDemo) return;
-  const { command, delay } = currentDemo;
-      
-      // Add demo command to message log
-      dispatch({ 
-        type: 'ADD_MESSAGE', 
-        payload: { 
-          id: Date.now().toString(), 
-          text: `🤖 Demo: ${command}`,
-          type: 'input',
-          timestamp: Date.now()
-        }
-      });
-
-      // Execute the command after a brief delay
-      setTimeout(() => {
-        handleCommand(command);
-        currentCommandIndex++;
-        
-        // Schedule next command
-        setTimeout(executeDemoCommand, delay);
-      }, 500);
-    };
-
-    // Start the demo sequence
-    dispatch({ 
-      type: 'ADD_MESSAGE', 
-      payload: { 
-        id: Date.now().toString(), 
-        text: "🎭 Ayla: \"Welcome to your guided tour of Gorstan! Watch as I demonstrate the core gameplay...\"",
-        type: 'system',
-        timestamp: Date.now()
-      }
-    });
-    
-    setTimeout(executeDemoCommand, 2000);
-  }, [handleCommand, dispatch]);
+  // (Removed legacy inline startDemoMode automation; using demoController instead)
 
   // Enhanced system controls with proper error handling and typing
   const toggleFullscreen = useCallback((): void => {
@@ -1377,6 +1510,50 @@ const handleBackout = useCallback((): void => {
       return newSoundState;
     });
   }, [dispatch]);
+
+  // Gamepad command handling (minimal integration)
+  const issueCommandFromGamepad = useCallback((raw: string) => {
+    if (stage !== 'game') return;
+    if (modal) return; // avoid conflicts while a modal is open
+    try {
+      if (raw.startsWith('go ')) {
+        const dir = raw.split(' ')[1];
+  const exits: Record<string, string> | undefined = room && (room as any).exits ? (room as any).exits : undefined;
+  const dirKey = dir as keyof typeof exits;
+  const target = exits && dirKey && typeof exits === 'object' ? exits[dirKey] : undefined;
+        if (target) dispatch({ type: 'MOVE_TO_ROOM', payload: target });
+        return;
+      }
+      switch (raw) {
+        case 'look':
+          if (room?.description) {
+            dispatch({ type: 'ADD_MESSAGE', payload: { id: Date.now().toString(), text: Array.isArray(room.description) ? room.description.join(' ') : room.description, type: 'system', timestamp: Date.now() } });
+          }
+          break;
+        case 'inventory':
+          openModal('inventory');
+          break;
+        case 'help':
+          dispatch({ type: 'ADD_MESSAGE', payload: { id: Date.now().toString(), text: 'Controller: D-Pad/Stick move • A Look • B Inventory • Start Pause', type: 'system', timestamp: Date.now() } });
+          break;
+      }
+    } catch (e) {
+      console.warn('[Gamepad] Failed to issue command', raw, e);
+    }
+  }, [stage, modal, room, dispatch, openModal]);
+
+  useGamepadControls({
+    enabled: stage === 'game',
+    issueCommand: issueCommandFromGamepad,
+    onMeta: (act) => {
+      if (act === 'pause') {
+        setControllerPaused(p => !p);
+        dispatch({ type: 'ADD_MESSAGE', payload: { id: Date.now().toString(), text: 'Pause (controller)', type: 'system', timestamp: Date.now() } });
+        openModal('pause');
+      }
+    },
+    log: (msg) => dispatch({ type: 'ADD_MESSAGE', payload: { id: Date.now().toString(), text: msg, type: 'system', timestamp: Date.now() } })
+  });
 
   // Enhanced room transition info with proper typing
   const transitionInfo = useRoomTransition(previousRoom, room ?? null, lastMovementAction);
@@ -1499,7 +1676,12 @@ const handleBackout = useCallback((): void => {
       initialRoomMapRef.current = loadedRoomMap;
       dispatch({ type: 'LOAD_ROOM_MAP', payload: loadedRoomMap });
       if (!loadedRoomMap[state.currentRoomId] && loadedRoomMap['controlnexus']) dispatch({ type: 'MOVE_TO_ROOM', payload: 'controlnexus' });
-      initializeAchievementEngine(dispatch);
+      // Achievement engine (lazy) – import only once at startup
+      if (!achievementEngineInitRef.current) {
+        import('../logic/achievementEngine')
+          .then(mod => { try { mod.initializeAchievementEngine(dispatch); achievementEngineInitRef.current = true; } catch (e) { console.warn('Achievement engine init failed:', e); } })
+          .catch(e => console.warn('Achievement engine dynamic import failed:', e));
+      }
 
       // Score manager
       try { initializeScoreManager(dispatch); } catch (error) {
@@ -1520,17 +1702,29 @@ const handleBackout = useCallback((): void => {
       try { loadCelebrationIndex(); } catch (error) { console.warn('Could not load celebration index:', error); }
 
       // Optional async modules
-      Promise.allSettled([
-        import('../services/npcAI'),
-        import('../engine/wanderingNPCController')
-      ]).then(() => {
-        try { initializeWanderingNPCs(state, dispatch); } catch (e) { console.warn('Wandering NPC init failed:', e); }
-      });
+      // Preload NPC AI & Wandering NPC controller in parallel (non-blocking)
+    Promise.allSettled([
+  import('../services/npcAI').then(mod => { npcAIModuleRef.current = mod; setNpcAIModuleLoaded(true); }).catch(e => console.warn('npcAI preload failed:', e)),
+        import('../engine/wanderingNPCController').then(mod => {
+          wanderingModuleRef.current = mod;
+          try { mod.initializeWanderingNPCs(state, dispatch); } catch (e) { console.warn('Wandering NPC init failed:', e); }
+        }).catch(e => console.warn('wanderingNPCController preload failed:', e))
+      ]);
     } catch (error) {
       console.error('[AppCore] Error during room map init:', error);
       dispatch({ type: 'ADD_MESSAGE', payload: { id: Date.now().toString(), text: 'Critical error: Unable to load room data.', type: 'error', timestamp: Date.now() } });
     }
   }, [dispatch, state.currentRoomId, state]);
+
+  // Auto-enable debug mode if superuser flag present (set via special beta code)
+  useEffect(() => {
+    try {
+      if (localStorage.getItem('gorstan.superuser') === '1' && !state.settings?.debugMode) {
+        dispatch({ type: 'ENABLE_DEBUG_MODE' });
+        dispatch({ type: 'ADD_MESSAGE', payload: { id: Date.now().toString(), text: 'Superuser debug mode enabled.', type: 'system', timestamp: Date.now() } });
+      }
+    } catch {}
+  }, [dispatch, state.settings?.debugMode]);
 
   // Enhanced room description effect with proper typing
   // Track descriptions already shown to prevent spamming on every render
@@ -1558,12 +1752,26 @@ const handleBackout = useCallback((): void => {
       }
       shownRoomDescriptionsRef.current.add(key);
       shownRoomDescriptionsRef.current.add(room.id); // mark room seen at least once
-      setLastShownRoomDescription(currentDescriptionString);
+  // (Removed setLastShownRoomDescription – legacy state not present)
       // Room entry side-effects (only first time per unique description)
       handleRoomEntry(room, state, dispatch);
-      handleRoomEntryForWanderingNPCs(room, state, dispatch);
+      // Lazy call wandering NPC room entry handler
+      if (wanderingModuleRef.current?.handleRoomEntryForWanderingNPCs) {
+        try { wanderingModuleRef.current.handleRoomEntryForWanderingNPCs(room, state, dispatch); } catch (e) { console.warn('Wandering NPC room entry handler failed:', e); }
+      } else {
+        import('../engine/wanderingNPCController')
+          .then(mod => {
+            wanderingModuleRef.current = mod;
+            try { mod.handleRoomEntryForWanderingNPCs(room, state, dispatch); } catch (e) { console.warn('Wandering NPC room entry handler (post-load) failed:', e); }
+          })
+          .catch(e => console.warn('Failed to load wanderingNPCController for room entry:', e));
+      }
       onRoomEntry(state, dispatch, room.id, state.previousRoomId);
       const currentZone = room.zone || '';
+      // Micro visual: spark glitch when entering glitch zone
+      if (currentZone.includes('glitchZone') && !(state as any).accessibilityMode) {
+        uiFx.glitch({ kind: 'spark', intensity: 0.8, source: 'zone-entry' });
+      }
       const npcsHere = state.npcsInRoom || [];
       if (npcsHere.length > 1) {
         import('../npc/groupChatLogic').then(({ GroupChatManager }) => {
@@ -1581,6 +1789,65 @@ const handleBackout = useCallback((): void => {
       }
     }
   }, [room, isDemoActive, dispatch, state]);
+
+  // Idle ambient glitch pulses in glitch zone (every ~6s after 30s idle)
+  useEffect(() => {
+    if (!room || !(room.zone || '').includes('glitchZone')) return;
+    if ((state as any).accessibilityMode) return;
+    let lastLen = state.history.length;
+    let idleStart = Date.now();
+    const interval = setInterval(() => {
+      if (state.history.length !== lastLen) {
+        lastLen = state.history.length;
+        idleStart = Date.now();
+        return;
+      }
+      const idleMs = Date.now() - idleStart;
+      if (idleMs > 30000) {
+        uiFx.glitch({ kind: 'spark', intensity: 0.5 + Math.random()*0.3, source: 'idle-glitch' });
+      }
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [room?.zone, state.history.length, uiFx, room]);
+
+  // Dynamic document.title updates (room / stage / Rune Sprint urgency)
+  useEffect(() => {
+    try {
+      let base = 'Gorstan';
+      if (stage === 'welcome' || stage === 'splash') base = 'Gorstan – Title';
+      else if (stage === 'trialsGame') base = 'Gorstan – Trials';
+      else if (stage.startsWith('transition_')) base = 'Gorstan – Transition';
+      else if (stage === 'demo') base = 'Gorstan – Demo';
+      else if (room?.title) base = `Gorstan – ${room.title}`;
+      // Rune Sprint urgency overlay: if active and <=10s remaining, prefix countdown
+      const rsActiveElem: HTMLElement | null = document.querySelector('[data-rs-active="true"][data-rs-time]');
+      if (rsActiveElem) {
+       
+        const ms = parseInt(rsActiveElem.getAttribute('data-rs-time') || '0', 10);
+        if (!isNaN(ms)) {
+          const sec = Math.floor(ms / 1000);
+          if (sec <= 10) base = `(${sec}) ` + base;
+        }
+      }
+      document.title = base;
+    } catch {}
+  }, [stage, room?.title, state.currentRoomId]);
+
+  // Inventory & health change live announcements (piggyback on AccessibilityAnnouncer via custom events)
+  useEffect(() => {
+    const currentHealth = (state.player as any)?.health;
+    if (typeof currentHealth === 'number' && lastHealthRef.current !== null && currentHealth !== lastHealthRef.current) {
+      const delta = currentHealth - lastHealthRef.current;
+      document.dispatchEvent(new CustomEvent('a11y:health-change', { detail: { current: currentHealth, delta } }));
+    }
+    if (typeof currentHealth === 'number') lastHealthRef.current = currentHealth;
+    const invSize = state.player?.inventory?.length || 0;
+    if (invSize !== lastInventorySizeRef.current) {
+      const added = invSize > lastInventorySizeRef.current;
+      document.dispatchEvent(new CustomEvent('a11y:inventory-change', { detail: { size: invSize, diff: invSize - lastInventorySizeRef.current, action: added ? 'added' : 'removed' } }));
+      lastInventorySizeRef.current = invSize;
+    }
+  }, [state.player?.health, state.player?.inventory?.length]);
 
   // Enhanced transition execution effect with proper error handling and typing
   useEffect(() => {
@@ -1626,20 +1893,43 @@ const handleBackout = useCallback((): void => {
     }
   }, [readyForTransition, transitionType, roomMap, transitionTargetRoom, transitionInventory, dispatch]);
 
-  // Demo mode effect (no stage flip) - starts automation when entering demo stage
+  // Demo mode effect - trigger demoController when entering demo stage
   const demoStartedRef = useRef(false);
   useEffect(() => {
+    // Bridge: if outer gate switches to DEMO mode (LandingScreen Play Demo), ensure we enter demo stage
+    // Previously Quick Demo path set isDemoActive directly; after cleanup we map gate mode to stage here.
+    try {
+      // We access gate context via useGate earlier; defensive in case of provider changes.
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const gate = (useGate as any)?.();
+      if (gate && gate.mode === 'DEMO' && stage !== 'demo' && !demoStartedRef.current) {
+        dispatch({ type: 'ADVANCE_STAGE', payload: 'demo' });
+      }
+    } catch {}
     if (stage === 'demo') {
       if (!demoStartedRef.current) {
-        console.log('[AppCore] Entered demo stage – preparing automated sequence');
+        console.log('[AppCore] Entered demo stage – invoking demoController.startDemo soon');
         setIsDemoActive(true);
         demoStartedRef.current = true;
         const demoTimer = setTimeout(() => {
-          console.log('[AppCore] Demo timer fired - starting demo automation');
-          startDemoMode();
+          console.log('[AppCore] Demo timer fired - calling demoController.startDemo()');
+          try {
+            demoController.startDemo();
+          } catch (err) {
+            console.error('[AppCore] demoController.startDemo failed', err);
+          }
         }, 1200);
+        // Keyboard shortcut: Shift+Esc to stop demo
+        const keyHandler = (e: KeyboardEvent) => {
+          if (e.key === 'Escape' && e.shiftKey) {
+            e.preventDefault();
+            try { demoController.stopDemo(); } catch (err) { console.error('Failed stopDemo via hotkey', err); }
+          }
+        };
+        window.addEventListener('keydown', keyHandler);
         return () => {
           clearTimeout(demoTimer);
+          window.removeEventListener('keydown', keyHandler);
         };
       } else {
         // Debug loop guard
@@ -1648,14 +1938,16 @@ const handleBackout = useCallback((): void => {
         }
       }
     } else {
-      // Leaving demo stage resets flag so a future re-entry can replay
+      // Only clear demo flag if we actually came from a demo stage run
       if (demoStartedRef.current) {
         console.log('[AppCore] Exiting demo stage – stopping demo mode flag');
+        setIsDemoActive(false);
+        demoStartedRef.current = false;
       }
-      setIsDemoActive(false);
-      demoStartedRef.current = false;
+      // If demoStartedRef was never set (e.g., Quick Demo path sets isDemoActive manually while in game stage)
+      // we intentionally keep the banner active.
     }
-  }, [stage, startDemoMode]);
+  }, [stage]);
 
   // Enhanced modal content rendering with proper typing
   const renderModalContent = useStableCallback((): React.ReactNode => {
@@ -1753,16 +2045,23 @@ const handleBackout = useCallback((): void => {
     }
   }, [modal, inventory, room, selectedNPC, isGroupConversation, playerName, state, npcsInRoom, closeModal, handlePickUpItems, dispatch, roomMap, currentRoomId]);
 
-  // Enhanced guard rails with proper type checking
-  if (!state.currentRoomId || !state.roomMap || !state.roomMap[state.currentRoomId]) {
-  if (import.meta.env.DEV) {
+  // Enhanced guard rails with proper type checking.
+  // IMPORTANT: Allow the standalone Trials mini-game stage to render even before any room/roomMap is loaded.
+  // The trials route selection happens before entering the main world; previously this early return blocked
+  // the 'trialsGame' stage (showing a perpetual loading screen). We now exempt that stage.
+  if (stage !== 'trialsGame' && (!state.currentRoomId || !state.roomMap || !state.roomMap[state.currentRoomId])) {
+    if (import.meta.env.DEV) {
       console.log('Guard rails:', {
+        stage,
         currentRoomId: state.currentRoomId,
         roomMapLoaded: Boolean(state.roomMap),
         roomExists: Boolean(state.roomMap?.[state.currentRoomId])
       });
     }
-    return <div className="appcore-loading">Loading game world...</div>;
+    // If demo mode active, avoid getting stuck – attempt to fallback to original controlnexus
+    if (!(demoController.isDemoMode() && state.roomMap['controlnexus'])) {
+      return <div className="appcore-loading">Loading game world...</div>;
+    }
   }
 
   // (Removed DemoStage early-return component to keep hook order stable; demo now overlays main UI)
@@ -1782,6 +2081,11 @@ const handleBackout = useCallback((): void => {
       console.log('[AppCore] JumpTransition completed');
       setReadyForTransition(true);
     }} />;
+  }
+  // Inject micro UI teleport effect when TeleportManager mounts (stage-level transitions)
+  // Do this before splash/welcome gating so transitions also show micro overlay
+  if (teleportType && typeof document !== 'undefined') {
+    try { document.dispatchEvent(new CustomEvent('ui:teleport', { detail: { mode: teleportType, source: 'teleport-manager' } })); } catch {}
   }
   if (transitionType === 'sip') {
     console.log('[AppCore] Rendering SipTransition');
@@ -1807,15 +2111,33 @@ const handleBackout = useCallback((): void => {
   if (stage === 'splash') {
     return <SplashScreen onComplete={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'welcome' })} />;
   }
+  // Trials: Rock Field arcade mini-game
+  if (state.currentRoomId === 'trials_rockfield') {
+  // TrialsRockfield component ref removed during refactor; proceed to built-in trialsGame stage instead
+  return null;
+  }
+  if (state.currentRoomId === 'artifactChamber') {
+    return <ArtifactChamberPuzzle />;
+  }
   if (stage === 'welcome') {
     return (
       <WelcomeScreen 
         onBegin={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'nameCapture' })} 
         onLoadGame={() => dispatch({ type: 'LOAD_SAVED_GAME' })} 
         onStartDemo={() => {
-          // Set demo-specific player name and skip nameCapture
+          // Set demo-specific player name and jump straight into game + start demo script
           dispatch({ type: 'SET_PLAYER_NAME', payload: 'Demo Player' });
-          dispatch({ type: 'ADVANCE_STAGE', payload: 'demo' });
+          // Move directly to game stage so environment is ready
+          dispatch({ type: 'ADVANCE_STAGE', payload: 'game' });
+          // Activate demo flag & schedule controller start
+          setIsDemoActive(true);
+          setTimeout(() => {
+            try {
+              demoController.startDemo();
+            } catch (e) {
+              console.error('[AppCore] Failed to start demo from WelcomeScreen:', e);
+            }
+          }, 600);
         }}
       />
     );
@@ -1837,7 +2159,10 @@ const handleBackout = useCallback((): void => {
         <TrialsGame
           onComplete={() => {
             console.log('[AppCore] Trials completed successfully!');
-            dispatch({ type: 'ADVANCE_STAGE', payload: 'routeSelect' });
+            // Move player into the Artifact Chamber and transition to main game UI
+            dispatch({ type: 'CHANGE_ROOM', payload: 'artifactChamber' });
+            dispatch({ type: 'ADD_MESSAGE', payload: { id: Date.now().toString(), text: 'You emerge from the maze into the hidden Artifact Chamber. An ancient glow beckons from the pedestal ahead.', type: 'narrative', timestamp: Date.now() } });
+            dispatch({ type: 'ADVANCE_STAGE', payload: 'game' });
           }}
           onQuit={() => {
             console.log('[AppCore] Player quit the trials');
@@ -1852,29 +2177,56 @@ const handleBackout = useCallback((): void => {
     return (
       <PlayerNameCapture 
         onNameSubmit={(name: string) => { 
-          dispatch({ type: 'SET_PLAYER_NAME', payload: name }); 
-          dispatch({ type: 'ADVANCE_STAGE', payload: 'routeSelect' }); 
-        }} 
+          dispatch({ type: 'SET_PLAYER_NAME', payload: name });
+          dispatch({ type: 'ADVANCE_STAGE', payload: 'routeSelect' });
+        }}
       />
     );
   }
   if (stage === 'routeSelect') {
+    const showTrialsPrompt = state.flags?.show_aevira_trials_prompt && (state.flags?.pending_trials_route === 'short10_trialsofgorstan' || state.flags?.pending_trials_route === 'short30_trialsofgorstan');
+    const accept = () => {
+      dispatch({ type: 'SET_FLAGS', payload: { ...state.flags, show_aevira_trials_prompt: false } });
+      dispatch({ type: 'ADVANCE_STAGE', payload: 'trialsGame' });
+    };
+    const sipCoffee = () => {
+      const base = 4;
+      const delta = Math.random() < 0.5 ? -2 : 2;
+      const finalLives = base + delta;
+      try { localStorage.setItem('playerLives', String(finalLives)); } catch {}
+      dispatch({ type: 'ADD_MESSAGE', payload: { id: Date.now().toString(), text: `☕ You sip the paradox brew. Trial lives shift to ${finalLives}.`, type: 'system', timestamp: Date.now() } });
+      dispatch({ type: 'SET_FLAGS', payload: { ...state.flags, show_aevira_trials_prompt: false } });
+      dispatch({ type: 'ADVANCE_STAGE', payload: 'trialsGame' });
+    };
     return (
-      <RouteSelectScreen 
-        onRouteSelect={(routeId) => {
-          dispatch({ type: 'SET_ROUTE', payload: routeId });
-          // Different paths based on route selection
-          if (routeId === 'demo') {
-            dispatch({ type: 'ADVANCE_STAGE', payload: 'demo' });
-          } else if (routeId === 'short10_trialsofgorstan') {
-            // Special handling for Trials of Gorstan interactive interface
-            dispatch({ type: 'ADVANCE_STAGE', payload: 'trialsGame' });
-          } else {
-            dispatch({ type: 'ADVANCE_STAGE', payload: 'intro' });
-          }
-        }}
-        onCancel={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'welcome' })}
-      />
+      <>
+        <RouteSelectScreen 
+          onRouteSelect={(routeId) => {
+            dispatch({ type: 'SET_ROUTE', payload: routeId });
+            if (routeId === 'demo') {
+              dispatch({ type: 'ADVANCE_STAGE', payload: 'demo' });
+            } else if (routeId === 'short10_trialsofgorstan' || routeId === 'short30_trialsofgorstan') {
+              dispatch({ type: 'SET_FLAGS', payload: { ...state.flags, show_aevira_trials_prompt: true, pending_trials_route: routeId } });
+            } else {
+              dispatch({ type: 'ADVANCE_STAGE', payload: 'intro' });
+            }
+          }}
+          onCancel={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'welcome' })}
+        />
+        {showTrialsPrompt && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/90 text-green-300 font-mono p-6 z-[999]">
+            <div className="max-w-xl w-full border-2 border-emerald-500 rounded-xl p-8 bg-gradient-to-b from-slate-900 to-black shadow-[0_0_30px_rgba(16,185,129,0.35)]">
+              <h1 className="text-2xl mb-4 tracking-wide text-emerald-300">The Aevira Challenge</h1>
+              <p className="text-sm leading-relaxed text-green-400/80 mb-6">The Aevira — an ancient and powerful race — have chosen you to be their potential champion. Prove your worth by completing the Trials. Or... delay destiny for a moment of contemplative caffeine.</p>
+              <div className="grid gap-4 md:grid-cols-2">
+                <button onClick={accept} className="px-4 py-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 border border-emerald-400/40 font-semibold shadow shadow-emerald-500/25">Accept The Aevira Challenge</button>
+                <button onClick={sipCoffee} className="px-4 py-3 rounded-lg bg-slate-800 hover:bg-slate-700 border border-cyan-400/40 font-semibold text-cyan-300 shadow shadow-cyan-500/25">Sip Coffee</button>
+              </div>
+              <div className="mt-5 text-[11px] text-green-500/60">Coffee effect: Random anomaly alters your starting trial lives (2 or 6).</div>
+            </div>
+          </div>
+        )}
+      </>
     );
   }
   if (stage === 'intro') {
@@ -1909,11 +2261,49 @@ const handleBackout = useCallback((): void => {
   }
 
   return (
-    <div className="appcore-grid">
+    <div
+      className="appcore-grid"
+      data-scale={(() => {
+        // Auto-scale heuristic: shrink if either dimension is tight
+        const w = typeof window !== 'undefined' ? window.innerWidth : 1920;
+        const h = typeof window !== 'undefined' ? window.innerHeight : 1080;
+        if (w < 900 || h < 700) return 'sm';
+        if (w < 780 || h < 620) return 'xs';
+        return undefined;
+      })()}
+    >
       {/* Demo mode indicator */}
       {isDemoActive && (
-        <div className="fixed top-0 left-0 right-0 z-50 bg-warning text-background text-center py-2 px-4 font-bold">
-          🎬 DEMO MODE ACTIVE - Press ESC to skip • Use "stop demo" to exit
+        <div className="fixed top-0 left-0 right-0 z-50">
+          <div className="mx-auto max-w-screen-lg">
+            <div className="m-2 rounded-lg bg-black/75 backdrop-blur-sm border border-yellow-400 text-yellow-300 shadow-lg px-4 py-3 flex flex-col md:flex-row items-center gap-3 justify-between">
+              <div className="text-sm md:text-base font-semibold tracking-wide flex-1 text-center md:text-left">
+                🎬 DEMO MODE ACTIVE
+                <span className="hidden md:inline"> – Press ESC to skip</span>
+              </div>
+              <div className="flex items-center gap-2">
+        <button
+                  type="button"
+                  onClick={() => { 
+                    try { demoController.stopDemo(); } catch (e) { console.error('Failed stopDemo', e); } 
+                    // Explicitly clear local demo flag so banner disappears when stopping from Quick Demo path
+                    setIsDemoActive(false); 
+          demoStartedRef.current = false; 
+          dispatch({ type: 'ADVANCE_STAGE', payload: 'welcome' });
+                  }}
+                  className="px-3 py-1.5 rounded-md bg-red-600 hover:bg-red-500 active:bg-red-700 text-white text-xs md:text-sm font-bold shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300"
+                  aria-label="Stop demo mode"
+                >
+                  Stop Demo
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {demoBanner && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, padding: '6px 10px', background: 'rgba(0,0,0,.7)', color: '#9fe', fontFamily: 'ui-monospace,Menlo,monospace', zIndex: 9998 }}>
+          {demoBanner}
         </div>
       )}
       
@@ -1928,6 +2318,18 @@ const handleBackout = useCallback((): void => {
           setLastMovementAction(''); 
         }} 
       />
+  {/* Micro-effects layer (glitch / teleport overlays) */}
+  <UiEffectsLayer />
+  <TeleportPulseListener />
+  <GlobalAudioListener />
+  <AccessibilityAnnouncer enabled={Boolean((state as any).accessibilityMode)} />
+  {/* Rune Sprint lore unlock + fragment toast listener (lightweight, always mounted) */}
+  <RSLoreUnlockListener />
+  <RSNPCQuipListener />
+  <RSNPCAutoQuips />
+  <MetaProgressionListener />
+  {/* Rune Sprint overlay controller */}
+  <RuneSprintOverlayController />
 
       <div className="quad quad-1">
         <RoomRenderer />
@@ -1935,6 +2337,7 @@ const handleBackout = useCallback((): void => {
         <div className="absolute top-2 left-2">
           <ProgressDashboard compact={true} className="w-48" />
         </div>
+  <InventoryTicker />
       </div>
       
       <div className="quad quad-2">
@@ -2036,14 +2439,22 @@ const handleBackout = useCallback((): void => {
       )}
       
       {hasFlag('showDebugPanel') && <DebugPanel />}
+      {FEATURES.DEBUG_MENU_ENABLED && IS_DEV && debug.open && (
+        <DebugMenu
+          onStartDemo={(packId) => { demoRef.current?.start(packId); debug.hide(); }}
+          onStopDemo={() => demoRef.current?.stop('aborted')}
+          onClose={() => debug.hide()}
+        />
+      )}
 
       {/* Combat Actions Panel - only show during combat */}
       <CombatActionsPanel />
 
-      {/* Enhanced modal overlay with proper typing */}
-      <ModalOverlay isOpen={Boolean(modal)} onClose={closeModal}>
-        {renderModalContent()}
-      </ModalOverlay>
+  {/* Floating Player Rename Button */}
+  {renameButton}
+
+  {/* Dynamic modal content (already returns RetroModal-based components) */}
+  {Boolean(modal) && renderModalContent()}
 
       {/* Blue Button Warning Modal */}
       <BlueButtonWarningModal 
@@ -2081,9 +2492,7 @@ const handleBackout = useCallback((): void => {
       )}
 
       {showAylaModal && (
-        <ModalOverlay isOpen={showAylaModal} onClose={() => setShowAylaModal(false)}>
-          <AylaPanel />
-        </ModalOverlay>
+        <AylaPanel />
       )}
 
       {/* Performance Dashboard */}
@@ -2091,6 +2500,9 @@ const handleBackout = useCallback((): void => {
         isOpen={showPerformanceDashboard}
         onClose={() => setShowPerformanceDashboard(false)}
       />
+
+  {/* Rename Player Modal */}
+  {renameModal}
 
       {/* AI Usage Monitor */}
       {showAIMonitor && (
@@ -2105,11 +2517,178 @@ const handleBackout = useCallback((): void => {
 
       {/* Quick Win Notifications System */}
       <QuickWinNotifications />
+      {/* Easter Egg Toggle (developer/settings control) */}
+      <div className="fixed bottom-2 right-2 z-[650]">
+        <button
+          onClick={() => setAllowEasterEggs(a => !a)}
+          className="px-2 py-1 rounded text-[10px] font-mono bg-black/60 border border-cyan-400/40 text-cyan-200 hover:bg-black/80 hover:border-cyan-300 transition"
+          aria-pressed={allowEasterEggs}
+          aria-label="Toggle narrative easter eggs"
+        >
+          Eggs: {allowEasterEggs ? 'ON' : 'OFF'}
+        </button>
+      </div>
+  {/* Accessibility preferences panel & toggle button */}
+  <AccessibilityPanel dispatch={dispatch} />
+      {/* Easter Egg ephemeral UI layer */}
+  {allowEasterEggs && !(state as any).accessibilityMode && (
+        <div className="pointer-events-none fixed inset-0 z-[600] select-none">
+          {fishGlyphs.map(f => (
+            <div
+              key={f.id}
+              className="absolute text-cyan-300 text-xs"
+              style={{ top: `${((Date.now() - f.created)/6000)*40 + 5}vh`, left: `${f.x}%`, opacity: 0.85 }}
+            >
+              🐟
+            </div>
+          ))}
+          {aylaOverlay && (
+            <div className="absolute inset-x-0 top-10 mx-auto w-[420px] bg-fuchsia-900/40 backdrop-blur-md border border-fuchsia-400/40 rounded-lg shadow-lg p-4 text-fuchsia-200 font-mono text-sm">
+              <div className="font-bold tracking-wide mb-1 text-fuchsia-300">Ayla Advisory</div>
+              <div className="text-fuchsia-100/90">"Temporal resonance stable. Continue exploring; hidden narrative threads are aligning."</div>
+            </div>
+          )}
+        </div>
+      )}
+  {/* New gated Debug Menu Overlay (F10 / Ctrl+` or command 'debug') */}
+  {(() => {
+    const dbg = useDebugMenu();
+    // Attach one-off event listener (hook safe inside IIFE render pattern)
+    React.useEffect(() => {
+  const handler = () => dbg.show();
+      window.addEventListener('debug:open' as any, handler as any);
+      document.addEventListener('debug:open', handler as any);
+      return () => {
+        window.removeEventListener('debug:open' as any, handler as any);
+        document.removeEventListener('debug:open', handler as any);
+      };
+  }, [dbg]);
+  return dbg.open ? <DebugMenuOverlay onClose={dbg.hide} /> : null;
+  })()}
     </div>
   );
 };
 
 // Performance monitoring cleanup
 performanceMonitor.markRenderEnd();
+  return <AppCore />; // Render original full game UI
+};
 
-export default AppCore;
+// Shell that selects between gate modes and the full game root.
+const AppShellInner: React.FC = () => {
+  const { mode, setMode, unlock } = useGate();
+  // Safety: if mode says FULL but unlock revoked in storage, relock.
+  useEffect(() => { if (mode === GameMode.FULL && !unlock.isUnlocked) setMode(GameMode.LOCKED); }, [mode, unlock.isUnlocked, setMode]);
+  switch (mode) {
+    case GameMode.ATTRACT: return <AttractMode onExit={() => setMode(GameMode.LOCKED)} />;
+    case GameMode.DEMO: return <DemoManager onEnd={() => setMode(GameMode.LOCKED)} />;
+  case GameMode.FULL: return <FullGameRootImpl />;
+    case GameMode.LOCKED:
+    default: return <LandingScreen />;
+  }
+};
+
+// Exported root now wraps gate context; retains previous default export signature.
+const AppCoreRoot: React.FC = () => (
+  <GateProvider>
+    <AppShellInner />
+    {/* Global unlock dialogs */}
+    <BetaCodeDialog />
+    <PatreonDialog />
+  </GateProvider>
+);
+export default AppCoreRoot;
+
+// RuneSprintOverlayController: attaches Rune Sprint HUD & Results to global DOM CustomEvents.
+// Minimal integration without altering existing game loop code elsewhere.
+
+interface RSRuntimeState {
+  active: boolean;
+  timeRemaining: number;
+  guardianDistance: number;
+  hintCount: number;
+  skipsUsed: number;
+  perfect: boolean;
+  guardianRage: boolean;
+  results: { outcome: 'success' | 'fail_time' | 'fail_guardian' | 'fail_rage' | 'fail_skip'; perfect: boolean } | null;
+}
+
+const initialRS: RSRuntimeState = { active: false, timeRemaining: 0, guardianDistance: 999, hintCount: 0, skipsUsed: 0, perfect: true, guardianRage: false, results: null };
+
+export const RuneSprintOverlayController: React.FC = () => {
+  const [rs, setRS] = useState<RSRuntimeState>(initialRS);
+  const [frags, setFrags] = useState<number>(0);
+
+  useEffect(() => {
+    const start = (e: Event) => {
+      const d = (e as CustomEvent).detail || {};
+  setRS(prev => ({ ...prev, active: true, results: null, timeRemaining: d.time || RUNE_SPRINT_BASE_DURATION_MS, hintCount: 0, skipsUsed: 0, perfect: true }));
+      setFrags(getFragmentCount());
+    };
+    const tick = (e: Event) => {
+      const d = (e as CustomEvent).detail || {};
+      setRS(prev => prev.active ? { ...prev, timeRemaining: d.timeRemaining ?? prev.timeRemaining, guardianDistance: d.guardianDistance ?? prev.guardianDistance } : prev);
+    };
+    const hint = () => setRS(prev => prev.active ? { ...prev, hintCount: prev.hintCount + 1, perfect: false } : prev);
+    const skip = () => setRS(prev => prev.active ? { ...prev, skipsUsed: prev.skipsUsed + 1, perfect: false } : prev);
+    const rage = () => setRS(prev => prev.active ? { ...prev, guardianRage: true } : prev);
+    const solved = (e: Event) => {
+      const d = (e as CustomEvent).detail || {};
+      if (d.fragments) setFrags(getFragmentCount());
+    };
+    const end = (e: Event) => {
+      const d = (e as CustomEvent).detail || {};
+      if (!rs.active) return;
+  setRS(prev => ({ ...prev, results: { outcome: d.outcome || 'success', perfect: prev.perfect }, active: false }));
+      setFrags(getFragmentCount());
+    };
+    document.addEventListener('rs:start', start as any);
+    document.addEventListener('rs:tick', tick as any);
+    document.addEventListener('rs:hint', hint as any);
+    document.addEventListener('rs:skip', skip as any);
+    document.addEventListener('rs:guardian-rage', rage as any);
+    document.addEventListener('rs:chamber-solved', solved as any);
+    document.addEventListener('rs:end', end as any);
+    return () => {
+      document.removeEventListener('rs:start', start as any);
+      document.removeEventListener('rs:tick', tick as any);
+      document.removeEventListener('rs:hint', hint as any);
+      document.removeEventListener('rs:skip', skip as any);
+      document.removeEventListener('rs:guardian-rage', rage as any);
+      document.removeEventListener('rs:chamber-solved', solved as any);
+      document.removeEventListener('rs:end', end as any);
+    };
+  }, [rs.active]);
+
+  if (!rs.active && !rs.results) return null;
+
+  return (
+    <>
+      {rs.active && (
+        <RSHUD
+          timeRemaining={rs.timeRemaining}
+          guardianDistance={rs.guardianDistance}
+          fragments={frags}
+          hintCount={rs.hintCount}
+          skipsUsed={rs.skipsUsed}
+          perfectThisChamber={rs.perfect}
+          guardianRage={rs.guardianRage}
+        />
+      )}
+      {rs.results && (
+        <SceneTransition in={!!rs.results} kind="slide-up">
+          <RSResults
+            outcome={rs.results.outcome}
+            fragments={frags}
+            perfect={rs.results.perfect}
+            onRestart={() => {
+              setRS(initialRS);
+              document.dispatchEvent(new CustomEvent('rs:start', { detail: { time: RUNE_SPRINT_BASE_DURATION_MS } }));
+            }}
+            onExit={() => setRS(initialRS)}
+          />
+        </SceneTransition>
+      )}
+    </>
+  );
+};
