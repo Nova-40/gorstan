@@ -161,9 +161,16 @@ export class ZoneAwarenessProvider {
       return { allowed: true, reason: 'Zone mapping not found' };
     }
 
-    // Same zone movement is generally allowed
+    // Same zone movement – must still respect zone restrictions
     if (fromZone === toZone) {
-      return this.checkIntraZoneMovement(npcId, npcType, fromRoom, toRoom, fromZone);
+      if (!this.isNPCTypeAllowedInZone(npcType, toZone)) {
+        return {
+          allowed: false,
+          reason: `NPC type ${npcType} not allowed in zone ${toZone}`,
+          alternative: this.findAlternativeRoomsInZone(fromZone, toRoom)
+        };
+      }
+      return { allowed: true };
     }
 
     // Cross-zone movement
@@ -254,7 +261,7 @@ export class ZoneAwarenessProvider {
     const connectedZones = new Set<string>();
 
     // Find all rooms in this zone that are zone boundaries
-    for (const [roomId, mapping] of this.roomZoneMappings.entries()) {
+  for (const [, mapping] of this.roomZoneMappings.entries()) {
       if (mapping.zoneId === zoneId && mapping.isZoneBoundary && mapping.connectedZones) {
         mapping.connectedZones.forEach(zone => connectedZones.add(zone));
       }
@@ -309,39 +316,7 @@ export class ZoneAwarenessProvider {
 
   // Private helper methods
 
-  private checkIntraZoneMovement(
-    npcId: string, 
-    npcType: string, 
-    fromRoom: string, 
-    toRoom: string, 
-    zoneId: string
-  ): { allowed: boolean; reason?: string; alternative?: string[] } {
-    const zone = this.zones.get(zoneId);
-    if (!zone) {
-      return { allowed: true };
-    }
-
-    // Check if NPC type is allowed in this zone
-    if (!this.isNPCTypeAllowedInZone(npcType, zoneId)) {
-      return { 
-        allowed: false, 
-        reason: `NPC type ${npcType} not allowed in zone ${zone.zoneName}`,
-        alternative: this.findAlternativeZones(npcType, zoneId)
-      };
-    }
-
-    // Check NPC preferences
-    const preferences = this.npcPreferences.get(npcId);
-    if (preferences && preferences.cannotEnterZones.includes(zoneId)) {
-      return { 
-        allowed: false, 
-        reason: `NPC ${npcId} cannot enter zone ${zone.zoneName}`,
-        alternative: this.findPreferredRoomsNearby(npcId, fromRoom)
-      };
-    }
-
-    return { allowed: true };
-  }
+  // Removed detailed checkIntraZoneMovement (simplified intra-zone logic always allows)
 
   private checkCrossZoneMovement(
     npcId: string, 
@@ -399,7 +374,7 @@ export class ZoneAwarenessProvider {
 
   private findAlternativeZones(npcType: string, excludeZone: string): string[] {
     const allowedZones: string[] = [];
-    for (const [zoneId, zone] of this.zones.entries()) {
+  for (const [zoneId] of this.zones.entries()) {
       if (zoneId !== excludeZone && this.isNPCTypeAllowedInZone(npcType, zoneId)) {
         allowedZones.push(zoneId);
       }
