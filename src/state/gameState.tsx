@@ -22,7 +22,19 @@
 import React, { createContext, useContext, useReducer, Dispatch } from 'react';
 
 import { processCommand } from '../engine/commandParser';
-import { unlockAchievement } from '../logic/achievementEngine';
+// Lazy achievement engine: dynamic import when needed
+let _unlockAchievement: ((id: string) => void) | null = null;
+async function lazyUnlockAchievement(id: string) {
+  try {
+    if (!_unlockAchievement) {
+      const mod = await import('../logic/achievementEngine');
+      _unlockAchievement = (mod as any).unlockAchievement;
+    }
+    _unlockAchievement && _unlockAchievement(id);
+  } catch (e) {
+    console.warn('[gameState] Failed to lazy load achievementEngine:', e);
+  }
+}
 import { Room } from '../types/Room';
 import { Player, GameAction, GameMessage, MiniquestState, Quest } from '../types/GameTypes';
 import type { NPC } from '../types/NPCTypes';
@@ -66,8 +78,9 @@ export const STAGES = {
 } as const;
 
 // --- Initial State ---
+import { isTestMode } from '../utils/envFlags';
 export const initialGameState: LocalGameState = {
-  stage: STAGES.SPLASH, // Normal game start sequence
+  stage: isTestMode() ? STAGES.WELCOME : STAGES.SPLASH, // Skip splash in tests for speed
   transition: null,
   player: {
     id: 'player',
@@ -92,6 +105,7 @@ export const initialGameState: LocalGameState = {
   flags: {},
   npcsInRoom: [],
   roomVisitCount: {},
+  trialFailureCount: 0,
   gameTime: {
     day: 1,
     hour: 8,
@@ -127,6 +141,7 @@ export const initialGameState: LocalGameState = {
   // Inter-NPC conversation system
   conversations: {},
   overhearNPCBanter: true,
+  arcade: { active: false, id: null },
 };
 
 // --- Helper: Blue Button Press ---
@@ -192,6 +207,50 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
     return combined.length > cap ? combined.slice(-cap) : combined;
   };
   switch (action.type) {
+    // --- Arcade Integration ---
+    case 'LAUNCH_ARCADE': {
+      const payload = action.payload as { id: string } | undefined;
+      if (!payload?.id) return state;
+      return {
+        ...state,
+        arcade: { active: true, id: payload.id }
+      } as LocalGameState;
+    }
+    case 'EXIT_ARCADE': {
+  if (!state.arcade?.active) return state;
+      return {
+        ...state,
+        arcade: { active: false, id: null }
+      } as LocalGameState;
+    }
+    case 'ADD_TRAIT': {
+      const trait = action.payload as string;
+      if (!trait) return state;
+      const traits = state.player.traits || [];
+      if (traits.includes(trait)) return state; // idempotent
+      return {
+        ...state,
+        player: { ...state.player, traits: [...traits, trait] },
+      };
+    }
+    case 'REMOVE_TRAIT': {
+      const trait = action.payload as string;
+      if (!trait) return state;
+      const traits = state.player.traits || [];
+      if (!traits.includes(trait)) return state;
+      return {
+        ...state,
+        player: { ...state.player, traits: traits.filter(t => t !== trait) },
+      };
+    }
+    case 'SET_TRAITS': {
+      const incoming = Array.isArray(action.payload) ? action.payload as string[] : [];
+      return {
+        ...state,
+        player: { ...state.player, traits: [...new Set(incoming)] },
+      };
+    }
+  // (SET_FLAGS handled later with consolidated flag logic)
     // --- Example action (legacy, retained for compatibility) ---
     case 'DRINK_COFFEE': {
       const hasCoffee = state.player.inventory.includes('coffee');
@@ -220,6 +279,32 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
           ]
         };
       }
+    }
+
+    case 'RECORD_TRIAL_FAILURE': {
+      const newCount = (state.trialFailureCount || 0) + 1;
+      // Trigger reboot if 4th failure
+      if (newCount >= 4 && !state.flags?.multiverse_reboot_pending) {
+        const warning: GameMessage = {
+          id: `trial-fails-${Date.now()}`,
+          text: 'Reality destabilises after repeated failures... Initiating multiverse reboot.',
+          type: 'warning',
+          timestamp: Date.now(),
+        };
+        return {
+          ...state,
+          trialFailureCount: 0,
+          history: appendHistory(state.history, warning),
+          flags: {
+            ...state.flags,
+            multiverse_reboot_pending: true,
+          }
+        };
+      }
+      return {
+        ...state,
+        trialFailureCount: newCount,
+      };
     }
 
     // --- Inventory ---
@@ -304,11 +389,16 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
     }
 
     // --- Player Actions ---
-    case 'SET_PLAYER_NAME':
+    case 'SET_PLAYER_NAME': {
+      const newName = (action.payload as string) || '';
+  try { localStorage.setItem('gorstan.playerName', JSON.stringify({ name: newName, ts: Date.now() })); } catch { /* ignore */ }
       return {
         ...state,
-        player: { ...state.player, name: action.payload as string },
-      };
+        player: { ...state.player, name: newName },
+        // Legacy root-level alias for older systems that referenced state.playerName directly
+        playerName: newName as any,
+      } as any; // cast to satisfy strict exactOptionalPropertyTypes
+    }
 
     case 'SET_ROUTE':
       return {
@@ -361,10 +451,10 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
 
       // Achievement triggers
       if (newVisitedRooms.length >= 10 && visitedRooms.length < 10) {
-        unlockAchievement('explorer');
+        lazyUnlockAchievement('explorer');
       }
       if (roomId.includes('final') || roomId.includes('end') || roomId.includes('stanton')) {
-        unlockAchievement('reached_final_zone');
+        lazyUnlockAchievement('reached_final_zone');
       }
 
       const newRoom = state.roomMap[roomId];
@@ -397,6 +487,16 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
           triggerMorthosAlEncounter: encounterFlag
         },
       };
+    }
+    // Debug menu compatibility alias (was MOVE_PLAYER) -> MOVE_TO_ROOM
+    case 'MOVE_PLAYER': {
+      if (typeof action.payload === 'object' && action.payload && 'roomId' in action.payload) {
+        return gameStateReducer(state, { type: 'MOVE_TO_ROOM', payload: (action.payload as any).roomId });
+      }
+      if (typeof action.payload === 'string') {
+        return gameStateReducer(state, { type: 'MOVE_TO_ROOM', payload: action.payload });
+      }
+      return state;
     }
     // Compatibility: legacy CHANGE_ROOM actions funnel through MOVE_TO_ROOM logic
     case 'CHANGE_ROOM': {
@@ -621,7 +721,7 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
         };
 
         const scoreEvent = scoreEvents[flag];
-        let scoreUpdates: GameMessage[] = [];
+  // removed unused scoreUpdates variable
         
         if (scoreEvent) {
           const eventKey = value ? scoreEvent.positive : scoreEvent.negative;
@@ -658,6 +758,8 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
       }
       return state;
     }
+
+  // (Duplicate SET_FLAGS case removed earlier in file)
 
     // --- Debug ---
     case 'ENABLE_DEBUG_MODE': {
@@ -750,6 +852,7 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
       };
     }
     case 'UPDATE_SCORE': {
+  // (legacy variable removed)
       return {
         ...state,
         player: {
@@ -1092,7 +1195,19 @@ export const GameStateContext = createContext<{
 } | undefined>(undefined);
 
 export function GameStateProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(gameStateReducer, initialGameState);
+  const [state, dispatch] = useReducer(gameStateReducer, initialGameState, (base) => {
+    // Hydrate player name from localStorage once
+    try {
+      const raw = localStorage.getItem('gorstan.playerName');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed.name === 'string' && parsed.name.trim()) {
+          return { ...base, player: { ...base.player, name: parsed.name.trim() }, playerName: parsed.name.trim() } as LocalGameState;
+        }
+      }
+    } catch { /* ignore */ }
+    return base;
+  });
   // Stable memo prevents unnecessary rerenders on HMR when state object identity changes during refresh cycle
   const value = React.useMemo(() => ({ state, dispatch }), [state, dispatch]);
   return <GameStateContext.Provider value={value}>{children}</GameStateContext.Provider>;
@@ -1132,6 +1247,7 @@ export interface LocalGameState {
   };
   npcsInRoom: NPC[];
   roomVisitCount: Record<string, number>;
+  trialFailureCount?: number; // cumulative trial failures (resets after reboot)
   gameTime: {
     day: number;
     hour: number;
@@ -1167,6 +1283,7 @@ export interface LocalGameState {
   // Inter-NPC conversation system
   conversations: Record<string, ConversationThread>;
   overhearNPCBanter: boolean;
+  arcade: { active: boolean; id: string | null };
   // Additional properties for compatibility
   playerName?: string;
   visitedRooms?: string[];

@@ -118,7 +118,7 @@ function collectShard(shard: Shard): Promise<void> {
   });
 }
 
-function assembleShards(shards: Shard[]): Promise<void> {
+function assembleShards(_shards: Shard[]): Promise<void> {
   return new Promise((resolve) => {
     console.log('[FractureOfTheNine] === THE GREAT ASSEMBLY ===');
     console.log('[FractureOfTheNine] All nine shards orbit around you...');

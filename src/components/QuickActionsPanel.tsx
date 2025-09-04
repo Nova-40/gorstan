@@ -1,5 +1,4 @@
-import { getRoom } from '../core/rooms/roomsLoader';
-import { executeEffects } from '../utils/roomActions';
+// (Removed unused imports getRoom, executeEffects during unused symbol pruning)
 /*
   Gorstan – Copyright © 2025 Geoff Webster. All Rights Reserved.
   
@@ -425,7 +424,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
       {/* Audio element for backout fail sound - Core Logic Preserved */}
       <audio 
         ref={backoutSoundRef} 
-        src="/audio/fail.wav" 
+        src="/sounds/click.wav" 
         preload="auto"
         aria-hidden="true"
       />

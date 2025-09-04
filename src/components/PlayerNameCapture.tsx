@@ -17,9 +17,7 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Game module.
 
-import React, { useState, useCallback, useEffect, useRef } from "react";
-
-import { NPC } from '../types/NPCTypes';
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 
 import { useGameState } from "../state/gameState";
 
@@ -96,6 +94,8 @@ Available commands and toggles (cheat/debug mode only):
 WARNING: Using cheat/debug mode may irreversibly alter your story state, and summon Aevira auditors or make Albie sigh pointedly.
 `;
 
+const DRAFT_KEY = 'gorstan.playerName.draft';
+
 const PlayerNameCapture: React.FC<{ onNameSubmit: (name: string) => void }> = ({ onNameSubmit }) => {
   const { state, dispatch } = useGameState();
 // React state declaration
@@ -103,6 +103,26 @@ const PlayerNameCapture: React.FC<{ onNameSubmit: (name: string) => void }> = ({
   const [modal, setModal] = useState<null | "instructions" | "cheat">(null);
 // React state declaration
   const [screen, setScreen] = useState(0);
+
+  // Hydrate any draft name if player name not yet committed
+  useEffect(() => {
+    if (state.player?.name) return; // already have committed name
+    if (name) return; // local state already populated
+    try {
+      const draft = localStorage.getItem(DRAFT_KEY);
+      if (draft) setName(draft);
+    } catch {}
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Resilience: if name becomes empty unexpectedly (e.g., remount) try to restore draft
+  useEffect(() => {
+    if (name !== '' || state.player?.name) return;
+    try {
+      const draft = localStorage.getItem(DRAFT_KEY);
+      if (draft) setName(draft);
+    } catch {}
+  }, [name, state.player?.name]);
 
 // Variable declaration
   const closeModal = useCallback(() => {
@@ -132,9 +152,21 @@ const PlayerNameCapture: React.FC<{ onNameSubmit: (name: string) => void }> = ({
   }, [modal, closeModal]);
 
 // Variable declaration
+  const invalidReason = useMemo(() => {
+    const trimmed = name.trim();
+    if (!trimmed) return 'Name required';
+    if (trimmed.length < 2) return 'Too short';
+    // Disallow if contains no alphanumeric characters (only punctuation / symbols)
+    if (!/[A-Za-z0-9]/.test(trimmed)) return 'Must include letters or numbers';
+    if (trimmed.length > 42) return 'Too long';
+    return null;
+  }, [name]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (name.trim()) onNameSubmit(name.trim());
+    if (!invalidReason && name.trim()) onNameSubmit(name.trim());
+    // Clear any draft after successful submission
+    try { localStorage.removeItem(DRAFT_KEY); } catch {}
   };
 
   
@@ -151,15 +183,15 @@ const PlayerNameCapture: React.FC<{ onNameSubmit: (name: string) => void }> = ({
 
 // JSX return block or main return
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#060f17]">
-      <div className="rounded-2xl border border-green-400 bg-[#101B24] shadow-xl max-w-md w-full p-8 relative">
-        <div className="flex flex-col items-center mb-4">
+    <div className="min-h-screen flex items-start justify-center pt-12 bg-[#060f17]">
+      <div className="rounded-2xl border border-green-400 bg-[#101B24] shadow-xl max-w-md w-full px-7 pt-4 pb-12 relative">
+        <div className="flex flex-col items-center mb-1">
           <GorstanIcon />
-          <h1 className="mt-2 mb-4 text-green-300 text-2xl font-mono text-center">
+          <h1 className="mt-1 mb-3 text-green-300 text-2xl font-mono text-center">
             Gorstan Terminal Access
           </h1>
         </div>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3 -mt-2">
           <label htmlFor="playerName" className="text-green-400 font-mono mb-2">
             Enter your name:
           </label>
@@ -170,13 +202,21 @@ const PlayerNameCapture: React.FC<{ onNameSubmit: (name: string) => void }> = ({
             value={name}
             autoFocus
             maxLength={42}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              const v = e.target.value;
+              setName(v);
+              // Persist draft so accidental remounts (e.g. StrictMode double render or HMR) don't wipe input
+              try { localStorage.setItem(DRAFT_KEY, v); } catch {}
+            }}
             placeholder="Player name (max 42 characters)"
           />
+          {invalidReason && name && (
+            <p className="text-xs text-red-400 font-mono -mt-1" role="alert">{invalidReason}</p>
+          )}
           <button
             type="submit"
             className="mt-2 py-2 rounded bg-green-700 hover:bg-green-600 text-white font-bold font-mono text-lg transition"
-            disabled={!name.trim()}
+            disabled={!!invalidReason}
           >
             Begin
           </button>

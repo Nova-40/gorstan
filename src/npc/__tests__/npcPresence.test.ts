@@ -22,8 +22,8 @@ import {
   NPCPresenceProvider, 
   getNPCPresenceProvider, 
   resetNPCPresenceProvider,
-  NPCPresenceUpdate,
-  NPCPresenceListener
+  // NPCPresenceUpdate,
+  // NPCPresenceListener
 } from '../npcPresence';
 
 describe('NPCPresenceProvider', () => {

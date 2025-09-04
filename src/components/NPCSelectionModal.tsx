@@ -19,6 +19,8 @@
 
 import React from 'react';
 import { MessageCircle, Users } from 'lucide-react';
+import { RetroModal } from './ui/RetroModal';
+import { Button } from './ui/Button';
 import type { NPC } from '../types/NPCTypes';
 
 interface NPCSelectionModalProps {
@@ -63,90 +65,56 @@ const NPCSelectionModal: React.FC<NPCSelectionModalProps> = ({
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="npc-selection-modal">
-        <div className="modal-header">
-          <h2 className="modal-title">
-            <Users className="title-icon" />
-            Choose Who to Talk To
-          </h2>
-          <button className="modal-close" onClick={onClose} aria-label="Close modal">
-            ×
-          </button>
-        </div>
-        
-        <div className="npc-selection-grid">
-          {npcs.map((npc) => (
-            <div 
-              key={npc.id}
-              className="npc-selection-card"
-              onClick={() => onSelectNPC(npc)}
-            >
-              <div className="npc-image-container">
-                <img 
-                  src={getImagePath(npc)}
-                  alt={npc.name}
-                  className="npc-selection-image"
-                  onError={(e) => {
-                    const img = e.target as HTMLImageElement;
-                    img.src = '/images/fallback.png';
-                  }}
-                />
-                <div className="npc-mood-indicator" data-mood={npc.mood}>
-                  <MessageCircle size={16} />
-                </div>
-              </div>
-              
-              <div className="npc-selection-info">
-                <h3 className="npc-name">{npc.name}</h3>
-                {npc.description && (
-                  <p className="npc-description">{npc.description}</p>
-                )}
-                <div className="npc-status">
-                  <span className="mood-badge" data-mood={npc.mood}>
-                    {npc.mood}
-                  </span>
-                </div>
+    <RetroModal
+      isOpen
+      onClose={onClose}
+      title="Choose Who to Talk To"
+      subtitle={npcs.length > 1 ? `${npcs.length} participants available` : `${npcs.length} participant`}
+      widthClass="max-w-4xl"
+      footer={(
+        <>
+          <span className="panel-subtle mr-auto text-xs">Click a portrait to begin</span>
+          {onTalkToAll && npcs.length > 1 && (
+            <Button size="sm" variant="secondary" onClick={onTalkToAll}><Users size={14} className="mr-1"/> Talk to Everyone</Button>
+          )}
+          {onTalkToAyla && (
+            <Button size="sm" variant="outline" onClick={onTalkToAyla}><MessageCircle size={14} className="mr-1"/> Ayla (Help)</Button>
+          )}
+          <Button size="sm" variant="ghost" onClick={onClose}>Close</Button>
+        </>
+      )}
+    >
+      <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {npcs.map(npc => (
+          <button
+            key={npc.id}
+            onClick={() => onSelectNPC(npc)}
+            className="group relative border border-emerald-400/30 rounded-sm overflow-hidden bg-black/30 hover:border-emerald-400/70 transition-colors text-left"
+          >
+            <div className="aspect-video w-full overflow-hidden bg-black/50 flex items-center justify-center">
+              <img
+                src={getImagePath(npc)}
+                alt={npc.name}
+                className="object-contain max-h-full max-w-full opacity-90 group-hover:opacity-100 transition-opacity"
+                onError={(e) => { (e.target as HTMLImageElement).src = '/images/fallback.png'; }}
+              />
+              <div className="absolute top-1 left-1 px-1 py-0.5 text-[10px] rounded-sm bg-black/60 border border-emerald-400/40 font-mono uppercase tracking-wide">
+                {npc.mood}
               </div>
             </div>
-          ))}
-        </div>
-
-        {/* Group conversation feature */}
-        {onTalkToAll && npcs.length > 1 && (
-          <div className="group-conversation-section">
-            <button 
-              className="group-talk-button"
-              onClick={onTalkToAll}
-              title="Start a group conversation"
-            >
-              <Users size={20} />
-              Talk to Everyone
-            </button>
-          </div>
-        )}
-
-        {/* Ayla Helper Option */}
-        {onTalkToAyla && (
-          <div className="ayla-helper-section">
-            <button 
-              className="ayla-talk-button"
-              onClick={onTalkToAyla}
-              title="Switch to Ayla for help and guidance"
-            >
-              <MessageCircle size={18} />
-              Talk to Ayla (Help)
-            </button>
-          </div>
-        )}
-
-        <div className="modal-footer">
-          <p className="selection-hint">
-            Click on an NPC to start a conversation, or press Escape to close.
-          </p>
-        </div>
+            <div className="p-2 space-y-1">
+              <div className="flex items-center gap-2">
+                <MessageCircle size={14} className="opacity-70" />
+                <span className="font-mono text-xs truncate">{npc.name}</span>
+              </div>
+              {npc.description && (
+                <p className="m-0 text-[10px] leading-snug opacity-70 line-clamp-2">{npc.description}</p>
+              )}
+            </div>
+          </button>
+        ))}
       </div>
-    </div>
+    </RetroModal>
   );
 };
 

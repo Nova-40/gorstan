@@ -9,7 +9,7 @@ export type SimpleRoom = {
   exits: { to: string; label: string }[];
 };
 
-type RawSimple = any;
+// type RawSimple = any; // unused
 
 const simpleCache: Record<string, SimpleRoom> = {};
 for (const [id, value] of Object.entries(rooms as any)) {

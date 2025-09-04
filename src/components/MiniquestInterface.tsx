@@ -18,27 +18,8 @@
 // Game module.
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Star,
-  Target,
-  Trophy,
-  Clock,
-  CheckCircle,
-  X,
-  HelpCircle,
-  User,
-  Search,
-  Puzzle,
-  Heart,
-  Map,
-  RotateCcw,
-  Zap,
-  Gift,
-  ArrowRight,
-  Award,
-  Lightbulb
-} from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Target, CheckCircle, X, Search, RotateCcw, Zap, Gift } from 'lucide-react';
 
 export interface MiniquestData {
   id: string;
@@ -71,11 +52,13 @@ export interface MiniquestInterfaceProps {
   roomName: string;
   miniquests: MiniquestData[];
   progress: { [questId: string]: MiniquestProgress };
-  onAttemptQuest: (questId: string) => void;
+  onAttemptQuest: (questId: string) => void; // retained API prop
   playerInventory: string[];
   totalScore?: number;
   completedCount?: number;
   availableCount?: number;
+  isDemo?: boolean; // demo autoplay integration
+  onDemoAutoComplete?: (info: { questId: string; outcome: string; score: number; durationMs: number }) => void;
 }
 
 const MiniquestInterface: React.FC<MiniquestInterfaceProps> = ({
@@ -84,11 +67,13 @@ const MiniquestInterface: React.FC<MiniquestInterfaceProps> = ({
   roomName,
   miniquests,
   progress,
-  onAttemptQuest,
+  onAttemptQuest: _onAttemptQuest,
   playerInventory,
   totalScore = 0,
   completedCount = 0,
   availableCount = 0
+  , isDemo = false,
+  onDemoAutoComplete
 }) => {
   const [selectedQuest, setSelectedQuest] = useState<MiniquestData | null>(null);
   const [filter, setFilter] = useState<'all' | 'available' | 'completed' | 'locked'>('all');
@@ -100,6 +85,15 @@ const MiniquestInterface: React.FC<MiniquestInterfaceProps> = ({
       setSelectedQuest(null);
     }
   }, [isOpen]);
+
+  // Demo auto-complete safeguard (graceful exit) – 70s timeout as specified
+  useEffect(() => {
+    if (!isOpen || !isDemo) return;
+    const t = setTimeout(() => {
+      try { onDemoAutoComplete?.({ questId: 'demo', outcome: 'partial', score: 0, durationMs: 70000 }); } catch {}
+    }, 70000);
+    return () => clearTimeout(t);
+  }, [isOpen, isDemo, onDemoAutoComplete]);
 
   
 // Variable declaration

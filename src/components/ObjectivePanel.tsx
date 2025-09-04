@@ -1,5 +1,4 @@
-
-import React from 'react';
+// React import removed (using automatic JSX runtime)
 import { useGameState } from '../state/gameState';
 
 interface ObjectiveLike { id: string; title: string; done?: boolean; }

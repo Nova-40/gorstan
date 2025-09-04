@@ -17,15 +17,12 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Game module.
 
-import { Achievement } from '../types/GameTypes';
 
 import { Dispatch } from 'react';
 
 import { GameAction } from '../types/GameTypes';
 
-import { NPC } from '../types/NPCTypes';
 
-import { Puzzle } from '../types/GameTypes';
 
 import { updateScore } from '../state/scoreManager';
 

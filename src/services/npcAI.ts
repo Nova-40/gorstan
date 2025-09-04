@@ -613,7 +613,7 @@ ${npcProfile.name}'s response:`;
   public async generateCharacterStory(
     npcId: string, 
     aboutCharacter: string, 
-    context: NPCBehaviorContext,
+  context: NPCBehaviorContext,
     playerAction?: string
   ): Promise<NPCAction | null> {
     try {
@@ -668,9 +668,9 @@ ${npcProfile.name}'s response:`;
    * Build character story prompt with relationship dynamics
    */
   private buildCharacterStoryPrompt(
-    npcProfile: NPCAIProfile, 
-    aboutCharacter: string, 
-    context: NPCBehaviorContext,
+  npcProfile: NPCAIProfile, 
+  aboutCharacter: string, 
+  _context: NPCBehaviorContext,
     playerAction?: string
   ): string {
     const speakerName = npcProfile.name;

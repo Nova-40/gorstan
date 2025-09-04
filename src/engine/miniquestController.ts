@@ -17,7 +17,7 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Core game engine module.
 
-import type { Miniquest, GameAction } from '../types/GameTypes';
+import type { GameAction } from '../types/GameTypes';
 
 import { LocalGameState } from '../state/gameState';
 

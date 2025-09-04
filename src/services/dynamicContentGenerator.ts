@@ -398,7 +398,7 @@ Content:`;
    * Reset session usage counters
    */
   public resetSession(): void {
-    for (const [ruleId, usage] of this.ruleUsage.entries()) {
+  for (const [, usage] of this.ruleUsage.entries()) {
       usage.count = 0;
     }
   }

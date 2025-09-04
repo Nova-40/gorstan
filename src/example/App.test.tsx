@@ -10,7 +10,9 @@ describe("App", () => {
     render(<App />);
 
     // Wait for initial app title (ensures initial effects settle)
-    await screen.findByText(/gorstan/i);
+    // Wait for any Gorstan text; tolerate multiple matches due to footer / banners
+    const matches = await screen.findAllByText(/gorstan/i);
+    expect(matches.length).toBeGreaterThan(0);
 
     // Try to find a start button or similar interaction (optional path)
     const startButtons = screen.queryAllByRole("button", { name: /start/i });

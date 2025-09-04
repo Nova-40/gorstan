@@ -74,7 +74,7 @@ export function generateNPCResponse(
   fromNpcId: string, 
   toNpcId: string, 
   topic?: string,
-  context?: string
+  // context?: string
 ): string {
   // Base responses by NPC pairing and topic
   const responses = getNPCPairResponses(fromNpcId, toNpcId, topic);

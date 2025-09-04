@@ -10,6 +10,7 @@ import {
   type SequencePuzzle,
   type QuantumPuzzle
 } from '../../types/logicPuzzles';
+import { easterEggEngine } from '../../features/easter-eggs/EasterEggEngine';
 
 interface PuzzleSolverProps {
   puzzle: LogicPuzzle;
@@ -124,6 +125,13 @@ const PuzzleSolver: React.FC<PuzzleSolverProps> = ({
       default: return 'text-gray-400';
     }
   };
+
+  // Trigger rare easter egg on puzzle completion (once)
+  useEffect(() => {
+    if (session.endTime && session.result && Math.random() < 0.1) {
+      easterEggEngine.maybeFire();
+    }
+  }, [session.endTime, session.result]);
 
   const renderPuzzleContent = () => {
     switch (puzzle.type) {

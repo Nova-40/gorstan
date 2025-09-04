@@ -29,6 +29,12 @@ export function useIdleGuidanceTimers(cfg: IdleGuidanceConfig): IdleGuidanceStat
   const rafRef = useRef<number | null>(null);
   const guidanceIntervalRef = useRef<number | null>(null);
 
+  // Store external callbacks in refs to avoid changing hook dependencies every render
+  const demoTriggerRef = useRef<typeof onDemoTrigger>(onDemoTrigger);
+  const guidanceTriggerRef = useRef<typeof onGuidanceTrigger>(onGuidanceTrigger);
+  useEffect(() => { demoTriggerRef.current = onDemoTrigger; }, [onDemoTrigger]);
+  useEffect(() => { guidanceTriggerRef.current = onGuidanceTrigger; }, [onGuidanceTrigger]);
+
   const frame = useCallback((t: number) => {
     if (demoStartRef.current == null) demoStartRef.current = t;
     const elapsed = t - demoStartRef.current;
@@ -36,11 +42,11 @@ export function useIdleGuidanceTimers(cfg: IdleGuidanceConfig): IdleGuidanceStat
     setDemoSecondsRemaining(remaining / 1000);
     setShowDemoCountdown(remaining < demoTotalMs && remaining > 0);
     if (remaining <= 0) {
-      if (onDemoTrigger) onDemoTrigger();
+      if (demoTriggerRef.current) demoTriggerRef.current();
     } else {
       rafRef.current = requestAnimationFrame(frame);
     }
-  }, [demoTotalMs, onDemoTrigger]);
+  }, [demoTotalMs]);
 
   const resetAll = useCallback(() => {
     // Demo
@@ -62,10 +68,10 @@ export function useIdleGuidanceTimers(cfg: IdleGuidanceConfig): IdleGuidanceStat
       if (p >= 1) {
         clearInterval(guidanceIntervalRef.current!);
         setShowGuidanceModal(true);
-        if (onGuidanceTrigger) onGuidanceTrigger();
+    if (guidanceTriggerRef.current) guidanceTriggerRef.current();
       }
     }, 150);
-  }, [demoTotalMs, frame, guidanceTotalMs, onGuidanceTrigger]);
+  }, [demoTotalMs, frame, guidanceTotalMs]);
 
   const dismissGuidance = useCallback(() => {
     setShowGuidanceModal(false);

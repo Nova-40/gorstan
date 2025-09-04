@@ -19,7 +19,6 @@
 
 import { GameState } from '../types/GameTypes';
 
-import { NPC } from '../types/NPCTypes';
 
 
 

@@ -255,7 +255,7 @@ function shouldAddMemoryHook(memory: NPCMemoryState): boolean {
 /**
  * Add memory hook for continuity
  */
-function addMemoryHook(response: string, memory: NPCMemoryState, persona: any): string {
+function addMemoryHook(response: string, memory: NPCMemoryState, _persona: any): string {
   const recentConversation = memory.conversationBuffer.slice(-3);
   const playerMentioned = recentConversation.find(turn => 
     turn.speaker === 'player' && 

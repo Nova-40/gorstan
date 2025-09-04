@@ -17,7 +17,7 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Game module.
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Brain,
@@ -25,7 +25,6 @@ import {
   Clock,
   CheckCircle,
   XCircle,
-  Star,
   Zap,
   Target,
   HelpCircle,

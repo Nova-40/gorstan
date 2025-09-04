@@ -268,7 +268,7 @@ function getPollyStalkerMessage(intensity: number): string {
 
 // Handle Polly's escalating behavior
 function handlePollyEscalation(
-  state: LocalGameState,
+  _state: LocalGameState,
   dispatch: Dispatch<GameAction>,
   stalkerState: StalkerState
 ): void {

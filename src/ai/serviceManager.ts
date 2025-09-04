@@ -5,7 +5,6 @@
 
 import { NPCAiRouter } from './npcAiRouter';
 import { LoreService } from './loreService';
-import { AIConfig } from './aiConfig';
 import { ContentLoader } from './contentLoader';
 import type { NPCResponse, LoreEntry, NPCPersona } from '../types/npc';
 

@@ -17,7 +17,8 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Game module.
 
-import { unlockAchievement } from './achievementEngine';
+let _hiddenUnlock: ((id: string)=>void)|null = null;
+async function hsUnlock(id: string){ try { if(!_hiddenUnlock){ _hiddenUnlock = (await import('./achievementEngine')).unlockAchievement; } _hiddenUnlock && _hiddenUnlock(id);} catch(e){ console.warn('[hiddenScrolls] achievement load failed', e);} }
 
 
 
@@ -37,7 +38,7 @@ export function readConstitutionScroll(): string[] {
     "This is Constitution v6.1.0 — a system built not to win, but to coexist."
   ];
 
-  unlockAchievement('found_constitution');
+  hsUnlock('found_constitution');
 
   return messages;
 }

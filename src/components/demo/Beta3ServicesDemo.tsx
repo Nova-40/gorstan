@@ -3,7 +3,7 @@
  * Shows how to use NPCs and lore in actual game components
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNPCConversation, useLore, useGameServices } from '../../hooks/useGameServices';
 import { Button } from '../ui/Button';
 

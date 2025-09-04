@@ -13,7 +13,7 @@ export interface RadialProgressRingProps {
   /** Solid color (when mode === 'solid') */
   color?: string;
   /** Gradient colors (when mode === 'gradient') */
-  gradientColors?: string[]; // at least 2
+  gradientColors?: string[]; // at least 2 (optional for other modes)
   /** Optional aria label override */
   label?: string;
   /** Optional className */

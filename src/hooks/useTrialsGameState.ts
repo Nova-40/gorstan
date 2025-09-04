@@ -5,10 +5,10 @@
 */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { getMetaSnapshot } from '../meta/metaProgression';
 import { TrialsController } from '../mechanics/trials/TrialsController';
 import { MushroomField } from '../mechanics/trials/MushroomField';
-import { RockField } from '../mechanics/trials/RockField';
-import { RandomRocks } from '../mechanics/trials/RandomRocks';
+// Removed unused RockField and RandomRocks imports (kept MushroomField usage)
 
 interface Position {
   x: number;
@@ -41,8 +41,19 @@ interface RestRock {
   cooldownRemaining: number;
 }
 
+interface MovingRock {
+  id: number;
+  x: number; // continuous world coords (tiles)
+  y: number;
+  vx: number; // tiles per second
+  vy: number; // tiles per second
+  size: number; // visual size scalar (tile fraction)
+  angle: number; // radians
+  rotationSpeed: number; // radians per second
+}
+
 interface TrialsGameState {
-  phase: 'rock-field' | 'random-rocks' | 'mushroom-field' | 'stream-reset' | 'cave-maze';
+  phase: 'rock-field' | 'random-rocks' | 'mushroom-field' | 'climb-ascent' | 'cave-horrors' | 'cave-maze';
   phaseName: string;
   phaseProgress: number;
   playerPos: Position;
@@ -52,19 +63,26 @@ interface TrialsGameState {
   creatures: Creature[];
   mushrooms: Mushroom[];
   restRocks: RestRock[];
+  movingRocks: MovingRock[]; // Asteroids-style moving rocks for rock-field phase
   streamActive: boolean;
   timeRemaining: number;
   score: number;
   achievements: string[];
   currentObjective: string;
   hints: string[];
+  climbGrip?: number;
+  echoRevealMs?: number;
+  confusion?: boolean;
+  runSeed?: number; // deterministic per-run seed for artifact selection & procedural variation
+  failureHandicap?: number; // derived from meta failures for adaptive scaling
 }
 
 const PHASE_OBJECTIVES = {
   'rock-field': 'Navigate through the rock field safely. Rest at blue rocks to recover energy.',
   'random-rocks': 'Avoid falling rocks and reach the end. Watch for patterns in the chaos.',
   'mushroom-field': '🍄 Navigate the dense mushroom field! Stepping on mushrooms spawns WAVES of ravenous six-legged monsters. Use the 3 safety rocks strategically - creatures despawn near them. Reach the stream for ultimate safety! 🌊',
-  'stream-reset': 'Avoid the Cleaners that reset your progress. Find alternative paths.',
+  'climb-ascent': 'Ascend the unstable cliff face. Manage grip and stamina while avoiding falling debris.',
+  'cave-horrors': 'Traverse the horror-filled chamber. Unknown sounds stalk you; light pulses reveal safe tiles.',
   'cave-maze': 'Navigate the procedural cave maze and find the hidden artifact to complete the trials.'
 };
 
@@ -87,10 +105,15 @@ const PHASE_HINTS = {
     '🏃 Creatures move fast and coordinate - plan your route to safety rocks!',
     '💀 Avoid triggering multiple mushrooms - that means certain doom!'
   ],
-  'stream-reset': [
-    'Cleaners move in set patterns - learn their routes',
-    'Getting caught by a Cleaner resets your progress',
-    'Look for hidden passages around the main stream'
+  'climb-ascent': [
+    'Grip drains faster on overhang sections',
+    'Rest briefly on ledges to restore some stamina',
+    'Falling debris rattles before it drops – move laterally'
+  ],
+  'cave-horrors': [
+    'You can’t always trust what you see in the dark',
+    'Echo pulses (Press E) briefly reveal safe ground',
+    'Some horrors react to sound – move after they shriek'
   ],
   'cave-maze': [
     'The artifact is hidden in a dead-end chamber',
@@ -111,6 +134,7 @@ export function useTrialsGameState() {
     creatures: [],
     mushrooms: [],
     restRocks: [],
+  movingRocks: [],
     streamActive: false,
     timeRemaining: 600, // 10 minutes
     score: 0,
@@ -132,6 +156,13 @@ export function useTrialsGameState() {
     setIsPaused(false);
     trialsControllerRef.current = new TrialsController();
     lastUpdateTime.current = Date.now();
+    const meta = getMetaSnapshot();
+    const failureCount = meta.trials.failures || 0;
+    const failureHandicap = Math.min(failureCount, 6); // cap handicap influence
+    const baseTime = 600; // seconds
+    // Award extra time for repeated failures (gentle assist), up to +3 min
+    const timeBonus = failureHandicap * 30; // seconds per failure
+    const runSeed = hashRunSeed(new Date().toISOString());
     
     // Reset game state
     setGameState(prev => ({
@@ -146,11 +177,14 @@ export function useTrialsGameState() {
       creatures: [],
       mushrooms: [],
       restRocks: generateInitialRestRocks(),
-      timeRemaining: 600,
+      movingRocks: generateInitialMovingRocks(failureHandicap),
+      timeRemaining: baseTime + timeBonus,
       score: 0,
       achievements: [],
       currentObjective: PHASE_OBJECTIVES['rock-field'],
-      hints: PHASE_HINTS['rock-field']
+      hints: PHASE_HINTS['rock-field'],
+      runSeed,
+      failureHandicap
     }));
 
     console.log('[TrialsGameState] Game started');
@@ -194,14 +228,40 @@ export function useTrialsGameState() {
     return rocks;
   };
 
+  // Generate moving rocks (Asteroids style) for initial rock-field phase
+  const generateInitialMovingRocks = (failureHandicap = 0): MovingRock[] => {
+    const rocks: MovingRock[] = [];
+    const count = Math.max(6, 14 - failureHandicap * 2); // reduce density on repeated failures
+    for (let i = 0; i < count; i++) {
+      const speed = 0.6 + Math.random() * 0.9; // tiles / second
+      const direction = Math.random() * Math.PI * 2;
+      rocks.push({
+        id: i,
+        x: Math.random() * 40,
+        y: Math.random() * 25,
+        vx: Math.cos(direction) * speed,
+        vy: Math.sin(direction) * speed,
+        size: 0.6 + Math.random() * 1.2, // roughly 0.6–1.8 tile radius
+        angle: Math.random() * Math.PI * 2,
+        rotationSpeed: (Math.random() - 0.5) * 1.2 // rad/s
+      });
+    }
+    return rocks;
+  };
+
   // Player movement
   const movePlayer = useCallback((direction: 'north' | 'south' | 'east' | 'west') => {
     if (isPaused || !isActive) return;
 
     setGameState(prev => {
       const newPos = { ...prev.playerPos };
+      let dir = direction;
+      if (prev.phase === 'cave-horrors' && prev.confusion) {
+        const mapping: Record<'north'|'south'|'east'|'west','north'|'south'|'east'|'west'> = { north:'south', south:'north', east:'west', west:'east' };
+        dir = mapping[direction];
+      }
       
-      switch (direction) {
+      switch (dir) {
         case 'north':
           newPos.y = Math.max(0, newPos.y - 1);
           break;
@@ -224,11 +284,20 @@ export function useTrialsGameState() {
       let newPhaseProgress = prev.phaseProgress;
       let newScore = prev.score + 1;
       
-      if (newPos.x > 35 && prev.phaseProgress < 100) {
-        newPhaseProgress = 100;
-        newScore += 100;
-      } else {
+      if (prev.phase === 'rock-field') {
+        if (newPos.x > 35 && prev.phaseProgress < 100) { newPhaseProgress = 100; newScore += 100; }
+        else newPhaseProgress = Math.max(prev.phaseProgress, (newPos.x / 40) * 100);
+      } else if (prev.phase === 'random-rocks') {
         newPhaseProgress = Math.max(prev.phaseProgress, (newPos.x / 40) * 100);
+        if (newPhaseProgress >= 100) newScore += 120;
+      } else if (prev.phase === 'mushroom-field') {
+        newPhaseProgress = Math.max(prev.phaseProgress, (newPos.x / 40) * 100);
+      } else if (prev.phase === 'climb-ascent') {
+        const ascent = (24 - newPos.y) / 24; newPhaseProgress = Math.max(prev.phaseProgress, ascent * 100);
+      } else if (prev.phase === 'cave-horrors') {
+        const metric = ((newPos.x/40) + (1 - newPos.y/24)) / 2; newPhaseProgress = Math.max(prev.phaseProgress, metric * 100);
+      } else if (prev.phase === 'cave-maze') {
+        if (newPos.x > 34 && newPos.y < 5) newPhaseProgress = 100; else newPhaseProgress = Math.max(prev.phaseProgress, ((newPos.x + (24-newPos.y))/ (40+24)) * 100);
       }
 
       return {
@@ -354,6 +423,26 @@ export function useTrialsGameState() {
           return rock;
         });
 
+        // Update moving rocks only during rock-field phase (Asteroids-style)
+        if (prev.phase === 'rock-field') {
+          const width = 40;
+            const height = 25;
+            newState.movingRocks = prev.movingRocks.map(r => {
+              let x = r.x + r.vx * (deltaTime / 1000);
+              let y = r.y + r.vy * (deltaTime / 1000);
+              // Wrap around edges for continuous field
+              if (x < 0) x += width;
+              if (x >= width) x -= width;
+              if (y < 0) y += height;
+              if (y >= height) y -= height;
+              const angle = (r.angle + r.rotationSpeed * (deltaTime / 1000)) % (Math.PI * 2);
+              return { ...r, x, y, angle };
+            });
+        } else {
+          // Clear movingRocks for other phases to avoid unnecessary rendering
+          if (prev.movingRocks.length) newState.movingRocks = [];
+        }
+
         // Update creatures (basic AI for non-mushroom phases, sync with MushroomField for mushroom phase)
         if (prev.phase === 'mushroom-field' && mushroomFieldRef.current) {
           // Sync with enhanced MushroomField
@@ -425,6 +514,27 @@ export function useTrialsGameState() {
           newState.playerHealth = Math.max(0, prev.playerHealth - 1);
         }
 
+        // Collisions with moving rocks (continuous damage scaled by deltaTime)
+        if (prev.phase === 'rock-field' && prev.movingRocks.length) {
+          const playerRadius = 0.5; // in tiles
+          let collision = false;
+          for (const rock of prev.movingRocks) {
+            const dx = rock.x - prev.playerPos.x;
+            const dy = rock.y - prev.playerPos.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const rockRadius = rock.size * 0.6; // approximate radius
+            if (dist < playerRadius + rockRadius) {
+              collision = true;
+              break;
+            }
+          }
+          if (collision) {
+            // 10 health per second while colliding
+            const damage = 10 * (deltaTime / 1000);
+            newState.playerHealth = Math.max(0, prev.playerHealth - damage);
+          }
+        }
+
         // Regenerate energy slowly
         if (prev.playerEnergy < 100) {
           newState.playerEnergy = Math.min(100, prev.playerEnergy + 0.05);
@@ -444,6 +554,7 @@ export function useTrialsGameState() {
           newState.hints = PHASE_HINTS['random-rocks'];
           newState.achievements = [...prev.achievements, 'Rock Field Master'];
           newState.playerPos = { x: 2, y: 12 }; // Reset position
+          newState.movingRocks = []; // clear asteroids
         } else if (prev.phaseProgress >= 100 && prev.phase === 'random-rocks') {
           newState.phase = 'mushroom-field';
           newState.phaseName = 'Mushroom Field Trials';
@@ -470,6 +581,33 @@ export function useTrialsGameState() {
             available: Date.now() >= r.cooldownUntil,
             cooldownRemaining: Math.max(0, (r.cooldownUntil - Date.now()) / 1000)
           }));
+        } else if (prev.phaseProgress >= 100 && prev.phase === 'mushroom-field') {
+          newState.phase = 'climb-ascent';
+          newState.phaseName = 'Cliff Ascent';
+          newState.phaseProgress = 0;
+          newState.currentObjective = PHASE_OBJECTIVES['climb-ascent'];
+          newState.hints = PHASE_HINTS['climb-ascent'];
+          newState.achievements = [...prev.achievements, 'Mushroom Survivor'];
+          newState.playerPos = { x: 20, y: 24 };
+          newState.climbGrip = 100;
+        } else if (prev.phaseProgress >= 100 && prev.phase === 'climb-ascent') {
+          newState.phase = 'cave-horrors';
+          newState.phaseName = 'Cave of Horrors';
+          newState.phaseProgress = 0;
+          newState.currentObjective = PHASE_OBJECTIVES['cave-horrors'];
+          newState.hints = PHASE_HINTS['cave-horrors'];
+          newState.achievements = [...prev.achievements, 'Cliff Conqueror'];
+          newState.playerPos = { x: 2, y: 22 };
+          newState.echoRevealMs = 0;
+          newState.confusion = false;
+        } else if (prev.phaseProgress >= 100 && prev.phase === 'cave-horrors') {
+          newState.phase = 'cave-maze';
+          newState.phaseName = 'Cave Maze';
+          newState.phaseProgress = 0;
+          newState.currentObjective = PHASE_OBJECTIVES['cave-maze'];
+          newState.hints = PHASE_HINTS['cave-maze'];
+          newState.achievements = [...prev.achievements, 'Horror Endurer'];
+          newState.playerPos = { x: 2, y: 22 };
         }
 
         // Game over conditions
@@ -477,6 +615,18 @@ export function useTrialsGameState() {
           setIsActive(false);
         }
 
+        // Climb grip drain
+        if (prev.phase === 'climb-ascent') {
+          newState.climbGrip = Math.max(0, (prev.climbGrip ?? 100) - (deltaTime/1000)*2);
+          if ((newState.climbGrip ?? 0) <= 0) newState.playerHealth = Math.max(0, prev.playerHealth - 5);
+        }
+        // Cave horrors effects
+        if (prev.phase === 'cave-horrors') {
+          if (prev.phaseProgress > 35 && prev.phaseProgress < 70 && !prev.confusion) newState.confusion = true;
+          if (prev.confusion && prev.phaseProgress >= 70) newState.confusion = false;
+          if ((prev.echoRevealMs ?? 0) > 0) newState.echoRevealMs = Math.max(0, (prev.echoRevealMs ?? 0) - deltaTime);
+          if ((prev.echoRevealMs ?? 0) === 0 && Math.random() < 0.01) newState.playerHealth = Math.max(0, prev.playerHealth - 1);
+        }
         return newState;
       });
 
@@ -503,4 +653,14 @@ export function useTrialsGameState() {
     movePlayer,
     performAction
   };
+}
+
+// Simple string hash -> 32-bit unsigned int
+function hashRunSeed(str: string): number {
+  let h = 2166136261 >>> 0;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
 }

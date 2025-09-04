@@ -83,8 +83,7 @@ export class UnifiedAIIntelligence {
       const prioritizedResponse = this.prioritizeGuidance(
         aylaResponse, 
         miniquestInsights, 
-        dynamicOpportunities, 
-        context
+        dynamicOpportunities
       );
 
       if (prioritizedResponse) {
@@ -173,7 +172,7 @@ export class UnifiedAIIntelligence {
       if (recommendations && recommendations.length > 0) {
         const topRecommendation = recommendations[0];
         if (topRecommendation) {
-          const aylaFramedGuidance = await this.frameMiniquestInAylaVoice(topRecommendation, context);
+          const aylaFramedGuidance = await this.frameMiniquestInAylaVoice(topRecommendation);
           return {
             type: 'miniquest',
             priority: topRecommendation.confidence > 0.8 ? 'high' : 'medium',
@@ -229,22 +228,22 @@ Enhanced hint:`;
    * Frame miniquest recommendations in Ayla's voice
    */
   private async frameMiniquestInAylaVoice(
-    recommendation: AIMiniquestRecommendation,
-    context: UnifiedAIContext
+    recommendation: AIMiniquestRecommendation
   ): Promise<string> {
     const prompt = `Frame this miniquest recommendation in Ayla's cosmic, wise voice:
 
 QUEST: ${recommendation.questId}
 REASONING: ${recommendation.reasoning}
 HINTS: ${recommendation.hints.join(', ')}
-PLAYER LOCATION: ${context.currentRoom.title}
+PLAYER LOCATION: (context_removed)
 
 Transform this into Ayla's style - cosmic, guiding, mysterious but helpful. Reference "threads of possibility" or "cosmic purpose" naturally. Keep under 150 characters.
 
 Ayla's guidance:`;
 
     try {
-      const aylaVoice = await groqAI.generateAIResponse(prompt, 'ayla_framing', context.gameState, 200);
+      const gameState: any = (MiniquestController.getInstance() as any).getGameState?.() || {};
+      const aylaVoice = await groqAI.generateAIResponse(prompt, 'ayla_framing', gameState, 200);
       if (aylaVoice && aylaVoice.length > 20) {
         return aylaVoice;
       }
@@ -311,7 +310,7 @@ Ayla's guidance:`;
     aylaResponse: AIGuidanceResponse | null,
     miniquestResponse: AIGuidanceResponse | null,
     dynamicResponse: AIGuidanceResponse | null,
-    context: UnifiedAIContext
+  // context: UnifiedAIContext
   ): AIGuidanceResponse | null {
     const responses = [aylaResponse, miniquestResponse, dynamicResponse].filter(Boolean);
     if (responses.length === 0) return null;
@@ -354,75 +353,7 @@ Ayla's guidance:`;
   /**
    * Dynamic content generation
    */
-  private async generateDynamicContent(
-    content: DynamicContent,
-    context: UnifiedAIContext
-  ): Promise<string | null> {
-    const prompt = `Generate dynamic ${content.type} for the current context:
-
-ROOM: ${context.currentRoom.title}
-DESCRIPTION: ${Array.isArray(context.currentRoom.description) ? context.currentRoom.description[0] : context.currentRoom.description}
-RECENT PLAYER ACTIONS: ${context.recentCommands.slice(-3).join(', ')}
-TIME IN ROOM: ${Math.floor(context.timeInRoom / 1000)} seconds
-
-Generate subtle, atmospheric content that enhances immersion without disrupting gameplay. Keep it under 100 characters.
-
-Dynamic content:`;
-
-    try {
-      return await groqAI.generateAIResponse(prompt, 'dynamic_content', context.gameState, 150);
-    } catch (error) {
-      console.warn('[Unified AI] Dynamic content generation failed:', error);
-      return null;
-    }
-  }
-
-  private shouldTriggerDynamicContent(content: DynamicContent, context: UnifiedAIContext): boolean {
-    if (content.lastTriggered && Date.now() - content.lastTriggered < content.cooldown) {
-      return false;
-    }
-
-    if (!content.conditions(context.gameState)) {
-      return false;
-    }
-
-    return content.triggers.some(trigger => 
-      context.recentCommands.some(cmd => cmd.includes(trigger))
-    );
-  }
-
-  private async createNewDynamicContent(context: UnifiedAIContext): Promise<AIGuidanceResponse | null> {
-    const prompt = `Create subtle atmospheric content for this room:
-
-ROOM: ${context.currentRoom.title}
-PLAYER BEHAVIOR: ${context.recentCommands.slice(-3).join(', ')}
-TIME SPENT: ${Math.floor(context.timeInRoom / 1000)} seconds
-
-Generate a brief, atmospheric observation that adds to immersion. Could be environmental details, subtle sounds, or mood descriptions. Keep under 80 characters.
-
-Atmospheric content:`;
-
-    try {
-      const content = await groqAI.generateAIResponse(prompt, 'atmospheric', context.gameState, 120);
-      if (content && content.length > 10) {
-        return {
-          type: 'dynamic_content',
-          priority: 'low',
-          content: `*${content}*`,
-          source: 'dynamic_generator',
-          metadata: {
-            confidence: 0.5,
-            reasoning: 'Atmospheric enhancement',
-            category: 'ambient'
-          }
-        };
-      }
-    } catch (error) {
-      console.warn('[Unified AI] Atmospheric content failed:', error);
-    }
-
-    return null;
-  }
+  // (Removed unused dynamic content generation helpers to reduce unused symbol noise)
 
   /**
    * Configuration methods

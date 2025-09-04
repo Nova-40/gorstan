@@ -18,7 +18,6 @@
 // Handles NPC logic, memory, or rendering.
 
 import React, { useState, useEffect } from 'react';
-import { NPC } from '../types/NPCTypes';
 
 type NPCDialogueProps = {
   npc?: string | null;

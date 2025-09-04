@@ -4,13 +4,26 @@
 */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, X, Send, User, Users } from 'lucide-react';
+import { RetroModal } from './ui/RetroModal';
+import { Button } from './ui/Button';
+import { Send } from 'lucide-react';
 import type { NPC } from '../types/NPCTypes';
 import { useGameState } from '../state/gameState';
 import { formatDialogue } from '../utils/playerNameUtils';
 import { getEnhancedNPCResponse } from '../utils/enhancedNPCResponse';
 import { groqAI } from '../services/groqAI';
-import { GroupChatManager } from '../npc/groupChatLogic';
+// GroupChatManager dynamically imported to avoid pulling group chat logic into main bundle prematurely
+let GroupChatManagerRef: any = null;
+async function ensureGroupChatManager() {
+  if (!GroupChatManagerRef) {
+    try {
+      GroupChatManagerRef = (await import('../npc/groupChatLogic')).GroupChatManager;
+    } catch (e) {
+      console.warn('[EnhancedNPCConsole] Failed to load GroupChatManager', e);
+    }
+  }
+  return GroupChatManagerRef;
+}
 
 interface EnhancedDialogueMessage {
   id: string;
@@ -60,38 +73,17 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
   const primaryNpc: NPC | undefined = realNpcs.find(npc => npc.id === activeNpcId) || realNpcs[0];
 
   // Check if player is redacted
-  const isPlayerRedacted = state.flags?.playerIsRedacted || false;
+  // Reserved for future redacted player presentation logic
+  // const isPlayerRedacted = state.flags?.playerIsRedacted || false;
 
   // NPC image mapping
-  const npcImages: Record<string, string> = {
-    'dominic': '/images/Dominic.png',
-    'chef': '/images/Chef.png',
-    'albie': '/images/Albie.png',
-    'polly': '/images/Polly.png',
-    'mr_wendell': '/images/MrWendell.png',
-    'mr wendell': '/images/MrWendell.png',
-    'wendell': '/images/MrWendell.png',
-    'ayla': '/images/Ayla.png',
-    'al': '/images/Al.png',
-    'librarian': '/images/Librarian.png',
-    'morthos': '/images/Morthos.png'
-  };
+  // Removed unused npcImages mapping (not used in simplified rendering)
 
   // Get NPC avatar
-  const getNpcAvatar = (npcId: string): string => {
-    const npc = realNpcs.find(n => n.id === npcId);
-    const avatarUrl = npc?.portrait || npcImages[npcId] || '/images/fallback.png';
-    
-    // Debug logging to help identify issues
-    if (!npc?.portrait && !npcImages[npcId]) {
-      console.log(`[NPC Avatar] No image found for NPC: ${npcId}, using fallback`);
-    }
-    
-    return avatarUrl;
-  };
+  // Removed unused getNpcAvatar helper after UI simplification
 
   // Get speaker badge color based on NPC role in group conversations
-  const getSpeakerBadgeColor = (npcId: string, context?: string): string => {
+  const getSpeakerBadgeColor = (npcId: string): string => {
     if (!isGroupConversation) return 'var(--accent-color)';
     
     switch (npcId) {
@@ -115,138 +107,81 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
   };
 
   // Add competitive context styling
-  const getCompetitiveMarker = (npcId: string, context?: string): string => {
-    if (!isGroupConversation || context !== 'competitive') return '';
-    
-    switch (npcId) {
-      case 'al':
-        return '🏛️'; // Government/bureaucracy symbol
-      case 'morthos':
-        return '🌑'; // Dark moon/shadow symbol
-      default:
-        return '';
-    }
-  };
+  // Removed unused competitive marker helper
 
-  // Enhanced speaker identification for group conversations
-  const getSpeakerDisplay = (message: EnhancedDialogueMessage): React.ReactElement => {
-    if (message.speaker === 'player') {
-      return (
-        <div className="speaker-info player">
-          <User size={16} className="speaker-icon" />
-          <span className="speaker-name">{playerName}</span>
-        </div>
-      );
-    }
-
-    const npc = realNpcs.find(n => n.id === message.npcId);
-    const competitiveMarker = getCompetitiveMarker(message.npcId!, message.speakerContext);
-    const badgeColor = getSpeakerBadgeColor(message.npcId!);
-
-    return (
-      <div className="speaker-info npc">
-        <div 
-          className="npc-avatar-mini"
-          style={{ 
-            backgroundImage: `url(${getNpcAvatar(message.npcId!)}), url(/images/fallback.png)`,
-            borderColor: badgeColor
-          }}
-          title={`${message.npcName || npc?.name || 'Unknown'} avatar`}
-        />
-        <span 
-          className="speaker-name" 
-          style={{ color: badgeColor }}
-          data-npc={message.npcId}
-        >
-          {competitiveMarker} {message.npcName || npc?.name || 'Unknown'}
-        </span>
-        {isGroupConversation && (
-          <span className="group-indicator">
-            <Users size={12} />
-          </span>
-        )}
-      </div>
-    );
-  };
+  // Removed unused getSpeakerDisplay helper (rendering logic is inline where needed)
 
   // Initialize conversation with greeting
   useEffect(() => {
-    if (isOpen && realNpcs.length > 0) {
-      if (isGroupConversation && realNpcs.length > 1) {
-        // Group conversation initialization
-        const groupGreeting: EnhancedDialogueMessage = {
-          id: `group-greeting-${Date.now()}`,
-          speaker: 'npc',
-          npcId: 'system',
-          npcName: 'Narrator',
-          text: `You encounter ${realNpcs.map(npc => npc.name).join(' and ')}. They notice your presence and turn toward you.`,
-          timestamp: Date.now(),
-          isGroupConversation: true,
-          speakerContext: 'neutral'
-        };
-        setMessages([groupGreeting]);
-
-        // Initialize group chat behaviors
-        const groupContext = {
-          state,
-          dispatch,
-          roomId: state.currentRoomId,
-          npcsInRoom: realNpcs
-        };
-        
-        // Check if this zone should force group chat mode
-        const currentZone = state.roomMap?.[state.currentRoomId]?.zone || '';
-        if (GroupChatManager.shouldForceGroupChat(state.currentRoomId, currentZone)) {
-          dispatch({ type: 'SET_FLAG', payload: { flag: 'forceGroupChat', value: true } });
-        }
-        
-        // Trigger initial group behaviors after short delay
-        setTimeout(() => {
-          GroupChatManager.orchestrateGroupChat(groupContext);
-        }, 2000);
-
-        // Add individual NPC reactions after a delay
-        setTimeout(() => {
-          npcs.forEach((npc, index) => {
-            setTimeout(() => {
-              const greeting = getGroupGreeting(npc.id);
-              const reactionMessage: EnhancedDialogueMessage = {
-                id: `reaction-${npc.id}-${Date.now()}`,
-                speaker: 'npc',
-                npcId: npc.id,
-                npcName: npc.name,
-                text: greeting,
-                timestamp: Date.now() + index * 100,
-                isGroupConversation: true,
-                speakerContext: getConversationContext(npc.id)
-              };
-              setMessages(prev => [...prev, reactionMessage]);
-            }, index * 1500);
-          });
-        }, 1000);
-      } else {
-        // Single NPC conversation
-        const npc = primaryNpc;
-        if (npc) {
-          const greeting = getSingleGreeting(npc.id);
-          const formattedGreeting = formatDialogue(greeting, state);
-          const welcomeMessage: EnhancedDialogueMessage = {
-            id: `greeting-${Date.now()}`,
+    let cancelled = false;
+    (async () => {
+      if (isOpen && realNpcs.length > 0) {
+        if (isGroupConversation && realNpcs.length > 1) {
+          const groupGreeting: EnhancedDialogueMessage = {
+            id: `group-greeting-${Date.now()}`,
             speaker: 'npc',
-            npcId: npc.id,
-            npcName: npc.name,
-            text: formattedGreeting,
+            npcId: 'system',
+            npcName: 'Narrator',
+            text: `You encounter ${realNpcs.map(npc => npc.name).join(' and ')}. They notice your presence and turn toward you.`,
             timestamp: Date.now(),
-            isGroupConversation: false,
+            isGroupConversation: true,
             speakerContext: 'neutral'
           };
-          setMessages([welcomeMessage]);
+          if (!cancelled) setMessages([groupGreeting]);
+
+          const groupContext = { state, dispatch, roomId: state.currentRoomId, npcsInRoom: realNpcs };
+          const currentZone = state.roomMap?.[state.currentRoomId]?.zone || '';
+          const GroupChatManager = await ensureGroupChatManager();
+          if (!cancelled && GroupChatManager && GroupChatManager.shouldForceGroupChat(state.currentRoomId, currentZone)) {
+            dispatch({ type: 'SET_FLAG', payload: { flag: 'forceGroupChat', value: true } });
+          }
+          // Initial orchestrated behavior
+          setTimeout(() => { if (!cancelled) GroupChatManager && GroupChatManager.orchestrateGroupChat(groupContext); }, 2000);
+          // Individual NPC reactions
+            setTimeout(() => {
+              if (cancelled) return;
+              npcs.forEach((npc, index) => {
+                setTimeout(() => {
+                  if (cancelled) return;
+                  const greeting = getGroupGreeting(npc.id);
+                  const reactionMessage: EnhancedDialogueMessage = {
+                    id: `reaction-${npc.id}-${Date.now()}`,
+                    speaker: 'npc',
+                    npcId: npc.id,
+                    npcName: npc.name,
+                    text: greeting,
+                    timestamp: Date.now() + index * 100,
+                    isGroupConversation: true,
+                    speakerContext: getConversationContext(npc.id)
+                  };
+                  setMessages(prev => [...prev, reactionMessage]);
+                }, index * 1500);
+              });
+            }, 1000);
+        } else {
+          const npc = primaryNpc;
+          if (npc) {
+            const greeting = getSingleGreeting();
+            const formattedGreeting = formatDialogue(greeting, state);
+            const welcomeMessage: EnhancedDialogueMessage = {
+              id: `greeting-${Date.now()}`,
+              speaker: 'npc',
+              npcId: npc.id,
+              npcName: npc.name,
+              text: formattedGreeting,
+              timestamp: Date.now(),
+              isGroupConversation: false,
+              speakerContext: 'neutral'
+            };
+            if (!cancelled) setMessages([welcomeMessage]);
+          }
         }
+      } else {
+        if (!cancelled) setMessages([]);
       }
-    } else {
-      setMessages([]);
-    }
-  }, [npcs, isOpen, isGroupConversation]);
+    })();
+    return () => { cancelled = true; };
+  }, [npcs, isOpen, isGroupConversation, realNpcs.length, primaryNpc, state.currentRoomId]);
 
   // Get appropriate greeting based on conversation type
   const getGroupGreeting = (npcId: string): string => {
@@ -262,10 +197,7 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
     }
   };
 
-  const getSingleGreeting = (npcId: string): string => {
-    // Use existing greeting system for single conversations
-    return "Hello there! How can I assist you today?";
-  };
+  const getSingleGreeting = (): string => "Hello there! How can I assist you today?";
 
   const getConversationContext = (npcId: string): 'competitive' | 'cooperative' | 'neutral' => {
     if (!isGroupConversation) return 'neutral';
@@ -386,7 +318,11 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
         roomId: state.currentRoomId,
         npcsInRoom: realNpcs
       };
-      GroupChatManager.orchestrateGroupChat(groupContext, trimmed);
+      ensureGroupChatManager().then(GroupChatManager => {
+        if (GroupChatManager) {
+          GroupChatManager.orchestrateGroupChat(groupContext, trimmed);
+        }
+      });
     }
 
     // Simulate NPC response after delay
@@ -558,7 +494,7 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
         console.log(`[Enhanced NPC Console] ✅ Typing state cleared for successful group response from ${respondingNpc.name}`);
 
         // Trigger potential inter-NPC exchange
-        if (shouldTriggerInterNPCExchange(respondingNpcId, playerMessage)) {
+  if (shouldTriggerInterNPCExchange(respondingNpcId)) {
           setTimeout(async () => {
             const reactionNpcId = getReactionNpcId(respondingNpcId);
             if (reactionNpcId) {
@@ -920,7 +856,7 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
   };
 
   // Determine if an inter-NPC exchange should trigger
-  const shouldTriggerInterNPCExchange = (speakingNpcId: string, playerMessage: string): boolean => {
+  const shouldTriggerInterNPCExchange = (speakingNpcId: string): boolean => {
     if (!isGroupConversation) return false;
     
     // Al and Morthos competitive dynamics
@@ -998,114 +934,88 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
     : `Conversation with ${primaryNpc?.name}`;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal enhanced-npc-console" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <div className="console-title">
-            <MessageCircle size={20} />
-            <span>{consoleTitle}</span>
-            {isGroupConversation && (
-              <div className="group-indicators">
-                {realNpcs.map(npc => (
-                  <div 
-                    key={npc.id}
-                    className="participant-avatar"
-                    style={{ 
-                      backgroundImage: `url(${getNpcAvatar(npc.id)}), url(/images/fallback.png)`,
-                      borderColor: getSpeakerBadgeColor(npc.id)
-                    }}
-                    title={npc.name}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-          <button onClick={onClose} className="close-btn">
-            <X size={20} />
-          </button>
-        </div>
-
-        <div className="modal-body enhanced-conversation">
-          <div className="messages-container">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`enhanced-message ${message.speaker} ${message.speakerContext || ''}`}
-                data-npc-id={message.speaker === 'npc' ? message.npcId : undefined}
-                style={message.speaker === 'npc' ? {
-                  borderLeftColor: getSpeakerBadgeColor(message.npcId!)
-                } : undefined}
-              >
-                <div className="message-header">
-                  {getSpeakerDisplay(message)}
-                  <span className="timestamp">
-                    {new Date(message.timestamp).toLocaleTimeString()}
-                  </span>
-                </div>
-                <div className="message-text">{message.text}</div>
-              </div>
-            ))}
-            {isTyping && (
-              <div className="enhanced-message npc typing">
-                <div className="message-header">
-                  <div className="speaker-info npc">
-                    {typingNpcId && (
-                      <div 
-                        className="npc-avatar-mini"
-                        style={{ 
-                          backgroundImage: `url(${getNpcAvatar(typingNpcId)}), url(/images/fallback.png)`,
-                          borderColor: getSpeakerBadgeColor(typingNpcId)
-                        }}
-                        title={`${realNpcs.find(n => n.id === typingNpcId)?.name} is typing...`}
-                      />
-                    )}
-                    <span className="speaker-name">
-                      {typingNpcId ? realNpcs.find(n => n.id === typingNpcId)?.name : 'Someone'} is typing...
-                    </span>
-                  </div>
-                </div>
-                <div className="message-text typing-indicator">
-                  <span></span><span></span><span></span>
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-
-          <div className="input-area">
-            <div className="input-container">
-              <textarea
-                ref={inputRef}
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder={isGroupConversation 
-                  ? `Address ${realNpcs.map(npc => npc.name).join(', ')} or ask a general question...`
-                  : `Talk to ${primaryNpc?.name}...`
-                }
-                className="message-input full-width"
-                rows={2}
-                disabled={isTyping}
-              />
-              <button
-                onClick={handleSendMessage}
-                disabled={!inputMessage.trim() || isTyping}
-                className="send-btn"
-              >
-                <Send size={18} />
-              </button>
+    <RetroModal
+      isOpen
+      onClose={onClose}
+      title={consoleTitle}
+      subtitle={isGroupConversation ? `${realNpcs.length} participants` : primaryNpc?.description || 'Available for conversation'}
+      widthClass="max-w-5xl"
+      footer={(
+        <>
+          {isGroupConversation && (
+            <span className="panel-subtle mr-auto text-[10px]">Address NPCs by name for targeted responses</span>
+          )}
+          {!isGroupConversation && <span className="panel-subtle mr-auto text-[10px]">Enter to send • Shift+Enter newline</span>}
+          <Button size="sm" variant="secondary" onClick={onClose}>Close</Button>
+        </>
+      )}
+    >
+      {isGroupConversation && (
+        <div className="flex flex-wrap gap-2 mb-2">
+          {realNpcs.map(npc => (
+            <div key={npc.id} className="flex items-center gap-1 px-2 py-1 border border-emerald-400/30 rounded-sm bg-black/40 text-[10px] font-mono" style={{borderColor: getSpeakerBadgeColor(npc.id)}}>
+              <span>{npc.name}</span>
             </div>
-            {isGroupConversation && (
-              <div className="conversation-hints">
-                <small>
-                  💡 Tip: Address NPCs by name (e.g., "Al, what do you think?") or ask topic-based questions
-                </small>
-              </div>
-            )}
-          </div>
+          ))}
         </div>
+      )}
+      <div className="h-80 overflow-y-auto space-y-3 pr-1">
+        {messages.map(message => (
+          <div
+            key={message.id}
+            className={`p-2 rounded-sm border text-[11px] font-mono leading-snug enhanced-msg ${message.speaker}`}
+            style={message.speaker === 'npc' ? { borderLeft: `3px solid ${getSpeakerBadgeColor(message.npcId!)}` } : undefined}
+            data-npc-id={message.npcId}
+          >
+            <div className="flex items-center justify-between mb-1 opacity-70">
+              {message.speaker === 'npc' ? (
+                <span>{realNpcs.find(n => n.id === message.npcId)?.name}{message.speakerContext === 'competitive' && ' ⚔️'}</span>
+              ) : (
+                <span>{playerName}</span>
+              )}
+              <span>{new Date(message.timestamp).toLocaleTimeString()}</span>
+            </div>
+            <div className="whitespace-pre-wrap">{message.text}</div>
+          </div>
+        ))}
+        {isTyping && (
+          <div className="p-2 rounded-sm border border-emerald-400/30 bg-black/30 text-console text-[11px] font-mono">
+            <div className="flex items-center justify-between mb-1 opacity-70">
+              <span>{typingNpcId ? realNpcs.find(n => n.id === typingNpcId)?.name : 'Someone'} typing...</span>
+              <span>...</span>
+            </div>
+            <div className="flex gap-1">
+              <span className="w-2 h-2 bg-emerald-400/60 animate-pulse rounded-full" />
+              <span className="w-2 h-2 bg-emerald-400/40 animate-pulse rounded-full" />
+              <span className="w-2 h-2 bg-emerald-400/20 animate-pulse rounded-full" />
+            </div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
       </div>
-    </div>
+      <div className="flex gap-2 items-start">
+        <textarea
+          ref={inputRef}
+          value={inputMessage}
+          onChange={(e) => setInputMessage(e.target.value)}
+          onKeyDown={handleKeyPress}
+          placeholder={isGroupConversation
+            ? `Address ${realNpcs.map(npc => npc.name).join(', ')} or ask a general question...`
+            : `Talk to ${primaryNpc?.name}...`
+          }
+          rows={3}
+          className="flex-1 h-24 bg-black/40 border border-emerald-400/30 rounded-sm p-2 text-xs font-mono focus:outline-none focus:border-emerald-400/60 resize-none"
+          disabled={isTyping}
+        />
+        <Button size="sm" onClick={handleSendMessage} disabled={!inputMessage.trim() || isTyping}>
+          <Send size={14} className="mr-1" />
+          {isTyping ? '...' : 'Send'}
+        </Button>
+      </div>
+      {isGroupConversation && (
+        <div className="text-[10px] font-mono opacity-60">💡 Address an NPC by name for a directed response</div>
+      )}
+    </RetroModal>
   );
 };
 

@@ -212,10 +212,10 @@ export function wanderNPC(npcId: string, state: LocalGameState) {
 
 // --- Function: initializeWanderingNPCs ---
 export function initializeWanderingNPCs(
-  state: LocalGameState,
+  _state: LocalGameState,
   dispatch: Dispatch<GameAction>
 ) {
-  for (const [npcId, npc] of npcRegistry.entries()) {
+  for (const npc of npcRegistry.values()) {
     if ((npc as NPC).shouldWander) {
       dispatch({
         type: 'ADD_NPC',

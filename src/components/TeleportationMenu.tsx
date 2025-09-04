@@ -17,11 +17,11 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Game module.
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-import { Button } from './button';
+import { Button } from './ui/Button';
 
-import { Room } from '../types/Room';
+// Removed unused Room import
 
 
 

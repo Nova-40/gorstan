@@ -2,10 +2,8 @@
 // Enhanced AI system for all NPCs - concise but powerful
 // Gorstan Game Beta 1 - Code License MIT
 
-import type { GameAction } from '../types/GameTypes';
 import type { LocalGameState } from '../state/gameState';
 import type { NPC } from '../types/NPCTypes';
-import type { Dispatch } from 'react';
 import { pickRandomOrFallback } from '../utils/random';
 
 // Core intelligence traits for different NPC archetypes
@@ -55,7 +53,6 @@ interface NPCMemoryEntry {
 class NPCIntelligenceEngine {
   private static instance: NPCIntelligenceEngine;
   private npcMemories = new Map<string, NPCMemoryEntry>();
-  private conversationPatterns = new Map<string, string[]>();
   
   static getInstance(): NPCIntelligenceEngine {
     if (!NPCIntelligenceEngine.instance) {
@@ -216,7 +213,7 @@ class NPCIntelligenceEngine {
     npc: NPC,
     memory: NPCMemoryEntry,
     profile: any,
-    input: string,
+  _input: string,
     intent: string,
     state: LocalGameState
   ): string {
@@ -236,7 +233,7 @@ class NPCIntelligenceEngine {
   }
   
   // Select base response template
-  private selectBaseResponse(npc: NPC, intent: string, memory: NPCMemoryEntry): string {
+  private selectBaseResponse(_npc: NPC, intent: string, memory: NPCMemoryEntry): string {
     const responses = {
       help: [
         "I'd be happy to assist you.",
@@ -276,7 +273,7 @@ class NPCIntelligenceEngine {
   }
   
   // Apply personality to response
-  private applyPersonality(response: string, profile: any, memory: NPCMemoryEntry): string {
+  private applyPersonality(response: string, profile: any, _memory: NPCMemoryEntry): string {
     switch (profile.responses) {
       case 'formal':
         return `*adjusts papers* ${response} Please allow me to provide the proper documentation.`;
@@ -352,10 +349,8 @@ class NPCIntelligenceEngine {
   }
   
   // Generate proactive conversation
-  generateProactiveConversation(npcId: string, npc: NPC, state: LocalGameState): string {
+  generateProactiveConversation(_npcId: string, npc: NPC, _state: LocalGameState): string {
     const profile = this.getIntelligenceProfile(npc);
-    const playerId = state.player?.name || 'Player';
-    const memory = this.getMemory(npcId, playerId);
     
     const proactiveMessages = {
       bureaucrat: "I have some additional paperwork that might interest you.",

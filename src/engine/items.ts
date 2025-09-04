@@ -653,22 +653,7 @@ You know too much.`,
   }
 ];
 
-
-const ITEM_TRANSFORMATIONS: ItemTransformation[] = [
-  {
-    sourceId: "medallion",
-    targetId: "ancient_key",
-    condition: "mystical_energy_activated",
-    trigger: "location",
-    reversible: false
-  },
-  {
-    sourceId: "coffee",
-    targetId: "empty_cup",
-    trigger: "use",
-    reversible: false
-  }
-];
+// Removed unused ITEM_TRANSFORMATIONS (transformation logic not currently active)
 
 
 // Variable declaration
@@ -856,7 +841,7 @@ export function useItem(
 function processItemEffect(
   effect: ItemEffect,
   result: ItemUseResult,
-  playerState: any
+  _playerState: any
 ): void {
   switch (effect.type) {
     case 'message':

@@ -8,6 +8,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './TrialsInterface.css';
+import { TrialsHUD } from './TrialsHUD';
+import { SceneTransition } from '../design/motion/SceneTransition';
+import { RetroBar } from '../components/ui/RetroBar';
 
 interface Position {
   x: number;
@@ -40,8 +43,20 @@ interface RestRock {
   cooldownRemaining: number;
 }
 
+interface MovingRock {
+  id: number;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  size: number;
+  angle: number;
+  rotationSpeed: number;
+}
+
 interface TrialsGameState {
-  phase: 'rock-field' | 'random-rocks' | 'mushroom-field' | 'stream-reset' | 'cave-maze';
+  // Combined union of all current / planned phases (keep in sync with useTrialsGameState)
+  phase: 'rock-field' | 'random-rocks' | 'mushroom-field' | 'climb-ascent' | 'cave-horrors' | 'stream-reset' | 'cave-maze';
   phaseName: string;
   phaseProgress: number;
   playerPos: Position;
@@ -51,6 +66,7 @@ interface TrialsGameState {
   creatures: Creature[];
   mushrooms: Mushroom[];
   restRocks: RestRock[];
+  movingRocks: MovingRock[];
   streamActive: boolean;
   timeRemaining: number;
   score: number;
@@ -81,7 +97,7 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
   const [showHints, setShowHints] = useState(false);
   const [selectedTile, setSelectedTile] = useState<Position | null>(null);
   const [cameraOffset, setCameraOffset] = useState({ x: 0, y: 0 });
-  const [showMiniMap, setShowMiniMap] = useState(true);
+  const [showMiniMap] = useState(true); // minimap toggle not yet implemented; keep state for layout
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationFrameRef = useRef<number | undefined>(undefined);
 
@@ -240,6 +256,43 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
       }
     });
 
+    // Render moving rocks (Asteroids-style) during rock-field phase
+    if (gameState.phase === 'rock-field' && gameState.movingRocks) {
+      gameState.movingRocks.forEach(rock => {
+        const x = rock.x * tileSize - cameraOffset.x;
+        const y = rock.y * tileSize - cameraOffset.y;
+        if (x >= -tileSize && x <= canvas.width && y >= -tileSize && y <= canvas.height) {
+          ctx.save();
+          ctx.translate(x + tileSize/2, y + tileSize/2);
+          ctx.rotate(rock.angle);
+          const radius = rock.size * (tileSize/2);
+          // Rock body
+          const gradient = ctx.createRadialGradient(0,0, radius*0.2,0,0,radius);
+          gradient.addColorStop(0,'#777');
+          gradient.addColorStop(0.6,'#555');
+          gradient.addColorStop(1,'#333');
+          ctx.fillStyle = gradient;
+          ctx.beginPath();
+          // Irregular polygon to feel organic
+          const points = 6 + Math.floor(rock.size * 2);
+          for (let i=0;i<points;i++) {
+            const ang = (i/points) * Math.PI*2;
+            const wobble = 0.7 + Math.sin(rock.id*13 + ang*3 + Date.now()*0.0007)*0.15;
+            const px = Math.cos(ang) * radius * wobble;
+            const py = Math.sin(ang) * radius * wobble;
+            if (i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+          }
+          ctx.closePath();
+          ctx.fill();
+          // Edge highlight
+          ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          ctx.restore();
+        }
+      });
+    }
+
     // Render creatures with enhanced aggression visual effects
     gameState.creatures.forEach((creature, index) => {
       const x = creature.x * tileSize - cameraOffset.x;
@@ -343,35 +396,20 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
 
   return (
     <div className="trials-interface">
-      {/* Header */}
-      <div className="trials-header">
-        <div className="phase-info">
-          <h2 className="phase-title">{gameState.phaseName}</h2>
-          <div className="phase-progress">
-            <div 
-              className="progress-bar" 
-              style={{ width: `${gameState.phaseProgress}%` }}
-            />
-          </div>
-        </div>
-        
-        <div className="game-stats">
-          <div className="stat">
-            <span className="stat-label">Time Remaining:</span>
-            <span className="stat-value">{(gameState.timeRemaining / 60).toFixed(2)} min</span>
-          </div>
-          <div className="stat">
-            <span className="stat-label">Score:</span>
-            <span className="stat-value">{gameState.score}</span>
-          </div>
-        </div>
-
-        <div className="controls">
-          <button onClick={isPaused ? onResume : onPause} className="control-btn">
-            {isPaused ? '▶️' : '⏸️'}
-          </button>
-          <button onClick={onQuit} className="control-btn">❌</button>
-        </div>
+      <TrialsHUD
+        timeRemaining={gameState.timeRemaining}
+        health={gameState.playerHealth}
+        energy={gameState.playerEnergy}
+        stamina={gameState.playerStamina}
+        phase={gameState.phaseName}
+        phaseProgress={gameState.phaseProgress}
+        objective={gameState.currentObjective}
+        dangerLevel={gameState.creatures.length > 0 ? Math.min(1, gameState.creatures.filter(c=>c.aggressive).length / 5) : 0}
+      />
+      {/* Controls (compact) */}
+      <div style={{ position: 'fixed', top: 8, right: 12, zIndex: 555, display: 'flex', gap: 8 }}>
+        <button onClick={isPaused ? onResume : onPause} style={{ fontSize: 12, padding: '4px 8px', background: 'rgba(0,0,0,0.5)', border: '1px solid var(--color-border-secondary)', borderRadius: 6 }}>{isPaused ? 'Resume' : 'Pause'}</button>
+        <button onClick={onQuit} style={{ fontSize: 12, padding: '4px 8px', background: 'rgba(0,0,0,0.5)', border: '1px solid var(--color-border-secondary)', borderRadius: 6 }}>Quit</button>
       </div>
 
       {/* Main Game Area */}
@@ -386,16 +424,16 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
           />
           
           {isPaused && (
-            <div className="pause-overlay">
-              <div className="pause-menu">
-                <h3>Game Paused</h3>
-                <button onClick={onResume} className="menu-btn">Resume</button>
-                <button onClick={() => setShowHints(!showHints)} className="menu-btn">
-                  {showHints ? 'Hide' : 'Show'} Hints
-                </button>
-                <button onClick={onQuit} className="menu-btn">Quit to Menu</button>
+            <SceneTransition in={isPaused} kind="scale">
+              <div className="pause-overlay">
+                <div className="pause-menu">
+                  <h3>Game Paused</h3>
+                  <button onClick={onResume} className="menu-btn">Resume</button>
+                  <button onClick={() => setShowHints(!showHints)} className="menu-btn">{showHints ? 'Hide' : 'Show'} Hints</button>
+                  <button onClick={onQuit} className="menu-btn">Quit to Menu</button>
+                </div>
               </div>
-            </div>
+            </SceneTransition>
           )}
         </div>
 
@@ -403,40 +441,40 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
           {/* Player Status */}
           <div className="status-panel">
             <h3>Player Status</h3>
-            <div className="status-bars">
-              <div className="status-bar">
-                <label>Health</label>
-                <div className="bar">
-                  <div 
-                    className="bar-fill health" 
-                    style={{ width: `${gameState.playerHealth}%` }}
+            {(() => {
+              const healthIntent = gameState.playerHealth <= 25 ? 'danger' : gameState.playerHealth <= 50 ? 'warning' : 'success';
+              const energyIntent = gameState.playerEnergy <= 20 ? 'danger' : gameState.playerEnergy <= 50 ? 'warning' : 'info';
+              const staminaIntent = gameState.playerStamina <= 20 ? 'danger' : gameState.playerStamina <= 50 ? 'warning' : 'success';
+              return (
+                <div className="status-bars condensed">
+                  <RetroBar
+                    value={gameState.playerHealth/100}
+                    label="HEALTH"
+                    intent={healthIntent as any}
+                    height={6}
+                    showValue
+                    aria-label={`Health ${gameState.playerHealth} percent`}
+                  />
+                  <RetroBar
+                    value={gameState.playerEnergy/100}
+                    label="ENERGY"
+                    intent={energyIntent as any}
+                    height={6}
+                    showValue
+                    aria-label={`Energy ${gameState.playerEnergy} percent`}
+                  />
+                  <RetroBar
+                    value={gameState.playerStamina/100}
+                    label="STAMINA"
+                    intent={staminaIntent as any}
+                    height={6}
+                    showValue
+                    aria-label={`Stamina ${gameState.playerStamina} percent`}
                   />
                 </div>
-                <span>{gameState.playerHealth}%</span>
-              </div>
-              
-              <div className="status-bar">
-                <label>Energy</label>
-                <div className="bar">
-                  <div 
-                    className="bar-fill energy" 
-                    style={{ width: `${gameState.playerEnergy}%` }}
-                  />
-                </div>
-                <span>{gameState.playerEnergy}%</span>
-              </div>
-              
-              <div className="status-bar">
-                <label>Stamina</label>
-                <div className="bar">
-                  <div 
-                    className="bar-fill stamina" 
-                    style={{ width: `${gameState.playerStamina}%` }}
-                  />
-                </div>
-                <span>{gameState.playerStamina}%</span>
-              </div>
-            </div>
+              );
+            })()}
+          
           </div>
 
           {/* Current Objective */}
@@ -513,6 +551,16 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
                     style={{
                       left: `${(rock.x / 40) * 100}%`,
                       top: `${(rock.y / 25) * 100}%`
+                    }}
+                  />
+                ))}
+                {gameState.movingRocks && gameState.phase === 'rock-field' && gameState.movingRocks.map(r => (
+                  <div
+                    key={`mr-${r.id}`}
+                    className="minimap-moving-rock"
+                    style={{
+                      left: `${(r.x / 40) * 100}%`,
+                      top: `${(r.y / 25) * 100}%`
                     }}
                   />
                 ))}

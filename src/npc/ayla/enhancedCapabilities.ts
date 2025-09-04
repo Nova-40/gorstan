@@ -27,7 +27,6 @@ interface ConversationContext {
 export class EnhancedAylaConversation {
   private static instance: EnhancedAylaConversation;
   private playerInteractionHistory: Map<string, any[]> = new Map();
-  private conversationMemory: Map<string, any> = new Map();
   
   static getInstance(): EnhancedAylaConversation {
     if (!EnhancedAylaConversation.instance) {
@@ -38,7 +37,7 @@ export class EnhancedAylaConversation {
   
   // Analyze current game state for intervention opportunities
   analyzeGameState(context: ConversationContext): AylaAnalysis {
-    const { recentMessages, currentRoom, npcsPresent, playerActions, gameState } = context;
+  const { recentMessages, currentRoom, npcsPresent, playerActions, gameState } = context;
     
     // Analyze player stuck level
     const playerStuckLevel = this.calculateStuckLevel(playerActions, currentRoom, gameState);
@@ -186,7 +185,7 @@ export class EnhancedAylaConversation {
   }
   
   // Generate meta-aware responses
-  private generateMetaResponse(analysis: AylaAnalysis, context: ConversationContext): string {
+  private generateMetaResponse(analysis: AylaAnalysis, _context: ConversationContext): string {
     const metaResponses = [
       "I can sense your frustration with the game mechanics. Remember, this is about exploration and discovery.",
       "Sometimes the best approach is to step back and consider what you haven't tried yet.",
@@ -204,7 +203,7 @@ export class EnhancedAylaConversation {
   }
   
   // Generate mediation responses for NPC conflicts
-  private generateMediationResponse(npcsPresent: string[], context: ConversationContext): string {
+  private generateMediationResponse(npcsPresent: string[], _context: ConversationContext): string {
     if (npcsPresent.includes('al') && npcsPresent.includes('morthos')) {
       const mediationResponses = [
         "*steps between Al and Morthos* Perhaps we should focus on helping our guest rather than our philosophical differences.",
@@ -222,7 +221,7 @@ export class EnhancedAylaConversation {
   }
   
   // Generate hint responses for stuck players
-  private generateHintResponse(currentRoom: string, context: ConversationContext): string {
+  private generateHintResponse(currentRoom: string, _context: ConversationContext): string {
     // Room-specific hints
     const roomHints: Record<string, string[]> = {
       'controlroom': [
@@ -253,7 +252,7 @@ export class EnhancedAylaConversation {
   }
   
   // Generate lore responses
-  private generateLoreResponse(currentRoom: string, context: ConversationContext): string {
+  private generateLoreResponse(_currentRoom: string, _context: ConversationContext): string {
     const loreResponses = [
       "The multiverse is vast and full of interconnected realities. Each room is a window into different possibilities.",
       "NPCs like Al and Morthos represent different philosophies of existence - order versus chaos, structure versus freedom.",
@@ -267,7 +266,7 @@ export class EnhancedAylaConversation {
   }
   
   // Generate general guidance responses
-  private generateGuidanceResponse(playerInput: string, context: ConversationContext): string {
+  private generateGuidanceResponse(playerInput: string, _context: ConversationContext): string {
     const input = playerInput.toLowerCase();
     
     // Respond to specific topics
@@ -375,7 +374,7 @@ export class EnhancedAylaConversation {
 export function getEnhancedAylaConversation(
   playerInput: string,
   state: LocalGameState,
-  dispatch: Dispatch<GameAction>
+  _dispatch: Dispatch<GameAction>
 ): string {
   const ayla = EnhancedAylaConversation.getInstance();
   

@@ -17,7 +17,7 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Handles NPC logic, memory, or rendering.
 
-import { NPC } from '../types/NPCTypes';
+// Removed unused NPC import
 
 
 
@@ -533,33 +533,6 @@ function checkLineConditions(conditions: any, context: IdleLineContext): boolean
 
 
 
-// --- Function: selectWeightedLine ---
-function selectWeightedLine(lines: IdleLine[]): IdleLine {
-  try {
-    if (lines.length === 0) {
-      throw new Error('No lines provided for selection');
-    }
-
-    const totalWeight = lines.reduce((sum, line) => sum + (line.weight || 1), 0);
-    let random = Math.random() * totalWeight;
-
-    for (const line of lines) {
-      random -= (line.weight || 1);
-      if (random <= 0) {
-        return line;
-      }
-    }
-
-    
-  const last = lines[lines.length - 1];
-  if (last) return last;
-  // At this point lines.length === 0 already handled earlier, but add fallback
-  return { text: '...', weight: 1 } as IdleLine;
-  } catch (error) {
-    console.error('[NPCIdleLines] Error selecting weighted line:', error);
-    return lines[0] || { text: "...", weight: 1 };
-  }
-}
 
 
 

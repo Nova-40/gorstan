@@ -17,15 +17,16 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // User interface panel display.
 
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { DemoModeService } from '@/services/DemoModeService';
+import { track } from '@/lib/analytics';
 import { useGameState } from '../../state/gameState';
-import { Room } from '../../types/Room';
 
 // Variable declaration
 const DebugPanel = () => {
 // React state declaration
   const [isOpen, setIsOpen] = useState(false);
-  const { state, dispatch } = useGameState();
+  const { dispatch } = useGameState();
 
 // Variable declaration
   const handleRevealRooms = () => {
@@ -68,6 +69,24 @@ const DebugPanel = () => {
         <div className="debug-content">
           <h2>Debug Panel</h2>
           <button onClick={handleRevealRooms}>Reveal All Rooms</button>
+          <div style={{ marginTop: '1rem' }}>
+            <h3>Demo Mode</h3>
+            {DemoModeService.isActive() ? (
+              <button onClick={() => { DemoModeService.stop('debug'); }}>Stop Demo Mode</button>
+            ) : (
+              <>
+                {DemoModeService.listPacks().map(p => (
+                  <button key={p.id} onClick={() => { DemoModeService.start(p.id); track('demo_start', { source:'debug', pack:p.id }); }}>
+                    Start {p.title}
+                  </button>
+                ))}
+              </>
+            )}
+          </div>
+          <div style={{ marginTop: '1rem' }}>
+            <h3>Mini-Quests</h3>
+            <button onClick={() => track('mini_start', { questId:'atom-weaver', source:'debug' })}>Launch AtomWeaver (placeholder)</button>
+          </div>
           <button onClick={() => handleJump('controlnexus')}>Jump to Control Nexus</button>
           <button onClick={() => handleAddItem('coffee')}>Add Coffee</button>
           <button onClick={() => handleSummonNPC('polly')}>Call Polly</button>

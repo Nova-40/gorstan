@@ -19,7 +19,7 @@
 
 import { GameState } from '../types/GameTypes';
 
-import { NPC } from '../types/NPCTypes';
+// import { NPC } from '../types/NPCTypes'; // removed
 
 
 

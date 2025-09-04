@@ -769,9 +769,7 @@ function canTriggerIntervention(rule: InterventionRule, context: InterventionCon
 
 
 // --- Function: getPlayerReputation ---
-function getPlayerReputation(playerState: PlayerState): number {
-  return ConditionHelpers.getReputation(playerState);
-}
+// Removed unused getPlayerReputation wrapper (direct calls use ConditionHelpers)
 
 
 

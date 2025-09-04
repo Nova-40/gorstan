@@ -20,9 +20,8 @@
 import React, { useState, useEffect } from 'react';
 import { getRoomImagePath } from '../core/rooms/roomImages';
 
-import { Bone, Fish, Bot, UserCircle, ChefHat, Shield } from 'lucide-react';
+// Removed unused icon imports
 import { useGameState } from '../state/gameState';
-import type { RoomNPC } from '../types/Room';
 
 
 
@@ -37,32 +36,9 @@ import type { RoomNPC } from '../types/Room';
 
 
 
-const npcIconMap: Record<string, React.ElementType> = {
-  'mr wendell': Bone,
-  dominic: Fish,
-  ayla: Bot,
-  polly: UserCircle,
-  chef: ChefHat,
-  albie: Shield,
-};
+// Removed npcIconMap (NPC display component no longer used here)
 
-interface NpcDisplayProps {
-  npc: RoomNPC;
-}
-
-const NpcDisplay: React.FC<NpcDisplayProps> = ({ npc }) => {
-// Variable declaration
-  const Icon = npcIconMap[npc.name.toLowerCase()] || UserCircle;
-// Variable declaration
-  const description = npc.entryMessage || `${npc.name} is here.`;
-// JSX return block or main return
-  return (
-    <div className="npc-item flex items-center space-x-2" title={description}>
-      <Icon size={20} className="text-green-400" />
-      <span className="npc-name font-medium text-green-300">{npc.name}</span>
-    </div>
-  );
-};
+// Removed unused NpcDisplay component
 
 const RoomRenderer: React.FC = () => {
   const { state, dispatch } = useGameState();
@@ -188,7 +164,8 @@ const RoomRenderer: React.FC = () => {
       )}
       {room.music && (
         <audio autoPlay loop>
-          <source src={`/audio/${room.music}`} type="audio/mpeg" />
+          {/* Prefer /sounds/; fallback to /audio/ for legacy paths */}
+          <source src={`/sounds/${room.music}`} onError={(e) => { (e.currentTarget as HTMLSourceElement).src = `/audio/${room.music}`; }} type="audio/mpeg" />
         </audio>
       )}
     </div>

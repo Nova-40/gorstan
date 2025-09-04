@@ -344,7 +344,7 @@ function getValidAdjacentMoves(context: NPCMoveContext): string[] {
 /**
  * Check if a move between two rooms is legal
  */
-function isMoveLegal(fromRoom: string, toRoom: string, context: NPCMoveContext): boolean {
+function isMoveLegal(_fromRoom: string, toRoom: string, context: NPCMoveContext): boolean {
   // Check avoid list
   if (context.avoidRooms.includes(toRoom)) {
     return false;

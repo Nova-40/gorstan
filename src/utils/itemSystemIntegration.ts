@@ -21,7 +21,7 @@ import type { LocalGameState } from '../state/gameState';
 
 import { getItemById } from '../engine/items';
 
-import { Room } from '../types/Room';
+// Removed unused Room import
 
 import { validateGlobalItemManagement } from './globalItemValidator';
 

@@ -17,13 +17,12 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Renders room descriptions and image logic.
 
-import { handlePlayerDeath } from "./deathEngine";
-import { NPC } from '../types/NPCTypes';
+// Removed unused imports handlePlayerDeath, NPC
 import { Room } from '../types/Room';
 import type { GameState } from '../types/GameTypes';
 
 // --- Function: processRoomEntry ---
-export function processRoomEntry(room: Room, gameState: GameState): void {
+export function processRoomEntry(room: Room, _gameState: GameState): void {
 
   if (!room) {
     console.warn(`[RoomEngine] Room not found.`);

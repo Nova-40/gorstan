@@ -14,7 +14,7 @@
   Full licence terms: see EULA.md in the project root.
 */
 
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import FractalTeleportOverlay from "./FractalTeleportOverlay";
 import TrekTeleportOverlay from "./TrekTeleportOverlay";
 

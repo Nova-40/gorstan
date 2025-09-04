@@ -335,4 +335,27 @@ export const roomMiniquests: { roomId: string; miniquests: Miniquest[] }[] = [
   }
 ];
 
+// Superstring Collapse mini-quest registration (placeholder room association)
+roomMiniquests.push({
+  roomId: 'gorstanZone_gorstanhub',
+  miniquests: [
+    {
+      id: 'superstringCollapse',
+      title: 'Superstring Collapse',
+      description: 'Stabilise harmonic frequencies before entropy consumes the lattice.',
+      type: 'arcade',
+      rewardPoints: 40,
+      flagOnCompletion: 'mq_superstring_completed',
+      requiredItems: [],
+      requiredConditions: [],
+      triggerAction: 'play superstring',
+      triggerText: 'Stare into the vibrating lattice',
+      hint: 'Match frequencies. Avoid entropy.',
+      repeatable: false,
+      timeLimit: 0,
+      difficulty: 'medium'
+    }
+  ]
+});
+
 export default roomMiniquests;

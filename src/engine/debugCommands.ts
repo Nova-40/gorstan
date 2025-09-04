@@ -27,7 +27,7 @@ import { Dispatch } from 'react';
 export const debugCommands: Record<string, { description: string; handler: (gameState: LocalGameState, dispatch?: Dispatch<GameAction>) => any }> = {
   'debug morthos al': {
     description: 'Trigger the Morthos and Al encounter manually',
-    handler: (gameState: LocalGameState, dispatch?: Dispatch<GameAction>) => {
+  handler: (_gameState: LocalGameState, dispatch?: Dispatch<GameAction>) => {
       if (dispatch) {
         dispatch({ type: 'TRIGGER_MORTHOS_AL_ENCOUNTER', payload: null });
       }
@@ -44,7 +44,7 @@ export const debugCommands: Record<string, { description: string; handler: (game
   
   'debug npc movement': {
     description: 'Force NPC movement evaluation',
-    handler: (gameState: LocalGameState, dispatch?: Dispatch<GameAction>) => {
+  handler: (_gameState: LocalGameState, dispatch?: Dispatch<GameAction>) => {
       if (dispatch) {
         dispatch({ 
           type: 'SET_FLAG', 
@@ -87,7 +87,7 @@ export const debugCommands: Record<string, { description: string; handler: (game
 
   'debug reset encounter': {
     description: 'Reset the Morthos/Al encounter flags',
-    handler: (gameState: LocalGameState, dispatch?: Dispatch<GameAction>) => {
+  handler: (_gameState: LocalGameState, dispatch?: Dispatch<GameAction>) => {
       if (dispatch) {
         dispatch({ type: 'SET_FLAG', payload: { flag: 'hasMetMorthosAl', value: false } });
         dispatch({ type: 'SET_FLAG', payload: { flag: 'metMorthos', value: false } });

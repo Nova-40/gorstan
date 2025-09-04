@@ -20,11 +20,13 @@
 // Enhanced NPC conversation interface with images and dialogue
 
 import React, { useState, useEffect, useRef } from 'react';
+import { RetroModal } from './ui/RetroModal';
+import { Button } from './ui/Button';
 import { getNPCResponseWithState } from '../npcs/npcMemory';
 import { getEnhancedAylaResponse } from '../npc/ayla/aylaResponder';
 import { getEnhancedNPCResponse } from '../utils/enhancedNPCResponse';
 import { formatDialogue } from '../utils/playerNameUtils';
-import { MessageCircle, X, Send, User } from 'lucide-react';
+import { Send } from 'lucide-react';
 import type { NPC } from '../types/NPCTypes';
 import { useGameState } from '../state/gameState';
 
@@ -320,90 +322,75 @@ const NPCConsole: React.FC<NPCConsoleProps> = ({
   const npcImage = npcImages[npc.id.toLowerCase()] || npcImages[npc.name.toLowerCase()] || '/images/fallback.png';
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content npc-console">
-        <div className="modal-header">
-          <div className="npc-header-info">
-            <img 
-              src={npcImage} 
-              alt={npc.name}
-              className="npc-avatar"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = '/images/fallback.png';
-              }}
-            />
-            <div className="npc-details">
-              <h2 className="modal-title">
-                <MessageCircle className="modal-icon" />
-                Talking to {npc.name}
-              </h2>
-              <span className="npc-subtitle">{npc.description || 'Available for conversation'}</span>
-            </div>
-          </div>
-          <button className="modal-close" onClick={onClose}>
-            <X size={20} />
-          </button>
-        </div>
-
-        <div className="modal-body npc-conversation">
-          <div className="messages-container">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`message ${message.speaker} ${message.mood || ''}`}
-              >
-                <div className="message-header">
-                  <span className="speaker-name">
-                    {message.speaker === 'player' ? playerName : npc.name}
-                  </span>
-                  <span className="timestamp">
-                    {new Date(message.timestamp).toLocaleTimeString()}
-                  </span>
-                </div>
-                <div className="message-text">{message.text}</div>
-              </div>
-            ))}
-            {isTyping && (
-              <div className="message npc typing">
-                <div className="message-header">
-                  <span className="speaker-name">{npc.name}</span>
-                  <span className="timestamp">typing...</span>
-                </div>
-                <div className="message-text typing-indicator">
-                  <span></span><span></span><span></span>
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-
-          <div className="message-input-container">
-            <div className="input-group">
-              <User className="input-icon" size={16} />
-              <input
-                type="text"
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder={`Say something to ${npc.name}...`}
-                className="message-input"
-                maxLength={200}
-              />
-              <button
-                onClick={handleSendMessage}
-                disabled={!inputMessage.trim() || isTyping}
-                className="send-button"
-              >
-                <Send size={16} />
-              </button>
-            </div>
-            <div className="input-hints">
-              Try: "hello", "help", "goodbye" or ask them about their work
-            </div>
+    <RetroModal
+      isOpen
+      onClose={onClose}
+      title={`Talking to ${npc.name}`}
+      subtitle={npc.description || 'Available for conversation'}
+      widthClass="max-w-3xl"
+      footer={(
+        <>
+          <span className="panel-subtle mr-auto text-[10px]">Enter to send • Shift+Enter newline</span>
+          <Button size="sm" variant="secondary" onClick={onClose}>Close</Button>
+        </>
+      )}
+    >
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center gap-3 p-2 border border-emerald-400/30 rounded-sm bg-black/30">
+          <img
+            src={npcImage}
+            alt={npc.name}
+            className="w-14 h-14 object-contain rounded-sm bg-black/60"
+            onError={(e) => { (e.target as HTMLImageElement).src = '/images/fallback.png'; }}
+          />
+          <div className="text-xs font-mono opacity-80">
+            <p className="m-0">Mood: <span className="opacity-100">{npc.mood || 'neutral'}</span></p>
+            <p className="m-0">Messages: {messages.length}</p>
           </div>
         </div>
+        <div className="h-72 overflow-y-auto space-y-3 pr-1">
+          {messages.map(message => (
+            <div key={message.id} className={`p-2 rounded-sm border text-[11px] font-mono leading-snug ${message.speaker === 'player' ? 'border-emerald-400/50 bg-black/50 text-console-bright' : 'border-emerald-400/20 bg-black/30 text-console'}`}>
+              <div className="flex items-center justify-between mb-1 opacity-70">
+                <span>{message.speaker === 'player' ? playerName : npc.name}</span>
+                <span>{new Date(message.timestamp).toLocaleTimeString()}</span>
+              </div>
+              <div className="whitespace-pre-wrap">{message.text}</div>
+            </div>
+          ))}
+          {isTyping && (
+            <div className="p-2 rounded-sm border border-emerald-400/20 bg-black/30 text-console text-[11px] font-mono">
+              <div className="flex items-center justify-between mb-1 opacity-70">
+                <span>{npc.name}</span>
+                <span>typing...</span>
+              </div>
+              <div className="flex gap-1">
+                <span className="w-2 h-2 bg-emerald-400/60 animate-pulse rounded-full" />
+                <span className="w-2 h-2 bg-emerald-400/40 animate-pulse rounded-full" />
+                <span className="w-2 h-2 bg-emerald-400/20 animate-pulse rounded-full" />
+              </div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+        <div className="flex gap-2 items-start">
+          <textarea
+            value={inputMessage}
+            onChange={(e) => setInputMessage(e.target.value)}
+            onKeyDown={handleKeyPress}
+            placeholder={`Say something to ${npc.name}...`}
+            maxLength={400}
+            className="flex-1 h-24 bg-black/40 border border-emerald-400/30 rounded-sm p-2 text-xs font-mono focus:outline-none focus:border-emerald-400/60 resize-none"
+            disabled={isTyping}
+          />
+          <Button size="sm" onClick={handleSendMessage} disabled={!inputMessage.trim() || isTyping}>
+            <Send size={14} className="mr-1" />
+            {isTyping ? '...' : 'Send'}
+          </Button>
+        </div>
+        <div className="text-[10px] font-mono opacity-60">Try: "hello", "help", "goodbye" or ask them about their work</div>
       </div>
-    </div>
+    </RetroModal>
   );
 };
 

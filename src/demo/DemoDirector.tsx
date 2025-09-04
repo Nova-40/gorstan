@@ -79,7 +79,6 @@ export default function DemoDirector() {
     sh.attach({ state, dispatch });
 
     let cancelled = false;
-    let stepIndex = 0;
 
     async function runEnhancedDemo() {
       // Enhanced demo sequence with progressive disclosure

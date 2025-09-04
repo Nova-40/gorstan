@@ -19,8 +19,8 @@
 
 import { GameAction } from '../types/GameTypes';
 import { LocalGameState } from '../state/gameState';
-import { NPC } from '../types/NPCTypes';
-import { unlockAchievement } from '../logic/achievementEngine';
+let _libAch: ((id: string)=>void)|null = null;
+async function libUnlock(id: string){ try { if(!_libAch){ _libAch = (await import('../logic/achievementEngine')).unlockAchievement; } _libAch && _libAch(id);} catch(e){ console.warn('[librarianController] achievement load failed', e);} }
 import type { Room } from '../types/Room';
 
 
@@ -72,7 +72,7 @@ function isLibraryRoom(room: Room): boolean {
 // --- Function: evaluateLibrarianSpawn ---
 export function evaluateLibrarianSpawn(
   room: Room,
-  gameState: LocalGameState
+  _gameState: LocalGameState
 ): { shouldSpawn: boolean; reason: string } {
 
   if (!isLibraryRoom(room)) {
@@ -168,7 +168,7 @@ export function spawnLibrarian(
 
 // --- Function: handleGreasyNapkin ---
 function handleGreasyNapkin(
-  gameState: LocalGameState,
+  _gameState: LocalGameState,
   dispatch: React.Dispatch<GameAction>
 ): void {
 
@@ -333,7 +333,7 @@ function presentThreeDoorsPuzzle(dispatch: React.Dispatch<GameAction>): void {
 // --- Function: handleGuardQuestion ---
 export function handleGuardQuestion(
   question: string,
-  gameState: LocalGameState,
+  _gameState: LocalGameState,
   dispatch: React.Dispatch<GameAction>
 ): { handled: boolean; success: boolean } {
 
@@ -415,7 +415,7 @@ export function handleGuardQuestion(
 // --- Function: handleDoorChoice ---
 export function handleDoorChoice(
   doorColor: string,
-  gameState: LocalGameState,
+  _gameState: LocalGameState,
   dispatch: React.Dispatch<GameAction>
 ): { handled: boolean; success: boolean; teleport?: string } {
 
@@ -473,7 +473,7 @@ export function handleDoorChoice(
     dispatch({ type: 'SET_FLAG', payload: { key: 'hasSolvedLibraryPuzzle', value: true } });
 
     
-    unlockAchievement('puzzle_solver');
+  libUnlock('puzzle_solver');
 
     setTimeout(() => {
       dispatch({

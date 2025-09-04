@@ -17,13 +17,11 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Core game engine module.
 
-import * as MiniquestTracker from '../state/miniquestTracker';
 
 import MiniquestEngine from './miniquestEngine';
 
 import roomMiniquests from '../data/roomMiniquests';
 
-import { Miniquest } from '../types/GameTypes';
 
 
 

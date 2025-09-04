@@ -17,7 +17,7 @@
 
 // GameOverHandler.ts - Handles death events and lives system
 
-import { resetGameState, clearInventory } from '../state/gameState';
+import { resetGameState } from '../state/gameState';
 import { FlagMap } from '../state/flagRegistry';
 import { consoleWrite } from '../utils/consoleTools';
 

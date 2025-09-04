@@ -16,18 +16,15 @@
 
 
 import React from 'react';
-import './modalStyles.css';
+// Deprecated: use RetroModal instead. This shim logs a warning and renders children unstyled.
+// TODO: Remove this file after all imports are migrated.
 
-interface ModalProps {
-  children: React.ReactNode;
-}
-
-const UnifiedModal: React.FC<ModalProps> = ({ children }) => (
-  <div className="modal-overlay">
-    <div className="modal-content">
-      {children}
-    </div>
-  </div>
-);
+const UnifiedModal: React.FC<{children: React.ReactNode}> = ({ children }) => {
+  if (typeof window !== 'undefined') {
+    // eslint-disable-next-line no-console
+    console.warn('[UnifiedModal] Deprecated. Replace with <RetroModal>.');
+  }
+  return <>{children}</>;
+};
 
 export default UnifiedModal;

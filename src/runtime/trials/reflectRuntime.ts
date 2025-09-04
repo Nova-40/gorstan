@@ -48,7 +48,7 @@ class ReflectionCaveRuntime {
 
   private flagSystem: any = null;
   private roomService: any = null;
-  private itemSystem: any = null;
+  // private itemSystem: any = null; // currently unused
 
   // Register systems
   setFlagSystem(flagSystem: any) {
@@ -59,8 +59,8 @@ class ReflectionCaveRuntime {
     this.roomService = roomService;
   }
 
-  setItemSystem(itemSystem: any) {
-    this.itemSystem = itemSystem;
+  setItemSystem(_itemSystem: any) {
+    // unused
   }
 
   // Pressure plate activation
@@ -278,13 +278,13 @@ class ReflectionCaveRuntime {
     }
   }
 
-  private checkBridgeCompletion(bridgeId: string): boolean {
+  private checkBridgeCompletion(_bridgeId: string): boolean {
     // Check if critical bridges are raised
     const criticalBridges = ['harmony_bridge', 'sigil_bridge', 'guardian_bridge'];
     return criticalBridges.every(id => this.reflection.bridges.get(id) === true);
   }
 
-  private triggerPathCompletion(context: EffectContext): void {
+  private triggerPathCompletion(_context: EffectContext): void {
     this.flagSystem?.setFlag('elf.mirror_path_complete', true);
   }
 
@@ -294,7 +294,7 @@ class ReflectionCaveRuntime {
     this.addMessage(context, `The Mirror Guardian's eyes open. It begins its eternal patrol.`);
   }
 
-  private addMessage(context: EffectContext, message: string): void {
+  private addMessage(_context: EffectContext, message: string): void {
     console.log(`[Reflect] ${message}`);
     
     if (this.roomService?.addMessage) {

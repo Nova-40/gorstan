@@ -17,7 +17,10 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Game module.
 
-import React from 'react';
+// LEGACY BUTTON COMPONENT (Deprecated)
+// This file remains temporarily to avoid breaking imports during migration.
+// All new code should import from 'components/ui/Button'.
+// After confirming no remaining imports, this file can be deleted.
 import { ButtonHTMLAttributes, ReactNode } from 'react';
 import { cn } from '../utils/cn';
 
@@ -44,29 +47,25 @@ const buttonSizes = {
   lg: 'px-6 py-3 text-lg',
 };
 
-export const Button = ({ 
-  children, 
-  variant = 'primary', 
-  size = 'md', 
-  className,
-  ...props 
-}: ButtonProps) => (
-  <button 
-    {...props} 
-    className={cn(
-      // Base styles
-      'inline-flex items-center justify-center font-mono font-medium',
-      'border rounded-lg transition-all duration-150',
-      'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background',
-      'disabled:opacity-50 disabled:cursor-not-allowed',
-      // Variant styles
-      buttonVariants[variant],
-      // Size styles
-      buttonSizes[size],
-      // Custom className
-      className
-    )}
-  >
-    {children}
-  </button>
-);
+export const Button = (props: ButtonProps) => {
+  if (process.env.NODE_ENV !== 'production') {
+    console.warn('[legacy button] Use components/ui/Button instead.');
+  }
+  const { children, variant = 'primary', size = 'md', className, ...rest } = props;
+  return (
+    <button
+      {...rest}
+      className={cn(
+        'inline-flex items-center justify-center font-mono font-medium border rounded-lg transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed opacity-70',
+        'pointer-events-none',
+        buttonVariants[variant],
+        buttonSizes[size],
+        className
+      )}
+      aria-disabled="true"
+      title="Legacy button deprecated."
+    >
+      {children}
+    </button>
+  );
+};

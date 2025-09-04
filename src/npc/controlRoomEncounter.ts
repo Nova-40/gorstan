@@ -129,7 +129,7 @@ export class ControlRoomEncounterOrchestrator {
     const memories = this.recallRelevantMemories(context);
     
     // Determine encounter type based on relationship and memories
-    const encounterType = this.determineEncounterType(relationship, memories, context);
+  const encounterType = this.determineEncounterType(relationship, memories);
     
     // Generate the encounter
     const encounter = this.createEncounter(encounterType, relationship, memories, context);
@@ -193,7 +193,7 @@ export class ControlRoomEncounterOrchestrator {
   private determineEncounterType(
     relationship: AllianceRelationship | null,
     memories: RecalledMemory[],
-    context: ControlRoomContext
+  // context: ControlRoomContext
   ): EncounterType {
     // No previous relationship
     if (!relationship) {
@@ -334,7 +334,7 @@ export class ControlRoomEncounterOrchestrator {
   /**
    * Generate dialogue for reunion based on positive memories
    */
-  private generateReunionDialogue(encounter: ControlRoomEncounter, memories: RecalledMemory[], context: ControlRoomContext): void {
+  private generateReunionDialogue(encounter: ControlRoomEncounter, memories: RecalledMemory[], _context: ControlRoomContext): void {
   const mostRelevantMemory = memories.length > 0 ? memories[0] : undefined;
     
     encounter.dialogue = [
@@ -457,7 +457,7 @@ export class ControlRoomEncounterOrchestrator {
   /**
    * Generate dialogue for mutual recognition
    */
-  private generateMutualRecognitionDialogue(encounter: ControlRoomEncounter, memories: RecalledMemory[], context: ControlRoomContext): void {
+  private generateMutualRecognitionDialogue(encounter: ControlRoomEncounter, memories: RecalledMemory[], _context: ControlRoomContext): void {
     encounter.dialogue = [
       {
         speaker: 'morthos',
@@ -544,7 +544,7 @@ export class ControlRoomEncounterOrchestrator {
   /**
    * Generate reconciliation dialogue
    */
-  private generateReconciliationDialogue(encounter: ControlRoomEncounter, memories: RecalledMemory[], context: ControlRoomContext): void {
+  private generateReconciliationDialogue(encounter: ControlRoomEncounter, _memories: RecalledMemory[], _context: ControlRoomContext): void {
     encounter.dialogue = [
       {
         speaker: 'morthos',
@@ -606,7 +606,7 @@ export class ControlRoomEncounterOrchestrator {
   /**
    * Generate outcomes based on the encounter
    */
-  private generateEncounterOutcomes(encounter: ControlRoomEncounter, context: ControlRoomContext): void {
+  private generateEncounterOutcomes(encounter: ControlRoomEncounter, _context: ControlRoomContext): void {
     // Trust impact outcome
     if (encounter.trustImpact > 0) {
       encounter.outcomes.push({

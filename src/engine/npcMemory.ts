@@ -20,7 +20,7 @@ export type PlayerState = any;
 // Handles NPC logic, memory, or rendering.
 
 
-import { NPC } from '../types/NPCTypes';
+// Removed unused NPC import
 
 export interface NPCMemory {
   topic: string;

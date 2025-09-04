@@ -5,6 +5,7 @@
 
 import { cn } from '../../utils/cn';
 import { Badge } from './Badge';
+import { RetroBar } from './RetroBar';
 
 export interface Objective {
   id: string;
@@ -49,16 +50,15 @@ export function ObjectiveList({
           </Badge>
         </div>
         
-        {/* Progress bar */}
         {totalCount > 0 && (
           <div className="mt-2">
-            <div className="w-full bg-neutral-200 rounded-full h-2">
-              <div
-                className="bg-success-500 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${(completedCount / totalCount) * 100}%` }}
-                aria-label={`${completedCount} of ${totalCount} objectives completed`}
-              />
-            </div>
+            <RetroBar
+              value={completedCount / totalCount}
+              intent="success"
+              height={8}
+              showValue={false}
+              aria-label={`${completedCount} of ${totalCount} objectives completed`}
+            />
           </div>
         )}
       </div>
@@ -189,15 +189,13 @@ function ObjectiveItem({ objective, compact, onClick }: ObjectiveItemProps) {
         {/* Progress bar for individual objective */}
         {objective.progress && !objective.completed && (
           <div className="mt-2">
-            <div className="w-full bg-neutral-100 rounded-full h-1.5">
-              <div
-                className="bg-primary-500 h-1.5 rounded-full transition-all duration-300"
-                style={{
-                  width: `${(objective.progress.current / objective.progress.total) * 100}%`,
-                }}
-                aria-label={`${objective.progress.current} of ${objective.progress.total} completed`}
-              />
-            </div>
+            <RetroBar
+              value={objective.progress.total ? (objective.progress.current / objective.progress.total) : 0}
+              intent="default"
+              height={6}
+              showValue={false}
+              aria-label={`${objective.progress.current} of ${objective.progress.total} completed`}
+            />
           </div>
         )}
       </div>

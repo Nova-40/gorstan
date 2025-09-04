@@ -66,7 +66,7 @@ export const puzzleIndex: PuzzleRecord[] = [
     description: "Moral framework test (Constitution Gate)",
     fromZone: "offmultiverse",
     toZone: "gorstan",
-    isSolved: (flags, achievements) => achievements.includes("moralPassed")
+  isSolved: (_flags, achievements) => achievements.includes("moralPassed")
   },
   {
     id: "gorstan_libraries",
@@ -80,6 +80,6 @@ export const puzzleIndex: PuzzleRecord[] = [
     description: "Endgame multi-choice final gate",
     fromZone: "libraries",
     toZone: "stantonharcourt",
-    isSolved: (flags, achievements) => achievements.includes("finalDecisionMade")
+  isSolved: (_flags, achievements) => achievements.includes("finalDecisionMade")
   }
 ];

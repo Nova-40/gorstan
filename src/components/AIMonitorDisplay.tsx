@@ -7,7 +7,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Brain, Activity, Users, Gamepad2, X, Eye, EyeOff } from 'lucide-react';
+import { Brain, Activity, Users, Gamepad2, X, EyeOff } from 'lucide-react';
 import { aiUsageMonitor } from '../services/aiUsageMonitor';
 import { npcAI } from '../services/npcAI';
 import type { GameplayUpdate } from '../services/aiUsageMonitor';

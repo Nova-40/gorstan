@@ -18,7 +18,8 @@
 // Handles NPC logic, memory, or rendering.
 
 import { GameState } from '../state/gameState';
-import { logAchievement } from '../engine/achievementEngine';
+let _pollyLog: ((id:string, ctx?:Record<string,any>)=>void)|null = null;
+async function pLog(id:string, ctx?:Record<string,any>){ try { if(!_pollyLog){ _pollyLog = (await import('../engine/achievementEngine')).logAchievement; } _pollyLog && _pollyLog(id, ctx);} catch(e){ console.warn('[pollyStalkerLogic] achievement load failed', e);} }
 import { appendToConsole } from '../ui/TerminalConsole';
 import { dispatch } from '../state/dispatch';
 
@@ -53,7 +54,7 @@ export function handlePollyStalkerLogic(gameState: GameState) {
     if (roomsVisited.length >= 3 && !flags.killedByPolly) {
       import('../engine/specialDeathEffects').then(mod => mod.pollyDeathSequence());
       flags.killedByPolly = true;
-      logAchievement("pollyKill");
+  pLog("pollyKill");
       appendToConsole("You feel a sudden chill. Then pain. Then nothing.");
       appendToConsole("Polly smiles. It’s the last thing you see.");
     }

@@ -15,7 +15,7 @@
 */
 
 import React, { useState } from 'react';
-import { Share2, Download, Copy, Twitter, MessageSquare, Camera, Trophy, Star, MapPin } from 'lucide-react';
+import { Share2, Download, Copy, Twitter, Trophy, Star, MapPin } from 'lucide-react';
 import { useGameState } from '../state/gameState';
 import { showNotification } from './QuickWinNotifications';
 
@@ -49,7 +49,7 @@ export const SocialSharing: React.FC<SocialSharingProps> = ({
 }) => {
   const { state } = useGameState();
   const [activeTab, setActiveTab] = useState<'achievements' | 'discoveries' | 'stats'>('achievements');
-  const [selectedItem, setSelectedItem] = useState<ShareableAchievement | ShareableDiscovery | null>(null);
+  // selectedItem removed – simplified share flow
 
   // Convert achievements to shareable format
   const getShareableAchievements = (): ShareableAchievement[] => {

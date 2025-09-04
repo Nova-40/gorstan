@@ -18,7 +18,7 @@ import { vi } from 'vitest';
 // src/npc/__tests__/movePolicy.test.ts
 // Unit tests for NPC movement policy
 
-import { decideMove, createDefaultPolicy, NPCMoveContext, MovePolicyConfig, calculateDistance } from '../movePolicy';
+import { decideMove, createDefaultPolicy, NPCMoveContext, MovePolicyConfig } from '../movePolicy';
 
 describe('MovePolicy', () => {
   const basicContext: NPCMoveContext = {

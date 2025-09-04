@@ -50,37 +50,71 @@ export const useSystemInitialization = () => {
           const roomMap = getAllRoomsAsObject();
           dispatch({ type: 'SET_ROOM_MAP', payload: roomMap });
           setFlag(FlagRegistryType.transition.roomMapReady, true);
-
-          const achievementModule = await loadModule('../logic/achievementEngine');
-          if (achievementModule?.initializeAchievementEngine) {
-            achievementModule.initializeAchievementEngine();
+          // Achievement engine (non-fatal if it fails)
+          try {
+            const achievementModule = await loadModule('../logic/achievementEngine');
+            if (achievementModule?.initializeAchievementEngine) {
+              try {
+                achievementModule.initializeAchievementEngine(dispatch);
+              } catch (e) {
+                console.warn('[SYSTEM] Achievement engine init threw:', e);
+              }
+            }
+          } catch (e) {
+            console.warn('[SYSTEM] Achievement engine module load failed:', e);
           }
 
-          const npcModule = await loadModule('../engine/wanderingNPCController');
-          if (npcModule?.initializeWanderingNPCs) {
-            npcModule.initializeWanderingNPCs();
-          }
+          // Wandering NPCs (non-fatal)
+            try {
+              const npcModule = await loadModule('../engine/wanderingNPCController');
+              if (npcModule?.initializeWanderingNPCs) {
+                try {
+                  npcModule.initializeWanderingNPCs();
+                } catch (e) {
+                  console.warn('[SYSTEM] Wandering NPC initialization threw:', e);
+                }
+              }
+            } catch (e) {
+              console.warn('[SYSTEM] Wandering NPC module load failed:', e);
+            }
 
-          systemsInitialized.current = true;
-          setFlag(FlagRegistryType.transition.systemsReady, true);
-
-          console.log('[SYSTEM] Core game systems initialized successfully');
+          console.log('[SYSTEM] Core game systems initialization sequence complete (errors above are non-fatal).');
         } catch (error) {
-          console.error('[SYSTEM] Failed to initialize game systems:', error);
+          console.error('[SYSTEM] Fatal error during core initialization sequence:', error);
           dispatch({
             type: 'ADD_MESSAGE',
             payload: {
-              text: 'System initialization failed. Some features may not work correctly.',
+              text: 'System initialization encountered a fatal error. Attempting degraded mode...',
               type: 'error',
               timestamp: Date.now()
             }
           });
+        } finally {
+          // Always attempt to mark systems ready so the UI can proceed; degraded features may be disabled
+          if (!systemsInitialized.current) {
+            systemsInitialized.current = true;
+            setFlag(FlagRegistryType.transition.systemsReady, true);
+          }
         }
       };
 
       initializeSystems();
     }
   }, [dispatch, setFlag, loadModule]);
+
+  // Safety net: if for any reason systemsReady flag not set within 3s, force it to avoid user being stuck
+  useEffect(() => {
+    if (!hasFlag(FlagRegistryType.transition.systemsReady)) {
+      const t = setTimeout(() => {
+        if (!hasFlag(FlagRegistryType.transition.systemsReady)) {
+          console.warn('[SYSTEM] Safety fallback: forcing systemsReady flag after timeout');
+          systemsInitialized.current = true;
+          setFlag(FlagRegistryType.transition.systemsReady, true);
+        }
+      }, 3000);
+      return () => clearTimeout(t);
+    }
+  }, [hasFlag(FlagRegistryType.transition.systemsReady), hasFlag, setFlag]);
 
   useEffect(() => {
     if (hasFlag(FlagRegistryType.transition.systemsReady) && state.stage === 'game') {

@@ -44,6 +44,10 @@ export const TrialsGame: React.FC<TrialsGameProps> = ({
   useEffect(() => {
     if (gameState.phase === 'cave-maze' && gameState.phaseProgress >= 100) {
       console.log('[TrialsGame] Trials completed successfully!');
+      // Emit artifact run completion meta event (placeholder artifact sampling)
+  const unlockedArtifacts = sampleArtifactsForRun(gameState.runSeed);
+      document.dispatchEvent(new CustomEvent('trials:artifact-run', { detail: { artifacts: unlockedArtifacts } }));
+      unlockedArtifacts.forEach(id => document.dispatchEvent(new CustomEvent('trials:artifact-unlock', { detail: { id } })));
       onComplete();
     }
   }, [gameState.phase, gameState.phaseProgress, onComplete]);
@@ -52,10 +56,8 @@ export const TrialsGame: React.FC<TrialsGameProps> = ({
   useEffect(() => {
     if (!isActive && (gameState.timeRemaining <= 0 || gameState.playerHealth <= 0)) {
       console.log('[TrialsGame] Game over');
-      // Could show game over screen here
-      setTimeout(() => {
-        onQuit();
-      }, 3000);
+      document.dispatchEvent(new CustomEvent('trials:fail', { detail: { reason: gameState.timeRemaining <= 0 ? 'time' : 'health' } }));
+      setTimeout(() => { onQuit(); }, 3000);
     }
   }, [isActive, gameState.timeRemaining, gameState.playerHealth, onQuit]);
 
@@ -172,5 +174,29 @@ export const TrialsGame: React.FC<TrialsGameProps> = ({
     />
   );
 };
+
+// Placeholder artifact sampling logic – deterministic lightweight selection for now
+function sampleArtifactsForRun(seed?: number): string[] {
+  const pool = ['stone_memory','echo_compass','ember_veil','gravity_lens','chrono_seed'];
+  const rng = mulberry32((seed ?? Date.now()) >>> 0);
+  const count = 1 + Math.floor(rng() * 2); // 1-2 artifacts
+  const copy = [...pool];
+  const out: string[] = [];
+  for (let i=0;i<count && copy.length;i++) {
+    const idx = Math.floor(rng() * copy.length);
+    const picked = copy.splice(idx,1)[0];
+    if (picked) out.push(picked);
+  }
+  return out;
+}
+
+function mulberry32(a: number) {
+  return function() {
+    let t = a += 0x6D2B79F5;
+    t = Math.imul(t ^ t >>> 15, t | 1);
+    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
 
 export default TrialsGame;

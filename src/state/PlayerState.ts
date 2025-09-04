@@ -17,7 +17,6 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Game module.
 
-import { NPC } from '../types/NPCTypes';
 
 
 

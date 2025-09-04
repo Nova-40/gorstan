@@ -19,7 +19,6 @@
 
 import { Dispatch } from 'react';
 import { GameAction } from '../types/GameTypes';
-import { Room } from '../types/Room';
 
 interface AchievementDefinition {
   id: string;

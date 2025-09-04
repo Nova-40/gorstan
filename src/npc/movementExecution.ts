@@ -21,11 +21,11 @@
 import { getWanderScheduler } from './wanderScheduler';
 import { getNPCPresenceProvider } from './npcPresence';
 import { decideMove, createDefaultPolicy, NPCMoveContext, MovePolicyConfig } from './movePolicy';
-import { getWanderActivationController } from './wanderActivation';
+// Removed unused wanderActivation import
 import { getZoneAwarenessProvider, ZoneSetupConfig } from './zoneAwareness';
 import { getPerformanceOptimizer } from './performanceOptimizer';
 import { getAccessibilityProvider } from './accessibilityProvider';
-import { getErrorHandler, NPCErrorType, NPCErrorSeverity, createSafeWrapper } from './errorHandling';
+import { getErrorHandler, NPCErrorType, NPCErrorSeverity } from './errorHandling';
 import { getGameState } from '../state/gameState';
 
 export interface NPCMovementConfig {
@@ -94,7 +94,7 @@ export class MovementExecutor {
     
     // Start dependent systems with error handling
     try {
-      const scheduler = getWanderScheduler();
+  const scheduler = getWanderScheduler();
       const presence = getNPCPresenceProvider();
       const zoneAwareness = getZoneAwarenessProvider();
       const optimizer = getPerformanceOptimizer();
@@ -138,7 +138,7 @@ export class MovementExecutor {
 
     try {
       // Stop dependent systems
-      const scheduler = getWanderScheduler();
+  const scheduler = getWanderScheduler();
       const presence = getNPCPresenceProvider();
       const optimizer = getPerformanceOptimizer();
       const accessibility = getAccessibilityProvider();
@@ -179,8 +179,7 @@ export class MovementExecutor {
     presence.registerNPC(config.npcId, currentRoom);
 
     // Register with wandering scheduler
-    const scheduler = getWanderScheduler();
-    scheduler.registerNPC(config.npcId, (npcId) => this.executeMovement(npcId));
+  getWanderScheduler().registerNPC(config.npcId, (npcId: string) => this.executeMovement(npcId));
 
     this.updateStats();
     console.log(`[MovementExecution] Registered NPC ${config.npcId} (type: ${config.npcType})`);
@@ -193,10 +192,8 @@ export class MovementExecutor {
     this.npcConfigs.delete(npcId);
 
     // Unregister from systems
-    const scheduler = getWanderScheduler();
     const presence = getNPCPresenceProvider();
-
-    scheduler.unregisterNPC(npcId);
+    getWanderScheduler().unregisterNPC(npcId);
     presence.unregisterNPC(npcId);
 
     this.updateStats();
@@ -323,11 +320,8 @@ export class MovementExecutor {
     this.roomRegistry.clear();
     
     // Clear dependent systems
-    const scheduler = getWanderScheduler();
-    const presence = getNPCPresenceProvider();
-    
-    presence.clear();
-    // Note: scheduler doesn't have a clear method, unregister individually
+  const presence = getNPCPresenceProvider();
+  presence.clear();
     
     this.resetStats();
     console.log('[MovementExecution] Cleared all movement data');
@@ -339,9 +333,9 @@ export class MovementExecutor {
    * Execute movement for a specific NPC
    */
   private async executeMovement(npcId: string): Promise<void> {
-    const startTime = performance.now();
-    const optimizer = getPerformanceOptimizer();
-    const accessibility = getAccessibilityProvider();
+  const startTime = performance.now();
+  const optimizer = getPerformanceOptimizer();
+  const accessibility = getAccessibilityProvider();
     
     try {
       // Check if movement should be slowed for accessibility
@@ -414,7 +408,6 @@ export class MovementExecutor {
     const config = this.npcConfigs.get(npcId);
     const presence = getNPCPresenceProvider();
     const currentState = presence.getNPCState(npcId);
-    const optimizer = getPerformanceOptimizer();
     const errorHandler = getErrorHandler();
 
     // Basic validation
@@ -532,7 +525,7 @@ export class MovementExecutor {
     npcId: string, 
     currentRoom: string
   ): Promise<{ targetRoom: string | null; reason: string; requiresTeleport?: boolean }> {
-    const optimizer = getPerformanceOptimizer();
+  const optimizer = getPerformanceOptimizer();
     
     // First try normal movement decision
     const basicDecision = decideMove(context, policy);

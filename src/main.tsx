@@ -21,9 +21,11 @@
 
 import './tailwind.css';
 
-import App from './App';
+// Original full game App now loaded inside GameShell; landing site root here
+import SiteRoot from './SiteRoot';
+import { ThemeProvider } from './design/ThemeProvider';
 
-import React from 'react';
+// React import not needed with automatic JSX runtime
 
 import { createRoot } from 'react-dom/client';
 import { SpeedInsights } from '@vercel/speed-insights/react';
@@ -75,11 +77,21 @@ if (!rootElement) {
 
 
 // Variable declaration
+// Remove pre-splash placeholder if present before rendering React tree
+try {
+  const pre = document.getElementById('pre-splash');
+  if (pre && pre.parentElement === rootElement) {
+    pre.remove();
+  }
+} catch (e) {
+  console.warn('[Gorstan] Failed to remove pre-splash placeholder', e);
+}
+
 const root = createRoot(rootElement);
 root.render(
-  <>
-    <App />
+  <ThemeProvider>
+  <SiteRoot />
     <SpeedInsights />
     <Analytics />
-  </>
+  </ThemeProvider>
 );

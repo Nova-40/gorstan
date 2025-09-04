@@ -21,7 +21,7 @@ import './PlayerStatsPanel.css';
 
 import React, { useState } from 'react';
 
-import { Heart, Star, Trophy, Package, Share2, Calendar, BarChart3 } from 'lucide-react';
+import { Heart, Star, Package, Share2, Calendar, BarChart3 } from 'lucide-react';
 
 import { useGameState } from '../state/gameState';
 import ProgressDashboard from './ProgressDashboard';

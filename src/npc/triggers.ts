@@ -120,7 +120,7 @@ export function maybeAylaIntervention(state: LocalGameState, dispatch: any, room
 }
 
 // Trigger conversations on room entry
-export function onRoomEntry(state: LocalGameState, dispatch: any, newRoomId: string, oldRoomId?: string): void {
+export function onRoomEntry(state: LocalGameState, dispatch: any, newRoomId: string, _oldRoomId?: string): void {
   // Short delay to let room settle
   setTimeout(() => {
     maybeStartBanter(state, dispatch, newRoomId);

@@ -17,7 +17,7 @@
 // src/celebrate/gen/build-judaism.ts
 // Jewish holiday date generation using simplified approach
 
-import { Span, daySpan, multiDaySpan } from './util';
+import { Span, multiDaySpan } from './util';
 
 /**
  * Rosh Hashanah - 1 Tishrei (Jewish New Year)

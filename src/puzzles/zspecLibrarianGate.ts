@@ -20,11 +20,12 @@
 import { GameState } from '../state/gameState';
 import { appendToNPCConsole } from '../ui/NPCConsole';
 import { triggerDeath } from '../engine/deathEngine';
-import { logAchievement } from '../engine/achievementEngine';
+let _zspecLog: ((id:string, ctx?:Record<string,any>)=>void)|null = null;
+async function zLog(id:string, ctx?:Record<string,any>){ try { if(!_zspecLog){ _zspecLog = (await import('../engine/achievementEngine')).logAchievement; } _zspecLog && _zspecLog(id, ctx);} catch(e){ console.warn('[zspecLibrarianGate] achievement load failed', e);} }
 import { teleportToRoom } from '../engine/roomRouter';
 
 // Variable declaration
-const correctAnswers = ['B', 'D'];
+// Removed unused correctAnswers constant (spec artifact)
 
 
 // --- Function: triggerZSpecPuzzle ---
@@ -56,7 +57,7 @@ export function handleZSpecAnswer(gameState: GameState, answer: string) {
   if (correct) {
     appendToNPCConsole("Librarian", "That is... acceptable. You may pass.");
     gameState.flags.puzzle_maze_lattice_solved = true;
-    logAchievement("puzzle_zspec_cleared");
+  zLog("puzzle_zspec_cleared");
     teleportToRoom("latticeentry");
   } else {
     if (!gameState.flags.zspecFailedOnce) {

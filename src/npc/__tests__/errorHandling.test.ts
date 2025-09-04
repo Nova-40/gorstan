@@ -48,7 +48,7 @@ describe('NPCErrorHandler', () => {
 
   describe('Error Reporting', () => {
     test('should report errors with context', async () => {
-      const recovered = await errorHandler.reportError(
+  await errorHandler.reportError(
         NPCErrorType.MOVEMENT_FAILED,
         'Test movement failure',
         { npcId: 'test-npc', roomId: 'test-room' },

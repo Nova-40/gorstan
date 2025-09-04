@@ -18,7 +18,6 @@
 // Alliance memory system for NPCs to remember cross-run alliances
 // Step 5: Alliance Memory Model (Morthos & Al)
 
-import { getGameState } from '../state/gameState';
 
 /**
  * Types of alliance interactions that can be remembered

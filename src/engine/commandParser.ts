@@ -17,14 +17,12 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Parses and processes player commands.
 
-import { NPC } from '../types/NPCTypes';
+// Removed unused NPC import
 import { Room } from '../types/Room';
 import { TerminalMessage } from '../components/TerminalConsole';
-import { MiniquestEngine } from './miniquestInitializer';
-import { applyScoreForEvent, getScoreBasedMessage, getDominicScoreComment } from '../state/scoreEffects';
-import { unlockAchievement, listAchievements } from '../logic/achievementEngine';
-import { recordItemDiscovery, displayCodex } from '../logic/codexTracker';
-import { isLibrarianActive } from './librarianController';
+// Removed unused MiniquestEngine and score effect imports
+// Removed unused achievement helper functions
+// Removed unused codexTracker and librarianController imports
 import { handleCrossingInteraction, resetCrossingState } from './crossingController';
 import { searchForTraps, canPlayerDisarmTrap } from './trapDetection';
 import { LocalGameState } from '../state/gameState';
@@ -101,6 +99,14 @@ export function processCommand({
   let updates: Partial<LocalGameState> = {};
 
   switch (verb) {
+    case 'debug': {
+      // Lightweight trigger – UI layer listens for this custom event to open overlay
+      if (gameState.settings?.debugMode || import.meta.env.DEV) {
+        document.dispatchEvent(new CustomEvent('debug:open'));
+        return { messages: [{ text: 'Opening Debug Menu…', type: 'system' }] };
+      }
+      return { messages: [{ text: 'Debug menu not available.', type: 'error' }] };
+    }
     case 'wander': {
       // Developer oriented inspection of wandering NPC system
       if (!gameState.settings?.debugMode) {
@@ -497,7 +503,7 @@ export function processCommand({
 /**
  * Processes room entry logic
  */
-function processRoomEntry(room: Room, gameState: LocalGameState): CommandResult {
+function processRoomEntry(room: Room, _gameState: LocalGameState): CommandResult {
   const messages: TerminalMessage[] = [];
   let updates: Partial<LocalGameState> = {};
 

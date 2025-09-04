@@ -9,83 +9,46 @@ import { startTrialsOfGorstan } from './demoScripts/trialsOfGorstan';
 import { startGladeOfEchoes } from './demoScripts/gladeOfEchoes';
 import { startTramlinesOfTime } from './demoScripts/tramlinesOfTime';
 import { startRuinsOfStanton } from './demoScripts/ruinsOfStanton';
-import { startThreeRegnants } from './longform/theThreeRegnants';
-import { startFractureOfTheNine } from './longform/fractureOfTheNine';
-import { startDominicBirthdayHeist } from './longform/dominicBirthdayHeist';
-import { startMasterShowcase } from './ConsolidatedShowcase';
+// Longform + consolidated showcase routes quarantined (see legacy/demo). Remove imports.
+// import { startThreeRegnants } from './longform/theThreeRegnants';
+// import { startFractureOfTheNine } from './longform/fractureOfTheNine';
+// import { startDominicBirthdayHeist } from './longform/dominicBirthdayHeist';
+// import { startMasterShowcase } from './ConsolidatedShowcase';
 
 export const demoRoutes: DemoRoute[] = [
-  // Featured consolidated showcase - showcases the absolute best of the game
-  { 
-    id: "master-showcase", 
-    title: "🎮 Master Showcase", 
-    kind: "featured", 
-    durationMin: 15, 
-    entry: startMasterShowcase, 
-    summary: "The definitive Gorstan experience - combat, exploration, puzzles, and drama in one comprehensive tour." 
+  // Short demos retained; longform + showcase removed during Phase 1 cleanup.
+  {
+    id: "trials-of-gorstan",
+    title: "Enhanced Trials of Gorstan",
+    kind: "short",
+    durationMin: 10,
+    entry: startTrialsOfGorstan,
+    summary: "Experience wave-based creature combat with strategic safety rocks and enhanced AI."
   },
-  
-  // Enhanced Trials of Gorstan - now featuring the mushroom field improvements
-  { 
-    id: "trials-of-gorstan", 
-    title: "Enhanced Trials of Gorstan", 
-    kind: "short", 
-    durationMin: 10, 
-    entry: startTrialsOfGorstan, 
-    summary: "Experience wave-based creature combat with strategic safety rocks and enhanced AI." 
+  {
+    id: "glade-of-echoes",
+    title: "Glade of Echoes",
+    kind: "short",
+    durationMin: 10,
+    entry: startGladeOfEchoes,
+    summary: "Whispering trees, mirrored choices, moral test."
   },
-  
-  // Core short demos
-  { 
-    id: "glade-of-echoes", 
-    title: "Glade of Echoes", 
-    kind: "short", 
-    durationMin: 10, 
-    entry: startGladeOfEchoes, 
-    summary: "Whispering trees, mirrored choices, moral test." 
+  {
+    id: "tramlines-of-time",
+    title: "Tramlines of Time",
+    kind: "short",
+    durationMin: 10,
+    entry: startTramlinesOfTime,
+    summary: "Signals, switches, and timeline sidings."
   },
-  { 
-    id: "tramlines-of-time", 
-    title: "Tramlines of Time", 
-    kind: "short", 
-    durationMin: 10, 
-    entry: startTramlinesOfTime, 
-    summary: "Signals, switches, and timeline sidings." 
-  },
-  { 
-    id: "ruins-of-stanton", 
-    title: "Ruins of Stanton", 
-    kind: "short", 
-    durationMin: 10, 
-    entry: startRuinsOfStanton, 
-    summary: "Local history fractal—documents and ghosts of policy." 
-  },
-  
-  // Extended adventures
-  { 
-    id: "the-three-regnants", 
-    title: "The Three Regnants", 
-    kind: "long", 
-    durationMin: 30, 
-    entry: startThreeRegnants, 
-    summary: "Courtly intrigue across three realms." 
-  },
-  { 
-    id: "fracture-of-the-nine", 
-    title: "Fracture of the Nine", 
-    kind: "long", 
-    durationMin: 30, 
-    entry: startFractureOfTheNine, 
-    summary: "Nine shards, one converging truth." 
-  },
-  { 
-    id: "dominic-birthday-heist", 
-    title: "Dominic's Birthday Heist", 
-    kind: "long", 
-    durationMin: 30, 
-    entry: startDominicBirthdayHeist, 
-    summary: "The goldfish demands cake and a plan." 
-  },
+  {
+    id: "ruins-of-stanton",
+    title: "Ruins of Stanton",
+    kind: "short",
+    durationMin: 10,
+    entry: startRuinsOfStanton,
+    summary: "Local history fractal—documents and ghosts of policy."
+  }
 ];
 
 export async function startDemo(id: string, unattended = false) {

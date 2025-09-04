@@ -179,21 +179,21 @@ class MushroomFieldRuntime {
     }
   }
 
-  private refreshOdorTrail(context: EffectContext, roomId: string): void {
+  private refreshOdorTrail(_context: EffectContext, roomId: string): void {
     if (this.pursuitState.odorStrength > 0) {
       this.pursuitState.odorStrength = Math.max(50, this.pursuitState.odorStrength - 5);
       this.pursuitState.huntingRoom = roomId;
     }
   }
 
-  private handleSafeZoneCamping(context: EffectContext, roomId: string): void {
+  private handleSafeZoneCamping(context: EffectContext, _roomId: string): void {
     const currentTime = Date.now();
     const timeInSafeZone = currentTime - (this.pack.lastMove || 0);
     
     // Increase aggression if player camps too long
     if (timeInSafeZone > 30000) { // 30 seconds
       this.pack.aggressionLevel += 0.2;
-      this.addMessage(context, `The Hexhounds grow impatient. Their howls grow closer.`);
+  this.addMessage(context, `The Hexhounds grow impatient. Their howls grow closer.`);
     }
   }
 
@@ -218,7 +218,7 @@ class MushroomFieldRuntime {
     }
   }
 
-  private addMessage(context: EffectContext, message: string): void {
+  private addMessage(_context: EffectContext, message: string): void {
     console.log(`[MField] ${message}`);
     
     if (this.roomService?.addMessage) {

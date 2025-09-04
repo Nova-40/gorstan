@@ -80,8 +80,8 @@ const DEFAULT_RECOVERY_STRATEGIES: ErrorRecoveryStrategy[] = [
     maxRetries: 3,
     retryDelayMs: 1000,
     shouldRetry: (error) => error.attemptCount < 3 && error.isRecoverable,
-    fallbackAction: async (error) => {
-      console.log(`[ErrorRecovery] Fallback: Keeping NPC ${error.npcId} in current room`);
+    fallbackAction: async (err) => {
+      console.log(`[ErrorRecovery] Fallback: Keeping NPC ${err.npcId} in current room`);
       return true;
     }
   },
@@ -90,8 +90,8 @@ const DEFAULT_RECOVERY_STRATEGIES: ErrorRecoveryStrategy[] = [
     maxRetries: 2,
     retryDelayMs: 500,
     shouldRetry: (error) => error.attemptCount < 2,
-    fallbackAction: async (error) => {
-      console.log(`[ErrorRecovery] Fallback: Using random adjacent room for ${error.npcId}`);
+    fallbackAction: async (err) => {
+      console.log(`[ErrorRecovery] Fallback: Using random adjacent room for ${err.npcId}`);
       return true;
     }
   },
@@ -100,8 +100,8 @@ const DEFAULT_RECOVERY_STRATEGIES: ErrorRecoveryStrategy[] = [
     maxRetries: 1,
     retryDelayMs: 100,
     shouldRetry: (error) => error.attemptCount < 1,
-    fallbackAction: async (error) => {
-      console.log(`[ErrorRecovery] Fallback: Bypassing zone validation for ${error.npcId}`);
+    fallbackAction: async (err) => {
+      console.log(`[ErrorRecovery] Fallback: Bypassing zone validation for ${err.npcId}`);
       return true;
     }
   },
@@ -110,7 +110,7 @@ const DEFAULT_RECOVERY_STRATEGIES: ErrorRecoveryStrategy[] = [
     maxRetries: 5,
     retryDelayMs: 2000,
     shouldRetry: (error) => error.attemptCount < 5,
-    fallbackAction: async (error) => {
+    fallbackAction: async (_error) => {
       console.log(`[ErrorRecovery] Fallback: Restarting scheduler with reduced frequency`);
       return true;
     }
@@ -120,7 +120,7 @@ const DEFAULT_RECOVERY_STRATEGIES: ErrorRecoveryStrategy[] = [
     maxRetries: 0,
     retryDelayMs: 0,
     shouldRetry: () => false,
-    fallbackAction: async (error) => {
+    fallbackAction: async (_error) => {
       console.log(`[ErrorRecovery] Fallback: Applying performance degradation`);
       return true;
     }
@@ -285,7 +285,7 @@ export class NPCErrorHandler {
   private circuitBreaker: CircuitBreaker;
   private retryMechanism: RetryMechanism;
   private currentDegradationLevel = 0;
-  private isEnabled = true;
+  // Removed isEnabled flag (no longer used)
 
   // Error statistics
   private errorCounts: Map<NPCErrorType, number> = new Map();
@@ -547,12 +547,10 @@ export class NPCErrorHandler {
   // ===== SYSTEM CONTROL =====
 
   enable(): void {
-    this.isEnabled = true;
     console.log('[NPCErrorHandler] Error handling enabled');
   }
 
   disable(): void {
-    this.isEnabled = false;
     console.log('[NPCErrorHandler] Error handling disabled');
   }
 

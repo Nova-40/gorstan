@@ -18,7 +18,9 @@
 // Game module.
 
 import React from 'react';
-import { XCircle, Settings, ArrowLeft, Zap, Wrench } from 'lucide-react';
+import { Settings, ArrowLeft, Wrench } from 'lucide-react';
+import { RetroModal } from './ui/RetroModal';
+import { Button } from './ui/Button';
 
 interface UseItemModalProps {
   inventory: string[];
@@ -50,20 +52,24 @@ export const UseItemModal: React.FC<UseItemModalProps> = ({ inventory, environme
 
   // JSX return block or main return
   return (
-    <div className="modal-overlay">
-      <div className="modal-box use-item-modal">
-        <div className="modal-header">
-          <div className="modal-title">
-            <Settings className="modal-icon" />
-            <h3>Use an Item</h3>
+    <RetroModal
+      isOpen
+      onClose={onClose}
+      title="Use an Item"
+  subtitle={selectedItem ? null : 'Select an item from your inventory to begin'}
+      footer={selectedItem && (
+        <div className="flex w-full justify-between items-center">
+          <span className="panel-subtle">{mode === 'choose' ? 'Choose a usage option' : 'Select a target'}</span>
+          <div className="flex gap-2">
+            {selectedItem && mode !== 'choose' && (
+              <Button size="sm" variant="secondary" onClick={resetToChoose}><ArrowLeft size={12} className="mr-1"/>Back</Button>
+            )}
+            <Button size="sm" variant="outline" onClick={onClose}>Close</Button>
           </div>
-          <button className="close-button" onClick={onClose} aria-label="Close">
-            <XCircle className="close-icon" />
-          </button>
         </div>
-
-        <div className="modal-content">
-          {!selectedItem ? (
+      )}
+    >
+      {!selectedItem ? (
             <div className="item-selection">
               <p className="instruction-text">Select an item from your inventory to use:</p>
               {inventory.length > 0 ? (
@@ -94,59 +100,42 @@ export const UseItemModal: React.FC<UseItemModalProps> = ({ inventory, environme
                   <div className="item-icon">📦</div>
                   <span className="item-name">{selectedItem}</span>
                 </div>
-                <button className="back-button" onClick={resetToChoose}>
-                  <ArrowLeft size={16} />
-                  Choose Different Item
-                </button>
+                <Button size="sm" variant="secondary" onClick={resetToChoose}><ArrowLeft size={14} className="mr-1"/>Choose Different</Button>
               </div>
               
               <p className="instruction-text">How would you like to use <strong>{selectedItem}</strong>?</p>
               
               <div className="usage-options">
-                <button 
-                  className="usage-button standalone"
-                  onClick={() => onUse(selectedItem)}
-                >
-                  <Zap className="option-icon" />
-                  <div className="option-content">
-                    <span className="option-title">Use by itself</span>
-                    <small>Activate or use the item directly</small>
-                  </div>
-                </button>
+                <Button onClick={() => onUse(selectedItem)} className="usage-button standalone !justify-start gap-3">
+                  <span className="option-icon">⚡</span>
+                  <span className="text-left">
+                    <span className="block option-title">Use by itself</span>
+                    <small className="block text-console-dim">Activate or use directly</small>
+                  </span>
+                </Button>
                 
-                <button 
-                  className="usage-button with-item"
-                  onClick={() => setMode('withItem')}
-                  disabled={otherItems.length === 0}
-                >
+                <Button onClick={() => setMode('withItem')} disabled={otherItems.length === 0} className="usage-button with-item !justify-start gap-3">
                   <Settings className="option-icon" />
-                  <div className="option-content">
-                    <span className="option-title">Use with another item</span>
-                    <small>{otherItems.length > 0 ? `Combine with one of ${otherItems.length} items` : 'No other items available'}</small>
-                  </div>
-                </button>
+                  <span className="text-left">
+                    <span className="block option-title">Use with another item</span>
+                    <small className="block text-console-dim">{otherItems.length > 0 ? `Combine with ${otherItems.length}` : 'None available'}</small>
+                  </span>
+                </Button>
                 
-                <button 
-                  className="usage-button with-env"
-                  onClick={() => setMode('withEnv')}
-                  disabled={environmentItems.length === 0}
-                >
+                <Button onClick={() => setMode('withEnv')} disabled={environmentItems.length === 0} className="usage-button with-env !justify-start gap-3">
                   <Wrench className="option-icon" />
-                  <div className="option-content">
-                    <span className="option-title">Use with environment</span>
-                    <small>{environmentItems.length > 0 ? `Use with one of ${environmentItems.length} objects` : 'No environmental objects available'}</small>
-                  </div>
-                </button>
+                  <span className="text-left">
+                    <span className="block option-title">Use with environment</span>
+                    <small className="block text-console-dim">{environmentItems.length > 0 ? `Use with ${environmentItems.length} objects` : 'No environment targets'}</small>
+                  </span>
+                </Button>
               </div>
             </div>
           ) : mode === 'withItem' ? (
-            <div className="target-selection">
+      <div className="target-selection">
               <div className="selected-item">
                 <span>Using: <strong>{selectedItem}</strong></span>
-                <button className="back-button" onClick={() => setMode('choose')}>
-                  <ArrowLeft size={16} />
-                  Back
-                </button>
+        <Button size="sm" variant="secondary" onClick={() => setMode('choose')}><ArrowLeft size={14} className="mr-1"/>Back</Button>
               </div>
               
               <p className="instruction-text">Choose another item to combine with <strong>{selectedItem}</strong>:</p>
@@ -154,14 +143,14 @@ export const UseItemModal: React.FC<UseItemModalProps> = ({ inventory, environme
               {otherItems.length > 0 ? (
                 <div className="target-grid">
                   {otherItems.map(item => (
-                    <button 
-                      key={item} 
-                      className="target-button"
+                    <Button 
+                      key={item}
                       onClick={() => onUse(selectedItem, item)}
+                      className="target-button !justify-start"
                     >
                       <div className="item-icon">📦</div>
                       <span className="item-name">{item}</span>
-                    </button>
+                    </Button>
                   ))}
                 </div>
               ) : (
@@ -172,13 +161,10 @@ export const UseItemModal: React.FC<UseItemModalProps> = ({ inventory, environme
               )}
             </div>
           ) : (
-            <div className="target-selection">
+      <div className="target-selection">
               <div className="selected-item">
                 <span>Using: <strong>{selectedItem}</strong></span>
-                <button className="back-button" onClick={() => setMode('choose')}>
-                  <ArrowLeft size={16} />
-                  Back
-                </button>
+        <Button size="sm" variant="secondary" onClick={() => setMode('choose')}><ArrowLeft size={14} className="mr-1"/>Back</Button>
               </div>
               
               <p className="instruction-text">Choose an environmental object to use <strong>{selectedItem}</strong> with:</p>
@@ -186,14 +172,14 @@ export const UseItemModal: React.FC<UseItemModalProps> = ({ inventory, environme
               {environmentItems.length > 0 ? (
                 <div className="target-grid">
                   {environmentItems.map(env => (
-                    <button 
-                      key={env} 
-                      className="target-button environmental"
+                    <Button
+                      key={env}
                       onClick={() => onUse(selectedItem, env)}
+                      className="target-button environmental !justify-start"
                     >
                       <div className="env-icon">🌍</div>
                       <span className="env-name">{env}</span>
-                    </button>
+                    </Button>
                   ))}
                 </div>
               ) : (
@@ -204,8 +190,6 @@ export const UseItemModal: React.FC<UseItemModalProps> = ({ inventory, environme
               )}
             </div>
           )}
-        </div>
-      </div>
-    </div>
+    </RetroModal>
   );
 };

@@ -17,8 +17,7 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Renders room descriptions and image logic.
 
-import { NPC, NPCMemory, NPCMood } from './NPCTypes';
-import { RoomDefinition } from '../engine/roomSchema';
+import { NPCMemory, NPCMood } from './NPCTypes';
 
 /**
  * Game stage enumeration for tracking player progress

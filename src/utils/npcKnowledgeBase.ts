@@ -20,7 +20,7 @@
 import type { LocalGameState } from '../state/gameState';
 import { getPlayerName, formatDialogue } from './playerNameUtils';
 import { pickRandomOrFallback } from './random';
-import { hasDiscussedTopic, shouldVaryResponse, getRelationshipLevel, getNPCConversationHistory } from './npcConversationHistory';
+import { shouldVaryResponse, getNPCConversationHistory } from './npcConversationHistory';
 
 export interface KnowledgeResponse {
   responses: string[];
@@ -169,11 +169,11 @@ export function getKnowledgeBaseReply(
   playerInput: string,
   npcId: string,
   state: LocalGameState,
-  history?: any
+  _history?: any
 ): string | null {
   // playerName retained via getPlayerName in responses formatting; direct variable not required here.
   const normalizedInput = playerInput.toLowerCase().trim();
-  const npcHistory = getNPCConversationHistory(state, npcId);
+  // history fetched for variation; direct variable not required
   
   // Check NPC-specific knowledge first
   const npcKnowledge = npcSpecificKnowledge[npcId] || {};
@@ -242,8 +242,7 @@ export function getContextualGreeting(
 ): string {
   const playerName = getPlayerName(state);
   const history = getNPCConversationHistory(state, npcId);
-  const relationship = state.player?.npcRelationships?.[npcId] || 0;
-  const relationshipLevel = getRelationshipLevel(relationship);
+  // relationship level currently unused; compute lazily when needed
 
   // Time-based greetings
   const timeSinceLastInteraction = Date.now() - history.lastInteraction;
@@ -268,8 +267,8 @@ export function getContextualGreeting(
  * Get fallback responses for edge cases
  */
 export function getIntelligentFallback(
-  npcId: string,
-  playerInput: string,
+  _npcId: string,
+  _playerInput: string,
   state: LocalGameState
 ): string {
   const playerName = getPlayerName(state);

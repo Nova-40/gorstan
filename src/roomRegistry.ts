@@ -35,7 +35,7 @@ const placeholder = (id: string): MinimalRoom => ({
 const base: Record<string, Room> = {
   // Seed with a few known IDs that existed before; others materialize on demand.
   introZone_introreset: { ...placeholder('introZone_introreset'), exits: { south: 'gorstanZone_gorstanhub' } } as any,
-  gorstanZone_gorstanhub: { ...placeholder('gorstanZone_gorstanhub'), title: 'Gorstan Hub', exits: { north: 'introZone_introreset', east: 'glitchZone_ravenchamber' } } as any,
+  gorstanZone_gorstanhub: { ...placeholder('gorstanZone_gorstanhub'), title: 'Gorstan Hub', exits: { north: 'introZone_introreset', east: 'glitchZone_ravenchamber' }, miniquests: ['superstringCollapse'] } as any,
   glitchZone_ravenchamber: { ...placeholder('glitchZone_ravenchamber'), title: 'Raven Chamber', exits: { west: 'gorstanZone_gorstanhub' } } as any,
 };
 

@@ -19,6 +19,7 @@
 
 import AppCore from './components/AppCore';
 import { CelebrationController } from './celebrate';
+import { ErrorBoundary } from './ui/ErrorBoundary';
 
 import React from 'react';
 
@@ -40,9 +41,11 @@ const App: React.FC = () => {
 // JSX return block or main return
   return (
     <GameStateProvider>
-      <CelebrationController>
-        <AppCore />
-      </CelebrationController>
+      <ErrorBoundary>
+        <CelebrationController>
+          <AppCore />
+        </CelebrationController>
+      </ErrorBoundary>
     </GameStateProvider>
   );
 };

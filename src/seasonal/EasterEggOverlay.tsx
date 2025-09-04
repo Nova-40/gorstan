@@ -14,7 +14,7 @@
   Full licence terms: see EULA.md in the project root.
 */
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import BaseDialog from "./a11y/BaseDialog";
 import { usePrefersReducedMotion } from "./hooks/usePrefersReducedMotion";
 

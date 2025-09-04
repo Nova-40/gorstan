@@ -65,14 +65,14 @@ export class WanderScheduler {
   private intervalId: number | null = null;
   private npcStates: Map<string, NPCWanderState> = new Map();
   private pauseScopes: Map<string, PauseScope> = new Map();
-  private rng: () => number;
+  // removed unused _rng field (previous deterministic scheduling PRNG)
   private moveCallbacks: Map<string, (npcId: string) => Promise<void>> = new Map();
   private lastTickTime: number = 0;
   private tickCount: number = 0;
 
   constructor(config: Partial<WanderSchedulerConfig> = {}) {
     this.config = { ...DEFAULT_CONFIG, ...config };
-    this.rng = this.createSeededRNG(this.config.seed);
+  // PRNG removed (unused)
   }
 
   /**

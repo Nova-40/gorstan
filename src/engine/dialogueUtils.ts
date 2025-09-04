@@ -17,11 +17,10 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Controls NPC dialogue trees and responses.
 
-import { NPC } from '../types/NPCTypes';
+// Removed unused NPC import; only importing needed dialogue types
 import { 
   DialogueState, 
-  DialogueCondition,
-  DialogueEffect 
+  DialogueCondition
 } from './dialogueEngine';
 
 export interface DialogueProbabilities {
@@ -41,7 +40,7 @@ export interface DialogueContext {
   npc: string;
   playerState: DialogueState;
   conversationTurn: number;
-  lastPlayerAction?: string;
+  lastPlayerAction?: string; // retained for future branching logic
   mood?: 'friendly' | 'neutral' | 'hostile' | 'suspicious' | 'caring';
 }
 
@@ -225,7 +224,7 @@ function compareValues(actual: any, expected: any, operator: string): boolean {
 // --- Function: getDialogueVariationsByMood ---
 export function getDialogueVariationsByMood(
   baseMood: 'friendly' | 'neutral' | 'hostile' | 'suspicious' | 'caring',
-  playerState: DialogueState
+  _playerState: DialogueState
 ): DialogueVariation[] {
 
   const moodVariations: {
@@ -275,7 +274,7 @@ export function getDialogueVariationsByMood(
 
 // --- Function: generateContextualGreeting ---
 export function generateContextualGreeting(
-  npc: string,
+  _npc: string,
   playerState: DialogueState
 ): string {
   const deathCount = playerState.deathCount || 0;

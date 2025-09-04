@@ -9,7 +9,10 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": true,
+  "strict": true,
+  // Re-enabled to surface unused symbol issues for pruning (will be kept once clean)
+  "noUnusedLocals": true,
+  "noUnusedParameters": true,
     "noImplicitOverride": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
@@ -23,5 +26,6 @@
     "baseUrl": ".",
     "paths": {"@/*": ["src/*"]}
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["supabase/functions", "scripts/mint_code.ts"]
 }

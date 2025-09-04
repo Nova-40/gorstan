@@ -3,7 +3,7 @@ import { roomRegistry as rooms } from '../roomRegistry';
 
 describe('Room Graph Validation', () => {
   test('All rooms have valid structure', () => {
-    Object.entries(rooms).forEach(([roomId, room]) => {
+  Object.entries(rooms).forEach(([_, room]) => {
       // Basic required fields for game functionality
       expect(room.id).toBeTruthy(); // Room should have an ID, but it doesn't need to match the registry key
       expect(room.title || room.name).toBeTruthy();
@@ -27,7 +27,7 @@ describe('Room Graph Validation', () => {
     const roomIds = new Set(Object.keys(rooms));
     const invalidExits: string[] = [];
 
-    Object.entries(rooms).forEach(([roomId, room]) => {
+  Object.entries(rooms).forEach(([roomId, room]) => {
       if (room.exits) {
         // exits is Record<string, string> in actual implementation
         Object.entries(room.exits).forEach(([direction, targetRoom]) => {
@@ -83,7 +83,7 @@ describe('Room Graph Validation', () => {
   });
 
   test('No circular references in immediate exits', () => {
-    Object.entries(rooms).forEach(([roomId, room]) => {
+  Object.entries(rooms).forEach(([roomId, room]) => {
       if (room.exits) {
         const selfReferencingExits = Object.entries(room.exits).filter(([_, targetRoom]) => targetRoom === roomId);
         
@@ -98,18 +98,16 @@ describe('Room Graph Validation', () => {
   test('Zone consistency', () => {
     const zoneRooms = new Map<string, string[]>();
     
-    Object.entries(rooms).forEach(([roomId, room]) => {
+    Object.entries(rooms).forEach(([_, room]) => {
       const zone = room.zone;
       if (zone) {
-        if (!zoneRooms.has(zone)) {
-          zoneRooms.set(zone, []);
-        }
-        zoneRooms.get(zone)!.push(roomId);
+        if (!zoneRooms.has(zone)) zoneRooms.set(zone, []);
+        zoneRooms.get(zone)!.push(room.id);
       }
     });
 
     // Each zone should have at least one room
-    zoneRooms.forEach((roomList, zoneName) => {
+    zoneRooms.forEach((roomList, _zoneName) => {
       expect(roomList.length).toBeGreaterThan(0);
     });
 

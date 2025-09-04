@@ -148,7 +148,7 @@ export function recommendNextRoute(progression: QuantumProgression): {
     }
     return {
       routeType: 'short10',
-      reason: 'Try 10-minute adventures to discover new artifacts'
+  reason: 'Try short adventures to discover new artifacts'
     };
   }
 
@@ -157,12 +157,12 @@ export function recommendNextRoute(progression: QuantumProgression): {
     if (progression.routeCompletions.short10.length < 2) {
       return {
         routeType: 'short10',
-        reason: 'Complete more 10-minute adventures for artifact variety'
+  reason: 'Complete more short adventures for artifact variety'
       };
     }
     return {
       routeType: 'short30',
-      reason: 'Ready for 30-minute adventures and relic-tier discoveries'
+  reason: 'Ready for medium adventures and relic-tier discoveries'
     };
   }
 
@@ -178,7 +178,7 @@ export function recommendNextRoute(progression: QuantumProgression): {
   if (progression.routeCompletions.short30.length < 4) {
     return {
       routeType: 'short30',
-      reason: 'Complete all 30-minute adventures for mastery'
+  reason: 'Complete all medium adventures for mastery'
     };
   }
 

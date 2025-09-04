@@ -18,7 +18,8 @@
 // Handles trap logic and room-based dangers.
 
 import { triggerDeath } from './deathEngine';
-import { logAchievement } from './achievementEngine';
+let _logAchFn: ((id:string, ctx?:Record<string,any>)=>void)|null = null;
+async function logAch(id:string, ctx?:Record<string,any>){ try { if(!_logAchFn){ _logAchFn = (await import('./achievementEngine')).logAchievement; } _logAchFn && _logAchFn(id, ctx);} catch(e){ console.warn('[trapDeathLogic] achievement load failed', e);} }
 import { appendToConsole } from '../ui/TerminalConsole';
 
 
@@ -27,7 +28,7 @@ export function deathByCoin() {
   appendToConsole("You kept the cursed coin too long.");
   appendToConsole("It flips you.");
   triggerDeath("Killed by Coin");
-  logAchievement("coinDeath");
+  logAch("coinDeath");
 }
 
 
@@ -36,7 +37,7 @@ export function deathByGreed() {
   appendToConsole("You reached for treasure that wasn’t yours.");
   appendToConsole("Turns out it was bait. You took it anyway. Bold.");
   triggerDeath("Killed by Greed");
-  logAchievement("greedDeath");
+  logAch("greedDeath");
 }
 
 
@@ -45,5 +46,5 @@ export function deathByDominicRevenge() {
   appendToConsole("Dominic blinks. Reality buckles.");
   appendToConsole("You are... reversed.");
   triggerDeath("Killed by Dominic");
-  logAchievement("dominicRevenge");
+  logAch("dominicRevenge");
 }

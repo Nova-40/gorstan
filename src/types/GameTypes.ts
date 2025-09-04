@@ -22,7 +22,7 @@
 import type { NPC } from './NPCTypes';
 import type { Room } from './Room';
 
-export type MiniquestType = 'dynamic' | 'structured' | 'puzzle' | 'social' | 'exploration';
+export type MiniquestType = 'dynamic' | 'structured' | 'puzzle' | 'social' | 'exploration' | 'arcade';
 
 export interface Miniquest {
   readonly id: string;
@@ -209,6 +209,7 @@ export type GameAction =
   | { type: 'DISMISS_BLUE_BUTTON_WARNING' }
   | { type: 'PRESS_ACTION' }
   | { type: 'START_MULTIVERSE_REBOOT' }
+  | { type: 'RECORD_TRIAL_FAILURE' }
   | { type: 'SHOW_RESET_SEQUENCE' }
   | { type: 'ADD_HISTORY'; payload: string }
   | { type: 'CLEAR_HISTORY' }

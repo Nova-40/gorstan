@@ -36,28 +36,21 @@ export default defineConfig({
     target: 'esnext',
     rollupOptions: {
       output: {
-        // Optimize chunk naming for caching
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash].[ext]',
-        manualChunks: {
-          // Split large dependencies into separate chunks
-          'framer-motion': ['framer-motion'],
-          'lucide-react': ['lucide-react'],
-          'react-vendor': ['react', 'react-dom'],
-          // Split game engine into separate chunks
-          'game-engine': [
-            './src/engine/commandParser',
-            './src/engine/wanderingNPCController',
-            './src/engine/librarianController',
-            './src/engine/mrWendellController'
-          ],
-          'game-logic': [
-            './src/logic/achievementEngine',
-            './src/logic/codexTracker',
-            './src/state/scoreManager',
-            './src/state/scoreEffects'
-          ]
+        // Dynamic chunk strategy: isolate the heaviest libs & subsystems only
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('framer-motion')) return 'framer-motion';
+            if (id.includes('lucide-react')) return 'lucide-react';
+            if (/(react|react-dom)\\/i.test(id)) return 'react-vendor';
+          }
+          // Internal large subsystems (kept coarse to avoid tiny chunks)
+            if (id.includes('/engine/')) return 'engine';
+            if (id.includes('/logic/')) return 'logic';
+            if (id.includes('/mechanics/trials/')) return 'trials';
+          return undefined; // default
         }
       }
     }

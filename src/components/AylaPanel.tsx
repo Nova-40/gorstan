@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { HttpAylaClient, MockAylaClient } from '../core/ayla/AylaClient';
 import { useAyla } from '../core/ayla/useAyla';
 import { useGameState } from '../state/gameState';

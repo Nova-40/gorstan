@@ -34,7 +34,7 @@ export class LoreService {
     try {
       const loadedEntries = await this.contentLoader.loadAllLore();
       
-      for (const [id, entry] of loadedEntries) {
+      for (const entry of loadedEntries.values()) {
         this.addEntry(entry);
       }
       
@@ -42,67 +42,6 @@ export class LoreService {
     } catch (error) {
       console.error('Failed to load lore entries:', error);
     }
-  }
-
-  /**
-   * Parse markdown file with YAML front-matter into LoreEntry
-   */
-  private parseLoreEntry(filename: string, content: string): LoreEntry {
-    // Simple YAML front-matter parser
-    // In a real implementation, you'd use a proper YAML parser
-    const lines = content.split('\n');
-    let frontMatterEnd = -1;
-    
-  if (lines.length > 0 && lines[0] === '---') {
-      for (let i = 1; i < lines.length; i++) {
-        if (lines[i] === '---') {
-          frontMatterEnd = i;
-          break;
-        }
-      }
-    }
-
-    if (frontMatterEnd === -1) {
-      throw new Error(`No valid YAML front-matter found in ${filename}`);
-    }
-
-    const frontMatter = lines.slice(1, frontMatterEnd).join('\n');
-    const markdown = lines.slice(frontMatterEnd + 1).join('\n').trim();
-
-    // Parse YAML front-matter (simplified)
-    const metadata: Partial<LoreEntry> = {};
-    const yamlLines = frontMatter.split('\n');
-    
-    for (const line of yamlLines) {
-      const [key, ...valueParts] = line.split(':');
-      if (key && valueParts.length > 0) {
-        const value = valueParts.join(':').trim();
-        
-        if (key === 'tags' || key === 'related') {
-          // Parse array values [item1, item2, item3]
-          const arrayMatch = value.match(/\[(.*)\]/);
-          if (arrayMatch && arrayMatch[1] !== undefined) {
-            const arrayValue = arrayMatch[1]
-              .split(',')
-              .map(item => item.trim().replace(/['"]/g, ''));
-            (metadata as any)[key] = arrayValue;
-          }
-        } else {
-          metadata[key as keyof LoreEntry] = value.replace(/['"]/g, '') as any;
-        }
-      }
-    }
-
-    return {
-      id: metadata.id || filename,
-      title: metadata.title || filename,
-      type: metadata.type || 'research',
-      tags: metadata.tags || [],
-      related: metadata.related,
-      discovered_by: metadata.discovered_by,
-      classification: metadata.classification,
-      content: markdown
-    } as LoreEntry;
   }
 
   /**
@@ -148,14 +87,13 @@ export class LoreService {
     const results: LoreSearchResult[] = [];
     const searchTerms = query.toLowerCase().split(/\s+/);
     
-    for (const [id, entry] of this.entries) {
+    for (const entry of this.entries.values()) {
       let relevanceScore = 0;
       const matchedFields: string[] = [];
       
       // Apply filters first
-      if (options.tags && options.tags.length > 0) {
-        const hasMatchingTag = options.tags.some(tag => entry.tags.includes(tag));
-        if (!hasMatchingTag) continue;
+      if (options.tags?.length) {
+        if (!options.tags.some(tag => entry.tags.includes(tag))) continue;
       }
       
       if (options.type && entry.type !== options.type) {
@@ -219,7 +157,7 @@ export class LoreService {
     
     return Array.from(entryIds)
       .map(id => this.entries.get(id))
-      .filter((entry): entry is LoreEntry => entry !== undefined);
+      .filter((e): e is LoreEntry => e !== undefined);
   }
 
   /**
@@ -231,7 +169,7 @@ export class LoreService {
     
     return Array.from(entryIds)
       .map(id => this.entries.get(id))
-      .filter((entry): entry is LoreEntry => entry !== undefined);
+      .filter((e): e is LoreEntry => e !== undefined);
   }
 
   /**
@@ -273,7 +211,7 @@ export class LoreService {
     return Array.from(relatedIds)
       .slice(0, limit)
       .map(id => this.entries.get(id))
-      .filter((entry): entry is LoreEntry => entry !== undefined);
+      .filter((e): e is LoreEntry => e !== undefined);
   }
 
   /**
@@ -320,14 +258,14 @@ export class LoreService {
     let maxConnections = 0;
     let mostConnected: string | undefined;
     
-    for (const [id, entry] of this.entries) {
+    for (const entry of this.entries.values()) {
       const directRelations = entry.related?.length || 0;
-      const backReferences = this.relationIndex.get(id)?.size || 0;
+      const backReferences = this.relationIndex.get(entry.id)?.size || 0;
       const totalConnections = directRelations + backReferences;
       
       if (totalConnections > maxConnections) {
         maxConnections = totalConnections;
-        mostConnected = id;
+        mostConnected = entry.id;
       }
     }
     

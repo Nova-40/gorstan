@@ -18,7 +18,6 @@
 // Controls full multiverse reset logic
 
 import type { LocalGameState } from '../state/gameState';
-import type { NPC } from '../types/NPCTypes';
 
 export interface PlayerSnapshot {
   inventory?: string[];
@@ -117,21 +116,7 @@ function validateGameState(state: unknown): state is LocalGameState {
 /**
  * Creates a hash of game state for backup purposes
  */
-function createGameStateHash(state: LocalGameState): string {
-  const hashData = {
-    stage: state.stage,
-    player: {
-      name: state.player.name,
-      health: state.player.health,
-      score: state.player.score,
-      currentRoom: state.player.currentRoom
-    },
-    currentRoomId: state.currentRoomId,
-    flagCount: Object.keys(state.flags).length
-  };
-  
-  return btoa(JSON.stringify(hashData)).slice(0, 16);
-}
+// Removed unused createGameStateHash (was only for backup hashing; no callers)
 
 /**
  * Main reset engine function - handles all types of game resets

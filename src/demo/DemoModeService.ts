@@ -1,4 +1,5 @@
 import { DEMO } from "@/config";
+import { track } from '@/lib/analytics';
 import { DEMO_COMMAND_WHITELIST } from "./CommandWhitelist";
 import { DEMO_PACKS, DemoPack } from "./DemoPacks";
 import { groqSuggestCommand } from "./GroqClient";
@@ -26,6 +27,7 @@ export class DemoModeService {
     this.stepsExecuted = 0;
     this.warpToRoom(pack.entryRoom);
     this.setOverlayBanner?.("Autoplay Demo — press ESC to regain control");
+  track('demo_start' as any, { pack: pack.id, style: pack.style });
     void this.loop(pack);
   }
 
@@ -33,6 +35,7 @@ export class DemoModeService {
     this.controller?.abort();
     this.status = reason;
     this.setOverlayBanner?.(undefined);
+  track('demo_stop' as any, { reason });
   }
 
   private async loop(pack: DemoPack) {

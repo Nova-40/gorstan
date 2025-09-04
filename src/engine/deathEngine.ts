@@ -18,7 +18,10 @@
 // Manages death events, reset logic, and resurrection mechanics.
 
 import { playSound } from '../utils/soundUtils';
-import { unlockAchievement } from '../logic/achievementEngine';
+let _unlockAchievementFn: ((id: string) => void) | null = null;
+async function achUnlock(id: string) {
+  try { if (!_unlockAchievementFn) { _unlockAchievementFn = (await import('../logic/achievementEngine')).unlockAchievement; } _unlockAchievementFn && _unlockAchievementFn(id); } catch (e) { console.warn('[deathEngine] achievement load failed', e); }
+}
 
 // --- Type Definitions ---
 export interface PlayerState {
@@ -340,8 +343,8 @@ export function triggerDeath(cause: DeathCause, playerState?: PlayerState, locat
 function generateDeathMessages(
   cause: DeathCause, 
   deathStats: DeathStatistics, 
-  playerState: PlayerState,
-  context?: Record<string, any>
+  _playerState: PlayerState,
+  _context?: Record<string, any>
 ): string[] {
   const messages: string[] = [];
   
@@ -375,7 +378,7 @@ function generateDeathMessages(
   messages.push(`This is your ${getOrdinalNumber(deathStats.totalDeaths)} death.`);
 
   // Add special effects descriptions
-  const effects = calculateDeathEffects(cause, deathStats, playerState);
+  const effects = calculateDeathEffects(cause, deathStats, _playerState);
   effects.forEach(effect => {
     if (effect.description) {
       messages.push(effect.description);
@@ -393,7 +396,7 @@ function generateDeathMessages(
 function calculateDeathEffects(
   cause: DeathCause, 
   deathStats: DeathStatistics, 
-  playerState: PlayerState
+  _playerState: PlayerState
 ): DeathEffect[] {
   const effects: DeathEffect[] = [];
 
@@ -464,7 +467,7 @@ function calculateDeathEffects(
 function determineRespawnLocation(
   cause: DeathCause, 
   playerState: PlayerState, 
-  context?: Record<string, any>
+  _context?: Record<string, any>
 ): string {
   // Special respawn locations based on death cause
   switch (cause) {
@@ -523,7 +526,7 @@ function calculateScoreAdjustment(
 
 function calculateInventoryChanges(
   cause: DeathCause, 
-  deathStats: DeathStatistics, 
+  _deathStats: DeathStatistics, 
   playerState: PlayerState
 ): { remove?: string[]; add?: string[] } {
   const changes: { remove?: string[]; add?: string[] } = {};
@@ -553,42 +556,42 @@ function calculateInventoryChanges(
 function triggerDeathAchievements(
   cause: DeathCause, 
   deathStats: DeathStatistics, 
-  playerState: PlayerState
+  _playerState: PlayerState
 ): void {
   // Achievement for first death
   if (deathStats.totalDeaths === 1) {
-    unlockAchievement('first_death');
+  achUnlock('first_death');
   }
 
   // Achievements for specific death counts
   if (deathStats.totalDeaths === 5) {
-    unlockAchievement('death_veteran');
+  achUnlock('death_veteran');
   }
   
   if (deathStats.totalDeaths >= 10) {
-    unlockAchievement('death_master');
+  achUnlock('death_master');
   }
 
   // Achievements for specific death causes
   switch (cause) {
     case 'coin':
-      unlockAchievement('coinDeath');
+  achUnlock('coinDeath');
       break;
     case 'greed':
-      unlockAchievement('greedDeath');
+  achUnlock('greedDeath');
       break;
     case 'paradox':
-      unlockAchievement('paradox_victim');
+  achUnlock('paradox_victim');
       break;
     case 'glitch':
-      unlockAchievement('digital_death');
+  achUnlock('digital_death');
       break;
   }
 
   // Achievement for dying to all causes
   const uniqueDeathCauses = Object.keys(deathStats.deathsByCause).length;
   if (uniqueDeathCauses >= 5) {
-    unlockAchievement('death_collector');
+  achUnlock('death_collector');
   }
 }
 

@@ -2,8 +2,8 @@
 // Quick validation of the AI systems working together
 
 import { unifiedAI } from '../services/unifiedAI';
-import { aiMiniquestService } from '../services/aiMiniquestService';
-import { aylaHints } from '../services/aylaHintSystem';
+// import { aiMiniquestService } from '../services/aiMiniquestService';
+// import { aylaHints } from '../services/aylaHintSystem';
 import MiniquestController from '../engine/miniquestController';
 import type { LocalGameState } from '../state/gameState';
 
@@ -66,7 +66,8 @@ const mockGameState: LocalGameState = {
   inventory: ['map', 'key'],
   conversations: {},
   overhearNPCBanter: false,
-  visitedRooms: ['gorstanhub', 'gorstanvillage']
+  visitedRooms: ['gorstanhub', 'gorstanvillage'],
+  arcade: { active: false, id: null }
 };
 
 const mockRoom = {

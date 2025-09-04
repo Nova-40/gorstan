@@ -18,7 +18,9 @@
 // Blue button warning modal component.
 
 import React from 'react';
-import { AlertTriangle, XCircle } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
+import { RetroModal } from './ui/RetroModal';
+import { Button } from './ui/Button';
 
 interface BlueButtonWarningModalProps {
   isOpen: boolean;
@@ -29,50 +31,34 @@ const BlueButtonWarningModal: React.FC<BlueButtonWarningModalProps> = ({ isOpen,
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay blue-button-warning">
-      <div className="modal-content warning-modal">
-        <div className="modal-header warning-header">
-          <div className="modal-title">
-            <AlertTriangle className="warning-icon" />
-            <h2>⚠️ CRITICAL WARNING</h2>
-          </div>
-          <button className="close-button" onClick={onClose} aria-label="Close">
-            <XCircle size={24} />
-          </button>
+    <RetroModal
+      isOpen
+      onClose={onClose}
+      title="⚠️ CRITICAL WARNING"
+      subtitle="Reality Integrity Breach Imminent"
+      widthClass="max-w-xl"
+      footer={(
+        <Button variant="danger" onClick={onClose} size="sm">I Understand The Consequences</Button>
+      )}
+    >
+      <div className="relative border border-red-500/40 rounded-sm p-4 bg-black/40 overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none" style={{background:"repeating-linear-gradient(0deg, rgba(255,0,0,0.05) 0 2px, transparent 2px 4px)"}} />
+        <div className="flex items-center gap-2 mb-3 text-red-400">
+          <AlertTriangle className="animate-pulse" size={20} />
+          <span className="font-mono text-sm tracking-wide">DO NOT PRESS THIS BUTTON AGAIN</span>
         </div>
-
-        <div className="modal-body warning-body">
-          <div className="warning-display">
-            <div className="warning-screen">
-              <div className="warning-text-container">
-                <div className="warning-line primary">DO NOT PRESS THIS BUTTON AGAIN</div>
-                <div className="warning-line secondary">⚠️ MULTIVERSE STABILITY WARNING ⚠️</div>
-                <div className="warning-line details">
-                  Pressing this button again will trigger a complete reality reset.
-                </div>
-                <div className="warning-line details">
-                  All progress will be lost. All timelines will be affected.
-                </div>
-                <div className="warning-line final">
-                  You have been warned.
-                </div>
-              </div>
-              
-              <div className="warning-effects">
-                <div className="pulse-effect"></div>
-                <div className="scan-line"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="modal-footer warning-footer">
-          <button className="acknowledge-button" onClick={onClose}>
-            I Understand The Consequences
-          </button>
+        <ul className="list-none m-0 p-0 space-y-2 font-mono text-xs">
+          <li className="text-red-300">⚠️ MULTIVERSE STABILITY WARNING ⚠️</li>
+          <li className="text-console">Pressing this button again will trigger a complete reality reset.</li>
+          <li className="text-console">All progress will be lost. All timelines will be affected.</li>
+          <li className="text-red-400 font-semibold pt-2">You have been warned.</li>
+        </ul>
+        <div className="mt-4 h-1 bg-red-600/40 overflow-hidden relative">
+          <div className="absolute inset-y-0 left-0 w-1/3 bg-red-500 animate-[scan_1.2s_linear_infinite]" />
         </div>
       </div>
-    </div>
+      <style>{`@keyframes scan {0%{transform:translateX(-100%)}100%{transform:translateX(400%)}}`}</style>
+    </RetroModal>
   );
 };
 

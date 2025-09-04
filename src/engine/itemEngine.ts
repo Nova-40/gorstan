@@ -17,8 +17,7 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Core game engine module.
 
-import { Room } from '../types/Room';
-import { getItemById, getAllItems, Item } from './items';
+import { getItemById, getAllItems } from './items';
 
 
 
@@ -163,7 +162,7 @@ export function seedItemsInRooms(
 
 
 // --- Function: seedRoomItems ---
-function seedRoomItems(room: RoomData, context?: SeedingContext): SeedingResult {
+function seedRoomItems(room: RoomData, _context?: SeedingContext): SeedingResult {
   try {
     const itemsToAdd: string[] = [];
     const itemsSkipped: string[] = [];
@@ -260,7 +259,7 @@ function generateRoomItems(roomId: string, context?: SeedingContext): ItemData[]
             spawnChance: rule.chance,
             ...(item.spawnRooms && { spawnRooms: item.spawnRooms }),
             ...(item.excludeRooms && { excludeRooms: item.excludeRooms }),
-            requiredFlags: item.requirements?.map(r => r.target).filter(Boolean) as string[] || [],
+            requiredFlags: item.requirements?.map((r: any) => r.target).filter(Boolean) as string[] || [],
             conflictItems: item.conflictItems || []
           });
         }
@@ -289,7 +288,7 @@ function generateRoomItems(roomId: string, context?: SeedingContext): ItemData[]
         spawnChance: randomItem.spawnChance || SPAWN_CONFIG.baseSpawnChance,
         ...(randomItem.spawnRooms && { spawnRooms: randomItem.spawnRooms }),
         ...(randomItem.excludeRooms && { excludeRooms: randomItem.excludeRooms }),
-        requiredFlags: randomItem.requirements?.map(r => r.target).filter(Boolean) as string[] || [],
+  requiredFlags: randomItem.requirements?.map((r: any) => r.target).filter(Boolean) as string[] || [],
         conflictItems: randomItem.conflictItems || []
       };
 
@@ -368,15 +367,7 @@ function shouldSpawnRandomItem(item: ItemData, roomId: string, context?: Seeding
 
 
 
-// --- Function: createSeededRandom ---
-function createSeededRandom(seed: number): () => number {
-  let currentSeed = seed;
-// JSX return block or main return
-  return () => {
-    currentSeed = (currentSeed * 9301 + 49297) % 233280;
-    return currentSeed / 233280;
-  };
-}
+// Removed unused createSeededRandom helper
 
 
 
@@ -446,7 +437,7 @@ export function validateRoomItems(rooms: RoomData[]): {
   try {
     // Build a set of valid item IDs from the item registry
     const allItems = getAllItems();
-    const itemIds = new Set(allItems.map(item => item.id));
+  const itemIds = new Set(allItems.map((item: any) => item.id));
     
     const errors: string[] = [];
     const warnings: string[] = [];

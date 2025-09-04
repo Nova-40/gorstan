@@ -20,9 +20,7 @@
 import type { LocalGameState } from '../state/gameState';
 import { getPlayerName, formatDialogue } from './playerNameUtils';
 import { 
-  addConversationEntry, 
   getNPCConversationHistory, 
-  updateNPCRelationship,
   shouldVaryResponse 
 } from './npcConversationHistory';
 import { 
@@ -70,7 +68,7 @@ export async function getEnhancedNPCResponse(
   console.log(`[Enhanced NPC] 📜 Scripted response for ${npcId}`);
   
   // Fallback to existing enhanced scripted system
-  const playerName = getPlayerName(state);
+  // playerName not required at this stage; personalization handled later if needed
   const history = getNPCConversationHistory(state, npcId);
   
   // Normalize player input for analysis
@@ -199,7 +197,7 @@ function addPersonalTouch(response: string, playerName: string): string {
 /**
  * Add variation to prevent repetitive responses
  */
-function addVariation(response: string, npcId: string, topic: string): string {
+function addVariation(response: string, _npcId: string, _topic: string): string {
   const variations = {
     prefix: [
       "As I was saying, ",

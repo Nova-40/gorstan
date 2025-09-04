@@ -16,13 +16,32 @@
 
 
 import React from 'react';
-import UnifiedModal from './UnifiedModal';
+import { RetroModal } from './ui/RetroModal';
 
-const HelpModal = () => (
-  <UnifiedModal>
-    <h2>Help</h2>
-    <p>This is the help modal content.</p>
-  </UnifiedModal>
+interface HelpModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => (
+  <RetroModal
+    isOpen={isOpen}
+    onClose={onClose}
+    title="Help"
+    subtitle="Quick reference"
+    widthClass="max-w-lg"
+  >
+    <div className="space-y-2 text-sm font-mono">
+      <p className="m-0">Explore rooms, pick up items, and talk to NPCs to uncover Gorstan's secrets.</p>
+      <ul className="list-disc pl-5 space-y-1">
+        <li>Movement: Use on-screen travel menu</li>
+        <li>Inventory: Open inventory modal to review items</li>
+        <li>Conversation: Select an NPC to begin dialogue</li>
+        <li>Save: Use the save game modal to preserve progress</li>
+      </ul>
+      <p className="m-0 text-xs opacity-70">Press Escape to close.</p>
+    </div>
+  </RetroModal>
 );
 
 export default HelpModal;

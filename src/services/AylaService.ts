@@ -142,7 +142,7 @@ export class AylaService {
   /**
    * Layer 2: Find synonym matches
    */
-  private findSynonymMatch(input: string, state: GameState): MatchResult | null {
+  private findSynonymMatch(input: string, _state: GameState): MatchResult | null {
     const categories = ['lore', 'hints', 'books', 'world_state', 'humor'];
     
     for (const category of categories) {
@@ -172,7 +172,7 @@ export class AylaService {
   /**
    * Layer 3: Find fuzzy matches using Levenshtein distance
    */
-  private findFuzzyMatch(input: string, state: GameState): MatchResult | null {
+  private findFuzzyMatch(input: string, _state: GameState): MatchResult | null {
     const words = input.split(' ');
     const categories = ['lore', 'hints', 'books', 'world_state', 'humor'];
     
@@ -205,7 +205,7 @@ export class AylaService {
   /**
    * Layer 4: Keyword scoring system
    */
-  private findKeywordMatch(input: string, state: GameState): MatchResult | null {
+  private findKeywordMatch(input: string, _state: GameState): MatchResult | null {
     const scores: Array<{ score: number; topic: string; responses: string[] }> = [];
     const categories = ['lore', 'hints', 'books', 'world_state', 'humor'];
     
@@ -347,7 +347,7 @@ export class AylaService {
   /**
    * Process and format the response
    */
-  private processResponse(match: MatchResult, context: ConversationContext, sessionId: string): string {
+  private processResponse(match: MatchResult, context: ConversationContext, _sessionId: string): string {
     // Add to conversation history
     context.history.push({
       speaker: 'ayla',

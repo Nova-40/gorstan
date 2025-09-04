@@ -21,7 +21,6 @@ import React, { useState } from 'react';
 
 import { getItemById } from '../engine/items';
 
-import { Room } from '../types/Room';
 
 import { X, Package, Check } from 'lucide-react';
 

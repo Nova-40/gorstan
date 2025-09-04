@@ -6,7 +6,6 @@
 */
 
 import { npcAI } from './npcAI';
-import type { LocalGameState } from '../state/gameState';
 import type { NPCBehaviorContext } from './npcAI';
 
 export interface DialogueTrigger {

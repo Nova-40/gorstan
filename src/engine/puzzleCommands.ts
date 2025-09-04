@@ -23,7 +23,7 @@ import { GameAction, GameMessage } from '../types/GameTypes';
 
 import { LocalGameState } from '../state/gameState';
 
-import type { Puzzle } from '../types/GameTypes';
+// Removed unused Puzzle type import
 
 
 

@@ -20,8 +20,6 @@
 import React from 'react';
 import type { GameAction } from '../types/GameTypes';
 import type { LocalGameState } from '../state/gameState';
-import type { NPC } from '../types/NPCTypes';
-import type { Room } from '../types/Room';
 
 /**
  * Gorstan Dynamic Encounter Engine
@@ -146,7 +144,7 @@ export class DynamicEncounterEngine {
   private buildEncounterConfig(
     type: EncounterType,
     participants: string[],
-    gameState: LocalGameState
+    _gameState: LocalGameState
   ): EncounterConfig {
     const baseConfig: EncounterConfig = {
       type,
@@ -321,7 +319,7 @@ export class DynamicEncounterEngine {
   /**
    * Gets the sequence of messages for an encounter type.
    */
-  private getEncounterSequences(type: EncounterType, participants: string[]): string[] {
+  private getEncounterSequences(type: EncounterType, _participants: string[]): string[] {
     switch (type) {
       case 'ayla_control':
         return [

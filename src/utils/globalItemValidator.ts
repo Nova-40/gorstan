@@ -305,7 +305,7 @@ export function generateItemPlacementReport(roomMap: Record<string, Room>): {
     });
 
 // Variable declaration
-    const item = getItemById(itemId);
+  // const item = getItemById(itemId); // currently unused
 // Variable declaration
     const isProperlyPlaced = itemId === 'dominic' || itemId === 'goldfish_food'
       ? locations.includes('dalesapartment')

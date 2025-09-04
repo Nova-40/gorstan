@@ -14,7 +14,7 @@
   Full licence terms: see EULA.md in the project root.
 */
 
-import React from "react";
+// React import not required with react-jsx runtime
 import BaseDialog from "./a11y/BaseDialog";
 import { usePrefersReducedMotion } from "./hooks/usePrefersReducedMotion";
 

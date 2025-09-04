@@ -17,8 +17,6 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Game module.
 
-import type { Achievement, Puzzle } from '../types/GameTypes';
-import type { NPC } from '../types/NPCTypes';
 
 import { updateScore, applyScoreBonus, applyScorePenalty } from './scoreManager';
 

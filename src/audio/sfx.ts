@@ -25,8 +25,9 @@ export interface SoundEffect {
 export const SFX_REGISTRY: Record<string, SoundEffect> = {
   swordSwing: { src: '/sounds/click.wav', volume: 0.5, playbackRate: 1.2 },
   swordHit:   { src: '/sounds/splat.mp3', volume: 0.6 },
-  parrySuccess: { src: '/sounds/success.wav', volume: 0.7 },
-  parryFail:  { src: '/sounds/fail.wav', volume: 0.5 },
+  // Using portal.mp3 as temporary stand-in for success and click.wav for fail until bespoke variations exist
+  parrySuccess: { src: '/sounds/portal.mp3', volume: 0.55 },
+  parryFail:  { src: '/sounds/click.wav', volume: 0.45 },
   dodge:      { src: '/sounds/click.wav', volume: 0.4, playbackRate: 1.4 },
   spellCast:  { src: '/sounds/portal.mp3', volume: 0.6 },
   fireBolt:   { src: '/sounds/portal-oscillate.mp3', volume: 0.7 },
@@ -40,7 +41,11 @@ export const SFX_REGISTRY: Record<string, SoundEffect> = {
   shock:      { src: '/sounds/energy-hum-books.mp3', volume: 0.5 },
   criticalHit:{ src: '/sounds/wilhelm.mp3', volume: 0.7 },
   stagger:    { src: '/sounds/truckhorn.mp3', volume: 0.5 },
-  riposte:    { src: '/sounds/success.wav', volume: 0.7 }
+  riposte:    { src: '/sounds/portal.mp3', volume: 0.6 },
+  // Rock field trial (temporary mappings)
+  rockGlide:  { src: '/sounds/quiet-breeze.mp3', volume: 0.35, loop: true },
+  rockBounce: { src: '/sounds/portal-oscillate.mp3', volume: 0.5, playbackRate: 1.3 },
+  rockShatter:{ src: '/sounds/splat.mp3', volume: 0.55, playbackRate: 1.4 }
 };
 
 /** Audio manager for game sounds */
@@ -85,7 +90,21 @@ class AudioManager {
       this.audioCache.set(src, audioBuffer);
       return audioBuffer;
     } catch (error) {
-      console.warn(`Failed to load audio: ${src}`, error);
+      // Attempt legacy fallback if path migrated (/sounds -> /audio)
+      if (src.startsWith('/sounds/')) {
+        const fallback = src.replace('/sounds/', '/audio/');
+        try {
+          const response2 = await fetch(fallback);
+          const arrayBuffer2 = await response2.arrayBuffer();
+          const audioBuffer2 = await this.audioContext.decodeAudioData(arrayBuffer2);
+            this.audioCache.set(src, audioBuffer2); // cache under original key
+          return audioBuffer2;
+        } catch (e2) {
+          console.warn(`Failed primary & fallback audio: ${src} -> ${fallback}`, e2);
+        }
+      } else {
+        console.warn(`Failed to load audio: ${src}`, error);
+      }
       return null;
     }
   }

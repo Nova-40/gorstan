@@ -18,7 +18,9 @@
 // Game module.
 
 import React from 'react';
-import { XCircle, Package, Search } from 'lucide-react';
+import { Package, Search } from 'lucide-react';
+import { RetroModal } from './ui/RetroModal';
+import { Button } from './ui/Button';
 
 interface InventoryModalProps {
   items: string[];
@@ -41,63 +43,61 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ items, onClose }
     item.toLowerCase().includes(searchFilter.toLowerCase())
   );
 
-  // JSX return block or main return
   return (
-    <div className="modal-overlay">
-      <div className="modal-box inventory-modal">
-        <div className="modal-header">
-          <div className="modal-title">
-            <Package className="modal-icon" />
-            <h3>Inventory ({items.length} items)</h3>
-          </div>
-          <button className="close-button" onClick={onClose} aria-label="Close">
-            <XCircle className="close-icon" />
-          </button>
+    <RetroModal
+      isOpen
+      onClose={onClose}
+      title={`Inventory (${items.length})`}
+      subtitle={items.length ? 'Search, browse and manage your collected items' : 'Inventory is empty'}
+      footer={(
+        <>
+          <span className="panel-subtle mr-auto text-xs">{filteredItems.length}/{items.length} shown</span>
+          <Button size="sm" variant="secondary" onClick={onClose}>Close</Button>
+        </>
+      )}
+      widthClass="max-w-2xl"
+    >
+      {items.length > 0 && (
+        <div className="relative">
+          <Search size={14} className="absolute left-2 top-1/2 -translate-y-1/2 opacity-60" />
+          <input
+            type="text"
+            placeholder="Search inventory..."
+            value={searchFilter}
+            onChange={(e) => setSearchFilter(e.target.value)}
+            className="w-full bg-black/40 border border-emerald-400/30 rounded-sm pl-7 pr-2 py-1 text-sm font-mono focus:outline-none focus:border-emerald-400/70 placeholder:text-console-dim"
+            autoFocus
+          />
         </div>
-        
-        {items.length > 0 && (
-          <div className="search-container">
-            <Search className="search-icon" />
-            <input
-              type="text"
-              placeholder="Search inventory..."
-              value={searchFilter}
-              onChange={(e) => setSearchFilter(e.target.value)}
-              className="search-input"
-            />
-          </div>
-        )}
-
-        <div className="modal-content">
-          {filteredItems.length > 0 ? (
-            <div className="inventory-grid">
-              {filteredItems.map((item, i) => (
-                <div key={i} className="inventory-item" title={`Details about ${item}`}>
-                  <div className="item-icon">📦</div>
-                  <span className="item-name">{item}</span>
-                </div>
-              ))}
+      )}
+      {filteredItems.length > 0 ? (
+        <div className="grid gap-2 grid-cols-2 md:grid-cols-3 max-h-72 overflow-y-auto pr-1">
+          {filteredItems.map((item, i) => (
+            <div
+              key={i}
+              className="border border-emerald-400/30 bg-black/30 rounded-sm p-2 flex flex-col gap-1 hover:border-emerald-400/60 transition-colors"
+              title={`Details about ${item}`}
+            >
+              <div className="flex items-center gap-2 text-xs font-mono">
+                <span className="opacity-80">📦</span>
+                <span className="truncate flex-1">{item}</span>
+              </div>
             </div>
-          ) : searchFilter ? (
-            <div className="empty-state">
-              <Search className="empty-icon" />
-              <p>No items match "{searchFilter}"</p>
-            </div>
-          ) : (
-            <div className="empty-state">
-              <Package className="empty-icon" />
-              <p>Your inventory is empty.</p>
-              <small>Items you pick up will appear here</small>
-            </div>
-          )}
+          ))}
         </div>
-
-        <div className="modal-footer">
-          <small className="help-text">
-            💡 Use the search box to quickly find items
-          </small>
+      ) : searchFilter ? (
+        <div className="text-center py-8 opacity-80">
+          <Search className="mx-auto mb-2" size={32} />
+          <p className="m-0 text-sm">No items match "{searchFilter}"</p>
         </div>
-      </div>
-    </div>
+      ) : (
+        <div className="text-center py-8 opacity-80">
+          <Package className="mx-auto mb-2" size={32} />
+          <p className="m-0 text-sm">Your inventory is empty.</p>
+          <small className="block mt-1 text-xs">Items you pick up will appear here</small>
+        </div>
+      )}
+      <p className="m-0 text-xs panel-subtle">💡 Use the search box to quickly find items</p>
+    </RetroModal>
   );
 };

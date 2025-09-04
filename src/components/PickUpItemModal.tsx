@@ -18,8 +18,9 @@
 // Game module.
 
 import React, { useState } from 'react';
-import { XCircle, Package, CheckSquare, Square } from 'lucide-react';
-import '../styles/ModalOverlay.css';
+import { CheckSquare, Square } from 'lucide-react';
+import { RetroModal } from './ui/RetroModal';
+import { Button } from './ui/Button';
 
 interface PickUpItemModalProps {
   isOpen: boolean;
@@ -57,84 +58,58 @@ const PickUpItemModal: React.FC<PickUpItemModalProps> = ({ isOpen, items, onClos
 
   // JSX return block or main return
   return (
-    <div className="modal-overlay">
-      <div className="modal-content pickup-modal console-theme">
-        <div className="modal-header">
-          <div className="modal-title">
-            <Package className="modal-icon" />
-            <h2>Pick Up Items</h2>
-          </div>
-          <button className="close-button" onClick={onClose} aria-label="Close">
-            <XCircle size={24} />
-          </button>
-        </div>
-
-        <div className="modal-body">
-          <p className="instruction-text">
-            Select the items you want to pick up from this room:
-          </p>
-
-          {items.length > 1 && (
-            <div className="selection-controls">
-              <button 
-                className="control-button" 
-                onClick={selectAll}
-                disabled={selectedItems.length === items.length}
-              >
-                Select All
-              </button>
-              <button 
-                className="control-button" 
-                onClick={selectNone}
-                disabled={selectedItems.length === 0}
-              >
-                Clear All
-              </button>
-            </div>
-          )}
-
-          <div className="item-list">
-            {items.map((item) => {
-              const isSelected = selectedItems.includes(item);
-              return (
-                <div 
-                  key={item} 
-                  className={`item-option ${isSelected ? 'selected' : ''}`}
-                  onClick={() => toggleItemSelection(item)}
-                >
-                  <div className="checkbox-container">
-                    {isSelected ? (
-                      <CheckSquare className="checkbox checked" />
-                    ) : (
-                      <Square className="checkbox unchecked" />
-                    )}
-                  </div>
-                  <span className="item-name">{item}</span>
-                  <div className="item-icon">📦</div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="modal-footer">
-          <div className="selection-summary">
-            {selectedItems.length > 0 ? (
-              <span>{selectedItems.length} of {items.length} items selected</span>
-            ) : (
-              <span>No items selected</span>
-            )}
-          </div>
-          <button 
-            className="pickup-button console-button" 
-            onClick={handlePickUp} 
+    <RetroModal
+      isOpen
+      onClose={onClose}
+      title="Pick Up Items"
+      subtitle="Select items to add to your inventory"
+      footer={(
+        <>
+          <span className="panel-subtle mr-auto">{selectedItems.length ? `${selectedItems.length} selected` : 'No selection'}</span>
+          <Button size="sm" variant="secondary" onClick={onClose}>Close</Button>
+          <Button
+            size="sm"
             disabled={selectedItems.length === 0}
+            onClick={handlePickUp}
           >
-            Pick Up {selectedItems.length > 0 ? `(${selectedItems.length})` : ''}
-          </button>
+            Pick Up {selectedItems.length > 0 && `(${selectedItems.length})`}
+          </Button>
+        </>
+      )}
+    >
+      {items.length > 1 && (
+        <div className="flex gap-2 mb-2">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={selectAll}
+            disabled={selectedItems.length === items.length}
+          >Select All</Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={selectNone}
+            disabled={selectedItems.length === 0}
+          >Clear All</Button>
         </div>
+      )}
+      <div className="grid gap-2 max-h-72 overflow-y-auto pr-1">
+        {items.map(item => {
+          const isSelected = selectedItems.includes(item);
+          return (
+            <button
+              key={item}
+              onClick={() => toggleItemSelection(item)}
+              className={`w-full text-left border rounded-sm px-2 py-1 flex items-center gap-3 text-sm font-mono transition-colors ${isSelected ? 'bg-black/60 border-emerald-400/70 text-console-bright' : 'bg-black/30 border-emerald-400/20 hover:border-emerald-400/40 text-console'} `}
+            >
+              <span className="inline-block">{isSelected ? <CheckSquare size={14}/> : <Square size={14}/>}</span>
+              <span className="flex-1">{item}</span>
+              <span className="opacity-70">📦</span>
+            </button>
+          );
+        })}
       </div>
-    </div>
+    </RetroModal>
   );
 };
 

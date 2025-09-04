@@ -19,6 +19,8 @@
 
 import React, { useState } from 'react';
 import { Save, Download, Trash2, Calendar, Clock } from 'lucide-react';
+import { RetroModal } from './ui/RetroModal';
+import { Button } from './ui/Button';
 
 interface SaveSlot {
   id: string;
@@ -81,115 +83,94 @@ const SaveGameModal: React.FC<SaveGameModalProps> = ({
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content save-game-modal">
-        <div className="modal-header">
-          <h2 className="modal-title">
-            <Save className="modal-icon" />
-            Save & Load Game
-          </h2>
-          <button className="modal-close" onClick={onClose}>×</button>
+    <RetroModal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Save & Load Game"
+      subtitle="Manage your progression snapshots"
+      footer={(
+        <>
+          <span className="panel-subtle mr-auto">Tip: Ctrl+S opens this menu</span>
+          <Button size="sm" variant="secondary" onClick={onClose}>Close</Button>
+        </>
+      )}
+    >
+      <section className="space-y-3">
+        <h3 className="panel-heading text-sm flex items-center gap-2"><Save size={14}/> Create New Save</h3>
+        <div className="flex gap-2 items-center">
+          <input
+            type="text"
+            value={newSaveName}
+            onChange={(e) => setNewSaveName(e.target.value)}
+            onKeyDown={handleKeyPress}
+            placeholder="Enter save name"
+            maxLength={50}
+            className="flex-1 bg-black/60 border border-emerald-400/30 rounded-sm px-2 py-1 text-console-bright focus:outline-none focus:ring-1 focus:ring-emerald-400/60"
+          />
+          <Button
+            size="sm"
+            onClick={handleSave}
+            disabled={!newSaveName.trim()}
+            variant="primary"
+          >
+            <Save size={14} className="mr-1"/> Save
+          </Button>
         </div>
+      </section>
 
-        <div className="modal-body">
-          {/* New Save Section */}
-          <div className="save-section">
-            <h3>Create New Save</h3>
-            <div className="save-input-group">
-              <input
-                type="text"
-                value={newSaveName}
-                onChange={(e) => setNewSaveName(e.target.value)}
-                onKeyDown={handleKeyPress}
-                placeholder="Enter save name..."
-                className="save-name-input"
-                maxLength={50}
-              />
-              <button
-                onClick={handleSave}
-                disabled={!newSaveName.trim()}
-                className="save-button"
-              >
-                <Save size={16} />
-                Save
-              </button>
-            </div>
-          </div>
-
-          {/* Existing Saves Section */}
-          <div className="saves-section">
-            <h3>Saved Games</h3>
-            {saveSlots.length === 0 ? (
-              <div className="no-saves">
-                <p>No saved games found.</p>
-              </div>
-            ) : (
-              <div className="saves-list">
-                {saveSlots.map((slot) => (
-                  <div
-                    key={slot.id}
-                    className={`save-slot ${selectedSlot === slot.id ? 'selected' : ''}`}
-                    onClick={() => setSelectedSlot(slot.id)}
-                  >
-                    <div className="save-info">
-                      <div className="save-name">{slot.name}</div>
-                      <div className="save-details">
-                        <span className="player-name">{slot.playerName}</span>
-                        <span className="current-room">{slot.currentRoom}</span>
-                        <span className="score">Score: {slot.score}</span>
+      <section className="mt-6 space-y-3">
+        <h3 className="panel-heading text-sm">Saved Games</h3>
+        {saveSlots.length === 0 ? (
+          <div className="panel-subtle">No saved games found.</div>
+        ) : (
+          <div className="max-h-72 overflow-y-auto pr-1 space-y-2">
+            {saveSlots.map(slot => {
+              const selected = selectedSlot === slot.id;
+              return (
+                <div
+                  key={slot.id}
+                  onClick={() => setSelectedSlot(slot.id)}
+                  className={
+                    `cursor-pointer border rounded-sm p-2 transition-colors text-console text-xs ${selected ? 'border-emerald-400/70 bg-black/60' : 'border-emerald-400/20 hover:border-emerald-400/40 bg-black/30'}`
+                  }
+                >
+                  <div className="flex justify-between items-start gap-3">
+                    <div className="space-y-1">
+                      <div className="text-console-bright font-mono text-sm flex items-center gap-2">
+                        <span>{slot.name}</span>
+                        <span className="panel-subtle">Score {slot.score}</span>
                       </div>
-                      <div className="save-metadata">
-                        <span className="timestamp">
-                          <Calendar size={12} />
-                          {formatTimestamp(slot.timestamp)}
-                        </span>
-                        <span className="playtime">
-                          <Clock size={12} />
-                          {formatPlayTime(slot.playTime)}
-                        </span>
+                      <div className="panel-subtle flex flex-wrap gap-x-3 gap-y-1">
+                        <span>{slot.playerName}</span>
+                        <span>{slot.currentRoom}</span>
+                        <span className="inline-flex items-center gap-1"><Calendar size={10}/> {formatTimestamp(slot.timestamp)}</span>
+                        <span className="inline-flex items-center gap-1"><Clock size={10}/> {formatPlayTime(slot.playTime)}</span>
                       </div>
                     </div>
-                    <div className="save-actions">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onLoad(slot.id);
-                        }}
-                        className="load-button"
-                        title="Load this save"
+                    <div className="flex flex-col gap-2">
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={(e) => { e.stopPropagation(); onLoad(slot.id); }}
                       >
-                        <Download size={16} />
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (confirm(`Delete save "${slot.name}"?`)) {
-                            onDelete(slot.id);
-                          }
-                        }}
-                        className="delete-button"
-                        title="Delete this save"
+                        <Download size={12} className="mr-1"/> Load
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="danger"
+                        onClick={(e) => { e.stopPropagation(); if (confirm(`Delete save \"${slot.name}\"?`)) onDelete(slot.id); }}
                       >
-                        <Trash2 size={16} />
-                      </button>
+                        <Trash2 size={12} className="mr-1"/> Delete
+                      </Button>
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
+                </div>
+              );
+            })}
           </div>
-        </div>
-
-        <div className="modal-footer">
-          <div className="save-hint">
-            <p>💡 Tip: Use Ctrl+S to quickly open this menu</p>
-          </div>
-          <button onClick={onClose} className="close-button">
-            Close
-          </button>
-        </div>
-      </div>
-    </div>
+        )}
+      </section>
+    </RetroModal>
   );
 };
 

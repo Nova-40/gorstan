@@ -17,7 +17,7 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Core game engine module.
 
-import { Room } from '../types/Room';
+// Removed unused Room import
 
 // Global state for scene management
 const sceneExecutionHistory = new Map<string, { count: number; lastExecuted: number; totalTime: number; errors: number }>();
@@ -36,7 +36,7 @@ const sceneStats = {
   averageExecutionTime: 0,
   lastExecuted: 0
 };
-const MAX_CACHE_SIZE = 100;
+// Removed unused MAX_CACHE_SIZE constant
 
 // Global scene registry
 const scenes = new Map<string, Scene>();
@@ -298,15 +298,11 @@ interface SceneExecutionData {
 }
 
 
-interface SceneCacheEntry {
-  readonly scene: Scene;
-  readonly timestamp: number;
-  readonly accessCount: number;
-}
+// Removed unused SceneCacheEntry interface
 
 
 // Variable declaration
-const CACHE_DURATION = 60000; 
+// Removed unused CACHE_DURATION constant
 // Variable declaration
 const PERFORMANCE_THRESHOLD = 1000; 
 
@@ -352,7 +348,7 @@ export class SceneFlowAnalyzer {
   identifyBottlenecks(): SceneBottleneck[] {
     const bottlenecks: SceneBottleneck[] = [];
 
-    for (const [sceneId, scene] of this.sceneRegistry) {
+  for (const [sceneId, scene] of this.sceneRegistry) {
       const executionData = this.executionHistory.get(sceneId);
       
       if (scene.choices && scene.choices.length > 5) {
@@ -484,7 +480,7 @@ export class SceneRecommendationEngine {
   recommendNextScene(currentScene: string, playerState: PlayerState): string[] {
     const recommendations: Array<{ sceneId: string; relevance: number }> = [];
 
-    for (const [sceneId, scene] of this.sceneRegistry) {
+  for (const [sceneId, _scene] of this.sceneRegistry) {
       if (sceneId === currentScene) continue;
 
       const context: SceneContext = {
@@ -496,9 +492,8 @@ export class SceneRecommendationEngine {
         gameTime: Date.now()
       };
 
-      const relevance = this.calculateSceneRelevance(sceneId, context);
-
-            if (relevance > 0) {
+  const relevance = this.calculateSceneRelevance(sceneId, context);
+  if (relevance > 0) {
         recommendations.push({ sceneId, relevance });
       }
     }
@@ -696,7 +691,7 @@ export class ScenePerformanceMonitor {
     };
   }
 
-  private identifySlowOperations(sceneId: string): string[] {
+  private identifySlowOperations(_sceneId: string): string[] {
     return [
       'Complex condition evaluation',
       'Multiple state updates',
@@ -704,7 +699,7 @@ export class ScenePerformanceMonitor {
     ];
   }
 
-  private generateOptimizationRecommendations(sceneId: string, averageTime: number): string[] {
+  private generateOptimizationRecommendations(_sceneId: string, averageTime: number): string[] {
     const recommendations: string[] = [];
 
     if (averageTime > PERFORMANCE_THRESHOLD * 2) {
@@ -719,192 +714,6 @@ export class ScenePerformanceMonitor {
 
     return recommendations;
   }
-}
-
-
-
-// --- Function: initializeDefaultScenes ---
-function initializeDefaultScenes(): void {
-  
-  registerScene({
-    id: 'goldfishEscape',
-    title: 'The Goldfish Dilemma',
-    category: 'social',
-    tags: ['moral_choice', 'npc_interaction', 'pet'],
-    messages: [
-      '💦 The orb tank is heavy. Water sloshes out, soaking your feet.',
-      '🐟 The fish stares at you. Do you really want to take Dominic out of water?',
-      '⚠️ Taking him might upset Polly — it\'s the only thing she really cares about.'
-    ],
-    actions: [
-      {
-        type: 'setFlag',
-        target: 'consideringDominic',
-        value: true
-      }
-    ],
-    choices: [
-      {
-        id: 'take_dominic',
-        text: 'Take Dominic anyway',
-        requirements: {
-          traits: ['compassionate']
-        },
-        action: (context: SceneContext) => {
-          context.appendMessage('🐟 You carefully lift the orb tank. Dominic swims in frantic circles.');
-          context.setGameState(prev => ({
-            ...prev,
-            inventory: [...(prev.inventory || []), 'dominic_in_tank'],
-            flags: {
-              ...prev.flags,
-              tookDominic: true,
-              pollyWillBeUpset: true,
-              moral_weight: ((prev.flags?.moral_weight as number) || 0) + 1
-            }
-          }));
-        }
-      },
-      {
-        id: 'leave_dominic',
-        text: 'Leave Dominic where he is',
-        action: (context: SceneContext) => {
-          context.appendMessage('🐟 You decide to leave Dominic in peace. He seems grateful.');
-          context.setGameState(prev => ({
-            ...prev,
-            flags: {
-              ...prev.flags,
-              leftDominic: true,
-              showedMercy: true,
-              karma_points: ((prev.flags?.karma_points as number) || 0) + 1
-            }
-          }));
-        }
-      },
-      {
-        id: 'talk_to_dominic',
-        text: 'Try to communicate with Dominic',
-        requirements: {
-          traits: ['animal_speaker', 'telepathic']
-        },
-        action: (context: SceneContext) => {
-          context.appendMessage('🐟 You focus your mind and attempt to reach Dominic telepathically...');
-          context.appendMessage('💭 "Help... me..." you hear in your mind. Dominic is asking for rescue!');
-          context.setGameState(prev => ({
-            ...prev,
-            flags: {
-              ...prev.flags,
-              spokeWithDominic: true,
-              understands_animal_suffering: true
-            }
-          }));
-        },
-        nextScene: 'dominicRescuePlan'
-      }
-    ],
-    effects: {
-      mood: 'tense',
-      atmosphere: 'moral_dilemma'
-    }
-  });
-
-  
-  registerScene({
-    id: 'libraryDiscovery',
-    title: 'Ancient Library',
-    category: 'exploration',
-    tags: ['knowledge', 'magic', 'discovery'],
-    messages: [
-      '📚 You discover a hidden library filled with ancient tomes.',
-      '✨ The books seem to glow with an otherworldly light.',
-      '🔮 One particular tome catches your attention...'
-    ],
-    conditions: [
-      {
-        type: 'hasFlag',
-        value: 'hasLibraryKey'
-      }
-    ],
-    choices: [
-      {
-        id: 'read_tome',
-        text: 'Read the glowing tome',
-        requirements: {
-          traits: ['scholar', 'literate']
-        },
-        action: (context: SceneContext) => {
-          context.appendMessage('📖 Your scholarly training allows you to decipher the ancient text.');
-          context.appendMessage('🌟 You learn a powerful incantation!');
-          context.setGameState(prev => ({
-            ...prev,
-            flags: { ...prev.flags, learnedAncientSecret: true },
-            score: (prev.score || 0) + 10,
-            traits: [...new Set([...(prev.traits || []), 'arcane_knowledge'])]
-          }));
-        }
-      },
-      {
-        id: 'search_shelves',
-        text: 'Search the shelves for useful items',
-        action: (context: SceneContext) => {
-          context.appendMessage('🔍 You find a mysterious scroll hidden behind the books.');
-          context.setGameState(prev => ({
-            ...prev,
-            inventory: [...(prev.inventory || []), 'mysterious_scroll']
-          }));
-        }
-      }
-    ],
-    effects: {
-      mood: 'mysterious',
-      atmosphere: 'ancient_knowledge',
-      lighting: 'ethereal'
-    }
-  });
-
-  
-  registerScene({
-    id: 'dominicRescuePlan',
-    title: 'Dominic\'s Rescue Plan',
-    category: 'story',
-    tags: ['animal_rescue', 'planning', 'empathy'],
-    dependencies: ['goldfishEscape'],
-    messages: [
-      '🐟 Dominic explains his situation telepathically.',
-      '💭 "Polly means well, but this tank is too small. I dream of the river."',
-      '🌊 You sense his longing for flowing water and freedom.'
-    ],
-    choices: [
-      {
-        id: 'promise_river_trip',
-        text: 'Promise to take him to the river',
-        action: (context: SceneContext) => {
-          context.appendMessage('🤝 You promise Dominic you\'ll find a way to get him to natural water.');
-          context.setGameState(prev => ({
-            ...prev,
-            flags: {
-              ...prev.flags,
-              promisedDominicFreedom: true,
-              active_quest_dominic_rescue: true
-            }
-          }));
-        }
-      },
-      {
-        id: 'suggest_bigger_tank',
-        text: 'Suggest convincing Polly to get a bigger tank',
-        action: (context: SceneContext) => {
-          context.appendMessage('🏠 Dominic considers this... "Better than here, but still not home."');
-          context.setGameState(prev => ({
-            ...prev,
-            flags: {
-              ...prev.flags,
-              suggestedBiggerTank: true
-            }
-          }));
-        }
-      }
-    ]
-  });
 }
 
 
@@ -1081,50 +890,7 @@ function validateSceneContext(context: SceneContext): boolean {
 
 
 
-// --- Function: getSceneWithCache ---
-function getSceneWithCache(sceneId: string): Scene | null {
-  try {
-    const cached = sceneCache.get(sceneId);
-        if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-      sceneStats.cacheHits++;
-
-      
-      sceneCache.set(sceneId, {
-        ...cached,
-        accessCount: cached.accessCount + 1
-      });
-
-      return cached.scene;
-    }
-
-    sceneStats.cacheMisses++;
-
-    const scenes = new Map<string, Scene>(); // This would typically be injected
-    const scene = scenes.get(sceneId);
-        if (scene) {
-      
-      if (sceneCache.size >= MAX_CACHE_SIZE) {
-        const oldestKey = Array.from(sceneCache.entries())
-          .sort(([, a], [, b]) => a.timestamp - b.timestamp)[0]?.[0];
-                if (oldestKey) {
-          sceneCache.delete(oldestKey);
-        }
-      }
-
-      sceneCache.set(sceneId, {
-        scene,
-        timestamp: Date.now(),
-        accessCount: 1
-      });
-      return scene;
-    }
-
-    return null;
-  } catch (error) {
-    console.error('[SceneEngine] Error getting scene from cache:', error);
-    return null;
-  }
-}
+// Removed unused getSceneWithCache helper
 
 
 
@@ -1284,9 +1050,7 @@ function executeSceneActions(
     actions.forEach((action, index) => {
       try {
         
-        if (action.conditional && !evaluateActionCondition(action, context)) {
-          return;
-        }
+  // Conditional action evaluation removed (always execute when reached)
 
         switch (action.type) {
           case 'message':
@@ -1419,79 +1183,11 @@ function executeSceneActions(
 
 
 
-// --- Function: evaluateActionCondition ---
-function evaluateActionCondition(action: SceneAction, context: SceneContext): boolean {
-  
-  return true;
-}
+// Removed unused evaluateActionCondition helper (conditional handling simplified)
 
 
 
-// --- Function: displaySceneChoices ---
-function displaySceneChoices(
-  choices: readonly SceneChoice[],
-  context: SceneContext
-): { available: number; messagesAdded: number; nextScenes: string[] } {
-  const result: { available: number; messagesAdded: number; nextScenes: string[] } = {
-    available: 0,
-    messagesAdded: 0,
-    nextScenes: []
-  };
-
-  try {
-    // Filter choices to only show available ones
-    const availableChoices = choices.filter(choice => {
-      // Check if choice is disabled
-      if (choice.disabled) return false;
-
-      // Check choice condition
-      if (choice.condition && !choice.condition(context)) return false;
-
-      // Check choice requirements
-      if (choice.requirements && !checkChoiceRequirements(choice.requirements, context)) return false;
-
-      // Check choice cooldown
-      if (choice.cooldown && isChoiceOnCooldown(choice.id, choice.cooldown)) return false;
-
-      return true;
-    });
-
-    if (availableChoices.length === 0) {
-      context.appendMessage('🚫 No valid choices available.', 'warning');
-      result.messagesAdded++;
-      return result;
-    }
-
-    context.appendMessage('Choose your action:', 'choice-prompt');
-    result.messagesAdded++;
-
-    availableChoices.forEach((choice, index) => {
-      let choiceText = `${index + 1}. ${choice.text}`;
-
-      // Add requirement hints for disabled choices
-      if (choice.requirements) {
-        const missingReqs = getMissingRequirements(choice.requirements, context);
-        if (missingReqs.length > 0) {
-          choiceText += ` [Requires: ${missingReqs.join(', ')}]`;
-        }
-      }
-
-      context.appendMessage(choiceText, 'choice');
-      result.messagesAdded++;
-
-      // Track next scenes for navigation
-      if (choice.nextScene) {
-        result.nextScenes.push(choice.nextScene);
-      }
-    });
-
-    result.available = availableChoices.length;
-    return result;
-  } catch (error) {
-    console.error('[SceneEngine] Error displaying choices:', error);
-    return result;
-  }
-}
+// Removed unused displaySceneChoices helper (UI layer now handles rendering)
 
 
 
@@ -1539,65 +1235,12 @@ function checkChoiceRequirements(requirements: SceneChoice['requirements'], cont
 
 
 // --- Function: getMissingRequirements ---
-function getMissingRequirements(requirements: SceneChoice['requirements'], context: SceneContext): string[] {
-  const missing: string[] = [];
-
-  try {
-    if (!requirements) return missing;
-
-    
-    requirements.flags?.forEach(flag => {
-      if (!context.flags?.[flag] && !context.player?.flags?.[flag]) {
-        missing.push(`flag: ${flag}`);
-      }
-    });
-
-    
-    requirements.items?.forEach(item => {
-      if (!context.player?.inventory?.includes(item)) {
-        missing.push(`item: ${item}`);
-      }
-    });
-
-    
-    requirements.traits?.forEach(trait => {
-      if (!context.player?.traits?.includes(trait)) {
-        missing.push(`trait: ${trait}`);
-      }
-    });
-
-    
-    if (requirements.health && (context.player?.health || 0) < requirements.health) {
-      missing.push(`health: ${requirements.health}+`);
-    }
-
-    
-    if (requirements.score && (context.player?.score || 0) < requirements.score) {
-      missing.push(`score: ${requirements.score}+`);
-    }
-
-    
-    if (requirements.level && (context.player?.level || 0) < requirements.level) {
-      missing.push(`level: ${requirements.level}+`);
-    }
-
-    return missing;
-  } catch {
-    return missing;
-  }
-}
+// Removed unused getMissingRequirements helper
 
 
 
 // --- Function: isChoiceOnCooldown ---
-function isChoiceOnCooldown(choiceId: string, cooldown: number): boolean {
-  try {
-    const lastUsed = choiceCooldowns.get(choiceId);
-        return lastUsed ? Date.now() - lastUsed < cooldown : false;
-  } catch {
-    return false;
-  }
-}
+// Removed unused isChoiceOnCooldown helper
 
 
 
@@ -1676,7 +1319,7 @@ function updateSceneExecutionTracking(sceneId: string, executionTime: number): v
 
 
 // --- Function: updateSceneStats ---
-function updateSceneStats(success: boolean, executionTime: number): void {
+function updateSceneStats(success: boolean, _executionTime: number): void {
   try {
     sceneStats.totalExecuted++;
     sceneStats.lastExecuted = Date.now();
@@ -2004,22 +1647,15 @@ export function clearSceneCache(): void {
 // --- Function: resetSceneStats ---
 export function resetSceneStats(): void {
   try {
-    // Reset scene execution statistics
-    const stats = {
-      totalExecuted: 0,
-      successfulExecutions: 0,
-      failedExecutions: 0,
-      mostExecutedScenes: {} as Record<string, number>,
-      averageExecutionTime: 0,
-      lastExecuted: 0
-    };
-
     sceneExecutionHistory.clear();
-    choiceCooldowns.clear();
+    sceneStats.totalExecuted = 0;
+    sceneStats.successfulExecutions = 0;
+    sceneStats.failedExecutions = 0;
+    sceneStats.mostExecutedScenes = {} as Record<string, number>;
+    sceneStats.averageExecutionTime = 0;
+    sceneStats.lastExecuted = 0;
     console.log('[SceneEngine] Scene statistics reset');
   } catch (error) {
     console.error('[SceneEngine] Error resetting scene stats:', error);
   }
 }
-
-initializeDefaultScenes();

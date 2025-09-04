@@ -108,7 +108,7 @@ function isForbiddenTopic(intentResult: IntentResult, persona: NPCPersona, conte
 /**
  * Generate a deflection response for forbidden topics
  */
-function generateDeflection(persona: NPCPersona, intentResult: IntentResult, context: ContextSnapshot): string {
+function generateDeflection(persona: NPCPersona, _intentResult: IntentResult, context: ContextSnapshot): string {
   const deflections = [
     "I can guide, but I won't override your discovery.",
     "Some things are better experienced than explained.",
@@ -174,7 +174,7 @@ function checkAskTwiceRule(utterance: string, memory: NPCMemoryState, persona: N
 /**
  * Generate a direct solution when asked twice
  */
-function generateDirectSolution(query: string, memory: NPCMemoryState): string {
+function generateDirectSolution(query: string, _memory: NPCMemoryState): string {
   // This would contain specific puzzle solutions
   if (query.includes('coin') || query.includes('schrodinger')) {
     return "Alright, since you asked twice: The Schrödinger coin exists in two states. Pick it up to collapse it into being unusable, or leave it to keep it usable for the extrapolator. The choice affects what you can do in the library.";
@@ -190,7 +190,7 @@ function generateDirectSolution(query: string, memory: NPCMemoryState): string {
 /**
  * Get response template for intent and NPC
  */
-function getResponseTemplate(npcId: string, intent: string, context: ContextSnapshot): ResponseTemplate {
+function getResponseTemplate(npcId: string, intent: string, _context: ContextSnapshot): ResponseTemplate {
   // Load NPC-specific templates (simplified for now)
   const templates = getTemplatesForNPC(npcId);
   
@@ -208,7 +208,7 @@ function getResponseTemplate(npcId: string, intent: string, context: ContextSnap
 /**
  * Get templates for a specific NPC (simplified implementation)
  */
-function getTemplatesForNPC(npcId: string): Record<string, ResponseTemplate> {
+function getTemplatesForNPC(_npcId: string): Record<string, ResponseTemplate> {
   // This would be expanded with full template libraries
   const commonTemplates: Record<string, ResponseTemplate> = {
     greeting: {
@@ -254,8 +254,8 @@ function getTemplatesForNPC(npcId: string): Record<string, ResponseTemplate> {
 function applyPersonaToTemplate(
   template: ResponseTemplate,
   persona: NPCPersona,
-  memorySummary: any,
-  context: ContextSnapshot
+  _memorySummary: any,
+  _context: ContextSnapshot
 ): string {
   let response = template.base;
   
@@ -288,8 +288,8 @@ function applyPersonaToTemplate(
 function addPersonalityTouches(
   response: string,
   persona: NPCPersona,
-  context: ContextSnapshot,
-  memorySummary: any
+  _context: ContextSnapshot,
+  _memorySummary: any
 ): string {
   // Add contractions or expand them based on speaking style
   if (persona.speaking_style.use_contractions) {
@@ -324,7 +324,7 @@ function addPersonalityTouches(
 /**
  * Add memory references to make responses feel continuous
  */
-function addMemoryReferences(response: string, memorySummary: any, persona: NPCPersona): string {
+function addMemoryReferences(response: string, memorySummary: any, _persona: NPCPersona): string {
   if (memorySummary.relationshipStatus === 'trusted' && Math.random() < 0.3) {
     const memoryTouches = [
       "As we discussed before,",

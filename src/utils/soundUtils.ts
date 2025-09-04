@@ -24,7 +24,14 @@ let ambientAudio: HTMLAudioElement | null = null;
  */
 export function playSound(filename: string): void {
   try {
-    const audio = new Audio(`/audio/${filename}.mp3`);
+    const audio = new Audio(`/sounds/${filename}.mp3`);
+    audio.onerror = () => {
+      if (!audio.src.includes('/audio/')) {
+        audio.src = `/audio/${filename}.mp3`;
+        audio.load();
+        audio.play().catch(()=>{});
+      }
+    };
     audio.volume = 0.5;
     audio.play().catch(err => {
       console.warn(`Sound ${filename} could not be played:`, err);
@@ -39,7 +46,14 @@ export function playSound(filename: string): void {
  */
 export function playClickSound(): void {
   try {
-    const audio = new Audio('/audio/click.wav');
+    const audio = new Audio('/sounds/click.wav');
+    audio.onerror = () => {
+      if (!audio.src.includes('/audio/')) {
+        audio.src = '/audio/click.wav';
+        audio.load();
+        audio.play().catch(()=>{});
+      }
+    };
     audio.volume = 0.5;
     audio.play().catch(err => {
       console.warn('Click sound blocked:', err);
@@ -54,7 +68,14 @@ export function playClickSound(): void {
  */
 export function playAmbientAudio(enabled: boolean = true): void {
   if (!ambientAudio) {
-    ambientAudio = new Audio('/audio/ambient.mp3');
+    ambientAudio = new Audio('/sounds/ambient.mp3');
+    ambientAudio.onerror = () => {
+      if (ambientAudio && !ambientAudio.src.includes('/audio/')) {
+        ambientAudio.src = '/audio/ambient.mp3';
+        ambientAudio.load();
+        ambientAudio.play().catch(()=>{});
+      }
+    };
     ambientAudio.loop = true;
   }
   

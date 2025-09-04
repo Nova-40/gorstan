@@ -17,15 +17,13 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Game module.
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import TeleportTransition from './animations/TeleportTransition';
 
-import { Button } from './button';
+import { Button } from './ui/Button';
 
-import { GameStateContext } from '../state/gameState';
-
-import { Room } from '../types/Room';
+// import { GameStateContext } from '../state/gameState';
 
 
 
@@ -116,7 +114,8 @@ const TravelMenu: React.FC<TravelMenuProps> = ({
   
   const [selectedDestinationId, setSelectedDestinationId] = useState<string | null>(null);
 // Variable declaration
-  const game = React.useContext(GameStateContext);
+  // game state context currently unused (retain hook if future logic needs it)
+  // const game = useContext(GameStateContext);
 
 // Variable declaration
   const totalPages = Math.ceil(destinations.length / roomsPerPage);

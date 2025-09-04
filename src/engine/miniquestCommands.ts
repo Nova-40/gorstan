@@ -23,7 +23,6 @@ import { GameAction, GameMessage } from '../types/GameTypes';
 
 import { LocalGameState } from '../state/gameState';
 
-import type { Miniquest } from '../types/GameTypes';
 
 
 

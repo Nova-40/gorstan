@@ -659,7 +659,7 @@ export function toggleDebugMode(): boolean {
 
 // --- Function: maybeTriggerInquisitionTrap ---
 export function maybeTriggerInquisitionTrap(
-  roomId: string,
+  _roomId: string,
   playerState: PlayerState,
   appendMessage: (msg: string) => void
 ): void {
@@ -697,7 +697,7 @@ export function maybeTriggerInquisitionTrap(
 
 // --- Function: maybeTriggerBugblatterTrap ---
 export function maybeTriggerBugblatterTrap(
-  roomId: string,
+  _roomId: string,
   playerState: PlayerState,
   appendMessage: (msg: string) => void
 ): void {
@@ -861,39 +861,6 @@ export function getTrapCount(filter?: {
   } catch (error) {
     console.error("[TrapEngine] Error getting trap count:", error);
     return 0;
-  }
-}
-
-
-// --- Function: getWeightedRandom ---
-function getWeightedRandom(weights: Record<string, number>): string {
-  try {
-    const totalWeight = Object.values(weights).reduce((sum, weight) => sum + weight, 0);
-    if (totalWeight === 0) return Object.keys(weights)[0] || 'default';
-
-    let random = Math.random() * totalWeight;
-
-    for (const [key, weight] of Object.entries(weights)) {
-      random -= weight;
-      if (random <= 0) return key;
-    }
-
-    return Object.keys(weights)[0] || 'default';
-  } catch (error) {
-    console.error("[TrapEngine] Error in weighted random selection:", error);
-    return 'default';
-  }
-}
-
-
-// --- Function: getSeverityIcon ---
-function getSeverityIcon(severity?: string): string {
-  switch (severity) {
-    case 'light': return '⚠️';
-    case 'moderate': return '⚡';
-    case 'severe': return '💥';
-    case 'lethal': return '☠️';
-    default: return '⚠️';
   }
 }
 

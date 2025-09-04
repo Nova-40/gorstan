@@ -19,7 +19,7 @@
 
 import { ContextSnapshot } from './context';
 import { NPCMemoryState } from './memory';
-import { getPersona } from './personas';
+// Removed unused getPersona import
 
 export interface ProactivePrompt {
   npcId: string;
@@ -87,7 +87,6 @@ function evaluateNPCPrompt(
   context: ContextSnapshot,
   memory: NPCMemoryState
 ): ProactivePrompt | null {
-  const persona = getPersona(npcId);
   
   // Ayla's specialized proactive behaviors
   if (npcId === 'ayla') {
@@ -190,7 +189,7 @@ function evaluateAylaPrompts(context: ContextSnapshot, memory: NPCMemoryState): 
 /**
  * Polly's urgent prompts during takeover
  */
-function evaluatePollyUrgency(context: ContextSnapshot, memory: NPCMemoryState): ProactivePrompt | null {
+function evaluatePollyUrgency(context: ContextSnapshot, _memory: NPCMemoryState): ProactivePrompt | null {
   if (!context.timers.pollyTakeover?.active) return null;
   
   const timeRemaining = context.timers.pollyTakeover.timeRemaining;
@@ -238,7 +237,7 @@ function evaluateWendellLibraryPrompts(context: ContextSnapshot, memory: NPCMemo
 /**
  * Chef's cooking context prompts
  */
-function evaluateChefPrompts(context: ContextSnapshot, memory: NPCMemoryState): ProactivePrompt | null {
+function evaluateChefPrompts(context: ContextSnapshot, _memory: NPCMemoryState): ProactivePrompt | null {
   // Flash when ingredients are combined incorrectly
   if (context.recentConsoleEvents.includes('cooking_failed')) {
     return {
@@ -260,7 +259,7 @@ function evaluateChefPrompts(context: ContextSnapshot, memory: NPCMemoryState): 
 /**
  * Dominic's system observations
  */
-function evaluateDominicPrompts(context: ContextSnapshot, memory: NPCMemoryState): ProactivePrompt | null {
+function evaluateDominicPrompts(context: ContextSnapshot, _memory: NPCMemoryState): ProactivePrompt | null {
   // Flash when system anomalies occur
   if (context.recentConsoleEvents.includes('glitch_detected')) {
     return {

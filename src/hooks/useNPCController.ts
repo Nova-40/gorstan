@@ -21,7 +21,6 @@ import { useEffect } from 'react';
 import { useGameState } from '../state/gameState';
 import { useFlags } from './useFlags';
 import { useModuleLoader } from './useModuleLoader';
-import { useTimers } from './useTimers';
 // Adjust the import according to the actual export in flagRegistry.ts
 import { FlagMap } from '../state/flagRegistry';
 
@@ -31,7 +30,7 @@ export const useNPCController = () => {
   const { state, dispatch } = useGameState();
   const { hasFlag, clearFlag, setFlag } = useFlags();
   const { loadModule } = useModuleLoader();
-  const { setTimer } = useTimers();
+  // removed unused setTimer
 
 // Variable declaration
   const room = state.roomMap?.[state.currentRoomId] || null;
@@ -40,7 +39,6 @@ export const useNPCController = () => {
 // Variable declaration
   const debugFlags = FlagMap.debug;
 // Variable declaration
-  const systemFlags = FlagMap.system;
 
   // Optimized unified NPC movement system
   useEffect(() => {

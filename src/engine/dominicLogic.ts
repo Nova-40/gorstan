@@ -19,7 +19,6 @@
 
 import { playSound } from '../utils/soundUtils';
 import { triggerDeath } from './deathEngine';
-import { dispatch } from '../state/dispatch';
 import { appendToConsole } from '../ui/TerminalConsole';
 
 export function triggerDominicPickupWarning(): void {

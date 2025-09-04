@@ -18,18 +18,11 @@
 // Handles NPC logic, memory, or rendering.
 
 import { pickRandom, chance } from '../utils/random';
-import type { NPC } from '../types/NPCTypes';
 import type { LocalGameState } from '../state/gameState';
 
 // Import enhanced NPC intelligence
-import { getPlayerName, formatDialogue } from '../utils/playerNameUtils';
-import { 
-  getEnhancedNPCResponse, 
-} from '../utils/enhancedNPCResponse';
-import { 
-  addConversationEntry, 
-  updateNPCRelationship 
-} from '../utils/npcConversationHistory';
+import { formatDialogue } from '../utils/playerNameUtils';
+import { getEnhancedNPCResponse } from '../utils/enhancedNPCResponse';
 
 import { PlayerState, NPCState } from '../types/npcMemory';
 
@@ -371,7 +364,7 @@ export function getWanderingNPCResponse(
   npcId: string,
   topic: string,
   playerState: PlayerState,
-  npcState: NPCState
+  _npcState: NPCState
 ): string {
 
   let dialogue: DialogueTree;
@@ -462,7 +455,7 @@ export async function getEnhancedWanderingNPCResponse(
 
 
 // --- Function: getWanderingNPCIdleLine ---
-export function getWanderingNPCIdleLine(npcId: string, playerState: PlayerState): string | null {
+export function getWanderingNPCIdleLine(npcId: string, _playerState: PlayerState): string | null {
   const idleLines: Record<string, string[]> = {
     mr_wendell: [
       "*stands perfectly motionless, watching*",
@@ -510,7 +503,7 @@ export function getWanderingNPCIdleLine(npcId: string, playerState: PlayerState)
 
 
 // --- Function: getNPCInteractionLine ---
-export function getNPCInteractionLine(npc1: string, npc2: string): string | null {
+export function getNPCInteractionLine(_npc1: string, _npc2: string): string | null {
   const interactions: Record<string, Record<string, string[]>> = {
     ayla: {
       polly: ["*Ayla's presence causes Polly to step back nervously*", "*gentle but firm* You don't belong here right now."],
@@ -528,12 +521,7 @@ export function getNPCInteractionLine(npc1: string, npc2: string): string | null
   };
 
 // Variable declaration
-  const npc1Interactions = interactions[npc1];
-  if (npc1Interactions && npc1Interactions[npc2]) {
-// Variable declaration
-    const lines = npc1Interactions[npc2];
-    return pickRandom(lines);
-  }
-
-  return null;
+  const npc1Interactions = interactions[_npc1];
+  const lines = npc1Interactions?.[_npc2];
+  return lines && lines.length ? pickRandom(lines) : null;
 }

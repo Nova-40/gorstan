@@ -65,7 +65,8 @@ const testGameState: LocalGameState = {
   inventory: ['map', 'key'],
   conversations: {},
   overhearNPCBanter: false,
-  visitedRooms: ['gorstanhub', 'gorstanvillage']
+  visitedRooms: ['gorstanhub', 'gorstanvillage'],
+  arcade: { active: false, id: null }
 };
 
 // Test functions

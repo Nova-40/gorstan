@@ -18,6 +18,7 @@
 // Game module.
 
 import React, { useEffect, useRef, useCallback } from 'react';
+import { isTestMode } from '../utils/envFlags';
 
 
 
@@ -43,9 +44,12 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
 
   // Run only once – avoids resetting the timer if parent re-renders rapidly
   useEffect(() => {
+    // Allow configuration via build-time env; fall back to shorter default (previously 4000ms)
+    const configured = Number((import.meta as any).env?.VITE_SPLASH_MS);
+    const duration = isTestMode() ? 10 : (!isNaN(configured) && configured > 0 ? configured : 1800);
     const timer = setTimeout(() => {
       try { onCompleteRef.current(); } catch (e) { console.error('Splash completion failed', e); }
-    }, 4000);
+    }, duration);
     return () => clearTimeout(timer);
   }, []);
 
@@ -66,7 +70,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
       title="Click or press Enter/Space to continue"
     >
       {}
-      <div className="text-center font-mono">
+  <div className="text-center font-mono relative">
         {}
         <h1
           className="text-6xl md:text-8xl font-bold mb-4 animate-pulse"
@@ -112,6 +116,9 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
             animation: 'scanLine 3s linear infinite'
           }}
         />
+        <div className="mt-10 text-sm text-green-400 opacity-70 animate-pulse tracking-wider">
+          Click, tap or press Enter / Space to skip
+        </div>
       </div>
 
       {}

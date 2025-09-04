@@ -5,10 +5,7 @@
   Real-time tracking of AI interactions, player behavior, and game statistics
 */
 
-import { dynamicContentGenerator } from './dynamicContentGenerator';
-import { unifiedAI } from './unifiedAI';
 import type { LocalGameState } from '../state/gameState';
-import type { Room } from '../types/Room';
 
 export interface AIUsageEvent {
   id: string;
@@ -169,7 +166,7 @@ export class AIUsageMonitor {
   /**
    * Track room visit
    */
-  public trackRoomVisit(roomId: string, gameState: LocalGameState): void {
+  public trackRoomVisit(roomId: string, _gameState: LocalGameState): void {
     this.metrics.roomsVisited++;
     this.metrics.totalPlayTime = Date.now() - this.sessionStartTime;
     
@@ -186,7 +183,7 @@ export class AIUsageMonitor {
   /**
    * Track command execution
    */
-  public trackCommand(command: string, success: boolean, roomId: string): void {
+  public trackCommand(command: string, success: boolean, _roomId: string): void {
     this.metrics.commandsExecuted++;
     
     if (success) {

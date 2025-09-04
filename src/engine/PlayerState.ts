@@ -17,7 +17,7 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Core game engine module.
 
-import { NPC } from '../types/NPCTypes';
+// Removed unused NPC import
 
 
 

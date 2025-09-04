@@ -157,7 +157,7 @@ export function applyAylaPersonality(
     allowCheekyAside?: boolean;
   }
 ): string {
-  const style = getAylaResponseStyle(context);
+  // const style = getAylaResponseStyle(context); // currently unused style details
   let response = baseResponse;
 
   // Add transition if requested

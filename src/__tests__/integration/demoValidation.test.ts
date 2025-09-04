@@ -62,7 +62,7 @@ describe('Demo Mode Functionality Validation', () => {
   expect(expectedDemoCommands[expectedDemoCommands.length - 1]?.command).toBe('help');
       
       // Test all commands have valid structure
-      expectedDemoCommands.forEach((cmd, index) => {
+      expectedDemoCommands.forEach(cmd => {
         expect(cmd).toHaveProperty('command');
         expect(cmd).toHaveProperty('delay');
         expect(typeof cmd.command).toBe('string');

@@ -102,7 +102,7 @@ export default function RoomEditor({
   onValidationChange,
   availableItems = [],
   availableNPCs = [],
-  availableFlags = [],
+  // availableFlags removed (unused)
 }: RoomEditorProps): React.JSX.Element {
 // Variable declaration
   const roomIds = Object.keys(rooms);

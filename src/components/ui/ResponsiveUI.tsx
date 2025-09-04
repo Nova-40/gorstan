@@ -5,6 +5,7 @@
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { detectDevice, monitorPerformance, detectAccessibilityPreferences, type DeviceInfo, type PerformanceMetrics, type AccessibilitySettings } from '../../utils/mobileOptimization';
+import { RetroModal } from '../ui/RetroModal';
 
 // Responsive breakpoints
 export const breakpoints = {
@@ -358,62 +359,26 @@ export const ResponsiveModal: React.FC<ResponsiveModalProps> = ({
   size = 'medium',
   className = ''
 }) => {
-  const { deviceInfo, uiAdaptation } = useResponsive();
+  const { deviceInfo } = useResponsive();
 
   if (!isOpen) return null;
 
   const modalSize = deviceInfo.isMobile ? 'fullscreen' : size;
   const useFullscreen = modalSize === 'fullscreen' || deviceInfo.screenSize === 'small';
 
-  const modalStyles: React.CSSProperties = useFullscreen ? {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    width: '100vw',
-    height: '100vh',
-    margin: 0,
-    borderRadius: 0,
-    maxWidth: 'none',
-    maxHeight: 'none',
-  } : {
-    position: 'fixed',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    maxWidth: size === 'small' ? '400px' : size === 'large' ? '800px' : '600px',
-    maxHeight: '90vh',
-    width: '90vw',
-    margin: 0,
-    borderRadius: '8px',
-  };
+  // removed modalStyles (unused after refactor)
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div
-        className={`responsive-modal modal-${modalSize} ${className}`}
-        style={modalStyles}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="modal-header">
-          <h2 className="modal-title">{title}</h2>
-          <button
-            className="modal-close"
-            onClick={onClose}
-            style={{
-              minHeight: uiAdaptation.touchOptimized ? '44px' : '32px',
-              minWidth: uiAdaptation.touchOptimized ? '44px' : '32px',
-            }}
-          >
-            ✕
-          </button>
-        </div>
-        <div className="modal-content">
-          {children}
-        </div>
-      </div>
-    </div>
+    <RetroModal
+      isOpen
+      onClose={onClose}
+      title={title}
+  subtitle={useFullscreen ? 'Fullscreen view' : null}
+      widthClass={useFullscreen ? 'max-w-full' : size === 'small' ? 'max-w-md' : size === 'large' ? 'max-w-4xl' : 'max-w-2xl'}
+      className={className}
+    >
+      {children}
+    </RetroModal>
   );
 };
 

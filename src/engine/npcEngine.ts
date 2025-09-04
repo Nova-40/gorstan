@@ -18,7 +18,6 @@
 // Handles NPC logic, memory, or rendering.
 
 
-import { getGameState } from '../state/gameState';
 import { npcRegistry } from '../npcs/npcMemory';
 import { v4 as uuidv4 } from 'uuid';
 // If dispatchToConsole is not found, define a fallback here for type safety.
@@ -98,8 +97,6 @@ export function npcReact(npcId: string, playerInput: string, gameState?: LocalGa
   
   // Standard NPC topic-based handling
   const memory: Record<string, any> = npcObj.memory || {};
-  const playerName: string = state.player?.name || "Player";
-  const flags: Record<string, any> = state.flags || {};
   const knownTopics: Topic[] = npcObj.topics || [];
   const matched: Topic | undefined = knownTopics.find((topic: Topic) =>
     topic.triggers.some((trigger: string) =>

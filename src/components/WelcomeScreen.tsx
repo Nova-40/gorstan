@@ -19,7 +19,6 @@ import React, { useEffect, useRef } from "react";
 import { getVersionString, getShortVersion } from "../config/version";
 import RadialProgressRing from "../ui/RadialProgressRing";
 import { attachWelcomeIdleAutostart, detachWelcomeIdleAutostart } from "../engine/idleAutostart";
-import { startDemo } from "../demo/demoRouter";
 import { useIdleGuidanceTimers } from "../hooks/useIdleGuidanceTimers";
 import "../ui/theme.css";
 
@@ -74,7 +73,7 @@ const AylaGuidanceModal: React.FC<AylaGuidanceProps> = ({ onDismiss, onStartDemo
 
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onStartDemo }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { showDemoCountdown, demoSecondsRemaining, guidanceProgress, showGuidanceModal, resetAll, dismissGuidance } = useIdleGuidanceTimers({
+  const { showDemoCountdown, demoSecondsRemaining, guidanceProgress, showGuidanceModal, dismissGuidance } = useIdleGuidanceTimers({
     demoTotalMs: 150000,
     guidanceTotalMs: 120000,
     onDemoTrigger: () => { if (onStartDemo) onStartDemo(); },
@@ -96,23 +95,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
     <>
     <div ref={containerRef} className="relative flex flex-col items-center justify-center min-h-[80vh] w-full max-w-4xl mx-auto px-4 border bg-gradient-to-b from-slate-900 to-black text-green-400 border-2 border-green-500 p-6 m-4 rounded-xl">
       
-      {/* Idle Countdown in top-right corner */}
-  {showDemoCountdown && (
-        <div className="absolute top-4 right-4 z-10 flex flex-col items-center" aria-live="polite">
-          <RadialProgressRing
-    progress={1 - demoSecondsRemaining / 150}
-            size={90}
-            strokeWidth={5}
-            mode="gradient"
-            gradientColors={["#22c55e", "#f59e0b", "#ef4444"]}
-    label={`Idle demo starts in ${Math.ceil(demoSecondsRemaining)} seconds`}
-    title={`Idle demo starts in ${Math.ceil(demoSecondsRemaining)}s`}
-          />
-          <div className="mt-1 text-xs text-green-300 font-mono" role="status">
-    {Math.ceil(demoSecondsRemaining)}s
-          </div>
-        </div>
-      )}
+  {/* (Removed top-right radial; consolidated into bottom-left) */}
 
       <h1 className="text-4xl md:text-6xl font-bold mb-4 text-center flex items-center justify-center gap-4">
         <img
@@ -188,10 +171,32 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
         </div>
       </div>
       
-      {/* Secondary Ayla guidance radial (2 min popup) */}
-    {!showGuidanceModal && (
-        <div className="absolute top-4 left-4 z-10">
-      <RadialProgressRing progress={guidanceProgress} size={70} strokeWidth={4} mode="spectrum" label="Ayla guidance timer" title="Ayla guidance timer" />
+      {/* Unified bottom-left radial: shows demo countdown if active; otherwise guidance progress */}
+      {!showGuidanceModal && (showDemoCountdown || guidanceProgress < 1) && (
+        <div className="absolute left-4 bottom-14 z-10 flex flex-col items-center" aria-live="polite">
+          {showDemoCountdown ? (
+            <RadialProgressRing
+              progress={1 - demoSecondsRemaining / 150}
+              size={70}
+              strokeWidth={5}
+              mode="gradient"
+              gradientColors={['#22c55e', '#f59e0b', '#ef4444']}
+              label={`Idle demo starts in ${Math.ceil(demoSecondsRemaining)} seconds`}
+              title={`Idle demo starts in ${Math.ceil(demoSecondsRemaining)}s`}
+            />
+          ) : (
+            <RadialProgressRing
+              progress={guidanceProgress}
+              size={70}
+              strokeWidth={5}
+              mode="spectrum"
+              label={'Ayla guidance timer'}
+              title={'Ayla guidance timer'}
+            />
+          )}
+          <div className="mt-1 text-[10px] uppercase tracking-wide text-green-300 opacity-70 font-mono" role="status">
+            {showDemoCountdown ? `${Math.ceil(demoSecondsRemaining)}s` : 'Guidance'}
+          </div>
         </div>
       )}
 

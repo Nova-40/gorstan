@@ -12,72 +12,7 @@ interface ContentManifest {
   lastUpdated: number;
 }
 
-// Simple YAML parser for front-matter and content
-class SimpleYAMLParser {
-  static parse(content: string): Record<string, any> {
-    const result: Record<string, any> = {};
-    const lines = content.split('\n');
-    
-    for (const line of lines) {
-      const trimmed = line.trim();
-      if (!trimmed || trimmed.startsWith('#')) continue;
-      
-      const colonIndex = trimmed.indexOf(':');
-      if (colonIndex === -1) continue;
-      
-      const key = trimmed.substring(0, colonIndex).trim();
-      const value = trimmed.substring(colonIndex + 1).trim();
-      
-      // Handle different value types
-      if (value.startsWith('[') && value.endsWith(']')) {
-        // Array value
-        const arrayContent = value.slice(1, -1);
-        result[key] = arrayContent
-          .split(',')
-          .map(item => item.trim().replace(/['"]/g, ''))
-          .filter(item => item.length > 0);
-      } else if (value.match(/^\d+$/)) {
-        // Number value
-        result[key] = parseInt(value, 10);
-      } else if (value === 'true' || value === 'false') {
-        // Boolean value
-        result[key] = value === 'true';
-      } else {
-        // String value
-        result[key] = value.replace(/['"]/g, '');
-      }
-    }
-    
-    return result;
-  }
-
-  static parseMarkdownWithFrontMatter(content: string): { frontMatter: Record<string, any>; markdown: string } {
-    const lines = content.split('\n');
-    let frontMatterEnd = -1;
-    
-  // Guard first element access for strict noUncheckedIndexedAccess
-  if (lines.length > 0 && lines[0] === '---') {
-      for (let i = 1; i < lines.length; i++) {
-        if (lines[i] === '---') {
-          frontMatterEnd = i;
-          break;
-        }
-      }
-    }
-
-    if (frontMatterEnd === -1) {
-      return { frontMatter: {}, markdown: content };
-    }
-
-    const frontMatterContent = lines.slice(1, frontMatterEnd).join('\n');
-    const markdownContent = lines.slice(frontMatterEnd + 1).join('\n').trim();
-
-    return {
-      frontMatter: this.parse(frontMatterContent),
-      markdown: markdownContent
-    };
-  }
-}
+// Removed unused SimpleYAMLParser (mock content loader supplies data directly)
 
 export class ContentLoader {
   private personaCache = new Map<string, NPCPersona>();

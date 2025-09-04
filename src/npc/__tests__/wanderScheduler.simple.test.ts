@@ -18,7 +18,7 @@ import { vi, Mock } from 'vitest';
 // src/npc/__tests__/wanderScheduler.simple.test.ts
 // Simplified unit tests for wandering scheduler
 
-import { WanderScheduler, WanderSchedulerConfig } from '../wanderScheduler';
+import { WanderScheduler } from '../wanderScheduler';
 
 describe('WanderScheduler - Core Functionality', () => {
   let scheduler: WanderScheduler;

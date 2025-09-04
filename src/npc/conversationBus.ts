@@ -21,7 +21,7 @@
 
 import { ConversationThread, NPCExchange, SpeakerRef } from "../types/dialogue";
 import { LocalGameState } from "../state/gameState";
-import { getNPCMemory, getVoiceForNPC, recordConversation } from "./profiles";
+import { getVoiceForNPC, recordConversation } from "./profiles";
 import { stylize, generateNPCResponse } from "./style";
 import { CO_LOCATED_ONLY, CROSS_ROOM_SPEAKERS, MAX_THREAD_EXCHANGES } from "./registry";
 import { getEnhancedNPCResponse } from "../utils/enhancedNPCResponse";
@@ -139,11 +139,11 @@ function scheduleNPCReply(
           responseText = enhancedResponse.text;
         } else {
           // Fallback to style-based generation
-          responseText = generateNPCResponse(from.id, to.id, topic, promptFromNPC);
+          responseText = generateNPCResponse(from.id, to.id, topic);
         }
       } catch (error) {
         console.warn('Enhanced conversation response failed, using fallback:', error);
-        responseText = generateNPCResponse(from.id, to.id, topic, promptFromNPC);
+  responseText = generateNPCResponse(from.id, to.id, topic);
       }
 
       // Apply voice styling

@@ -18,8 +18,7 @@
 // Game module.
 
 import React, { useEffect } from 'react';
-import { XCircle } from 'lucide-react';
-import '../styles/ModalOverlay.css';
+// Deprecated legacy ModalOverlay – replaced by RetroModal. This shim will be removed.
 
 interface ModalOverlayProps {
   isOpen: boolean;
@@ -50,18 +49,11 @@ const ModalOverlay: React.FC<ModalOverlayProps> = ({ isOpen, onClose, children }
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
-
-// JSX return block or main return
-  return (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <button className="close-button" onClick={onClose} aria-label="Close">
-          <XCircle size={24} />
-        </button>
-        {children}
-      </div>
-    </div>
-  );
+  if (typeof window !== 'undefined') {
+    // eslint-disable-next-line no-console
+    console.warn('[ModalOverlay] Deprecated – migrate to <RetroModal>.');
+  }
+  return <>{children}</>;
 };
 
 export default ModalOverlay;

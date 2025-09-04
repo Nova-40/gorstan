@@ -109,7 +109,7 @@ class GroqAIService {
     // Check alliance status
     const playerAlliance = gameState.flags?.playerAlliance;
     const allianceChosen = gameState.flags?.allianceChosen;
-    const myRelationship = gameState.player?.npcRelationships?.[npcId] || 0;
+  // Removed unused myRelationship (future personalization hook)
     
     // Check if this is likely a group conversation by looking at current room NPCs
     const isControlRoom = currentRoom.toLowerCase().includes('control') || currentRoom.toLowerCase().includes('nexus');

@@ -15,6 +15,6 @@ export interface RoomDef {
   teleportStyle?: TeleportStyle | undefined;
   unlocksLore?: string[] | undefined;
   objectiveHints?: string[] | undefined;
-  ambient?: string | undefined; // e.g. '/audio/amb/control_loop.ogg'
+  ambient?: string | undefined; // e.g. '/sounds/amb/control_loop.ogg' (fallback to /audio/ for legacy)
   actions?: RoomAction[] | undefined;
 }

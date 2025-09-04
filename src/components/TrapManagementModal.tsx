@@ -4,7 +4,7 @@
 */
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { X, AlertTriangle, Wrench, Clock, Zap, Shield, Search } from 'lucide-react';
+import { Wrench, Clock, Shield, Search } from 'lucide-react';
 import { useGameState } from '../state/gameState';
 import { getTrapByRoom, disarmTrap } from '../engine/trapController';
 import { canPlayerDisarmTrap } from '../engine/trapDetection';

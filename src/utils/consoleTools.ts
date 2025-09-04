@@ -37,7 +37,7 @@ export function setConsoleDispatch(dispatch: DispatchFunction): void {
 /**
  * Write a message to the game console (with dispatch parameter)
  */
-export function consoleWriteWithDispatch(dispatch: DispatchFunction, message: string, type: 'info' | 'error' | 'success' = 'info'): void {
+export function consoleWriteWithDispatch(dispatch: DispatchFunction, message: string, _type: 'info' | 'error' | 'success' = 'info'): void {
   dispatch({
     type: 'ADD_CONSOLE_LINE',
     payload: message
@@ -47,7 +47,7 @@ export function consoleWriteWithDispatch(dispatch: DispatchFunction, message: st
 /**
  * Write a message to the game console (using global dispatch)
  */
-export function consoleWrite(message: string, type: 'info' | 'error' | 'success' = 'info'): void {
+export function consoleWrite(message: string, _type: 'info' | 'error' | 'success' = 'info'): void {
   if (globalDispatch) {
     globalDispatch({
       type: 'ADD_CONSOLE_LINE',
@@ -75,13 +75,13 @@ export function consoleSuccess(message: string): void {
 /**
  * Push a console message with enhanced formatting (with dispatch parameter)
  */
-export function pushConsoleMessageWithDispatch(dispatch: DispatchFunction, message: string, type: 'info' | 'error' | 'success' = 'info'): void {
-  consoleWriteWithDispatch(dispatch, message, type);
+export function pushConsoleMessageWithDispatch(dispatch: DispatchFunction, message: string, _type: 'info' | 'error' | 'success' = 'info'): void {
+  consoleWriteWithDispatch(dispatch, message, _type);
 }
 
 /**
  * Push a console message with enhanced formatting (using global dispatch)
  */
-export function pushConsoleMessage(message: string, type: 'info' | 'error' | 'success' = 'info'): void {
-  consoleWrite(message, type);
+export function pushConsoleMessage(message: string, _type: 'info' | 'error' | 'success' = 'info'): void {
+  consoleWrite(message, _type);
 }

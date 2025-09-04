@@ -1,10 +1,15 @@
 import { describe, test, expect } from 'vitest';
 import { initialGameState } from '../../../state/gameState';
+import { isTestMode } from '../../../utils/envFlags';
 import { processCommand } from '../../../engine/commandParser';
 
 describe('Game State basics', () => {
-	test('initial state has splash stage and controlnexus room', () => {
-		expect(initialGameState.stage).toBe('splash');
+	test('initial state stage respects environment (splash in prod, welcome in test)', () => {
+		if (isTestMode()) {
+			expect(initialGameState.stage).toBe('welcome');
+		} else {
+			expect(initialGameState.stage).toBe('splash');
+		}
 		expect(initialGameState.currentRoomId).toBe('controlnexus');
 	});
 

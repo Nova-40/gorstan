@@ -6,7 +6,8 @@
 
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import TrialsGame from '../../components/TrialsGame';
+// Dynamic import of TrialsGame for better code splitting
+const loadTrialsGame = () => import('../../components/TrialsGame');
 import { clearDemo } from '../demoRouter';
 
 export async function startTrialsOfGorstan(): Promise<void> {
@@ -52,6 +53,7 @@ export async function startTrialsOfGorstan(): Promise<void> {
       console.log('[TrialsOfGorstan] Returning to Choose Your Adventure...');
     };
     
+    const { default: TrialsGame } = await loadTrialsGame();
     root.render(
       React.createElement(TrialsGame, {
         onComplete: handleComplete,

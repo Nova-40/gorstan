@@ -156,7 +156,7 @@ export function getContextAwareDialogue(npcId: string, state: any): string | nul
 }
 
 // --- Enhanced: NPC-to-NPC passive reactions (optional, for controller use) ---
-export function getNPCtoNPCReactions(roomNPCs: string[], state: any): string[] {
+export function getNPCtoNPCReactions(roomNPCs: string[], _state: any): string[] {
   const reactions: string[] = [];
   if (roomNPCs.includes('polly') && roomNPCs.includes('dominic')) {
     reactions.push('Polly eyes Dominic with disdain.');

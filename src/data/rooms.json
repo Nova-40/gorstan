@@ -12,7 +12,7 @@
       { "id": "console", "name": "control console", "description": "A sleek console with touch-sensitive panels awaiting input." }
     ],
     "teleportStyle": "trek",
-    "ambient": "/audio/amb/control_loop.ogg",
+  "ambient": "/sounds/amb/control_loop.ogg",
     "objectiveHints": [
       "That suspiciously blue button is begging to be pressed."
     ],
@@ -350,7 +350,7 @@
       }
     ],
     "teleportStyle": "fractal",
-    "ambient": "/audio/amb/glitch_loop.ogg",
+  "ambient": "/sounds/amb/glitch_loop.ogg",
     "objectiveHints": [
       "The coin feels heavier here. Try using it."
     ],

@@ -18,9 +18,7 @@
 // Game module.
 
 import { FlagMap } from '../state/flagRegistry';
-const { npc, debug } = FlagMap;
-
-import { Room } from '../types/Room';
+const { debug } = FlagMap; // removed unused npc
 
 import { useEffect } from 'react';
 
@@ -33,11 +31,11 @@ import { useTimers } from './useTimers';
 export const useOptimizedEffects = (
   state: any,
   dispatch: any,
-  room: any
+  _room: any
 ) => {
-  const { hasFlag, clearFlag, setFlag } = useFlags();
-  const { loadModule } = useModuleLoader();
-  const { setTimer } = useTimers();
+  const { hasFlag, clearFlag } = useFlags();
+  const { loadModule } = useModuleLoader(); // maybe used later
+  const { setTimer } = useTimers(); // maybe used later
 
   
 // React effect hook

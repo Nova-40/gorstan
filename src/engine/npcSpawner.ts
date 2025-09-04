@@ -17,12 +17,6 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Handles NPC logic, memory, or rendering.
 
-import { Dispatch } from 'react';
-
-import { GameAction } from '../types/GameTypes';
-
-import { NPC } from '../types/NPCTypes';
-
 import { NPCState, PlayerState } from '../types/npcMemory';
 
 
@@ -254,14 +248,7 @@ export const wanderingNPCs: WanderingNPC[] = [
 ];
 
 
-let globalDispatch: Dispatch<GameAction> | null = null;
 let activeNPCs: Map<string, string> = new Map(); 
-
-
-// --- Function: initializeNPCSpawner ---
-export function initializeNPCSpawner(dispatch: Dispatch<GameAction>): void {
-  globalDispatch = dispatch;
-}
 
 
 
@@ -349,12 +336,12 @@ function canNPCSpawnInRoom(
   roomId: string,
   room: Room,
   playerState: PlayerState,
-  npcStates: Record<string, NPCState>
+  _npcStates: Record<string, NPCState>
 ): boolean {
 
   
   if (!npc.spawnConditions.every(condition =>
-    evaluateSpawnCondition(condition, roomId, room, playerState, npcStates)
+    evaluateSpawnCondition(condition, roomId, room, playerState, _npcStates)
   )) {
     return false;
   }
@@ -383,7 +370,7 @@ function shouldNPCStayInRoom(
   npc: WanderingNPC,
   roomId: string,
   room: Room,
-  playerState: PlayerState
+  _playerState: PlayerState
 ): boolean {
 
   
@@ -406,7 +393,7 @@ function evaluateSpawnCondition(
   roomId: string,
   room: Room,
   playerState: PlayerState,
-  npcStates: Record<string, NPCState>
+  _npcStates: Record<string, NPCState>
 ): boolean {
 
   switch (condition.type) {
@@ -451,7 +438,7 @@ function evaluateConflictRule(
   rule: ConflictRule,
   roomId: string,
   room: Room,
-  playerState: PlayerState
+  _playerState: PlayerState
 ): boolean {
 
   switch (rule.type) {

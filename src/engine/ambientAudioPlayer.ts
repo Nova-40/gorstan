@@ -17,20 +17,29 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Core game engine module.
 
-const audioCache: Record<string, HTMLAudioElement> = {};
 let currentAudio: HTMLAudioElement | null = null;
 
 
 // --- Function: playAmbientForZone ---
 export function playAmbientForZone(zone: string): void {
 // Variable declaration
-  const audioFile = `/audio/ambient/${zone}.mp3`;
+  // Prefer new /sounds/ location; fallback to /audio/ if load fails
+  const primary = `/sounds/ambient/${zone}.mp3`;
+  const legacy = `/audio/ambient/${zone}.mp3`;
+  const audioFile = primary;
   if (currentAudio && currentAudio.src.includes(zone)) return;
 
   stopAmbient();
 
 // Variable declaration
   const audio = new Audio(audioFile);
+  audio.onerror = () => {
+    if (!audio.src.endsWith(legacy)) {
+      audio.src = legacy;
+      audio.load();
+      audio.play().catch(()=>{});
+    }
+  };
   audio.loop = true;
   audio.volume = 0;
   audio.play().catch(() => {});

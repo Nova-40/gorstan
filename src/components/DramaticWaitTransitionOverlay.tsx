@@ -16,12 +16,33 @@
 
 
 import React from 'react';
-import UnifiedModal from './UnifiedModal';
+import { RetroModal } from './ui/RetroModal';
 
-const DramaticWaitTransitionOverlay = () => (
-  <UnifiedModal>
-    <p>Loading... Please wait.</p>
-  </UnifiedModal>
+interface DramaticWaitTransitionOverlayProps {
+  isOpen: boolean;
+  onClose?: () => void; // optional: may auto-close via parent logic
+  message?: string;
+}
+
+const DramaticWaitTransitionOverlay: React.FC<DramaticWaitTransitionOverlayProps> = ({
+  isOpen,
+  onClose = () => {},
+  message = 'Loading... Please wait.'
+}) => (
+  <RetroModal
+    isOpen={isOpen}
+    onClose={onClose}
+    title="Transition"
+    subtitle="Temporal recalibration in progress"
+    widthClass="max-w-md"
+  >
+    <div className="font-mono text-sm flex flex-col items-center gap-4 py-4">
+      <div className="w-full h-2 bg-black/40 rounded overflow-hidden">
+        <div className="h-full w-1/2 bg-emerald-400/60 animate-pulse" />
+      </div>
+      <p className="m-0 opacity-80">{message}</p>
+    </div>
+  </RetroModal>
 );
 
 export default DramaticWaitTransitionOverlay;

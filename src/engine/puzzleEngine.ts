@@ -19,9 +19,9 @@
 
 import { LocalGameState } from '../state/gameState';
 
-import { Puzzle } from '../types/GameTypes';
+// Removed unused Puzzle import
 
-import { PuzzleData, PuzzleComponent } from '../components/PuzzleInterface';
+import { PuzzleData } from '../components/PuzzleInterface';
 
 
 // Use type-only import for Room to avoid conflicts

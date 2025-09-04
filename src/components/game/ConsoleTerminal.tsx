@@ -3,10 +3,10 @@
  * Features teletype animation, braille cursor, skip-to-reveal, accessibility
  */
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { cn } from '../../utils/cn';
 import { ANIMATION, PUNCTUATION_DELAYS } from '../../domain/constants';
-import type { ConsoleMessage, ConsoleTerminalProps } from '../../domain/types';
+import type { ConsoleTerminalProps } from '../../domain/types';
 
 // Ephemeral Ayla message shape (non-typed in domain to keep domain core lean)
 interface EphemeralAylaMessage { id: string; content: string; expiresAt: number }
@@ -208,22 +208,47 @@ export function ConsoleTerminal({
   {displayedMessages.map((text, index) => {
           const message = messages[index];
           if (!message) return null;
+          // Extract speaker label (e.g., "Ayla:" prefix) for NPC/player lines to style hierarchy.
+          let speaker: string | null = null;
+          let body = text;
+          const speakerMatch = /^(\w[\w\s]{0,24}?):\s+(.+)/.exec(text);
+          if (speakerMatch && (message.type === 'npc' || message.type === 'player' || message.type === 'system')) {
+            speaker = speakerMatch[1] ?? null;
+            if (speakerMatch[2]) body = speakerMatch[2];
+          }
+
+          const baseClasses = cn(
+            'leading-relaxed transition-opacity',
+            index === displayedMessages.length - 1 && 'animate-fade-in',
+            message.type === 'system' && 'text-console',
+            message.type === 'player' && 'text-text',
+            message.type === 'npc' && 'text-info',
+            message.type === 'narration' && 'text-text/80 italic',
+            message.type === 'error' && 'text-error'
+          );
 
           return (
-            <div key={message.id} className={cn(
-              'leading-relaxed transition-opacity',
-              message.type === 'system' && 'text-console',
-              message.type === 'player' && 'text-text',
-              message.type === 'npc' && 'text-info',
-              message.type === 'narration' && 'text-text/80',
-              message.type === 'error' && 'text-error',
-            )}>
-              {text}
+            <div key={message.id} className={baseClasses}>
+              {speaker && (
+                <span className={cn(
+                  'mr-2 px-1 py-0.5 rounded-sm font-semibold tracking-wide text-[11px] align-top inline-block',
+                  message.type === 'npc' && 'bg-info/10 text-info border border-info/30',
+                  message.type === 'player' && 'bg-text/10 text-text border border-text/20',
+                  message.type === 'system' && 'bg-console/10 text-console border border-console/30'
+                )}>{speaker}</span>
+              )}
+              <span className={cn(
+                'whitespace-pre-wrap',
+                message.type === 'npc' && 'text-info/90',
+                message.type === 'player' && 'text-text/90'
+              )}>
+                {body}
+              </span>
               {index === typingState.messageIndex && typingState.isTyping && (
-                <span 
+                <span
                   className={cn(
                     'inline-block ml-1 text-console',
-                    !prefersReducedMotion && 'animate-blink'
+                    !prefersReducedMotion && 'animate-blink type-blip'
                   )}
                   aria-hidden="true"
                 >

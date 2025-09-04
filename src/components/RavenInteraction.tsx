@@ -138,7 +138,7 @@ const RavenInteraction: React.FC<RavenInteractionProps> = ({ onComplete, playerN
   const { dispatch } = useGameState();
   const [phase, setPhase] = useState<'greeting' | 'prompt' | 'displaying' | 'glitch' | 'complete'>('greeting');
   const [displayedEntries, setDisplayedEntries] = useState<number>(0);
-  const [showPlayerEntry, setShowPlayerEntry] = useState(false);
+  // Removed unused showPlayerEntry state
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -322,7 +322,7 @@ const RavenInteraction: React.FC<RavenInteractionProps> = ({ onComplete, playerN
         }
       });
 
-      setShowPlayerEntry(true);
+  // previously set showPlayerEntry (unused)
     }, 7000);
 
     setTimeout(() => {

@@ -103,7 +103,7 @@ export class NPCAiRouter {
     }
 
     // Fallback to persona-based response
-    const fallbackResponse = this.getFallbackResponse(persona, conversationContext);
+    const fallbackResponse = this.getFallbackResponse(persona);
     return {
       content: fallbackResponse,
       npc_id: npcId,
@@ -139,8 +139,6 @@ export class NPCAiRouter {
     const history = this.getRecentHistory(context.npc_id, persona.memory_length || 10);
     const systemPrompt = this.buildSystemPrompt(persona, context, history);
 
-    const startTime = Date.now();
-
     try {
       // This is where you'd integrate with actual AI services
       // For now, return null to trigger fallback
@@ -150,11 +148,11 @@ export class NPCAiRouter {
         case 'groq':
           return await this.callGroqAPI(systemPrompt, context.user_input);
         case 'openai':
-          return await this.callOpenAIAPI(systemPrompt, context.user_input);
+          return await this.callOpenAIAPI();
         case 'anthropic':
-          return await this.callAnthropicAPI(systemPrompt, context.user_input);
+          return await this.callAnthropicAPI();
         case 'local':
-          return await this.callLocalAPI(systemPrompt, context.user_input);
+          return await this.callLocalAPI();
         default:
           return null;
       }
@@ -201,7 +199,7 @@ Respond as ${persona.name} would, staying true to their personality and constrai
   /**
    * Get fallback response from persona data
    */
-  private getFallbackResponse(persona: NPCPersona, context: ConversationContext): string {
+  private getFallbackResponse(persona: NPCPersona): string {
     const fallbacks = persona.fallbacks?.offline || [
       `${persona.name} seems distracted and doesn't respond clearly.`
     ];
@@ -255,8 +253,6 @@ Respond as ${persona.name} would, staying true to their personality and constrai
         apiKey: primaryProvider.apiKey,
       });
 
-      const startTime = Date.now();
-
       const completion = await groq.chat.completions.create({
         messages: [
           { role: 'system', content: systemPrompt },
@@ -269,16 +265,14 @@ Respond as ${persona.name} would, staying true to their personality and constrai
         stream: false
       });
 
-      const responseTime = Date.now() - startTime;
       const content = completion.choices[0]?.message?.content;
 
       if (!content) {
         return null;
       }
 
-      const result: any = {
+      const result: AIResponse = {
         content: content.trim(),
-        response_time_ms: responseTime
       };
       
       if (completion.usage?.total_tokens !== undefined) {
@@ -293,17 +287,17 @@ Respond as ${persona.name} would, staying true to their personality and constrai
     }
   }
 
-  private async callOpenAIAPI(systemPrompt: string, userInput: string): Promise<AIResponse | null> {
+  private async callOpenAIAPI(): Promise<AIResponse | null> {
     // TODO: Implement OpenAI API integration
     return null;
   }
 
-  private async callAnthropicAPI(systemPrompt: string, userInput: string): Promise<AIResponse | null> {
+  private async callAnthropicAPI(): Promise<AIResponse | null> {
     // TODO: Implement Anthropic API integration
     return null;
   }
 
-  private async callLocalAPI(systemPrompt: string, userInput: string): Promise<AIResponse | null> {
+  private async callLocalAPI(): Promise<AIResponse | null> {
     // TODO: Implement local model integration
     return null;
   }

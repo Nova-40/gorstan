@@ -127,96 +127,7 @@ export type ItemRarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary' |
 
 let inventory: InventoryItem[] = [];
 
-
-const ITEM_DATABASE: Record<string, Omit<InventoryItem, 'id'>> = {
-  coffee: {
-    name: 'Coffee',
-    description: 'A steaming cup of coffee. Provides energy and alertness.',
-    category: 'consumable',
-    stackable: true,
-    weight: 0.5,
-    value: 5,
-    rarity: 'common',
-    effects: [
-      { type: 'boost', value: 1, duration: 300000, description: 'Increased alertness' }
-    ]
-  },
-
-  runbag: {
-    name: 'Run Bag',
-    description: 'A practical bag that increases your carrying capacity.',
-    category: 'tool',
-    stackable: false,
-    weight: 2,
-    value: 50,
-    rarity: 'uncommon',
-    effects: [
-      { type: 'special', description: 'Increases inventory capacity' }
-    ]
-  },
-
-  key: {
-    name: 'Ancient Key',
-    description: 'An ornate key that pulses with mysterious energy.',
-    category: 'key',
-    stackable: false,
-    weight: 0.2,
-    value: 100,
-    rarity: 'rare',
-    effects: [
-      { type: 'unlock', description: 'Opens locked passages' }
-    ]
-  },
-
-  map: {
-    name: 'Detailed Map',
-    description: 'A map of the local area with cryptic markings.',
-    category: 'document',
-    stackable: false,
-    weight: 0.1,
-    value: 25,
-    rarity: 'common'
-  },
-
-  constitution_scroll: {
-    name: 'Constitution Scroll',
-    description: 'An ancient document containing fundamental truths.',
-    category: 'document',
-    stackable: false,
-    weight: 0.3,
-    value: 500,
-    rarity: 'legendary',
-    effects: [
-      { type: 'quest', description: 'Reveals cosmic truths' }
-    ]
-  },
-
-  polly_gift: {
-    name: 'Polly\'s Gift',
-    description: 'A small token of forgiveness and friendship.',
-    category: 'artifact',
-    stackable: false,
-    weight: 0.1,
-    value: 1000,
-    rarity: 'unique',
-    effects: [
-      { type: 'special', description: 'Symbol of redemption' }
-    ]
-  },
-
-  temporal_device: {
-    name: 'Temporal Device',
-    description: 'A device that seems to exist in multiple timelines simultaneously.',
-    category: 'artifact',
-    stackable: false,
-    weight: 1.5,
-    value: 2000,
-    rarity: 'legendary',
-    effects: [
-      { type: 'special', description: 'Manipulates time flow' }
-    ]
-  }
-};
+// Removed unused legacy ITEM_DATABASE (current system uses ITEMS registry)
 
 
 
@@ -437,7 +348,7 @@ export function clearInventory(category?: ItemCategory): void {
 
 
 // --- Function: useItem ---
-export function useItem(itemId: string, context?: InventoryContext): InventoryOperation {
+export function useItem(itemId: string, _context?: InventoryContext): InventoryOperation {
   try {
     const item = inventory.find((invItem: InventoryItem) => invItem.id === itemId);
     if (!item) {
@@ -613,7 +524,7 @@ function canStackItem(itemId: string): boolean {
 
 
 // --- Function: applyItemEffect ---
-function applyItemEffect(effect: ItemEffect, context?: InventoryContext): string | null {
+function applyItemEffect(effect: ItemEffect, _context?: InventoryContext): string | null {
   
   
   switch (effect.type) {

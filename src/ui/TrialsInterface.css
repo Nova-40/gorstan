@@ -38,22 +38,7 @@
   text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
 }
 
-.phase-progress {
-  width: 300px;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  margin-top: 8px;
-  overflow: hidden;
-}
-
-.progress-bar {
-  height: 100%;
-  background: linear-gradient(90deg, #00ff88, #00d4aa);
-  border-radius: 4px;
-  transition: width 0.3s ease;
-  box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
-}
+/* Phase progress now uses RetroBar component (see TrialsInterface.tsx); legacy styles removed */
 
 .game-stats {
   display: flex;
@@ -210,53 +195,11 @@
   gap: 12px;
 }
 
-.status-bar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.status-bars.condensed {
+  gap: 6px;
 }
 
-.status-bar label {
-  width: 60px;
-  font-size: 0.9rem;
-  color: #a0a6ad;
-}
-
-.bar {
-  flex: 1;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.bar-fill {
-  height: 100%;
-  border-radius: 4px;
-  transition: width 0.5s ease;
-}
-
-.bar-fill.health {
-  background: linear-gradient(90deg, #ff4757, #ff6b7d);
-  box-shadow: 0 0 8px rgba(255, 71, 87, 0.5);
-}
-
-.bar-fill.energy {
-  background: linear-gradient(90deg, #3742fa, #5352ed);
-  box-shadow: 0 0 8px rgba(55, 66, 250, 0.5);
-}
-
-.bar-fill.stamina {
-  background: linear-gradient(90deg, #ffa726, #ffcc02);
-  box-shadow: 0 0 8px rgba(255, 167, 38, 0.5);
-}
-
-.status-bar span {
-  width: 40px;
-  text-align: right;
-  font-size: 0.85rem;
-  color: #ffffff;
-}
+/* Status bars now use RetroBar (see TrialsInterface.tsx); legacy .status-bar/.bar/.bar-fill styles removed */
 
 /* Objective Panel */
 .objective-panel {
@@ -372,6 +315,17 @@
   50% {
     transform: translate(-50%, -50%) translateY(-1px);
   }
+}
+
+/* Moving rocks on minimap */
+.minimap-moving-rock {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #ffae42;
+  box-shadow: 0 0 4px rgba(255, 174, 66, 0.8);
+  transform: translate(-50%, -50%);
 }
 
 @keyframes rockPulse {

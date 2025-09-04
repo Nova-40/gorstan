@@ -153,7 +153,7 @@ export function validateRoomItems(room: Room): RoomValidationResult {
 // Variable declaration
   const seenItemIds = new Set<string>();
 // Variable declaration
-  const seenItemNames = new Set<string>();
+  // const seenItemNames = new Set<string>(); // not used yet
   const itemIds = extractItemIds(room.items);
 
   for (const itemId of itemIds) {

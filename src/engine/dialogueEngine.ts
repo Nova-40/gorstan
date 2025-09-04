@@ -17,7 +17,7 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Controls NPC dialogue trees and responses.
 
-import { NPC } from '../types/NPCTypes';
+// Removed unused NPC type import (was triggering noUnusedLocals warning)
 
 
 
@@ -542,7 +542,7 @@ function markDialogueAsUsed(npc: string, dialogueId: string, state: DialogueStat
 
 
 // --- Function: handleUnknownNPC ---
-function handleUnknownNPC(npc: string, state: DialogueState): string {
+function handleUnknownNPC(npc: string, _state: DialogueState): string {
   const unknownResponses = [
     `${npc} doesn't seem to want to talk right now.`,
     `${npc} looks at you with confusion.`,
@@ -557,7 +557,7 @@ function handleUnknownNPC(npc: string, state: DialogueState): string {
 
 
 // --- Function: getFallbackDialogue ---
-function getFallbackDialogue(npc: string, state: DialogueState): string {
+function getFallbackDialogue(npc: string, _state: DialogueState): string {
   const fallbackDialogues: Record<string, string[]> = {
     ayla: [
       'The lattice flows in mysterious ways.',

@@ -19,8 +19,6 @@
 
 import React, { useEffect, useRef } from 'react';
 
-import { FlagMap } from '../state/flagRegistry';
-
 import { GameMessage } from '../types/GameTypes';
 
 

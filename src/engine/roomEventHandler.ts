@@ -187,7 +187,7 @@ function handleRoomEvent(
  */
 export function triggerNPCMovement(
   gameState: LocalGameState,
-  dispatch: Dispatch<GameAction>
+  _dispatch: Dispatch<GameAction>
 ): void {
   // Import and use wandering controller
   import('./wanderingNPCController').then(mod => {

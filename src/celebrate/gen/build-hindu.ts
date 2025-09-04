@@ -17,7 +17,7 @@
 // src/celebrate/gen/build-hindu.ts
 // Hindu holiday date generation
 
-import { Span, daySpan, multiDaySpan } from './util';
+import { Span, multiDaySpan } from './util';
 
 /**
  * Diwali - Festival of Lights

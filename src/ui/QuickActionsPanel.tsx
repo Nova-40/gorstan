@@ -1,5 +1,4 @@
-import { getRoom } from '../core/rooms/roomsLoader';
-import { executeEffects } from '../utils/roomActions';
+// Removed unused imports getRoom, executeEffects during pruning
 /*
   Gorstan – Copyright © 2025 Geoff Webster. All Rights Reserved.
   

@@ -21,8 +21,7 @@ import {
   MovementExecutor,
   getMovementExecutor,
   resetMovementExecutor,
-  setupNPCMovement,
-  NPCMovementConfig
+  setupNPCMovement
 } from '../movementExecution';
 import { resetNPCPresenceProvider } from '../npcPresence';
 import { resetZoneAwarenessProvider } from '../zoneAwareness';

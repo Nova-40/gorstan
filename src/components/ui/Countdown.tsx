@@ -76,14 +76,9 @@ export function Countdown({
     return `${minutes}:${secs.toString().padStart(2, '0')}`;
   };
 
+  // Unified Gorstan timer styling: consistent emerald/cyan scheme (no color shift per threshold)
   const getStateStyles = () => {
-    if (remainingSeconds <= criticalThreshold) {
-      return 'text-danger-600 bg-danger-50 border-danger-200 animate-pulse';
-    }
-    if (remainingSeconds <= warningThreshold) {
-      return 'text-warning-600 bg-warning-50 border-warning-200';
-    }
-    return 'text-neutral-700 bg-neutral-50 border-neutral-200';
+    return 'text-emerald-300 bg-slate-800/60 border-emerald-500/40';
   };
 
   const getAriaLabel = () => {
@@ -137,9 +132,7 @@ export function Countdown({
           <span
             className={cn(
               'text-sm font-bold text-center',
-              remainingSeconds <= criticalThreshold ? 'text-danger-600' :
-              remainingSeconds <= warningThreshold ? 'text-warning-600' :
-              'text-neutral-700'
+              'text-emerald-300'
             )}
             aria-label={getAriaLabel()}
             role="timer"
@@ -155,7 +148,7 @@ export function Countdown({
   return (
     <div
       className={cn(
-        'inline-flex items-center px-3 py-2 rounded-md border text-sm font-mono',
+  'inline-flex items-center px-3 py-2 rounded-md border text-sm font-mono tracking-tight',
         getStateStyles(),
         isPaused && 'opacity-60',
         className
@@ -183,11 +176,7 @@ export function Countdown({
         {formatTime(remainingSeconds)}
       </span>
       
-      {remainingSeconds <= criticalThreshold && (
-        <span className="ml-2 animate-pulse" aria-hidden="true">
-          ⚠️
-        </span>
-      )}
+  {/* Removed warning icon for unified appearance */}
     </div>
   );
 }

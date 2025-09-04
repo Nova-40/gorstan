@@ -19,10 +19,10 @@
 
 import {
   AllianceMemorySystem,
-  AllianceEvent,
+  // AllianceEvent (unused),
   AllianceContext,
   MemoryTrigger,
-  getAllianceMemory,
+  // getAllianceMemory (unused),
   recordCooperation,
   recordBetrayal,
   recordRescue

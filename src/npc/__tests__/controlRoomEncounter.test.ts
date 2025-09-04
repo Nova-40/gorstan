@@ -21,7 +21,7 @@ import { vi } from 'vitest';
 import {
   ControlRoomEncounterOrchestrator,
   ControlRoomContext,
-  EncounterType,
+  // EncounterType (unused),
   getControlRoomOrchestrator,
   triggerControlRoomEncounter
 } from '../controlRoomEncounter';

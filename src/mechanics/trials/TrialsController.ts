@@ -14,7 +14,7 @@ import { demoProgress } from '../../engine/state/demoState';
 export class TrialsController {
   private currentPhase: number = 0;
   private phases = [
-    { name: 'Rock Field', controller: RockField },
+  { name: 'Rock Field', controller: RockField },
     { name: 'Random Rocks', controller: RandomRocks },
     { name: 'Mushroom Field', controller: MushroomField },
   ];

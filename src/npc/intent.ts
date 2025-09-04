@@ -195,7 +195,7 @@ export function classifyIntent(utterance: string, context: any = {}): IntentResu
 function extractEntities(utterance: string): string[] {
   const entities: string[] = [];
   
-  for (const [category, patterns] of Object.entries(ENTITY_PATTERNS)) {
+  for (const [, patterns] of Object.entries(ENTITY_PATTERNS)) {
     for (const pattern of patterns) {
       const matches = utterance.match(pattern);
       if (matches) {

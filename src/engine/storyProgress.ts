@@ -660,13 +660,6 @@ function validateFlagName(flag: string): boolean {
 
 
 // --- Function: validateCategory ---
-function validateCategory(category: string): string {
-  const validCategories: FlagCategory[] = [
-    'quest', 'story_event', 'chapter_progress', 'general',
-    'achievement', 'relationship', 'exploration'
-  ];
-  return validCategories.includes(category as FlagCategory) ? category : 'general';
-}
 
 
 // --- Function: validateMetadata ---
@@ -681,7 +674,7 @@ function validateMetadata(meta: any): meta is FlagMetadata {
 
 
 // --- Function: hasCircularDependency ---
-function hasCircularDependency(flag: string, dependencies: string[]): boolean {
+function hasCircularDependency(flag: string, _dependencies: string[]): boolean {
   const visited = new Set<string>();
   const stack = new Set<string>();
 
@@ -784,7 +777,7 @@ export function getStatistics(): ProgressStatistics {
 
   // Count expired flags
   const now = Date.now();
-  for (const [flag, timestamp] of flagTimestamps.entries()) {
+  for (const [_flag, timestamp] of flagTimestamps.entries()) {
     if (now > timestamp) {
       stats.expiredFlags++;
     }
@@ -902,32 +895,7 @@ export interface CircularDependency {
   severity: 'high' | 'medium' | 'low';
 }
 
-interface FlagSystemBridge {
-  syncWithEngineFlags(): void;
-  syncWithNPCFlags(): void;
-  resolveConflicts(): FlagConflictReport;
-}
-
-class DependencyGraph {
-  validateDependencyChain(flag: string, deps: string[]): ValidationResult {
-    // Implementation would go here
-    return { isValid: true, errors: [], warnings: [] };
-  }
-  
-  findCircularDependencies(): CircularDependency[] {
-    // Implementation would go here
-    return [];
-  }
-  
-  optimizeDependencyOrder(): string[] {
-    // Implementation would go here
-    return [];
-  }
-}
+// Removed unused FlagSystemBridge and DependencyGraph scaffolding.
 
 
-interface FlagAnalytics {
-  mostUsedFlags: Array<{ flag: string; usage: number }>;
-  unusedFlags: string[];
-  conflictingFlags: Array<{ flags: string[]; reason: string }>;
-}
+// Removed unused FlagAnalytics interface

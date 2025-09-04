@@ -128,8 +128,8 @@ export class GroupChatManager {
    * Trigger NPC arguments and discussions
    */
   static triggerNPCArguments(context: GroupChatContext): void {
-    const { state, dispatch, roomId } = context;
-    const ctx: ConversationContext = { state, dispatch, roomId };
+  const { state, dispatch, roomId } = context;
+  const ctx: ConversationContext = { state, dispatch, roomId }; // used below for dialogue calls
     const npcs = context.npcsInRoom.map(npc => npc.id);
     
     // Special case: Al vs Morthos alliance pitch in control room
@@ -144,24 +144,15 @@ export class GroupChatManager {
     // Al vs Morthos philosophical arguments (general)
     if (npcs.includes('al') && npcs.includes('morthos') && state.flags?.allianceChosen) {
       setTimeout(() => {
-        NPCTalk.morthosAndAl.alStarts(
-          "*adjusts spectacles* Your methodology lacks proper documentation. How can we ensure reproducible results?", 
-          ctx
-        );
+        NPCTalk.morthosAndAl.alStarts("*adjusts spectacles* Your methodology lacks proper documentation. How can we ensure reproducible results?", ctx);
       }, 3000);
       
       setTimeout(() => {
-        NPCTalk.morthosAndAl.morthosStarts(
-          "*mechanical chuckle* Results? *gestures broadly* Look around! Sometimes you need to embrace the chaos to find truth.", 
-          ctx
-        );
+        NPCTalk.morthosAndAl.morthosStarts("*mechanical chuckle* Results? *gestures broadly* Look around! Sometimes you need to embrace the chaos to find truth.", ctx);
       }, 5000);
       
       setTimeout(() => {
-        NPCTalk.morthosAndAl.alStarts(
-          "*firmly* Chaos leads to system failures. Order provides stability. *to player* Surely you see the value in proper procedures?", 
-          ctx
-        );
+        NPCTalk.morthosAndAl.alStarts("*firmly* Chaos leads to system failures. Order provides stability. *to player* Surely you see the value in proper procedures?", ctx);
       }, 7000);
     }
     
@@ -169,10 +160,7 @@ export class GroupChatManager {
     if (npcs.includes('polly') && npcs.length > 1) {
       setTimeout(() => {
         const target = npcs.find(id => id !== 'polly') || 'al';
-        NPCTalk.any('polly', target,
-          "*dramatically* Oh, how CONVENIENT that you all just happen to agree on everything! Where were your opinions when Dominic needed defending?", 
-          ctx
-        );
+        NPCTalk.any('polly', target, "*dramatically* Oh, how CONVENIENT that you all just happen to agree on everything! Where were your opinions when Dominic needed defending?", ctx);
       }, 6000);
     }
   }
@@ -194,7 +182,7 @@ export class GroupChatManager {
       NPCTalk.any('morthos', 'player',
         "*mechanical smile* Ah, perfect timing! *gestures warmly* I've been hoping to speak with you privately. " +
         "*leans in conspiratorially* I've been around... well, forever really, and I've learned a thing or two. " +
-        "I'd like to offer you my assistance - my protection, my guidance through the challenges ahead.", 
+        "I'd like to offer you my assistance - my protection, my guidance through the challenges ahead.",
         ctx
       );
     }, 2000);
@@ -203,7 +191,7 @@ export class GroupChatManager {
       NPCTalk.any('morthos', 'player',
         "*confident grin* There'll be a small cost, which we can discuss later, but I'll do what it takes to help you. " +
         "Think of me as your personal guardian - I can get you out of tight spots, give you advice on what to take, what to avoid... " +
-        "*voice drops to a whisper* Trust me, you'll need someone like me in this place.", 
+        "*voice drops to a whisper* Trust me, you'll need someone like me in this place.",
         ctx
       );
     }, 8000);
@@ -211,7 +199,7 @@ export class GroupChatManager {
     // Al interrupts with suspicion
     setTimeout(() => {
       NPCTalk.any('al', 'morthos',
-        "*adjusts spectacles suspiciously* 'Small cost'? *to player* ${state.player.name}, I feel compelled to share some song lyrics that seem... relevant.", 
+        "*adjusts spectacles suspiciously* 'Small cost'? *to player* ${state.player.name}, I feel compelled to share some song lyrics that seem... relevant.",
         ctx
       );
     }, 14000);
@@ -220,7 +208,7 @@ export class GroupChatManager {
       NPCTalk.any('al', 'player',
         "*clears throat* 'Nothing's free, nothing's free, there's always a price to pay... " +
         "When devils make deals, they always get their way...' *smiles knowingly* Ahh, see? He isn't trustworthy. " +
-        "Side with me, ${state.player.name} - I can at least promise to try my best at no cost to you.", 
+        "Side with me, ${state.player.name} - I can at least promise to try my best at no cost to you.",
         ctx
       );
     }, 20000);
@@ -230,7 +218,7 @@ export class GroupChatManager {
       NPCTalk.any('morthos', 'al',
         "*waves dismissively* Oh Al, always so paranoid! *to player* Don't listen to his doom and gloom. " +
         "The cost is... well, it's really quite reasonable. Nothing to worry about right now! " +
-        "*changes subject quickly* What matters is that I can offer real power, real protection!", 
+        "*changes subject quickly* What matters is that I can offer real power, real protection!",
         ctx
       );
     }, 26000);
@@ -245,18 +233,17 @@ export class GroupChatManager {
    * Present alliance choice to player with interaction buttons
    */
   static presentAllianceChoice(context: GroupChatContext): void {
-    const { state, dispatch, roomId } = context;
-    const ctx: ConversationContext = { state, dispatch, roomId };
+  const { state, dispatch } = context; // state needed for player-specific dynamic content
     
     // Add interactive choice message
     dispatch({
       type: 'ADD_HISTORY',
       payload: {
         id: `alliance-choice-${Date.now()}`,
-        text: "🤝 **Choose Your Ally**\n\n" +
+    text: `🤝 **Choose Your Ally**\n\n` +
               "Morthos offers power and protection for a 'small cost' (details unclear)\n" +
               "Al promises to try his best with no cost to you\n\n" +
-              "Type 'ally morthos' or 'ally al' to make your choice, or 'ally neither' to remain neutral.",
+      `Type 'ally morthos' or 'ally al' to ally, or 'ally neither' to remain neutral, ${state.player.name}.`,
         type: 'system',
         timestamp: Date.now(),
         isChoicePrompt: true

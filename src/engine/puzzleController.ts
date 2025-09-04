@@ -21,7 +21,7 @@ import PuzzleEngine, { PuzzleResult } from '../engine/puzzleEngine';
 
 import React from 'react';
 
-import { Achievement, Puzzle } from '../types/GameTypes';
+// Removed unused Achievement, Puzzle imports
 
 import { GameAction } from '../types/GameTypes';
 
@@ -51,7 +51,8 @@ export interface PuzzleControllerResult {
 class PuzzleController {
   private static instance: PuzzleController;
   private puzzleEngine: PuzzleEngine;
-  private currentPuzzle: PuzzleData | null = null;
+  // Retained placeholder for potential active puzzle tracking (underscored to silence unused warning)
+  // private _currentPuzzle: PuzzleData | null = null; // placeholder (currently unused)
   private dispatch: React.Dispatch<GameAction> | null = null;
 
   private constructor() {
@@ -164,7 +165,7 @@ class PuzzleController {
       };
     }
 
-    this.currentPuzzle = puzzle;
+  // Active puzzle tracking removed
 
     
 // Variable declaration
@@ -234,7 +235,7 @@ class PuzzleController {
   private createCloseHandler() {
 // JSX return block or main return
     return () => {
-      this.currentPuzzle = null;
+  // Active puzzle tracking removed
     };
   }
 

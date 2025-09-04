@@ -118,7 +118,7 @@ export class Artifact {
     return new Artifact(location);
   }
 
-  static createSpecificArtifact(location: { x: number; y: number }, type: string): Artifact {
+  static createSpecificArtifact(location: { x: number; y: number }, _type: string): Artifact {
     const artifact = new Artifact(location);
     // Could customize based on type if needed
     return artifact;

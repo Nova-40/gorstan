@@ -33,23 +33,7 @@ const mockDiv = {
   remove: vi.fn()
 };
 
-const mockBody = {
-  appendChild: vi.fn(),
-  removeChild: vi.fn(),
-  classList: {
-    add: vi.fn(),
-    remove: vi.fn(),
-    toggle: vi.fn(),
-    contains: vi.fn().mockReturnValue(false)
-  }
-};
-
-const mockDocumentElement = {
-  style: {
-    setProperty: vi.fn(),
-    removeProperty: vi.fn()
-  }
-};
+// Removed unused mock DOM elements
 
 // Provide a stub matchMedia if JSDOM environment doesn't supply one
 beforeAll(() => {

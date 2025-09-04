@@ -19,10 +19,11 @@
 
 import { GameAction } from '../types/GameTypes';
 import { LocalGameState } from '../state/gameState';
-import { NPC } from '../types/NPCTypes';
-import { PlayerState } from '../types/npcMemory';
 import { Room } from '../types/Room';
-import { unlockAchievement } from '../logic/achievementEngine';
+let _wendellUnlock: ((id: string) => void) | null = null;
+async function wUnlock(id: string) {
+  try { if (!_wendellUnlock) { _wendellUnlock = (await import('../logic/achievementEngine')).unlockAchievement; } _wendellUnlock && _wendellUnlock(id); } catch (e) { console.warn('[mrWendell] achievement load failed', e); }
+}
 
 
 
@@ -165,7 +166,7 @@ function hasActiveTriggers(gameState: LocalGameState): boolean {
 // --- Function: handleWendellInteraction ---
 export function handleWendellInteraction(
   command: string,
-  gameState: LocalGameState,
+  _gameState: LocalGameState,
   dispatch: React.Dispatch<GameAction>
 ): { handled: boolean; result?: 'spared' | 'killed' | 'neutral' } {
 
@@ -199,7 +200,7 @@ export function handleWendellInteraction(
       wendellState.sparedByPlayer = true;
 
       
-      unlockAchievement('wendell_encounter');
+  wUnlock('wendell_encounter');
 
       return { handled: true, result: 'spared' };
     } else {
@@ -279,7 +280,7 @@ function triggerWendellDeath(dispatch: React.Dispatch<GameAction>): void {
       wendellState.isCurrentlyActive = false;
 
       
-      unlockAchievement('wendell_encounter');
+  wUnlock('wendell_encounter');
 
     }, 1000);
   }, 1500);
@@ -336,7 +337,7 @@ export function resetWendellState(): void {
 
 
 // --- Function: onRoomTransition ---
-export function onRoomTransition(newRoom: Room, gameState: LocalGameState): void {
+export function onRoomTransition(_newRoom: Room, gameState: LocalGameState): void {
   wendellState.transitionsSinceSpawn++;
 
   

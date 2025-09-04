@@ -194,7 +194,7 @@ export const short10Routes: RouteManifest[] = [
     id: 'short10_trialsofgorstan',
     label: 'Trials of Gorstan',
     targetMinutes: 10,
-    description: 'Navigate three perilous zones ending with a mystical cave maze to find the hidden artifact.',
+  description: 'The Aevira – an ancient and powerful race – choose you to be their champion. You must show yourself worthy and complete their trials. Navigate three perilous zones ending with a mystical cave maze to find the hidden artifact.',
     hintPolicy: 'timed',
     difficulty: 'normal',
     allowedSkips: 1,
@@ -229,6 +229,24 @@ export const short10Routes: RouteManifest[] = [
 
 // Short 30-minute Adventures
 export const short30Routes: RouteManifest[] = [
+  {
+    id: 'short30_trialsofgorstan',
+    label: 'Trials of Gorstan (Extended)',
+    targetMinutes: 30,
+    description: 'An extended sequence of the Trials with added phases, deeper cave hazards, and the artifact chamber climax.',
+    hintPolicy: 'timed',
+    difficulty: 'normal',
+    allowedSkips: 2,
+    enableFastTravel: false,
+    nodes: [
+      { id: 'trials_rockfield', type: 'quest', required: true },
+      { id: 'trials_mushroomfield', type: 'quest', required: true },
+      { id: 'trials_climb_ascent', type: 'quest', required: true },
+      { id: 'trials_cave_horrors', type: 'quest', required: true },
+      { id: 'trials_cavemaze', type: 'logicPuzzle', required: true, difficulty: 'medium', pauseOnModal: true },
+      { id: 'artifactChamber', type: 'logicPuzzle', required: true, difficulty: 'hard', pauseOnModal: true },
+    ],
+  },
   {
     id: 'short30_trentparkrecon',
     label: 'Trent Park Reconnaissance',

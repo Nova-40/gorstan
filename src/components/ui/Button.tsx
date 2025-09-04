@@ -1,6 +1,5 @@
 import React from 'react';
 import { cn } from '@/utils/cn';
-import { COLORS, TARGETS } from '@/domain/constants';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'outline';

@@ -17,7 +17,7 @@
 // src/celebrate/gen/build-shinto.ts
 // Shinto holiday date generation
 
-import { Span, daySpan, multiDaySpan } from './util';
+import { Span, multiDaySpan } from './util';
 
 /**
  * Shōgatsu - Japanese New Year

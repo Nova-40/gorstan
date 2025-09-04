@@ -30,8 +30,7 @@ export interface AylaHintResponse {
 export class AylaHintSystem {
   private lastHintTime: number = 0;
   private hintCooldown: number = 30000; // 30 seconds between hints
-  private playerStuckState: Map<string, number> = new Map();
-  private unifiedAIEnabled: boolean = true; // Integration with unified AI system
+  // (Removed unused tracking fields pending future implementation)
 
   /**
    * Analyze if Ayla should offer guidance
@@ -172,7 +171,7 @@ export class AylaHintSystem {
     context: AylaHintContext, 
     stuckState: any
   ): Promise<AylaHintResponse | null> {
-    const { currentRoom, gameState, recentCommands, failedAttempts } = context;
+  const { currentRoom, gameState, recentCommands, failedAttempts } = context;
     
     // Get miniquest context for enhanced hints
     const miniquestContext = await this.getMiniquestContext(gameState, currentRoom.id);
@@ -261,7 +260,7 @@ Respond with just the hint text, in Ayla's voice with appropriate cosmic imagery
     context: AylaHintContext, 
     stuckState: any
   ): AylaHintResponse {
-    const { currentRoom, recentCommands } = context;
+  // No context fields currently required for scripted hints
     
     const scriptedHints = {
       navigation: [
@@ -392,9 +391,7 @@ Respond with just the hint text, in Ayla's voice with appropriate cosmic imagery
   /**
    * Enable/disable unified AI integration
    */
-  setUnifiedAIEnabled(enabled: boolean): void {
-    this.unifiedAIEnabled = enabled;
-  }
+  setUnifiedAIEnabled(_enabled: boolean): void { /* feature toggle placeholder */ }
 }
 
 // Export singleton instance

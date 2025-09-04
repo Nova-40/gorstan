@@ -355,16 +355,6 @@ export class VisualEffectsManager {
   }
 
   /**
-   * Checks if an effect should persist.
-   */
-  private isEffectPersistent(effectName: VisualEffectType): boolean {
-    const persistentEffects: VisualEffectType[] = [
-      'scanlines', 'vhs', 'fog', 'rain', 'snow', 'pulse', 'blur', 'sepia', 'invert', 'grayscale'
-    ];
-    return persistentEffects.includes(effectName);
-  }
-
-  /**
    * Validates an effect name.
    */
   private isValidEffect(effectName: VisualEffectType): boolean {

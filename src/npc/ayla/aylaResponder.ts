@@ -153,7 +153,7 @@ function getGenericBookResponse(): string {
 /**
  * Core Ayla responses (existing system)
  */
-function getCoreAylaResponse(input: string, state: GameState): string {
+function getCoreAylaResponse(input: string, _state: GameState): string {
   const key = input.toLowerCase().trim();
   
   // Core personality responses

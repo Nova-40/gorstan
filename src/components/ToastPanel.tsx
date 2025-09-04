@@ -17,7 +17,7 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Toast notification panel component
 
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 type ToastPanelProps = {
   message: string;

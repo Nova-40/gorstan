@@ -173,7 +173,6 @@ class ScreenReaderAnnouncer {
 // ===== REDUCED MOTION SUPPORT =====
 
 class MotionReducer {
-  private originalAnimationSpeed = 1.0;
   
   applyReducedMotion(enabled: boolean): void {
     if (typeof document === 'undefined') return;

@@ -16,8 +16,12 @@
 
 import React from 'react';
 import { Trophy, Target, Map, Star, Award, TrendingUp } from 'lucide-react';
+import { RetroBar } from './ui/RetroBar';
 import { useGameState } from '../state/gameState';
-import { achievements } from '../logic/achievementEngine';
+// Lazy-load achievements to avoid pulling achievementEngine into main bundle
+const loadAchievements = async () => {
+  try { const mod = await import('../logic/achievementEngine'); return (mod as any).achievements || []; } catch { return []; }
+};
 
 interface ProgressDashboardProps {
   className?: string;
@@ -37,10 +41,11 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
   // If used as modal and not open, return null
   if (onClose && !isOpen) return null;
   
-  // Calculate achievement progress - use existing game state structure
+  // Achievements (lazy) placeholder values until loaded
   const unlockedAchievements = (state.player as any).achievements?.length || 0;
-  const totalAchievements = achievements.length;
-  const achievementProgress = (unlockedAchievements / totalAchievements) * 100;
+  const [totalAchievements, setTotalAchievements] = React.useState<number>(0);
+  React.useEffect(()=>{ let mounted = true; loadAchievements().then(list=>{ if(mounted) setTotalAchievements(list.length); }); return ()=>{ mounted=false; }; },[]);
+  const achievementProgress = totalAchievements ? (unlockedAchievements / totalAchievements) * 100 : 0;
   
   // Calculate room exploration progress
   const visitedRooms = state.player.visitedRooms?.length || 0;
@@ -71,7 +76,7 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
   
   if (compact) {
     return (
-      <div className={`bg-gray-900 border border-gray-700 rounded-lg p-3 ${className}`}>
+  <div className={`retro-panel ${className}`}>
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             {rank.icon}
@@ -124,94 +129,65 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
   }
   
   return (
-    <div className={`bg-gray-900 border border-gray-700 rounded-lg p-4 ${className}`}>
+  <div className={`retro-panel p-4 ${className}`}>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
+        <h3 className="text-lg font-bold flex items-center gap-2 text-console-bright tracking-wide">
           {rank.icon}
           Progress Dashboard
         </h3>
-        <div className="text-right">
-          <div className={`text-lg font-bold ${rank.color}`}>Level {level}</div>
-          <div className="text-sm text-gray-400">{rank.name}</div>
+        <div className="text-right font-mono">
+          <div className={`text-lg font-bold ${rank.color} drop-shadow-[0_0_4px_rgba(0,255,200,0.4)]`}>L{level}</div>
+          <div className="text-xs opacity-70 uppercase tracking-wider text-console-dim">{rank.name}</div>
         </div>
       </div>
       
-      {/* Level Progress Bar */}
-      <div className="mb-4">
-        <div className="flex justify-between text-sm mb-1">
-          <span className="text-gray-300">Level Progress</span>
-          <span className="text-gray-400">{score} / {nextLevelScore} pts</span>
-        </div>
-        <div className="w-full bg-gray-800 rounded-full h-2">
-          <div 
-            className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
-            style={{ width: `${currentLevelProgress}%` }}
-          />
-        </div>
+      <div className="mb-6">
+        <RetroBar
+          value={currentLevelProgress / 100}
+          label={`LEVEL PROGRESS (${score}/${nextLevelScore})`}
+          intent="default"
+          height={8}
+        />
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Achievements */}
         <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <Trophy className="w-4 h-4 text-yellow-500" />
-            <span className="text-sm font-medium text-gray-300">Achievements</span>
-            <span className="text-xs text-gray-500">{unlockedAchievements}/{totalAchievements}</span>
+          <div className="flex items-center gap-2 font-mono">
+            <Trophy className="w-4 h-4 text-amber-300 drop-shadow-[0_0_4px_rgba(255,200,0,0.4)]" />
+            <span className="text-xs tracking-wide text-console-bright">ACHIEVEMENTS</span>
           </div>
-          <div className="w-full bg-gray-800 rounded-full h-2">
-            <div 
-              className="bg-gradient-to-r from-yellow-500 to-orange-500 h-2 rounded-full transition-all duration-500"
-              style={{ width: `${achievementProgress}%` }}
-            />
-          </div>
+          <RetroBar value={achievementProgress/100} intent="warning" height={8} showValue />
         </div>
         
         {/* Exploration */}
         <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <Map className="w-4 h-4 text-blue-500" />
-            <span className="text-sm font-medium text-gray-300">Exploration</span>
-            <span className="text-xs text-gray-500">{visitedRooms} rooms</span>
+          <div className="flex items-center gap-2 font-mono">
+            <Map className="w-4 h-4 text-cyan-300" />
+            <span className="text-xs tracking-wide text-console-bright">EXPLORATION</span>
           </div>
-          <div className="w-full bg-gray-800 rounded-full h-2">
-            <div 
-              className="bg-gradient-to-r from-blue-500 to-cyan-500 h-2 rounded-full transition-all duration-500"
-              style={{ width: `${explorationProgress}%` }}
-            />
-          </div>
+          <RetroBar value={explorationProgress/100} intent="default" height={8} showValue />
         </div>
         
         {/* Miniquests */}
         <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <Target className="w-4 h-4 text-green-500" />
-            <span className="text-sm font-medium text-gray-300">Miniquests</span>
-            <span className="text-xs text-gray-500">{completedMiniquests} completed</span>
+          <div className="flex items-center gap-2 font-mono">
+            <Target className="w-4 h-4 text-emerald-300" />
+            <span className="text-xs tracking-wide text-console-bright">MINIQUESTS</span>
           </div>
-          <div className="w-full bg-gray-800 rounded-full h-2">
-            <div 
-              className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full transition-all duration-500"
-              style={{ width: `${miniquestProgress}%` }}
-            />
-          </div>
+          <RetroBar value={miniquestProgress/100} intent="success" height={8} showValue />
         </div>
         
         {/* Current Score */}
         <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <Star className="w-4 h-4 text-purple-500" />
-            <span className="text-sm font-medium text-gray-300">Total Score</span>
-            <span className="text-xs text-gray-500">{score} points</span>
+          <div className="flex items-center gap-2 font-mono">
+            <Star className="w-4 h-4 text-fuchsia-400" />
+            <span className="text-xs tracking-wide text-console-bright">TOTAL SCORE</span>
+            <span className="text-[10px] text-console-dim">{score}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className={`px-2 py-1 rounded text-xs font-medium ${rank.color} bg-gray-800`}>
-              {rank.name}
-            </div>
-            {score > 0 && (
-              <div className="text-xs text-gray-400">
-                +{Math.floor(score / 10)} sessions
-              </div>
-            )}
+          <div className="flex items-center gap-2 font-mono text-[10px]">
+            <div className={`px-2 py-0.5 rounded border border-console-glow/30 bg-black/40 ${rank.color}`}>{rank.name}</div>
+            {score > 0 && (<div className="text-console-dim">+{Math.floor(score / 10)} SESSIONS</div>)}
           </div>
         </div>
       </div>
