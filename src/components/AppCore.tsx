@@ -134,7 +134,7 @@ import { registerDefaultEggs } from '../features/easter-eggs/registry';
 
 import type { Room } from '../types/Room';
 import type { NPC, NPCMood } from '../types/NPCTypes';
-import { demoController, setDemoDispatch } from '../demo/demoController';
+// Legacy demoController removed (migrated to new DemoModeService)
 // Removed unused RockFieldArcade import (arcade launched via other controllers)
 import { isDemoEnvironment } from '../demo/demoGate';
 import type { GameTransition } from '../types/GameTypes';
@@ -858,21 +858,21 @@ const handleBackout = useCallback((): void => {
   useEffect(() => {
   if (isDemoEnvironment() && dispatch) {
       console.log('[AppCore] Initializing demo system');
-      demoController.setDispatch(dispatch);
+  // legacy demoController dispatch hookup removed
       
       // Set up teleport trigger function for demo
       const teleportTrigger = (teleportType: 'fractal' | 'trek', callback: () => void) => {
         setTeleportType(teleportType);
         setTeleportCallback(() => callback);
       };
-      demoController.setTeleportTrigger(teleportTrigger);
+  // legacy demoController teleport trigger removed
       
       // Check URL parameters for auto-start demo
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('demo') === 'auto' && stage === 'game') {
         console.log('[AppCore] Auto-starting demo mode');
         setIsDemoActive(true);
-        demoController.startDemo();
+  // legacy demoController start removed
       }
     }
   }, [dispatch, stage]);
@@ -1067,7 +1067,7 @@ const handleBackout = useCallback((): void => {
       if (e.key === 'Escape' && isDemoActive) {
         // Skip demo with ESC key
         e.preventDefault();
-        demoController.skipDemo();
+  // legacy demoController skip removed
         setIsDemoActive(false);
         dispatch({ 
           type: 'RECORD_MESSAGE', 
@@ -1362,7 +1362,7 @@ const handleBackout = useCallback((): void => {
       if (lowerCmd === 'start demo' || lowerCmd === 'demo start') {
         if (!isDemoActive) {
           setIsDemoActive(true);
-          demoController.startDemo();
+          // legacy demoController start removed
           dispatch({ 
             type: 'ADD_MESSAGE', 
             payload: { 
@@ -1388,7 +1388,7 @@ const handleBackout = useCallback((): void => {
       
     if (lowerCmd === 'stop demo' || lowerCmd === 'demo stop' || lowerCmd === 'skip demo') {
         if (isDemoActive) {
-          demoController.skipDemo();
+          // legacy demoController skip removed
           setIsDemoActive(false);
           dispatch({ 
             type: 'ADD_MESSAGE', 
@@ -1416,7 +1416,7 @@ const handleBackout = useCallback((): void => {
       
       if (lowerCmd === 'next demo' || lowerCmd === 'demo next') {
         if (isDemoActive) {
-          demoController.skipToNext();
+          // legacy demoController skipToNext removed
           dispatch({ 
             type: 'ADD_MESSAGE', 
             payload: { 
@@ -1499,7 +1499,7 @@ const handleBackout = useCallback((): void => {
     }
   }, [teleportCallback]);
 
-  // (Removed legacy inline startDemoMode automation; using demoController instead)
+  // Legacy inline startDemoMode automation removed
 
   // Enhanced system controls with proper error handling and typing
   const toggleFullscreen = useCallback((): void => {
@@ -1934,7 +1934,7 @@ const handleBackout = useCallback((): void => {
     }
   }, [readyForTransition, transitionType, roomMap, transitionTargetRoom, transitionInventory, dispatch]);
 
-  // Demo mode effect - trigger demoController when entering demo stage
+  // Legacy demo mode effect removed
   const demoStartedRef = useRef(false);
   useEffect(() => {
     // Bridge: if outer gate switches to DEMO mode (LandingScreen Play Demo), ensure we enter demo stage
@@ -1949,22 +1949,22 @@ const handleBackout = useCallback((): void => {
     } catch {}
     if (stage === 'demo') {
       if (!demoStartedRef.current) {
-        console.log('[AppCore] Entered demo stage – invoking demoController.startDemo soon');
+  // Legacy demo stage enter logic removed
         setIsDemoActive(true);
         demoStartedRef.current = true;
         const demoTimer = setTimeout(() => {
-          console.log('[AppCore] Demo timer fired - calling demoController.startDemo()');
+          // Legacy demo timer logic removed
           try {
-            demoController.startDemo();
+            // legacy demoController start removed
           } catch (err) {
-            console.error('[AppCore] demoController.startDemo failed', err);
+            console.error('[AppCore] legacy demoController start failed (ignored)', err);
           }
         }, 1200);
         // Keyboard shortcut: Shift+Esc to stop demo
         const keyHandler = (e: KeyboardEvent) => {
           if (e.key === 'Escape' && e.shiftKey) {
             e.preventDefault();
-            try { demoController.stopDemo(); } catch (err) { console.error('Failed stopDemo via hotkey', err); }
+            // legacy demo stop removed
           }
         };
         window.addEventListener('keydown', keyHandler);
@@ -2100,7 +2100,7 @@ const handleBackout = useCallback((): void => {
       });
     }
     // If demo mode active, avoid getting stuck – attempt to fallback to original controlnexus
-    if (!(demoController.isDemoMode() && state.roomMap['controlnexus'])) {
+  if (!(false && state.roomMap['controlnexus'])) {
       return <div className="appcore-loading">Loading game world...</div>;
     }
   }
@@ -2174,7 +2174,7 @@ const handleBackout = useCallback((): void => {
           setIsDemoActive(true);
           setTimeout(() => {
             try {
-              demoController.startDemo();
+              // legacy demoController start removed
             } catch (e) {
               console.error('[AppCore] Failed to start demo from WelcomeScreen:', e);
             }
@@ -2326,7 +2326,7 @@ const handleBackout = useCallback((): void => {
         <button
                   type="button"
                   onClick={() => { 
-                    try { demoController.stopDemo(); } catch (e) { console.error('Failed stopDemo', e); } 
+                    // legacy demoController stop removed
                     // Explicitly clear local demo flag so banner disappears when stopping from Quick Demo path
                     setIsDemoActive(false); 
           demoStartedRef.current = false; 

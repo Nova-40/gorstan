@@ -6,7 +6,7 @@
   Provides environment variable and console command detection
 */
 
-import { startDemo, setDemoDispatch } from './demoController';
+// Legacy demoController removed; gate now no-ops (kept for backward compatibility)
 import type { Dispatch } from 'react';
 import type { GameAction } from '../types/GameTypes';
 
@@ -22,15 +22,13 @@ export function isDemoEnvironment(): boolean {
 }
 
 // Initialize demo system with dispatch
-export function initializeDemo(dispatch: Dispatch<GameAction>): void {
-  setDemoDispatch(dispatch);
+export function initializeDemo(_dispatch: Dispatch<GameAction>): void {
+  // legacy setDemoDispatch removed
   
   // Auto-start demo if in demo environment
   if (isDemoEnvironment()) {
     console.log('[DemoGate] Demo environment detected, starting demo...');
-    setTimeout(() => {
-      startDemo();
-    }, 1000);
+  // legacy auto-start removed
   }
 }
 
@@ -40,14 +38,13 @@ export function handleDemoCommand(command: string): boolean {
   
   if (trimmed === 'demo') {
     console.log('[DemoGate] Starting demo via console command');
-    startDemo();
+  // legacy start removed
     return true;
   }
   
   if (trimmed === 'quit demo' || trimmed === 'stop demo') {
     console.log('[DemoGate] Stopping demo via console command');
-    const { stopDemo } = require('./demoController');
-    stopDemo();
+  // legacy stop removed
     return true;
   }
   
