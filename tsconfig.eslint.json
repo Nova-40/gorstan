@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": true,
+    "types": ["node", "vite/client", "jest", "vitest"]
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.d.ts",
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
+    "vite-env.d.ts",
+    "vite.config.*",
+    "vitest.config.*",
+    "tailwind.config.*"
+  ]
+}
