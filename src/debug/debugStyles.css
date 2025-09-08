@@ -1,6 +1,0 @@
-.debug-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.85); z-index: 9999; color: #cfe; }
-.debug-menu { max-width: 720px; margin: 4rem auto; background: #111; border: 1px solid #2a2a2a; border-radius: 12px; padding: 16px; }
-.debug-menu header { display: flex; justify-content: space-between; align-items: center; }
-.actions { display:flex; gap:8px; margin-top:8px; }
-button { background:#222; color:#9fe; border:1px solid #2d3f47; border-radius:8px; padding:4px 8px; cursor:pointer; }
-button:hover { background:#1a1a1a; }
