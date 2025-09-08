@@ -111,3 +111,5 @@ export function saveAchievement(achievementId: string): void {
     localStorage.setItem('achievements', JSON.stringify(existing));
   }
 }
+
+\n/**\n * Convenience: unlock an achievement (save + log)\n */\nexport function unlockAchievement(achievementId: string, context?: Record<string, any>): void {\n  try {\n    saveAchievement(achievementId);\n    logAchievement(achievementId, context);\n  } catch (err) {\n    console.warn('Failed to unlock achievement', achievementId, err);\n  }\n}\n
