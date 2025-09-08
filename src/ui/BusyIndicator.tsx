@@ -1,3 +1,4 @@
+import React from 'react'
 interface BusyIndicatorProps {
   isVisible: boolean;
   message?: string;
@@ -34,7 +35,7 @@ export default function BusyIndicator({
   message = "Loading...", 
   className = "" 
 }: BusyIndicatorProps) {
-  if (!isVisible) return null;
+  if (!isVisible) {return null;}
 
   return (
     <>
@@ -59,3 +60,4 @@ export default function BusyIndicator({
     </>
   );
 }
+

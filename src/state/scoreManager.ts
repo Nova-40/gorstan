@@ -1,3 +1,4 @@
+import React from 'react'
 /*
   Gorstan – Copyright © 2025 Geoff Webster. All Rights Reserved.
   
@@ -142,10 +143,10 @@ function checkLevelUp(oldScore: number, newScore: number): void {
 
 // --- Function: getScoreGainMessage ---
 function getScoreGainMessage(points: number): string {
-  if (points >= 100) return 'Excellent work!';
-  if (points >= 75) return 'Great achievement!';
-  if (points >= 50) return 'Well done!';
-  if (points >= 25) return 'Nice work!';
+  if (points >= 100) {return 'Excellent work!';}
+  if (points >= 75) {return 'Great achievement!';}
+  if (points >= 50) {return 'Well done!';}
+  if (points >= 25) {return 'Nice work!';}
   return 'Good job!';
 }
 
@@ -220,3 +221,4 @@ export function applyScorePenalty(reason: string, amount: number): void {
     });
   }
 }
+

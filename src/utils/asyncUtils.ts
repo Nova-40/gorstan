@@ -1,3 +1,4 @@
+import React from 'react'
 /**
  * Async utilities for loading, error handling, and state management
  * Extracted from common patterns across components and services
@@ -339,7 +340,7 @@ export class BatchProcessor<T, R> {
     this.resolvers = [];
     this.rejecters = [];
 
-    if (currentBatch.length === 0) return;
+    if (currentBatch.length === 0) {return;}
 
     try {
       const results = await this.processor(currentBatch);
@@ -352,3 +353,4 @@ export class BatchProcessor<T, R> {
     }
   }
 }
+

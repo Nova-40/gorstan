@@ -1,3 +1,4 @@
+import React from 'react'
 /*
   Gorstan – Copyright © 2025 Geoff Webster. All Rights Reserved.
   
@@ -63,7 +64,7 @@ class GameStateOptimizer {
    * Start automatic optimization
    */
   public startAutoOptimization(): void {
-    if (this.cleanupTimer) return;
+    if (this.cleanupTimer) {return;}
 
     this.cleanupTimer = setInterval(() => {
       this.performAutomaticCleanup();
@@ -158,7 +159,7 @@ class GameStateOptimizer {
    * Optimize game flags
    */
   private optimizeFlags(state: LocalGameState): LocalGameState {
-    if (!state.flags) return state;
+    if (!state.flags) {return state;}
 
     const optimizedFlags: Record<string, any> = {};
 
@@ -193,7 +194,7 @@ class GameStateOptimizer {
    * Optimize room visit counts
    */
   private optimizeRoomVisitCounts(state: LocalGameState): LocalGameState {
-    if (!state.roomVisitCount) return state;
+    if (!state.roomVisitCount) {return state;}
 
     // Remove rooms with zero visits
     const optimizedVisitCounts: Record<string, number> = {};
@@ -214,7 +215,7 @@ class GameStateOptimizer {
    * Optimize player data
    */
   private optimizePlayerData(state: LocalGameState): LocalGameState {
-    if (!state.player) return state;
+    if (!state.player) {return state;}
 
     const optimizedPlayer = { ...state.player };
 
@@ -409,3 +410,4 @@ if (import.meta.env.DEV) {
 }
 
 export default gameStateOptimizer;
+

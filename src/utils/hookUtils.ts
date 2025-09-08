@@ -1,3 +1,4 @@
+import React from 'react'
 /**
  * React hook utilities - extracted common patterns from components
  */
@@ -47,7 +48,7 @@ export function useFormState<T extends Record<string, any>>(
   }, []);
 
   const validateForm = useCallback(() => {
-    if (!validate) return true;
+    if (!validate) {return true;}
     
     const validationErrors = validate(values);
     setErrors(validationErrors);
@@ -273,10 +274,10 @@ export function useIntersectionObserver(
 
   useEffect(() => {
     const element = ref.current;
-    if (!element) return;
+    if (!element) {return;}
 
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry) setIsIntersecting(entry.isIntersecting); },
+      ([entry]) => { if (entry) {setIsIntersecting(entry.isIntersecting);} },
       options
     );
 
@@ -347,7 +348,7 @@ export function useFocusTrap(isActive: boolean) {
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    if (!isActive || !ref.current) return;
+    if (!isActive || !ref.current) {return;}
 
     const element = ref.current;
     const focusableElements = element.querySelectorAll(
@@ -358,7 +359,7 @@ export function useFocusTrap(isActive: boolean) {
     const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
 
     function handleTabKey(e: KeyboardEvent) {
-      if (e.key !== 'Tab') return;
+      if (e.key !== 'Tab') {return;}
 
       if (e.shiftKey) {
         if (document.activeElement === firstElement) {
@@ -421,3 +422,4 @@ export function useOptimisticUpdate<T>(
     update,
   };
 }
+
