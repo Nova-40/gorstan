@@ -1,0 +1,34 @@
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\ai\npcAiRouter.ts:297:// TODO: Implement OpenAI API integration
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\ai\npcAiRouter.ts:302:// TODO: Implement Anthropic API integration
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\ai\npcAiRouter.ts:307:// TODO: Implement local model integration
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\engine\VisualEffectsManager.ts:165:this.applyEffectToDOM(effectName, effectConfig);
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\engine\VisualEffectsManager.ts:188:private applyEffectToDOM(effectName: VisualEffectType, config: EffectConfig): void {
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\logic\achievementEngine.ts:40:{ id: 'reality_hacker', label: 'Reality Hacker', description: 'Bent the rules of the multiverse to your will' },
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\npcs\wanderers.ts:85:{ text: 'I still want to hear what Morthos has to say.', nextId: 'stubborn_neutral' },
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\services\logicPuzzleService.ts:97:// Stub implementation - generator and template selection not implemented yet
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\services\loreSystem.ts:58:background: 'One of the few beings to remember the previous iterations of reality. When the multiverse undergoes its periodic resets, most consciousness is wiped clean and reformed. Mr. Wendell, through unknown means, retains his memories and experiences across resets. He has witnessed the rise and fall of entire reality structures.',
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\services\loreSystem.ts:232:background: 'Dominic appears as a fish-like entity who serves as a helpful but cryptic guide. His most remarkable ability is retaining memories across multiverse resets - when reality cycles and most consciousness is wiped clean, Dominic remembers everything. He knows what players did in previous iterations and can reference actions from past cycles.',
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\services\loreSystem.ts:324:Most consciousness is wiped and reformed with each reset.
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\services\shadowEncounterService.ts:645:// TODO: Implement route detection
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\services\shadowEncounterService.ts:650:// TODO: Implement room detection
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\services\shadowEncounterService.ts:655:// TODO: Implement quantum progression retrieval
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\state\scoreEffects.ts:111:'reality.hacked': 80,
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\utils\accessibility.ts:42:swipeThreshold: number;
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\utils\mobileOptimization.ts:223:onSwipeLeft?: () => void;
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\utils\mobileOptimization.ts:224:onSwipeRight?: () => void;
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\utils\mobileOptimization.ts:225:onSwipeUp?: () => void;
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\utils\mobileOptimization.ts:226:onSwipeDown?: () => void;
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\utils\mobileOptimization.ts:239:const threshold = 50; // Minimum distance for swipe
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\utils\mobileOptimization.ts:240:const timeThreshold = 300; // Maximum time for swipe
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\utils\mobileOptimization.ts:266:if (isLongPress) {return;} // Don't process swipe if long press occurred
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\utils\mobileOptimization.ts:278:if (deltaTime > timeThreshold) {return;} // Too slow for swipe
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\utils\mobileOptimization.ts:285:// Horizontal swipe
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\utils\mobileOptimization.ts:287:handlers.onSwipeRight?.();
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\utils\mobileOptimization.ts:289:handlers.onSwipeLeft?.();
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\utils\mobileOptimization.ts:292:// Vertical swipe
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\utils\mobileOptimization.ts:294:handlers.onSwipeDown?.();
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\utils\mobileOptimization.ts:296:handlers.onSwipeUp?.();
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\components\AppCore.tsx:458:const result = await SaveManager.save(parseInt(slotId), saveFile as any); // TODO refine SaveFile typing
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\components\EnhancedApp.tsx:76:swipeThreshold: 50,
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\components\PlayerNameCapture.tsx:93:• cheat clear — Wipes game history/console
+C:\Users\geoff\AppData\Local\Temp\gorstan-baseline-worktree\src\engine\trapController.tsx:200:'A small blade swipes across your path!'
