@@ -112,7 +112,19 @@ export function saveAchievement(achievementId: string): void {
   }
 }
 
-\n/**\n * Convenience: unlock an achievement (save + log)\n */\nexport function unlockAchievement(achievementId: string, context?: Record<string, any>): void {\n  try {\n    saveAchievement(achievementId);\n    logAchievement(achievementId, context);\n  } catch (err) {\n    console.warn('Failed to unlock achievement', achievementId, err);\n  }\n}\n
+
+/**
+ * Convenience: unlock an achievement (save + log)
+ */
+export function unlockAchievement(achievementId: string, context?: Record<string, any>): void {
+  try {
+    saveAchievement(achievementId);
+    logAchievement(achievementId, context);
+  } catch (err) {
+    console.warn('Failed to unlock achievement', achievementId, err);
+  }
+}
+
 
 /**
  * Convenience: unlock an achievement (save + log)
@@ -137,4 +149,5 @@ export function unlockAchievement(achievementId: string, context?: Record<string
     console.warn('Failed to unlock achievement', achievementId, err);
   }
 }
+
 
