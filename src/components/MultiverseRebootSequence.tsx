@@ -19,7 +19,8 @@
 
 import React, { useEffect, useState } from 'react';
 
-import { useGameState } from '../state/gameState';
+
+import { unlockAchievement } from '../engine/achievementEngine';
 
 
 
@@ -318,4 +319,5 @@ const MultiverseRebootSequence: React.FC = () => {
 };
 
 export default MultiverseRebootSequence;
+
 
