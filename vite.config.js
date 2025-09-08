@@ -49,7 +49,7 @@ export default defineConfig({
                         if (id.includes('react')) return 'vendor-react';
                         if (id.includes('framer-motion')) return 'vendor-motion';
                         if (id.includes('lucide-react')) return 'vendor-icons';
-                        if (id.includes('groq-sdk')) return 'vendor-ai';
+                        
                         if (id.includes('valtio') || id.includes('zustand') || id.includes('@tanstack/react-query')) return 'vendor-state';
                         return 'vendor';
                     }
