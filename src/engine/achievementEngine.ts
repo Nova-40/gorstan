@@ -76,7 +76,7 @@ export function logAchievement(achievementId: string, context?: Record<string, a
  */
 export function hasAchievement(achievementId: string): boolean {
   const achievements = localStorage.getItem('achievements');
-  if (!achievements) return false;
+  if (!achievements) {return false;}
   
   try {
     const parsed = JSON.parse(achievements);
@@ -91,7 +91,7 @@ export function hasAchievement(achievementId: string): boolean {
  */
 export function getUnlockedAchievements(): string[] {
   const achievements = localStorage.getItem('achievements');
-  if (!achievements) return [];
+  if (!achievements) {return [];}
   
   try {
     const parsed = JSON.parse(achievements);
