@@ -1567,7 +1567,7 @@ const handleBackout = useCallback((): void => {
                 setIsGroupConversation(true);
                 setSelectedNPC(npcsHere[0] || null);
                 openModal('npcConsole');
-              }, 2000);\n            }\n          }\n        }\n  }, [room, isDemoActive, dispatch, state]);
+              }, 2000);            }          }        }  }, [room, isDemoActive, dispatch, state]);
 
   // Enhanced transition execution effect with proper error handling and typing
   useEffect(() => {
