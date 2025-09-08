@@ -912,7 +912,7 @@ const handleBackout = useCallback((): void => {
     const roomTitle: string = (room as any).title || (room as any).name || "Unknown room";
     const roomDescription: string = Array.isArray(room.description) 
       ? room.description[0] || "No description available."
-      : room.description?.split('\n')[0] || "No description available.";
+      : room.description?.split('')[0] || "No description available.";
     
     // Enhanced item handling with proper typing
     const itemsList: string = room.items && room.items.length > 0
@@ -2100,5 +2100,6 @@ const handleBackout = useCallback((): void => {
 performanceMonitor.markRenderEnd();
 
 export default AppCore;
+
 
 
