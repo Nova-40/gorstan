@@ -69,7 +69,7 @@ const MultiverseRebootSequence: React.FC = () => {
     if (currentMessageIndex < rebootSequence.length) {
 // Variable declaration
   const currentMessage = rebootSequence[currentMessageIndex];
-  if (!currentMessage) return; // Defensive guard
+  if (!currentMessage) {return;} // Defensive guard
 
       timeoutId = setTimeout(() => {
   setDisplayedMessages(prev => currentMessage ? [...prev, currentMessage] : prev);
@@ -81,9 +81,7 @@ const MultiverseRebootSequence: React.FC = () => {
             setIsComplete(true);
 
             
-            import('../logic/achievementEngine').then(({ unlockAchievement }) => {
-              unlockAchievement('multiverse_rebooter');
-            });
+            unlockAchievement('multiverse_rebooter');
 
             
             dispatch({
@@ -320,3 +318,4 @@ const MultiverseRebootSequence: React.FC = () => {
 };
 
 export default MultiverseRebootSequence;
+

@@ -154,7 +154,7 @@ const AppCore: React.FC = () => {
   performanceMonitor.markRenderStart();
   // Objectives nudger lifecycle
   // Install objectives nudger once (internal interval references getState each tick); avoid reinstall every state change
-  useEffect(() => { installObjectivesNudger(()=>state); return () => uninstallObjectivesNudger(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, []);
+  useEffect(() => { installObjectivesNudger(()=>state); return () => uninstallObjectivesNudger();   }, []);
   // Debounced autosave on key state changes
   // Lightweight autosave on coarse-grained triggers (room change, inventory count change)
   const inventoryCount = state.player?.inventory?.length || 0;
@@ -630,12 +630,12 @@ const handleBackout = useCallback((): void => {
   // NPC AI Behavior Generation
   useEffect(() => {
     const generateNPCBehaviors = async () => {
-      if (!room || npcsInRoom.length === 0) return;
+      if (!room || npcsInRoom.length === 0) {return;}
 
       for (const npc of npcsInRoom) {
         try {
           const npcProfile = npcAI.getAllNPCs().find(p => p.npcId === npc.id);
-          if (!npcProfile) continue;
+          if (!npcProfile) {continue;}
 
           const context = {
             npcProfile,
@@ -686,7 +686,7 @@ const handleBackout = useCallback((): void => {
       openModal('npcConsole');
     } else if (npcsInRoom.length === 1) {
       // Single NPC in room
-  if (npcsInRoom[0]) setSelectedNPC(npcsInRoom[0]);
+  if (npcsInRoom[0]) {setSelectedNPC(npcsInRoom[0]);}
       openModal('npcConsole');
     } else if (npcsInRoom.length > 1) {
       // Multiple NPCs - show selection modal
@@ -948,7 +948,7 @@ const handleBackout = useCallback((): void => {
 
   // Enhanced hint checking function with unified AI
   const checkForHints = useCallback(async (cmd: string, _lowerCmd: string) => {
-    if (!aylaHintSystem || currentHint || currentGuidance) return;
+    if (!aylaHintSystem || currentHint || currentGuidance) {return;}
 
     // Check if this was a failed command (we can check this by looking at recent messages)
     const recentMessages = state.messages.slice(-3);
@@ -1110,7 +1110,7 @@ const handleBackout = useCallback((): void => {
     } else {
       setLastMovementAction("");
       // For non-movement commands, just update previousRoom as before
-      if (room) setPreviousRoom(room);
+      if (room) {setPreviousRoom(room);}
     }
 
     // Demo system commands - only available in demo environment
@@ -1289,7 +1289,7 @@ const handleBackout = useCallback((): void => {
       }
 
   const currentDemo = demoCommands[currentCommandIndex];
-  if (!currentDemo) return;
+  if (!currentDemo) {return;}
   const { command, delay } = currentDemo;
       
       // Add demo command to message log
@@ -1454,7 +1454,7 @@ const handleBackout = useCallback((): void => {
 
   // Convert certain Ayla hints into ephemeral console guidance
   useEffect(() => {
-    if (!currentHint) return;
+    if (!currentHint) {return;}
     // Only show ephemeral for low/medium urgency; high keeps popup
     if (currentHint.urgency === 'low' || currentHint.urgency === 'medium') {
       const id = `ayla-ephemeral-${Date.now()}`;
@@ -1491,14 +1491,14 @@ const handleBackout = useCallback((): void => {
 
   // Enhanced game initialization with proper error handling and typing
   useEffect(() => {
-    if (initialRoomMapRef.current) return; // Already loaded
+    if (initialRoomMapRef.current) {return;} // Already loaded
     try {
       const loadedRoomMap: Record<string, Room> = getAllRoomsAsObject();
-      if (!loadedRoomMap || Object.keys(loadedRoomMap).length === 0) console.warn('[AppCore] No rooms loaded from main loader');
+      if (!loadedRoomMap || Object.keys(loadedRoomMap).length === 0) {console.warn('[AppCore] No rooms loaded from main loader');}
       console.log('[AppCore] Loading room map with', Object.keys(loadedRoomMap).length, 'rooms');
       initialRoomMapRef.current = loadedRoomMap;
       dispatch({ type: 'LOAD_ROOM_MAP', payload: loadedRoomMap });
-      if (!loadedRoomMap[state.currentRoomId] && loadedRoomMap['controlnexus']) dispatch({ type: 'MOVE_TO_ROOM', payload: 'controlnexus' });
+      if (!loadedRoomMap[state.currentRoomId] && loadedRoomMap['controlnexus']) {dispatch({ type: 'MOVE_TO_ROOM', payload: 'controlnexus' });}
       initializeAchievementEngine(dispatch);
 
       // Score manager
@@ -1520,12 +1520,7 @@ const handleBackout = useCallback((): void => {
       try { loadCelebrationIndex(); } catch (error) { console.warn('Could not load celebration index:', error); }
 
       // Optional async modules
-      Promise.allSettled([
-        import('../services/npcAI'),
-        import('../engine/wanderingNPCController')
-      ]).then(() => {
-        try { initializeWanderingNPCs(state, dispatch); } catch (e) { console.warn('Wandering NPC init failed:', e); }
-      });
+      try { initializeWanderingNPCs(state, dispatch); } catch (e) { console.warn('Wandering NPC init failed:', e); }
     } catch (error) {
       console.error('[AppCore] Error during room map init:', error);
       dispatch({ type: 'ADD_MESSAGE', payload: { id: Date.now().toString(), text: 'Critical error: Unable to load room data.', type: 'error', timestamp: Date.now() } });
@@ -1536,7 +1531,7 @@ const handleBackout = useCallback((): void => {
   // Track descriptions already shown to prevent spamming on every render
   const shownRoomDescriptionsRef = useRef<Set<string>>(new Set());
   useEffect(() => {
-    if (!room) return;
+    if (!room) {return;}
     const currentDescriptionString = Array.isArray(room.description)
       ? room.description.join(' ')
       : (room.description || '');
@@ -1566,9 +1561,7 @@ const handleBackout = useCallback((): void => {
       const currentZone = room.zone || '';
       const npcsHere = state.npcsInRoom || [];
       if (npcsHere.length > 1) {
-        import('../npc/groupChatLogic').then(({ GroupChatManager }) => {
-          if (GroupChatManager.shouldForceGroupChat(room.id, currentZone)) {
-            dispatch({ type: 'SET_FLAG', payload: { flag: 'forceGroupChat', value: true } });
+        // groupChatLogic preloading removed; module is statically imported where needed
             if (currentZone === 'stantonZone' || currentZone === 'stantonharcourtZone') {
               setTimeout(() => {
                 setIsGroupConversation(true);
@@ -1590,7 +1583,7 @@ const handleBackout = useCallback((): void => {
       roomMapLoaded: Object.keys(roomMap).length > 0
     });
     
-    if (!readyForTransition || !transitionType || Object.keys(roomMap).length === 0) return;
+    if (!readyForTransition || !transitionType || Object.keys(roomMap).length === 0) {return;}
     
     try {
       const target: string = transitionTargetRoom.trim().toLowerCase();
@@ -2113,3 +2106,4 @@ const handleBackout = useCallback((): void => {
 performanceMonitor.markRenderEnd();
 
 export default AppCore;
+
