@@ -1570,7 +1570,6 @@ const handleBackout = useCallback((): void => {
               }, 2000);
             }
           }
-        });
       }
     }
   }, [room, isDemoActive, dispatch, state]);
