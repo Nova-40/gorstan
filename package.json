@@ -63,8 +63,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.28.4",
-    "@babel/preset-env": "^7.28.4",
-    "@babel/register": "^7.28.4",
+    "@babel/preset-env": "^7.28.3",
+    "@babel/register": "^7.28.3",
     "@hebcal/core": "^5.10.1",
     "@playwright/test": "^1.55.0",
     "@tailwindcss/aspect-ratio": "^0.4.2",
@@ -121,4 +121,5 @@
   "author": "Geoff Webster",
   "license": "All Rights Reserved"
 }
+
 
