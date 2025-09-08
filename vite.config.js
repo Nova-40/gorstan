@@ -1,17 +1,5 @@
 /*
   Gorstan – Copyright © 2025 Geoff Webster. All Rights Reserved.
-  
-  You may play Gorstan for free for personal entertainment only.
-  You may NOT copy, redistribute, modify, or sell the game, its code,
-  artwork, storyline, or any other part without written permission.
-  
-  Gorstan includes third-party libraries and assets:
-    - React © Meta Platforms, Inc. – MIT Licence
-    - Lucide Icons © Lucide Contributors – ISC Licence
-    - Flaticon icons © Flaticon.com – Free Licence with attribution
-    - Other packages under their respective licences (see package.json)
-
-  Full licence terms: see EULA.md in the project root.
 */
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
@@ -52,18 +40,41 @@ export default defineConfig({
         chunkSizeWarningLimit: 1200,
         rollupOptions: {
             output: {
-                manualChunks: {
-                    // Core React chunk
-                    'react-vendor': ['react', 'react-dom'],
-                    // Heavy UI libraries
-                    'framer-motion': ['framer-motion'],
-                    'lucide-react': ['lucide-react'],
-                    // Game state management
-                    'state-management': ['valtio', 'zustand', '@tanstack/react-query'],
-                    // AI services (can be lazy loaded)
-                    'ai-services': ['groq-sdk'],
+                // consistent filenames
+                entryFileNames: 'assets/[name]-[hash].js',
+                chunkFileNames: 'assets/[name]-[hash].js',
+                assetFileNames: 'assets/[name]-[hash][extname]',
+                manualChunks(id) {
+                    if (id && id.includes('node_modules')) {
+                        if (id.includes('react')) return 'vendor-react';
+                        if (id.includes('framer-motion')) return 'vendor-motion';
+                        if (id.includes('lucide-react')) return 'vendor-icons';
+                        if (id.includes('groq-sdk')) return 'vendor-ai';
+                        if (id.includes('valtio') || id.includes('zustand') || id.includes('@tanstack/react-query')) return 'vendor-state';
+                        return 'vendor';
+                    }
                 }
-            }
+            },
+            treeshake: {
+                moduleSideEffects: 'no-external',
+                propertyReadSideEffects: false,
+                tryCatchDeoptimization: false
+            },
+            plugins: [
+                {
+                    name: 'fail-on-empty-chunk',
+                    generateBundle(_, bundle) {
+                        for (const [fileName, chunk] of Object.entries(bundle)) {
+                            if (chunk && chunk.type === 'chunk') {
+                                const code = chunk.code || '';
+                                if (code.trim().length === 0) {
+                                    this.error(`Empty chunk generated: ${fileName}`);
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
         }
     },
     optimizeDeps: {
