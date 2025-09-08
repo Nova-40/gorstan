@@ -53,7 +53,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
 
     // Focus trap implementation
     useEffect(() => {
-      if (!isOpen) return;
+      if (!isOpen) {return;}
 
       // Store the currently focused element
       previousActiveElement.current = document.activeElement;
@@ -66,7 +66,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
 
       // Setup focus trap
       const handleFocusTrap = (e: KeyboardEvent) => {
-        if (!modal) return;
+        if (!modal) {return;}
 
         const focusableElements = modal.querySelectorAll(
           'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
@@ -109,7 +109,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
       };
     }, [isOpen, onClose, closeOnEscape]);
 
-    if (!isOpen) return null;
+    if (!isOpen) {return null;}
 
     const handleOverlayClick = (e: React.MouseEvent) => {
       if (closeOnOverlayClick && e.target === e.currentTarget) {

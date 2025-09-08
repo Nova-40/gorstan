@@ -42,7 +42,7 @@ export default function BaseDialog({ title, children, onClose, labelledById }: B
         const focusables = panelRef.current?.querySelectorAll<HTMLElement>(
           'a[href],button,textarea,input,select,[tabindex]:not([tabindex="-1"])'
         );
-        if (!focusables || focusables.length === 0) return;
+        if (!focusables || focusables.length === 0) {return;}
         const first = focusables[0];
         const last = focusables[focusables.length - 1];
         if (e.shiftKey && document.activeElement === first) {
@@ -60,7 +60,7 @@ export default function BaseDialog({ title, children, onClose, labelledById }: B
   }, [onClose]);
 
   const onBackdropClick = useCallback((e: React.MouseEvent) => {
-    if (e.target === backdropRef.current) onClose();
+    if (e.target === backdropRef.current) {onClose();}
   }, [onClose]);
 
   return (

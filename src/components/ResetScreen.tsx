@@ -82,7 +82,7 @@ const ResetScreen: React.FC<ResetScreenProps> = ({ onComplete = () => {} }) => {
   
 // React effect hook
   useEffect(() => {
-    if (!finished) return;
+    if (!finished) {return;}
 
 // Variable declaration
     const spinnerTimer = setInterval(() => {

@@ -85,9 +85,9 @@ const TrapManagementModal: React.FC<TrapManagementModalProps> = ({
     }
 
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-      if (analyzeTimeoutRef.current) clearTimeout(analyzeTimeoutRef.current);
-      if (disarmTimeoutRef.current) clearTimeout(disarmTimeoutRef.current);
+      if (timerRef.current) {clearInterval(timerRef.current);}
+      if (analyzeTimeoutRef.current) {clearTimeout(analyzeTimeoutRef.current);}
+      if (disarmTimeoutRef.current) {clearTimeout(disarmTimeoutRef.current);}
     };
   }, [isOpen, trap]);
 
@@ -118,7 +118,7 @@ const TrapManagementModal: React.FC<TrapManagementModalProps> = ({
   }, [dispatch, trap, onClose]);
 
   const handleAnalyzeTrap = useCallback(() => {
-    if (managementState.isAnalyzing || managementState.hasAnalyzed) return;
+    if (managementState.isAnalyzing || managementState.hasAnalyzed) {return;}
 
     setManagementState(prev => ({ ...prev, isAnalyzing: true }));
 
@@ -147,7 +147,7 @@ const TrapManagementModal: React.FC<TrapManagementModalProps> = ({
   }, [managementState.isAnalyzing, managementState.hasAnalyzed, trap, playerTraits, playerItems]);
 
   const handleDisarmAttempt = useCallback(() => {
-    if (!managementState.hasAnalyzed || !managementState.disarmMethod || managementState.isDisarming) return;
+    if (!managementState.hasAnalyzed || !managementState.disarmMethod || managementState.isDisarming) {return;}
 
     setManagementState(prev => ({ ...prev, isDisarming: true }));
 
@@ -239,7 +239,7 @@ const TrapManagementModal: React.FC<TrapManagementModalProps> = ({
     onClose();
   }, [dispatch, onClose]);
 
-  if (!isOpen || !trap || trap.triggered) return null;
+  if (!isOpen || !trap || trap.triggered) {return null;}
 
   return (
     <Modal visible={isOpen} onClose={onClose} title="⚠️ Trap Management" pinned={true}>

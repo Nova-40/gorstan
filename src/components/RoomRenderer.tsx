@@ -109,7 +109,7 @@ const RoomRenderer: React.FC = () => {
         
 // Variable declaration
   const activeTrap = roomData.traps.find((trap: any) => !trap.triggered);
-  if (activeTrap) dispatch({ type: 'TRIGGER_TRAP', payload: activeTrap });
+  if (activeTrap) {dispatch({ type: 'TRIGGER_TRAP', payload: activeTrap });}
       }
 
       
@@ -145,24 +145,24 @@ const RoomRenderer: React.FC = () => {
   //   '/images/introZone_controlnexus.png'
   // Fall back to existing fallback.png (default-room.png does not exist)
   const resolveImagePath = (img?: string): string => {
-    if (!img || img.trim() === '') return '/images/fallback.png';
-    if (img.startsWith('http://') || img.startsWith('https://')) return img;
-    if (img.startsWith('/images/')) return img;
-    if (img.startsWith('images/')) return '/' + img;
+    if (!img || img.trim() === '') {return '/images/fallback.png';}
+    if (img.startsWith('http://') || img.startsWith('https://')) {return img;}
+    if (img.startsWith('/images/')) {return img;}
+    if (img.startsWith('images/')) {return '/' + img;}
     return `/images/${img}`;
   };
   // Derive a loose zone for fallback mapping
   const deriveZone = (roomId: string): any => {
-    if (roomId.includes('control') || roomId.startsWith('intro')) return 'nexus';
-    if (roomId.includes('glitch')) return 'glitch';
-    if (roomId.includes('elf')) return 'elfhame';
-    if (roomId.includes('maze')) return 'maze';
+    if (roomId.includes('control') || roomId.startsWith('intro')) {return 'nexus';}
+    if (roomId.includes('glitch')) {return 'glitch';}
+    if (roomId.includes('elf')) {return 'elfhame';}
+    if (roomId.includes('maze')) {return 'maze';}
     return 'default';
   };
   let imagePath = room.image ? resolveImagePath(room.image) : '';
   if (!imagePath || imagePath === '/images/fallback.png') {
     const mapped = getRoomImagePath(room.id, deriveZone(room.id));
-    if (mapped) imagePath = mapped; else imagePath = '/images/fallback.png';
+    if (mapped) {imagePath = mapped;} else {imagePath = '/images/fallback.png';}
   }
   return (
     <div className="room-container flex flex-col h-full bg-black rounded-lg shadow-inner overflow-hidden border border-green-600">

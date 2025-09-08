@@ -26,7 +26,7 @@ interface BlueButtonWarningModalProps {
 }
 
 const BlueButtonWarningModal: React.FC<BlueButtonWarningModalProps> = ({ isOpen, onClose }) => {
-  if (!isOpen) return null;
+  if (!isOpen) {return null;}
 
   return (
     <div className="modal-overlay blue-button-warning">

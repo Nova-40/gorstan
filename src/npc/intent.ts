@@ -227,23 +227,23 @@ function getContextClues(utterance: string, context: any): string[] {
   
   // Location context
   if (context.roomId) {
-    if (context.roomId.includes('reset')) clues.push('in_critical_room');
-    if (context.roomId.includes('library')) clues.push('in_knowledge_area');
-    if (context.roomId.includes('maze')) clues.push('in_navigation_challenge');
+    if (context.roomId.includes('reset')) {clues.push('in_critical_room');}
+    if (context.roomId.includes('library')) {clues.push('in_knowledge_area');}
+    if (context.roomId.includes('maze')) {clues.push('in_navigation_challenge');}
   }
   
   // Behavioral context
-  if (utterance.includes('?') || utterance.includes('how')) clues.push('seeking_information');
-  if (utterance.includes('!') || utterance.includes('please')) clues.push('emotional_emphasis');
-  if (utterance.split(' ').length > 10) clues.push('detailed_query');
-  if (utterance.split(' ').length < 3) clues.push('brief_query');
+  if (utterance.includes('?') || utterance.includes('how')) {clues.push('seeking_information');}
+  if (utterance.includes('!') || utterance.includes('please')) {clues.push('emotional_emphasis');}
+  if (utterance.split(' ').length > 10) {clues.push('detailed_query');}
+  if (utterance.split(' ').length < 3) {clues.push('brief_query');}
   
   // Question types
-  if (utterance.startsWith('what')) clues.push('what_question');
-  if (utterance.startsWith('where')) clues.push('where_question');
-  if (utterance.startsWith('how')) clues.push('how_question');
-  if (utterance.startsWith('why')) clues.push('why_question');
-  if (utterance.startsWith('should')) clues.push('decision_question');
+  if (utterance.startsWith('what')) {clues.push('what_question');}
+  if (utterance.startsWith('where')) {clues.push('where_question');}
+  if (utterance.startsWith('how')) {clues.push('how_question');}
+  if (utterance.startsWith('why')) {clues.push('why_question');}
+  if (utterance.startsWith('should')) {clues.push('decision_question');}
   
   return clues;
 }

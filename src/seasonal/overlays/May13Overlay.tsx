@@ -37,7 +37,7 @@ export interface May13OverlayProps {
  * - Triggers post-overlay NPC banter
  */
 export const May13Overlay: React.FC<May13OverlayProps> = ({ isOpen, onClose }) => {
-  if (!isOpen) return null;
+  if (!isOpen) {return null;}
 
   return (
     <BaseDialog

@@ -48,20 +48,20 @@ const PlayerStatsPanel: React.FC = () => {
 
   // Score color and rating based on current score
   const getScoreColor = (score: number) => {
-    if (score >= 1000) return '#ff69b4'; // Legendary - hot pink
-    if (score >= 600) return '#9370db';  // Master - medium slate blue
-    if (score >= 300) return '#20b2aa';  // Explorer - light sea green
-    if (score >= 100) return '#ffd700';  // Rookie - gold
-    if (score >= 0) return '#87ceeb';    // Neutral - sky blue
+    if (score >= 1000) {return '#ff69b4';} // Legendary - hot pink
+    if (score >= 600) {return '#9370db';}  // Master - medium slate blue
+    if (score >= 300) {return '#20b2aa';}  // Explorer - light sea green
+    if (score >= 100) {return '#ffd700';}  // Rookie - gold
+    if (score >= 0) {return '#87ceeb';}    // Neutral - sky blue
     return '#ff6347';                    // Negative - tomato red
   };
 
   const getScoreRating = (score: number) => {
-    if (score >= 1000) return 'Legendary';
-    if (score >= 600) return 'Master';
-    if (score >= 300) return 'Explorer';
-    if (score >= 100) return 'Rookie';
-    if (score >= 0) return 'Novice';
+    if (score >= 1000) {return 'Legendary';}
+    if (score >= 600) {return 'Master';}
+    if (score >= 300) {return 'Explorer';}
+    if (score >= 100) {return 'Rookie';}
+    if (score >= 0) {return 'Novice';}
     return 'Chaotic';
   };
 

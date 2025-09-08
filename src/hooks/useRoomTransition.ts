@@ -152,7 +152,7 @@ const isPortalTravel = (fromRoom: RoomLike, toRoom: RoomLike): boolean => {
 
 
 export const getZoneDisplayName = (zoneId?: string): string => {
-  if (!zoneId) return 'Unknown Zone';
+  if (!zoneId) {return 'Unknown Zone';}
 
   const zoneNames: Record<string, string> = {
     'introZone': 'Dimensional Control',

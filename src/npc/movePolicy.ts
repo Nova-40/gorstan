@@ -454,7 +454,7 @@ function findNearestPatrolRoom(context: NPCMoveContext, patrolRoute: string[]): 
  * Calculate distance between rooms (simplified - in real implementation would use actual room graph)
  */
 export function calculateDistance(fromRoom: string, toRoom: string, context: NPCMoveContext): number {
-  if (fromRoom === toRoom) return 0;
+  if (fromRoom === toRoom) {return 0;}
   
   // Simplified: Adjacent rooms are distance 1, others are estimated
   if (context.allowedAdjacency.includes(toRoom)) {

@@ -474,7 +474,7 @@ export class SceneRecommendationEngine {
   ) {}
 
   private checkDependencies(dependencies: readonly string[], context: SceneContext): boolean {
-    if (!context.sceneHistory) return false;
+    if (!context.sceneHistory) {return false;}
     return dependencies.every(dep =>
       context.sceneHistory!.includes(dep) ||
       context.flags?.[`scene_${dep}_completed`]
@@ -485,7 +485,7 @@ export class SceneRecommendationEngine {
     const recommendations: Array<{ sceneId: string; relevance: number }> = [];
 
     for (const [sceneId, scene] of this.sceneRegistry) {
-      if (sceneId === currentScene) continue;
+      if (sceneId === currentScene) {continue;}
 
       const context: SceneContext = {
         player: playerState,
@@ -511,7 +511,7 @@ export class SceneRecommendationEngine {
 
   calculateSceneRelevance(sceneId: string, context: SceneContext): number {
     const scene = this.sceneRegistry.get(sceneId);
-        if (!scene) return 0;
+        if (!scene) {return 0;}
 
     let relevance = 10; 
 
@@ -527,8 +527,8 @@ export class SceneRecommendationEngine {
     
     if (scene.dependencies) {
       const dependenciesMet = this.checkDependencies(scene.dependencies, context);
-            if (dependenciesMet) relevance += 15;
-      else return 0; 
+            if (dependenciesMet) {relevance += 15;}
+      else {return 0;} 
     }
 
     
@@ -659,7 +659,7 @@ export class ScenePerformanceMonitor {
     const issues: PerformanceIssue[] = [];
 
     for (const [sceneId, data] of this.performanceData.entries()) {
-      if (data.length === 0) continue;
+      if (data.length === 0) {continue;}
 
       const averageTime = data.reduce((sum, entry) => sum + entry.duration, 0) / data.length;
 
@@ -1157,7 +1157,7 @@ function canExecuteScene(sceneId: string, scene: Scene): boolean {
 // --- Function: checkSceneDependencies ---
 function checkSceneDependencies(dependencies: readonly string[], context: SceneContext): boolean {
   try {
-    if (!context.sceneHistory) return false;
+    if (!context.sceneHistory) {return false;}
 
     return dependencies.every(dep =>
       context.sceneHistory!.includes(dep) ||
@@ -1442,16 +1442,16 @@ function displaySceneChoices(
     // Filter choices to only show available ones
     const availableChoices = choices.filter(choice => {
       // Check if choice is disabled
-      if (choice.disabled) return false;
+      if (choice.disabled) {return false;}
 
       // Check choice condition
-      if (choice.condition && !choice.condition(context)) return false;
+      if (choice.condition && !choice.condition(context)) {return false;}
 
       // Check choice requirements
-      if (choice.requirements && !checkChoiceRequirements(choice.requirements, context)) return false;
+      if (choice.requirements && !checkChoiceRequirements(choice.requirements, context)) {return false;}
 
       // Check choice cooldown
-      if (choice.cooldown && isChoiceOnCooldown(choice.id, choice.cooldown)) return false;
+      if (choice.cooldown && isChoiceOnCooldown(choice.id, choice.cooldown)) {return false;}
 
       return true;
     });
@@ -1498,22 +1498,22 @@ function displaySceneChoices(
 // --- Function: checkChoiceRequirements ---
 function checkChoiceRequirements(requirements: SceneChoice['requirements'], context: SceneContext): boolean {
   try {
-    if (!requirements) return true;
+    if (!requirements) {return true;}
 
     
     if (requirements.flags && !requirements.flags.every(flag =>
       context.flags?.[flag] || context.player?.flags?.[flag]
-    )) return false;
+    )) {return false;}
 
     
     if (requirements.items && !requirements.items.every(item =>
       context.player?.inventory?.includes(item)
-    )) return false;
+    )) {return false;}
 
     
     if (requirements.traits && !requirements.traits.every(trait =>
       context.player?.traits?.includes(trait)
-    )) return false;
+    )) {return false;}
 
     
     if (requirements.health && (context.player?.health || 0) < requirements.health) {
@@ -1543,7 +1543,7 @@ function getMissingRequirements(requirements: SceneChoice['requirements'], conte
   const missing: string[] = [];
 
   try {
-    if (!requirements) return missing;
+    if (!requirements) {return missing;}
 
     
     requirements.flags?.forEach(flag => {
@@ -1604,7 +1604,7 @@ function isChoiceOnCooldown(choiceId: string, cooldown: number): boolean {
 // --- Function: applySceneEffects ---
 function applySceneEffects(effects: Scene['effects'], context: SceneContext, stateChanges: Record<string, unknown>): void {
   try {
-    if (!effects) return;
+    if (!effects) {return;}
 
     if (effects.mood) {
       context.setGameState(prev => {
@@ -1705,7 +1705,7 @@ function processSceneChoices(choices: readonly SceneChoice[], context: SceneCont
   nextScenes: string[];
 } {
   let available = 0;
-  let messagesAdded = 0;
+  const messagesAdded = 0;
   const nextScenes: string[] = [];
 
   for (const choice of choices) {
@@ -1862,20 +1862,20 @@ export function registerScene(scene: Scene): boolean {
 // --- Function: validateSceneStructure ---
 function validateSceneStructure(scene: Scene): boolean {
   try {
-    if (!scene.id || typeof scene.id !== 'string') return false;
-    if (!Array.isArray(scene.messages)) return false;
+    if (!scene.id || typeof scene.id !== 'string') {return false;}
+    if (!Array.isArray(scene.messages)) {return false;}
 
     if (scene.choices) {
-      if (!Array.isArray(scene.choices)) return false;
+      if (!Array.isArray(scene.choices)) {return false;}
       for (const choice of scene.choices) {
-        if (!choice.id || !choice.text) return false;
+        if (!choice.id || !choice.text) {return false;}
       }
     }
 
     if (scene.actions) {
-      if (!Array.isArray(scene.actions)) return false;
+      if (!Array.isArray(scene.actions)) {return false;}
       for (const action of scene.actions) {
-        if (!action.type) return false;
+        if (!action.type) {return false;}
       }
     }
 
@@ -1899,7 +1899,7 @@ export function getAvailableScenes(filter?: {
     if (filter) {
       sceneIds = sceneIds.filter(id => {
         const scene = scenes.get(id);
-        if (!scene) return false;
+        if (!scene) {return false;}
 
         if (filter.category && scene.category !== filter.category) {
           return false;
@@ -1927,7 +1927,7 @@ export function getAvailableScenes(filter?: {
 // --- Function: hasScene ---
 export function hasScene(sceneId: string): boolean {
   try {
-    if (!sceneId || typeof sceneId !== 'string') return false;
+    if (!sceneId || typeof sceneId !== 'string') {return false;}
     return scenes.has(sceneId);
   } catch (error) {
     console.error('[SceneEngine] Error checking scene existence:', error);
@@ -1945,17 +1945,17 @@ export function getSceneInfo(sceneId: string): (Pick<Scene, 'id' | 'title' | 'ca
   try {
     const scene = scenes.get(sceneId);
     const executionData = sceneExecutionHistory.get(sceneId);
-        if (!scene) return null;
+        if (!scene) {return null;}
 
     const result: any = {
       id: scene.id
     };
     
-    if (scene.title !== undefined) result.title = scene.title;
-    if (scene.category !== undefined) result.category = scene.category;
-    if (scene.tags !== undefined) result.tags = scene.tags;
-    if (executionData?.count !== undefined) result.executionCount = executionData.count;
-    if (executionData?.lastExecuted !== undefined) result.lastExecuted = executionData.lastExecuted;
+    if (scene.title !== undefined) {result.title = scene.title;}
+    if (scene.category !== undefined) {result.category = scene.category;}
+    if (scene.tags !== undefined) {result.tags = scene.tags;}
+    if (executionData?.count !== undefined) {result.executionCount = executionData.count;}
+    if (executionData?.lastExecuted !== undefined) {result.lastExecuted = executionData.lastExecuted;}
     
     return result;
   } catch (error) {

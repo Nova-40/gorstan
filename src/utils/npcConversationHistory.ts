@@ -136,14 +136,14 @@ export function shouldVaryResponse(
  * Get relationship level description
  */
 export function getRelationshipLevel(relationship: number): string {
-  if (relationship >= 80) return 'close friend';
-  if (relationship >= 60) return 'friend';
-  if (relationship >= 40) return 'acquaintance';
-  if (relationship >= 20) return 'neutral';
-  if (relationship >= 0) return 'wary';
-  if (relationship >= -20) return 'suspicious';
-  if (relationship >= -40) return 'unfriendly';
-  if (relationship >= -60) return 'hostile';
+  if (relationship >= 80) {return 'close friend';}
+  if (relationship >= 60) {return 'friend';}
+  if (relationship >= 40) {return 'acquaintance';}
+  if (relationship >= 20) {return 'neutral';}
+  if (relationship >= 0) {return 'wary';}
+  if (relationship >= -20) {return 'suspicious';}
+  if (relationship >= -40) {return 'unfriendly';}
+  if (relationship >= -60) {return 'hostile';}
   return 'enemy';
 }
 

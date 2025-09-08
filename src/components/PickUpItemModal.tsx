@@ -53,7 +53,7 @@ const PickUpItemModal: React.FC<PickUpItemModalProps> = ({ isOpen, items, onClos
     onClose();
   };
 
-  if (!isOpen) return null;
+  if (!isOpen) {return null;}
 
   // JSX return block or main return
   return (

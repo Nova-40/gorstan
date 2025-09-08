@@ -85,7 +85,7 @@ const PuzzleCollectionBrowser: React.FC<PuzzleCollectionBrowserProps> = ({
   };
 
   const getRecommendedPuzzles = () => {
-    if (!playerDifficulty) return puzzles.slice(0, 5);
+    if (!playerDifficulty) {return puzzles.slice(0, 5);}
 
     return puzzles.filter(p => {
       // Filter by recommended difficulty and types

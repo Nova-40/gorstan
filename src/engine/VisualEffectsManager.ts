@@ -75,10 +75,10 @@ export class VisualEffectsManager {
    * Initializes CSS classes for visual effects if they don't exist.
    */
   private initializeEffectStyles(): void {
-    if (typeof document === 'undefined') return;
+    if (typeof document === 'undefined') {return;}
 
     const styleId = 'visual-effects-styles';
-    if (document.getElementById(styleId)) return;
+    if (document.getElementById(styleId)) {return;}
 
     const style = document.createElement('style');
     style.id = styleId;
@@ -186,7 +186,7 @@ export class VisualEffectsManager {
    * Applies the visual effect to the DOM.
    */
   private applyEffectToDOM(effectName: VisualEffectType, config: EffectConfig): void {
-    if (typeof document === 'undefined') return;
+    if (typeof document === 'undefined') {return;}
 
     const gameContainer = document.getElementById('root') || document.body;
     const className = `effect-${effectName}`;
@@ -213,7 +213,7 @@ export class VisualEffectsManager {
    */
   public removeEffect(effectName: VisualEffectType): boolean {
     const effectState = this.activeEffects.get(effectName);
-    if (!effectState) return false;
+    if (!effectState) {return false;}
 
     // Clear timeout if it exists
     if (effectState.timeoutId) {
@@ -237,7 +237,7 @@ export class VisualEffectsManager {
    * Removes the visual effect from the DOM.
    */
   private removeEffectFromDOM(effectName: VisualEffectType): void {
-    if (typeof document === 'undefined') return;
+    if (typeof document === 'undefined') {return;}
 
     const gameContainer = document.getElementById('root') || document.body;
     const className = `effect-${effectName}`;

@@ -106,18 +106,18 @@ export class AylaService {
   private findExactMatch(input: string, state: GameState): MatchResult | null {
     // Check flag-based edge cases first
     const flagMatch = this.checkFlagBasedEdgeCases(input, state);
-    if (flagMatch) return flagMatch;
+    if (flagMatch) {return flagMatch;}
     
     // Check location-based responses
     const locationMatch = this.checkLocationBasedResponses(input, state);
-    if (locationMatch) return locationMatch;
+    if (locationMatch) {return locationMatch;}
     
     // Check all intent categories
     const categories = ['lore', 'hints', 'books', 'world_state', 'humor'];
     
     for (const category of categories) {
       const categoryData = (intentsData as any)[category];
-      if (!categoryData) continue;
+      if (!categoryData) {continue;}
       
       for (const [topicKey, topic] of Object.entries(categoryData)) {
         const topicData = topic as any;
@@ -147,7 +147,7 @@ export class AylaService {
     
     for (const category of categories) {
       const categoryData = (intentsData as any)[category];
-      if (!categoryData) continue;
+      if (!categoryData) {continue;}
       
       for (const [topicKey, topic] of Object.entries(categoryData)) {
         const topicData = topic as any;
@@ -178,7 +178,7 @@ export class AylaService {
     
     for (const category of categories) {
       const categoryData = (intentsData as any)[category];
-      if (!categoryData) continue;
+      if (!categoryData) {continue;}
       
       for (const [topicKey, topic] of Object.entries(categoryData)) {
         const topicData = topic as any;
@@ -211,7 +211,7 @@ export class AylaService {
     
     for (const category of categories) {
       const categoryData = (intentsData as any)[category];
-      if (!categoryData) continue;
+      if (!categoryData) {continue;}
       
       for (const [topicKey, topic] of Object.entries(categoryData)) {
         const topicData = topic as any;
@@ -339,7 +339,7 @@ export class AylaService {
       fallbacks.push("The fae magic is making language more poetic than precise. What else might I clarify?");
     }
     
-  if (fallbacks.length === 0) return '';
+  if (fallbacks.length === 0) {return '';}
   const idx = Math.floor(Math.random() * fallbacks.length);
   return fallbacks[idx] ?? fallbacks[0] ?? '';
   }
@@ -427,7 +427,7 @@ export class AylaService {
   }
 
   private selectResponse(responses: string[] | undefined): string {
-    if (!responses || responses.length === 0) return '';
+    if (!responses || responses.length === 0) {return '';}
     const idx = Math.floor(Math.random() * responses.length);
     return responses[idx] ?? responses[0] ?? '';
   }
@@ -448,26 +448,26 @@ export class AylaService {
 
   private getCurrentZone(state: GameState): string | null {
     const roomId = state.currentRoomId;
-    if (!roomId) return null;
+    if (!roomId) {return null;}
     
     // Extract zone from room ID (e.g., "glitchZone_datavoid" -> "glitchrealm")
-    if (roomId.includes('glitchZone')) return 'glitchrealm';
-    if (roomId.includes('elfhameZone')) return 'elfhame';
-    if (roomId.includes('mazeZone')) return 'maze';
+    if (roomId.includes('glitchZone')) {return 'glitchrealm';}
+    if (roomId.includes('elfhameZone')) {return 'elfhame';}
+    if (roomId.includes('mazeZone')) {return 'maze';}
     
     return null;
   }
 
   private levenshteinDistance(str1: string, str2: string): number {
     // Optimised two-row implementation avoiding multi-dimensional undefined indexing
-    if (str1 === str2) return 0;
+    if (str1 === str2) {return 0;}
     const len1 = str1.length;
     const len2 = str2.length;
-    if (len1 === 0) return len2;
-    if (len2 === 0) return len1;
+    if (len1 === 0) {return len2;}
+    if (len2 === 0) {return len1;}
   let prev: number[] = new Array(len2 + 1);
   let curr: number[] = new Array(len2 + 1);
-  for (let j = 0; j <= len2; j++) prev[j] = j;
+  for (let j = 0; j <= len2; j++) {prev[j] = j;}
     for (let i = 1; i <= len1; i++) {
       curr[0] = i;
       const c1 = str1[i - 1];
@@ -497,7 +497,7 @@ export class AylaService {
    */
   getConversationStats(sessionId: string = 'default'): any {
     const context = conversationContexts.get(sessionId);
-    if (!context) return null;
+    if (!context) {return null;}
     
     return {
       messageCount: context.history.length,

@@ -52,7 +52,7 @@ class ArtifactArcService {
   }
 
   private startBackgroundProcesses(): void {
-    if (!this.config.enabled) return;
+    if (!this.config.enabled) {return;}
 
     // Vision trigger timer
     this.visionTimer = window.setInterval(() => {
@@ -143,7 +143,7 @@ class ArtifactArcService {
     const unlockedLore: string[] = [];
 
     for (const loreEntry of artifactLore) {
-      if (this.archive.unlockedLore.has(loreEntry.id)) continue;
+      if (this.archive.unlockedLore.has(loreEntry.id)) {continue;}
 
       if (this.meetsUnlockConditions(loreEntry, artifactId, quantumProgression)) {
         this.archive.unlockedLore.set(loreEntry.id, loreEntry);
@@ -201,7 +201,7 @@ class ArtifactArcService {
       const hasRequired = conditions.otherArtifacts.every(requiredId =>
         quantumProgression.artifacts.has(requiredId)
       );
-      if (!hasRequired) return false;
+      if (!hasRequired) {return false;}
     }
 
     // Check time with artifact
@@ -242,13 +242,13 @@ class ArtifactArcService {
     const recentVisions = this.archive.experiencedVisions.filter(v => 
       v.id === vision.id && Date.now() - (v.metadata?.timestamp || 0) < 86400000 // 24 hours
     );
-    if (recentVisions.length > 0) return false;
+    if (recentVisions.length > 0) {return false;}
 
     // Check trigger conditions
     const conditions = vision.triggerConditions;
     
     // Random chance based on configuration
-    if (Math.random() > this.config.visionFrequency) return false;
+    if (Math.random() > this.config.visionFrequency) {return false;}
 
     // Check quantum resonance (approximated by bond level)
     if (conditions.quantumResonance && bond.bondLevel < conditions.quantumResonance) {
@@ -260,7 +260,7 @@ class ArtifactArcService {
       const hasOthers = conditions.otherArtifactsPresent.every(otherId =>
         this.archive.artifactBonds.has(otherId)
       );
-      if (!hasOthers) return false;
+      if (!hasOthers) {return false;}
     }
 
     // Check time of day (simplified - based on current hour)
@@ -272,7 +272,7 @@ class ArtifactArcService {
         dusk: hour >= 18 && hour < 21,
         night: hour >= 21 || hour < 5
       };
-      if (!timeMatches[conditions.timeOfDay]) return false;
+      if (!timeMatches[conditions.timeOfDay]) {return false;}
     }
 
     return true;
@@ -353,7 +353,7 @@ class ArtifactArcService {
     amount: number = 1
   ): void {
     const bond = this.archive.artifactBonds.get(artifactId);
-    if (!bond) return;
+    if (!bond) {return;}
 
     bond.bondLevel = Math.min(100, bond.bondLevel + (amount * this.config.bondingSpeed));
     bond.lastInteraction = Date.now();
@@ -397,8 +397,8 @@ class ArtifactArcService {
     bond: ArtifactBond, 
     trigger: string
   ): void {
-    if (!this.config.personalityDevelopment) return;
-    if (!bond.personality) return;
+    if (!this.config.personalityDevelopment) {return;}
+    if (!bond.personality) {return;}
 
     const communicationChance = (bond.personality.communicative / 100) * this.config.communicationChance;
     
@@ -408,7 +408,7 @@ class ArtifactArcService {
   }
 
   private generateCommunication(artifactId: string, bond: ArtifactBond, trigger: string): void {
-    if (!bond.personality) return;
+    if (!bond.personality) {return;}
 
     // Choose communication type based on bond level and personality
     let selectedType: ArtifactCommunication['communicationType'];
@@ -495,10 +495,10 @@ class ArtifactArcService {
 
   // Evolution System
   private checkEvolutionReadiness(artifactId: string, bond: ArtifactBond): void {
-    if (!this.config.evolutionEnabled) return;
+    if (!this.config.evolutionEnabled) {return;}
 
     const evolution = ARTIFACT_EVOLUTIONS.find(evo => evo.artifactId === artifactId);
-    if (!evolution) return;
+    if (!evolution) {return;}
 
     const requirements = evolution.requirements;
     let isReady = true;

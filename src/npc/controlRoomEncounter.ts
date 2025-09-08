@@ -709,9 +709,9 @@ export class ControlRoomEncounterOrchestrator {
   private getTriggerConditions(context: ControlRoomContext): string[] {
     const conditions = ['both-npcs-in-control-room'];
     
-    if (context.playerPresent) conditions.push('player-present');
-    if (context.roomState.terminalActive) conditions.push('terminal-active');
-    if (context.roomState.securityLevel === 'high') conditions.push('high-security');
+    if (context.playerPresent) {conditions.push('player-present');}
+    if (context.roomState.terminalActive) {conditions.push('terminal-active');}
+    if (context.roomState.securityLevel === 'high') {conditions.push('high-security');}
     
     return conditions;
   }

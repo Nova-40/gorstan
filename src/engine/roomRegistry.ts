@@ -30,7 +30,7 @@ const base: Record<string, Room> = {
 
 export const roomRegistry: Record<string, Room> = new Proxy(base, {
   get(target, prop: string) {
-    if (!(prop in target)) target[prop] = placeholder(prop);
+    if (!(prop in target)) {target[prop] = placeholder(prop);}
     return target[prop];
   }
 });

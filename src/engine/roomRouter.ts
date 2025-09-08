@@ -34,8 +34,8 @@ export async function teleportToRoom(roomId: string): Promise<void> {
   const overlay: TeleportOverlay = room?.zone === 'glitch' ? 'fractal' : 'trek';
   const ok = await teleportManager.go(roomId, { overlay } as TeleportOptions);
   const dispatch = getGameDispatch?.();
-  if (ok && dispatch) dispatch({ type: 'MOVE_TO_ROOM', payload: roomId });
-  else pushConsoleMessage('Teleport failed. Try again.', 'error');
+  if (ok && dispatch) {dispatch({ type: 'MOVE_TO_ROOM', payload: roomId });}
+  else {pushConsoleMessage('Teleport failed. Try again.', 'error');}
 }
 
 

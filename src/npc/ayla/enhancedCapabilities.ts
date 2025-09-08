@@ -55,10 +55,10 @@ export class EnhancedAylaConversation {
       gameplayFrustration > 0.5;
     
     let suggestionType: AylaAnalysis['suggestionType'] = 'guidance';
-    if (npcConflictLevel > 0.7) suggestionType = 'mediation';
-    else if (playerStuckLevel > 0.8) suggestionType = 'hint';
-    else if (gameplayFrustration > 0.6) suggestionType = 'meta';
-    else if (Math.random() < 0.3) suggestionType = 'lore';
+    if (npcConflictLevel > 0.7) {suggestionType = 'mediation';}
+    else if (playerStuckLevel > 0.8) {suggestionType = 'hint';}
+    else if (gameplayFrustration > 0.6) {suggestionType = 'meta';}
+    else if (Math.random() < 0.3) {suggestionType = 'lore';}
     
     return {
       playerStuckLevel,
@@ -138,7 +138,7 @@ export class EnhancedAylaConversation {
   
   // Analyze NPC conflict levels
   private analyzeNPCConflicts(npcsPresent: string[], recentMessages: string[]): number {
-    if (npcsPresent.length < 2) return 0;
+    if (npcsPresent.length < 2) {return 0;}
     
     let conflictScore = 0;
     
@@ -333,10 +333,10 @@ export class EnhancedAylaConversation {
     const analysis = this.analyzeGameState(context);
     
     // Initiate if intervention is needed
-    if (analysis.needsIntervention) return true;
+    if (analysis.needsIntervention) {return true;}
     
     // Random chance for casual conversation
-    if (Math.random() < 0.05) return true;
+    if (Math.random() < 0.05) {return true;}
     
     return false;
   }

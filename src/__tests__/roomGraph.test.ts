@@ -18,8 +18,8 @@ describe('Room Graph Validation', () => {
       }
       
       // Optional fields should have correct types if present
-      if (room.zone) expect(typeof room.zone).toBe('string');
-      if (room.exits) expect(typeof room.exits).toBe('object');
+      if (room.zone) {expect(typeof room.zone).toBe('string');}
+      if (room.exits) {expect(typeof room.exits).toBe('object');}
     });
   });
 

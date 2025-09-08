@@ -145,7 +145,7 @@ export const QuantumMagicScreen: React.FC<QuantumMagicScreenProps> = ({
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-space-4">
                     {activeArtifacts.map((artifactId) => {
                       const artifact = progression.artifacts.get(artifactId);
-                      if (!artifact) return null;
+                      if (!artifact) {return null;}
                       return (
                         <ArtifactCard
                           key={artifactId}

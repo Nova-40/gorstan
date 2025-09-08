@@ -36,7 +36,7 @@ export interface ChristmasOverlayProps {
  * - ESC key handling
  */
 export const ChristmasOverlay: React.FC<ChristmasOverlayProps> = ({ isOpen, onClose }) => {
-  if (!isOpen) return null;
+  if (!isOpen) {return null;}
 
   return (
     <BaseDialog

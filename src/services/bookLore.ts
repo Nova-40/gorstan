@@ -64,13 +64,13 @@ class BookLoreService {
    * Find a book by title, author, or ID
    */
   findBook(query: string): BookLoreEntry | null {
-    if (!this.initialized) return null;
+    if (!this.initialized) {return null;}
 
     const normalizedQuery = query.toLowerCase().trim();
     
     // Direct lookup
-    let book = this.bookMap.get(normalizedQuery);
-    if (book) return book;
+    const book = this.bookMap.get(normalizedQuery);
+    if (book) {return book;}
 
     // Try partial title matching
     for (const [key, bookEntry] of this.bookMap.entries()) {
@@ -107,7 +107,7 @@ class BookLoreService {
    */
   getAylaResponse(bookQuery: string): { response: string; book: BookLoreEntry | null } | null {
     const book = this.findBook(bookQuery);
-    if (!book) return null;
+    if (!book) {return null;}
 
     // Determine if we should include the cheeky aside
     const includeCheeky = book.ailaResponse.cheekySide && 
@@ -125,7 +125,7 @@ class BookLoreService {
    * Get books by genre
    */
   getBooksByGenre(genre: string): BookLoreEntry[] {
-    if (!this.initialized) return [];
+    if (!this.initialized) {return [];}
     return this.loreData.books.filter(book => book.genre === genre.toLowerCase());
   }
 
@@ -133,7 +133,7 @@ class BookLoreService {
    * Get books by theme
    */
   getBooksByTheme(theme: string): BookLoreEntry[] {
-    if (!this.initialized) return [];
+    if (!this.initialized) {return [];}
     const normalizedTheme = theme.toLowerCase();
     return this.loreData.books.filter(book => 
       book.themes.some(t => t.toLowerCase().includes(normalizedTheme))
@@ -144,7 +144,7 @@ class BookLoreService {
    * Get random book for conversation starter
    */
   getRandomBook(): BookLoreEntry | null {
-    if (!this.initialized || this.loreData.books.length === 0) return null;
+    if (!this.initialized || this.loreData.books.length === 0) {return null;}
     const randomIndex = Math.floor(Math.random() * this.loreData.books.length);
     return this.loreData.books[randomIndex] || null;
   }
@@ -153,7 +153,7 @@ class BookLoreService {
    * Search books by tag
    */
   searchByTag(tag: string): BookLoreEntry[] {
-    if (!this.initialized) return [];
+    if (!this.initialized) {return [];}
     const normalizedTag = tag.toLowerCase();
     return this.loreData.books.filter(book =>
       book.tags.some(t => t.toLowerCase().includes(normalizedTag))
@@ -165,7 +165,7 @@ class BookLoreService {
    */
   getRelatedBooks(bookId: string): BookLoreEntry[] {
     const book = this.bookMap.get(bookId.toLowerCase());
-    if (!book || !book.relatedBooks) return [];
+    if (!book || !book.relatedBooks) {return [];}
 
     return book.relatedBooks
       .map(id => this.bookMap.get(id.toLowerCase()))

@@ -86,7 +86,7 @@ const PuzzleSolver: React.FC<PuzzleSolverProps> = ({
   };
 
   const handleArtifactActivation = (artifactId: string, interactionType: string) => {
-    if (!artifactStates[artifactId]) return;
+    if (!artifactStates[artifactId]) {return;}
 
     const newStates = {
       ...artifactStates,
@@ -238,7 +238,7 @@ const PuzzleSolver: React.FC<PuzzleSolverProps> = ({
                 <div className="space-y-3">
                   {puzzle.quantumAspects.requiredArtifacts.map(artifactId => {
                     const state = artifactStates[artifactId];
-                    if (!state) return null;
+                    if (!state) {return null;}
 
                     return (
                       <div key={artifactId} className="bg-gray-700 rounded p-3">

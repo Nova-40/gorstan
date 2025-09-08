@@ -48,7 +48,7 @@ export class UtilityAI {
 
     // Build AI context
     const context = this.buildContext(actor, allActors);
-    if (!context.player) return; // No player to fight
+    if (!context.player) {return;} // No player to fight
 
     // Get archetype-specific behaviors
     const behaviors = this.getBehaviorsForArchetype(actor);
@@ -58,7 +58,7 @@ export class UtilityAI {
       this.evaluateBehavior(behavior, context)
     ).filter(scored => scored.score > 0);
 
-    if (scoredBehaviors.length === 0) return;
+    if (scoredBehaviors.length === 0) {return;}
 
     // Sort by score and execute best behavior
     scoredBehaviors.sort((a, b) => b.score - a.score);
@@ -104,7 +104,7 @@ export class UtilityAI {
   private evaluateBehavior(behavior: string, context: AIContext): BehaviorScore {
     const { actor, player } = context;
     let score = 0;
-    let target = player;
+    const target = player;
 
     if (!player) {
       return { behavior, score: 0 };
@@ -151,17 +151,17 @@ export class UtilityAI {
     let score = 1.0;
 
     // Check stamina availability
-    if (actor.stamina < 15) score *= 0.1;
+    if (actor.stamina < 15) {score *= 0.1;}
 
     // Distance factor (prefer close range)
     const distance = this.getDistance(actor, target);
-    if (distance <= 1) score *= AI_WEIGHTS.distance.optimal;
-    else if (distance > 3) score *= AI_WEIGHTS.distance.tooFar;
+    if (distance <= 1) {score *= AI_WEIGHTS.distance.optimal;}
+    else if (distance > 3) {score *= AI_WEIGHTS.distance.tooFar;}
 
     // Health factor
     const healthRatio = actor.hp / actor.stats.maxHP;
-    if (healthRatio < 0.25) score *= AI_WEIGHTS.health.critical;
-    else if (healthRatio < 0.5) score *= AI_WEIGHTS.health.low;
+    if (healthRatio < 0.25) {score *= AI_WEIGHTS.health.critical;}
+    else if (healthRatio < 0.5) {score *= AI_WEIGHTS.health.low;}
 
     // Target state bonuses
     if (statusSystem.hasStatus(target, 'Stagger' as any)) {
@@ -180,8 +180,8 @@ export class UtilityAI {
 
     // Prefer medium distance
     const distance = this.getDistance(actor, target);
-    if (distance >= 2 && distance <= 4) score *= AI_WEIGHTS.distance.optimal;
-    else if (distance < 1) score *= AI_WEIGHTS.distance.tooClose;
+    if (distance >= 2 && distance <= 4) {score *= AI_WEIGHTS.distance.optimal;}
+    else if (distance < 1) {score *= AI_WEIGHTS.distance.tooClose;}
 
     return Math.max(0, score);
   }
@@ -191,11 +191,11 @@ export class UtilityAI {
     let score = 0.9;
 
     // Check focus availability
-    if (actor.focus < 20) score *= 0.1;
+    if (actor.focus < 20) {score *= 0.1;}
 
     // Maintain distance for casting
     const distance = this.getDistance(actor, target);
-    if (distance < 2) score *= AI_WEIGHTS.distance.tooClose;
+    if (distance < 2) {score *= AI_WEIGHTS.distance.tooClose;}
 
     // Interrupt if player is casting
     if (target.state === CombatState.Channeling) {
@@ -211,10 +211,10 @@ export class UtilityAI {
 
     // Higher score if low health
     const healthRatio = actor.hp / actor.stats.maxHP;
-    if (healthRatio < 0.3) score *= 2.0;
+    if (healthRatio < 0.3) {score *= 2.0;}
 
     // Check stamina
-    if (actor.stamina < 15) score *= 0.1;
+    if (actor.stamina < 15) {score *= 0.1;}
 
     return Math.max(0, score);
   }
@@ -286,7 +286,7 @@ export class UtilityAI {
 
   /** Calculate distance between actors */
   private getDistance(a: Actor, b: Actor): number {
-    if (!a.position || !b.position) return 1; // Assume close if no position data
+    if (!a.position || !b.position) {return 1;} // Assume close if no position data
     
     return Math.sqrt(
       Math.pow(b.position.x - a.position.x, 2) +

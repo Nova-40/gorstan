@@ -30,7 +30,7 @@ interface ModalProps {
 const Modal: React.FC<ModalProps> = ({ visible, onClose, timeout = 4000, children, title, pinned = false }) => {
   // Memoized auto-close logic
   const handleAutoClose = useCallback(() => {
-    if (!visible || pinned) return;
+    if (!visible || pinned) {return;}
     const timer = setTimeout(onClose, timeout);
     return () => clearTimeout(timer);
   }, [visible, timeout, onClose, pinned]);
@@ -57,7 +57,7 @@ const Modal: React.FC<ModalProps> = ({ visible, onClose, timeout = 4000, childre
     </div>
   ), [title, pinned, onClose, children]);
 
-  if (!visible) return null;
+  if (!visible) {return null;}
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">

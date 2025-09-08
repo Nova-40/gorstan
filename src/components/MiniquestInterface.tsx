@@ -124,7 +124,7 @@ const MiniquestInterface: React.FC<MiniquestInterfaceProps> = ({
 // Variable declaration
   const hasRequiredItems = useCallback(
     (quest: MiniquestData) => {
-      if (!quest.requiredItems) return true;
+      if (!quest.requiredItems) {return true;}
       return quest.requiredItems.every(item => playerInventory.includes(item));
     },
     [playerInventory]
@@ -174,7 +174,7 @@ const MiniquestInterface: React.FC<MiniquestInterfaceProps> = ({
     [progress, hasRequiredItems]
   );
 
-  if (!isOpen) return null;
+  if (!isOpen) {return null;}
 
 // JSX return block or main return
   return (

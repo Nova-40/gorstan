@@ -17,7 +17,7 @@ export function NPCChatDemo({ npcId, zone = 'nexus' }: NPCChatDemoProps) {
   const { persona, lastResponse, isLoading, sendMessage, clearHistory } = useNPCConversation(npcId);
 
   const handleSendMessage = async () => {
-    if (!message.trim()) return;
+    if (!message.trim()) {return;}
     
     await sendMessage(message, { zone, sessionId: 'demo-session' });
     setMessage('');

@@ -44,7 +44,7 @@ export function areConnected(fromRoom: string, toRoom: string): boolean {
  * Find shortest path between two rooms using BFS
  */
 export function findPath(startRoom: string, endRoom: string): string[] | null {
-  if (startRoom === endRoom) return [startRoom];
+  if (startRoom === endRoom) {return [startRoom];}
   
   const visited = new Set<string>();
   const queue: { room: string; path: string[] }[] = [{ room: startRoom, path: [startRoom] }];
@@ -52,7 +52,7 @@ export function findPath(startRoom: string, endRoom: string): string[] | null {
   while (queue.length > 0) {
     const { room, path } = queue.shift()!;
     
-    if (visited.has(room)) continue;
+    if (visited.has(room)) {continue;}
     visited.add(room);
     
     const roomNeighbors = neighbors(room);
@@ -111,7 +111,7 @@ export function getReachableRooms(startRoom: string, maxDepth: number = Infinity
   while (queue.length > 0) {
     const { room, depth } = queue.shift()!;
     
-    if (reachable.has(room) || depth > maxDepth) continue;
+    if (reachable.has(room) || depth > maxDepth) {continue;}
     reachable.add(room);
     
     const roomNeighbors = neighbors(room);

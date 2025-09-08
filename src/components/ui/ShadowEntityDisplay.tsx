@@ -64,9 +64,9 @@ const ShadowEntityDisplay: React.FC<ShadowEntityDisplayProps> = ({
   };
 
   const getStressEffect = () => {
-    if (playerStress > 80) return 'The shadow seems more solid and threatening.';
-    if (playerStress > 50) return 'Your stress makes the shadow more noticeable.';
-    if (playerStress > 20) return 'You feel uneasy in the shadow\'s presence.';
+    if (playerStress > 80) {return 'The shadow seems more solid and threatening.';}
+    if (playerStress > 50) {return 'Your stress makes the shadow more noticeable.';}
+    if (playerStress > 20) {return 'You feel uneasy in the shadow\'s presence.';}
     return 'The shadow appears calm and distant.';
   };
 

@@ -22,7 +22,7 @@ import { appendToNPCConsole } from '../ui/NPCConsole';
 import { GameState } from '../state/gameState';
 
 export async function triggerPollyInterrogation(gameState: GameState) {
-  if (gameState.currentRoomId !== 'mazeZone_Pollysbay' || gameState.flags.pollyBayTriggered) return;
+  if (gameState.currentRoomId !== 'mazeZone_Pollysbay' || gameState.flags.pollyBayTriggered) {return;}
 
   gameState.flags.pollyBayTriggered = true;
 

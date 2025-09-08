@@ -114,7 +114,7 @@ export function getZoneForPath(pathName: string): string | null {
  */
 export function estimatePathDuration(pathName: string): number {
   const path = GOLDEN_PATHS[pathName];
-  if (!path) return 0;
+  if (!path) {return 0;}
   
   // Rough estimate: 30-45 seconds per room
   return Math.ceil((path.length * 0.6)); // 0.6 minutes = 36 seconds average

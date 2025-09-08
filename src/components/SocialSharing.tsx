@@ -193,7 +193,7 @@ Ready for your own adventure? Join me in Gorstan! 🌟`;
     // Create a canvas element for generating shareable images
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) {return;}
 
     canvas.width = 800;
     canvas.height = 600;
@@ -259,7 +259,7 @@ Ready for your own adventure? Join me in Gorstan! 🌟`;
   const achievements = getShareableAchievements();
   const discoveries = getShareableDiscoveries();
 
-  if (!isOpen) return null;
+  if (!isOpen) {return null;}
 
   return (
     <div className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-50 ${className}`}>

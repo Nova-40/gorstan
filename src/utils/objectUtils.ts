@@ -38,7 +38,7 @@ export function safeObjectIteration<T extends Record<string, unknown>, R>(
   
   for (let i = 0; i < entries.length; i++) {
     const tuple = entries[i];
-    if (!tuple) continue;
+    if (!tuple) {continue;}
     const [key, value] = tuple;
     try {
       const result = callback(key, value, i);
@@ -179,9 +179,9 @@ export function countMatching<T extends Record<string, unknown>>(
  * Check if object is empty
  */
 export function isEmpty(obj: unknown): boolean {
-  if (obj === null || obj === undefined) return true;
-  if (Array.isArray(obj)) return obj.length === 0;
-  if (typeof obj === 'object') return Object.keys(obj).length === 0;
+  if (obj === null || obj === undefined) {return true;}
+  if (Array.isArray(obj)) {return obj.length === 0;}
+  if (typeof obj === 'object') {return Object.keys(obj).length === 0;}
   return false;
 }
 
@@ -189,13 +189,13 @@ export function isEmpty(obj: unknown): boolean {
  * Merge objects deeply (for configuration merging)
  */
 export function deepMerge<T extends Record<string, unknown>>(target: T, ...sources: Partial<T>[]): T {
-  if (!sources.length) return target;
+  if (!sources.length) {return target;}
   const source = sources.shift();
   
   if (isObject(target) && isObject(source)) {
     for (const key in source) {
       if (isObject(source[key])) {
-        if (!target[key]) Object.assign(target, { [key]: {} });
+        if (!target[key]) {Object.assign(target, { [key]: {} });}
         deepMerge(target[key] as Record<string, unknown>, source[key] as Record<string, unknown>);
       } else {
         Object.assign(target, { [key]: source[key] });

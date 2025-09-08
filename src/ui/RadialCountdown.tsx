@@ -28,7 +28,7 @@ export default function RadialCountdown({ totalMs, className = "" }: Props) {
 
   useEffect(() => {
     const tick = (t: number) => {
-      if (!startRef.current) startRef.current = t;
+      if (!startRef.current) {startRef.current = t;}
       const elapsed = t - startRef.current;
       const left = Math.max(0, totalMs - elapsed);
       setMsLeft(left);
@@ -40,7 +40,7 @@ export default function RadialCountdown({ totalMs, className = "" }: Props) {
     
     rafRef.current = requestAnimationFrame(tick);
     return () => { 
-      if (rafRef.current) cancelAnimationFrame(rafRef.current); 
+      if (rafRef.current) {cancelAnimationFrame(rafRef.current);} 
     };
   }, [totalMs]);
 

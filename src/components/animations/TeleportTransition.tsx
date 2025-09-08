@@ -71,7 +71,7 @@ const TeleportTransition: React.FC<TeleportTransitionProps> = ({
     };
   }, [isActive, onComplete]);
 
-  if (!isActive || phase === 'complete') return null;
+  if (!isActive || phase === 'complete') {return null;}
 
 // Variable declaration
   const getAnimationProps = () => {

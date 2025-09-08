@@ -61,7 +61,7 @@ export const useTimers = () => {
     
     if (immediate) {
       callback();
-      if (!repeat) return; 
+      if (!repeat) {return;} 
     }
 
 // Variable declaration
@@ -133,7 +133,7 @@ export const useTimers = () => {
   const getRemainingTime = useCallback((id: string): number => {
 // Variable declaration
     const timer = timersRef.current.get(id);
-    if (!timer) return 0;
+    if (!timer) {return 0;}
 
 // Variable declaration
     const elapsed = Date.now() - timer.startTime;

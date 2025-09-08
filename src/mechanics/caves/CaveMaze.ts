@@ -76,7 +76,7 @@ export class CaveMaze {
     const entranceRow = tiles[entrance.y];
     if (entranceRow) {
       const entranceTile = entranceRow[entrance.x];
-      if (entranceTile) entranceTile.type = 'entrance';
+      if (entranceTile) {entranceTile.type = 'entrance';}
     }
     
     // Place artifact in a dead end
@@ -84,7 +84,7 @@ export class CaveMaze {
     const artifactRow = tiles[artifactLocation.y];
     if (artifactRow) {
       const artifactTile = artifactRow[artifactLocation.x];
-      if (artifactTile) artifactTile.type = 'artifact';
+      if (artifactTile) {artifactTile.type = 'artifact';}
     }
     
     return {
@@ -138,7 +138,7 @@ export class CaveMaze {
         if (targetTile && !targetTile.visited) {
           const betweenRow = tiles[y + dir.dy / 2];
           const betweenTile = betweenRow ? betweenRow[x + dir.dx / 2] : undefined;
-            if (betweenTile) betweenTile.type = 'floor';
+            if (betweenTile) {betweenTile.type = 'floor';}
           this.carveMaze(tiles, newX, newY, width, height);
         }
       }
@@ -271,7 +271,7 @@ export class CaveMaze {
         // Illuminate current position (guard nested indexing)
         const row = this.maze.tiles[this.playerPos.y];
         const tile = row ? row[this.playerPos.x] : undefined;
-        if (tile) tile.illuminated = true;
+        if (tile) {tile.illuminated = true;}
       }
       
       // Generate exploration flavor text
@@ -285,7 +285,7 @@ export class CaveMaze {
         ];
         const textIdx = Math.floor(Math.random() * explorationTexts.length);
         const text = explorationTexts[textIdx];
-        if (text) console.log(`[CaveMaze] ${text}`);
+        if (text) {console.log(`[CaveMaze] ${text}`);}
       }
     } else {
       console.log('[CaveMaze] Dead end - backtracking...');

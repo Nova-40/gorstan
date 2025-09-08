@@ -322,10 +322,10 @@ describe('MovePolicy', () => {
         .mockImplementation((...args: unknown[]) => {
           const [from, to] = args as [string, string, NPCMoveContext];
           console.log(`calculateDistance called with: ${from} -> ${to}`);
-          if (from === 'home' && to === 'nearby') return 1;
-          if (from === 'home' && to === 'faraway') return 3;
-          if (from === 'nearby' && to === 'home') return 1;
-          if (from === 'faraway' && to === 'home') return 3;
+          if (from === 'home' && to === 'nearby') {return 1;}
+          if (from === 'home' && to === 'faraway') {return 3;}
+          if (from === 'nearby' && to === 'home') {return 1;}
+          if (from === 'faraway' && to === 'home') {return 3;}
           return 1; // Default fallback
         });
 

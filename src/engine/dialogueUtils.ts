@@ -267,7 +267,7 @@ export function getDialogueVariationsByMood(
   };
 
   const mv = (moodVariations as Record<string, DialogueVariation[]>)[baseMood];
-  if (mv) return mv;
+  if (mv) {return mv;}
   return moodVariations.neutral; // defined in object literal above
 }
 
@@ -348,26 +348,26 @@ export function calculateDialogueMood(
   
   switch (npc.toLowerCase()) {
     case 'polly':
-      if (playerState.flags?.polly_forgiveness) return 'caring';
-      if (trust < 0) return 'hostile';
+      if (playerState.flags?.polly_forgiveness) {return 'caring';}
+      if (trust < 0) {return 'hostile';}
       return 'suspicious';
 
     case 'ayla':
-      if (deathCount > 3) return 'caring';
-      if (trust > 5) return 'friendly';
+      if (deathCount > 3) {return 'caring';}
+      if (trust > 5) {return 'friendly';}
       return 'neutral';
 
     case 'dominic':
       return trust > 3 ? 'friendly' : 'neutral';
 
     case 'wendell':
-      if (traits.includes('scholar')) return 'friendly';
+      if (traits.includes('scholar')) {return 'friendly';}
       return 'neutral';
 
     default:
-      if (trust > 5) return 'friendly';
-      if (trust < -2) return 'hostile';
-      if (trust < 2) return 'suspicious';
+      if (trust > 5) {return 'friendly';}
+      if (trust < -2) {return 'hostile';}
+      if (trust < 2) {return 'suspicious';}
       return 'neutral';
   }
 }
@@ -389,16 +389,16 @@ export function buildDialogueHistory(
 
 // --- Function: validateDialogueData ---
 export function validateDialogueData(data: any): boolean {
-  if (!data || typeof data !== 'object') return false;
+  if (!data || typeof data !== 'object') {return false;}
 
   
-  if (typeof data.text !== 'string') return false;
+  if (typeof data.text !== 'string') {return false;}
 
   
-  if (data.conditions && !Array.isArray(data.conditions)) return false;
+  if (data.conditions && !Array.isArray(data.conditions)) {return false;}
 
   
-  if (data.effects && !Array.isArray(data.effects)) return false;
+  if (data.effects && !Array.isArray(data.effects)) {return false;}
 
   return true;
 }

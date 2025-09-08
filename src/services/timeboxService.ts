@@ -42,7 +42,7 @@ export class TimeboxService {
   }
 
   start(): void {
-    if (this.isActive) return;
+    if (this.isActive) {return;}
     
     this.isActive = true;
     this.startTime = Date.now();
@@ -57,7 +57,7 @@ export class TimeboxService {
   }
 
   stop(): void {
-    if (!this.isActive) return;
+    if (!this.isActive) {return;}
     
     this.isActive = false;
     if (this.intervalId) {
@@ -74,7 +74,7 @@ export class TimeboxService {
   }
 
   resume(): void {
-    if (!this.isActive) return;
+    if (!this.isActive) {return;}
     
     this.intervalId = window.setInterval(() => {
       this.tick();
@@ -111,13 +111,13 @@ export class TimeboxService {
   private getWarningLevel(remainingMinutes: number): TimeboxState['warningLevel'] {
     const thresholds = [...this.config.warningThresholds].sort((a, b) => b - a);
     
-    if (remainingMinutes <= 0) return 'critical';
+    if (remainingMinutes <= 0) {return 'critical';}
     const threshold2 = thresholds[2];
     const threshold1 = thresholds[1];
     const threshold0 = thresholds[0];
-    if (thresholds.length >= 3 && threshold2 !== undefined && remainingMinutes <= threshold2) return 'critical';
-    if (thresholds.length >= 2 && threshold1 !== undefined && remainingMinutes <= threshold1) return 'urgent';
-    if (thresholds.length >= 1 && threshold0 !== undefined && remainingMinutes <= threshold0) return 'early';
+    if (thresholds.length >= 3 && threshold2 !== undefined && remainingMinutes <= threshold2) {return 'critical';}
+    if (thresholds.length >= 2 && threshold1 !== undefined && remainingMinutes <= threshold1) {return 'urgent';}
+    if (thresholds.length >= 1 && threshold0 !== undefined && remainingMinutes <= threshold0) {return 'early';}
     
     return 'none';
   }

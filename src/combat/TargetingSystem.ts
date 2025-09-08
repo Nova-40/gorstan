@@ -33,7 +33,7 @@ export class TargetingSystem {
 
   /** Get current target */
   getCurrentTarget(): Actor | null {
-    if (!this.currentTarget) return null;
+    if (!this.currentTarget) {return null;}
     return this.availableTargets.find(a => a.id === this.currentTarget) || null;
   }
 
@@ -58,7 +58,7 @@ export class TargetingSystem {
     options: TargetingOptions = {}
   ): Actor | null {
     const validTargets = this.getValidTargets(from, options);
-    if (validTargets.length === 0) return null;
+    if (validTargets.length === 0) {return null;}
 
     // If no position data, return first valid target
     if (!from.position) {
@@ -70,7 +70,7 @@ export class TargetingSystem {
     let nearestDistance = Infinity;
 
     for (const target of validTargets) {
-      if (!target.position) continue;
+      if (!target.position) {continue;}
 
       const distance = Math.sqrt(
         Math.pow(target.position.x - from.position.x, 2) +
@@ -117,7 +117,7 @@ export class TargetingSystem {
       a.name.toLowerCase() === normalizedName
     );
 
-    if (target) return target;
+    if (target) {return target;}
 
     // Partial match
     target = this.availableTargets.find(a => 
@@ -138,7 +138,7 @@ export class TargetingSystem {
       filter
     } = options;
 
-    let targets = this.availableTargets.filter(actor => {
+    const targets = this.availableTargets.filter(actor => {
       // Skip self unless explicitly included
       if (actor.id === from.id && !includeSelf) {
         return false;
@@ -148,11 +148,11 @@ export class TargetingSystem {
       const isAlly = actor.faction === from.faction;
       const isEnemy = actor.faction !== from.faction && actor.faction !== Faction.Neutral;
 
-      if (isAlly && !includeAllies) return false;
-      if (isEnemy && !includeEnemies) return false;
+      if (isAlly && !includeAllies) {return false;}
+      if (isEnemy && !includeEnemies) {return false;}
 
       // Check if actor is alive
-      if (actor.hp <= 0) return false;
+      if (actor.hp <= 0) {return false;}
 
       // Check range if specified
       if (maxRange && from.position && actor.position) {
@@ -160,11 +160,11 @@ export class TargetingSystem {
           Math.pow(actor.position.x - from.position.x, 2) +
           Math.pow(actor.position.y - from.position.y, 2)
         );
-        if (distance > maxRange) return false;
+        if (distance > maxRange) {return false;}
       }
 
       // Apply custom filter
-      if (filter && !filter(actor)) return false;
+      if (filter && !filter(actor)) {return false;}
 
       return true;
     });

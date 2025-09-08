@@ -44,7 +44,7 @@ export interface CelebrationIndex {
 }
 
 // Cache for loaded celebration data
-let celebrationCache: Map<string, CelebrationData> = new Map();
+const celebrationCache: Map<string, CelebrationData> = new Map();
 let indexCache: CelebrationIndex | null = null;
 
 // Data mapping
@@ -102,8 +102,8 @@ export function isDateInSpan(date: Date, span: Span): boolean {
   const iso = date.toISOString();
   const parts = iso.split('T');
   const dateStr = parts[0]; // always defined for valid ISO string
-  if (!dateStr) return false;
-  if (!span.start || !span.end) return false;
+  if (!dateStr) {return false;}
+  if (!span.start || !span.end) {return false;}
   return dateStr >= span.start && dateStr <= span.end;
 }
 
@@ -112,7 +112,7 @@ export function isDateInSpan(date: Date, span: Span): boolean {
  */
 export async function getActiveCelebrations(date: Date = new Date()): Promise<Span[]> {
   const index = await loadCelebrationIndex();
-  if (!index) return [];
+  if (!index) {return [];}
   
   const activeCelebrations: Span[] = [];
   
@@ -146,7 +146,7 @@ export async function hasCelebrations(date: Date = new Date()): Promise<boolean>
  */
 export async function getCelebrationById(id: string): Promise<Span | null> {
   const index = await loadCelebrationIndex();
-  if (!index) return null;
+  if (!index) {return null;}
   
   // Search through all traditions for the ID
   for (const [traditionName, holidays] of Object.entries(index.traditions)) {
@@ -155,7 +155,7 @@ export async function getCelebrationById(id: string): Promise<Span | null> {
     for (const holidayType of holidays) {
       const spans = traditionData[holidayType] || [];
       const found = spans.find(span => span.id === id);
-      if (found) return found;
+      if (found) {return found;}
     }
   }
   

@@ -75,13 +75,13 @@ class MiniquestEngine {
         const hasAllItems = quest.requiredItems.every((item: string) =>
           gameState.player.inventory.includes(item)
         );
-        if (!hasAllItems) return false;
+        if (!hasAllItems) {return false;}
       }
       if (quest.requiredConditions) {
         const meetsConditions = quest.requiredConditions.every((condition: string) => {
           return gameState.flags[condition] === true;
         });
-        if (!meetsConditions) return false;
+        if (!meetsConditions) {return false;}
       }
       return true;
     });

@@ -39,7 +39,7 @@ const ShadowEncountersScreen: React.FC<ShadowEncountersScreenProps> = ({
 
   // Update state from shadow service
   const updateFromService = useCallback(() => {
-    if (!shadowService) return;
+    if (!shadowService) {return;}
     
     setActiveEntities(shadowService.getActiveEntities());
     setActiveEncounters(shadowService.getActiveEncounters());
@@ -62,7 +62,7 @@ const ShadowEncountersScreen: React.FC<ShadowEncountersScreenProps> = ({
 
   // Set up event listener and initial load
   useEffect(() => {
-    if (!shadowService) return;
+    if (!shadowService) {return;}
     
     shadowService.addEventListener(handleShadowEvent);
     updateFromService();
@@ -73,7 +73,7 @@ const ShadowEncountersScreen: React.FC<ShadowEncountersScreenProps> = ({
   }, [shadowService, handleShadowEvent, updateFromService]);
 
   const handleInteraction = (entityId: string, interactionType: ShadowInteractionType, artifactIds?: string[]) => {
-    if (!shadowService) return;
+    if (!shadowService) {return;}
     
     const interaction = shadowService.interactWithShadow(entityId, interactionType, artifactIds || []);
     if (interaction) {
@@ -82,18 +82,18 @@ const ShadowEncountersScreen: React.FC<ShadowEncountersScreenProps> = ({
   };
 
   const getStressColor = (stress: number) => {
-    if (stress > 80) return 'text-red-400';
-    if (stress > 60) return 'text-orange-400';
-    if (stress > 40) return 'text-yellow-400';
-    if (stress > 20) return 'text-blue-400';
+    if (stress > 80) {return 'text-red-400';}
+    if (stress > 60) {return 'text-orange-400';}
+    if (stress > 40) {return 'text-yellow-400';}
+    if (stress > 20) {return 'text-blue-400';}
     return 'text-green-400';
   };
 
   const getFearDescription = (fear: number) => {
-    if (fear > 80) return 'Overwhelming dread';
-    if (fear > 60) return 'Significant unease';
-    if (fear > 40) return 'Growing anxiety';
-    if (fear > 20) return 'Mild apprehension';
+    if (fear > 80) {return 'Overwhelming dread';}
+    if (fear > 60) {return 'Significant unease';}
+    if (fear > 40) {return 'Growing anxiety';}
+    if (fear > 20) {return 'Mild apprehension';}
     return 'Calm and composed';
   };
 

@@ -81,7 +81,7 @@ class ScreenReaderAnnouncer {
   }
 
   private createLiveRegions(): void {
-    if (typeof document === 'undefined') return;
+    if (typeof document === 'undefined') {return;}
 
     // Assertive region for important announcements
     this.liveRegion = document.createElement('div');
@@ -116,7 +116,7 @@ class ScreenReaderAnnouncer {
   }
 
   private async processQueue(): Promise<void> {
-    if (this.isProcessing || this.announceQueue.length === 0) return;
+    if (this.isProcessing || this.announceQueue.length === 0) {return;}
     
     this.isProcessing = true;
     
@@ -133,7 +133,7 @@ class ScreenReaderAnnouncer {
 
   private async speakAnnouncement(announcement: NPCMovementAnnouncement): Promise<void> {
     const region = announcement.priority === 'high' ? this.liveRegion : this.politeRegion;
-    if (!region) return;
+    if (!region) {return;}
 
     // Clear previous content
     region.textContent = '';
@@ -153,8 +153,8 @@ class ScreenReaderAnnouncer {
 
   clear(): void {
     this.announceQueue.length = 0;
-    if (this.liveRegion) this.liveRegion.textContent = '';
-    if (this.politeRegion) this.politeRegion.textContent = '';
+    if (this.liveRegion) {this.liveRegion.textContent = '';}
+    if (this.politeRegion) {this.politeRegion.textContent = '';}
   }
 
   cleanup(): void {
@@ -176,7 +176,7 @@ class MotionReducer {
   private originalAnimationSpeed = 1.0;
   
   applyReducedMotion(enabled: boolean): void {
-    if (typeof document === 'undefined') return;
+    if (typeof document === 'undefined') {return;}
 
     const root = document.documentElement;
     
@@ -244,7 +244,7 @@ class FocusManager {
   private eventRemovals: Array<() => void> = [];
 
   pauseInteractiveElements(): void {
-    if (typeof document === 'undefined') return;
+    if (typeof document === 'undefined') {return;}
 
     const interactiveElements = document.querySelectorAll(
       'button, input, select, textarea, a[href], [tabindex]:not([tabindex="-1"])'
@@ -264,7 +264,7 @@ class FocusManager {
   }
 
   resumeInteractiveElements(): void {
-    if (typeof document === 'undefined') return;
+    if (typeof document === 'undefined') {return;}
 
     this.originalTabIndices.forEach((originalTabIndex, element) => {
       if (originalTabIndex === '') {
@@ -280,20 +280,20 @@ class FocusManager {
   }
 
   trapFocus(container: Element): void {
-    if (typeof document === 'undefined') return;
+    if (typeof document === 'undefined') {return;}
 
     const focusableElements = container.querySelectorAll(
       'button, input, select, textarea, a[href], [tabindex]:not([tabindex="-1"])'
     );
 
-    if (focusableElements.length === 0) return;
+    if (focusableElements.length === 0) {return;}
 
     const firstElement = focusableElements[0] as HTMLElement;
     const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
 
     const handleTabKey = (e: Event) => {
       const keyboardEvent = e as KeyboardEvent;
-      if (keyboardEvent.key !== 'Tab') return;
+      if (keyboardEvent.key !== 'Tab') {return;}
 
       if (keyboardEvent.shiftKey) {
         if (document.activeElement === firstElement) {
@@ -378,7 +378,7 @@ export class NPCAccessibilityProvider {
   // ===== INITIALIZATION =====
 
   enable(): void {
-    if (this.isEnabled) return;
+    if (this.isEnabled) {return;}
 
     this.isEnabled = true;
     this.applySettings();
@@ -387,7 +387,7 @@ export class NPCAccessibilityProvider {
   }
 
   disable(): void {
-    if (!this.isEnabled) return;
+    if (!this.isEnabled) {return;}
 
     this.isEnabled = false;
     this.screenReader.clear();
@@ -421,7 +421,7 @@ export class NPCAccessibilityProvider {
   }
 
   private detectSystemPreferences(): void {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') {return;}
 
     // Detect prefers-reduced-motion
     try {
@@ -460,7 +460,7 @@ export class NPCAccessibilityProvider {
     toRoom: string,
     movementType: 'arrival' | 'departure' | 'transit'
   ): void {
-    if (!this.isEnabled || !this.settings.liveRegionUpdates) return;
+    if (!this.isEnabled || !this.settings.liveRegionUpdates) {return;}
 
     const announcement: NPCMovementAnnouncement = {
       npcId,
@@ -480,10 +480,10 @@ export class NPCAccessibilityProvider {
   private determineAnnouncementPriority(npcId: string, movementType: string): 'low' | 'medium' | 'high' {
     // Important NPCs get higher priority
     const importantNPCs = ['morthos', 'al_escape_artist', 'polly'];
-    if (importantNPCs.includes(npcId)) return 'high';
+    if (importantNPCs.includes(npcId)) {return 'high';}
     
     // Arrivals are more important than departures
-    if (movementType === 'arrival') return 'medium';
+    if (movementType === 'arrival') {return 'medium';}
     
     return 'low';
   }
@@ -540,7 +540,7 @@ export class NPCAccessibilityProvider {
   // ===== PAUSE/RESUME FUNCTIONALITY =====
 
   pauseOnFocus(): void {
-    if (!this.settings.pauseOnFocus) return;
+    if (!this.settings.pauseOnFocus) {return;}
 
     this.focusManager.pauseInteractiveElements();
     this.metrics.pauseEvents++;
@@ -556,7 +556,7 @@ export class NPCAccessibilityProvider {
   // ===== TIMEOUT EXTENSIONS =====
 
   requestTimeoutExtension(timeoutId: string, additionalMs?: number): number {
-    if (!this.settings.extendedTimeouts) return 0;
+    if (!this.settings.extendedTimeouts) {return 0;}
 
     const extension = this.timeoutExtender.extendTimeout(timeoutId, additionalMs);
     this.metrics.timeoutExtensions++;
@@ -567,7 +567,7 @@ export class NPCAccessibilityProvider {
   // ===== MOVEMENT SPEED ADJUSTMENT =====
 
   getMovementSpeedMultiplier(): number {
-    if (!this.isEnabled) return 1.0;
+    if (!this.isEnabled) {return 1.0;}
 
     let multiplier = 1.0;
     
@@ -585,7 +585,7 @@ export class NPCAccessibilityProvider {
   // ===== AUDIO ACCESSIBILITY =====
 
   playMovementSound(soundType: 'arrival' | 'departure', volume?: number): void {
-    if (!this.settings.soundEnabled) return;
+    if (!this.settings.soundEnabled) {return;}
 
     const effectiveVolume = (volume || 1.0) * this.settings.soundVolume;
     
@@ -637,11 +637,11 @@ export class NPCAccessibilityProvider {
   getAccessibilityStatus(): string {
     const activeFeatures = [];
     
-    if (this.settings.reduceMotion) activeFeatures.push('Reduced Motion');
-    if (this.settings.highContrast) activeFeatures.push('High Contrast');
-    if (this.settings.screenReaderEnabled) activeFeatures.push('Screen Reader');
-    if (this.settings.extendedTimeouts) activeFeatures.push('Extended Timeouts');
-    if (this.settings.pauseOnFocus) activeFeatures.push('Pause on Focus');
+    if (this.settings.reduceMotion) {activeFeatures.push('Reduced Motion');}
+    if (this.settings.highContrast) {activeFeatures.push('High Contrast');}
+    if (this.settings.screenReaderEnabled) {activeFeatures.push('Screen Reader');}
+    if (this.settings.extendedTimeouts) {activeFeatures.push('Extended Timeouts');}
+    if (this.settings.pauseOnFocus) {activeFeatures.push('Pause on Focus');}
     
     return activeFeatures.length > 0 
       ? `Accessibility enabled: ${activeFeatures.join(', ')}`

@@ -131,7 +131,7 @@ export const isInventoryFull = (state: GameState, maxItems: number = 50): boolea
 export const getCurrentRoomFlags = (state: GameState): Record<string, any> => {
 // Variable declaration
   const currentRoom = getCurrentLocation(state);
-  if (!currentRoom) return {};
+  if (!currentRoom) {return {};}
 
   return Object.entries(state.flags || {})
     .filter(([key]) => key.includes(currentRoom))
@@ -145,7 +145,7 @@ export const getCurrentRoomFlags = (state: GameState): Record<string, any> => {
 export const getCurrentZone = (state: GameState): string => {
 // Variable declaration
   const currentRoom = getCurrentLocation(state);
-  if (!currentRoom) return '';
+  if (!currentRoom) {return '';}
 
   
 // Variable declaration

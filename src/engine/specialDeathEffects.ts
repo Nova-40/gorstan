@@ -102,7 +102,7 @@ export function checkHiddenEnding(): void {
 
 export function startPollyCountdown(): void {
   const existing = document.getElementById('polly-timer');
-  if (existing) return;
+  if (existing) {return;}
 
   const overlay = document.createElement('div');
   overlay.id = 'polly-timer';

@@ -110,12 +110,12 @@ export default function RoomEditor({
   const initialRoomCandidate = ((): RoomData | undefined => {
     if (initialRoomId) {
       const byId = rooms[initialRoomId];
-      if (byId) return byId as RoomData;
+      if (byId) {return byId as RoomData;}
     }
     if (roomIds.length > 0) {
       const first = roomIds[0];
       const firstRoom = first ? rooms[first] : undefined;
-      if (firstRoom) return firstRoom as RoomData;
+      if (firstRoom) {return firstRoom as RoomData;}
     }
     return undefined;
   })();
@@ -882,7 +882,7 @@ function TrapsAndEventsSection({
   const updateTrap = (index: number, updates: Partial<Trap>) => {
 // Variable declaration
     const newTraps = [...(room.traps || [])];
-  if (!newTraps[index]) return;
+  if (!newTraps[index]) {return;}
   newTraps[index] = { ...newTraps[index]!, ...updates };
     onUpdate({ traps: newTraps });
   };

@@ -20,10 +20,10 @@ class SimpleYAMLParser {
     
     for (const line of lines) {
       const trimmed = line.trim();
-      if (!trimmed || trimmed.startsWith('#')) continue;
+      if (!trimmed || trimmed.startsWith('#')) {continue;}
       
       const colonIndex = trimmed.indexOf(':');
-      if (colonIndex === -1) continue;
+      if (colonIndex === -1) {continue;}
       
       const key = trimmed.substring(0, colonIndex).trim();
       const value = trimmed.substring(colonIndex + 1).trim();

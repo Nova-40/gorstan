@@ -774,13 +774,13 @@ export function getItemsByRarity(rarity: ItemRarity): Item[] {
 
 // --- Function: validateItem ---
 export function validateItem(item: any): item is Item {
-  if (!item || typeof item !== 'object') return false;
+  if (!item || typeof item !== 'object') {return false;}
 
 // Variable declaration
   const hasRequiredFields = item.id && item.name && item.description &&
                            item.traits && typeof item.portable === 'boolean';
 
-  if (!hasRequiredFields) return false;
+  if (!hasRequiredFields) {return false;}
 
   
   return typeof item.id === 'string' &&
@@ -883,14 +883,14 @@ function processItemEffect(
 
     case 'trait':
       if (effect.value && result.traitChanges) {
-        if (!result.traitChanges.add) result.traitChanges.add = [];
+        if (!result.traitChanges.add) {result.traitChanges.add = [];}
         result.traitChanges.add.push(effect.value as string);
       }
       break;
 
     case 'inventory':
       if (effect.value && result.inventoryChanges) {
-        if (!result.inventoryChanges.add) result.inventoryChanges.add = [];
+        if (!result.inventoryChanges.add) {result.inventoryChanges.add = [];}
         result.inventoryChanges.add.push(effect.value as string);
       }
       break;
@@ -901,9 +901,9 @@ function processItemEffect(
 
     case 'transform':
       if (effect.target) {
-        if (!result.inventoryChanges) result.inventoryChanges = {};
-        if (!result.inventoryChanges.remove) result.inventoryChanges.remove = [];
-        if (!result.inventoryChanges.add) result.inventoryChanges.add = [];
+        if (!result.inventoryChanges) {result.inventoryChanges = {};}
+        if (!result.inventoryChanges.remove) {result.inventoryChanges.remove = [];}
+        if (!result.inventoryChanges.add) {result.inventoryChanges.add = [];}
 
         result.inventoryChanges.remove.push(effect.target);
         result.inventoryChanges.add.push(effect.value as string);
@@ -931,7 +931,7 @@ function checkRequirement(
       return playerState.traits?.includes(requirement.value as string) || false;
 
     case 'flag':
-      if (!requirement.target) return false;
+      if (!requirement.target) {return false;}
 // Variable declaration
       const flagValue = playerState.flags?.[requirement.target];
       return compareValues(flagValue, requirement.value, requirement.operator || 'equals');
@@ -948,7 +948,7 @@ function checkRequirement(
       return playerState.currentRoom === requirement.value;
 
     case 'npc_trust':
-      if (!requirement.target) return false;
+      if (!requirement.target) {return false;}
 // Variable declaration
       const trustLevel = playerState.npcTrust?.[requirement.target] || 0;
       return compareValues(trustLevel, requirement.value, requirement.operator || 'greater');
@@ -1005,7 +1005,7 @@ export function getThrowableItems(): Item[] {
 export function searchItems(criteria: ItemSearchCriteria | string): Item[] {
   if (typeof criteria === 'string') {
     
-    if (!criteria) return [];
+    if (!criteria) {return [];}
 
 // Variable declaration
     const lowerQuery = criteria.toLowerCase();
@@ -1069,7 +1069,7 @@ export function getItemValue(
 ): number {
 // Variable declaration
   const item = getItemById(itemId);
-  if (!item) return 0;
+  if (!item) {return 0;}
 
   let value = item.value || 0;
 
@@ -1077,11 +1077,11 @@ export function getItemValue(
   if (modifiers) {
     if (item.category) {
       const catMod = modifiers[item.category];
-      if (typeof catMod === 'number') value *= catMod;
+      if (typeof catMod === 'number') {value *= catMod;}
     }
     if (item.rarity) {
       const rarMod = modifiers[item.rarity];
-      if (typeof rarMod === 'number') value *= rarMod;
+      if (typeof rarMod === 'number') {value *= rarMod;}
     }
   }
 
@@ -1182,7 +1182,7 @@ export function transformItem(
 ): string | null {
 // Variable declaration
   const sourceItem = getItemById(sourceId);
-  if (!sourceItem || !sourceItem.transformInto) return null;
+  if (!sourceItem || !sourceItem.transformInto) {return null;}
 
 // Variable declaration
   const transformation = {
@@ -1190,7 +1190,7 @@ export function transformItem(
     condition: sourceItem.requirements?.[0]?.target 
   };
 
-  if (!transformation) return null;
+  if (!transformation) {return null;}
 
   
   if (transformation.condition && context?.playerFlags) {
@@ -1260,9 +1260,9 @@ export function getItemStatistics(): {
     }
 
     
-    if (item.usable) stats.usableCount++;
-    if (item.readable) stats.readableCount++;
-    if (item.throwable) stats.throwableCount++;
+    if (item.usable) {stats.usableCount++;}
+    if (item.readable) {stats.readableCount++;}
+    if (item.throwable) {stats.throwableCount++;}
   });
 
   stats.averageValue = ITEMS.length > 0 ? totalValue / ITEMS.length : 0;

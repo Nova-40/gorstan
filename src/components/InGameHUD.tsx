@@ -88,10 +88,10 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
   };
 
   const getRouteType = (routeId: string): 'demo' | 'short10' | 'short30' | 'full' => {
-    if (routeId === 'demo') return 'demo';
-    if (routeId === 'full') return 'full';
-    if (routeId.startsWith('short10')) return 'short10';
-    if (routeId.startsWith('short30')) return 'short30';
+    if (routeId === 'demo') {return 'demo';}
+    if (routeId === 'full') {return 'full';}
+    if (routeId.startsWith('short10')) {return 'short10';}
+    if (routeId.startsWith('short30')) {return 'short30';}
     return 'demo';
   };
 

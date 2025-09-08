@@ -50,7 +50,7 @@ const PickupSelectionModal: React.FC<PickupSelectionModalProps> = ({
 }) => {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
-  if (!isOpen) return null;
+  if (!isOpen) {return null;}
 
 // Variable declaration
   const handleItemToggle = (itemId: string) => {

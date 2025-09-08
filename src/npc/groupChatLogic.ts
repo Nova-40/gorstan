@@ -185,7 +185,7 @@ export class GroupChatManager {
     const ctx: ConversationContext = { state, dispatch, roomId };
     
     // Flag to prevent multiple alliance pitches
-    if (state.flags?.alliancePitchStarted) return;
+    if (state.flags?.alliancePitchStarted) {return;}
     
     dispatch({ type: 'SET_FLAG', payload: { flag: 'alliancePitchStarted', value: true } });
     
@@ -274,7 +274,7 @@ export class GroupChatManager {
     const { state, dispatch, roomId } = context;
     const ctx: ConversationContext = { state, dispatch, roomId };
     
-    if (!state.flags?.awaitingAllianceChoice) return false;
+    if (!state.flags?.awaitingAllianceChoice) {return false;}
     
     const lowerChoice = choice.toLowerCase();
     
@@ -505,7 +505,7 @@ export class GroupChatManager {
       
   const topicIdx = Math.floor(Math.random() * discussionTopics.length);
   const topic = discussionTopics[topicIdx];
-  if (!topic) return; // Safety guard
+  if (!topic) {return;} // Safety guard
       
       // Start discussion
       setTimeout(() => {

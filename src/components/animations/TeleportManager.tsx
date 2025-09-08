@@ -33,7 +33,7 @@ const TeleportManager: React.FC<{
   );
 
   useEffect(() => {
-    if (!mediaQuery) return;
+    if (!mediaQuery) {return;}
     
     setPrefersReducedMotion(mediaQuery.matches);
     
@@ -50,7 +50,7 @@ const TeleportManager: React.FC<{
     }
   }, [prefersReducedMotion, teleportType, onComplete]);
 
-  if (!teleportType) return null;
+  if (!teleportType) {return null;}
   
   // If user prefers reduced motion, skip animation
   if (prefersReducedMotion) {

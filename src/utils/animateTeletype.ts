@@ -20,7 +20,7 @@
 
 // --- Function: animateTeletype ---
 export function animateTeletype(targetEl: HTMLElement, text: string, delay: number = 30): void {
-  if (!targetEl) return;
+  if (!targetEl) {return;}
 
   let index = 0;
   targetEl.innerText = '';

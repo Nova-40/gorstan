@@ -124,15 +124,15 @@ export const CelebrationController: React.FC<CelebrationControllerProps> = ({ ch
   const extractTraditionFromCelebration = (celebration: Span): string => {
     const label = celebration.label?.toLowerCase() || '';
     
-    if (label.includes('christmas') || label.includes('easter')) return 'christian';
-    if (label.includes('eid') || label.includes('ramadan')) return 'islamic';
-    if (label.includes('rosh') || label.includes('passover') || label.includes('hanukkah')) return 'jewish';
-    if (label.includes('lunar') || label.includes('mid-autumn')) return 'chinese';
-    if (label.includes('diwali') || label.includes('holi')) return 'hindu';
-    if (label.includes('vesak') || label.includes('buddha')) return 'buddhist';
-    if (label.includes('vaisakhi')) return 'sikh';
-    if (label.includes('shogatsu') || label.includes('obon')) return 'shinto';
-    if (label.includes('solstice') || label.includes('equinox') || label.includes('naw-rúz')) return 'seasonal';
+    if (label.includes('christmas') || label.includes('easter')) {return 'christian';}
+    if (label.includes('eid') || label.includes('ramadan')) {return 'islamic';}
+    if (label.includes('rosh') || label.includes('passover') || label.includes('hanukkah')) {return 'jewish';}
+    if (label.includes('lunar') || label.includes('mid-autumn')) {return 'chinese';}
+    if (label.includes('diwali') || label.includes('holi')) {return 'hindu';}
+    if (label.includes('vesak') || label.includes('buddha')) {return 'buddhist';}
+    if (label.includes('vaisakhi')) {return 'sikh';}
+    if (label.includes('shogatsu') || label.includes('obon')) {return 'shinto';}
+    if (label.includes('solstice') || label.includes('equinox') || label.includes('naw-rúz')) {return 'seasonal';}
     
     return 'other';
   };
@@ -235,15 +235,15 @@ const CelebrationOverlay: React.FC<CelebrationOverlayProps> = ({ celebration, on
 function extractTraditionFromLabel(label: string): string {
   const lower = label.toLowerCase();
   
-  if (lower.includes('christmas') || lower.includes('easter')) return 'christian';
-  if (lower.includes('eid') || lower.includes('ramadan')) return 'islamic';
-  if (lower.includes('rosh') || lower.includes('passover') || lower.includes('hanukkah')) return 'jewish';
-  if (lower.includes('lunar') || lower.includes('mid-autumn')) return 'chinese';
-  if (lower.includes('diwali') || lower.includes('holi')) return 'hindu';
-  if (lower.includes('vesak') || lower.includes('buddha')) return 'buddhist';
-  if (lower.includes('vaisakhi')) return 'sikh';
-  if (lower.includes('shogatsu') || lower.includes('obon')) return 'shinto';
-  if (lower.includes('solstice') || lower.includes('equinox') || lower.includes('naw-rúz')) return 'seasonal';
+  if (lower.includes('christmas') || lower.includes('easter')) {return 'christian';}
+  if (lower.includes('eid') || lower.includes('ramadan')) {return 'islamic';}
+  if (lower.includes('rosh') || lower.includes('passover') || lower.includes('hanukkah')) {return 'jewish';}
+  if (lower.includes('lunar') || lower.includes('mid-autumn')) {return 'chinese';}
+  if (lower.includes('diwali') || lower.includes('holi')) {return 'hindu';}
+  if (lower.includes('vesak') || lower.includes('buddha')) {return 'buddhist';}
+  if (lower.includes('vaisakhi')) {return 'sikh';}
+  if (lower.includes('shogatsu') || lower.includes('obon')) {return 'shinto';}
+  if (lower.includes('solstice') || lower.includes('equinox') || lower.includes('naw-rúz')) {return 'seasonal';}
   
   return 'other';
 }
@@ -268,26 +268,26 @@ function getTraditionStyling(tradition: string): string {
 function getCelebrationMessage(celebration: Span): string {
   const label = celebration.label?.toLowerCase() || '';
   
-  if (label.includes('christmas')) return 'Wishing you peace, joy, and wonder this Christmas season.';
-  if (label.includes('easter')) return 'Celebrating renewal, hope, and new beginnings.';
-  if (label.includes('eid al-fitr')) return 'Eid Mubarak! Celebrating the end of Ramadan with joy and gratitude.';
-  if (label.includes('eid al-adha')) return 'Eid Mubarak! Honoring sacrifice, devotion, and community.';
-  if (label.includes('rosh hashanah')) return 'L\'Shana Tova! Wishing you a sweet and blessed new year.';
-  if (label.includes('passover')) return 'Chag Pesach Sameach! Celebrating freedom and liberation.';
-  if (label.includes('hanukkah')) return 'Chag Hanukkah Sameach! Festival of lights and miracles.';
-  if (label.includes('lunar new year')) return 'Gong Xi Fa Cai! Welcoming prosperity and good fortune.';
-  if (label.includes('mid-autumn')) return 'Happy Mid-Autumn Festival! Celebrating unity and harvest.';
-  if (label.includes('diwali')) return 'Happy Diwali! Festival of lights, prosperity, and new beginnings.';
-  if (label.includes('holi')) return 'Happy Holi! Celebrating the triumph of good over evil with colors and joy.';
-  if (label.includes('vesak')) return 'Happy Vesak Day! Honoring the birth, enlightenment, and passing of Buddha.';
-  if (label.includes('vaisakhi')) return 'Vaisakhi da mela! Celebrating harvest and the Khalsa.';
-  if (label.includes('shogatsu')) return 'Akemashite Omedetou Gozaimasu! Happy New Year!';
-  if (label.includes('obon')) return 'Honoring ancestors and the cycle of life.';
-  if (label.includes('spring equinox')) return 'Celebrating the balance of light and the renewal of spring.';
-  if (label.includes('summer solstice')) return 'Celebrating the longest day and the power of light.';
-  if (label.includes('autumn equinox')) return 'Honoring the harvest and the balance of day and night.';
-  if (label.includes('winter solstice')) return 'Celebrating the return of light in the darkest time.';
-  if (label.includes('naw-rúz')) return 'Happy Naw-Rúz! Celebrating the Baháʼí New Year and spiritual renewal.';
+  if (label.includes('christmas')) {return 'Wishing you peace, joy, and wonder this Christmas season.';}
+  if (label.includes('easter')) {return 'Celebrating renewal, hope, and new beginnings.';}
+  if (label.includes('eid al-fitr')) {return 'Eid Mubarak! Celebrating the end of Ramadan with joy and gratitude.';}
+  if (label.includes('eid al-adha')) {return 'Eid Mubarak! Honoring sacrifice, devotion, and community.';}
+  if (label.includes('rosh hashanah')) {return 'L\'Shana Tova! Wishing you a sweet and blessed new year.';}
+  if (label.includes('passover')) {return 'Chag Pesach Sameach! Celebrating freedom and liberation.';}
+  if (label.includes('hanukkah')) {return 'Chag Hanukkah Sameach! Festival of lights and miracles.';}
+  if (label.includes('lunar new year')) {return 'Gong Xi Fa Cai! Welcoming prosperity and good fortune.';}
+  if (label.includes('mid-autumn')) {return 'Happy Mid-Autumn Festival! Celebrating unity and harvest.';}
+  if (label.includes('diwali')) {return 'Happy Diwali! Festival of lights, prosperity, and new beginnings.';}
+  if (label.includes('holi')) {return 'Happy Holi! Celebrating the triumph of good over evil with colors and joy.';}
+  if (label.includes('vesak')) {return 'Happy Vesak Day! Honoring the birth, enlightenment, and passing of Buddha.';}
+  if (label.includes('vaisakhi')) {return 'Vaisakhi da mela! Celebrating harvest and the Khalsa.';}
+  if (label.includes('shogatsu')) {return 'Akemashite Omedetou Gozaimasu! Happy New Year!';}
+  if (label.includes('obon')) {return 'Honoring ancestors and the cycle of life.';}
+  if (label.includes('spring equinox')) {return 'Celebrating the balance of light and the renewal of spring.';}
+  if (label.includes('summer solstice')) {return 'Celebrating the longest day and the power of light.';}
+  if (label.includes('autumn equinox')) {return 'Honoring the harvest and the balance of day and night.';}
+  if (label.includes('winter solstice')) {return 'Celebrating the return of light in the darkest time.';}
+  if (label.includes('naw-rúz')) {return 'Happy Naw-Rúz! Celebrating the Baháʼí New Year and spiritual renewal.';}
   
   return 'Celebrating this special time of reflection and community.';
 }

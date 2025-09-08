@@ -69,7 +69,7 @@ const ShadowEncounterLog: React.FC<ShadowEncounterLogProps> = ({
   };
 
   const formatDuration = (duration?: number) => {
-    if (!duration) return '';
+    if (!duration) {return '';}
     const seconds = Math.floor(duration / 1000);
     const minutes = Math.floor(seconds / 60);
     if (minutes > 0) {

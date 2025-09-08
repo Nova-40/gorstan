@@ -63,7 +63,7 @@ export function ConsoleTerminal({
 
   // Get delay for character based on punctuation
   const getCharDelay = (char: string, nextChar?: string): number => {
-    if (prefersReducedMotion) return 0;
+    if (prefersReducedMotion) {return 0;}
     
     // Check for ellipsis
     if (char === '.' && nextChar === '.' && messages[typingState.messageIndex]?.content[typingState.charIndex + 2] === '.') {
@@ -84,7 +84,7 @@ export function ConsoleTerminal({
 
   // Typing animation effect
   useEffect(() => {
-    if (messages.length === 0) return;
+    if (messages.length === 0) {return;}
     
     const currentMessage = messages[typingState.messageIndex];
     if (!currentMessage) {
@@ -120,7 +120,7 @@ export function ConsoleTerminal({
 
     const typeNextChar = () => {
       const message = messages[typingState.messageIndex];
-      if (!message) return;
+      if (!message) {return;}
 
       if (typingState.charIndex >= message.content.length) {
         // Message complete, move to next
@@ -207,7 +207,7 @@ export function ConsoleTerminal({
       <div className="space-y-1">
   {displayedMessages.map((text, index) => {
           const message = messages[index];
-          if (!message) return null;
+          if (!message) {return null;}
 
           return (
             <div key={message.id} className={cn(

@@ -107,7 +107,7 @@ function scheduleNPCReply(
   roomId: string, 
   topic?: string
 ): void {
-  if (replying) return;
+  if (replying) {return;}
   replying = true;
 
   const delay = 350 + Math.floor(Math.random() * 400); // Short, natural pause
@@ -170,9 +170,9 @@ function scheduleNPCReply(
 
 // Helper functions to create contextual prompts for NPC replies
 function buildPromptFromNPC(fromNpcId: string, topic?: string): string {
-  if (topic === "hint") return `hint about current objective from ${fromNpcId}`;
-  if (topic === "lore") return `lore question from ${fromNpcId}`;
-  if (topic === "quest") return `quest discussion from ${fromNpcId}`;
+  if (topic === "hint") {return `hint about current objective from ${fromNpcId}`;}
+  if (topic === "lore") {return `lore question from ${fromNpcId}`;}
+  if (topic === "quest") {return `quest discussion from ${fromNpcId}`;}
   return `message from ${fromNpcId}`;
 }
 

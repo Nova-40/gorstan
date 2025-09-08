@@ -46,7 +46,7 @@ export function Tooltip({
   const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   const showTooltip = () => {
-    if (disabled) return;
+    if (disabled) {return;}
     clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => setIsVisible(true), delay);
   };

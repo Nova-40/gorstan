@@ -159,7 +159,7 @@ export class SaveManager {
     try {
       const key = `save_slot_${slot}`;
       const data = localStorage.getItem(key);
-      if (!data) return null;
+      if (!data) {return null;}
 
       const saveFile: SaveFile = JSON.parse(data);
       

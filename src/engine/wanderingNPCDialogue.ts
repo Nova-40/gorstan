@@ -413,7 +413,7 @@ export function getWanderingNPCResponse(
   
 // Variable declaration
   const responses = dialogue[topic] || dialogue['greeting'] || [];
-  if (responses.length === 0) return "...";
+  if (responses.length === 0) {return "...";}
 
   
 // Variable declaration

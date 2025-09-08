@@ -471,7 +471,7 @@ async function buildEnhancedContext(context: IdleLineContext): Promise<IdleLineC
 // --- Function: checkLineConditions ---
 function checkLineConditions(conditions: any, context: IdleLineContext): boolean {
   try {
-    if (!conditions) return true;
+    if (!conditions) {return true;}
 
     
     if (conditions.mood && context.npcState?.mood) {
@@ -552,7 +552,7 @@ function selectWeightedLine(lines: IdleLine[]): IdleLine {
 
     
   const last = lines[lines.length - 1];
-  if (last) return last;
+  if (last) {return last;}
   // At this point lines.length === 0 already handled earlier, but add fallback
   return { text: '...', weight: 1 } as IdleLine;
   } catch (error) {

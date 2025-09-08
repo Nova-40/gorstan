@@ -81,18 +81,18 @@ export const CollectionDisplay: React.FC<CollectionDisplayProps> = ({
   };
   
   const getItemType = (itemName: string): ItemData['type'] => {
-    if (['coffee', 'healing_potion'].includes(itemName)) return 'consumable';
-    if (['iron_key'].includes(itemName)) return 'key';
-    if (['ancient_scroll'].includes(itemName)) return 'lore';
-    if (['crystal_shard', 'rune_stone'].includes(itemName)) return 'material';
+    if (['coffee', 'healing_potion'].includes(itemName)) {return 'consumable';}
+    if (['iron_key'].includes(itemName)) {return 'key';}
+    if (['ancient_scroll'].includes(itemName)) {return 'lore';}
+    if (['crystal_shard', 'rune_stone'].includes(itemName)) {return 'material';}
     return 'artifact';
   };
   
   const getItemRarity = (itemName: string): ItemData['rarity'] => {
-    if (['mystical_orb'].includes(itemName)) return 'legendary';
-    if (['crystal_shard', 'ancient_scroll'].includes(itemName)) return 'epic';
-    if (['rune_stone', 'golden_coin'].includes(itemName)) return 'rare';
-    if (['iron_key'].includes(itemName)) return 'uncommon';
+    if (['mystical_orb'].includes(itemName)) {return 'legendary';}
+    if (['crystal_shard', 'ancient_scroll'].includes(itemName)) {return 'epic';}
+    if (['rune_stone', 'golden_coin'].includes(itemName)) {return 'rare';}
+    if (['iron_key'].includes(itemName)) {return 'uncommon';}
     return 'common';
   };
   
@@ -150,7 +150,7 @@ export const CollectionDisplay: React.FC<CollectionDisplayProps> = ({
     return matchesSearch && matchesFilter;
   });
   
-  if (!isOpen) return null;
+  if (!isOpen) {return null;}
   
   return (
     <div className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-50 ${className}`}>

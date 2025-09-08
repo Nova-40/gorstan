@@ -494,7 +494,7 @@ export class LogicPuzzleService {
     }
 
   const value = puzzle.puzzle.hints[hintIndex];
-  if (value === undefined) throw new Error('Hint retrieval returned undefined');
+  if (value === undefined) {throw new Error('Hint retrieval returned undefined');}
   return value;
   }
 
@@ -819,7 +819,7 @@ export class LogicPuzzleService {
     const sequence: string[] = [];
     for (let i = 0; i < Math.min(complexity, gates.length); i++) {
   const gate = gates[i % gates.length];
-  if (gate) sequence.push(gate);
+  if (gate) {sequence.push(gate);}
     }
     
     return sequence;

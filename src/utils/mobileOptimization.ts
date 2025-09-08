@@ -175,10 +175,10 @@ export const applyPerformanceOptimizations = (deviceInfo: DeviceInfo, metrics: P
   
   // Apply CSS classes based on optimizations
   const root = document.documentElement;
-  if (optimizations.reduceAnimations) root.classList.add('reduce-animations');
-  if (optimizations.lowerQuality) root.classList.add('low-quality');
-  if (optimizations.simplifyEffects) root.classList.add('simple-effects');
-  if (optimizations.useHardwareAcceleration) root.classList.add('hw-accelerated');
+  if (optimizations.reduceAnimations) {root.classList.add('reduce-animations');}
+  if (optimizations.lowerQuality) {root.classList.add('low-quality');}
+  if (optimizations.simplifyEffects) {root.classList.add('simple-effects');}
+  if (optimizations.useHardwareAcceleration) {root.classList.add('hw-accelerated');}
   
   return optimizations;
 };
@@ -242,7 +242,7 @@ export const setupGestureHandling = (element: HTMLElement, handlers: GestureHand
   
   element.addEventListener('touchstart', (e) => {
     const touch = e.touches[0];
-    if (!touch) return;
+    if (!touch) {return;}
     startX = touch.clientX;
     startY = touch.clientY;
     startTime = Date.now();
@@ -263,10 +263,10 @@ export const setupGestureHandling = (element: HTMLElement, handlers: GestureHand
   element.addEventListener('touchend', (e) => {
     clearTimeout(longPressTimer);
     
-    if (isLongPress) return; // Don't process swipe if long press occurred
+    if (isLongPress) {return;} // Don't process swipe if long press occurred
     
     const touch = e.changedTouches[0];
-    if (!touch) return;
+    if (!touch) {return;}
     const endX = touch.clientX;
     const endY = touch.clientY;
     const endTime = Date.now();
@@ -275,7 +275,7 @@ export const setupGestureHandling = (element: HTMLElement, handlers: GestureHand
     const deltaY = endY - startY;
     const deltaTime = endTime - startTime;
     
-    if (deltaTime > timeThreshold) return; // Too slow for swipe
+    if (deltaTime > timeThreshold) {return;} // Too slow for swipe
     
     const absX = Math.abs(deltaX);
     const absY = Math.abs(deltaY);

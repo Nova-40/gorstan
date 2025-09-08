@@ -97,7 +97,7 @@ const resetStats = {
  * Validates that a game state object has required properties
  */
 function validateGameState(state: unknown): state is LocalGameState {
-  if (!state || typeof state !== 'object') return false;
+  if (!state || typeof state !== 'object') {return false;}
   
   try {
     const s = state as LocalGameState;

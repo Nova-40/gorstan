@@ -559,9 +559,9 @@ export function handleLibrarianInteraction(
   
   if (lowerCommand.includes('enter') && lowerCommand.includes('door')) {
     let doorColor = '';
-    if (lowerCommand.includes('red')) doorColor = 'red';
-    else if (lowerCommand.includes('blue')) doorColor = 'blue';
-    else if (lowerCommand.includes('green')) doorColor = 'green';
+    if (lowerCommand.includes('red')) {doorColor = 'red';}
+    else if (lowerCommand.includes('blue')) {doorColor = 'blue';}
+    else if (lowerCommand.includes('green')) {doorColor = 'green';}
 
     if (doorColor) {
 // Variable declaration

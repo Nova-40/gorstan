@@ -204,7 +204,7 @@ export function validateRoomWithDetails(data: unknown): ValidationResult {
     const errorMessage = errors
       .map((err: ErrorObject) => {
         const path = err.instancePath || 'root';
-        let message = `${path}: ${err.message}`;
+        const message = `${path}: ${err.message}`;
 
         // Add specific suggestions based on error type
         if (err.keyword === 'required') {

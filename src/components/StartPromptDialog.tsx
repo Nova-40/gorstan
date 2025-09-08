@@ -35,7 +35,7 @@ export default function StartPromptDialog({ open, onStart, onCancel }: Props) {
     return () => document.removeEventListener('keydown', onKey);
   }, [open, onCancel]);
 
-  if (!open) return null;
+  if (!open) {return null;}
 
   return (
     <AnimatePresence>

@@ -8,7 +8,7 @@ export class DemoShadowState {
   private overrides: Record<string, any> = {};
 
   attach(game: { state: LocalGameState; dispatch: (a: any) => void }) {
-    if (!game?.dispatch) return;
+    if (!game?.dispatch) {return;}
     this.originalDispatch = game.dispatch;
 
     const self = this;

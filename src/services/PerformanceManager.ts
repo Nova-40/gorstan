@@ -294,7 +294,7 @@ export class PerformanceManager {
     // Return the highest scoring profile
     scoredProfiles.sort((a, b) => b.score - a.score);
     const bestProfile = scoredProfiles[0];
-    if (bestProfile) return bestProfile.profile;
+    if (bestProfile) {return bestProfile.profile;}
     
     // Fallback to default profiles
     return this.optimizationProfiles[1] || this.optimizationProfiles[0] || {
@@ -335,7 +335,7 @@ export class PerformanceManager {
     if (typeof process !== 'undefined' && (process.env.VITEST || process.env.NODE_ENV === 'test')) {
       return;
     }
-    if (this.isMonitoring) return;
+    if (this.isMonitoring) {return;}
     
     this.isMonitoring = true;
     console.log('[PerformanceManager] Starting performance monitoring...');
@@ -353,7 +353,7 @@ export class PerformanceManager {
    * Stop performance monitoring
    */
   stopMonitoring(): void {
-    if (!this.isMonitoring) return;
+    if (!this.isMonitoring) {return;}
     
     this.isMonitoring = false;
     
@@ -409,7 +409,7 @@ export class PerformanceManager {
   private measureFPS(): number {
   const now = performance.now();
   // @ts-expect-error internal buffer
-  if (!this.__frameTimes) this.__frameTimes = [] as number[];
+  if (!this.__frameTimes) {this.__frameTimes = [] as number[];}
   // @ts-expect-error
   this.__frameTimes = this.__frameTimes.filter((t: number) => now - t < 1000);
   // @ts-expect-error
@@ -449,7 +449,7 @@ export class PerformanceManager {
    * Measure interaction delay
    */
   private measureInteractionDelay(): number {
-  if (!this.lastInteraction) return 0;
+  if (!this.lastInteraction) {return 0;}
   return performance.now() - this.lastInteraction;
   }
 
@@ -462,15 +462,15 @@ export class PerformanceManager {
     // Simple responsiveness calculation based on FPS and memory
     let score = 1.0;
     
-    if (analysis.averageFPS < 30) score -= 0.3;
-    else if (analysis.averageFPS < 45) score -= 0.1;
+    if (analysis.averageFPS < 30) {score -= 0.3;}
+    else if (analysis.averageFPS < 45) {score -= 0.1;}
     
     if (analysis.averageMemory > this.currentSettings.memoryTargetMB) {
       score -= 0.2;
     }
     
-    if (analysis.trend === 'degrading') score -= 0.2;
-    else if (analysis.trend === 'improving') score += 0.1;
+    if (analysis.trend === 'degrading') {score -= 0.2;}
+    else if (analysis.trend === 'improving') {score += 0.1;}
     
     return Math.max(0, Math.min(1, score));
   }

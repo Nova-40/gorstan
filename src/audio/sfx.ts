@@ -72,7 +72,7 @@ class AudioManager {
 
   /** Load audio file into cache */
   async loadAudio(src: string): Promise<AudioBuffer | null> {
-    if (!this.audioContext) return null;
+    if (!this.audioContext) {return null;}
     
     if (this.audioCache.has(src)) {
       return this.audioCache.get(src)!;
@@ -93,11 +93,11 @@ class AudioManager {
   /** Play sound effect */
   async playSFX(id: string, options?: Partial<SoundEffect>): Promise<void> {
     const sfx = SFX_REGISTRY[id];
-    if (!sfx || !this.audioContext) return;
+    if (!sfx || !this.audioContext) {return;}
 
     const config = { ...sfx, ...options };
     const audioBuffer = await this.loadAudio(config.src);
-    if (!audioBuffer) return;
+    if (!audioBuffer) {return;}
 
     const source = this.audioContext.createBufferSource();
     const gainNode = this.audioContext.createGain();

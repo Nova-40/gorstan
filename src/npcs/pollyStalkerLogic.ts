@@ -28,7 +28,7 @@ export function handlePollyStalkerLogic(gameState: GameState) {
   const { flags, inventory, currentRoomId, player } = gameState;
   const playerName = player.name;
 
-  if (!flags.dominicIsDead || flags.killedByPolly) return;
+  if (!flags.dominicIsDead || flags.killedByPolly) {return;}
 
   if (!flags.pollyStalker && inventory.includes('dead fish')) {
     flags.pollyStalker = true;

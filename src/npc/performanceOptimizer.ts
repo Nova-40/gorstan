@@ -181,7 +181,7 @@ export class BatchProcessor<T> {
       this.timeoutId = null;
     }
 
-    if (this.queue.length === 0) return;
+    if (this.queue.length === 0) {return;}
 
     const batch = this.queue.splice(0, this.batchSize);
     try {
@@ -275,7 +275,7 @@ export class NPCPerformanceOptimizer {
   }
 
   startMonitoring(): void {
-    if (this.isMonitoring) return;
+    if (this.isMonitoring) {return;}
     
     this.isMonitoring = true;
     this.monitoringInterval = setInterval(() => {
@@ -287,7 +287,7 @@ export class NPCPerformanceOptimizer {
   }
 
   stopMonitoring(): void {
-    if (!this.isMonitoring) return;
+    if (!this.isMonitoring) {return;}
     
     this.isMonitoring = false;
     if (this.monitoringInterval) {
@@ -324,7 +324,7 @@ export class NPCPerformanceOptimizer {
   }
 
   private calculateShortestPath(fromRoom: string, toRoom: string, roomRegistry: Record<string, string[]>): string[] | null {
-    if (fromRoom === toRoom) return [fromRoom];
+    if (fromRoom === toRoom) {return [fromRoom];}
     
     const visited = new Set<string>();
     const queue: Array<{ room: string; path: string[] }> = [{ room: fromRoom, path: [fromRoom] }];
@@ -332,7 +332,7 @@ export class NPCPerformanceOptimizer {
     while (queue.length > 0) {
       const { room, path } = queue.shift()!;
       
-      if (visited.has(room)) continue;
+      if (visited.has(room)) {continue;}
       visited.add(room);
       
       const adjacent = roomRegistry[room] || [];
@@ -394,9 +394,9 @@ export class NPCPerformanceOptimizer {
 
     const maxFactor = Math.max(...factors);
     
-    if (maxFactor > 1.5) return 'critical';
-    if (maxFactor > 1.0) return 'high';
-    if (maxFactor > 0.7) return 'medium';
+    if (maxFactor > 1.5) {return 'critical';}
+    if (maxFactor > 1.0) {return 'high';}
+    if (maxFactor > 0.7) {return 'medium';}
     return 'low';
   }
 

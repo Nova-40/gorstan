@@ -230,15 +230,15 @@ export class WanderActivationController {
    * Get human-readable reason for deactivation
    */
   private getDeactivationReason(state: GameStateSnapshot): string {
-    if (state.hasReducedMotionPreference) return 'reduced-motion';
-    if (!this.config.activePhases.includes(state.currentPhase)) return `phase-${state.currentPhase}`;
-    if (state.isPlayerInCutscene) return 'cutscene';
-    if (state.isSystemOverlayActive) return 'overlay';
-    if (state.isPollyTakeoverActive) return 'polly-takeover';
-    if (state.isResetInProgress) return 'reset';
-    if (this.config.disabledRooms.includes(state.currentRoom)) return `disabled-room-${state.currentRoom}`;
-    if (state.gameFlags['wandering-disabled']) return 'flag-disabled';
-    if (state.gameFlags['final-sequence-active']) return 'final-sequence';
+    if (state.hasReducedMotionPreference) {return 'reduced-motion';}
+    if (!this.config.activePhases.includes(state.currentPhase)) {return `phase-${state.currentPhase}`;}
+    if (state.isPlayerInCutscene) {return 'cutscene';}
+    if (state.isSystemOverlayActive) {return 'overlay';}
+    if (state.isPollyTakeoverActive) {return 'polly-takeover';}
+    if (state.isResetInProgress) {return 'reset';}
+    if (this.config.disabledRooms.includes(state.currentRoom)) {return `disabled-room-${state.currentRoom}`;}
+    if (state.gameFlags['wandering-disabled']) {return 'flag-disabled';}
+    if (state.gameFlags['final-sequence-active']) {return 'final-sequence';}
     return 'unknown';
   }
 

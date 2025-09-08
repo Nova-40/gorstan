@@ -200,8 +200,8 @@ export class AIConfig {
    */
   getSafeConfig() {
     const safe = JSON.parse(JSON.stringify(this.config));
-    if (safe.primary?.apiKey) safe.primary.apiKey = '[REDACTED]';
-    if (safe.fallback?.apiKey) safe.fallback.apiKey = '[REDACTED]';
+    if (safe.primary?.apiKey) {safe.primary.apiKey = '[REDACTED]';}
+    if (safe.fallback?.apiKey) {safe.fallback.apiKey = '[REDACTED]';}
     return safe;
   }
 }

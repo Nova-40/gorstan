@@ -213,7 +213,7 @@ export class StatusSystem {
     // Update durations
     for (let i = actor.statuses.length - 1; i >= 0; i--) {
       const status = actor.statuses[i];
-      if (!status) continue;
+      if (!status) {continue;}
       status.durationMs -= deltaTime;
       if (status.durationMs <= 0) {
         status.onRemove?.(actor);
@@ -226,7 +226,7 @@ export class StatusSystem {
       this.lastTick = currentTime;
       
       for (const status of actor.statuses) {
-        if (!status) continue;
+        if (!status) {continue;}
         status.onTick?.(actor);
       }
     }

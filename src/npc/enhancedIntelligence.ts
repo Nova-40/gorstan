@@ -162,8 +162,8 @@ class NPCIntelligenceEngine {
     const words = input.toLowerCase().split(' ');
     
     words.forEach(word => {
-      if (positive.some(p => word.includes(p))) score += 0.1;
-      if (negative.some(n => word.includes(n))) score -= 0.1;
+      if (positive.some(p => word.includes(p))) {score += 0.1;}
+      if (negative.some(n => word.includes(n))) {score -= 0.1;}
     });
     
     return Math.max(-1, Math.min(1, score));
@@ -173,11 +173,11 @@ class NPCIntelligenceEngine {
   private analyzeIntent(input: string): string {
     const lower = input.toLowerCase();
     
-    if (lower.includes('help') || lower.includes('hint')) return 'help';
-    if (lower.includes('where') || lower.includes('how')) return 'guidance';
-    if (lower.includes('who') || lower.includes('what')) return 'information';
-    if (lower.includes('thank') || lower.includes('goodbye')) return 'social';
-    if (lower.includes('?')) return 'question';
+    if (lower.includes('help') || lower.includes('hint')) {return 'help';}
+    if (lower.includes('where') || lower.includes('how')) {return 'guidance';}
+    if (lower.includes('who') || lower.includes('what')) {return 'information';}
+    if (lower.includes('thank') || lower.includes('goodbye')) {return 'social';}
+    if (lower.includes('?')) {return 'question';}
     
     return 'conversation';
   }
@@ -192,23 +192,23 @@ class NPCIntelligenceEngine {
     let adjustment = sentiment * 0.1;
     
     // Bonus for polite interactions
-    if (intent === 'social' && sentiment > 0) adjustment += 0.05;
+    if (intent === 'social' && sentiment > 0) {adjustment += 0.05;}
     
     // Penalty for demands or rudeness
-    if (sentiment < -0.5) adjustment -= 0.1;
+    if (sentiment < -0.5) {adjustment -= 0.1;}
     
     // NPC-specific relationship modifiers
     const traits = npc.personalityTraits || [];
-    if (traits.includes('friendly')) adjustment *= 1.2;
-    if (traits.includes('suspicious')) adjustment *= 0.8;
+    if (traits.includes('friendly')) {adjustment *= 1.2;}
+    if (traits.includes('suspicious')) {adjustment *= 0.8;}
     
     memory.relationship = Math.max(-1, Math.min(1, memory.relationship + adjustment));
     
     // Update conversation style based on relationship
-    if (memory.relationship > 0.5) memory.conversationStyle = 'friendly';
-    else if (memory.relationship < -0.5) memory.conversationStyle = 'hostile';
-    else if (memory.relationship < -0.2) memory.conversationStyle = 'casual';
-    else memory.conversationStyle = 'formal';
+    if (memory.relationship > 0.5) {memory.conversationStyle = 'friendly';}
+    else if (memory.relationship < -0.5) {memory.conversationStyle = 'hostile';}
+    else if (memory.relationship < -0.2) {memory.conversationStyle = 'casual';}
+    else {memory.conversationStyle = 'formal';}
   }
   
   // Craft intelligent response

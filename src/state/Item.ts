@@ -14,7 +14,7 @@ export const healthPotion: Item = {
   description: 'Restores 50 health points.',
   effect: (player: Player) => {
     player.health += 50;
-    if (player.health > 100) player.health = 100; // Cap health at 100
+    if (player.health > 100) {player.health = 100;} // Cap health at 100
     console.log('Health restored by 50 points.');
   },
 };
@@ -25,7 +25,7 @@ export const manaPotion: Item = {
   description: 'Restores 30 mana points.',
   effect: (player: Player) => {
     player.mana += 30;
-    if (player.mana > 50) player.mana = 50; // Cap mana at 50
+    if (player.mana > 50) {player.mana = 50;} // Cap mana at 50
     console.log('Mana restored by 30 points.');
   },
 };

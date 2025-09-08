@@ -168,25 +168,25 @@ export class DynamicContentGenerator {
     recentCommands: string[],
     timeInRoom: number
   ): Promise<GeneratedContent | null> {
-    if (!this.aiEnabled) return null;
+    if (!this.aiEnabled) {return null;}
 
     // Find applicable rules
     const applicableRules = this.findApplicableRules(gameState, currentRoom, recentCommands, timeInRoom);
     
-    if (applicableRules.length === 0) return null;
+    if (applicableRules.length === 0) {return null;}
 
     // Sort by priority and select the best rule
   const selectedRule = applicableRules.sort((a, b) => b.priority - a.priority)[0];
-  if (!selectedRule) return null;
+  if (!selectedRule) {return null;}
 
   // Check cooldown and usage limits
-  if (!this.canUseRule(selectedRule)) return null;
+  if (!this.canUseRule(selectedRule)) {return null;}
 
     try {
       // Generate content using AI
   const content = await this.generateAIContent(selectedRule, gameState, currentRoom, recentCommands);
       
-      if (!content) return null;
+      if (!content) {return null;}
 
       // Create generated content record
       const generatedContent: GeneratedContent = {
@@ -262,7 +262,7 @@ export class DynamicContentGenerator {
       const hasRequiredFlags = triggers.playerFlags.some(flag => 
         gameState.player.flags?.[flag] || gameState.flags?.[flag]
       );
-      if (!hasRequiredFlags) return false;
+      if (!hasRequiredFlags) {return false;}
     }
 
     // Check time conditions
@@ -281,7 +281,7 @@ export class DynamicContentGenerator {
         const hasMatchingCommands = commandPatterns.some(pattern =>
           recentCommands.some(cmd => cmd.toLowerCase().includes(pattern.toLowerCase()))
         );
-        if (!hasMatchingCommands) return false;
+        if (!hasMatchingCommands) {return false;}
       }
 
       if (stuckDuration && timeInRoom < stuckDuration) {
@@ -348,13 +348,13 @@ Content:`;
    */
   private canUseRule(rule: DynamicContentRule): boolean {
     const usage = this.ruleUsage.get(rule.id);
-    if (!usage) return true;
+    if (!usage) {return true;}
 
     // Check cooldown
-    if (Date.now() - usage.lastUsed < rule.cooldown) return false;
+    if (Date.now() - usage.lastUsed < rule.cooldown) {return false;}
 
     // Check session limits
-    if (rule.maxUsesPerSession && usage.count >= rule.maxUsesPerSession) return false;
+    if (rule.maxUsesPerSession && usage.count >= rule.maxUsesPerSession) {return false;}
 
     return true;
   }

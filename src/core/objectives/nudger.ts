@@ -14,7 +14,7 @@ export function registerActivity() { _lastActivity = Date.now(); }
 function pickHint(state: any): string | null {
   const r = getRoom(state?.currentRoomId || '');
   const hints = (r?.objectiveHints || []) as string[];
-  if (hints && hints.length > 0 && typeof hints[0] === 'string') return hints[0];
+  if (hints && hints.length > 0 && typeof hints[0] === 'string') {return hints[0];}
   return null;
 }
 

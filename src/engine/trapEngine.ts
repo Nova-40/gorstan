@@ -869,13 +869,13 @@ export function getTrapCount(filter?: {
 function getWeightedRandom(weights: Record<string, number>): string {
   try {
     const totalWeight = Object.values(weights).reduce((sum, weight) => sum + weight, 0);
-    if (totalWeight === 0) return Object.keys(weights)[0] || 'default';
+    if (totalWeight === 0) {return Object.keys(weights)[0] || 'default';}
 
     let random = Math.random() * totalWeight;
 
     for (const [key, weight] of Object.entries(weights)) {
       random -= weight;
-      if (random <= 0) return key;
+      if (random <= 0) {return key;}
     }
 
     return Object.keys(weights)[0] || 'default';

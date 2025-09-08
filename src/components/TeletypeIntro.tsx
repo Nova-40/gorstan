@@ -102,7 +102,7 @@ const TeletypeIntro: React.FC<TeletypeIntroProps> = ({ playerName, onComplete })
 
 // React effect hook
   useEffect(() => {
-    if (showChoices) return;
+    if (showChoices) {return;}
 // Variable declaration
     const timeout = setTimeout(() => {
       if (charIndex < currentLine.length) {

@@ -74,7 +74,7 @@ class DemoController {
   }
 
   private addMessage(text: string, type: 'system' | 'action' | 'dialogue' | 'error' = 'system'): void {
-    if (!globalDispatch) return;
+    if (!globalDispatch) {return;}
     
     const message: GameMessage = {
       id: Date.now().toString(),
@@ -87,12 +87,12 @@ class DemoController {
   }
 
   private addToInventory(item: string): void {
-    if (!globalDispatch) return;
+    if (!globalDispatch) {return;}
     globalDispatch({ type: 'ADD_TO_INVENTORY', payload: item });
   }
 
   private changeRoom(roomId: string): void {
-    if (!globalDispatch) return;
+    if (!globalDispatch) {return;}
     globalDispatch({ type: 'CHANGE_ROOM', payload: roomId });
   }
 
@@ -143,7 +143,7 @@ class DemoController {
   }
 
   public stopDemo(): void {
-    if (!demoState.isActive) return;
+    if (!demoState.isActive) {return;}
 
     console.log('[DemoController] Stopping demo mode');
     
@@ -159,7 +159,7 @@ class DemoController {
   }
 
   public skipToNext(): void {
-    if (!demoState.isActive || !demoState.canSkip) return;
+    if (!demoState.isActive || !demoState.canSkip) {return;}
     
     const nextStep = demoState.currentStep + 1;
     if (nextStep < this.steps.length) {
@@ -171,13 +171,13 @@ class DemoController {
   }
 
   public skipDemo(): void {
-    if (!demoState.isActive) return;
+    if (!demoState.isActive) {return;}
     console.log('[DemoController] Skipping entire demo');
     this.endDemo();
   }
 
   private async executeStep(stepIndex: number): Promise<void> {
-    if (!demoState.isActive) return;
+    if (!demoState.isActive) {return;}
     
     demoState.currentStep = stepIndex;
     const stepName = this.steps[stepIndex];

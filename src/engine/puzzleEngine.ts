@@ -99,7 +99,7 @@ export class PuzzleEngine {
     return puzzleIds
       .map(id => this.puzzles.get(id))
       .filter((puzzle): puzzle is PuzzleData => {
-        if (!puzzle) return false;
+        if (!puzzle) {return false;}
 
         
 // Variable declaration
@@ -119,7 +119,7 @@ export class PuzzleEngine {
           const hasAllItems = puzzle.requiredItems.every((item: string) =>
             gameState.player.inventory.includes(item)
           );
-          if (!hasAllItems) return false;
+          if (!hasAllItems) {return false;}
         }
 
         
@@ -130,7 +130,7 @@ export class PuzzleEngine {
           const hasAllTraits = puzzle.requiredTraits.every((trait: string) =>
             playerTraits.includes(trait)
           );
-          if (!hasAllTraits) return false;
+          if (!hasAllTraits) {return false;}
         }
 
         return true;

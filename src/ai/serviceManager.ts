@@ -34,7 +34,7 @@ export class ServiceManager {
    * Initialize all services
    */
   async initialize(): Promise<void> {
-    if (this.initialized) return;
+    if (this.initialized) {return;}
 
     try {
       // Configure AI if credentials provided

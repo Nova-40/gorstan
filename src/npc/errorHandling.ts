@@ -440,7 +440,7 @@ export class NPCErrorHandler {
     this.currentDegradationLevel = level;
     
     const degradation = DEGRADATION_LEVELS[level];
-    if (!degradation) return;
+    if (!degradation) {return;}
     console.warn(`[NPCErrorHandler] Degradation level changed: ${oldLevel} -> ${level} (${degradation.name})`);
     console.warn(`[NPCErrorHandler] ${degradation.description}`);
     if (degradation.disabledFeatures.length > 0) {
@@ -519,7 +519,7 @@ export class NPCErrorHandler {
 
   isFeatureEnabled(feature: string): boolean {
   const degradation = DEGRADATION_LEVELS[this.currentDegradationLevel];
-  if (!degradation) return true;
+  if (!degradation) {return true;}
   return !degradation.disabledFeatures.includes(feature) && !degradation.disabledFeatures.includes('all');
   }
 

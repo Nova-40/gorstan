@@ -34,17 +34,17 @@ export function randomFloat(min: number, max: number): number {
 
 // --- Function: pickRandom<T> ---
 export function pickRandom<T>(arr: T[]): T {
-  if (arr.length === 0) throw new Error('Cannot pick random element from empty array');
+  if (arr.length === 0) {throw new Error('Cannot pick random element from empty array');}
   const idx = randomInt(0, arr.length);
   const val = arr[idx];
-  if (val === undefined) throw new Error('Random selection returned undefined');
+  if (val === undefined) {throw new Error('Random selection returned undefined');}
   return val;
 }
 
 // --- Function: pickRandomOrNull<T> ---
 // Returns null if array empty instead of throwing
 export function pickRandomOrNull<T>(arr: T[]): T | null {
-  if (arr.length === 0) return null;
+  if (arr.length === 0) {return null;}
   const idx = randomInt(0, arr.length);
   return arr[idx] === undefined ? null : arr[idx];
 }
@@ -52,7 +52,7 @@ export function pickRandomOrNull<T>(arr: T[]): T | null {
 // --- Function: pickRandomOrFallback<T> ---
 // Provides a caller-specified fallback when array empty or undefined element chosen
 export function pickRandomOrFallback<T>(arr: T[], fallback: T): T {
-  if (arr.length === 0) return fallback;
+  if (arr.length === 0) {return fallback;}
   const idx = randomInt(0, arr.length);
   const val = arr[idx];
   return val === undefined ? fallback : val;
@@ -71,7 +71,7 @@ export function chance(probability: number): boolean {
 export function shuffle<T>(arr: T[]): T[] {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = randomInt(0, i + 1);
-    if (j === i) continue;
+    if (j === i) {continue;}
     const a = arr[i];
     const b = arr[j];
     arr[i] = b as T;

@@ -149,7 +149,7 @@ function generateDeflection(persona: NPCPersona, intentResult: IntentResult, con
  * Check for the "ask twice" rule for sensitive information
  */
 function checkAskTwiceRule(utterance: string, memory: NPCMemoryState, persona: NPCPersona): string | null {
-  if (persona.id !== 'ayla') return null; // Only Ayla implements this rule
+  if (persona.id !== 'ayla') {return null;} // Only Ayla implements this rule
   
   const recentConversation = memory.conversationBuffer.slice(-4);
   const playerMessages = recentConversation.filter(turn => turn.speaker === 'player');
@@ -346,7 +346,7 @@ function addMemoryReferences(response: string, memorySummary: any, persona: NPCP
  * Choose a random synonym from a list
  */
 function chooseSynonym(options: string[]): string {
-  if (options.length === 0) return '';
+  if (options.length === 0) {return '';}
   const idx = Math.floor(Math.random() * options.length);
   return options[idx] ?? options[0] ?? '';
 }

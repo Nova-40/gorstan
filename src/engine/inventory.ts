@@ -312,7 +312,7 @@ export function addItem(
 export function hasItem(item: string, minQuantity: number = 1): boolean {
   try {
     const inventoryItem = inventory.find((invItem: InventoryItem) => invItem.id === item);
-    if (!inventoryItem) return false;
+    if (!inventoryItem) {return false;}
 
     const quantity = inventoryItem.quantity || 1;
     return quantity >= minQuantity;
@@ -596,7 +596,7 @@ export function getItemValue(itemIds?: string[]): number {
 // --- Function: createItemFromId ---
 function createItemFromId(itemId: string): InventoryItem | null {
   const itemData = getItemDefinition(itemId);
-  if (!itemData) return null;
+  if (!itemData) {return null;}
 
   return {
     ...itemData,

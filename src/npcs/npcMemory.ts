@@ -34,7 +34,7 @@ export function getNPCResponseWithState(npc: NPC, input: string, state: any): st
   }
   // Try context-aware dialogue
   const contextReply = getContextAwareDialogue(npc.id, state);
-  if (contextReply) return contextReply;
+  if (contextReply) {return contextReply;}
   // Default fallback
   return "I'm not sure how to answer that. Try asking something else.";
 }
@@ -85,7 +85,7 @@ const npcMemoryStore: Map<string, NPCMemoryState> = new Map();
 export function addMemoryEvent(npcId: string, event: string): void {
   initNPC(npcId);
   const memory = npcMemoryStore.get(npcId)!;
-  if (!memory.memoryLog) memory.memoryLog = [];
+  if (!memory.memoryLog) {memory.memoryLog = [];}
   memory.memoryLog.push(event);
 }
 
@@ -110,7 +110,7 @@ export function setNPCSchedule(npcId: string, schedule: Array<{ time: string; ro
 // --- Enhanced: Goal-driven movement logic (to be called by controller) ---
 export function getNextRoomForGoal(npcId: string, state: any): string | null {
   const memory = npcMemoryStore.get(npcId);
-  if (!memory || !memory.goal) return null;
+  if (!memory || !memory.goal) {return null;}
   // Example: find_player
   if (memory.goal === 'find_player' && state && state.player && state.player.currentRoom) {
     // Simple pathfinding: move toward player's room
@@ -122,7 +122,7 @@ export function getNextRoomForGoal(npcId: string, state: any): string | null {
     const hhmm = now.getHours().toString().padStart(2, '0') + now.getMinutes().toString().padStart(2, '0');
     // Find next scheduled room
     for (const entry of memory.schedule) {
-      if (entry.time >= hhmm) return entry.room;
+      if (entry.time >= hhmm) {return entry.room;}
     }
     // If past all times, loop to first
   const first = memory.schedule[0];
@@ -135,7 +135,7 @@ export function getNextRoomForGoal(npcId: string, state: any): string | null {
 // --- Enhanced: Context-aware dialogue helper ---
 export function getContextAwareDialogue(npcId: string, state: any): string | null {
   const memory = npcMemoryStore.get(npcId);
-  if (!memory) return null;
+  if (!memory) {return null;}
   // Example: Dominic is dead
   if (state.flags && state.flags.dominicIsDead && npcId !== 'dominic') {
     return 'You sense a somber mood. The air is heavy with loss.';
@@ -214,7 +214,7 @@ export function updateNPCState(npcId: string, updates: Record<string, any>): voi
 export function getLastInteraction(npcId: string): NPCInteractionRecord | null {
 // Variable declaration
   const memory = npcMemoryStore.get(npcId);
-  if (!memory || memory.interactions.length === 0) return null;
+  if (!memory || memory.interactions.length === 0) {return null;}
   return memory.interactions[memory.interactions.length - 1] ?? null;
 }
 

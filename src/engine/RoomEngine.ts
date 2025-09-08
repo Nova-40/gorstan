@@ -32,10 +32,10 @@ export function processRoomEntry(room: Room, gameState: GameState): void {
   }
 
   console.log(`[RoomEngine] Entered room: ${room.id}`);
-  if (room.zone) console.log(`[RoomEngine] Zone: ${room.zone}`);
-  if ((room as any).music) console.log(`[RoomEngine] Playing ambient music: ${(room as any).music}`);
-  if (room.items?.length) console.log(`[RoomEngine] Items in room:`, room.items.map((i: any) => i.name || i.id || i));
-  if (room.npcs?.length) console.log(`[RoomEngine] NPCs in room:`, room.npcs.map((n: any) => n.name || n));
+  if (room.zone) {console.log(`[RoomEngine] Zone: ${room.zone}`);}
+  if ((room as any).music) {console.log(`[RoomEngine] Playing ambient music: ${(room as any).music}`);}
+  if (room.items?.length) {console.log(`[RoomEngine] Items in room:`, room.items.map((i: any) => i.name || i.id || i));}
+  if (room.npcs?.length) {console.log(`[RoomEngine] NPCs in room:`, room.npcs.map((n: any) => n.name || n));}
 
   
   if (room.trap) {

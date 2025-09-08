@@ -325,12 +325,12 @@ Respond with just the hint text, in Ayla's voice with appropriate cosmic imagery
    * Categorize the type of hint needed
    */
   private categorizeHint(context: AylaHintContext, stuckState: any): AylaHintResponse['hintType'] {
-    if (stuckState.category === 'navigation') return 'navigation';
-    if (stuckState.category === 'puzzle') return 'puzzle';
-    if (stuckState.category === 'miniquest') return 'story'; // Miniquest hints are story-related
-    if (stuckState.category === 'inventory') return 'story'; // Inventory management is part of story progression
-    if (stuckState.category === 'social' || context.currentRoom.npcs?.length) return 'interaction';
-    if (context.currentRoom.id.includes('trap') || context.failedAttempts.some(f => f.includes('trap'))) return 'safety';
+    if (stuckState.category === 'navigation') {return 'navigation';}
+    if (stuckState.category === 'puzzle') {return 'puzzle';}
+    if (stuckState.category === 'miniquest') {return 'story';} // Miniquest hints are story-related
+    if (stuckState.category === 'inventory') {return 'story';} // Inventory management is part of story progression
+    if (stuckState.category === 'social' || context.currentRoom.npcs?.length) {return 'interaction';}
+    if (context.currentRoom.id.includes('trap') || context.failedAttempts.some(f => f.includes('trap'))) {return 'safety';}
     return 'story';
   }
 
@@ -370,7 +370,7 @@ Respond with just the hint text, in Ayla's voice with appropriate cosmic imagery
       const controller = MiniquestController.getInstance();
       const aiStatus = controller.getAIStatus();
       
-      if (!aiStatus.enabled) return null;
+      if (!aiStatus.enabled) {return null;}
 
       // Get active/available miniquests for context
       const recommendations = await aiMiniquestService.getRecommendedQuests(roomId, gameState, 3);

@@ -198,7 +198,7 @@ export class ZoneAwarenessProvider {
    */
   isNPCTypeAllowedInZone(npcType: string, zoneId: string): boolean {
     const zone = this.zones.get(zoneId);
-    if (!zone) return true;
+    if (!zone) {return true;}
 
     // Check explicit restrictions first
     if (zone.restrictedNPCTypes.includes(npcType)) {
@@ -409,7 +409,7 @@ export class ZoneAwarenessProvider {
 
   private findPreferredRoomsNearby(npcId: string, fromRoom: string): string[] {
     const preferences = this.npcPreferences.get(npcId);
-    if (!preferences) return [];
+    if (!preferences) {return [];}
 
     const nearbyRooms: string[] = [];
     for (const [roomId, mapping] of this.roomZoneMappings.entries()) {

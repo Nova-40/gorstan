@@ -101,7 +101,7 @@ class BookStoreService {
    * Record a book discussion interaction
    */
   recordBookDiscussion(): void {
-    if (!this.initialized) return;
+    if (!this.initialized) {return;}
     
     this.state.totalBookDiscussions++;
     this.state.lastBookDiscussion = Date.now();
@@ -245,7 +245,7 @@ class BookStoreService {
    * Record CTA interaction
    */
   recordCTAInteraction(ctaId: string, action: 'shown' | 'clicked' | 'dismissed' | 'snoozed'): void {
-    if (!this.initialized) return;
+    if (!this.initialized) {return;}
 
     this.state.interactions.push({
       ctaId,

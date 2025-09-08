@@ -185,7 +185,7 @@ const RavenInteraction: React.FC<RavenInteractionProps> = ({ onComplete, playerN
 
   // Listen for player input during prompt phase
   useEffect(() => {
-    if (phase !== 'prompt') return;
+    if (phase !== 'prompt') {return;}
 
     const handleInput = (event: CustomEvent) => {
       const input = event.detail.toLowerCase().trim();
@@ -228,7 +228,7 @@ const RavenInteraction: React.FC<RavenInteractionProps> = ({ onComplete, playerN
     intervalRef.current = setInterval(() => {
       if (displayedEntries < REDACTED_REGISTER.length) {
   const entry = REDACTED_REGISTER[displayedEntries];
-  if (!entry) return; // Safety
+  if (!entry) {return;} // Safety
         
         // Add some glitch effects randomly
         const isGlitched = Math.random() < 0.2;

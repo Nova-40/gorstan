@@ -74,7 +74,7 @@ const Particles: React.FC<ParticlesFX> = ({ count = 20, color = '#00ffff', speed
   useEffect(() => {
     // Check for reduced motion preference
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) return;
+    if (prefersReducedMotion) {return;}
 
     const initialParticles = Array.from({ length: count }, (_, i) => ({
       x: Math.random() * 100,
@@ -174,7 +174,7 @@ const CRTScroller: React.FC<CRTScrollerFX> = ({ text, color = '#00ff00', speed =
       Array.from({ length: 20 }, () => charset[Math.floor(Math.random() * charset.length)]).join('')
     );
 
-    let currentText = text || 'SYSTEM_READY';
+    const currentText = text || 'SYSTEM_READY';
     let index = 0;
 
     const updateScroll = () => {
@@ -221,7 +221,7 @@ const FloatingOrb: React.FC<FloatingOrbFX> = ({ color = '#ffffff', orbSize = 20,
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) return;
+    if (prefersReducedMotion) {return;}
 
     const animate = () => {
       timeRef.current += 0.02 * speed;

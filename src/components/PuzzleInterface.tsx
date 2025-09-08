@@ -179,7 +179,7 @@ const PuzzleInterface: React.FC<PuzzleInterfaceProps> = ({
   
 // Variable declaration
   const handleSubmit = async () => {
-    if (isSubmitting) return;
+    if (isSubmitting) {return;}
 
     setIsSubmitting(true);
     setPulseEffect(true);
@@ -206,7 +206,7 @@ const PuzzleInterface: React.FC<PuzzleInterfaceProps> = ({
   
 // Variable declaration
   const handleHint = (hintIndex: number) => {
-    if (usedHints.includes(hintIndex)) return;
+    if (usedHints.includes(hintIndex)) {return;}
     setUsedHints(prev => [...prev, hintIndex]);
     onHint?.(hintIndex);
   };
@@ -375,7 +375,7 @@ const PuzzleInterface: React.FC<PuzzleInterfaceProps> = ({
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen) {return null;}
 
 // Variable declaration
   const canSubmit = puzzle.components?.every(comp =>

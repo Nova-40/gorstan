@@ -112,7 +112,7 @@ export function processCommand({
           // @ts-ignore - internal export not typed
           const mod = require('./wanderingNPCController');
           const buffer: string[] = mod.__getWanderLogBuffer ? mod.__getWanderLogBuffer() : [];
-          if (!buffer.length) return { messages: [{ text: 'No wander logs captured yet.', type: 'system' }] };
+          if (!buffer.length) {return { messages: [{ text: 'No wander logs captured yet.', type: 'system' }] };}
           return { messages: [
             { text: `--- Last ${buffer.length} Wander Logs ---`, type: 'system' },
             ...buffer.map(l => ({ text: l, type: 'info' as const }))
@@ -499,7 +499,7 @@ export function processCommand({
  */
 function processRoomEntry(room: Room, gameState: LocalGameState): CommandResult {
   const messages: TerminalMessage[] = [];
-  let updates: Partial<LocalGameState> = {};
+  const updates: Partial<LocalGameState> = {};
 
   // Reset crossing state when entering crossing room
   if (room.id === 'crossing') {

@@ -88,7 +88,7 @@ export const MenorahIcon: React.FC<IconProps> = ({ className = '', size = 24 }) 
       {/* Side candles */}
       {Array.from({ length: 8 }, (_, i) => {
         const x = 6 + i * 1.5;
-        if (i === 4) return null; // Skip center position
+        if (i === 4) {return null;} // Skip center position
         return (
           <g key={i}>
             <rect x={x} y="8" width="1" height="10" />

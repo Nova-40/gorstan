@@ -36,7 +36,7 @@ export interface EasterOverlayProps {
  * - ESC key handling
  */
 export const EasterOverlay: React.FC<EasterOverlayProps> = ({ isOpen, onClose }) => {
-  if (!isOpen) return null;
+  if (!isOpen) {return null;}
 
   return (
     <BaseDialog

@@ -79,7 +79,7 @@ export type ItemCategory =
 let globalDispatch: Dispatch<GameAction> | null = null;
 
 
-let codexEntries: Map<string, CodexEntry> = new Map();
+const codexEntries: Map<string, CodexEntry> = new Map();
 
 
 
@@ -103,7 +103,7 @@ export function recordItemDiscovery(
     tags?: string[];
   }
 ): void {
-  if (!itemId || !roomId) return;
+  if (!itemId || !roomId) {return;}
 
 // Variable declaration
   const existingEntry = codexEntries.get(itemId);
@@ -354,7 +354,7 @@ export function updateCodexEntry(
 ): void {
 // Variable declaration
   const entry = codexEntries.get(itemId);
-  if (!entry) return;
+  if (!entry) {return;}
 
   Object.assign(entry, updates);
 
@@ -376,7 +376,7 @@ export function updateCodexEntry(
 export function linkItemToQuest(itemId: string, questId: string): void {
 // Variable declaration
   const entry = codexEntries.get(itemId);
-  if (!entry) return;
+  if (!entry) {return;}
 
   if (!entry.relatedQuests!.includes(questId)) {
     entry.relatedQuests!.push(questId);
@@ -389,7 +389,7 @@ export function linkItemToQuest(itemId: string, questId: string): void {
 export function linkItemToNPC(itemId: string, npcId: string): void {
 // Variable declaration
   const entry = codexEntries.get(itemId);
-  if (!entry) return;
+  if (!entry) {return;}
 
   if (!entry.relatedNPCs!.includes(npcId)) {
     entry.relatedNPCs!.push(npcId);
@@ -400,7 +400,7 @@ export function linkItemToNPC(itemId: string, npcId: string): void {
 
 // --- Function: displayCodex ---
 export function displayCodex(filter?: { category?: ItemCategory; significance?: string }): void {
-  if (!globalDispatch) return;
+  if (!globalDispatch) {return;}
 
   let entries = Array.from(codexEntries.values());
 
@@ -429,7 +429,7 @@ export function displayCodex(filter?: { category?: ItemCategory; significance?: 
   
 // Variable declaration
   const byCategory = entries.reduce((acc, entry) => {
-    if (!acc[entry.category]) acc[entry.category] = [];
+    if (!acc[entry.category]) {acc[entry.category] = [];}
     acc[entry.category].push(entry);
     return acc;
   }, {} as Record<ItemCategory, CodexEntry[]>);

@@ -73,7 +73,7 @@ export class TrialsController {
   getCurrentPhase(): string {
     if (this.currentPhase < this.phases.length) {
       const phaseDef = this.phases[this.currentPhase];
-      if (phaseDef) return phaseDef.name;
+      if (phaseDef) {return phaseDef.name;}
     }
     return 'Complete';
   }

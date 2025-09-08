@@ -63,7 +63,7 @@ export const WendellConversation: React.FC<WendellConversationProps> = ({
   }, [isOpen, messages.length]);
   
   const handleSendMessage = async () => {
-    if (!inputValue.trim()) return;
+    if (!inputValue.trim()) {return;}
     
     const userMessage = inputValue.trim();
     setInputValue('');
@@ -116,7 +116,7 @@ export const WendellConversation: React.FC<WendellConversationProps> = ({
     return toneClasses[tone || 'welcoming'];
   };
   
-  if (!isOpen) return null;
+  if (!isOpen) {return null;}
   
   return (
     <AnimatePresence>

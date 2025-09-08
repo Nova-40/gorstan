@@ -8,7 +8,7 @@ export function useImagePreload(imagePath: string | null, preload: boolean = fal
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (!imagePath || !preload || isLoaded) return;
+    if (!imagePath || !preload || isLoaded) {return;}
 
     setIsLoading(true);
     

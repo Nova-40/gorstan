@@ -153,9 +153,9 @@ export class DeviceProfiler {
     const screenPixels = window.screen.width * window.screen.height;
     const cores = navigator.hardwareConcurrency || 4;
     
-    if (screenPixels > 2073600 && cores >= 8) return 16; // 4K+ display, many cores
-    if (screenPixels > 1440000 && cores >= 4) return 8;  // 1080p+ display, quad core
-    if (screenPixels > 921600 && cores >= 2) return 4;   // 720p+ display, dual core
+    if (screenPixels > 2073600 && cores >= 8) {return 16;} // 4K+ display, many cores
+    if (screenPixels > 1440000 && cores >= 4) {return 8;}  // 1080p+ display, quad core
+    if (screenPixels > 921600 && cores >= 2) {return 4;}   // 720p+ display, dual core
     return 2; // Conservative estimate
   }
 
@@ -171,7 +171,7 @@ export class DeviceProfiler {
       const canvas = document.createElement('canvas');
       const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
       
-      if (!gl || !(gl instanceof WebGLRenderingContext)) return 'unknown';
+      if (!gl || !(gl instanceof WebGLRenderingContext)) {return 'unknown';}
 
       const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
       if (debugInfo) {
@@ -195,8 +195,8 @@ export class DeviceProfiler {
 
       // Performance test fallback
       const maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
-      if (maxTextureSize >= 16384) return 'high';
-      if (maxTextureSize >= 8192) return 'medium';
+      if (maxTextureSize >= 16384) {return 'high';}
+      if (maxTextureSize >= 8192) {return 'medium';}
       return 'low';
 
     } catch (error) {
@@ -229,8 +229,8 @@ export class DeviceProfiler {
       if (connection) {
         const effectiveType = connection.effectiveType;
         
-        if (effectiveType === '4g' || connection.downlink > 10) return 'fast';
-        if (effectiveType === '3g' || connection.downlink > 1.5) return 'medium';
+        if (effectiveType === '4g' || connection.downlink > 10) {return 'fast';}
+        if (effectiveType === '3g' || connection.downlink > 1.5) {return 'medium';}
         return 'slow';
       }
     }
@@ -241,8 +241,8 @@ export class DeviceProfiler {
       await fetch('/favicon.ico', { cache: 'no-cache' });
       const latency = performance.now() - start;
       
-      if (latency < 100) return 'fast';
-      if (latency < 500) return 'medium';
+      if (latency < 100) {return 'fast';}
+      if (latency < 500) {return 'medium';}
       return 'slow';
     } catch {
       return 'medium'; // Default assumption
@@ -276,11 +276,11 @@ export class DeviceProfiler {
   private detectBrowser(): string {
     const userAgent = navigator.userAgent;
     
-    if (userAgent.includes('Chrome')) return 'Chrome';
-    if (userAgent.includes('Firefox')) return 'Firefox';
-    if (userAgent.includes('Safari')) return 'Safari';
-    if (userAgent.includes('Edge')) return 'Edge';
-    if (userAgent.includes('Opera')) return 'Opera';
+    if (userAgent.includes('Chrome')) {return 'Chrome';}
+    if (userAgent.includes('Firefox')) {return 'Firefox';}
+    if (userAgent.includes('Safari')) {return 'Safari';}
+    if (userAgent.includes('Edge')) {return 'Edge';}
+    if (userAgent.includes('Opera')) {return 'Opera';}
     
     return 'Unknown';
   }
@@ -322,30 +322,30 @@ export class DeviceProfiler {
     let score = 0;
     
     // CPU score (0-3 points)
-    if (capabilities.cpuCores >= 8) score += 3;
-    else if (capabilities.cpuCores >= 4) score += 2;
-    else if (capabilities.cpuCores >= 2) score += 1;
+    if (capabilities.cpuCores >= 8) {score += 3;}
+    else if (capabilities.cpuCores >= 4) {score += 2;}
+    else if (capabilities.cpuCores >= 2) {score += 1;}
     
     // Memory score (0-3 points)
-    if (capabilities.memoryGB >= 16) score += 3;
-    else if (capabilities.memoryGB >= 8) score += 2;
-    else if (capabilities.memoryGB >= 4) score += 1;
+    if (capabilities.memoryGB >= 16) {score += 3;}
+    else if (capabilities.memoryGB >= 8) {score += 2;}
+    else if (capabilities.memoryGB >= 4) {score += 1;}
     
     // GPU score (0-3 points)
-    if (capabilities.gpuTier === 'high') score += 3;
-    else if (capabilities.gpuTier === 'medium') score += 2;
-    else if (capabilities.gpuTier === 'low') score += 1;
+    if (capabilities.gpuTier === 'high') {score += 3;}
+    else if (capabilities.gpuTier === 'medium') {score += 2;}
+    else if (capabilities.gpuTier === 'low') {score += 1;}
     
     // Platform modifier
-    if (capabilities.platform === 'desktop') score += 1;
-    else if (capabilities.platform === 'mobile') score -= 1;
+    if (capabilities.platform === 'desktop') {score += 1;}
+    else if (capabilities.platform === 'mobile') {score -= 1;}
     
     // WebGL support
-    if (capabilities.supportsWebGL && capabilities.maxTextureSize >= 8192) score += 1;
+    if (capabilities.supportsWebGL && capabilities.maxTextureSize >= 8192) {score += 1;}
     
     // Calculate tier
-    if (score >= 8) return 'high';
-    if (score >= 5) return 'medium';
+    if (score >= 8) {return 'high';}
+    if (score >= 5) {return 'medium';}
     return 'low';
   }
 
@@ -396,8 +396,8 @@ export class DeviceProfiler {
     const secondAvgFPS = secondHalf.reduce((sum, m) => sum + m.fps, 0) / secondHalf.length;
     
     let trend: 'improving' | 'stable' | 'degrading' = 'stable';
-    if (secondAvgFPS > firstAvgFPS + 5) trend = 'improving';
-    else if (secondAvgFPS < firstAvgFPS - 5) trend = 'degrading';
+    if (secondAvgFPS > firstAvgFPS + 5) {trend = 'improving';}
+    else if (secondAvgFPS < firstAvgFPS - 5) {trend = 'degrading';}
     
     return { averageFPS, averageMemory, trend };
   }

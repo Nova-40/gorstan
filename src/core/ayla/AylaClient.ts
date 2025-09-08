@@ -29,7 +29,7 @@ export class HttpAylaClient implements IAylaClient {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(req)
       });
-      if (!res.ok) throw new Error('Ayla HTTP ' + res.status);
+      if (!res.ok) {throw new Error('Ayla HTTP ' + res.status);}
       if (!res.body) {
         const text = await res.text();
         cb.onToken?.(text);
@@ -41,7 +41,7 @@ export class HttpAylaClient implements IAylaClient {
       let full = '';
       while (true) {
         const { done, value } = await reader.read();
-        if (done) break;
+        if (done) {break;}
         const chunk = decoder.decode(value, { stream: true });
         full += chunk;
         cb.onToken?.(chunk);

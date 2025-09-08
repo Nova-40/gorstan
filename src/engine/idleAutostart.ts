@@ -43,7 +43,7 @@ function startCountdown() {
 }
 
 function resetTimer() {
-  if (!onWelcome) return;
+  if (!onWelcome) {return;}
   
   if (idleTimer) {
     window.clearTimeout(idleTimer);

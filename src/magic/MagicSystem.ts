@@ -121,7 +121,7 @@ export class MagicSystem {
     const existingIndex = actorCooldowns.findIndex(cd => cd.spellId === spellId);
     if (existingIndex >= 0) {
       const existing = actorCooldowns[existingIndex];
-      if (existing) existing.remainingMs = durationMs;
+      if (existing) {existing.remainingMs = durationMs;}
     } else {
       actorCooldowns.push({ spellId, remainingMs: durationMs });
     }
@@ -134,7 +134,7 @@ export class MagicSystem {
     for (const [, actorCooldowns] of this.cooldowns) {
       for (let i = actorCooldowns.length - 1; i >= 0; i--) {
         const cooldown = actorCooldowns[i];
-        if (!cooldown) continue;
+        if (!cooldown) {continue;}
         cooldown.remainingMs -= deltaTime;
         if (cooldown.remainingMs <= 0) {
           actorCooldowns.splice(i, 1);
@@ -149,7 +149,7 @@ export class MagicSystem {
 
     for (let i = this.activeCasts.length - 1; i >= 0; i--) {
       const castState = this.activeCasts[i];
-      if (!castState) continue;
+      if (!castState) {continue;}
       const channelMs = castState.spell.cast?.channelMs ?? 1000;
       const elapsed = currentTime - castState.startTime;
       if (elapsed >= channelMs) {

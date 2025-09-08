@@ -42,7 +42,7 @@ export default function ToastPanel({ message, type = 'info', onClear }: ToastPan
     }
   }, [message, onClear]);
 
-  if (!message) return null;
+  if (!message) {return null;}
 
   return (
     <div

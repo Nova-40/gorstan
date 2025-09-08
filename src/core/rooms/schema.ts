@@ -48,7 +48,7 @@ export function validateRoomsJson(obj: unknown){
       mismatchedIds.push(`${key} (key) != ${room.id} (room.id)`);
     }
     for (const ex of room.exits){
-      if (!ids.has(ex.to)) badExits.push(`${key} -> ${ex.to}`);
+      if (!ids.has(ex.to)) {badExits.push(`${key} -> ${ex.to}`);}
     }
   }
   if (mismatchedIds.length){

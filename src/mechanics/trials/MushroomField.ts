@@ -155,7 +155,7 @@ export class MushroomField {
 
   private checkMushroomTriggers(): void {
     this.mushrooms.forEach(mushroom => {
-      if (mushroom.triggered || mushroom.packSpawned) return;
+      if (mushroom.triggered || mushroom.packSpawned) {return;}
       
       const distance = Math.sqrt(
         Math.pow(mushroom.x - this.playerPos.x, 2) + 
@@ -232,7 +232,7 @@ export class MushroomField {
 
   private updateCreaturePacks(): void {
     this.creaturePacks.forEach(pack => {
-      if (!pack.active) return;
+      if (!pack.active) {return;}
       
       // Check if pack should sleep due to rest rock proximity
       const nearRestRock = this.isPackNearRestRock(pack);
@@ -258,7 +258,7 @@ export class MushroomField {
   private isPackNearRestRock(pack: CreaturePack): boolean {
     return this.restRocks.some(rock => {
       const currentTime = Date.now();
-      if (currentTime < rock.cooldownUntil) return false;
+      if (currentTime < rock.cooldownUntil) {return false;}
       
       return pack.creatures.some(creature => {
         const distance = Math.sqrt(
@@ -293,7 +293,7 @@ export class MushroomField {
   }
 
   private updateSleepingPack(pack: CreaturePack): void {
-    if (!pack.sleepStartTime) return;
+    if (!pack.sleepStartTime) {return;}
     
     const sleepDuration = Date.now() - pack.sleepStartTime;
     
@@ -344,7 +344,7 @@ export class MushroomField {
   private checkPackCombat(pack: CreaturePack): void {
     // Check if this pack encounters another pack
     this.creaturePacks.forEach(otherPack => {
-      if (otherPack.id === pack.id || !otherPack.active || otherPack.sleeping) return;
+      if (otherPack.id === pack.id || !otherPack.active || otherPack.sleeping) {return;}
       
       // Check for proximity between packs
       const packDistance = this.getPackDistance(pack, otherPack);
@@ -356,7 +356,7 @@ export class MushroomField {
   }
 
   private getPackDistance(pack1: CreaturePack, pack2: CreaturePack): number {
-    if (pack1.creatures.length === 0 || pack2.creatures.length === 0) return Infinity;
+    if (pack1.creatures.length === 0 || pack2.creatures.length === 0) {return Infinity;}
     
     let minDistance = Infinity;
     
@@ -382,8 +382,8 @@ export class MushroomField {
     pack1.creatures.splice(0, casualties1);
     pack2.creatures.splice(0, casualties2);
     
-    if (pack1.creatures.length === 0) pack1.active = false;
-    if (pack2.creatures.length === 0) pack2.active = false;
+    if (pack1.creatures.length === 0) {pack1.active = false;}
+    if (pack2.creatures.length === 0) {pack2.active = false;}
     
     console.log(`[MushroomField] The battle ends with mutual losses...`);
   }

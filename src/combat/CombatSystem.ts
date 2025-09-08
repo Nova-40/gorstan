@@ -60,7 +60,7 @@ export class CombatSystem {
 
   /** Update combat system */
   update(actors: Actor[], deltaTime: number): void {
-    if (!this.activeCombat) return;
+    if (!this.activeCombat) {return;}
 
     // Update all actors
     for (const actor of actors) {
@@ -419,7 +419,7 @@ export class CombatSystem {
 
   /** Derived round: every 5s or every 4 queued actions (whichever higher) */
   private calculateRound(): number {
-    if (!this.activeCombat) return 0;
+    if (!this.activeCombat) {return 0;}
     const elapsed = Date.now() - this.combatStartTime;
     const timeRound = Math.floor(elapsed / 5000) + 1;
     const actionRound = Math.floor(this.actionQueue.length / 4) + 1;

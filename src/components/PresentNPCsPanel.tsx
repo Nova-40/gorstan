@@ -26,7 +26,7 @@ interface PresentNPCsPanelProps {
 }
 
 const PresentNPCsPanel: React.FC<PresentNPCsPanelProps> = ({ npcs, onTalkToNPC }) => {
-  if (!npcs.length) return null;
+  if (!npcs.length) {return null;}
 
   return (
     <div className="present-npcs-panel mt-2 flex flex-wrap gap-2 justify-center">

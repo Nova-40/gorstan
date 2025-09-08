@@ -89,7 +89,7 @@ export function stopAmbientAudio(): void {
  * Play zone-specific audio
  */
 export function playZoneAudio(src: string): void {
-  if (!src) return;
+  if (!src) {return;}
   try {
     const audio = new Audio(src);
     audio.volume = 0.5;

@@ -160,7 +160,7 @@ export const ConditionHelpers = {
 
   getReputation: (playerState: PlayerState | undefined): number => {
     try {
-      if (!playerState) return 0;
+      if (!playerState) {return 0;}
       let reputationValues: number[] = [];
       if (playerState.npcRelationships) {
         reputationValues = Object.values(playerState.npcRelationships);
@@ -1115,10 +1115,10 @@ export function getPotentialInterventions(
       }
 
       let reason: string | undefined;
-      if (!isNPCPresent) reason = 'NPC not present';
-      else if (suppressedNPCs.length === 0) reason = 'No targets to suppress';
-      else if (!canTrigger) reason = 'Cooldown/limit reached';
-      else if (!conditionsMet) reason = `Conditions not met${conditionError}`;
+      if (!isNPCPresent) {reason = 'NPC not present';}
+      else if (suppressedNPCs.length === 0) {reason = 'No targets to suppress';}
+      else if (!canTrigger) {reason = 'Cooldown/limit reached';}
+      else if (!conditionsMet) {reason = `Conditions not met${conditionError}`;}
 
       const result: any = {
         rule,

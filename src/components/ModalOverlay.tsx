@@ -49,7 +49,7 @@ const ModalOverlay: React.FC<ModalOverlayProps> = ({ isOpen, onClose, children }
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!isOpen) {return null;}
 
 // JSX return block or main return
   return (

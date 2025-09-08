@@ -59,10 +59,10 @@ export function getDiscoveryChances(routeId: string): { [artifactId: string]: nu
   };
 
   // Handle specific route IDs
-  if (routeId === 'demo') return baseChances.demo;
-  if (routeId === 'full') return baseChances.full;
-  if (routeId.startsWith('short10_')) return baseChances.short10;
-  if (routeId.startsWith('short30_')) return baseChances.short30;
+  if (routeId === 'demo') {return baseChances.demo;}
+  if (routeId === 'full') {return baseChances.full;}
+  if (routeId.startsWith('short10_')) {return baseChances.short10;}
+  if (routeId.startsWith('short30_')) {return baseChances.short30;}
   
   return {}; // No discoveries for unknown routes
 }
@@ -82,10 +82,10 @@ export function calculateDiscoveryBonus(progression: QuantumProgression, routeId
   
   // Route completion bonus
   const completionBonus = (() => {
-    if (routeId === 'demo') return progression.routeCompletions.demo * 0.05;
-    if (routeId === 'full') return progression.routeCompletions.full * 0.1;
-    if (routeId.startsWith('short10_')) return progression.routeCompletions.short10.length * 0.08;
-    if (routeId.startsWith('short30_')) return progression.routeCompletions.short30.length * 0.12;
+    if (routeId === 'demo') {return progression.routeCompletions.demo * 0.05;}
+    if (routeId === 'full') {return progression.routeCompletions.full * 0.1;}
+    if (routeId.startsWith('short10_')) {return progression.routeCompletions.short10.length * 0.08;}
+    if (routeId.startsWith('short30_')) {return progression.routeCompletions.short30.length * 0.12;}
     return 0;
   })();
   bonus += Math.min(0.2, completionBonus); // Max 20% bonus
@@ -100,10 +100,10 @@ export function shouldDiscoverArtifact(
   randomValue: number = Math.random()
 ): boolean {
   // Don't rediscover artifacts
-  if (progression.artifacts.has(artifactId)) return false;
+  if (progression.artifacts.has(artifactId)) {return false;}
   
   const baseChance = getDiscoveryChances(routeId)[artifactId] || 0;
-  if (baseChance === 0) return false;
+  if (baseChance === 0) {return false;}
   
   const bonus = calculateDiscoveryBonus(progression, routeId);
   const finalChance = Math.min(95, baseChance * bonus); // Cap at 95%
@@ -113,10 +113,10 @@ export function shouldDiscoverArtifact(
 
 export function getRouteExperienceMultiplier(routeId: string): number {
   // Different routes provide different experience rates
-  if (routeId === 'demo') return 1.5; // Bonus for new players
-  if (routeId === 'full') return 1.0; // Standard rate
-  if (routeId.startsWith('short10_')) return 1.2; // Slight bonus for focused play
-  if (routeId.startsWith('short30_')) return 1.0; // Standard rate
+  if (routeId === 'demo') {return 1.5;} // Bonus for new players
+  if (routeId === 'full') {return 1.0;} // Standard rate
+  if (routeId.startsWith('short10_')) {return 1.2;} // Slight bonus for focused play
+  if (routeId.startsWith('short30_')) {return 1.0;} // Standard rate
   return 1.0;
 }
 
@@ -189,11 +189,11 @@ export function recommendNextRoute(progression: QuantumProgression): {
 }
 
 export function formatQuantumLevel(level: number): string {
-  if (level === 0) return 'Quantum Initiate';
-  if (level < 5) return 'Quantum Apprentice';
-  if (level < 10) return 'Quantum Adept';
-  if (level < 15) return 'Quantum Expert';
-  if (level < 20) return 'Quantum Master';
+  if (level === 0) {return 'Quantum Initiate';}
+  if (level < 5) {return 'Quantum Apprentice';}
+  if (level < 10) {return 'Quantum Adept';}
+  if (level < 15) {return 'Quantum Expert';}
+  if (level < 20) {return 'Quantum Master';}
   return 'Quantum Ascendant';
 }
 

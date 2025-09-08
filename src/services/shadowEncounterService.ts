@@ -63,7 +63,7 @@ class ShadowEncounterService {
   }
 
   private startBackgroundProcesses(): void {
-    if (!this.config.enabled) return;
+    if (!this.config.enabled) {return;}
 
     // Spawn timer - check for new shadow spawns
     this.spawnTimer = window.setInterval(() => {
@@ -78,10 +78,10 @@ class ShadowEncounterService {
 
   private checkSpawnConditions(): void {
     const currentRoute = this.getCurrentRoute();
-    if (!currentRoute) return;
+    if (!currentRoute) {return;}
 
     const routeConfig = ROUTE_SHADOW_CONFIGS.find(config => config.routeId === currentRoute);
-    if (!routeConfig) return;
+    if (!routeConfig) {return;}
 
     const spawnChance = this.calculateSpawnChance(routeConfig);
     if (Math.random() < spawnChance) {
@@ -117,10 +117,10 @@ class ShadowEncounterService {
 
   private attemptSpawn(routeId: RouteId, routeConfig: RouteSpecificShadowConfig): void {
     const eligibleEntities = this.getEligibleEntities(routeId, routeConfig);
-    if (eligibleEntities.length === 0) return;
+    if (eligibleEntities.length === 0) {return;}
 
     const selectedEntity = this.selectEntityToSpawn(eligibleEntities);
-    if (!selectedEntity) return;
+    if (!selectedEntity) {return;}
 
     this.spawnEntity(selectedEntity);
   }
@@ -150,7 +150,7 @@ class ShadowEncounterService {
         const hasRequiredArtifacts = entity.spawnConditions.artifactPresence.some(artifactId =>
           quantumProgression.artifacts.has(artifactId)
         );
-        if (!hasRequiredArtifacts) return false;
+        if (!hasRequiredArtifacts) {return false;}
       }
 
       return true;
@@ -158,7 +158,7 @@ class ShadowEncounterService {
   }
 
   private selectEntityToSpawn(eligibleEntities: ShadowEntity[]): ShadowEntity | null {
-    if (eligibleEntities.length === 0) return null;
+    if (eligibleEntities.length === 0) {return null;}
 
     // Weight selection by player fear level and quantum progression
     const quantumLevel = this.getQuantumProgression().quantumLevel;
@@ -277,11 +277,11 @@ class ShadowEncounterService {
     artifactIds: string[] = []
   ): ShadowInteraction | null {
     const entity = this.shadowState.activeEntities.get(entityId);
-    if (!entity) return null;
+    if (!entity) {return null;}
 
     const encounter = Array.from(this.shadowState.encounterState.activeEncounters.values())
       .find(enc => enc.entityId === entityId);
-    if (!encounter) return null;
+    if (!encounter) {return null;}
 
     const interaction = this.processInteraction(entity, interactionType, artifactIds);
     
@@ -412,7 +412,7 @@ class ShadowEncounterService {
   }
 
   private calculateArtifactEffectiveness(entity: ShadowEntity, artifactIds: string[]): number {
-    if (artifactIds.length === 0) return 0;
+    if (artifactIds.length === 0) {return 0;}
 
     let totalEffectiveness = 0;
     
@@ -449,15 +449,15 @@ class ShadowEncounterService {
 
   private getEntityMoodDescription(entity: ShadowEntity): string {
     const manifestation = entity.stats.manifestation;
-    if (manifestation < 30) return 'barely visible';
-    if (manifestation < 60) return 'partially solid';
-    if (manifestation < 90) return 'clearly defined';
+    if (manifestation < 30) {return 'barely visible';}
+    if (manifestation < 60) {return 'partially solid';}
+    if (manifestation < 90) {return 'clearly defined';}
     return 'fully manifested';
   }
 
   private endEncounter(encounterId: string, outcome: 'success' | 'failure' | 'escape'): void {
     const encounter = this.shadowState.encounterState.activeEncounters.get(encounterId);
-    if (!encounter) return;
+    if (!encounter) {return;}
 
     encounter.outcome = outcome;
     encounter.duration = Date.now() - encounter.startTime;
@@ -503,7 +503,7 @@ class ShadowEncounterService {
 
   private updateAdaptiveDifficulty(): void {
     const recentEncounters = this.shadowState.encounterState.encounterHistory.slice(-10);
-    if (recentEncounters.length < 3) return;
+    if (recentEncounters.length < 3) {return;}
 
     const successRate = recentEncounters.filter(enc => enc.outcome === 'success').length / recentEncounters.length;
     this.shadowState.adaptiveDifficulty.successRate = successRate;

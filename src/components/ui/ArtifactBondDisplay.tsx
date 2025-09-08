@@ -24,10 +24,10 @@ const ArtifactBondDisplay: React.FC<ArtifactBondDisplayProps> = ({
   const [showNoteInput, setShowNoteInput] = useState(false);
 
   const getBondLevelColor = (level: number) => {
-    if (level >= 80) return 'text-purple-400 bg-purple-900';
-    if (level >= 60) return 'text-blue-400 bg-blue-900';
-    if (level >= 40) return 'text-green-400 bg-green-900';
-    if (level >= 20) return 'text-yellow-400 bg-yellow-900';
+    if (level >= 80) {return 'text-purple-400 bg-purple-900';}
+    if (level >= 60) {return 'text-blue-400 bg-blue-900';}
+    if (level >= 40) {return 'text-green-400 bg-green-900';}
+    if (level >= 20) {return 'text-yellow-400 bg-yellow-900';}
     return 'text-gray-400 bg-gray-900';
   };
 
@@ -67,8 +67,8 @@ const ArtifactBondDisplay: React.FC<ArtifactBondDisplayProps> = ({
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     
-    if (days > 0) return `${days}d ${hours}h ago`;
-    if (hours > 0) return `${hours}h ago`;
+    if (days > 0) {return `${days}d ${hours}h ago`;}
+    if (hours > 0) {return `${hours}h ago`;}
     return 'Recently';
   };
 

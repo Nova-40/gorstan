@@ -376,16 +376,16 @@ export function calculateSessionTime(state: GameState): number {
 export function validateGameState(state: Partial<GameState>): boolean {
   try {
     
-    if (typeof state.playerName !== 'string') return false;
-    if (typeof state.currentRoom !== 'string') return false;
-    if (!Array.isArray(state.inventory)) return false;
-    if (typeof state.flags !== 'object' || state.flags === null) return false;
-    if (!Array.isArray(state.visitedRooms)) return false;
+    if (typeof state.playerName !== 'string') {return false;}
+    if (typeof state.currentRoom !== 'string') {return false;}
+    if (!Array.isArray(state.inventory)) {return false;}
+    if (typeof state.flags !== 'object' || state.flags === null) {return false;}
+    if (!Array.isArray(state.visitedRooms)) {return false;}
 
     
-    if (typeof state.health !== 'number' || state.health < 0 || state.health > 100) return false;
-    if (typeof state.score !== 'number' || state.score < 0) return false;
-    if (typeof state.level !== 'number' || state.level < 1) return false;
+    if (typeof state.health !== 'number' || state.health < 0 || state.health > 100) {return false;}
+    if (typeof state.score !== 'number' || state.score < 0) {return false;}
+    if (typeof state.level !== 'number' || state.level < 1) {return false;}
 
     return true;
   } catch (error) {

@@ -215,7 +215,7 @@ export function checkMultipleFlags(
   mode: 'and' | 'or' = 'and'
 ): boolean {
   try {
-    if (flagNames.length === 0) return true;
+    if (flagNames.length === 0) {return true;}
 
     const results = flagNames.map(name => getFlagValue(flags, name, false));
     return mode === 'and'

@@ -38,10 +38,10 @@ class TeleportManagerClass {
   
   // Determine zone from room ID (simplified - should be enhanced)
   private getZoneFromRoom(roomId: string): Zone {
-    if (roomId.includes('glitch')) return 'glitch';
-    if (roomId.includes('nexus') || roomId.includes('control')) return 'nexus';
-    if (roomId.includes('elf') || roomId.includes('fae')) return 'elfhame';
-    if (roomId.includes('maze')) return 'maze';
+    if (roomId.includes('glitch')) {return 'glitch';}
+    if (roomId.includes('nexus') || roomId.includes('control')) {return 'nexus';}
+    if (roomId.includes('elf') || roomId.includes('fae')) {return 'elfhame';}
+    if (roomId.includes('maze')) {return 'maze';}
     return 'default';
   }
   

@@ -83,8 +83,8 @@ export function generateTrapReport(roomMap: Record<string, any>): {
       }
 
       room.traps.forEach((trap: TrapDefinition) => {
-        if (trap.type) trapsByType[trap.type] = (trapsByType[trap.type] || 0) + 1;
-        if (trap.severity) trapsBySeverity[trap.severity] = (trapsBySeverity[trap.severity] || 0) + 1;
+        if (trap.type) {trapsByType[trap.type] = (trapsByType[trap.type] || 0) + 1;}
+        if (trap.severity) {trapsBySeverity[trap.severity] = (trapsBySeverity[trap.severity] || 0) + 1;}
       });
     }
   }

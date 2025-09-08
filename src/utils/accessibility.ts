@@ -155,7 +155,7 @@ export class ScreenReaderSupport {
 
   // Text-to-speech support
   speak(text: string, options: { priority?: 'low' | 'normal' | 'high'; rate?: number; pitch?: number } = {}) {
-    if (!this.speechSynthesis) return;
+    if (!this.speechSynthesis) {return;}
 
     // Cancel current speech if high priority
     if (options.priority === 'high' && this.speechSynthesis.speaking) {
@@ -297,10 +297,10 @@ export class KeyboardNavigationManager {
 
   private getShortcutKey(e: KeyboardEvent): string {
     const modifiers = [];
-    if (e.ctrlKey) modifiers.push('Ctrl');
-    if (e.altKey) modifiers.push('Alt');
-    if (e.shiftKey) modifiers.push('Shift');
-    if (e.metaKey) modifiers.push('Meta');
+    if (e.ctrlKey) {modifiers.push('Ctrl');}
+    if (e.altKey) {modifiers.push('Alt');}
+    if (e.shiftKey) {modifiers.push('Shift');}
+    if (e.metaKey) {modifiers.push('Meta');}
     
     return [...modifiers, e.key].join('+');
   }
@@ -308,7 +308,7 @@ export class KeyboardNavigationManager {
   private handleTabNavigation(e: KeyboardEvent) {
     this.updateFocusableElements();
     
-    if (this.focusableElements.length === 0) return;
+    if (this.focusableElements.length === 0) {return;}
     
     const currentFocus = document.activeElement as HTMLElement;
     const currentIndex = this.focusableElements.indexOf(currentFocus);
@@ -328,12 +328,12 @@ export class KeyboardNavigationManager {
 
   private handleArrowNavigation(e: KeyboardEvent) {
     const gridContainer = (e.target as HTMLElement).closest('[role="grid"], .grid-navigation');
-    if (!gridContainer) return;
+    if (!gridContainer) {return;}
     
     const gridItems = Array.from(gridContainer.querySelectorAll('[tabindex]')) as HTMLElement[];
     const currentIndex = gridItems.indexOf(e.target as HTMLElement);
     
-    if (currentIndex === -1) return;
+    if (currentIndex === -1) {return;}
     
     const columns = parseInt(gridContainer.getAttribute('data-columns') || '1');
     let nextIndex = currentIndex;
@@ -415,7 +415,7 @@ export class KeyboardNavigationManager {
       [tabindex]:not([tabindex="-1"]):not([disabled])
     `) as NodeListOf<HTMLElement>;
     
-    if (focusableElements.length === 0) return;
+    if (focusableElements.length === 0) {return;}
     
   const firstElement = focusableElements[0];
   const lastElement = focusableElements[focusableElements.length - 1];

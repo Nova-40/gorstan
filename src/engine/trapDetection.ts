@@ -59,7 +59,7 @@ export function detectTrapsOnEntry(
     
     for (const trap of room.traps) {
       // Skip already triggered traps
-      if (trap.triggered) continue;
+      if (trap.triggered) {continue;}
       
       // Check if trap can be detected
       const detection = checkTrapDetection(trap, playerTraits, playerItems);
@@ -221,7 +221,7 @@ export function searchForTraps(
   // Check room traps with enhanced detection
   if (room.traps && room.traps.length > 0) {
     for (const trap of room.traps) {
-      if (trap.triggered) continue;
+      if (trap.triggered) {continue;}
       
       // Enhanced detection for active searching
       const detection = checkTrapDetection(trap, playerTraits, playerItems);

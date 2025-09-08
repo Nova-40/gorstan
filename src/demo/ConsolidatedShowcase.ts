@@ -59,7 +59,7 @@ export async function startConsolidatedShowcase(): Promise<void> {
     
     for (let i = 0; i < showcaseSegments.length; i++) {
       const segment = showcaseSegments[i];
-      if (!segment) continue; // Defensive guard
+      if (!segment) {continue;} // Defensive guard
       await runShowcaseSegment(segment, i + 1);
     }
     

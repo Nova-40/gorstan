@@ -59,7 +59,7 @@ export class PostureSystem {
   /** Break actor's posture (trigger stagger) */
   private breakPosture(actor: Actor): void {
     const state = this.postureStates.get(actor.id);
-    if (!state) return;
+    if (!state) {return;}
 
     // Apply stagger status
     statusSystem.applyStatus(actor, StatusEffects.stagger);
@@ -72,14 +72,14 @@ export class PostureSystem {
   /** Update posture regeneration */
   update(actor: Actor, deltaTime: number): void {
     const state = this.postureStates.get(actor.id);
-    if (!state) return;
+    if (!state) {return;}
 
     const currentTime = Date.now();
     const timeSinceLastDamage = currentTime - state.lastDamageTime;
 
     // Only regenerate after grace period
     const gracePeriod = 2000; // 2 seconds
-    if (timeSinceLastDamage < gracePeriod) return;
+    if (timeSinceLastDamage < gracePeriod) {return;}
 
     // Calculate regeneration
     const deltaSeconds = deltaTime / 1000;
@@ -94,7 +94,7 @@ export class PostureSystem {
   /** Get posture percentage */
   getPosturePercentage(actor: Actor): number {
     const state = this.postureStates.get(actor.id);
-    if (!state || state.maximum <= 0) return 1.0;
+    if (!state || state.maximum <= 0) {return 1.0;}
     
     return state.current / state.maximum;
   }
@@ -126,8 +126,8 @@ export class PostureSystem {
     const percentage = this.getPosturePercentage(actor);
     
     // Increased posture damage when already low
-    if (percentage <= 0.2) return 1.5;
-    if (percentage <= 0.5) return 1.2;
+    if (percentage <= 0.2) {return 1.5;}
+    if (percentage <= 0.5) {return 1.2;}
     return 1.0;
   }
 

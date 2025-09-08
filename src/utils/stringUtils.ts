@@ -7,7 +7,7 @@
  * Capitalize first letter of a string
  */
 export function capitalize(str: string): string {
-  if (!str) return str;
+  if (!str) {return str;}
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
@@ -65,7 +65,7 @@ export function toCamelCase(str: string): string {
  * Truncate string to specified length with ellipsis
  */
 export function truncate(str: string, length: number, suffix = '...'): string {
-  if (str.length <= length) return str;
+  if (str.length <= length) {return str;}
   return str.slice(0, length - suffix.length) + suffix;
 }
 
@@ -74,7 +74,7 @@ export function truncate(str: string, length: number, suffix = '...'): string {
  */
 export function truncateWords(str: string, wordCount: number, suffix = '...'): string {
   const words = str.split(' ');
-  if (words.length <= wordCount) return str;
+  if (words.length <= wordCount) {return str;}
   return words.slice(0, wordCount).join(' ') + suffix;
 }
 
@@ -139,9 +139,9 @@ export function generateUUID(): string {
  * Pluralize a word based on count
  */
 export function pluralize(word: string, count: number, pluralForm?: string): string {
-  if (count === 1) return word;
+  if (count === 1) {return word;}
   
-  if (pluralForm) return pluralForm;
+  if (pluralForm) {return pluralForm;}
   
   // Simple pluralization rules
   if (word.endsWith('s') || word.endsWith('sh') || word.endsWith('ch') || word.endsWith('x') || word.endsWith('z')) {
@@ -164,7 +164,7 @@ export function pluralize(word: string, count: number, pluralForm?: string): str
  * Format bytes as human readable string
  */
 export function formatBytes(bytes: number, decimals = 2): string {
-  if (bytes === 0) return '0 Bytes';
+  if (bytes === 0) {return '0 Bytes';}
   
   const k = 1024;
   const dm = decimals < 0 ? 0 : decimals;
@@ -196,7 +196,7 @@ export function parseTemplate(template: string, variables: Record<string, unknow
  */
 export function extractTemplateVariables(template: string): string[] {
   const matches = template.match(/\{\{(\w+)\}\}/g);
-  if (!matches) return [];
+  if (!matches) {return [];}
   
   return matches.map(match => match.replace(/[{}]/g, '')).filter((value, index, self) => self.indexOf(value) === index);
 }
@@ -238,7 +238,7 @@ export function similarity(str1: string, str2: string): number {
   const longer = str1.length > str2.length ? str1 : str2;
   const shorter = str1.length > str2.length ? str2 : str1;
   
-  if (longer.length === 0) return 1.0;
+  if (longer.length === 0) {return 1.0;}
   
   const editDistance = levenshteinDistance(longer, shorter);
   return (longer.length - editDistance) / longer.length;
@@ -248,8 +248,8 @@ function levenshteinDistance(str1: string, str2: string): number {
   const rows = str2.length + 1;
   const cols = str1.length + 1;
   const matrix: number[][] = Array.from({ length: rows }, () => Array<number>(cols).fill(0));
-  for (let i = 0; i < rows; i++) matrix[i]![0] = i;
-  for (let j = 0; j < cols; j++) matrix[0]![j] = j;
+  for (let i = 0; i < rows; i++) {matrix[i]![0] = i;}
+  for (let j = 0; j < cols; j++) {matrix[0]![j] = j;}
   for (let i = 1; i < rows; i++) {
     for (let j = 1; j < cols; j++) {
       if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
@@ -269,7 +269,7 @@ function levenshteinDistance(str1: string, str2: string): number {
  * Find best matching string from array
  */
 export function findBestMatch(target: string, candidates: string[]): { match: string; score: number } | null {
-  if (candidates.length === 0) return null;
+  if (candidates.length === 0) {return null;}
   const first = candidates[0]!;
   let bestMatch: string = first;
   let bestScore = similarity(target.toLowerCase(), first.toLowerCase());
@@ -305,7 +305,7 @@ export function removeDiacritics(str: string): string {
  * Highlight search terms in text
  */
 export function highlightText(text: string, searchTerm: string, className = 'highlight'): string {
-  if (!searchTerm) return text;
+  if (!searchTerm) {return text;}
   
   const regex = new RegExp(`(${escapeRegex(searchTerm)})`, 'gi');
   return text.replace(regex, `<span class="${className}">$1</span>`);

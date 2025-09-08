@@ -54,7 +54,7 @@ export function conversationsReducer(state: LocalGameState, action: any): LocalG
     case "MUTE_CONVERSATION": {
       const { threadId, muted } = action;
       const thread = state.conversations[threadId];
-      if (!thread) return state;
+      if (!thread) {return state;}
       
       return {
         ...state,

@@ -57,7 +57,7 @@ const Notification: React.FC<NotificationProps> = ({ notification, onDismiss }) 
   };
 
   const getIcon = () => {
-    if (notification.icon) return notification.icon;
+    if (notification.icon) {return notification.icon;}
     
     switch (notification.type) {
       case 'achievement': return <Trophy className="w-5 h-5" />;
@@ -72,7 +72,7 @@ const Notification: React.FC<NotificationProps> = ({ notification, onDismiss }) 
   };
 
   const getColorClasses = () => {
-    if (notification.color) return notification.color;
+    if (notification.color) {return notification.color;}
     
     switch (notification.type) {
       case 'achievement': return 'border-yellow-500 bg-yellow-900/20 text-yellow-300';

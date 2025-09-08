@@ -288,7 +288,7 @@ export class NPCPresenceProvider {
    */
   isRoomFull(roomId: string): boolean {
     const capacity = this.roomCapacities.get(roomId);
-    if (!capacity) return false;
+    if (!capacity) {return false;}
 
     const occupancy = this.roomOccupancy.get(roomId) || new Set();
     return occupancy.size >= capacity;

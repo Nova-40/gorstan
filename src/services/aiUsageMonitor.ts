@@ -312,7 +312,7 @@ export class AIUsageMonitor {
 
   private calculateAverageResponseTime(): number {
     const recentEvents = this.events.slice(-20);
-    if (recentEvents.length < 2) return 0;
+    if (recentEvents.length < 2) {return 0;}
     
     let totalTime = 0;
     for (let i = 1; i < recentEvents.length; i++) {

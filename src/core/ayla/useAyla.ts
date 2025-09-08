@@ -11,7 +11,7 @@ export function useAyla(client: IAylaClient){
     setTyping(true); setError(undefined);
     abortRef.current.aborted = false;
     try {
-      await client.stream(req, { onToken: (t)=>{ if(!abortRef.current.aborted) onToken(t); }, onDone: ()=> setTyping(false), onError: (e)=> setError(e?.message || 'Ayla error') });
+      await client.stream(req, { onToken: (t)=>{ if(!abortRef.current.aborted) {onToken(t);} }, onDone: ()=> setTyping(false), onError: (e)=> setError(e?.message || 'Ayla error') });
     } catch {
       setTyping(false);
     }

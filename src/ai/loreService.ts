@@ -155,7 +155,7 @@ export class LoreService {
       // Apply filters first
       if (options.tags && options.tags.length > 0) {
         const hasMatchingTag = options.tags.some(tag => entry.tags.includes(tag));
-        if (!hasMatchingTag) continue;
+        if (!hasMatchingTag) {continue;}
       }
       
       if (options.type && entry.type !== options.type) {
@@ -165,7 +165,7 @@ export class LoreService {
       if (options.related) {
         const isRelated = entry.related?.includes(options.related) || 
                          this.relationIndex.get(entry.id)?.has(options.related);
-        if (!isRelated) continue;
+        if (!isRelated) {continue;}
       }
       
       // Score based on content matches
@@ -176,17 +176,17 @@ export class LoreService {
       for (const term of searchTerms) {
         if (titleWords.includes(term)) {
           relevanceScore += 10;
-          if (!matchedFields.includes('title')) matchedFields.push('title');
+          if (!matchedFields.includes('title')) {matchedFields.push('title');}
         }
         
         if (tagWords.includes(term)) {
           relevanceScore += 5;
-          if (!matchedFields.includes('tags')) matchedFields.push('tags');
+          if (!matchedFields.includes('tags')) {matchedFields.push('tags');}
         }
         
         if (contentWords.includes(term)) {
           relevanceScore += 1;
-          if (!matchedFields.includes('content')) matchedFields.push('content');
+          if (!matchedFields.includes('content')) {matchedFields.push('content');}
         }
       }
       
@@ -215,7 +215,7 @@ export class LoreService {
    */
   getByTag(tag: string): LoreEntry[] {
     const entryIds = this.tagIndex.get(tag);
-    if (!entryIds) return [];
+    if (!entryIds) {return [];}
     
     return Array.from(entryIds)
       .map(id => this.entries.get(id))
@@ -227,7 +227,7 @@ export class LoreService {
    */
   getByType(type: string): LoreEntry[] {
     const entryIds = this.typeIndex.get(type);
-    if (!entryIds) return [];
+    if (!entryIds) {return [];}
     
     return Array.from(entryIds)
       .map(id => this.entries.get(id))
@@ -239,7 +239,7 @@ export class LoreService {
    */
   getRelated(entryId: string, limit: number = 5): LoreEntry[] {
     const entry = this.entries.get(entryId);
-    if (!entry) return [];
+    if (!entry) {return [];}
     
     const relatedIds = new Set<string>();
     
@@ -295,7 +295,7 @@ export class LoreService {
    */
   getRandomEntry(): LoreEntry | undefined {
     const entries = Array.from(this.entries.values());
-    if (entries.length === 0) return undefined;
+    if (entries.length === 0) {return undefined;}
     
     const randomIndex = Math.floor(Math.random() * entries.length);
     return entries[randomIndex];

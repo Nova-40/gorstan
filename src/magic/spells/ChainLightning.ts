@@ -24,7 +24,7 @@ export const ChainLightning: Spell = {
   description: 'Lightning that arcs between enemies, dealing more damage when targets are wet.',
   
   execute: (caster: Actor, target?: Actor) => {
-    if (!target) return;
+    if (!target) {return;}
 
     // Track targets hit to prevent infinite loops
     const hitTargets = new Set<string>();

@@ -34,7 +34,7 @@ export function useNPCConversation(npcId: string) {
     message: string,
     context?: { zone?: string; sessionId?: string }
   ) => {
-    if (!message.trim()) return;
+    if (!message.trim()) {return;}
 
     setIsLoading(true);
     setError(null);
@@ -170,7 +170,7 @@ export function useGameServices() {
   // Initialize services on mount
   useEffect(() => {
     const initialize = async () => {
-      if (initializeRef.current) return;
+      if (initializeRef.current) {return;}
       initializeRef.current = true;
 
       try {
@@ -231,8 +231,8 @@ export function useZoneNPC(npcId: string, zone: string) {
   const sendZoneMessage = useCallback((message: string, sessionId?: string) => {
     // Build options without setting undefined explicitly to satisfy exactOptionalPropertyTypes
     const opts: any = {};
-    if (zone) opts.zone = zone;
-    if (sessionId !== undefined) opts.sessionId = sessionId;
+    if (zone) {opts.zone = zone;}
+    if (sessionId !== undefined) {opts.sessionId = sessionId;}
     return conversation.sendMessage(message, opts as { zone?: string; sessionId?: string });
   }, [conversation.sendMessage, zone]);
 
@@ -252,7 +252,7 @@ export function useContextualLore(zone?: string, tags?: string[]) {
 
   useEffect(() => {
     const loadContextualLore = async () => {
-      if (!zone && !tags?.length) return;
+      if (!zone && !tags?.length) {return;}
 
       try {
         let entries: LoreEntry[] = [];

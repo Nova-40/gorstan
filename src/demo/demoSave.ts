@@ -45,7 +45,7 @@ export function seedDemoSave(): DemoSaveData {
  * Initialize demo save if none exists
  */
 export function initializeDemoSave(): void {
-  if (!IS_DEMO) return;
+  if (!IS_DEMO) {return;}
 
   const existingSave = Storage.getItem('demo_save');
   if (!existingSave) {
@@ -72,7 +72,7 @@ export function getDemoSettings() {
  * Apply demo-specific balance adjustments
  */
 export function applyDemoBalance() {
-  if (!IS_DEMO) return;
+  if (!IS_DEMO) {return;}
 
   // Ensure settings are demo-appropriate
   const settings = getDemoSettings();

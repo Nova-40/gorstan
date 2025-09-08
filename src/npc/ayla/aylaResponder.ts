@@ -48,7 +48,7 @@ export function getEnhancedAylaResponse(input: string, state: GameState): string
 function getLegacyAylaResponse(input: string, state: GameState): string {
   // First check for edge cases from existing system
   const edgeResponse = getAylaEdgeCaseResponse(input, state);
-  if (edgeResponse) return edgeResponse;
+  if (edgeResponse) {return edgeResponse;}
 
   // Check for book-related queries
   const bookResponse = handleBookQuery(input);
@@ -119,7 +119,7 @@ function handleBookQuery(input: string): string | null {
  */
 function maybeAddCTA(): string | null {
   const ctaResult = bookStoreService.shouldShowCTA();
-  if (!ctaResult) return null;
+  if (!ctaResult) {return null;}
 
   const { cta } = ctaResult;
   

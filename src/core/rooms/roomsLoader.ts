@@ -28,8 +28,8 @@ function normalizeExits(exits: RawRoom['exits']): RoomExit[] {
 }
 
 function normalizeEnterText(val: any): string[] {
-  if (Array.isArray(val)) return val.map(v => String(v));
-  if (val == null) return [];
+  if (Array.isArray(val)) {return val.map(v => String(v));}
+  if (val == null) {return [];}
   return [String(val)];
 }
 

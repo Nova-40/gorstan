@@ -6,7 +6,7 @@ interface DemoRibbonProps {
 }
 
 export default function DemoRibbon({ className = '' }: DemoRibbonProps) {
-  if (!IS_DEMO) return null;
+  if (!IS_DEMO) {return null;}
 
   const ribbonStyle: React.CSSProperties = {
     position: 'fixed',

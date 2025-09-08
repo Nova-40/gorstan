@@ -31,7 +31,7 @@ import { conversationsReducer } from '../reducers/conversations';
 
 // --- Util: Add Room Description To History ---
 function addRoomDescriptionToHistory(history: GameMessage[], room: Room | null, roomId: string): GameMessage[] {
-  if (!room || !room.description) return history;
+  if (!room || !room.description) {return history;}
   const newHistory = [...history];
 
   if (room.title && room.title !== roomId) {
@@ -185,7 +185,7 @@ export const handleBlueButtonPress = (state: LocalGameState): LocalGameState => 
 export const gameStateReducer = (state: LocalGameState, action: GameAction): LocalGameState => {
   // Helper to append messages with a cap to prevent unbounded memory / perf degradation
   const appendHistory = (history: GameMessage[], additions: GameMessage | GameMessage[] | undefined, cap = 400): GameMessage[] => {
-    if (!additions) return history;
+    if (!additions) {return history;}
     const addArray = Array.isArray(additions) ? additions : [additions];
     const combined = [...history, ...addArray];
     // Keep only the last `cap` entries (bias toward recent activity)
@@ -225,7 +225,7 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
     // --- Inventory ---
     case 'ADD_TO_INVENTORY': {
       const item = action.payload as string;
-      if (state.player.inventory.includes(item)) return state;
+      if (state.player.inventory.includes(item)) {return state;}
       
       // Trigger item collection notification
       const event = new CustomEvent('gorstan-notification', {
@@ -565,7 +565,7 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
     case 'UNLOCK_ACHIEVEMENT': {
       const id = action.payload as string;
       const current = state.metadata.achievements || [];
-      if (current.includes(id)) return state;
+      if (current.includes(id)) {return state;}
       return {
         ...state,
         metadata: {
@@ -621,7 +621,7 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
         };
 
         const scoreEvent = scoreEvents[flag];
-        let scoreUpdates: GameMessage[] = [];
+        const scoreUpdates: GameMessage[] = [];
         
         if (scoreEvent) {
           const eventKey = value ? scoreEvent.positive : scoreEvent.negative;
@@ -645,7 +645,7 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
         };
       } else if ('payload' in action) {
         const flag = action.payload as string | { key: string; value: boolean };
-        let newFlags = { ...state.flags };
+        const newFlags = { ...state.flags };
         if (typeof flag === 'string') {
           newFlags[flag] = true;
         } else if (typeof flag === 'object' && flag && (flag as any).key) {
@@ -852,7 +852,7 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
     case 'REMOVE_ITEM_FROM_ROOM': {
       const { roomId, item } = action.payload as { roomId: string; item: string };
       const room = state.roomMap?.[roomId];
-      if (!room || !room.items) return state;
+      if (!room || !room.items) {return state;}
       
       // Ensure we maintain the original items type structure
       const originalItems = room.items;

@@ -25,7 +25,7 @@ let currentAudio: HTMLAudioElement | null = null;
 export function playAmbientForZone(zone: string): void {
 // Variable declaration
   const audioFile = `/audio/ambient/${zone}.mp3`;
-  if (currentAudio && currentAudio.src.includes(zone)) return;
+  if (currentAudio && currentAudio.src.includes(zone)) {return;}
 
   stopAmbient();
 
@@ -52,7 +52,7 @@ export function playAmbientForZone(zone: string): void {
 
 // --- Function: stopAmbient ---
 export function stopAmbient(): void {
-  if (!currentAudio) return;
+  if (!currentAudio) {return;}
 // Variable declaration
   const fadeOut = setInterval(() => {
     if (currentAudio!.volume > 0.05) {

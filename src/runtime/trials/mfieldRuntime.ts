@@ -95,7 +95,7 @@ class MushroomFieldRuntime {
 
   // Remote trip - player creates false scent trail
   async remoteTrip(context: EffectContext, targetRoom: string): Promise<void> {
-    if (!targetRoom) return;
+    if (!targetRoom) {return;}
 
     // Check if player has scent totem
     const hasTotem = context.items.includes('scent_totem') || 

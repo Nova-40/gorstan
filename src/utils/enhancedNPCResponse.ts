@@ -298,13 +298,13 @@ function calculateRelationshipChange(topic: string, npcId: string): number {
  */
 function detectMoodFromText(text: string): string {
   const lowerText = text.toLowerCase();
-  if (lowerText.includes('!') || lowerText.includes('excited')) return 'excited';
-  if (lowerText.includes('*sigh') || lowerText.includes('unfortunately')) return 'sad';
-  if (lowerText.includes('*clank') || lowerText.includes('*whirr')) return 'mechanical';
-  if (lowerText.includes('careful') || lowerText.includes('warning')) return 'concerned';
-  if (lowerText.includes('*laugh') || lowerText.includes('amusing')) return 'amused';
-  if (lowerText.includes('formal') || lowerText.includes('procedure')) return 'professional';
-  if (lowerText.includes('*gaze') || lowerText.includes('thoughtful')) return 'mysterious';
+  if (lowerText.includes('!') || lowerText.includes('excited')) {return 'excited';}
+  if (lowerText.includes('*sigh') || lowerText.includes('unfortunately')) {return 'sad';}
+  if (lowerText.includes('*clank') || lowerText.includes('*whirr')) {return 'mechanical';}
+  if (lowerText.includes('careful') || lowerText.includes('warning')) {return 'concerned';}
+  if (lowerText.includes('*laugh') || lowerText.includes('amusing')) {return 'amused';}
+  if (lowerText.includes('formal') || lowerText.includes('procedure')) {return 'professional';}
+  if (lowerText.includes('*gaze') || lowerText.includes('thoughtful')) {return 'mysterious';}
   return 'neutral';
 }
 
@@ -313,11 +313,11 @@ function detectMoodFromText(text: string): string {
  */
 function calculateAIRelationshipChange(response: string): number {
   const lowerResponse = response.toLowerCase();
-  if (lowerResponse.includes('thank') || lowerResponse.includes('appreciate')) return 2;
-  if (lowerResponse.includes('help') || lowerResponse.includes('guide')) return 1;
-  if (lowerResponse.includes('welcome') || lowerResponse.includes('glad')) return 1;
-  if (lowerResponse.includes('annoying') || lowerResponse.includes('bother')) return -1;
-  if (lowerResponse.includes('dangerous') || lowerResponse.includes('threat')) return -2;
+  if (lowerResponse.includes('thank') || lowerResponse.includes('appreciate')) {return 2;}
+  if (lowerResponse.includes('help') || lowerResponse.includes('guide')) {return 1;}
+  if (lowerResponse.includes('welcome') || lowerResponse.includes('glad')) {return 1;}
+  if (lowerResponse.includes('annoying') || lowerResponse.includes('bother')) {return -1;}
+  if (lowerResponse.includes('dangerous') || lowerResponse.includes('threat')) {return -2;}
   return 0;
 }
 
@@ -328,13 +328,13 @@ function extractTopicsFromResponse(response: string): string[] {
   const topics = [];
   const lowerResponse = response.toLowerCase();
   
-  if (lowerResponse.includes('puzzle') || lowerResponse.includes('solve')) topics.push('puzzles');
-  if (lowerResponse.includes('room') || lowerResponse.includes('door')) topics.push('navigation');
-  if (lowerResponse.includes('item') || lowerResponse.includes('inventory')) topics.push('items');
-  if (lowerResponse.includes('story') || lowerResponse.includes('past')) topics.push('lore');
-  if (lowerResponse.includes('help') || lowerResponse.includes('assist')) topics.push('help');
-  if (lowerResponse.includes('procedure') || lowerResponse.includes('form')) topics.push('bureaucracy');
-  if (lowerResponse.includes('power') || lowerResponse.includes('magic')) topics.push('magic');
+  if (lowerResponse.includes('puzzle') || lowerResponse.includes('solve')) {topics.push('puzzles');}
+  if (lowerResponse.includes('room') || lowerResponse.includes('door')) {topics.push('navigation');}
+  if (lowerResponse.includes('item') || lowerResponse.includes('inventory')) {topics.push('items');}
+  if (lowerResponse.includes('story') || lowerResponse.includes('past')) {topics.push('lore');}
+  if (lowerResponse.includes('help') || lowerResponse.includes('assist')) {topics.push('help');}
+  if (lowerResponse.includes('procedure') || lowerResponse.includes('form')) {topics.push('bureaucracy');}
+  if (lowerResponse.includes('power') || lowerResponse.includes('magic')) {topics.push('magic');}
   
   return topics;
 }

@@ -92,7 +92,7 @@ export class RandomRocks {
 
   private updateRocks(): void {
     this.rocks.forEach(rock => {
-      if (!rock.active) return;
+      if (!rock.active) {return;}
 
       // Update position
       rock.x += rock.vx;

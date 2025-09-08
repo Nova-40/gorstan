@@ -37,7 +37,7 @@ let wanderLoggingEnabled = true;
 
 function throttledLog(tag: string, ...args: any[]) {
   const now = Date.now();
-  if (!wanderLoggingEnabled) return;
+  if (!wanderLoggingEnabled) {return;}
   if (now - lastRoomEntryLog > LOG_INTERVAL) {
     if (suppressedRoomEntryLogs > 0) {
       // Emit one summary line for suppressed logs
@@ -46,7 +46,7 @@ function throttledLog(tag: string, ...args: any[]) {
     }
     const line = `[${tag}] ${args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' ')}`;
     wanderLogBuffer.push(line);
-    if (wanderLogBuffer.length > MAX_WANDER_LOGS) wanderLogBuffer.splice(0, wanderLogBuffer.length - MAX_WANDER_LOGS);
+    if (wanderLogBuffer.length > MAX_WANDER_LOGS) {wanderLogBuffer.splice(0, wanderLogBuffer.length - MAX_WANDER_LOGS);}
     console.log(line);
     lastRoomEntryLog = now;
   } else {
@@ -55,9 +55,9 @@ function throttledLog(tag: string, ...args: any[]) {
 }
 
 // Debug helpers (not part of public game API)
-// eslint-disable-next-line @typescript-eslint/naming-convention
+ 
 export function __getWanderLogBuffer() { return [...wanderLogBuffer]; }
-// eslint-disable-next-line @typescript-eslint/naming-convention
+ 
 export function __setWanderLoggingEnabled(v: boolean) { wanderLoggingEnabled = v; }
 
 export function handleRoomEntryForWanderingNPCs(
@@ -109,14 +109,14 @@ export function wanderNPC(npcId: string, state: LocalGameState) {
   const flags = state.flags;
   const roomMap = state.roomMap || {};
 
-  if (!npc || !npc.canWander || npc.questOnly) return;
+  if (!npc || !npc.canWander || npc.questOnly) {return;}
 
   const now = Date.now();
-  if (npc.lastMoved && now - npc.lastMoved < 15000) return; // 15 second cooldown
+  if (npc.lastMoved && now - npc.lastMoved < 15000) {return;} // 15 second cooldown
 
   // Enhanced room filtering with adjacency logic
   const currentRoom = npc.currentRoom ? roomMap[npc.currentRoom] : null;
-  if (!currentRoom) return;
+  if (!currentRoom) {return;}
 
   // Get adjacent rooms from current room's exits for realistic movement
   const adjacentRoomIds = Object.values(currentRoom.exits || {}).filter(Boolean) as string[];
@@ -125,7 +125,7 @@ export function wanderNPC(npcId: string, state: LocalGameState) {
   let validRooms = adjacentRoomIds
     .map(id => roomMap[id])
     .filter((room): room is Room => {
-      if (!room || typeof room !== 'object') return false;
+      if (!room || typeof room !== 'object') {return false;}
       return !!(
         room.id !== npc.currentRoom &&
         !room.id.includes('trap') &&
@@ -140,7 +140,7 @@ export function wanderNPC(npcId: string, state: LocalGameState) {
   if (validRooms.length === 0) {
     const biasZones: string[] = npc.biasZones || [];
     validRooms = Object.values(roomMap).filter((room): room is Room => {
-      if (!room || typeof room !== 'object') return false;
+      if (!room || typeof room !== 'object') {return false;}
       return !!(
         room.id !== npc.currentRoom &&
         !room.id.includes('trap') &&
@@ -162,7 +162,7 @@ export function wanderNPC(npcId: string, state: LocalGameState) {
     validRooms = (roll < 0.7 && biasRooms.length > 0) ? biasRooms : neutralRooms;
   }
 
-  if (!validRooms.length) return;
+  if (!validRooms.length) {return;}
 
   // Enhanced room selection with collision detection
   let attemptCount = 0;
@@ -182,7 +182,7 @@ export function wanderNPC(npcId: string, state: LocalGameState) {
         validRooms = validRooms.filter(r => r.id !== newRoom.id);
         attemptCount++;
         
-        if (validRooms.length === 0) break;
+        if (validRooms.length === 0) {break;}
         continue;
       }
       

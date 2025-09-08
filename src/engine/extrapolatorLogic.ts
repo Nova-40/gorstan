@@ -29,7 +29,7 @@ interface GameState {
 
 export function canUseExtrapolator(state: GameState): boolean {
   const { flags } = state;
-  return Boolean(flags.schrCoinSeen) && !Boolean(flags.schrCoinPicked);
+  return Boolean(flags.schrCoinSeen) && !flags.schrCoinPicked;
 }
 
 export function runExtrapolator(state: GameState): string {

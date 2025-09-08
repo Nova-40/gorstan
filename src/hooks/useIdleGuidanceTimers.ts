@@ -30,13 +30,13 @@ export function useIdleGuidanceTimers(cfg: IdleGuidanceConfig): IdleGuidanceStat
   const guidanceIntervalRef = useRef<number | null>(null);
 
   const frame = useCallback((t: number) => {
-    if (demoStartRef.current == null) demoStartRef.current = t;
+    if (demoStartRef.current == null) {demoStartRef.current = t;}
     const elapsed = t - demoStartRef.current;
     const remaining = Math.max(0, demoTotalMs - elapsed);
     setDemoSecondsRemaining(remaining / 1000);
     setShowDemoCountdown(remaining < demoTotalMs && remaining > 0);
     if (remaining <= 0) {
-      if (onDemoTrigger) onDemoTrigger();
+      if (onDemoTrigger) {onDemoTrigger();}
     } else {
       rafRef.current = requestAnimationFrame(frame);
     }
@@ -45,24 +45,24 @@ export function useIdleGuidanceTimers(cfg: IdleGuidanceConfig): IdleGuidanceStat
   const resetAll = useCallback(() => {
     // Demo
     demoStartRef.current = null;
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    if (rafRef.current) {cancelAnimationFrame(rafRef.current);}
     rafRef.current = requestAnimationFrame(frame);
     setDemoSecondsRemaining(demoTotalMs / 1000);
     setShowDemoCountdown(false);
     // Guidance
-    if (guidanceIntervalRef.current) clearInterval(guidanceIntervalRef.current);
+    if (guidanceIntervalRef.current) {clearInterval(guidanceIntervalRef.current);}
     guidanceStartRef.current = Date.now();
     setGuidanceProgress(0);
     setShowGuidanceModal(false);
     guidanceIntervalRef.current = window.setInterval(() => {
-      if (!guidanceStartRef.current) return;
+      if (!guidanceStartRef.current) {return;}
       const elapsed = Date.now() - guidanceStartRef.current;
       const p = Math.min(1, elapsed / guidanceTotalMs);
       setGuidanceProgress(p);
       if (p >= 1) {
         clearInterval(guidanceIntervalRef.current!);
         setShowGuidanceModal(true);
-        if (onGuidanceTrigger) onGuidanceTrigger();
+        if (onGuidanceTrigger) {onGuidanceTrigger();}
       }
     }, 150);
   }, [demoTotalMs, frame, guidanceTotalMs, onGuidanceTrigger]);
@@ -80,8 +80,8 @@ export function useIdleGuidanceTimers(cfg: IdleGuidanceConfig): IdleGuidanceStat
     events.forEach(e => document.addEventListener(e, handler, true));
     return () => {
       events.forEach(e => document.removeEventListener(e, handler, true));
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      if (guidanceIntervalRef.current) clearInterval(guidanceIntervalRef.current);
+      if (rafRef.current) {cancelAnimationFrame(rafRef.current);}
+      if (guidanceIntervalRef.current) {clearInterval(guidanceIntervalRef.current);}
     };
   }, [resetAll, dismissGuidance]);
 

@@ -84,7 +84,7 @@ export async function handleNPCConversation(
   const intentResult = classifyIntent(playerMessage, context);
   
   // Generate base response
-  let response = generateNPCReply(npcId, playerMessage, intentResult, context, memory);
+  const response = generateNPCReply(npcId, playerMessage, intentResult, context, memory);
   
   // Apply AI-like conversation features
   const conversationFeatures = applyConversationFeatures(
@@ -180,9 +180,9 @@ function applyConversationFeatures(
  */
 function shouldAddHedging(persona: any, memory: NPCMemoryState, confidence: number): boolean {
   // More hedging for uncertain situations or cautious personalities
-  if (persona.tone.caution > 0.6) return Math.random() < 0.4;
-  if (confidence < 0.7) return Math.random() < 0.3;
-  if (memory.relationshipLevel < 0.2) return Math.random() < 0.2;
+  if (persona.tone.caution > 0.6) {return Math.random() < 0.4;}
+  if (confidence < 0.7) {return Math.random() < 0.3;}
+  if (memory.relationshipLevel < 0.2) {return Math.random() < 0.2;}
   return false;
 }
 
@@ -217,10 +217,10 @@ function addMicroHedging(response: string, persona: any): string {
  */
 function shouldAddCorrection(persona: any, memory: NPCMemoryState): boolean {
   // NPCs with high relationship might be more casual
-  if (memory.relationshipLevel > 0.6) return Math.random() < 0.15;
+  if (memory.relationshipLevel > 0.6) {return Math.random() < 0.15;}
   
   // Ayla is more likely to self-correct (natural speech pattern)
-  if (persona.id === 'ayla') return Math.random() < 0.2;
+  if (persona.id === 'ayla') {return Math.random() < 0.2;}
   
   return Math.random() < 0.1;
 }

@@ -26,7 +26,7 @@ export function getRoomTraps(room: RoomId): Trap[] {
 
 export function enterRoom(room: RoomId) {
   const traps = getRoomTraps(room);
-  if (!traps.length) return { death: false, cause: null as string | null };
+  if (!traps.length) {return { death: false, cause: null as string | null };}
   const lethal = traps.find(t => t.lethal);
   const fallback = traps[0]?.description || 'Unknown trap';
   return { death: !!lethal, cause: lethal?.description ?? fallback };
@@ -36,6 +36,6 @@ import { useEffect } from 'react';
 export function useRoomTraps(room: RoomId, onDeath?: (cause: string) => void) {
   useEffect(() => {
     const r = enterRoom(room);
-    if (r.death && onDeath) onDeath(r.cause || 'A trap was sprung.');
+    if (r.death && onDeath) {onDeath(r.cause || 'A trap was sprung.');}
   }, [room, onDeath]);
 }

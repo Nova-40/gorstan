@@ -24,7 +24,7 @@ import type { Room, RoomItem } from '../types/Room';
  * Extract item IDs from room items (handles both string[] and RoomItem[] formats)
  */
 function extractItemIds(items: RoomItem[] | string[] | undefined): string[] {
-  if (!items) return [];
+  if (!items) {return [];}
   
   return items.map(item => {
     if (typeof item === 'string') {

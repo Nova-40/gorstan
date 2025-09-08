@@ -178,17 +178,17 @@ export function canUnlockTalent(
   progression: ProgressionState
 ): boolean {
   const talent = TALENT_TREE[talentId];
-  if (!talent) return false;
+  if (!talent) {return false;}
   
   // Already unlocked
-  if (progression.unlockedTalents.has(talentId)) return false;
+  if (progression.unlockedTalents.has(talentId)) {return false;}
   
   // Not enough talent points
-  if (progression.talentPoints < talent.cost) return false;
+  if (progression.talentPoints < talent.cost) {return false;}
   
   // Prerequisites not met
   for (const prereq of talent.prerequisites) {
-    if (!progression.unlockedTalents.has(prereq)) return false;
+    if (!progression.unlockedTalents.has(prereq)) {return false;}
   }
   
   return true;

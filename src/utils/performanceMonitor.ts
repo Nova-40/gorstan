@@ -67,7 +67,7 @@ class PerformanceMonitor {
    * Start performance monitoring
    */
   public startMonitoring(): void {
-    if (this.isMonitoring) return;
+    if (this.isMonitoring) {return;}
     
     this.isMonitoring = true;
     console.log('[PerformanceMonitor] Monitoring started');
@@ -95,7 +95,7 @@ class PerformanceMonitor {
    */
   private monitorFrameRate(): void {
     const measureFrameRate = (timestamp: number) => {
-      if (!this.isMonitoring) return;
+      if (!this.isMonitoring) {return;}
       
       if (this.lastFrameTime > 0) {
         const delta = timestamp - this.lastFrameTime;
@@ -125,7 +125,7 @@ class PerformanceMonitor {
    */
   private monitorMemoryUsage(): void {
     const checkMemory = () => {
-      if (!this.isMonitoring) return;
+      if (!this.isMonitoring) {return;}
       
       if ('memory' in performance) {
         const memory = (performance as any).memory;

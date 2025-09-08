@@ -69,11 +69,11 @@ export const ResponsiveProvider: React.FC<ResponsiveProviderProps> = ({ children
   // Get current breakpoint
   const getCurrentBreakpoint = (): Breakpoint => {
     const width = window.innerWidth;
-    if (width >= breakpoints.xxl) return 'xxl';
-    if (width >= breakpoints.xl) return 'xl';
-    if (width >= breakpoints.lg) return 'lg';
-    if (width >= breakpoints.md) return 'md';
-    if (width >= breakpoints.sm) return 'sm';
+    if (width >= breakpoints.xxl) {return 'xxl';}
+    if (width >= breakpoints.xl) {return 'xl';}
+    if (width >= breakpoints.lg) {return 'lg';}
+    if (width >= breakpoints.md) {return 'md';}
+    if (width >= breakpoints.sm) {return 'sm';}
     return 'xs';
   };
 
@@ -201,9 +201,9 @@ export const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
   
   const getCurrentSrc = () => {
     if (sizes) {
-      if (deviceInfo.isMobile && sizes.mobile) return sizes.mobile;
-      if (deviceInfo.isTablet && sizes.tablet) return sizes.tablet;
-      if (deviceInfo.isDesktop && sizes.desktop) return sizes.desktop;
+      if (deviceInfo.isMobile && sizes.mobile) {return sizes.mobile;}
+      if (deviceInfo.isTablet && sizes.tablet) {return sizes.tablet;}
+      if (deviceInfo.isDesktop && sizes.desktop) {return sizes.desktop;}
     }
     return src;
   };
@@ -258,7 +258,7 @@ export const ResponsiveGrid: React.FC<ResponsiveGridProps> = ({
       const bp = breakpointOrder[i];
       if (bp && Object.prototype.hasOwnProperty.call(columns, bp)) {
         const val = columns[bp];
-        if (typeof val === 'number') return val;
+        if (typeof val === 'number') {return val;}
       }
     }
     return columns.xs ?? 1;
@@ -303,7 +303,7 @@ export const ResponsiveButton: React.FC<ResponsiveButtonProps> = ({
   const { uiAdaptation, deviceInfo } = useResponsive();
   
   const getButtonSize = () => {
-    if (size !== 'auto') return size;
+    if (size !== 'auto') {return size;}
     return uiAdaptation.buttonSize;
   };
 
@@ -360,7 +360,7 @@ export const ResponsiveModal: React.FC<ResponsiveModalProps> = ({
 }) => {
   const { deviceInfo, uiAdaptation } = useResponsive();
 
-  if (!isOpen) return null;
+  if (!isOpen) {return null;}
 
   const modalSize = deviceInfo.isMobile ? 'fullscreen' : size;
   const useFullscreen = modalSize === 'fullscreen' || deviceInfo.screenSize === 'small';
@@ -436,12 +436,12 @@ export const ResponsiveText: React.FC<ResponsiveTextProps> = ({
   const { uiAdaptation, deviceInfo } = useResponsive();
   
   const getResponsiveSize = () => {
-    if (!responsive || size) return size;
+    if (!responsive || size) {return size;}
     
     // Auto-adjust based on device and settings
-    if (uiAdaptation.fontSize === 'large') return 'lg';
-    if (uiAdaptation.fontSize === 'xlarge') return 'xl';
-    if (deviceInfo.isMobile) return 'sm';
+    if (uiAdaptation.fontSize === 'large') {return 'lg';}
+    if (uiAdaptation.fontSize === 'xlarge') {return 'xl';}
+    if (deviceInfo.isMobile) {return 'sm';}
     return 'base';
   };
 

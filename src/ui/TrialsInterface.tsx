@@ -88,7 +88,7 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
   // Keyboard controls
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      if (isPaused) return;
+      if (isPaused) {return;}
       
       switch(e.key.toLowerCase()) {
         case 'w':
@@ -151,10 +151,10 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
   // Render game field
   const renderGameField = useCallback(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) {return;}
 
     const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) {return;}
 
     const tileSize = 24;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -223,7 +223,7 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
       
       if (x >= -tileSize && x <= canvas.width && y >= -tileSize && y <= canvas.height) {
         ctx.fillStyle = rock.available ? '#87CEEB' : '#696969';
-        if (rock.occupied) ctx.fillStyle = '#4169E1';
+        if (rock.occupied) {ctx.fillStyle = '#4169E1';}
         
         // Add slight size variation for breathing effect
         const breathingEffect = Math.sin(animationTime * 0.8 + phaseOffset) * 0.5;
@@ -332,7 +332,7 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
 
   const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) {return;}
 
     const rect = canvas.getBoundingClientRect();
     const x = Math.floor((e.clientX - rect.left + cameraOffset.x) / 24);

@@ -369,9 +369,9 @@ Make hints progressive (start subtle, get more specific) and encouraging.`;
         ['go', 'north', 'south', 'east', 'west'].includes(cmd.toLowerCase())
       ).length;
 
-      if (examineCount > rushingCommands) profile.preferences.playStyle = 'methodical';
-      else if (talkCount > examineCount) profile.preferences.playStyle = 'careful';
-      else if (rushingCommands > examineCount) profile.preferences.playStyle = 'bold';
+      if (examineCount > rushingCommands) {profile.preferences.playStyle = 'methodical';}
+      else if (talkCount > examineCount) {profile.preferences.playStyle = 'careful';}
+      else if (rushingCommands > examineCount) {profile.preferences.playStyle = 'bold';}
     }
 
     // Update skill levels based on successful quest types

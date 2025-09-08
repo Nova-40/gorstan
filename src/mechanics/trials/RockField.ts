@@ -60,7 +60,7 @@ export class RockField {
 
     // Ensure path to exit
   const lastRow = tiles[height - 1];
-  if (lastRow) lastRow[width - 1] = this.EXIT_TILE;
+  if (lastRow) {lastRow[width - 1] = this.EXIT_TILE;}
     
     return {
       width,

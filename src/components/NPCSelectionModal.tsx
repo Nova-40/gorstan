@@ -38,7 +38,7 @@ const NPCSelectionModal: React.FC<NPCSelectionModalProps> = ({
   onTalkToAll,
   onTalkToAyla
 }) => {
-  if (!isOpen) return null;
+  if (!isOpen) {return null;}
 
   // NPC image mapping
   const npcImages: Record<string, string> = {
@@ -56,7 +56,7 @@ const NPCSelectionModal: React.FC<NPCSelectionModalProps> = ({
   };
 
   const getImagePath = (npc: NPC): string => {
-    if (npc.portrait) return npc.portrait;
+    if (npc.portrait) {return npc.portrait;}
     return npcImages[npc.id.toLowerCase()] || 
            npcImages[npc.name.toLowerCase()] || 
            '/images/fallback.png';

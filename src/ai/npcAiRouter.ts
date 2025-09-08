@@ -52,8 +52,8 @@ export class NPCAiRouter {
   setAIProvider(provider: 'groq' | 'openai' | 'anthropic' | 'local', apiKey?: string, model?: string): void {
     this.aiConfig = new AIConfig();
     const config: Partial<AIProviderConfig> = {};
-    if (apiKey !== undefined) config.apiKey = apiKey;
-    if (model !== undefined) config.model = model;
+    if (apiKey !== undefined) {config.apiKey = apiKey;}
+    if (model !== undefined) {config.model = model;}
     this.aiConfig.setPrimaryProvider(provider, config);
   }
 
@@ -118,7 +118,7 @@ export class NPCAiRouter {
    * Check if AI service is available
    */
   private async isAIAvailable(): Promise<boolean> {
-    if (!this.aiConfig) return false;
+    if (!this.aiConfig) {return false;}
     
     try {
       return this.aiConfig.isConfigured();
@@ -134,7 +134,7 @@ export class NPCAiRouter {
     persona: NPCPersona,
     context: ConversationContext
   ): Promise<AIResponse | null> {
-    if (!this.aiConfig) return null;
+    if (!this.aiConfig) {return null;}
 
     const history = this.getRecentHistory(context.npc_id, persona.memory_length || 10);
     const systemPrompt = this.buildSystemPrompt(persona, context, history);

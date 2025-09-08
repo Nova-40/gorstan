@@ -44,7 +44,7 @@ export function handleWendellStalking(
   dispatch: Dispatch<GameAction>
 ): void {
   const wendell = npcRegistry.get('mrwendell') || npcRegistry.get('mr_wendell');
-  if (!wendell) return;
+  if (!wendell) {return;}
   
   const playerId = state.player?.name || 'Player';
   const stalkerState = getStalkerState('wendell', playerId);
@@ -53,7 +53,7 @@ export function handleWendellStalking(
   // Check if Wendell should start stalking (triggered by player behavior)
   const shouldStalk = checkWendellStalkingTriggers(state);
   
-  if (!shouldStalk) return;
+  if (!shouldStalk) {return;}
   
   // Update Wendell's position to follow player with delay
   if (state.currentRoomId !== stalkerState.lastSeenRoom) {
@@ -122,10 +122,10 @@ export function handlePollyStalking(
   dispatch: Dispatch<GameAction>
 ): void {
   const polly = npcRegistry.get('polly');
-  if (!polly) return;
+  if (!polly) {return;}
   
   // Only stalk if Dominic is dead
-  if (!state.flags?.dominicIsDead && !state.flags?.dominicTakenAfterWarning) return;
+  if (!state.flags?.dominicIsDead && !state.flags?.dominicTakenAfterWarning) {return;}
   
   const playerId = state.player?.name || 'Player';
   const stalkerState = getStalkerState('polly', playerId);
@@ -191,19 +191,19 @@ function checkWendellStalkingTriggers(state: LocalGameState): boolean {
   const flags = state.flags || {};
   
   // Wendell stalks if player has been rude to NPCs
-  if (flags.rudeToNPCs) return true;
+  if (flags.rudeToNPCs) {return true;}
   
   // Wendell stalks if player has taken cursed items
   const inventory = state.player?.inventory || [];
   const cursedItems = ['cursed_ring', 'haunted_mirror', 'death_coin'];
-  if (cursedItems.some(item => inventory.includes(item))) return true;
+  if (cursedItems.some(item => inventory.includes(item))) {return true;}
   
   // Wendell stalks if player has killed or harmed NPCs
-  if (flags.dominicIsDead || flags.npcKilled) return true;
+  if (flags.dominicIsDead || flags.npcKilled) {return true;}
   
   // Wendell stalks if player has made too many dark choices
   const darkChoices = (flags.darkChoiceCount || 0);
-  if (darkChoices >= 3) return true;
+  if (darkChoices >= 3) {return true;}
   
   return false;
 }
@@ -229,9 +229,9 @@ function getWendellStalkerMessage(intensity: number): string {
   };
   
   let category: keyof typeof messages;
-  if (intensity < 1.5) category = 'low';
-  else if (intensity < 2.5) category = 'medium';
-  else category = 'high';
+  if (intensity < 1.5) {category = 'low';}
+  else if (intensity < 2.5) {category = 'medium';}
+  else {category = 'high';}
   
   const categoryMessages = messages[category];
   return categoryMessages[Math.floor(Math.random() * categoryMessages.length)] || 'A strange presence watches from the shadows.';
@@ -258,9 +258,9 @@ function getPollyStalkerMessage(intensity: number): string {
   };
   
   let category: keyof typeof messages;
-  if (intensity < 2) category = 'low';
-  else if (intensity < 3.5) category = 'medium';
-  else category = 'high';
+  if (intensity < 2) {category = 'low';}
+  else if (intensity < 3.5) {category = 'medium';}
+  else {category = 'high';}
   
   const categoryMessages = messages[category];
   return categoryMessages[Math.floor(Math.random() * categoryMessages.length)] || 'Polly watches with hollow eyes.';

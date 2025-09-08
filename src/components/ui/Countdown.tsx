@@ -40,7 +40,7 @@ export function Countdown({
   }, [totalSeconds]);
 
   useEffect(() => {
-    if (isPaused || remainingSeconds <= 0) return;
+    if (isPaused || remainingSeconds <= 0) {return;}
 
     const interval = setInterval(() => {
       setRemainingSeconds((prev) => {

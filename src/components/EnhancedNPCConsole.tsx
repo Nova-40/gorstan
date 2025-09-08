@@ -92,7 +92,7 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
 
   // Get speaker badge color based on NPC role in group conversations
   const getSpeakerBadgeColor = (npcId: string, context?: string): string => {
-    if (!isGroupConversation) return 'var(--accent-color)';
+    if (!isGroupConversation) {return 'var(--accent-color)';}
     
     switch (npcId) {
       case 'al':
@@ -116,7 +116,7 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
 
   // Add competitive context styling
   const getCompetitiveMarker = (npcId: string, context?: string): string => {
-    if (!isGroupConversation || context !== 'competitive') return '';
+    if (!isGroupConversation || context !== 'competitive') {return '';}
     
     switch (npcId) {
       case 'al':
@@ -268,7 +268,7 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
   };
 
   const getConversationContext = (npcId: string): 'competitive' | 'cooperative' | 'neutral' => {
-    if (!isGroupConversation) return 'neutral';
+    if (!isGroupConversation) {return 'neutral';}
     
     // Al and Morthos are competitive when together
     if ((npcId === 'al' || npcId === 'morthos') && npcs.some(n => n.id === 'al') && npcs.some(n => n.id === 'morthos')) {
@@ -284,9 +284,9 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
   }, [messages]);
 
   const handleSendMessage = () => {
-    if (!primaryNpc) return;
+    if (!primaryNpc) {return;}
     const trimmed = inputMessage.trim();
-    if (trimmed === '') return;
+    if (trimmed === '') {return;}
 
     // Add player message
     const playerMessage: EnhancedDialogueMessage = {
@@ -314,7 +314,7 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
     // Check for rudeness to Mr. Wendell - triggers death
     const isRudeToWendell = (message: string, npcs: typeof realNpcs): boolean => {
       const hasWendell = npcs.some(npc => npc.id === 'mr_wendell' || npc.name.toLowerCase().includes('wendell'));
-      if (!hasWendell) return false;
+      if (!hasWendell) {return false;}
       
       const rudeWords = [
         'shut up', 'fuck off', 'piss off', 'screw you', 'damn you',
@@ -429,16 +429,16 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
     const lowerMessage = message.toLowerCase();
     
     // Direct address (highest priority)
-    if (lowerMessage.includes('al')) return 'al';
-    if (lowerMessage.includes('morthos')) return 'morthos';
-    if (lowerMessage.includes('ayla')) return 'ayla';
-    if (lowerMessage.includes('polly')) return 'polly';
+    if (lowerMessage.includes('al')) {return 'al';}
+    if (lowerMessage.includes('morthos')) {return 'morthos';}
+    if (lowerMessage.includes('ayla')) {return 'ayla';}
+    if (lowerMessage.includes('polly')) {return 'polly';}
     
     // Topic-based routing (medium priority)
-    if (lowerMessage.includes('form') || lowerMessage.includes('rule') || lowerMessage.includes('procedure') || lowerMessage.includes('official')) return 'al';
-    if (lowerMessage.includes('power') || lowerMessage.includes('magic') || lowerMessage.includes('shadow') || lowerMessage.includes('chaos')) return 'morthos';
-    if (lowerMessage.includes('help') || lowerMessage.includes('guide') || lowerMessage.includes('advice') || lowerMessage.includes('wisdom')) return 'ayla';
-    if (lowerMessage.includes('fun') || lowerMessage.includes('exciting') || lowerMessage.includes('adventure') || lowerMessage.includes('wild')) return 'polly';
+    if (lowerMessage.includes('form') || lowerMessage.includes('rule') || lowerMessage.includes('procedure') || lowerMessage.includes('official')) {return 'al';}
+    if (lowerMessage.includes('power') || lowerMessage.includes('magic') || lowerMessage.includes('shadow') || lowerMessage.includes('chaos')) {return 'morthos';}
+    if (lowerMessage.includes('help') || lowerMessage.includes('guide') || lowerMessage.includes('advice') || lowerMessage.includes('wisdom')) {return 'ayla';}
+    if (lowerMessage.includes('fun') || lowerMessage.includes('exciting') || lowerMessage.includes('adventure') || lowerMessage.includes('wild')) {return 'polly';}
     
     // For greetings and general questions, use weighted random selection
     if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey') || 
@@ -921,7 +921,7 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
 
   // Determine if an inter-NPC exchange should trigger
   const shouldTriggerInterNPCExchange = (speakingNpcId: string, playerMessage: string): boolean => {
-    if (!isGroupConversation) return false;
+    if (!isGroupConversation) {return false;}
     
     // Al and Morthos competitive dynamics
     if (speakingNpcId === 'al' && npcs.some(n => n.id === 'morthos')) {
@@ -935,8 +935,8 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
   };
 
   const getReactionNpcId = (speakingNpcId: string): string | null => {
-    if (speakingNpcId === 'al' && npcs.some(n => n.id === 'morthos')) return 'morthos';
-    if (speakingNpcId === 'morthos' && npcs.some(n => n.id === 'al')) return 'al';
+    if (speakingNpcId === 'al' && npcs.some(n => n.id === 'morthos')) {return 'morthos';}
+    if (speakingNpcId === 'morthos' && npcs.some(n => n.id === 'al')) {return 'al';}
     return null;
   };
 
@@ -991,7 +991,7 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
     }
   };
 
-  if (!isOpen || realNpcs.length === 0) return null;
+  if (!isOpen || realNpcs.length === 0) {return null;}
 
   const consoleTitle = isGroupConversation 
     ? `Group Conversation: ${realNpcs.map(npc => npc.name).join(', ')}`

@@ -67,7 +67,7 @@ const NPCDialogue: React.FC<NPCDialogueProps> = ({
     'mr wendell': "Greetings. I remember everything. Even you."
   };
 
-  if (!npc) return null;
+  if (!npc) {return null;}
 
 // JSX return block or main return
   return (

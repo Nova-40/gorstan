@@ -40,11 +40,11 @@ export function maybeStartBanter(state: LocalGameState, dispatch: any, roomId: s
   const morthosPresent = state.npcsInRoom?.some(n => n.id === NPC_IDS.MORTHOS);
   const alPresent = state.npcsInRoom?.some(n => n.id === NPC_IDS.AL);
   
-  if (!morthosPresent || !alPresent) return;
+  if (!morthosPresent || !alPresent) {return;}
 
   // Room-specific banter
   const banters = getRoomBanter(roomId);
-  if (banters.length === 0) return;
+  if (banters.length === 0) {return;}
 
   const banter = banters[Math.floor(Math.random() * banters.length)]!;
   
@@ -100,7 +100,7 @@ function getRoomBanter(roomId: string): Array<{morthos: string, al: string}> {
 
 // Trigger Ayla guidance when player is stuck
 export function maybeAylaIntervention(state: LocalGameState, dispatch: any, roomId: string): void {
-  if (!isPlayerStuck(state, roomId)) return;
+  if (!isPlayerStuck(state, roomId)) {return;}
 
   const ctx: ConversationContext = { state, dispatch, roomId };
   
@@ -163,7 +163,7 @@ export function periodicConversationCheck(state: LocalGameState, dispatch: any, 
   const now = Date.now();
   const lastCheck = (state as any)._lastConversationCheck || 0;
   
-  if (now - lastCheck < 120000) return; // 2 minute cooldown
+  if (now - lastCheck < 120000) {return;} // 2 minute cooldown
   
   (state as any)._lastConversationCheck = now;
   

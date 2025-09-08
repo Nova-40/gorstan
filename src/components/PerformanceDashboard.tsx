@@ -35,7 +35,7 @@ const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ isOpen, onC
 
   // Update metrics every second
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {return;}
 
     const interval = setInterval(() => {
       setMetrics(performanceMonitor.getMetrics());
@@ -69,7 +69,7 @@ const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ isOpen, onC
     setWarnings([]);
   }, []);
 
-  if (!isOpen) return null;
+  if (!isOpen) {return null;}
 
   const summary = performanceMonitor.getPerformanceSummary();
   const statusColor = summary.status === 'good' ? 'text-green-400' : 

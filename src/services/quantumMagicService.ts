@@ -40,7 +40,7 @@ export class QuantumMagicService {
   // Discovery System
   async discoverArtifact(artifactId: string, routeId: string, nodeId: string): Promise<QuantumDiscovery | null> {
     const artifactData = quantumArtifacts[artifactId];
-    if (!artifactData) return null;
+    if (!artifactData) {return null;}
 
     // Check if already discovered
     if (this.progression.artifacts.has(artifactId)) {
@@ -98,11 +98,11 @@ export class QuantumMagicService {
   }
 
   private shouldAutoActivate(artifact: QuantumArtifact): boolean {
-    if (!this.progression.autoActivateNewArtifacts) return false;
+    if (!this.progression.autoActivateNewArtifacts) {return false;}
     
     // Auto-activate if we have space and it's not already covered
     const activeCount = this.progression.activeArtifacts.length;
-    if (activeCount >= 3) return false;
+    if (activeCount >= 3) {return false;}
 
     // Don't auto-activate if we already have this element active
     const activeElements = this.progression.activeArtifacts
@@ -138,7 +138,7 @@ export class QuantumMagicService {
 
   private unlockSkill(skillId: string): void {
     const skillData = quantumSkills[skillId];
-    if (!skillData) return;
+    if (!skillData) {return;}
 
     const skill: QuantumSkill = {
       ...skillData,
@@ -217,7 +217,7 @@ export class QuantumMagicService {
 
   private gainArtifactExperience(artifactId: string, amount: number): void {
     const artifact = this.progression.artifacts.get(artifactId);
-    if (!artifact) return;
+    if (!artifact) {return;}
 
     artifact.experience += amount;
     
@@ -234,7 +234,7 @@ export class QuantumMagicService {
 
   private gainSkillExperience(skillId: string, amount: number): void {
     const skill = this.progression.skills.get(skillId);
-    if (!skill) return;
+    if (!skill) {return;}
 
     skill.experience += amount;
     
@@ -271,7 +271,7 @@ export class QuantumMagicService {
     }
 
     const artifact = this.progression.artifacts.get(artifactId);
-    if (!artifact) return false;
+    if (!artifact) {return false;}
 
     this.progression.activeArtifacts.push(artifactId);
     artifact.isActive = true;
@@ -287,7 +287,7 @@ export class QuantumMagicService {
 
   deactivateArtifact(artifactId: string): boolean {
     const index = this.progression.activeArtifacts.indexOf(artifactId);
-    if (index === -1) return false;
+    if (index === -1) {return false;}
 
     this.progression.activeArtifacts.splice(index, 1);
     
@@ -312,7 +312,7 @@ export class QuantumMagicService {
     // Apply effects from all active artifacts
     for (const artifactId of this.progression.activeArtifacts) {
       const artifact = this.progression.artifacts.get(artifactId);
-      if (!artifact) continue;
+      if (!artifact) {continue;}
 
       for (const effect of artifact.effects) {
         this.applyEffectToGameState(effect, artifact);
@@ -368,7 +368,7 @@ export class QuantumMagicService {
 
   // Synergy System
   private checkArtifactSynergies(artifact: QuantumArtifact): void {
-    if (!artifact.synergies) return;
+    if (!artifact.synergies) {return;}
 
     const activeSynergies: string[] = [];
     

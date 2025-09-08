@@ -114,7 +114,7 @@ export class UnifiedAIIntelligence {
     };
 
     const aylaHint = await aylaHints.shouldAylaInterrupt(aylaContext);
-    if (!aylaHint) return null;
+    if (!aylaHint) {return null;}
 
     // Enhance Ayla's hint with miniquest awareness
     if (context.activeMiniquests && context.activeMiniquests.length > 0) {
@@ -161,7 +161,7 @@ export class UnifiedAIIntelligence {
       const miniquestController = MiniquestController.getInstance();
       const miniquestStatus = miniquestController.getAIStatus();
       
-      if (!miniquestStatus.enabled) return null;
+      if (!miniquestStatus.enabled) {return null;}
 
       // Get AI miniquest recommendations
       const recommendations = await aiMiniquestService.getRecommendedQuests(
@@ -314,7 +314,7 @@ Ayla's guidance:`;
     context: UnifiedAIContext
   ): AIGuidanceResponse | null {
     const responses = [aylaResponse, miniquestResponse, dynamicResponse].filter(Boolean);
-    if (responses.length === 0) return null;
+    if (responses.length === 0) {return null;}
 
     // Prioritization logic
     const priorities = { urgent: 4, high: 3, medium: 2, low: 1 };
@@ -323,7 +323,7 @@ Ayla's guidance:`;
       const aPriority = priorities[a!.priority];
       const bPriority = priorities[b!.priority];
       
-      if (aPriority !== bPriority) return bPriority - aPriority;
+      if (aPriority !== bPriority) {return bPriority - aPriority;}
       
       // If same priority, prefer based on confidence
       const aConfidence = a!.metadata?.confidence || 0.5;

@@ -76,7 +76,7 @@ const AylaHintPopup: React.FC<AylaHintPopupProps> = ({
     }
   };
 
-  if (!hint || !isVisible) return null;
+  if (!hint || !isVisible) {return null;}
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 pointer-events-none">

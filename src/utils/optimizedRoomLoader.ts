@@ -154,7 +154,7 @@ export async function preloadCriticalRooms(): Promise<void> {
  */
 export async function preloadAdjacentRooms(currentRoomId: string): Promise<void> {
   const currentRoom = roomCache.get(currentRoomId);
-  if (!currentRoom?.exits) return;
+  if (!currentRoom?.exits) {return;}
   
   const adjacentRoomIds = Object.values(currentRoom.exits).filter(Boolean) as string[];
   

@@ -20,14 +20,14 @@ import { roomRegistry } from '../roomRegistry';
 // If not, enable it in tsconfig. We defensively type as any then normalise.
 // rooms.json uses "enterText" – we map that to "description" expected elsewhere.
 // This ensures curated content overrides placeholder proxy rooms.
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+ 
 // @ts-ignore - allow json import typing fallback
 import roomsData from '../data/rooms.json';
 
 let mergedCache: Record<string, Room> | null = null;
 
 function normaliseRoom(raw: any): Room {
-  if (!raw) return raw;
+  if (!raw) {return raw;}
   const room: any = { ...raw };
   if (!room.description && room.enterText) {
     room.description = room.enterText; // Preserve authored text for history display
@@ -37,7 +37,7 @@ function normaliseRoom(raw: any): Room {
 
 // Utility function to get all rooms as an object (authored rooms override placeholders)
 export function getAllRoomsAsObject(): Record<string, Room> {
-  if (mergedCache) return mergedCache;
+  if (mergedCache) {return mergedCache;}
 
   const authored: Record<string, any> = roomsData as Record<string, any>;
   const merged: Record<string, Room> = { ...roomRegistry } as Record<string, Room>;

@@ -22,14 +22,14 @@ import { overlayBus } from "./overlayBus";
 import { config } from "../config";
 
 export function maybeShowSeasonalOverlay(dispatch?: any) {
-  if (!config.enableSeasonal) return;
+  if (!config.enableSeasonal) {return;}
   const now = inLondonNow();
   const y = now.getFullYear();
 
   const forced = config.forceSeason as "christmas" | "easter" | "may13" | null | undefined;
-  if (forced === "christmas") return triggerXmas(y);
-  if (forced === "easter") return triggerEaster(y);
-  if (forced === "may13") return triggerMay13(y, dispatch);
+  if (forced === "christmas") {return triggerXmas(y);}
+  if (forced === "easter") {return triggerEaster(y);}
+  if (forced === "may13") {return triggerMay13(y, dispatch);}
 
   // Christmas Day
   if (isChristmasDay(now) && shouldShowOncePerYear(`christmas-${y}`)) {

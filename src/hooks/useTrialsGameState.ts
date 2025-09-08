@@ -196,7 +196,7 @@ export function useTrialsGameState() {
 
   // Player movement
   const movePlayer = useCallback((direction: 'north' | 'south' | 'east' | 'west') => {
-    if (isPaused || !isActive) return;
+    if (isPaused || !isActive) {return;}
 
     setGameState(prev => {
       const newPos = { ...prev.playerPos };
@@ -243,7 +243,7 @@ export function useTrialsGameState() {
 
   // Player actions
   const performAction = useCallback((action: 'rest' | 'trigger-mushroom' | 'hide' | 'sprint' | 'examine') => {
-    if (isPaused || !isActive) return;
+    if (isPaused || !isActive) {return;}
 
     setGameState(prev => {
       const newState = { ...prev };

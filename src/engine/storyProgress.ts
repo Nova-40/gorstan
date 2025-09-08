@@ -687,15 +687,15 @@ function hasCircularDependency(flag: string, dependencies: string[]): boolean {
 
 // --- Function: dfs ---
   function dfs(current: string): boolean {
-    if (stack.has(current)) return true;
-    if (visited.has(current)) return false;
+    if (stack.has(current)) {return true;}
+    if (visited.has(current)) {return false;}
 
     visited.add(current);
     stack.add(current);
 
     const deps = flagDependencies.get(current) || [];
     for (const dep of deps) {
-      if (dfs(dep)) return true;
+      if (dfs(dep)) {return true;}
     }
 
     stack.delete(current);

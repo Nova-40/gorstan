@@ -196,7 +196,7 @@ const NPCConsole: React.FC<NPCConsoleProps> = ({
   }, [npc, isOpen, isPlayerRedacted]);
 
   const handleSendMessage = () => {
-    if (!npc) return;
+    if (!npc) {return;}
     const trimmed = inputMessage.trim();
     
     // Clear input immediately for better UX
@@ -315,7 +315,7 @@ const NPCConsole: React.FC<NPCConsoleProps> = ({
     }
   };
 
-  if (!isOpen || !npc) return null;
+  if (!isOpen || !npc) {return null;}
 
   const npcImage = npcImages[npc.id.toLowerCase()] || npcImages[npc.name.toLowerCase()] || '/images/fallback.png';
 

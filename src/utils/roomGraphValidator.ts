@@ -379,7 +379,7 @@ export function validateRoomPath(roomMap: RoomMap, path: string[]): boolean {
   for (let i = 0; i < path.length - 1; i++) {
     const currentId = path[i];
     const nextRoom = path[i + 1];
-    if (!currentId || !nextRoom) return false;
+    if (!currentId || !nextRoom) {return false;}
     const currentRoom = roomMap[currentId];
     
     if (!currentRoom || !currentRoom.exits) {

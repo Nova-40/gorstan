@@ -6,7 +6,7 @@ import { describe, test, expect } from 'vitest';
 let combat: any;
 try {
 	// Adjust path if actual combat system lives elsewhere
-	// eslint-disable-next-line @typescript-eslint/no-var-requires
+	 
 	combat = require('../../../combat/system');
 } catch {
 	combat = null;

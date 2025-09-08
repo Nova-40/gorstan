@@ -77,7 +77,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
   const { showDemoCountdown, demoSecondsRemaining, guidanceProgress, showGuidanceModal, resetAll, dismissGuidance } = useIdleGuidanceTimers({
     demoTotalMs: 150000,
     guidanceTotalMs: 120000,
-    onDemoTrigger: () => { if (onStartDemo) onStartDemo(); },
+    onDemoTrigger: () => { if (onStartDemo) {onStartDemo();} },
     onGuidanceTrigger: () => { /* modal auto shown by hook */ }
   });
 
@@ -208,7 +208,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
     {showGuidanceModal && onStartDemo && (
       <AylaGuidanceModal 
         onDismiss={() => { dismissGuidance(); }} 
-        onStartDemo={() => { if (onStartDemo) onStartDemo(); dismissGuidance(); }} 
+        onStartDemo={() => { if (onStartDemo) {onStartDemo();} dismissGuidance(); }} 
       />
     )}
     </>

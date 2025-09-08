@@ -130,10 +130,10 @@ export class DynamicEncounterEngine {
     gameState: LocalGameState,
     dispatch: React.Dispatch<GameAction>
   ): boolean {
-    if (npcs.length < 2) return false;
+    if (npcs.length < 2) {return false;}
 
     const encounterType = this.determineEncounterType(npcs, gameState);
-    if (!encounterType) return false;
+    if (!encounterType) {return false;}
 
     const encounter = this.buildEncounterConfig(encounterType, npcs, gameState);
     this.executeEncounter(roomId, encounter, gameState, dispatch);

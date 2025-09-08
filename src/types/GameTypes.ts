@@ -303,7 +303,7 @@ export interface ValidationResult {
 
 // --- Function: isPlayer ---
 export function isPlayer(obj: unknown): obj is Player {
-  if (!obj || typeof obj !== 'object') return false;
+  if (!obj || typeof obj !== 'object') {return false;}
 // Variable declaration
   const player = obj as Player;
 // JSX return block or main return
@@ -318,7 +318,7 @@ export function isPlayer(obj: unknown): obj is Player {
 
 // --- Function: isGameState ---
 export function isGameState(obj: unknown): obj is GameState {
-  if (!obj || typeof obj !== 'object') return false;
+  if (!obj || typeof obj !== 'object') {return false;}
 // JSX return block or main return
   return (
     isPlayer((obj as any).player) &&
@@ -331,7 +331,7 @@ export function isGameState(obj: unknown): obj is GameState {
 
 // --- Function: isGameMessage ---
 export function isGameMessage(obj: unknown): obj is GameMessage {
-  if (!obj || typeof obj !== 'object') return false;
+  if (!obj || typeof obj !== 'object') {return false;}
 // JSX return block or main return
   return (
     typeof (obj as any).id === 'string' &&

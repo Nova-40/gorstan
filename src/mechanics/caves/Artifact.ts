@@ -14,7 +14,7 @@ export class Artifact {
   }
 
   onPickup(): void {
-    if (this.discovered) return;
+    if (this.discovered) {return;}
     
     this.discovered = true;
     this.pickupTime = Date.now();
@@ -68,7 +68,7 @@ export class Artifact {
     ];
     
   const chosen = artifacts[Math.floor(Math.random() * artifacts.length)];
-  if (!chosen) return; // safety guard
+  if (!chosen) {return;} // safety guard
   console.log(`✨ ${chosen.name} ✨`);
     console.log('');
     console.log(chosen.description);

@@ -159,7 +159,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
    * Core Logic Preserved: 3-second sitting animation with visual feedback
    */
   const handleSit = useCallback((): void => {
-    if (isSitting) return; // Prevent multiple sit actions
+    if (isSitting) {return;} // Prevent multiple sit actions
     
     setIsSitting(true);
     
@@ -250,7 +250,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
               ? `Special jump / portal${roomTitle ? ` to ${roomTitle}` : ''}`
               : `${available ? 'Move' : 'No exit'} ${d.title.toLowerCase()}${available && roomTitle ? ` to ${roomTitle}` : ''}`;
           const handle = () => {
-            if (!available) return;
+            if (!available) {return;}
             if (d.dir === 'jump') { onJump(); return; }
             if (d.dir === 'sit') { handleSit(); return; }
             onMove(d.dir);

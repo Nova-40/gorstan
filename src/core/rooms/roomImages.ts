@@ -12,7 +12,7 @@ const registry = imagesJson as ImagesRegistry;
 
 export function getRoomImagePath(roomId: string, zone: Zone): string | null {
   const byId = registry.images[roomId];
-  if (byId) return byId;
+  if (byId) {return byId;}
   const byZone = registry._zoneDefaults[zone] || registry._zoneDefaults.default;
   return byZone || null;
 }

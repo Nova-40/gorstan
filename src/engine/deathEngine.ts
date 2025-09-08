@@ -350,7 +350,7 @@ function generateDeathMessages(
   if (deathMessages.length > 0) {
     const messageIndex = Math.floor(Math.random() * deathMessages.length);
     const primary = deathMessages[messageIndex] ?? deathMessages[0] ?? '';
-    if (primary) messages.push(primary);
+    if (primary) {messages.push(primary);}
   }
 
   // Add context if this isn't their first death of this type
@@ -360,7 +360,7 @@ function generateDeathMessages(
     if (Array.isArray(contextMessages) && contextMessages.length) {
       const contextIndex = Math.floor(Math.random() * contextMessages.length);
       const ctx = contextMessages[contextIndex] ?? contextMessages[0];
-      if (ctx) messages.push(ctx);
+      if (ctx) {messages.push(ctx);}
     }
   }
 
@@ -368,7 +368,7 @@ function generateDeathMessages(
   if (AWAKENING_MESSAGES.length) {
     const awakeningIndex = Math.floor(Math.random() * AWAKENING_MESSAGES.length);
     const awakening = AWAKENING_MESSAGES[awakeningIndex] ?? AWAKENING_MESSAGES[0];
-    if (awakening) messages.push(awakening);
+    if (awakening) {messages.push(awakening);}
   }
 
   // Add death count message

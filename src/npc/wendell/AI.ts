@@ -43,11 +43,11 @@ export class WendellAI {
   private analyzeIntent(input: string): 'greeting' | 'question' | 'boast' | 'seek_help' | 'challenge' | 'small_talk' {
     const lower = input.toLowerCase();
     
-    if (lower.includes('hello') || lower.includes('greet') || lower.includes('hi ')) return 'greeting';
-    if (lower.includes('?') || lower.includes('how') || lower.includes('what') || lower.includes('why')) return 'question';
-    if (lower.includes('i found') || lower.includes('i have') || lower.includes('i discovered')) return 'boast';
-    if (lower.includes('help') || lower.includes('stuck') || lower.includes('lost')) return 'seek_help';
-    if (lower.includes('wrong') || lower.includes('disagree') || lower.includes('but ')) return 'challenge';
+    if (lower.includes('hello') || lower.includes('greet') || lower.includes('hi ')) {return 'greeting';}
+    if (lower.includes('?') || lower.includes('how') || lower.includes('what') || lower.includes('why')) {return 'question';}
+    if (lower.includes('i found') || lower.includes('i have') || lower.includes('i discovered')) {return 'boast';}
+    if (lower.includes('help') || lower.includes('stuck') || lower.includes('lost')) {return 'seek_help';}
+    if (lower.includes('wrong') || lower.includes('disagree') || lower.includes('but ')) {return 'challenge';}
     
     return 'small_talk';
   }
@@ -55,28 +55,28 @@ export class WendellAI {
   private extractTopic(input: string): string {
     const lower = input.toLowerCase();
     
-    if (lower.includes('tower') || lower.includes('building')) return 'tower_history';
-    if (lower.includes('magic') || lower.includes('spell') || lower.includes('enchant')) return 'magical_theory';
-    if (lower.includes('artifact') || lower.includes('item') || lower.includes('treasure')) return 'artifacts';
-    if (lower.includes('book') || lower.includes('library') || lower.includes('scroll')) return 'knowledge';
-    if (lower.includes('past') || lower.includes('before') || lower.includes('ancient')) return 'history';
-    if (lower.includes('danger') || lower.includes('safe') || lower.includes('careful')) return 'warnings';
+    if (lower.includes('tower') || lower.includes('building')) {return 'tower_history';}
+    if (lower.includes('magic') || lower.includes('spell') || lower.includes('enchant')) {return 'magical_theory';}
+    if (lower.includes('artifact') || lower.includes('item') || lower.includes('treasure')) {return 'artifacts';}
+    if (lower.includes('book') || lower.includes('library') || lower.includes('scroll')) {return 'knowledge';}
+    if (lower.includes('past') || lower.includes('before') || lower.includes('ancient')) {return 'history';}
+    if (lower.includes('danger') || lower.includes('safe') || lower.includes('careful')) {return 'warnings';}
     
     return 'general';
   }
   
   private determineResponseType(intent: string, topic: string, context: ConversationContext): 'teaching' | 'testing' | 'revealing' | 'deflecting' | 'encouraging' {
     // High trust visitors get more revealing responses
-    if (context.trust_level >= 7) return 'revealing';
+    if (context.trust_level >= 7) {return 'revealing';}
     
     // Visitors asking questions about sensitive topics get tested first
-    if (intent === 'question' && this.isSensitiveTopic(topic)) return 'testing';
+    if (intent === 'question' && this.isSensitiveTopic(topic)) {return 'testing';}
     
     // Those seeking help get encouraging guidance
-    if (intent === 'seek_help') return 'encouraging';
+    if (intent === 'seek_help') {return 'encouraging';}
     
     // Boastful visitors might need gentle deflection or testing
-    if (intent === 'boast') return context.trust_level >= 5 ? 'teaching' : 'deflecting';
+    if (intent === 'boast') {return context.trust_level >= 5 ? 'teaching' : 'deflecting';}
     
     // Default to teaching mode for most interactions
     return 'teaching';
@@ -159,9 +159,9 @@ export class WendellAI {
   
   private calculateTrustChange(responseType: string, context: ConversationContext): number {
     // Trust changes based on response appropriateness and visitor actions
-    if (responseType === 'revealing' && context.trust_level < 5) return -1; // Too early
-    if (responseType === 'teaching' && context.knowledge_level === 'novice') return 1;
-    if (responseType === 'testing') return 0; // Neutral until response
+    if (responseType === 'revealing' && context.trust_level < 5) {return -1;} // Too early
+    if (responseType === 'teaching' && context.knowledge_level === 'novice') {return 1;}
+    if (responseType === 'testing') {return 0;} // Neutral until response
     
     return 0;
   }
@@ -180,7 +180,7 @@ export class WendellAI {
     if (knowledge.length > 0 && context.trust_level >= 4) {
   const idx = Math.floor(Math.random() * knowledge.length);
   const item = knowledge[idx];
-  if (item) response.knowledge_shared = [item];
+  if (item) {response.knowledge_shared = [item];}
     }
     
     return response;

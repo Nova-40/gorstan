@@ -126,26 +126,26 @@ export function getContextSnapshot(gameState: any): ContextSnapshot {
  * Determine room mood based on various factors
  */
 function determineRoomMood(room: any, gameState: any): string {
-  if (!room) return 'neutral';
+  if (!room) {return 'neutral';}
   
   const zone = room.zone;
   const roomId = room.id;
   
   // Zone-based moods
-  if (zone === 'glitchZone') return 'chaotic';
-  if (zone === 'gorstanZone') return 'mystical';
-  if (zone === 'introZone') return 'technological';
-  if (zone === 'latticeZone') return 'scholarly';
+  if (zone === 'glitchZone') {return 'chaotic';}
+  if (zone === 'gorstanZone') {return 'mystical';}
+  if (zone === 'introZone') {return 'technological';}
+  if (zone === 'latticeZone') {return 'scholarly';}
   
   // Specific room moods
-  if (roomId.includes('reset')) return 'urgent';
-  if (roomId.includes('cafe') || roomId.includes('kitchen')) return 'cozy';
-  if (roomId.includes('library')) return 'quiet';
-  if (roomId.includes('maze')) return 'confusing';
+  if (roomId.includes('reset')) {return 'urgent';}
+  if (roomId.includes('cafe') || roomId.includes('kitchen')) {return 'cozy';}
+  if (roomId.includes('library')) {return 'quiet';}
+  if (roomId.includes('maze')) {return 'confusing';}
   
   // State-dependent moods
-  if (gameState.flags?.pollyTakeoverActive) return 'tense';
-  if (gameState.flags?.dominicKilled) return 'somber';
+  if (gameState.flags?.pollyTakeoverActive) {return 'tense';}
+  if (gameState.flags?.dominicKilled) {return 'somber';}
   
   return 'neutral';
 }
@@ -154,11 +154,11 @@ function determineRoomMood(room: any, gameState: any): string {
  * Determine light level based on zone and room
  */
 function determineLightLevel(zone: string, room: any): string {
-  if (zone === 'glitchZone') return 'flickering';
-  if (zone === 'introZone') return 'artificial';
-  if (zone === 'latticeZone') return 'soft';
-  if (room?.id?.includes('hidden')) return 'dim';
-  if (room?.id?.includes('lab')) return 'bright';
+  if (zone === 'glitchZone') {return 'flickering';}
+  if (zone === 'introZone') {return 'artificial';}
+  if (zone === 'latticeZone') {return 'soft';}
+  if (room?.id?.includes('hidden')) {return 'dim';}
+  if (room?.id?.includes('lab')) {return 'bright';}
   return 'normal';
 }
 
@@ -166,9 +166,9 @@ function determineLightLevel(zone: string, room: any): string {
  * Determine temperature based on zone
  */
 function determineTemperature(zone: string): string {
-  if (zone === 'glitchZone') return 'unstable';
-  if (zone === 'gorstanZone') return 'cool';
-  if (zone === 'introZone') return 'controlled';
+  if (zone === 'glitchZone') {return 'unstable';}
+  if (zone === 'gorstanZone') {return 'cool';}
+  if (zone === 'introZone') {return 'controlled';}
   return 'moderate';
 }
 
@@ -179,11 +179,11 @@ function extractActiveQuests(gameState: any): string[] {
   const quests: string[] = [];
   
   // Check various flags that indicate active quests
-  if (gameState.flags?.seekingResetRoom) quests.push('find_reset_room');
-  if (gameState.flags?.pollyTakeoverActive) quests.push('stop_polly');
-  if (gameState.flags?.hasSchrodingerCoin && !gameState.flags?.coinUsed) quests.push('use_coin');
-  if (gameState.flags?.needsLibraryAccess) quests.push('access_library');
-  if (gameState.flags?.lookingForDominic) quests.push('find_dominic');
+  if (gameState.flags?.seekingResetRoom) {quests.push('find_reset_room');}
+  if (gameState.flags?.pollyTakeoverActive) {quests.push('stop_polly');}
+  if (gameState.flags?.hasSchrodingerCoin && !gameState.flags?.coinUsed) {quests.push('use_coin');}
+  if (gameState.flags?.needsLibraryAccess) {quests.push('access_library');}
+  if (gameState.flags?.lookingForDominic) {quests.push('find_dominic');}
   
   return quests;
 }
@@ -249,10 +249,10 @@ export function analyzePlayerBehavior(context: ContextSnapshot): {
   
   // Calculate confidence level
   let confidenceLevel = 0.5;
-  if (isExploring && !isStuck) confidenceLevel += 0.3;
-  if (isStuck) confidenceLevel -= 0.4;
-  if (isRushing && !isStuck) confidenceLevel += 0.2;
-  if (needsGuidance) confidenceLevel -= 0.2;
+  if (isExploring && !isStuck) {confidenceLevel += 0.3;}
+  if (isStuck) {confidenceLevel -= 0.4;}
+  if (isRushing && !isStuck) {confidenceLevel += 0.2;}
+  if (needsGuidance) {confidenceLevel -= 0.2;}
   
   confidenceLevel = Math.max(0, Math.min(1, confidenceLevel));
   
@@ -288,14 +288,14 @@ export function getLocationHints(context: ContextSnapshot): string[] {
   }
   
   // Room-specific hints
-  if (context.roomId.includes('reset')) hints.push('critical_choice', 'point_of_no_return');
-  if (context.roomId.includes('library')) hints.push('research_needed', 'information_available');
-  if (context.roomId.includes('cafe')) hints.push('social_space', 'rest_area');
-  if (context.roomId.includes('maze')) hints.push('navigation_challenge', 'patience_required');
+  if (context.roomId.includes('reset')) {hints.push('critical_choice', 'point_of_no_return');}
+  if (context.roomId.includes('library')) {hints.push('research_needed', 'information_available');}
+  if (context.roomId.includes('cafe')) {hints.push('social_space', 'rest_area');}
+  if (context.roomId.includes('maze')) {hints.push('navigation_challenge', 'patience_required');}
   
   // Item-based hints
-  if (context.inventory.includes('schrodingerCoin')) hints.push('quantum_paradox', 'choice_matters');
-  if (context.inventory.includes('napkin')) hints.push('research_clue', 'library_relevant');
+  if (context.inventory.includes('schrodingerCoin')) {hints.push('quantum_paradox', 'choice_matters');}
+  if (context.inventory.includes('napkin')) {hints.push('research_clue', 'library_relevant');}
   
   return hints;
 }

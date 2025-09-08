@@ -138,7 +138,7 @@ export class ObjectivesService {
 
   completeObjective(nodeId: string, partialProgress?: number): boolean {
     const objective = this.objectives.get(nodeId);
-    if (!objective) return false;
+    if (!objective) {return false;}
 
     if (partialProgress !== undefined) {
       objective.progress = Math.max(0, Math.min(100, partialProgress));
@@ -171,7 +171,7 @@ export class ObjectivesService {
 
   skipObjective(nodeId: string): boolean {
     const objective = this.objectives.get(nodeId);
-    if (!objective || objective.required) return false; // Can't skip required objectives
+    if (!objective || objective.required) {return false;} // Can't skip required objectives
 
     objective.skipped = true;
     objective.completed = false;
@@ -237,7 +237,7 @@ export class ObjectivesService {
   }
 
   importProgress(savedProgress: RouteProgress): void {
-    if (savedProgress.routeId !== this.manifest.id) return;
+    if (savedProgress.routeId !== this.manifest.id) {return;}
 
     this.progress = savedProgress;
 

@@ -17,30 +17,30 @@ export async function executeEffects(effects: string[]) {
   const dispatch = getGameDispatch?.();
   for (const e of effects) {
     const [head, op, ...rest] = e.split(':');
-    if (!head) continue;
+    if (!head) {continue;}
     try {
       switch (head) {
         case 'flag': {
           const key = rest.join(':'); // after op
-          if (op === 'set') dispatch?.({ type: 'SET_FLAG', payload: { key, value: true } });
-          if (op === 'clear') dispatch?.({ type: 'SET_FLAG', payload: { key, value: false } });
+          if (op === 'set') {dispatch?.({ type: 'SET_FLAG', payload: { key, value: true } });}
+          if (op === 'clear') {dispatch?.({ type: 'SET_FLAG', payload: { key, value: false } });}
           break;
         }
         case 'item': {
           const [id, qtyStr] = rest;
           const qty = Math.max(1, parseInt(qtyStr || '1', 10) || 1);
-          if (op === 'add') dispatch?.({ type: 'ADD_ITEM', payload: { id, qty } });
-          if (op === 'remove') dispatch?.({ type: 'REMOVE_ITEM', payload: { id, qty } });
+          if (op === 'add') {dispatch?.({ type: 'ADD_ITEM', payload: { id, qty } });}
+          if (op === 'remove') {dispatch?.({ type: 'REMOVE_ITEM', payload: { id, qty } });}
           break;
         }
         case 'teleport': {
           const [dest] = rest;
-          if (op === 'to' && dest) await teleportToRoom(dest);
+          if (op === 'to' && dest) {await teleportToRoom(dest);}
           break;
         }
         case 'lore': {
           const [id] = rest;
-          if (op === 'unlock' && id) dispatch?.({ type: 'UNLOCK_LORE', payload: id });
+          if (op === 'unlock' && id) {dispatch?.({ type: 'UNLOCK_LORE', payload: id });}
           break;
         }
         case 'say': {

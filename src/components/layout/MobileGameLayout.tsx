@@ -195,7 +195,7 @@ const MobileGameLayout: React.FC<MobileGameLayoutProps> = ({
   );
 
   const renderBottomPanel = () => {
-    if (!bottomPanel) return null;
+    if (!bottomPanel) {return null;}
     
     return (
       <div 
@@ -216,7 +216,7 @@ const MobileGameLayout: React.FC<MobileGameLayoutProps> = ({
   };
 
   const renderFloatingActions = () => {
-    if (!floatingActions || !deviceInfo.isMobile) return null;
+    if (!floatingActions || !deviceInfo.isMobile) {return null;}
     
     return (
       <div className="floating-actions">

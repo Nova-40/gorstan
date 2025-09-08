@@ -266,7 +266,7 @@ class PuzzleController {
     rewards: NonNullable<PuzzleResult['rewards']>,
     gameState: LocalGameState
   ): void {
-    if (!this.dispatch) return;
+    if (!this.dispatch) {return;}
 
     
     if (rewards.score) {

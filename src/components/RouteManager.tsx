@@ -231,7 +231,7 @@ export const RouteManagerProvider: React.FC<RouteManagerProviderProps> = ({
 
   // Update elapsed time periodically
   useEffect(() => {
-    if (!state.isActive || !state.progress) return;
+    if (!state.isActive || !state.progress) {return;}
 
     const interval = setInterval(() => {
       const now = Date.now();

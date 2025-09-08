@@ -22,7 +22,7 @@ export default function AylaPanel(){
       dispatch?.({ type: 'RECORD_MESSAGE', payload: { text: 'Ayla: ' + answer, type: 'npc', timestamp: Date.now() } });
     } catch {
       // fall back to mock on failure
-      if (!useMock) setUseMock(true);
+      if (!useMock) {setUseMock(true);}
     }
   }
 

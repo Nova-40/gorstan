@@ -82,7 +82,7 @@ export function npcReact(npcId: string, playerInput: string, gameState?: LocalGa
   }
   const state = gameState;
   const npcObj: NPC | undefined = npcRegistry.get(npcId);
-  if (!npcObj || npcObj.interrupted) return;
+  if (!npcObj || npcObj.interrupted) {return;}
   
   // Special handling for enhanced Ayla with book lore and CTAs
   if (npcId === 'ayla' || npcObj.name?.toLowerCase() === 'ayla') {
@@ -118,5 +118,5 @@ export function npcReact(npcId: string, playerInput: string, gameState?: LocalGa
     ? matched.response(state, memory)
     : matched.response;
   npcSpeak(npcId, response, matched.tone || "neutral");
-  if (matched.onRespond) matched.onRespond(state, memory);
+  if (matched.onRespond) {matched.onRespond(state, memory);}
 }

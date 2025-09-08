@@ -113,7 +113,7 @@ const PlayerNameCapture: React.FC<{ onNameSubmit: (name: string) => void }> = ({
   
 // React effect hook
   useEffect(() => {
-    if (!modal) return;
+    if (!modal) {return;}
 // Variable declaration
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -134,7 +134,7 @@ const PlayerNameCapture: React.FC<{ onNameSubmit: (name: string) => void }> = ({
 // Variable declaration
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (name.trim()) onNameSubmit(name.trim());
+    if (name.trim()) {onNameSubmit(name.trim());}
   };
 
   

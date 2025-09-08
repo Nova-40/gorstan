@@ -289,7 +289,7 @@ class GroqAIService {
   }
 
   private postProcessResponse(response: string | undefined, npcId: string): string | null {
-    if (!response) return null;
+    if (!response) {return null;}
 
     // Clean up common AI issues
     let cleaned = response
@@ -489,18 +489,18 @@ class GroqAIService {
   private getRecentConversationHistory(npcId: string, gameState: LocalGameState): string {
     // Get last 2 interactions for context from conversations state
     const conversations = gameState.conversations;
-    if (!conversations) return '';
+    if (!conversations) {return '';}
     
     // Look for conversations involving this NPC
     const npcConversations = Object.values(conversations).filter(conv => 
       conv.participants.includes(npcId)
     );
     
-    if (npcConversations.length === 0) return '';
+    if (npcConversations.length === 0) {return '';}
     
     // Get the most recent conversation
     const recentConv = npcConversations[npcConversations.length - 1];
-    if (!recentConv) return '';
+    if (!recentConv) {return '';}
     const recentExchanges = recentConv.exchanges.slice(-2);
     
     return recentExchanges.map((exchange: any) => 

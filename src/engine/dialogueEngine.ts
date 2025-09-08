@@ -417,7 +417,7 @@ function findMatchingDialogue(
     return true;
   });
 
-  if (validDialogues.length === 0) return null;
+  if (validDialogues.length === 0) {return null;}
   // Sort by priority (highest first)
   validDialogues.sort((a: DialogueNode, b: DialogueNode) => (b.priority || 0) - (a.priority || 0));
   const top = validDialogues[0]!; // guarded by length check
@@ -499,12 +499,12 @@ function applyDialogueEffects(effects: DialogueEffect[], state: DialogueState): 
   effects.forEach(effect => {
     switch (effect.type) {
       case 'flag':
-        if (!state.flags) state.flags = {};
+        if (!state.flags) {state.flags = {};}
         state.flags[effect.key] = effect.value;
         break;
 
       case 'trait':
-        if (!state.traits) state.traits = [];
+        if (!state.traits) {state.traits = [];}
         if (effect.operation === 'add' && !state.traits.includes(effect.value)) {
           state.traits.push(effect.value);
         } else if (effect.operation === 'remove') {
@@ -528,11 +528,11 @@ function applyDialogueEffects(effects: DialogueEffect[], state: DialogueState): 
 
 // --- Function: markDialogueAsUsed ---
 function markDialogueAsUsed(npc: string, dialogueId: string, state: DialogueState): void {
-  if (!state.flags) state.flags = {};
-  if (!state.flags.usedDialogues) state.flags.usedDialogues = {};
+  if (!state.flags) {state.flags = {};}
+  if (!state.flags.usedDialogues) {state.flags.usedDialogues = {};}
 
   const usedDialogues = state.flags.usedDialogues;
-  if (!usedDialogues[npc]) usedDialogues[npc] = [];
+  if (!usedDialogues[npc]) {usedDialogues[npc] = [];}
 
   if (!usedDialogues[npc].includes(dialogueId)) {
     usedDialogues[npc].push(dialogueId);
@@ -600,7 +600,7 @@ export function getDialogueOptions(
   const npcKey = npc.toLowerCase();
   const dialogueSet = npcDialogues[npcKey];
 
-  if (!dialogueSet) return [];
+  if (!dialogueSet) {return [];}
 
   const contexts: (keyof NPCDialogueSet)[] = ['greeting', 'quest', 'special', 'general', 'farewell'];
 

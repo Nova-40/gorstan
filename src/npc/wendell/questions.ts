@@ -98,7 +98,7 @@ export function getQuestionsByLevel(level: 'basic' | 'intermediate' | 'advanced'
 
 export function getRandomQuestion(category?: string): ConversationQuestion {
   const filtered = category ? wendellQuestions.filter(q => q.category === category) : wendellQuestions;
-  if (filtered.length === 0) return wendellQuestions[0]!; // fallback
+  if (filtered.length === 0) {return wendellQuestions[0]!;} // fallback
   const idx = Math.floor(Math.random() * filtered.length);
   return filtered[idx] ?? filtered[0]!;
 }

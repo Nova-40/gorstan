@@ -255,7 +255,7 @@ export const wanderingNPCs: WanderingNPC[] = [
 
 
 let globalDispatch: Dispatch<GameAction> | null = null;
-let activeNPCs: Map<string, string> = new Map(); 
+const activeNPCs: Map<string, string> = new Map(); 
 
 
 // --- Function: initializeNPCSpawner ---
@@ -321,13 +321,13 @@ function selectNPCToSpawn(
     canNPCSpawnInRoom(npc, roomId, room, playerState, npcStates)
   );
 
-  if (eligibleNPCs.length === 0) return null;
+  if (eligibleNPCs.length === 0) {return null;}
 
   
   eligibleNPCs.sort((a, b) => {
 // Variable declaration
     const priorityDiff = b.personality.priority - a.personality.priority;
-    if (priorityDiff !== 0) return priorityDiff;
+    if (priorityDiff !== 0) {return priorityDiff;}
     return b.spawnChance - a.spawnChance;
   });
 
@@ -411,13 +411,13 @@ function evaluateSpawnCondition(
 
   switch (condition.type) {
     case 'flag':
-      if (!condition.key || !playerState.flags) return false;
+      if (!condition.key || !playerState.flags) {return false;}
 // Variable declaration
       const flagValue = playerState.flags[condition.key];
       return evaluateValue(flagValue, condition.value, condition.operator);
 
     case 'inventory':
-      if (!condition.key || !playerState.inventory) return false;
+      if (!condition.key || !playerState.inventory) {return false;}
 // Variable declaration
       const hasItem = playerState.inventory.includes(condition.key);
       return condition.operator === 'not_contains' ? !hasItem : hasItem;
@@ -495,14 +495,14 @@ function evaluateValue(actual: any, expected: any, operator?: string): boolean {
 
 // --- Function: getRoomZone ---
 function getRoomZone(roomId: string, room: Room): string {
-  if (!roomId) return 'neutral';
+  if (!roomId) {return 'neutral';}
   if (roomId.includes('Zone_')) {
     const base = roomId.split('Zone_')[0];
     return base ? base.toLowerCase() : 'neutral';
   }
 
   const title = room.title?.toLowerCase();
-  if (title && title.includes('puzzle')) return 'puzzle_heavy';
+  if (title && title.includes('puzzle')) {return 'puzzle_heavy';}
 
   // Handle description as either string or string array
   const descriptionSource = Array.isArray(room.description)
@@ -510,10 +510,10 @@ function getRoomZone(roomId: string, room: Room): string {
     : room.description || '';
   const description = descriptionSource.toLowerCase();
 
-  if (description.includes('dark')) return 'dark';
-  if (description.includes('stable')) return 'stable';
-  if (roomId.includes('glitch')) return 'surreal';
-  if (roomId.includes('lattice')) return 'surreal';
+  if (description.includes('dark')) {return 'dark';}
+  if (description.includes('stable')) {return 'stable';}
+  if (roomId.includes('glitch')) {return 'surreal';}
+  if (roomId.includes('lattice')) {return 'surreal';}
 
   return 'neutral';
 }
@@ -548,6 +548,6 @@ export function forceDespawnNPC(roomId: string): void {
 
 // --- Function: shouldSpawnNPC ---
 export function shouldSpawnNPC(npc: WanderingNPC, state: PlayerState): boolean {
-  if ((npc as any).questOnly && state.flags && !(state.flags as any)[(npc as any).requiredFlag]) return false;
+  if ((npc as any).questOnly && state.flags && !(state.flags as any)[(npc as any).requiredFlag]) {return false;}
   return true;
 }

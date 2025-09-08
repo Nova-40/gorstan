@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 // Temporarily skipped: rooms module is not currently an ES module export. Guarding to satisfy typecheck.
 let rooms: Record<string, any> = {};
 try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+   
   rooms = require('../content/rooms').rooms || {};
 } catch {}
 
@@ -19,7 +19,7 @@ describe('RoomService (structural placeholder)', () => {
   for (const roomVal of Object.values(rooms)) {
       const room: any = roomVal as any;
       const exits: any = room?.exits;
-      if (!exits) continue;
+      if (!exits) {continue;}
       // Support both array and record styles
       if (Array.isArray(exits)) {
         for (const ex of exits) {

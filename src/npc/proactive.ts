@@ -191,7 +191,7 @@ function evaluateAylaPrompts(context: ContextSnapshot, memory: NPCMemoryState): 
  * Polly's urgent prompts during takeover
  */
 function evaluatePollyUrgency(context: ContextSnapshot, memory: NPCMemoryState): ProactivePrompt | null {
-  if (!context.timers.pollyTakeover?.active) return null;
+  if (!context.timers.pollyTakeover?.active) {return null;}
   
   const timeRemaining = context.timers.pollyTakeover.timeRemaining;
   

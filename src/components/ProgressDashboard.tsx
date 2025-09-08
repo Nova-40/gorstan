@@ -35,7 +35,7 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
   const { state } = useGameState();
   
   // If used as modal and not open, return null
-  if (onClose && !isOpen) return null;
+  if (onClose && !isOpen) {return null;}
   
   // Calculate achievement progress - use existing game state structure
   const unlockedAchievements = (state.player as any).achievements?.length || 0;
@@ -59,11 +59,11 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
   
   // Determine player rank based on score
   const getRank = (score: number): { name: string; color: string; icon: React.ReactNode } => {
-    if (score >= 2000) return { name: 'Legendary', color: 'text-purple-400', icon: <Star className="w-4 h-4" /> };
-    if (score >= 1500) return { name: 'Master', color: 'text-orange-400', icon: <Award className="w-4 h-4" /> };
-    if (score >= 1000) return { name: 'Expert', color: 'text-yellow-400', icon: <Trophy className="w-4 h-4" /> };
-    if (score >= 600) return { name: 'Adept', color: 'text-green-400', icon: <Target className="w-4 h-4" /> };
-    if (score >= 300) return { name: 'Apprentice', color: 'text-blue-400', icon: <TrendingUp className="w-4 h-4" /> };
+    if (score >= 2000) {return { name: 'Legendary', color: 'text-purple-400', icon: <Star className="w-4 h-4" /> };}
+    if (score >= 1500) {return { name: 'Master', color: 'text-orange-400', icon: <Award className="w-4 h-4" /> };}
+    if (score >= 1000) {return { name: 'Expert', color: 'text-yellow-400', icon: <Trophy className="w-4 h-4" /> };}
+    if (score >= 600) {return { name: 'Adept', color: 'text-green-400', icon: <Target className="w-4 h-4" /> };}
+    if (score >= 300) {return { name: 'Apprentice', color: 'text-blue-400', icon: <TrendingUp className="w-4 h-4" /> };}
     return { name: 'Novice', color: 'text-gray-400', icon: <Map className="w-4 h-4" /> };
   };
   

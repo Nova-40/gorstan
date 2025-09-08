@@ -171,10 +171,10 @@ export const useIntersectionObserver = (
 
   React.useEffect(() => {
     const target = targetRef.current;
-    if (!target) return;
+    if (!target) {return;}
 
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry) callback(entry.isIntersecting); },
+      ([entry]) => { if (entry) {callback(entry.isIntersecting);} },
       {
         threshold: 0.1,
         rootMargin: '50px',

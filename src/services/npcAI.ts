@@ -362,7 +362,7 @@ export class NPCAIController {
    * Generate AI-driven NPC behavior
    */
   public async generateNPCBehavior(context: NPCBehaviorContext): Promise<NPCAction | null> {
-    if (!this.aiEnabled) return null;
+    if (!this.aiEnabled) {return null;}
 
     const { npcProfile } = context;
     
@@ -370,7 +370,7 @@ export class NPCAIController {
       // Special handling for barista and Pike coffee
       if (npcProfile.npcId === 'barista' && context.playerPresent) {
         const pikeCallout = await this.generatePikeCoffeeCallout(context);
-        if (pikeCallout) return pikeCallout;
+        if (pikeCallout) {return pikeCallout;}
       }
 
       // Generate contextual behavior
@@ -533,12 +533,12 @@ ${npcProfile.name}'s response:`;
    */
   public async generateWanderingDestination(npcId: string, currentRoom: string): Promise<string | null> {
     const profile = this.npcProfiles.get(npcId);
-    if (!profile || !profile.aiFeatures.wanderingAI) return null;
+    if (!profile || !profile.aiFeatures.wanderingAI) {return null;}
 
     const availableRooms = profile.behaviorPatterns.wanderingRooms || [];
     const filteredRooms = availableRooms.filter(room => room !== currentRoom);
     
-    if (filteredRooms.length === 0) return null;
+    if (filteredRooms.length === 0) {return null;}
 
     // Simple AI: prefer rooms the NPC hasn't visited recently
     const state = this.npcStates.get(npcId);
@@ -554,7 +554,7 @@ ${npcProfile.name}'s response:`;
    */
   private updateNPCMemory(npcId: string, context: NPCBehaviorContext): void {
     const profile = this.npcProfiles.get(npcId);
-    if (!profile) return;
+    if (!profile) {return;}
 
     profile.memory.playerInteractions++;
     profile.memory.lastSeen = Date.now();
@@ -618,7 +618,7 @@ ${npcProfile.name}'s response:`;
   ): Promise<NPCAction | null> {
     try {
       const npcProfile = this.npcProfiles.get(npcId);
-      if (!npcProfile) return null;
+      if (!npcProfile) {return null;}
 
       const prompt = this.buildCharacterStoryPrompt(npcProfile, aboutCharacter, context, playerAction);
       

@@ -24,7 +24,7 @@ export const FireBolt: Spell = {
   description: 'Launches a bolt of flame that deals fire damage and may inflict burn.',
   
   execute: (caster: Actor, target?: Actor) => {
-    if (!target) return;
+    if (!target) {return;}
 
     // Create fire damage packet
     const damage = DamageUtils.fire(BALANCE.baseDamage.FireBolt, caster.id);

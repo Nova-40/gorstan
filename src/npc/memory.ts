@@ -319,10 +319,10 @@ export function getMemorySummary(npcId: string): {
   
   // Determine relationship status
   let relationshipStatus = 'neutral';
-  if (memory.relationshipLevel > 0.3) relationshipStatus = 'friendly';
-  else if (memory.relationshipLevel > 0.6) relationshipStatus = 'trusted';
-  else if (memory.relationshipLevel < -0.3) relationshipStatus = 'suspicious';
-  else if (memory.relationshipLevel < -0.6) relationshipStatus = 'hostile';
+  if (memory.relationshipLevel > 0.3) {relationshipStatus = 'friendly';}
+  else if (memory.relationshipLevel > 0.6) {relationshipStatus = 'trusted';}
+  else if (memory.relationshipLevel < -0.3) {relationshipStatus = 'suspicious';}
+  else if (memory.relationshipLevel < -0.6) {relationshipStatus = 'hostile';}
   
   // Get important semantic facts
   const importantFacts = Object.fromEntries(
@@ -332,9 +332,9 @@ export function getMemorySummary(npcId: string): {
   // Determine player style
   const prefs = memory.playerPreferences;
   let playerStyle = 'explorer';
-  if (prefs.impatient && !prefs.explores_thoroughly) playerStyle = 'rusher';
-  else if (prefs.asks_for_help && prefs.likes_hints) playerStyle = 'guidance_seeker';
-  else if (!prefs.likes_hints && prefs.explores_thoroughly) playerStyle = 'independent';
+  if (prefs.impatient && !prefs.explores_thoroughly) {playerStyle = 'rusher';}
+  else if (prefs.asks_for_help && prefs.likes_hints) {playerStyle = 'guidance_seeker';}
+  else if (!prefs.likes_hints && prefs.explores_thoroughly) {playerStyle = 'independent';}
   
   return {
     recentTopics,

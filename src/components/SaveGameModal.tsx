@@ -50,7 +50,7 @@ const SaveGameModal: React.FC<SaveGameModalProps> = ({
   const [newSaveName, setNewSaveName] = useState('');
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
 
-  if (!isOpen) return null;
+  if (!isOpen) {return null;}
 
   const formatTimestamp = (timestamp: number) => {
     const date = new Date(timestamp);

@@ -79,7 +79,7 @@ export default function DemoDirector() {
     sh.attach({ state, dispatch });
 
     let cancelled = false;
-    let stepIndex = 0;
+    const stepIndex = 0;
 
     async function runEnhancedDemo() {
       // Enhanced demo sequence with progressive disclosure
@@ -97,10 +97,10 @@ export default function DemoDirector() {
       setDemoStep(0);
 
       for (let i = 0; i < commands.length; i++) {
-        if (cancelled) break;
+        if (cancelled) {break;}
         
         const command = commands[i];
-        if (!command) continue;
+        if (!command) {continue;}
         
         const { cmd } = command;
         setDemoStep(i + 1);
@@ -117,9 +117,9 @@ export default function DemoDirector() {
         });
 
         // Show micro-tutorial if first time using a mechanic
-        if (i === 0) showMicroTutorialAt('This is how you interact with Gorstan', { x: 300, y: 100 });
-        if (i === 1) showMicroTutorialAt('Room navigation opens up the multiverse', { x: 300, y: 100 });
-        if (i === 3) showMicroTutorialAt('Detailed examination reveals hidden lore', { x: 300, y: 100 });
+        if (i === 0) {showMicroTutorialAt('This is how you interact with Gorstan', { x: 300, y: 100 });}
+        if (i === 1) {showMicroTutorialAt('Room navigation opens up the multiverse', { x: 300, y: 100 });}
+        if (i === 3) {showMicroTutorialAt('Detailed examination reveals hidden lore', { x: 300, y: 100 });}
 
         // Execute command through existing system
         dispatch({ type: 'COMMAND_INPUT', payload: cmd });

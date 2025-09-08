@@ -69,7 +69,7 @@ export const StartPromptDialog: React.FC<StartPromptDialogProps> = ({
     return () => document.removeEventListener('keydown', handleEscape);
   }, [isOpen, onCancel]);
 
-  if (!isOpen) return null;
+  if (!isOpen) {return null;}
 
   return (
     <AnimatePresence>

@@ -26,7 +26,7 @@ export class RoomObjectivesManager {
   private objectives: Record<string, RoomObjective[]> = {};
 
   addObjective(roomId: string, objective: RoomObjective) {
-    if (!this.objectives[roomId]) this.objectives[roomId] = [];
+    if (!this.objectives[roomId]) {this.objectives[roomId] = [];}
     if (!this.objectives[roomId].some(o => o.id === objective.id)) {
       this.objectives[roomId].push({ ...objective });
     }
@@ -35,8 +35,8 @@ export class RoomObjectivesManager {
   list(roomId: string): RoomObjective[] { return this.objectives[roomId] ? [...this.objectives[roomId]] : []; }
   complete(roomId: string, id: string) {
     const list = this.objectives[roomId];
-    if (!list) return;
+    if (!list) {return;}
     const obj = list.find(o => o.id === id);
-    if (obj) obj.completed = true;
+    if (obj) {obj.completed = true;}
   }
 }
