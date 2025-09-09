@@ -6,17 +6,17 @@ export const DEMO_ROOM_IDS = new Set<string>([
   // Starting sequence
   'controlnexus',
   'crossing',
-  
+
   // Faeglade tour (main demo zone)
   'elfhame',
-  'faeglade', 
+  'faeglade',
   'faelake',
   'faelakenorthshore',
-  
+
   // Set piece finale
   'faepalacemainhall',
   'faepalacerhianonsroom',
-  
+
   // Emergency/utility rooms
   'introreset',
   'liminalhub', // Fallback hub
@@ -41,17 +41,17 @@ export function isRoomAllowedInDemo(roomId: string): boolean {
  */
 export const DEMO_SUGGESTED_PATH = [
   'controlnexus',
-  'crossing', 
+  'crossing',
   'elfhame',
   'faeglade',
   'faelake',
   'faepalacemainhall',
-  'faepalacerhianonsroom'
+  'faepalacerhianonsroom',
 ] as const;
 
 /**
  * Get tooltip message for disabled exits in demo
  */
 export function getDemoBlockMessage(): string {
-  return "Available in the full game";
+  return 'Available in the full game';
 }

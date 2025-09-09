@@ -27,7 +27,7 @@ import { NPCErrorHandler, NPCErrorType, NPCErrorSeverity } from '../errorHandlin
 beforeAll(() => {
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
-    value: vi.fn().mockImplementation(query => ({
+    value: vi.fn().mockImplementation((query) => ({
       matches: false,
       media: query,
       onchange: null,
@@ -58,7 +58,7 @@ describe('NPC Wandering System Integration (Core Components)', () => {
   afterEach(() => {
     performanceOptimizer.cleanup();
     errorHandler.cleanup();
-    
+
     vi.restoreAllMocks();
   });
 
@@ -104,7 +104,7 @@ describe('NPC Wandering System Integration (Core Components)', () => {
         NPCErrorType.MOVEMENT_FAILED,
         'Test movement error',
         { npcId: 'test-npc' },
-        NPCErrorSeverity.MEDIUM
+        NPCErrorSeverity.MEDIUM,
       );
 
       const stats = errorHandler.getErrorStatistics();
@@ -113,7 +113,7 @@ describe('NPC Wandering System Integration (Core Components)', () => {
 
     test('should implement circuit breaker pattern', async () => {
       const failingOperation = vi.fn().mockRejectedValue(new Error('Operation failed'));
-      
+
       for (let i = 0; i < 6; i++) {
         try {
           await errorHandler.executeWithProtection(failingOperation);
@@ -137,7 +137,7 @@ describe('NPC Wandering System Integration (Core Components)', () => {
       });
 
       const result = await errorHandler.executeWithRetry(retryOperation, 3, 10);
-      
+
       expect(result).toBe('success');
       expect(retryOperation).toHaveBeenCalledTimes(3);
     });
@@ -150,8 +150,8 @@ describe('NPC Wandering System Integration (Core Components)', () => {
             NPCErrorType.MOVEMENT_FAILED,
             `Error ${i}`,
             {},
-            NPCErrorSeverity.HIGH
-          )
+            NPCErrorSeverity.HIGH,
+          ),
         );
       }
 
@@ -186,7 +186,7 @@ describe('NPC Wandering System Integration (Core Components)', () => {
         NPCErrorType.PERFORMANCE_DEGRADATION,
         'Performance issue detected',
         {},
-        NPCErrorSeverity.MEDIUM
+        NPCErrorSeverity.MEDIUM,
       );
 
       // Check that performance metrics are still available
@@ -197,27 +197,25 @@ describe('NPC Wandering System Integration (Core Components)', () => {
 
     test('should handle high-load scenarios', async () => {
       const startTime = performance.now();
-      
+
       // Simulate high load with both errors and performance operations
       const operations = [];
-      
+
       for (let i = 0; i < 10; i++) {
         operations.push(
           errorHandler.reportError(
             NPCErrorType.MOVEMENT_FAILED,
             `Load test error ${i}`,
             { iteration: i },
-            NPCErrorSeverity.LOW
-          )
+            NPCErrorSeverity.LOW,
+          ),
         );
-        
-        operations.push(
-          Promise.resolve(performanceOptimizer.getMetrics())
-        );
+
+        operations.push(Promise.resolve(performanceOptimizer.getMetrics()));
       }
 
       await Promise.all(operations);
-      
+
       const endTime = performance.now();
       const duration = endTime - startTime;
 
@@ -227,7 +225,7 @@ describe('NPC Wandering System Integration (Core Components)', () => {
       // Check system health
       const errorStats = errorHandler.getErrorStatistics();
       expect(errorStats.totalErrors).toBe(10);
-      
+
       const degradationLevel = errorHandler.getDegradationLevel();
       expect(degradationLevel).toBeLessThan(4); // Should not be critically degraded
     });
@@ -240,14 +238,14 @@ describe('NPC Wandering System Integration (Core Components)', () => {
         ally: 'al',
         roomId: 'intro-controlroom',
         timestamp: Date.now() - 100000,
-        strength: 0.8
+        strength: 0.8,
       };
 
       await errorHandler.reportError(
         NPCErrorType.UNKNOWN_ERROR,
         'Alliance memory accessed',
         allianceData,
-        NPCErrorSeverity.LOW
+        NPCErrorSeverity.LOW,
       );
 
       const errorStats = errorHandler.getErrorStatistics();
@@ -261,14 +259,14 @@ describe('NPC Wandering System Integration (Core Components)', () => {
 
     test('should handle concurrent alliance operations', async () => {
       const operations = [];
-      
+
       for (let i = 0; i < 5; i++) {
         const allianceData = {
           npcId: `npc-${i}`,
           ally: 'player',
           roomId: 'test-room',
           timestamp: Date.now(),
-          strength: 0.5 + (i * 0.1)
+          strength: 0.5 + i * 0.1,
         };
 
         operations.push(
@@ -276,8 +274,8 @@ describe('NPC Wandering System Integration (Core Components)', () => {
             NPCErrorType.UNKNOWN_ERROR,
             `Alliance ${i}`,
             allianceData,
-            NPCErrorSeverity.LOW
-          )
+            NPCErrorSeverity.LOW,
+          ),
         );
       }
 
@@ -306,16 +304,14 @@ describe('NPC Wandering System Integration (Core Components)', () => {
 
     test('should maintain performance under stress', async () => {
       const startTime = performance.now();
-      
+
       const promises = [];
       for (let i = 0; i < 20; i++) {
-        promises.push(
-          Promise.resolve(performanceOptimizer.getMetrics())
-        );
+        promises.push(Promise.resolve(performanceOptimizer.getMetrics()));
       }
 
       await Promise.all(promises);
-      
+
       const endTime = performance.now();
       const duration = endTime - startTime;
 
@@ -333,10 +329,7 @@ describe('NPC Wandering System Integration (Core Components)', () => {
     });
 
     test('should reset state when requested', async () => {
-      await errorHandler.reportError(
-        NPCErrorType.MOVEMENT_FAILED, 
-        'Test error'
-      );
+      await errorHandler.reportError(NPCErrorType.MOVEMENT_FAILED, 'Test error');
 
       errorHandler.reset();
 
@@ -348,7 +341,7 @@ describe('NPC Wandering System Integration (Core Components)', () => {
   describe('Performance Under Load', () => {
     test('should handle concurrent error reporting and performance monitoring', async () => {
       const operations = [];
-      
+
       // Mix error reporting and performance monitoring
       for (let i = 0; i < 20; i++) {
         if (i % 2 === 0) {
@@ -357,13 +350,11 @@ describe('NPC Wandering System Integration (Core Components)', () => {
               NPCErrorType.MOVEMENT_FAILED,
               `Concurrent error ${i}`,
               { index: i },
-              NPCErrorSeverity.LOW
-            )
+              NPCErrorSeverity.LOW,
+            ),
           );
         } else {
-          operations.push(
-            Promise.resolve(performanceOptimizer.getMetrics())
-          );
+          operations.push(Promise.resolve(performanceOptimizer.getMetrics()));
         }
       }
 
@@ -391,8 +382,8 @@ describe('NPC Wandering System Integration (Core Components)', () => {
             NPCErrorType.PERFORMANCE_DEGRADATION,
             `High load error ${i}`,
             { load: i },
-            i % 3 === 0 ? NPCErrorSeverity.CRITICAL : NPCErrorSeverity.HIGH
-          )
+            i % 3 === 0 ? NPCErrorSeverity.CRITICAL : NPCErrorSeverity.HIGH,
+          ),
         );
       }
 

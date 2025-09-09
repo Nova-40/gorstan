@@ -21,13 +21,6 @@ import React, { useEffect, useState } from 'react';
 
 import { useGameState } from '../state/gameState';
 
-
-
-
-
-
-
-
 interface RebootMessage {
   text: string;
   delay: number;
@@ -35,62 +28,58 @@ interface RebootMessage {
 }
 
 const rebootSequence: RebootMessage[] = [
-  { text: "Initialising Higgs Boson field...", delay: 500, type: 'system' },
-  { text: "Calibrating quantum foam lattice...", delay: 1000, type: 'system' },
-  { text: "Creating fundamental particles...", delay: 1500, type: 'system' },
-  { text: "Applying gravity patch (v1.0.2)...", delay: 2000, type: 'system' },
-  { text: "Generating baryonic matter...", delay: 2500, type: 'system' },
-  { text: "Constructing multiversal constants...", delay: 3000, type: 'system' },
-  { text: "Recompiling narrative entropy...", delay: 3500, type: 'system' },
-  { text: "Rebalancing protagonist probability...", delay: 4000, type: 'system' },
-  { text: "Restoring player state...", delay: 4500, type: 'system' },
-  { text: "Multiverse reboot complete.", delay: 5000, type: 'info' },
+  { text: 'Initialising Higgs Boson field...', delay: 500, type: 'system' },
+  { text: 'Calibrating quantum foam lattice...', delay: 1000, type: 'system' },
+  { text: 'Creating fundamental particles...', delay: 1500, type: 'system' },
+  { text: 'Applying gravity patch (v1.0.2)...', delay: 2000, type: 'system' },
+  { text: 'Generating baryonic matter...', delay: 2500, type: 'system' },
+  { text: 'Constructing multiversal constants...', delay: 3000, type: 'system' },
+  { text: 'Recompiling narrative entropy...', delay: 3500, type: 'system' },
+  { text: 'Rebalancing protagonist probability...', delay: 4000, type: 'system' },
+  { text: 'Restoring player state...', delay: 4500, type: 'system' },
+  { text: 'Multiverse reboot complete.', delay: 5000, type: 'info' },
 ];
 
 const MultiverseRebootSequence: React.FC = () => {
   const { state, dispatch } = useGameState();
-// React state declaration
+  // React state declaration
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const [displayedMessages, setDisplayedMessages] = useState<RebootMessage[]>([]);
-// React state declaration
+  // React state declaration
   const [isComplete, setIsComplete] = useState(false);
   const [fadeStage, setFadeStage] = useState<'none' | 'fading' | 'black' | 'reboot'>('none');
-// React state declaration
+  // React state declaration
   const [fadeOpacity, setFadeOpacity] = useState(0);
 
-// React effect hook
+  // React effect hook
   useEffect(() => {
     if (!state.flags?.show_reset_sequence || isComplete || fadeStage !== 'reboot') {
       return;
     }
 
-    let timeoutId: NodeJS.Timeout;
+    let timeoutId: ReturnType<typeof setTimeout>;
 
     if (currentMessageIndex < rebootSequence.length) {
-// Variable declaration
+      // Variable declaration
       const currentMessage = rebootSequence[currentMessageIndex];
 
       timeoutId = setTimeout(() => {
-        setDisplayedMessages(prev => [...prev, currentMessage]);
-        setCurrentMessageIndex(prev => prev + 1);
+        setDisplayedMessages((prev) => [...prev, currentMessage]);
+        setCurrentMessageIndex((prev) => prev + 1);
 
-        
         if (currentMessageIndex === rebootSequence.length - 1) {
           setTimeout(() => {
             setIsComplete(true);
 
-            
             import('../logic/achievementEngine').then(({ unlockAchievement }) => {
               unlockAchievement('multiverse_rebooter');
             });
 
-            
             dispatch({
               type: 'CHANGE_ROOM',
-              payload: 'crossing'
+              payload: 'crossing',
             });
 
-            
             dispatch({
               type: 'SET_FLAGS',
               payload: {
@@ -98,14 +87,12 @@ const MultiverseRebootSequence: React.FC = () => {
                 multiverse_reboot_pending: false,
                 multiverse_reboot_active: false,
                 show_reset_sequence: false,
-              }
+              },
             });
 
-            
             setFadeStage('none');
             setFadeOpacity(0);
 
-            
             setTimeout(() => {
               dispatch({
                 type: 'ADD_MESSAGE',
@@ -114,52 +101,53 @@ const MultiverseRebootSequence: React.FC = () => {
                   text: 'You awaken with a faint sense of déjà vu. The multiverse has been rebooted.',
                   type: 'narrative',
                   timestamp: Date.now(),
-                }
+                },
               });
             }, 1000);
-
-          }, 1500); 
+          }, 1500);
         }
       }, currentMessage.delay);
     }
 
-// JSX return block or main return
+    // JSX return block or main return
     return () => {
       if (timeoutId) {
         clearTimeout(timeoutId);
       }
     };
-  }, [currentMessageIndex, state.flags?.show_reset_sequence, isComplete, fadeStage, dispatch, state.flags]);
+  }, [
+    currentMessageIndex,
+    state.flags?.show_reset_sequence,
+    isComplete,
+    fadeStage,
+    dispatch,
+    state.flags,
+  ]);
 
-  
-// React effect hook
+  // React effect hook
   useEffect(() => {
     if (state.flags?.multiverse_reboot_pending && !state.flags?.multiverse_reboot_active) {
-      
       setFadeStage('fading');
 
-      
-// Variable declaration
+      // Variable declaration
       const initialDelay = setTimeout(() => {
         setFadeOpacity(1);
       }, 50);
 
-      let fadeTimeoutId: NodeJS.Timeout;
-      let rebootTimeoutId: NodeJS.Timeout;
+      let fadeTimeoutId: ReturnType<typeof setTimeout>;
+      let rebootTimeoutId: ReturnType<typeof setTimeout>;
 
-      
       fadeTimeoutId = setTimeout(() => {
         setFadeStage('black');
 
-        
         rebootTimeoutId = setTimeout(() => {
           setFadeStage('reboot');
           dispatch({ type: 'START_MULTIVERSE_REBOOT' });
           dispatch({ type: 'SHOW_RESET_SEQUENCE' });
-        }, 2000); 
-      }, 1000); 
+        }, 2000);
+      }, 1000);
 
-// JSX return block or main return
+      // JSX return block or main return
       return () => {
         clearTimeout(initialDelay);
         clearTimeout(fadeTimeoutId);
@@ -172,7 +160,6 @@ const MultiverseRebootSequence: React.FC = () => {
     return null;
   }
 
-  
   const fadeOverlayStyle: React.CSSProperties = {
     position: 'fixed',
     top: 0,
@@ -186,12 +173,10 @@ const MultiverseRebootSequence: React.FC = () => {
     pointerEvents: 'all',
   };
 
-  
   if (fadeStage === 'fading' || fadeStage === 'black') {
     return <div style={fadeOverlayStyle} />;
   }
 
-  
   if (fadeStage !== 'reboot') {
     return null;
   }
@@ -264,14 +249,19 @@ const MultiverseRebootSequence: React.FC = () => {
     marginRight: '0.5rem',
   };
 
-// Variable declaration
+  // Variable declaration
   const getMessageColor = (type: string): string => {
     switch (type) {
-      case 'system': return '#00ccff';
-      case 'info': return '#00ff00';
-      case 'error': return '#ff6666';
-      case 'warning': return '#ffaa00';
-      default: return '#ffffff';
+      case 'system':
+        return '#00ccff';
+      case 'info':
+        return '#00ff00';
+      case 'error':
+        return '#ff6666';
+      case 'warning':
+        return '#ffaa00';
+      default:
+        return '#ffffff';
     }
   };
 
@@ -281,7 +271,7 @@ const MultiverseRebootSequence: React.FC = () => {
     animation: 'blink 1s infinite',
   };
 
-// JSX return block or main return
+  // JSX return block or main return
   return (
     <div style={overlayStyle}>
       <div style={containerStyle}>
@@ -296,15 +286,11 @@ const MultiverseRebootSequence: React.FC = () => {
           {displayedMessages.map((message, index) => (
             <div key={index} style={messageStyle}>
               <span style={prefixStyle}>{'>'}</span>
-              <span style={{ color: getMessageColor(message.type) }}>
-                {message.text}
-              </span>
+              <span style={{ color: getMessageColor(message.type) }}>{message.text}</span>
             </div>
           ))}
 
-          {currentMessageIndex < rebootSequence.length && (
-            <div style={cursorStyle}>█</div>
-          )}
+          {currentMessageIndex < rebootSequence.length && <div style={cursorStyle}>█</div>}
         </div>
       </div>
 

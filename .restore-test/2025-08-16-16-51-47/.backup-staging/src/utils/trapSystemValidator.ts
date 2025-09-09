@@ -17,7 +17,6 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Handles trap logic and room-based dangers.
 
-
 import type { TrapDefinition } from '../engine/trapEngine';
 // If Room or Trap types are needed, import them as type only:
 // import type { Room } from '../types/RoomTypes';
@@ -84,7 +83,8 @@ export function generateTrapReport(roomMap: Record<string, any>): {
 
       room.traps.forEach((trap: TrapDefinition) => {
         if (trap.type) trapsByType[trap.type] = (trapsByType[trap.type] || 0) + 1;
-        if (trap.severity) trapsBySeverity[trap.severity] = (trapsBySeverity[trap.severity] || 0) + 1;
+        if (trap.severity)
+          trapsBySeverity[trap.severity] = (trapsBySeverity[trap.severity] || 0) + 1;
       });
     }
   }
@@ -169,7 +169,7 @@ export function validateTrapSystem(roomMap: Record<string, any>): TrapSystemVali
     warnings: [],
     roomsWithTraps: [],
     systemStatus: {
-      trapProcessingActive: true, 
+      trapProcessingActive: true,
       gameStateIntegration: true,
       roomRendererIntegration: true,
       commandParserIntegration: true,
@@ -178,10 +178,9 @@ export function validateTrapSystem(roomMap: Record<string, any>): TrapSystemVali
     recommendations: [],
   };
 
-  
   for (const [roomId, room] of Object.entries(roomMap)) {
     if (room.traps && Array.isArray(room.traps)) {
-// Variable declaration
+      // Variable declaration
       const trapValidations = room.traps.map((trap: TrapDefinition) => validateTrap(trap));
 
       result.roomsWithTraps.push({
@@ -190,10 +189,11 @@ export function validateTrapSystem(roomMap: Record<string, any>): TrapSystemVali
         traps: trapValidations,
       });
 
-      
       trapValidations.forEach((validation: TrapValidationResult) => {
         if (!validation.isValid) {
-          result.errors.push(`Room ${roomId}, trap ${validation.trapId}: ${validation.issues.join(', ')}`);
+          result.errors.push(
+            `Room ${roomId}, trap ${validation.trapId}: ${validation.issues.join(', ')}`,
+          );
           result.isOperational = false;
         }
 
@@ -204,11 +204,12 @@ export function validateTrapSystem(roomMap: Record<string, any>): TrapSystemVali
         }
       });
 
-      
-// Variable declaration
+      // Variable declaration
       const trapIds = room.traps.map((trap: TrapDefinition) => trap.id);
-// Variable declaration
-      const duplicates = trapIds.filter((id: string, index: number) => trapIds.indexOf(id) !== index);
+      // Variable declaration
+      const duplicates = trapIds.filter(
+        (id: string, index: number) => trapIds.indexOf(id) !== index,
+      );
       if (duplicates.length > 0) {
         result.errors.push(`Room ${roomId} has duplicate trap IDs: ${duplicates.join(', ')}`);
         result.isOperational = false;
@@ -216,7 +217,6 @@ export function validateTrapSystem(roomMap: Record<string, any>): TrapSystemVali
     }
   }
 
-  
   result.recommendations = [
     'Test trap triggering by entering rooms with traps',
     'Verify health deduction works correctly for damage traps',
@@ -231,15 +231,15 @@ export function validateTrapSystem(roomMap: Record<string, any>): TrapSystemVali
   }
 
   if (result.roomsWithTraps.length > 0) {
-// Variable declaration
+    // Variable declaration
     const totalTraps = result.roomsWithTraps.reduce((sum, room) => sum + room.trapCount, 0);
-    result.recommendations.push(`Found ${totalTraps} traps across ${result.roomsWithTraps.length} rooms`);
+    result.recommendations.push(
+      `Found ${totalTraps} traps across ${result.roomsWithTraps.length} rooms`,
+    );
   }
 
   return result;
 }
-
-
 
 // --- Function: testTrapSystem ---
 export function testTrapSystem(): {
@@ -250,45 +250,43 @@ export function testTrapSystem(): {
     details: string;
   }>;
 } {
-// Variable declaration
+  // Variable declaration
   const tests = [
     {
       name: 'Trap Definition Interface',
-      passed: true, 
+      passed: true,
       details: 'TrapDefinition interface compiles correctly',
     },
     {
       name: 'Game State Integration',
-      passed: true, 
+      passed: true,
       details: 'TRIGGER_TRAP action exists in game state reducer',
     },
     {
       name: 'Room Renderer Integration',
-      passed: true, 
+      passed: true,
       details: 'RoomRenderer checks for traps on room entry',
     },
     {
       name: 'Command Processor Integration',
-      passed: true, 
+      passed: true,
       details: 'Command processor has trap handling logic',
     },
     {
       name: 'Score System Integration',
-      passed: true, 
+      passed: true,
       details: 'Score penalties exist for trap triggering',
     },
   ];
 
-// Variable declaration
-  const allPassed = tests.every(test => test.passed);
+  // Variable declaration
+  const allPassed = tests.every((test) => test.passed);
 
   return {
     passed: allPassed,
     tests,
   };
 }
-
-
 
 // --- Function: trapSystemHealthCheck ---
 export function trapSystemHealthCheck(): {
@@ -301,16 +299,14 @@ export function trapSystemHealthCheck(): {
     testingRecommended: boolean;
   };
 } {
-  
   const criticalIssues: string[] = [];
 
-  
-// Variable declaration
-  const hasDefinitions = true; 
-// Variable declaration
-  const hasGameStateIntegration = true; 
-// Variable declaration
-  const hasRoomIntegration = true; 
+  // Variable declaration
+  const hasDefinitions = true;
+  // Variable declaration
+  const hasGameStateIntegration = true;
+  // Variable declaration
+  const hasRoomIntegration = true;
 
   let status: 'OPERATIONAL' | 'WARNING' | 'ERROR' = 'OPERATIONAL';
   let message = 'Trap system is operational and ready for use';

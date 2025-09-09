@@ -31,7 +31,9 @@ export function OverlayPortal() {
     return unsubscribe;
   }, []);
 
-  if (!currentOverlay) return null;
+  if (!currentOverlay) {
+    return null;
+  }
 
   return currentOverlay;
 }

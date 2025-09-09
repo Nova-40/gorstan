@@ -18,8 +18,8 @@ export const StartPromptDialog: React.FC<StartPromptDialogProps> = ({
   isOpen,
   onConfirm,
   onCancel,
-  title = "Start Enhanced Demo?",
-  message = "This will guide you through Gorstan's key features with progressive tutorials. You can exit anytime by pressing ESC."
+  title = 'Start Enhanced Demo?',
+  message = "This will guide you through Gorstan's key features with progressive tutorials. You can exit anytime by pressing ESC.",
 }) => {
   const confirmButtonRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -28,12 +28,12 @@ export const StartPromptDialog: React.FC<StartPromptDialogProps> = ({
   useEffect(() => {
     if (isOpen) {
       confirmButtonRef.current?.focus();
-      
+
       // Focus trap
       const handleTabKey = (e: KeyboardEvent) => {
         if (e.key === 'Tab') {
           const focusableElements = dialogRef.current?.querySelectorAll(
-            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
           );
           const firstElement = focusableElements?.[0] as HTMLElement;
           const lastElement = focusableElements?.[focusableElements.length - 1] as HTMLElement;
@@ -69,7 +69,9 @@ export const StartPromptDialog: React.FC<StartPromptDialogProps> = ({
     return () => document.removeEventListener('keydown', handleEscape);
   }, [isOpen, onCancel]);
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
 
   return (
     <AnimatePresence>
@@ -90,9 +92,9 @@ export const StartPromptDialog: React.FC<StartPromptDialogProps> = ({
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
           className="bg-gray-800 border border-gray-600 rounded-lg shadow-2xl max-w-md w-full p-6"
-          onClick={e => e.stopPropagation()}
+          onClick={(e) => e.stopPropagation()}
         >
           <div className="text-center space-y-4">
             {/* Icon */}
@@ -101,18 +103,12 @@ export const StartPromptDialog: React.FC<StartPromptDialogProps> = ({
             </div>
 
             {/* Title */}
-            <h2 
-              id="demo-dialog-title"
-              className="text-xl font-semibold text-slate-100"
-            >
+            <h2 id="demo-dialog-title" className="text-xl font-semibold text-slate-100">
               {title}
             </h2>
 
             {/* Message */}
-            <p 
-              id="demo-dialog-description"
-              className="text-slate-300 text-sm leading-relaxed"
-            >
+            <p id="demo-dialog-description" className="text-slate-300 text-sm leading-relaxed">
               {message}
             </p>
 

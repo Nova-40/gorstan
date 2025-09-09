@@ -5,41 +5,15 @@
     "end": 2050
   },
   "traditions": {
-    "christian": [
-      "christmas",
-      "easter"
-    ],
-    "islamic": [
-      "eidAlFitr",
-      "eidAlAdha"
-    ],
-    "jewish": [
-      "roshHashanah",
-      "passover",
-      "hanukkah"
-    ],
-    "chinese": [
-      "lunarNewYear",
-      "midAutumnFestival"
-    ],
-    "hindu": [
-      "diwali",
-      "holi"
-    ],
-    "buddhist": [
-      "vesak"
-    ],
-    "sikh": [
-      "vaisakhi"
-    ],
-    "shinto": [
-      "shogatsu",
-      "obon"
-    ],
-    "seasonal": [
-      "solsticesEquinoxes",
-      "nawRuz"
-    ]
+    "christian": ["christmas", "easter"],
+    "islamic": ["eidAlFitr", "eidAlAdha"],
+    "jewish": ["roshHashanah", "passover", "hanukkah"],
+    "chinese": ["lunarNewYear", "midAutumnFestival"],
+    "hindu": ["diwali", "holi"],
+    "buddhist": ["vesak"],
+    "sikh": ["vaisakhi"],
+    "shinto": ["shogatsu", "obon"],
+    "seasonal": ["solsticesEquinoxes", "nawRuz"]
   },
   "totalCelebrations": 520
 }

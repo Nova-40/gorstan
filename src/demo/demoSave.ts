@@ -27,17 +27,17 @@ export function seedDemoSave(): DemoSaveData {
     player: {
       currentRoom: 'controlnexus', // Start at control nexus
       inventory: ['teleport_token'], // One teleport token for exploration
-      health: 100
+      health: 100,
     },
     flags: {
       // Demo-safe flags only
       demoMode: true,
       tutorialCompleted: false,
-      aylaIntroduced: false
+      aylaIntroduced: false,
     },
     visitedRooms: ['controlnexus'],
     timestamp: new Date().toISOString(),
-    isDemo: true
+    isDemo: true,
   };
 }
 
@@ -45,7 +45,9 @@ export function seedDemoSave(): DemoSaveData {
  * Initialize demo save if none exists
  */
 export function initializeDemoSave(): void {
-  if (!IS_DEMO) return;
+  if (!IS_DEMO) {
+    return;
+  }
 
   const existingSave = Storage.getItem('demo_save');
   if (!existingSave) {
@@ -62,9 +64,9 @@ export function getDemoSettings() {
   return {
     sfxEnabled: false, // Default SFX off in demo
     musicEnabled: true,
-    reducedMotion: true, // Respect accessibility 
+    reducedMotion: true, // Respect accessibility
     hintCadence: 6000, // Faster hints in demo
-    showTutorialPrompts: true
+    showTutorialPrompts: true,
   };
 }
 
@@ -72,14 +74,16 @@ export function getDemoSettings() {
  * Apply demo-specific balance adjustments
  */
 export function applyDemoBalance() {
-  if (!IS_DEMO) return;
+  if (!IS_DEMO) {
+    return;
+  }
 
   // Ensure settings are demo-appropriate
   const settings = getDemoSettings();
-  
+
   // Store demo settings
   Storage.setItem('demo_settings', JSON.stringify(settings));
-  
+
   // Initialize demo save if needed
   initializeDemoSave();
 }

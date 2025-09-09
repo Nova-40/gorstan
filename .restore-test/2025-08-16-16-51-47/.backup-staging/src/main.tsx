@@ -32,7 +32,7 @@ import { MagicSystem } from './engine/MagicSystem';
 import { Player } from './state/Player';
 import { RoomObjectivesManager } from './rooms/RoomObjectives';
 
-console.log("🔥 Gorstan main.tsx executing...");
+console.log('🔥 Gorstan main.tsx executing...');
 
 // Variable declaration
 const rootElement = document.getElementById('root');
@@ -81,5 +81,5 @@ root.render(
     <App />
     <SpeedInsights />
     <Analytics />
-  </>
+  </>,
 );

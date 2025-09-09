@@ -30,13 +30,13 @@ import { detectTrapsOnEntry } from './trapDetection';
 export function handleRoomEntry(
   room: Room,
   gameState: LocalGameState,
-  dispatch: Dispatch<GameAction>
+  dispatch: Dispatch<GameAction>,
 ): void {
   // Check for traps when entering room
   const trapDetection = detectTrapsOnEntry(room, gameState);
   if (trapDetection.detected && trapDetection.warning) {
     let messageType: 'system' | 'warning' | 'error' = 'warning';
-    
+
     // Adjust message type based on severity
     if (trapDetection.severity === 'extreme') {
       messageType = 'error';
@@ -50,8 +50,8 @@ export function handleRoomEntry(
         id: `trap-warning-${Date.now()}`,
         text: trapDetection.warning,
         type: messageType,
-        timestamp: Date.now()
-      }
+        timestamp: Date.now(),
+      },
     });
 
     // Add disarm hint if applicable
@@ -62,15 +62,15 @@ export function handleRoomEntry(
           id: `trap-hint-${Date.now()}`,
           text: '💡 You might be able to disarm this trap with the right tools or skills. Try "disarm trap" or "search for traps".',
           type: 'system',
-          timestamp: Date.now()
-        }
+          timestamp: Date.now(),
+        },
       });
     }
   }
 
   // Check for Morthos & Al first encounter in Control Room - handled by room file
   // (Removed duplicate encounter trigger - room handles its own events)
-  
+
   // Random chance for Spanish Inquisition (but not during intro stages)
   if (gameState.stage === 'game' && room.id !== 'introreset') {
     const playerState = {
@@ -83,9 +83,9 @@ export function handleRoomEntry(
       level: 1, // Default level
       flags: {}, // Convert complex flags to boolean flags for trap engine
       name: gameState.player.name || 'Player',
-      difficulty: 'normal'
+      difficulty: 'normal',
     };
-    
+
     maybeTriggerInquisitionTrap(room.id, playerState, (message: string) => {
       dispatch({
         type: 'ADD_MESSAGE',
@@ -93,12 +93,12 @@ export function handleRoomEntry(
           id: `inquisition-${Date.now()}`,
           text: message,
           type: 'system',
-          timestamp: Date.now()
-        }
+          timestamp: Date.now(),
+        },
       });
     });
   }
-  
+
   // Handle other room-specific events
   if (room.events?.onEnter) {
     room.events.onEnter.forEach((event: string) => {
@@ -114,7 +114,7 @@ function handleRoomEvent(
   event: string,
   room: Room,
   gameState: LocalGameState,
-  dispatch: Dispatch<GameAction>
+  dispatch: Dispatch<GameAction>,
 ): void {
   // Check if room has custom event handlers
   if (room.eventHandlers && room.eventHandlers[event]) {
@@ -125,25 +125,25 @@ function handleRoomEvent(
         result.messages.forEach((message: any) => {
           dispatch({
             type: 'RECORD_MESSAGE',
-            payload: message
+            payload: message,
           });
         });
       }
-      
+
       // Apply updates
       if (result.updates) {
         if (result.updates.flags) {
           Object.entries(result.updates.flags).forEach(([flag, value]) => {
             dispatch({
               type: 'SET_FLAG',
-              payload: { flag, value }
+              payload: { flag, value },
             });
           });
         }
         if (result.updates.npcsInRoom) {
           dispatch({
             type: 'SET_NPCS_IN_ROOM',
-            payload: result.updates.npcsInRoom
+            payload: result.updates.npcsInRoom,
           });
         }
       }
@@ -155,21 +155,23 @@ function handleRoomEvent(
   switch (event) {
     case 'checkMorthosAlEncounter':
       // Encounter is handled by room's eventHandlers
-      console.log('[RoomEventHandler] Morthos/Al encounter should be handled by room eventHandlers');
+      console.log(
+        '[RoomEventHandler] Morthos/Al encounter should be handled by room eventHandlers',
+      );
       break;
-    
+
     case 'showControlRoomIntro':
       // Default control room intro handling
       break;
-      
+
     case 'checkEmergencyStatus':
       // Emergency status check
       break;
-      
+
     case 'updateTacticalDisplay':
       // Tactical display update
       break;
-      
+
     default:
       // Handle other events as needed
       break;
@@ -187,15 +189,21 @@ function handleRoomEvent(
  */
 export function triggerNPCMovement(
   gameState: LocalGameState,
-  dispatch: Dispatch<GameAction>
+  dispatch: Dispatch<GameAction>,
 ): void {
   // Import and use wandering controller
-  import('./wanderingNPCController').then(mod => {
+  import('./wanderingNPCController').then((mod) => {
     if (mod.wanderNPC) {
       // Trigger movement for wandering NPCs
-      const wanderingNPCs = ['morthos', 'al_escape_artist', 'polly', 'dominic_wandering', 'mr_wendell'];
-      
-      wanderingNPCs.forEach(npcId => {
+      const wanderingNPCs = [
+        'morthos',
+        'al_escape_artist',
+        'polly',
+        'dominic_wandering',
+        'mr_wendell',
+      ];
+
+      wanderingNPCs.forEach((npcId) => {
         mod.wanderNPC(npcId, gameState);
       });
     }

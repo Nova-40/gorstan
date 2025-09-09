@@ -24,7 +24,7 @@ export interface AsyncOperationState<T> {
  */
 export function useAsyncOperation<T>(
   asyncFn: () => Promise<T>,
-  dependencies: React.DependencyList = []
+  dependencies: React.DependencyList = [],
 ): AsyncOperationState<T> & {
   retry: () => void;
   reset: () => void;
@@ -46,7 +46,7 @@ export function useAsyncOperation<T>(
     abortControllerRef.current = new AbortController();
     const currentController = abortControllerRef.current;
 
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       isLoading: true,
       error: null,
@@ -54,7 +54,7 @@ export function useAsyncOperation<T>(
 
     try {
       const result = await asyncFn();
-      
+
       if (!currentController.signal.aborted) {
         setState({
           isLoading: false,
@@ -65,7 +65,7 @@ export function useAsyncOperation<T>(
       }
     } catch (error) {
       if (!currentController.signal.aborted) {
-        setState(prev => ({
+        setState((prev) => ({
           ...prev,
           isLoading: false,
           error: error instanceof Error ? error.message : 'Unknown error occurred',
@@ -91,7 +91,7 @@ export function useAsyncOperation<T>(
 
   useEffect(() => {
     execute();
-    
+
     return () => {
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
@@ -147,38 +147,43 @@ export function useLoadingState(initialLoading = false) {
  */
 export function useDebounceAsync<T extends any[], R>(
   asyncFn: (...args: T) => Promise<R>,
-  delay: number
+  delay: number,
 ): [(...args: T) => Promise<R>, () => void] {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const resolversRef = useRef<Array<{
-    resolve: (value: R) => void;
-    reject: (error: any) => void;
-  }>>([]);
+  const resolversRef = useRef<
+    Array<{
+      resolve: (value: R) => void;
+      reject: (error: any) => void;
+    }>
+  >([]);
 
-  const debouncedFn = useCallback((...args: T): Promise<R> => {
-    return new Promise<R>((resolve, reject) => {
-      // Clear existing timeout
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-
-      // Add this promise to the resolvers queue
-      resolversRef.current.push({ resolve, reject });
-
-      // Set new timeout
-      timeoutRef.current = setTimeout(async () => {
-        const currentResolvers = [...resolversRef.current];
-        resolversRef.current = [];
-
-        try {
-          const result = await asyncFn(...args);
-          currentResolvers.forEach(({ resolve }) => resolve(result));
-        } catch (error) {
-          currentResolvers.forEach(({ reject }) => reject(error));
+  const debouncedFn = useCallback(
+    (...args: T): Promise<R> => {
+      return new Promise<R>((resolve, reject) => {
+        // Clear existing timeout
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
         }
-      }, delay);
-    });
-  }, [asyncFn, delay]);
+
+        // Add this promise to the resolvers queue
+        resolversRef.current.push({ resolve, reject });
+
+        // Set new timeout
+        timeoutRef.current = setTimeout(async () => {
+          const currentResolvers = [...resolversRef.current];
+          resolversRef.current = [];
+
+          try {
+            const result = await asyncFn(...args);
+            currentResolvers.forEach(({ resolve }) => resolve(result));
+          } catch (error) {
+            currentResolvers.forEach(({ reject }) => reject(error));
+          }
+        }, delay);
+      });
+    },
+    [asyncFn, delay],
+  );
 
   const cancel = useCallback(() => {
     if (timeoutRef.current) {
@@ -204,7 +209,7 @@ export function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<
   return Promise.race([
     promise,
     new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error(`Operation timed out after ${timeoutMs}ms`)), timeoutMs)
+      setTimeout(() => reject(new Error(`Operation timed out after ${timeoutMs}ms`)), timeoutMs),
     ),
   ]);
 }
@@ -220,7 +225,7 @@ export async function retryWithBackoff<T>(
     maxDelay?: number;
     backoffFactor?: number;
     shouldRetry?: (error: any) => boolean;
-  } = {}
+  } = {},
 ): Promise<T> {
   const {
     maxRetries = 3,
@@ -231,22 +236,22 @@ export async function retryWithBackoff<T>(
   } = options;
 
   let lastError: any;
-  
+
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       return await fn();
     } catch (error) {
       lastError = error;
-      
+
       if (attempt === maxRetries || !shouldRetry(error)) {
         throw error;
       }
-      
+
       const delay = Math.min(initialDelay * Math.pow(backoffFactor, attempt), maxDelay);
-      await new Promise(resolve => setTimeout(resolve, delay));
+      await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
-  
+
   throw lastError;
 }
 
@@ -257,7 +262,8 @@ export class AsyncCache<K, V> {
   private cache = new Map<K, { value: V; expires: number }>();
   private defaultTTL: number;
 
-  constructor(defaultTTLMs = 5 * 60 * 1000) { // 5 minutes default
+  constructor(defaultTTLMs = 5 * 60 * 1000) {
+    // 5 minutes default
     this.defaultTTL = defaultTTLMs;
   }
 
@@ -301,13 +307,13 @@ export class BatchProcessor<T, R> {
   constructor(
     private processor: (items: T[]) => Promise<R[]>,
     private batchSize = 10,
-    private batchTimeout = 100
+    private batchTimeout = 100,
   ) {}
 
   async add(item: T): Promise<R> {
     return new Promise<R>((resolve, reject) => {
       this.batch.push(item);
-      
+
       const resolverIndex = this.resolvers.length;
       this.resolvers.push((results: R[]) => resolve(results[resolverIndex]));
       this.rejecters.push(reject);
@@ -342,7 +348,7 @@ export class BatchProcessor<T, R> {
         resolve(results);
       });
     } catch (error) {
-      currentRejecters.forEach(reject => reject(error));
+      currentRejecters.forEach((reject) => reject(error));
     }
   }
 }

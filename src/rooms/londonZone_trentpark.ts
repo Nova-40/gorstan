@@ -19,14 +19,6 @@
 
 import { Room } from '../types/Room';
 
-
-
-
-
-
-
-
-
 const trentpark: Room = {
   id: 'trentpark',
   zone: 'londonZone',
@@ -57,9 +49,9 @@ const trentpark: Room = {
     east: 'stkatherinesdock',
     west: 'dalesapartment',
     south: 'findlaterscornercoffeeshop',
-    sit: 'introreset',  
-    
-    'chair_portal': 'introreset',
+    sit: 'introreset',
+
+    chair_portal: 'introreset',
   },
 
   items: [
@@ -72,41 +64,45 @@ const trentpark: Room = {
   ],
 
   interactables: {
-    'runic_chair': {
-      description: 'A simple wooden chair that radiates an aura of significance. Carved runes circle its base, their meaning lost to time but their power undeniable.',
+    runic_chair: {
+      description:
+        'A simple wooden chair that radiates an aura of significance. Carved runes circle its base, their meaning lost to time but their power undeniable.',
       actions: ['examine', 'sit', 'touch_runes', 'study_symbols', 'press'],
       requires: [],
     },
-    'carved_runes': {
-      description: 'Ancient symbols carved deep into the earth around the chair. They seem to shift and change when you\'re not looking directly at them.',
+    carved_runes: {
+      description:
+        "Ancient symbols carved deep into the earth around the chair. They seem to shift and change when you're not looking directly at them.",
       actions: ['examine', 'trace_with_finger', 'decipher', 'photograph'],
       requires: [],
     },
-    'watching_trees': {
-      description: 'The trees around this clearing seem different from the rest of the park. Their shadows move independently and you sense hidden observers.',
+    watching_trees: {
+      description:
+        'The trees around this clearing seem different from the rest of the park. Their shadows move independently and you sense hidden observers.',
       actions: ['examine', 'look_between', 'call_out', 'listen_carefully'],
       requires: [],
     },
-    'sacred_grove': {
-      description: 'This small clearing feels like a natural temple. The arrangement of trees and the placement of the chair suggest this is no accident.',
+    sacred_grove: {
+      description:
+        'This small clearing feels like a natural temple. The arrangement of trees and the placement of the chair suggest this is no accident.',
       actions: ['examine', 'walk_around', 'sense_energy', 'meditate'],
       requires: [],
     },
-    'shadow_movements': {
-      description: 'Dark shapes that flit between the trees when you\'re not looking directly. The watchers make their presence known without revealing themselves.',
+    shadow_movements: {
+      description:
+        "Dark shapes that flit between the trees when you're not looking directly. The watchers make their presence known without revealing themselves.",
       actions: ['track_movement', 'try_to_spot', 'acknowledge_presence'],
       requires: [],
     },
-    'normal_parkland': {
-      description: 'Beyond this mysterious grove, the rest of Trent Park continues its normal daily rhythm of joggers, families, and dog walkers.',
+    normal_parkland: {
+      description:
+        'Beyond this mysterious grove, the rest of Trent Park continues its normal daily rhythm of joggers, families, and dog walkers.',
       actions: ['observe', 'return_to_normal', 'appreciate_contrast'],
       requires: [],
     },
   },
 
-  npcs: [
-    
-  ],
+  npcs: [],
 
   events: {
     onEnter: ['activateWatchers', 'revealeRunicChair', 'heightenAwareness'],
@@ -133,7 +129,7 @@ const trentpark: Room = {
     optional: [
       'Decipher the Ancient Runes',
       'Acknowledge the Hidden Watchers',
-      'Understand the Grove\'s Purpose',
+      "Understand the Grove's Purpose",
       'Decide Whether to Use the Chair',
     ],
   },
@@ -147,7 +143,7 @@ const trentpark: Room = {
       'wind_through_leaves',
       'mysterious_rustling',
       'bird_calls',
-      'watchful_silence'
+      'watchful_silence',
     ],
     hazards: ['dimensional_displacement_risk', 'reality_reset_possibility'],
   },
@@ -184,7 +180,7 @@ const trentpark: Room = {
       rewards: ['runic_knowledge', 'symbol_interpretation_ability'],
     },
     watcher_purpose: {
-      description: 'Why the hidden entities observe this place and what they\'re protecting',
+      description: "Why the hidden entities observe this place and what they're protecting",
       requirements: ['acknowledge shadow_movements', 'establish contact with watchers'],
       rewards: ['observer_blessing', 'guardian_understanding'],
     },
@@ -196,17 +192,17 @@ const trentpark: Room = {
   },
 
   customActions: {
-    'sit_in_chair': {
+    sit_in_chair: {
       description: 'Sit in the runic chair and activate whatever power it contains',
       requirements: ['examine runic_chair'],
       effects: ['transport_to_reset_room', 'trigger_reality_displacement', 'begin_reset_sequence'],
     },
-    'commune_with_watchers': {
+    commune_with_watchers: {
       description: 'Attempt to communicate with the hidden observers',
       requirements: ['acknowledge shadow_movements', 'show_respect_to_grove'],
       effects: ['gain_watcher_guidance', 'receive_warnings', 'understand_purpose'],
     },
-    'study_complete_rune_circle': {
+    study_complete_rune_circle: {
       description: 'Examine all the runes around the chair to understand their combined meaning',
       requirements: ['trace all carved_runes', 'walk complete circle'],
       effects: ['unlock_runic_knowledge', 'understand_portal_mechanics', 'gain_reset_insight'],
@@ -215,5 +211,3 @@ const trentpark: Room = {
 };
 
 export default trentpark;
-
-

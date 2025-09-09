@@ -18,7 +18,7 @@ import { vi } from 'vitest';
 // src/npc/__tests__/movePolicy.test.ts
 // Unit tests for NPC movement policy
 
-import { decideMove, createDefaultPolicy, NPCMoveContext, MovePolicyConfig, calculateDistance } from '../movePolicy';
+import { decideMove, createDefaultPolicy, NPCMoveContext, MovePolicyConfig } from '../movePolicy';
 
 describe('MovePolicy', () => {
   const basicContext: NPCMoveContext = {
@@ -27,7 +27,7 @@ describe('MovePolicy', () => {
     allowedAdjacency: ['room2', 'room3'],
     avoidRooms: [],
     preferRooms: [],
-    playerRoomId: 'playerRoom'
+    playerRoomId: 'playerRoom',
   };
 
   describe('Random Adjacent Movement', () => {
@@ -35,7 +35,7 @@ describe('MovePolicy', () => {
       const policy: MovePolicyConfig = {
         mode: 'random-adjacent',
         respectCapacity: false,
-        allowTeleportFallback: false
+        allowTeleportFallback: false,
       };
 
       const decision = decideMove(basicContext, policy);
@@ -49,13 +49,13 @@ describe('MovePolicy', () => {
     test('should respect avoid rooms', () => {
       const context: NPCMoveContext = {
         ...basicContext,
-        avoidRooms: ['room2']
+        avoidRooms: ['room2'],
       };
 
       const policy: MovePolicyConfig = {
         mode: 'random-adjacent',
         respectCapacity: false,
-        allowTeleportFallback: false
+        allowTeleportFallback: false,
       };
 
       const decision = decideMove(context, policy);
@@ -67,13 +67,13 @@ describe('MovePolicy', () => {
     test('should prefer preferred rooms', () => {
       const context: NPCMoveContext = {
         ...basicContext,
-        preferRooms: ['room3']
+        preferRooms: ['room3'],
       };
 
       const policy: MovePolicyConfig = {
         mode: 'random-adjacent',
         respectCapacity: false,
-        allowTeleportFallback: false
+        allowTeleportFallback: false,
       };
 
       const decision = decideMove(context, policy);
@@ -86,13 +86,13 @@ describe('MovePolicy', () => {
       const context: NPCMoveContext = {
         ...basicContext,
         allowedAdjacency: [],
-        avoidRooms: ['room2', 'room3']
+        avoidRooms: ['room2', 'room3'],
       };
 
       const policy: MovePolicyConfig = {
         mode: 'random-adjacent',
         respectCapacity: false,
-        allowTeleportFallback: false
+        allowTeleportFallback: false,
       };
 
       const decision = decideMove(context, policy);
@@ -108,14 +108,14 @@ describe('MovePolicy', () => {
       const context: NPCMoveContext = {
         ...basicContext,
         currentRoom: 'patrol1',
-        allowedAdjacency: ['patrol2', 'patrol3', 'other']
+        allowedAdjacency: ['patrol2', 'patrol3', 'other'],
       };
 
       const policy: MovePolicyConfig = {
         mode: 'patrol',
         patrolRoute: ['patrol1', 'patrol2', 'patrol3'],
         respectCapacity: false,
-        allowTeleportFallback: false
+        allowTeleportFallback: false,
       };
 
       const decision = decideMove(context, policy);
@@ -129,14 +129,14 @@ describe('MovePolicy', () => {
       const context: NPCMoveContext = {
         ...basicContext,
         currentRoom: 'patrol3',
-        allowedAdjacency: ['patrol1', 'patrol2', 'other']
+        allowedAdjacency: ['patrol1', 'patrol2', 'other'],
       };
 
       const policy: MovePolicyConfig = {
         mode: 'patrol',
         patrolRoute: ['patrol1', 'patrol2', 'patrol3'],
         respectCapacity: false,
-        allowTeleportFallback: false
+        allowTeleportFallback: false,
       };
 
       const decision = decideMove(context, policy);
@@ -149,14 +149,14 @@ describe('MovePolicy', () => {
       const context: NPCMoveContext = {
         ...basicContext,
         currentRoom: 'offroute',
-        allowedAdjacency: ['patrol1', 'patrol2', 'other']
+        allowedAdjacency: ['patrol1', 'patrol2', 'other'],
       };
 
       const policy: MovePolicyConfig = {
         mode: 'patrol',
         patrolRoute: ['patrol1', 'patrol2', 'patrol3'],
         respectCapacity: false,
-        allowTeleportFallback: false
+        allowTeleportFallback: false,
       };
 
       const decision = decideMove(context, policy);
@@ -170,14 +170,14 @@ describe('MovePolicy', () => {
     test('should move to player room when adjacent', () => {
       const context: NPCMoveContext = {
         ...basicContext,
-        allowedAdjacency: ['room2', 'playerRoom']
+        allowedAdjacency: ['room2', 'playerRoom'],
       };
 
       const policy: MovePolicyConfig = {
         mode: 'player-seek',
         seekChance: 1.0, // Always seek for testing
         respectCapacity: false,
-        allowTeleportFallback: false
+        allowTeleportFallback: false,
       };
 
       const decision = decideMove(context, policy);
@@ -189,14 +189,14 @@ describe('MovePolicy', () => {
     test('should fallback to random when seek chance is low', () => {
       const context: NPCMoveContext = {
         ...basicContext,
-        allowedAdjacency: ['room2', 'room3']
+        allowedAdjacency: ['room2', 'room3'],
       };
 
       const policy: MovePolicyConfig = {
         mode: 'player-seek',
         seekChance: 0.0, // Never seek for testing
         respectCapacity: false,
-        allowTeleportFallback: false
+        allowTeleportFallback: false,
       };
 
       const decision = decideMove(context, policy);
@@ -211,14 +211,14 @@ describe('MovePolicy', () => {
       const context: NPCMoveContext = {
         ...basicContext,
         currentRoom: 'faraway',
-        playerRoomId: 'playerRoom'
+        playerRoomId: 'playerRoom',
       };
 
       const policy: MovePolicyConfig = {
         mode: 'player-avoid',
         avoidDistance: 1,
         respectCapacity: false,
-        allowTeleportFallback: false
+        allowTeleportFallback: false,
       };
 
       // Since calculateDistance returns 4 for different zones, this should be far enough
@@ -234,14 +234,14 @@ describe('MovePolicy', () => {
       const context: NPCMoveContext = {
         ...basicContext,
         homeRoom: 'home',
-        allowedAdjacency: ['home', 'room3']
+        allowedAdjacency: ['home', 'room3'],
       };
 
       const policy: MovePolicyConfig = {
         mode: 'home-bias',
         homeReturnChance: 1.0, // Always return for testing
         respectCapacity: false,
-        allowTeleportFallback: false
+        allowTeleportFallback: false,
       };
 
       const decision = decideMove(context, policy);
@@ -253,14 +253,14 @@ describe('MovePolicy', () => {
     test('should fallback to random when no home room', () => {
       const context: NPCMoveContext = {
         ...basicContext,
-        homeRoom: undefined
+        homeRoom: undefined,
       };
 
       const policy: MovePolicyConfig = {
         mode: 'home-bias',
         homeReturnChance: 1.0,
         respectCapacity: false,
-        allowTeleportFallback: false
+        allowTeleportFallback: false,
       };
 
       const decision = decideMove(context, policy);
@@ -275,13 +275,13 @@ describe('MovePolicy', () => {
       const context: NPCMoveContext = {
         ...basicContext,
         roomCapacity: { room2: 1 },
-        occupiedRooms: { room2: ['other-npc'] }
+        occupiedRooms: { room2: ['other-npc'] },
       };
 
       const policy: MovePolicyConfig = {
         mode: 'random-adjacent',
         respectCapacity: true,
-        allowTeleportFallback: false
+        allowTeleportFallback: false,
       };
 
       const decision = decideMove(context, policy);
@@ -303,24 +303,33 @@ describe('MovePolicy', () => {
         allowedAdjacency: ['nearby', 'faraway'],
         avoidRooms: [],
         preferRooms: [],
-        playerRoomId: 'playerRoom'
+        playerRoomId: 'playerRoom',
       };
 
       const policy: MovePolicyConfig = {
         mode: 'random-adjacent',
         respectCapacity: false,
-        allowTeleportFallback: false
+        allowTeleportFallback: false,
       };
 
       // Mock calculateDistance to return appropriate values
-      const calculateDistanceSpy = vi.spyOn(require('../movePolicy'), 'calculateDistance')
+      const calculateDistanceSpy = vi
+        .spyOn(require('../movePolicy'), 'calculateDistance')
         .mockImplementation((...args: unknown[]) => {
           const [from, to] = args as [string, string, NPCMoveContext];
           console.log(`calculateDistance called with: ${from} -> ${to}`);
-          if (from === 'home' && to === 'nearby') return 1;
-          if (from === 'home' && to === 'faraway') return 3;
-          if (from === 'nearby' && to === 'home') return 1;
-          if (from === 'faraway' && to === 'home') return 3;
+          if (from === 'home' && to === 'nearby') {
+            return 1;
+          }
+          if (from === 'home' && to === 'faraway') {
+            return 3;
+          }
+          if (from === 'nearby' && to === 'home') {
+            return 1;
+          }
+          if (from === 'faraway' && to === 'home') {
+            return 3;
+          }
           return 1; // Default fallback
         });
 
@@ -332,7 +341,7 @@ describe('MovePolicy', () => {
       // we'll check that it's not the far one and that a decision was made
       expect(decision.targetRoom).not.toBe('faraway');
       expect(decision.targetRoom).not.toBeNull();
-      
+
       // Restore the original implementation
       calculateDistanceSpy.mockRestore();
     });
@@ -346,13 +355,13 @@ describe('MovePolicy', () => {
         allowedAdjacency: [],
         avoidRooms: [],
         preferRooms: [],
-        playerRoomId: 'player'
+        playerRoomId: 'player',
       };
 
       const policy: MovePolicyConfig = {
         mode: 'random-adjacent',
         respectCapacity: false,
-        allowTeleportFallback: false
+        allowTeleportFallback: false,
       };
 
       const decision = decideMove(invalidContext, policy);
@@ -366,7 +375,7 @@ describe('MovePolicy', () => {
   describe('Default Policy Creation', () => {
     test('should create appropriate policy for wanderer', () => {
       const policy = createDefaultPolicy('wanderer');
-      
+
       expect(policy.mode).toBe('random-adjacent');
       expect(policy.respectCapacity).toBe(true);
       expect(policy.allowTeleportFallback).toBe(false);
@@ -374,7 +383,7 @@ describe('MovePolicy', () => {
 
     test('should create appropriate policy for guard', () => {
       const policy = createDefaultPolicy('guard');
-      
+
       expect(policy.mode).toBe('patrol');
       expect(policy.respectCapacity).toBe(true);
       expect(policy.allowTeleportFallback).toBe(true);
@@ -382,7 +391,7 @@ describe('MovePolicy', () => {
 
     test('should create appropriate policy for seeker', () => {
       const policy = createDefaultPolicy('seeker');
-      
+
       expect(policy.mode).toBe('player-seek');
       expect(policy.seekChance).toBe(0.2);
       expect(policy.respectCapacity).toBe(true);
@@ -390,7 +399,7 @@ describe('MovePolicy', () => {
 
     test('should create appropriate policy for hermit', () => {
       const policy = createDefaultPolicy('hermit');
-      
+
       expect(policy.mode).toBe('home-bias');
       expect(policy.homeReturnChance).toBe(0.7);
       expect(policy.allowTeleportFallback).toBe(true);

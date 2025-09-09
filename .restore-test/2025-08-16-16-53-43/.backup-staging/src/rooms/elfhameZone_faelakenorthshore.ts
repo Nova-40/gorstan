@@ -19,14 +19,6 @@
 
 import { Room } from '../types/Room';
 
-
-
-
-
-
-
-
-
 const faelakenorthshore: Room = {
   id: 'faelakenorthshore',
   zone: 'elfhameZone',
@@ -59,31 +51,30 @@ const faelakenorthshore: Room = {
     up: 'faepalacemainhall',
   },
 
-  items: [
-    'pearl_sand',
-    'white_stone',
-    'butterfly_wing',
-    'transition_crystal',
-  ],
+  items: ['pearl_sand', 'white_stone', 'butterfly_wing', 'transition_crystal'],
 
   interactables: {
-    'white_stone_path': {
-      description: 'A path of smooth white stones that leads up from the shore toward the palace, humming with magic.',
+    white_stone_path: {
+      description:
+        'A path of smooth white stones that leads up from the shore toward the palace, humming with magic.',
       actions: ['examine', 'follow', 'touch'],
       requires: [],
     },
-    'pearl_beach': {
-      description: 'A beach of pearl-white sand that sparkles with inner light and feels warm beneath your feet.',
+    pearl_beach: {
+      description:
+        'A beach of pearl-white sand that sparkles with inner light and feels warm beneath your feet.',
       actions: ['examine', 'walk', 'gather'],
       requires: [],
     },
-    'palace_gardens': {
-      description: 'Gardens of impossible beauty that line the path to the palace, filled with flowering bushes and magical plants.',
+    palace_gardens: {
+      description:
+        'Gardens of impossible beauty that line the path to the palace, filled with flowering bushes and magical plants.',
       actions: ['examine', 'smell', 'admire'],
       requires: [],
     },
-    'glass_butterflies': {
-      description: 'Butterflies with wings like stained glass that flutter between the flowers, their wings catching the light.',
+    glass_butterflies: {
+      description:
+        'Butterflies with wings like stained glass that flutter between the flowers, their wings catching the light.',
       actions: ['examine', 'watch', 'interact'],
       requires: [],
     },
@@ -91,5 +82,3 @@ const faelakenorthshore: Room = {
 };
 
 export default faelakenorthshore;
-
-

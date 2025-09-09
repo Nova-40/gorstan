@@ -19,14 +19,6 @@
 
 import { Room } from '../types/Room';
 
-
-
-
-
-
-
-
-
 export const peacefulStanton: Room = {
   image: 'stantonZone_peacefulStanton.png',
   description: [
@@ -55,25 +47,20 @@ export const peacefulStanton: Room = {
     west: 'ascendantStanton',
   },
 
-  items: [
-    'flower_petals',
-    'fountain_coin',
-    'sunlight_crystal',
-    'childrens_toy',
-  ],
+  items: ['flower_petals', 'fountain_coin', 'sunlight_crystal', 'childrens_toy'],
 
   interactables: {
-    'fountain': {
+    fountain: {
       description: 'A small fountain bubbling quietly at the center of the square.',
       actions: ['examine', 'drink', 'throw_coin'],
       requires: [],
     },
-    'flower_beds': {
+    flower_beds: {
       description: 'Vibrant flower beds lining the streets, radiating color and life.',
       actions: ['examine', 'collect', 'smell'],
       requires: [],
     },
-    'cottages': {
+    cottages: {
       description: 'Warm and hospitable cottages, inviting you to explore.',
       actions: ['examine', 'enter', 'knock'],
       requires: [],
@@ -84,5 +71,3 @@ export const peacefulStanton: Room = {
 };
 
 export default peacefulStanton;
-
-

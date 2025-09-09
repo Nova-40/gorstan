@@ -19,15 +19,6 @@
 
 import { ButtonHTMLAttributes, ReactNode } from 'react';
 
-
-
-
-
-
-
-
-
-
 type ButtonProps = {
   children: ReactNode;
 } & ButtonHTMLAttributes<HTMLButtonElement>;

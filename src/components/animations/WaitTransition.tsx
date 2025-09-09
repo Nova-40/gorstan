@@ -21,15 +21,6 @@ import React, { useEffect, useState } from 'react';
 
 import { motion, AnimatePresence } from 'framer-motion';
 
-
-
-
-
-
-
-
-
-
 interface WaitTransitionProps {
   onComplete: () => void;
 }
@@ -37,20 +28,20 @@ interface WaitTransitionProps {
 const WaitTransition: React.FC<WaitTransitionProps> = ({ onComplete }) => {
   const [phase, setPhase] = useState<'tension' | 'approaching' | 'impact' | 'reset'>('tension');
 
-// React effect hook
+  // React effect hook
   useEffect(() => {
-// Variable declaration
+    // Variable declaration
     const timers = [
       setTimeout(() => setPhase('approaching'), 800),
       setTimeout(() => setPhase('impact'), 2500),
       setTimeout(() => setPhase('reset'), 3200),
       setTimeout(() => onComplete(), 4200),
     ];
-// JSX return block or main return
+    // JSX return block or main return
     return () => timers.forEach(clearTimeout);
   }, [onComplete]);
 
-// JSX return block or main return
+  // JSX return block or main return
   return (
     <AnimatePresence>
       <motion.div
@@ -85,7 +76,8 @@ const WaitTransition: React.FC<WaitTransitionProps> = ({ onComplete }) => {
               animate={{ opacity: [0, 0.6, 0.8] }}
               transition={{ duration: 1.7 }}
               style={{
-                background: 'radial-gradient(ellipse at 80% 50%, #660000 0%, #330000 40%, transparent 70%)',
+                background:
+                  'radial-gradient(ellipse at 80% 50%, #660000 0%, #330000 40%, transparent 70%)',
               }}
             />
 
@@ -96,7 +88,8 @@ const WaitTransition: React.FC<WaitTransitionProps> = ({ onComplete }) => {
               animate={{ opacity: [0, 1, 1], scale: [0.5, 1.2, 1.5] }}
               transition={{ duration: 1.7 }}
               style={{
-                background: 'conic-gradient(from 45deg at 85% 50%, transparent 40%, #ffff9955 50%, transparent 60%)',
+                background:
+                  'conic-gradient(from 45deg at 85% 50%, transparent 40%, #ffff9955 50%, transparent 60%)',
               }}
             />
           </>
@@ -123,7 +116,8 @@ const WaitTransition: React.FC<WaitTransitionProps> = ({ onComplete }) => {
               animate={{ scale: [0, 1.5, 2], opacity: [0, 1, 0.8] }}
               transition={{ duration: 0.7, delay: 0.1 }}
               style={{
-                background: 'radial-gradient(circle, #990000 0%, #660000 30%, #330000 60%, transparent 100%)',
+                background:
+                  'radial-gradient(circle, #990000 0%, #660000 30%, #330000 60%, transparent 100%)',
                 transformOrigin: '85% 50%',
               }}
             />
@@ -139,11 +133,7 @@ const WaitTransition: React.FC<WaitTransitionProps> = ({ onComplete }) => {
             transition={{ duration: 0.5 }}
           >
             <div className="text-center font-mono text-green-400">
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="text-xl mb-4"
-              >
+              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="text-xl mb-4">
                 SYSTEM RESET INITIATED
               </motion.div>
               <motion.div
@@ -152,9 +142,7 @@ const WaitTransition: React.FC<WaitTransitionProps> = ({ onComplete }) => {
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="h-1 bg-green-400 mx-auto mb-2"
               />
-              <div className="text-sm animate-pulse">
-                Reality matrix reconstructing...
-              </div>
+              <div className="text-sm animate-pulse">Reality matrix reconstructing...</div>
             </div>
           </motion.div>
         )}

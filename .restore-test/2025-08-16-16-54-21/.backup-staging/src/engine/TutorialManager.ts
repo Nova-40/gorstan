@@ -11,7 +11,7 @@ export class TutorialManager {
     _gameState: GameStateManager,
     _magicSystem: MagicSystem,
     player: Player,
-    _objectivesManager: RoomObjectivesManager
+    _objectivesManager: RoomObjectivesManager,
   ) {
     this.player = player;
   }

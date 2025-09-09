@@ -42,10 +42,10 @@ class BookLoreService {
       this.bookMap.clear();
 
       // Build lookup map for fast access
-      this.loreData.books.forEach(book => {
+      this.loreData.books.forEach((book) => {
         this.bookMap.set(book.id.toLowerCase(), book);
         this.bookMap.set(book.title.toLowerCase(), book);
-        
+
         // Also index by author if available
         if (book.author) {
           const authorKey = `by:${book.author.toLowerCase()}`;
@@ -67,7 +67,7 @@ class BookLoreService {
     if (!this.initialized) return null;
 
     const normalizedQuery = query.toLowerCase().trim();
-    
+
     // Direct lookup
     let book = this.bookMap.get(normalizedQuery);
     if (book) return book;
@@ -81,19 +81,19 @@ class BookLoreService {
 
     // Try fuzzy matching on titles
     const books = Array.from(this.bookMap.values());
-    const uniqueBooks = books.filter((book, index, arr) => 
-      arr.findIndex(b => b.id === book.id) === index
+    const uniqueBooks = books.filter(
+      (book, index, arr) => arr.findIndex((b) => b.id === book.id) === index,
     );
 
     for (const book of uniqueBooks) {
       const titleWords = book.title.toLowerCase().split(/\s+/);
       const queryWords = normalizedQuery.split(/\s+/);
-      
+
       // Check if most query words appear in title
-      const matchingWords = queryWords.filter(qWord => 
-        titleWords.some(tWord => tWord.includes(qWord) || qWord.includes(tWord))
+      const matchingWords = queryWords.filter((qWord) =>
+        titleWords.some((tWord) => tWord.includes(qWord) || qWord.includes(tWord)),
       );
-      
+
       if (matchingWords.length >= Math.ceil(queryWords.length * 0.6)) {
         return book;
       }
@@ -110,8 +110,8 @@ class BookLoreService {
     if (!book) return null;
 
     // Determine if we should include the cheeky aside
-    const includeCheeky = book.ailaResponse.cheekySide && 
-                         Math.random() < book.ailaResponse.cheekySideChance;
+    const includeCheeky =
+      book.ailaResponse.cheekySide && Math.random() < book.ailaResponse.cheekySideChance;
 
     let response = book.ailaResponse.mainResponse;
     if (includeCheeky && book.ailaResponse.cheekySide) {
@@ -126,7 +126,7 @@ class BookLoreService {
    */
   getBooksByGenre(genre: string): BookLoreEntry[] {
     if (!this.initialized) return [];
-    return this.loreData.books.filter(book => book.genre === genre.toLowerCase());
+    return this.loreData.books.filter((book) => book.genre === genre.toLowerCase());
   }
 
   /**
@@ -135,8 +135,8 @@ class BookLoreService {
   getBooksByTheme(theme: string): BookLoreEntry[] {
     if (!this.initialized) return [];
     const normalizedTheme = theme.toLowerCase();
-    return this.loreData.books.filter(book => 
-      book.themes.some(t => t.toLowerCase().includes(normalizedTheme))
+    return this.loreData.books.filter((book) =>
+      book.themes.some((t) => t.toLowerCase().includes(normalizedTheme)),
     );
   }
 
@@ -155,8 +155,8 @@ class BookLoreService {
   searchByTag(tag: string): BookLoreEntry[] {
     if (!this.initialized) return [];
     const normalizedTag = tag.toLowerCase();
-    return this.loreData.books.filter(book =>
-      book.tags.some(t => t.toLowerCase().includes(normalizedTag))
+    return this.loreData.books.filter((book) =>
+      book.tags.some((t) => t.toLowerCase().includes(normalizedTag)),
     );
   }
 
@@ -168,7 +168,7 @@ class BookLoreService {
     if (!book || !book.relatedBooks) return [];
 
     return book.relatedBooks
-      .map(id => this.bookMap.get(id.toLowerCase()))
+      .map((id) => this.bookMap.get(id.toLowerCase()))
       .filter((book): book is BookLoreEntry => book !== undefined);
   }
 
@@ -188,8 +188,8 @@ class BookLoreService {
       totalBooks: this.loreData.books.length,
       version: this.loreData.version,
       lastUpdated: this.loreData.lastUpdated,
-      genres: [...new Set(this.loreData.books.map(b => b.genre))],
-      totalThemes: [...new Set(this.loreData.books.flatMap(b => b.themes))].length
+      genres: [...new Set(this.loreData.books.map((b) => b.genre))],
+      totalThemes: [...new Set(this.loreData.books.flatMap((b) => b.themes))].length,
     };
   }
 }

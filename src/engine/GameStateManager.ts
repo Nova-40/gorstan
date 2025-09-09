@@ -14,7 +14,7 @@ export class GameStateManager {
   private playerState: PlayerState;
   private magicSystem: MagicSystem | null = null;
   private countdown: number = 600; // Example: 10 minutes in seconds
-  private countdownInterval: NodeJS.Timeout | null = null;
+  private countdownInterval: ReturnType<typeof setInterval> | null = null;
   private player: Player | null = null;
 
   private constructor() {

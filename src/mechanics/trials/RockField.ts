@@ -23,15 +23,15 @@ export class RockField {
 
   async run(): Promise<void> {
     console.log('[RockField] Starting knife-rocks phase');
-    
+
     return new Promise((resolve) => {
       this.displayPhaseIntro();
-      
+
       // Simulate rock field navigation
       setTimeout(() => {
         console.log('[RockField] Navigating through jagged rock formations...');
         this.simulatePathfinding();
-        
+
         setTimeout(() => {
           console.log('[RockField] Successfully navigated through the knife-rocks');
           resolve();
@@ -60,12 +60,12 @@ export class RockField {
 
     // Ensure path to exit
     tiles[height - 1][width - 1] = this.EXIT_TILE;
-    
+
     return {
       width,
       height,
       tiles,
-      playerPos: { x: 0, y: 0 }
+      playerPos: { x: 0, y: 0 },
     };
   }
 
@@ -85,7 +85,7 @@ export class RockField {
       'Squeezing through a narrow gap...',
       'Stepping carefully over loose shale...',
       'Following a deer path between the rocks...',
-      'Avoiding a particularly vicious-looking spire...'
+      'Avoiding a particularly vicious-looking spire...',
     ];
 
     moves.forEach((move, index) => {

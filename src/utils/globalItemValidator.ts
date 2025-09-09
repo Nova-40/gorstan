@@ -25,9 +25,11 @@ import { ITEMS, getItemById } from '../engine/items';
  * Extract item IDs from room items (handles both string[] and RoomItem[] formats)
  */
 function extractItemIds(items: RoomItem[] | string[] | undefined): string[] {
-  if (!items) return [];
-  
-  return items.map(item => {
+  if (!items) {
+    return [];
+  }
+
+  return items.map((item) => {
     if (typeof item === 'string') {
       return item;
     } else {
@@ -35,18 +37,6 @@ function extractItemIds(items: RoomItem[] | string[] | undefined): string[] {
     }
   });
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 export interface GlobalItemValidationResult {
   isValid: boolean;
@@ -76,12 +66,10 @@ export interface ItemIssue {
   details: string;
 }
 
-
-
 // --- Function: validateGlobalItemManagement ---
 export function validateGlobalItemManagement(
   roomMap: Record<string, Room>,
-  gameState?: LocalGameState
+  gameState?: LocalGameState,
 ): GlobalItemValidationResult {
   const result: GlobalItemValidationResult = {
     isValid: true,
@@ -92,29 +80,25 @@ export function validateGlobalItemManagement(
     summary: {
       totalRoomsChecked: 0,
       totalItemsValidated: 0,
-      duplicatePreventionActive: true, 
-      crossRoomDropSupported: true,    
+      duplicatePreventionActive: true,
+      crossRoomDropSupported: true,
     },
   };
 
-  
   for (const [roomId, room] of Object.entries(roomMap)) {
     result.summary.totalRoomsChecked++;
 
     if (room.items && Array.isArray(room.items)) {
-      
-// Variable declaration
+      // Variable declaration
       const itemCounts = new Map<string, number>();
       const itemIds = extractItemIds(room.items);
 
-      itemIds.forEach(itemId => {
+      itemIds.forEach((itemId) => {
         result.summary.totalItemsValidated++;
 
-        
         itemCounts.set(itemId, (itemCounts.get(itemId) || 0) + 1);
 
-        
-// Variable declaration
+        // Variable declaration
         const itemData = getItemById(itemId);
         if (!itemData) {
           result.roomIssues.push({
@@ -126,7 +110,6 @@ export function validateGlobalItemManagement(
           result.errors.push(`Room ${roomId} contains unknown item: ${itemId}`);
           result.isValid = false;
         } else {
-          
           if (itemData.spawnRooms && !itemData.spawnRooms.includes(roomId)) {
             result.roomIssues.push({
               roomId,
@@ -137,7 +120,6 @@ export function validateGlobalItemManagement(
             result.warnings.push(`Item ${itemId} in room ${roomId} but not in spawnRooms list`);
           }
 
-          
           if (itemData.excludeRooms && itemData.excludeRooms.includes(roomId)) {
             result.roomIssues.push({
               roomId,
@@ -151,7 +133,6 @@ export function validateGlobalItemManagement(
         }
       });
 
-      
       itemCounts.forEach((count, itemId) => {
         if (count > 1) {
           result.roomIssues.push({
@@ -166,12 +147,10 @@ export function validateGlobalItemManagement(
     }
   }
 
-  
-  ITEMS.forEach(item => {
-    
+  ITEMS.forEach((item) => {
     if (item.spawnRooms && item.excludeRooms) {
-// Variable declaration
-      const conflicts = item.spawnRooms.filter(room => item.excludeRooms!.includes(room));
+      // Variable declaration
+      const conflicts = item.spawnRooms.filter((room) => item.excludeRooms!.includes(room));
       if (conflicts.length > 0) {
         result.itemIssues.push({
           itemId: item.id,
@@ -179,21 +158,22 @@ export function validateGlobalItemManagement(
           severity: 'error',
           details: `Conflicting rooms: ${conflicts.join(', ')}`,
         });
-        result.errors.push(`Item ${item.id} has conflicting spawn/exclude rooms: ${conflicts.join(', ')}`);
+        result.errors.push(
+          `Item ${item.id} has conflicting spawn/exclude rooms: ${conflicts.join(', ')}`,
+        );
         result.isValid = false;
       }
     }
 
-    
     if (item.id === 'dominic') {
       if (!item.spawnRooms?.includes('dalesapartment')) {
         result.itemIssues.push({
           itemId: item.id,
           issue: 'Dominic should spawn in dalesapartment',
           severity: 'warning',
-          details: 'Special pet item should be in Dale\'s apartment',
+          details: "Special pet item should be in Dale's apartment",
         });
-        result.warnings.push('Dominic the goldfish should spawn in Dale\'s apartment');
+        result.warnings.push("Dominic the goldfish should spawn in Dale's apartment");
       }
     }
 
@@ -203,21 +183,20 @@ export function validateGlobalItemManagement(
           itemId: item.id,
           issue: 'Runbag should be available in dalesapartment',
           severity: 'warning',
-          details: 'Essential storage item should be accessible from Dale\'s apartment',
+          details: "Essential storage item should be accessible from Dale's apartment",
         });
-        result.warnings.push('Runbag should be spawnable in Dale\'s apartment');
+        result.warnings.push("Runbag should be spawnable in Dale's apartment");
       }
     }
   });
 
-  
   if (gameState) {
-// Variable declaration
+    // Variable declaration
     const inventory = gameState.player.inventory || [];
-// Variable declaration
+    // Variable declaration
     const inventoryItems = new Set<string>();
 
-    inventory.forEach(itemId => {
+    inventory.forEach((itemId) => {
       if (inventoryItems.has(itemId)) {
         result.errors.push(`Player inventory contains duplicate item: ${itemId}`);
         result.isValid = false;
@@ -225,7 +204,7 @@ export function validateGlobalItemManagement(
         inventoryItems.add(itemId);
       }
 
-// Variable declaration
+      // Variable declaration
       const itemData = getItemById(itemId);
       if (!itemData) {
         result.errors.push(`Player inventory contains unknown item: ${itemId}`);
@@ -237,25 +216,15 @@ export function validateGlobalItemManagement(
   return result;
 }
 
-
-
 // --- Function: validatePickupPrevention ---
 export function validatePickupPrevention(): boolean {
-  
-  
   return true;
 }
-
-
 
 // --- Function: validateCrossRoomDropping ---
 export function validateCrossRoomDropping(): boolean {
-  
-  
   return true;
 }
-
-
 
 // --- Function: itemManagementHealthCheck ---
 export function itemManagementHealthCheck(roomMap: Record<string, Room>): {
@@ -263,7 +232,7 @@ export function itemManagementHealthCheck(roomMap: Record<string, Room>): {
   criticalIssues: string[];
   recommendations: string[];
 } {
-// Variable declaration
+  // Variable declaration
   const validation = validateGlobalItemManagement(roomMap);
 
   return {
@@ -278,8 +247,6 @@ export function itemManagementHealthCheck(roomMap: Record<string, Room>): {
   };
 }
 
-
-
 // --- Function: generateItemPlacementReport ---
 export function generateItemPlacementReport(roomMap: Record<string, Room>): {
   specialItems: Array<{
@@ -291,10 +258,10 @@ export function generateItemPlacementReport(roomMap: Record<string, Room>): {
   roomsWithItems: number;
   itemDistribution: Record<string, number>;
 } {
-// Variable declaration
+  // Variable declaration
   const specialItemIds = ['dominic', 'runbag', 'remote_control', 'goldfish_food'];
-// Variable declaration
-  const specialItems = specialItemIds.map(itemId => {
+  // Variable declaration
+  const specialItems = specialItemIds.map((itemId) => {
     const locations: string[] = [];
 
     Object.entries(roomMap).forEach(([roomId, room]) => {
@@ -304,12 +271,13 @@ export function generateItemPlacementReport(roomMap: Record<string, Room>): {
       }
     });
 
-// Variable declaration
+    // Variable declaration
     const item = getItemById(itemId);
-// Variable declaration
-    const isProperlyPlaced = itemId === 'dominic' || itemId === 'goldfish_food'
-      ? locations.includes('dalesapartment')
-      : locations.length > 0;
+    // Variable declaration
+    const isProperlyPlaced =
+      itemId === 'dominic' || itemId === 'goldfish_food'
+        ? locations.includes('dalesapartment')
+        : locations.length > 0;
 
     return {
       itemId,
@@ -322,13 +290,13 @@ export function generateItemPlacementReport(roomMap: Record<string, Room>): {
   let roomsWithItems = 0;
   const itemDistribution: Record<string, number> = {};
 
-  Object.values(roomMap).forEach(room => {
+  Object.values(roomMap).forEach((room) => {
     if (room.items && room.items.length > 0) {
       roomsWithItems++;
       totalItems += room.items.length;
 
       const roomItemIds = extractItemIds(room.items);
-      roomItemIds.forEach(itemId => {
+      roomItemIds.forEach((itemId) => {
         itemDistribution[itemId] = (itemDistribution[itemId] || 0) + 1;
       });
     }

@@ -85,7 +85,7 @@ export function createPlayer(name: string): Player {
     poiseRegen: 20,
     stamina: 100,
     focus: 50,
-    resists: {}
+    resists: {},
   };
 
   return {
@@ -102,7 +102,7 @@ export function createPlayer(name: string): Player {
     state: 'Idle' as any,
     knownSpells: ['FireBolt', 'FrostNova'],
     experience: 0,
-    equipment: {}
+    equipment: {},
   };
 }
 
@@ -111,7 +111,7 @@ export function createEnemy(
   id: string,
   name: string,
   archetype: AIArchetype,
-  statsOverride?: Partial<Stats>
+  statsOverride?: Partial<Stats>,
 ): Enemy {
   const baseStats: Stats = {
     maxHP: 80,
@@ -124,7 +124,7 @@ export function createEnemy(
     stamina: 80,
     focus: 30,
     resists: {},
-    ...statsOverride
+    ...statsOverride,
   };
 
   return {
@@ -140,6 +140,6 @@ export function createEnemy(
     faction: Faction.Enemy,
     state: 'Idle' as any,
     archetype,
-    expReward: 25
+    expReward: 25,
   };
 }

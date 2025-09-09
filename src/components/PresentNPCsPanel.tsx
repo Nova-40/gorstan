@@ -26,7 +26,9 @@ interface PresentNPCsPanelProps {
 }
 
 const PresentNPCsPanel: React.FC<PresentNPCsPanelProps> = ({ npcs, onTalkToNPC }) => {
-  if (!npcs.length) return null;
+  if (!npcs.length) {
+    return null;
+  }
 
   return (
     <div className="present-npcs-panel mt-2 flex flex-wrap gap-2 justify-center">
@@ -35,7 +37,9 @@ const PresentNPCsPanel: React.FC<PresentNPCsPanelProps> = ({ npcs, onTalkToNPC }
           key={npc.id}
           className="npc-card border border-green-700 p-2 rounded cursor-pointer hover:bg-green-900 transition"
           title={`Talk to ${npc.name}`}
-          onClick={() => onTalkToNPC ? onTalkToNPC(npc) : console.warn('No onTalkToNPC handler provided')}
+          onClick={() =>
+            onTalkToNPC ? onTalkToNPC(npc) : console.warn('No onTalkToNPC handler provided')
+          }
         >
           <div className="text-center font-mono text-green-300">{npc.name}</div>
           {npc.portrait && (

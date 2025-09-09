@@ -35,5 +35,5 @@ export {
   preloadAudio,
   LazyImage,
   preloadCriticalAssets,
-  useIntersectionObserver as useAssetIntersectionObserver
+  useIntersectionObserver as useAssetIntersectionObserver,
 } from './assetOptimization';

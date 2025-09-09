@@ -18,11 +18,7 @@ interface AIMonitorDisplayProps {
   onClose: () => void;
 }
 
-const AIMonitorDisplay: React.FC<AIMonitorDisplayProps> = ({ 
-  updates, 
-  npcBehaviors, 
-  onClose 
-}) => {
+const AIMonitorDisplay: React.FC<AIMonitorDisplayProps> = ({ updates, npcBehaviors, onClose }) => {
   const [activeTab, setActiveTab] = useState<'ai' | 'metrics' | 'npcs' | 'report'>('ai');
   const [aiStats, setAIStats] = useState<any>(null);
   const [metrics, setMetrics] = useState<any>(null);
@@ -55,9 +51,7 @@ const AIMonitorDisplay: React.FC<AIMonitorDisplayProps> = ({
           <Brain className="w-5 h-5" />
           <span className="text-sm font-medium">AI Monitor</span>
           {updates.length > 0 && (
-            <span className="bg-red-500 text-xs px-2 py-1 rounded-full">
-              {updates.length}
-            </span>
+            <span className="bg-red-500 text-xs px-2 py-1 rounded-full">{updates.length}</span>
           )}
         </button>
       </motion.div>
@@ -84,10 +78,7 @@ const AIMonitorDisplay: React.FC<AIMonitorDisplayProps> = ({
           >
             <EyeOff className="w-4 h-4" />
           </button>
-          <button
-            onClick={onClose}
-            className="text-slate-400 hover:text-white p-1"
-          >
+          <button onClick={onClose} className="text-slate-400 hover:text-white p-1">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -99,8 +90,8 @@ const AIMonitorDisplay: React.FC<AIMonitorDisplayProps> = ({
           { id: 'ai', label: 'AI', icon: Brain },
           { id: 'metrics', label: 'Metrics', icon: Activity },
           { id: 'npcs', label: 'NPCs', icon: Users },
-          { id: 'report', label: 'Report', icon: Gamepad2 }
-        ].map(tab => (
+          { id: 'report', label: 'Report', icon: Gamepad2 },
+        ].map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id as any)}
@@ -135,7 +126,12 @@ const AIMonitorDisplay: React.FC<AIMonitorDisplayProps> = ({
                 <div className="flex justify-between">
                   <span>Success Rate:</span>
                   <span className="text-green-400">
-                    {aiStats ? Math.round((aiStats.successfulResponses / Math.max(aiStats.totalRequests, 1)) * 100) : 0}%
+                    {aiStats
+                      ? Math.round(
+                          (aiStats.successfulResponses / Math.max(aiStats.totalRequests, 1)) * 100,
+                        )
+                      : 0}
+                    %
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -145,18 +141,21 @@ const AIMonitorDisplay: React.FC<AIMonitorDisplayProps> = ({
                   </span>
                 </div>
               </div>
-              
+
               <div className="border-t border-slate-700 pt-2">
                 <h4 className="text-slate-200 text-xs font-medium mb-1">Recent Activity</h4>
                 <div className="space-y-1 max-h-32 overflow-y-auto">
-                  {updates.slice(-5).reverse().map((update, index) => (
-                    <div key={index} className="text-xs text-slate-400 p-1 bg-slate-800 rounded">
-                      <span className="text-blue-300">{update.type}</span>
-                      {update.data?.event?.type && (
-                        <span className="ml-2 text-slate-300">({update.data.event.type})</span>
-                      )}
-                    </div>
-                  ))}
+                  {updates
+                    .slice(-5)
+                    .reverse()
+                    .map((update, index) => (
+                      <div key={index} className="text-xs text-slate-400 p-1 bg-slate-800 rounded">
+                        <span className="text-blue-300">{update.type}</span>
+                        {update.data?.event?.type && (
+                          <span className="ml-2 text-slate-300">({update.data.event.type})</span>
+                        )}
+                      </div>
+                    ))}
                 </div>
               </div>
             </motion.div>
@@ -217,7 +216,7 @@ const AIMonitorDisplay: React.FC<AIMonitorDisplayProps> = ({
                   <span className="text-yellow-400">{npcStats?.wanderingNPCs || 0}</span>
                 </div>
               </div>
-              
+
               <div className="border-t border-slate-700 pt-2">
                 <h4 className="text-slate-200 text-xs font-medium mb-1">Recent Behaviors</h4>
                 <div className="space-y-1 max-h-32 overflow-y-auto">
@@ -250,10 +249,12 @@ const AIMonitorDisplay: React.FC<AIMonitorDisplayProps> = ({
               >
                 Generate Full Report
               </button>
-              
+
               <div className="text-xs text-slate-400">
                 <p>Generate a comprehensive AI usage and gameplay report in the console.</p>
-                <p className="mt-1 text-slate-500">Includes insights, recommendations, and detailed analytics.</p>
+                <p className="mt-1 text-slate-500">
+                  Includes insights, recommendations, and detailed analytics.
+                </p>
               </div>
             </motion.div>
           )}

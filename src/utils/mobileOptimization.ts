@@ -53,25 +53,36 @@ export const detectDevice = (): DeviceInfo => {
   const isIOS = /iphone|ipad|ipod/i.test(userAgent);
   const isAndroid = /android/i.test(userAgent);
   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  
+
   const width = window.innerWidth;
   const height = window.innerHeight;
   const pixelRatio = window.devicePixelRatio || 1;
-  
-  const screenSize = width < 768 ? 'small' : 
-                    width < 1024 ? 'medium' : 
-                    width < 1440 ? 'large' : 'xlarge';
-  
+
+  const screenSize =
+    width < 768 ? 'small' : width < 1024 ? 'medium' : width < 1440 ? 'large' : 'xlarge';
+
   const orientation = width > height ? 'landscape' : 'portrait';
-  
+
   // Safe area detection for mobile devices
   const safeAreaInsets = {
-    top: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-top')) || 0,
-    right: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-right')) || 0,
-    bottom: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-bottom')) || 0,
-    left: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-left')) || 0,
+    top:
+      parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-top'),
+      ) || 0,
+    right:
+      parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-right'),
+      ) || 0,
+    bottom:
+      parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-bottom'),
+      ) || 0,
+    left:
+      parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-left'),
+      ) || 0,
   };
-  
+
   return {
     isMobile,
     isTablet,
@@ -84,25 +95,33 @@ export const detectDevice = (): DeviceInfo => {
     pixelRatio,
     viewportWidth: width,
     viewportHeight: height,
-    safeAreaInsets
+    safeAreaInsets,
   };
 };
 
 // Performance monitoring
 export const monitorPerformance = (): PerformanceMetrics => {
-  const connection = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
+  const connection =
+    (navigator as any).connection ||
+    (navigator as any).mozConnection ||
+    (navigator as any).webkitConnection;
   const battery = (navigator as any).battery || (navigator as any).getBattery?.();
-  
+
   return {
     fps: 60, // Will be updated by actual FPS monitoring
     memoryUsage: (performance as any).memory?.usedJSHeapSize || 0,
     batteryLevel: battery?.level,
     isLowPowerMode: battery?.charging === false && battery?.level < 0.2,
-    connectionType: connection ? 
-      (connection.effectiveType === '4g' ? '4g' : 
-       connection.effectiveType === '3g' ? '3g' : 
-       connection.effectiveType === '2g' ? '2g' : 'wifi') : 'wifi',
-    latency: connection?.rtt || 50
+    connectionType: connection
+      ? connection.effectiveType === '4g'
+        ? '4g'
+        : connection.effectiveType === '3g'
+          ? '3g'
+          : connection.effectiveType === '2g'
+            ? '2g'
+            : 'wifi'
+      : 'wifi',
+    latency: connection?.rtt || 50,
   };
 };
 
@@ -111,7 +130,7 @@ export const detectAccessibilityPreferences = (): AccessibilitySettings => {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const prefersHighContrast = window.matchMedia('(prefers-contrast: high)').matches;
   const prefersLargeText = window.matchMedia('(prefers-font-size: large)').matches;
-  
+
   return {
     reduceMotion: prefersReducedMotion,
     highContrast: prefersHighContrast,
@@ -121,7 +140,7 @@ export const detectAccessibilityPreferences = (): AccessibilitySettings => {
     colorBlindness: 'none', // Would need user setting
     fontSize: prefersLargeText ? 'large' : 'medium',
     soundEnabled: true, // Would need user setting
-    vibrationEnabled: 'vibrate' in navigator
+    vibrationEnabled: 'vibrate' in navigator,
   };
 };
 
@@ -129,7 +148,7 @@ export const detectAccessibilityPreferences = (): AccessibilitySettings => {
 export const optimizeForTouch = () => {
   // Add touch-friendly classes to root
   document.documentElement.classList.add('touch-optimized');
-  
+
   // Prevent double-tap zoom on buttons
   const style = document.createElement('style');
   style.textContent = `
@@ -164,22 +183,33 @@ export const optimizeForTouch = () => {
 };
 
 // Performance optimization based on device capabilities
-export const applyPerformanceOptimizations = (deviceInfo: DeviceInfo, metrics: PerformanceMetrics) => {
+export const applyPerformanceOptimizations = (
+  deviceInfo: DeviceInfo,
+  metrics: PerformanceMetrics,
+) => {
   const optimizations = {
     reduceAnimations: deviceInfo.isMobile && metrics.isLowPowerMode,
     lowerQuality: metrics.memoryUsage > 50 * 1024 * 1024, // 50MB threshold
     simplifyEffects: deviceInfo.screenSize === 'small' || metrics.fps < 30,
     preloadContent: metrics.connectionType === 'wifi' && !metrics.isLowPowerMode,
-    useHardwareAcceleration: deviceInfo.pixelRatio > 1 && !deviceInfo.isMobile
+    useHardwareAcceleration: deviceInfo.pixelRatio > 1 && !deviceInfo.isMobile,
   };
-  
+
   // Apply CSS classes based on optimizations
   const root = document.documentElement;
-  if (optimizations.reduceAnimations) root.classList.add('reduce-animations');
-  if (optimizations.lowerQuality) root.classList.add('low-quality');
-  if (optimizations.simplifyEffects) root.classList.add('simple-effects');
-  if (optimizations.useHardwareAcceleration) root.classList.add('hw-accelerated');
-  
+  if (optimizations.reduceAnimations) {
+    root.classList.add('reduce-animations');
+  }
+  if (optimizations.lowerQuality) {
+    root.classList.add('low-quality');
+  }
+  if (optimizations.simplifyEffects) {
+    root.classList.add('simple-effects');
+  }
+  if (optimizations.useHardwareAcceleration) {
+    root.classList.add('hw-accelerated');
+  }
+
   return optimizations;
 };
 
@@ -192,11 +222,12 @@ export const setupMobileViewport = () => {
     viewport.setAttribute('name', 'viewport');
     document.head.appendChild(viewport);
   }
-  
-  viewport.setAttribute('content', 
-    'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover'
+
+  viewport.setAttribute(
+    'content',
+    'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover',
   );
-  
+
   // Add CSS custom properties for safe areas
   const style = document.createElement('style');
   style.textContent = `
@@ -235,68 +266,84 @@ export const setupGestureHandling = (element: HTMLElement, handlers: GestureHand
   let startTime = 0;
   let isLongPress = false;
   let longPressTimer: number;
-  
+
   const threshold = 50; // Minimum distance for swipe
   const timeThreshold = 300; // Maximum time for swipe
   const longPressDelay = 500; // Long press duration
-  
-  element.addEventListener('touchstart', (e) => {
-    const touch = e.touches[0];
-    startX = touch.clientX;
-    startY = touch.clientY;
-    startTime = Date.now();
-    isLongPress = false;
-    
-    // Start long press timer
-    longPressTimer = window.setTimeout(() => {
-      isLongPress = true;
-      handlers.onLongPress?.(startX, startY);
-    }, longPressDelay);
-  }, { passive: true });
-  
-  element.addEventListener('touchmove', () => {
-    // Cancel long press on movement
-    clearTimeout(longPressTimer);
-  }, { passive: true });
-  
-  element.addEventListener('touchend', (e) => {
-    clearTimeout(longPressTimer);
-    
-    if (isLongPress) return; // Don't process swipe if long press occurred
-    
-    const touch = e.changedTouches[0];
-    const endX = touch.clientX;
-    const endY = touch.clientY;
-    const endTime = Date.now();
-    
-    const deltaX = endX - startX;
-    const deltaY = endY - startY;
-    const deltaTime = endTime - startTime;
-    
-    if (deltaTime > timeThreshold) return; // Too slow for swipe
-    
-    const absX = Math.abs(deltaX);
-    const absY = Math.abs(deltaY);
-    
-    if (absX > threshold || absY > threshold) {
-      if (absX > absY) {
-        // Horizontal swipe
-        if (deltaX > 0) {
-          handlers.onSwipeRight?.();
+
+  element.addEventListener(
+    'touchstart',
+    (e) => {
+      const touch = e.touches[0];
+      startX = touch.clientX;
+      startY = touch.clientY;
+      startTime = Date.now();
+      isLongPress = false;
+
+      // Start long press timer
+      longPressTimer = window.setTimeout(() => {
+        isLongPress = true;
+        handlers.onLongPress?.(startX, startY);
+      }, longPressDelay);
+    },
+    { passive: true },
+  );
+
+  element.addEventListener(
+    'touchmove',
+    () => {
+      // Cancel long press on movement
+      clearTimeout(longPressTimer);
+    },
+    { passive: true },
+  );
+
+  element.addEventListener(
+    'touchend',
+    (e) => {
+      clearTimeout(longPressTimer);
+
+      if (isLongPress) {
+        return;
+      } // Don't process swipe if long press occurred
+
+      const touch = e.changedTouches[0];
+      const endX = touch.clientX;
+      const endY = touch.clientY;
+      const endTime = Date.now();
+
+      const deltaX = endX - startX;
+      const deltaY = endY - startY;
+      const deltaTime = endTime - startTime;
+
+      if (deltaTime > timeThreshold) {
+        return;
+      } // Too slow for swipe
+
+      const absX = Math.abs(deltaX);
+      const absY = Math.abs(deltaY);
+
+      if (absX > threshold || absY > threshold) {
+        if (absX > absY) {
+          // Horizontal swipe
+          if (deltaX > 0) {
+            handlers.onSwipeRight?.();
+          } else {
+            handlers.onSwipeLeft?.();
+          }
         } else {
-          handlers.onSwipeLeft?.();
-        }
-      } else {
-        // Vertical swipe
-        if (deltaY > 0) {
-          handlers.onSwipeDown?.();
-        } else {
-          handlers.onSwipeUp?.();
+          // Vertical swipe
+          if (deltaY > 0) {
+            handlers.onSwipeDown?.();
+          } else {
+            handlers.onSwipeUp?.();
+          }
         }
       }
-    }
-  }, { passive: true });
-  
+    },
+    { passive: true },
+  );
+
   // Prevent context menu on long press
   element.addEventListener('contextmenu', (e) => {
     if (isLongPress) {
@@ -308,11 +355,11 @@ export const setupGestureHandling = (element: HTMLElement, handlers: GestureHand
 // Battery optimization
 export const optimizeForBattery = (batteryLevel?: number) => {
   const isLowBattery = batteryLevel !== undefined && batteryLevel < 0.3;
-  
+
   if (isLowBattery) {
     // Reduce background operations
     document.documentElement.classList.add('battery-saving');
-    
+
     // Lower animation frame rate
     const style = document.createElement('style');
     style.textContent = `
@@ -338,5 +385,5 @@ export default {
   applyPerformanceOptimizations,
   setupMobileViewport,
   setupGestureHandling,
-  optimizeForBattery
+  optimizeForBattery,
 };

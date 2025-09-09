@@ -43,7 +43,7 @@ export class CombatSystem {
   startCombat(actors: Actor[]): void {
     this.activeCombat = true;
     this.combatStartTime = Date.now();
-    
+
     // Reset all actors to idle state
     for (const actor of actors) {
       actor.state = CombatState.Idle;
@@ -60,7 +60,9 @@ export class CombatSystem {
 
   /** Update combat system */
   update(actors: Actor[], deltaTime: number): void {
-    if (!this.activeCombat) return;
+    if (!this.activeCombat) {
+      return;
+    }
 
     // Update all actors
     for (const actor of actors) {
@@ -86,7 +88,7 @@ export class CombatSystem {
       actor,
       action,
       targetId,
-      queueTime: Date.now()
+      queueTime: Date.now(),
     });
 
     // Set actor state
@@ -101,7 +103,7 @@ export class CombatSystem {
       id: 'light_attack',
       costs: { stamina: BALANCE.staminaCosts.light },
       timing: { windup: 300, active: 200, recovery: 400 },
-      damage: DamageUtils.physical(BALANCE.baseDamage.light, attacker.id, ['light'])
+      damage: DamageUtils.physical(BALANCE.baseDamage.light, attacker.id, ['light']),
     };
 
     return this.queueAction(attacker, action, target?.id);
@@ -113,7 +115,7 @@ export class CombatSystem {
       id: 'heavy_attack',
       costs: { stamina: BALANCE.staminaCosts.heavy },
       timing: { windup: 600, active: 300, recovery: 800 },
-      damage: DamageUtils.physical(BALANCE.baseDamage.heavy, attacker.id, ['heavy'])
+      damage: DamageUtils.physical(BALANCE.baseDamage.heavy, attacker.id, ['heavy']),
     };
 
     return this.queueAction(attacker, action, target?.id);
@@ -125,7 +127,7 @@ export class CombatSystem {
       id: 'dodge',
       costs: { stamina: BALANCE.staminaCosts.dodge },
       timing: { windup: 100, active: BALANCE.timing.dodgeIFrames, recovery: 300 },
-      effects: [{ id: 'IFrames' as any, durationMs: BALANCE.timing.dodgeIFrames }]
+      effects: [{ id: 'IFrames' as any, durationMs: BALANCE.timing.dodgeIFrames }],
     };
 
     const success = this.queueAction(actor, action);
@@ -141,7 +143,7 @@ export class CombatSystem {
       id: 'parry',
       costs: { stamina: BALANCE.staminaCosts.parry },
       timing: { windup: 50, active: BALANCE.timing.parryWindow, recovery: 200 },
-      effects: [{ id: 'ParryWindow' as any, durationMs: BALANCE.timing.parryWindow }]
+      effects: [{ id: 'ParryWindow' as any, durationMs: BALANCE.timing.parryWindow }],
     };
 
     const success = this.queueAction(actor, action);
@@ -159,7 +161,7 @@ export class CombatSystem {
       id: 'riposte',
       costs: { stamina: 5 }, // Reduced cost during riposte window
       timing: { windup: 200, active: 250, recovery: 300 },
-      damage: DamageUtils.physical(BALANCE.baseDamage.riposte, attacker.id, ['riposte'])
+      damage: DamageUtils.physical(BALANCE.baseDamage.riposte, attacker.id, ['riposte']),
     };
 
     const success = this.queueAction(attacker, action, target?.id);
@@ -226,26 +228,17 @@ export class CombatSystem {
     // Regenerate stamina
     actor.stamina = Math.min(
       actor.stats.stamina,
-      actor.stamina + BALANCE.regen.stamina * deltaSeconds
+      actor.stamina + BALANCE.regen.stamina * deltaSeconds,
     );
 
     // Regenerate focus
-    actor.focus = Math.min(
-      actor.stats.focus,
-      actor.focus + BALANCE.regen.focus * deltaSeconds
-    );
+    actor.focus = Math.min(actor.stats.focus, actor.focus + BALANCE.regen.focus * deltaSeconds);
 
     // Regenerate poise
-    actor.poise = Math.min(
-      actor.stats.poise,
-      actor.poise + BALANCE.regen.poise * deltaSeconds
-    );
+    actor.poise = Math.min(actor.stats.poise, actor.poise + BALANCE.regen.poise * deltaSeconds);
 
     // Decay tension
-    actor.tension = Math.max(
-      0,
-      actor.tension - BALANCE.regen.tensionDecay * deltaSeconds
-    );
+    actor.tension = Math.max(0, actor.tension - BALANCE.regen.tensionDecay * deltaSeconds);
   }
 
   /** Process queued actions */
@@ -291,7 +284,7 @@ export class CombatSystem {
     let target: Actor | undefined;
 
     if (targetId) {
-      target = actors.find(a => a.id === targetId);
+      target = actors.find((a) => a.id === targetId);
     }
 
     // Apply action effects to self
@@ -304,7 +297,7 @@ export class CombatSystem {
           onTick: effectTemplate.onTick,
           onApply: effectTemplate.onApply,
           onRemove: effectTemplate.onRemove,
-          data: effectTemplate.data
+          data: effectTemplate.data,
         });
         statusSystem.applyStatus(actor, statusFactory);
       }
@@ -319,7 +312,10 @@ export class CombatSystem {
       const result = HitResolver.resolveDamage(target, action.damage);
 
       // Handle parry attempts
-      if (statusSystem.hasStatus(target, 'ParryWindow' as any) && action.damage.element === 'Physical') {
+      if (
+        statusSystem.hasStatus(target, 'ParryWindow' as any) &&
+        action.damage.element === 'Physical'
+      ) {
         this.handleParryAttempt(target, actor, result);
       }
 
@@ -355,10 +351,10 @@ export class CombatSystem {
       statusSystem.removeStatus(defender, 'ParryWindow' as any);
       statusSystem.applyStatus(defender, StatusEffects.riposte);
       statusSystem.applyStatus(attacker, StatusEffects.stagger);
-      
+
       showCombatCue(COMBAT_CUES.parry);
       combatAudio.parrySuccess();
-      
+
       // Negate damage
       damageResult.damage = 0;
     } else {
@@ -377,7 +373,7 @@ export class CombatSystem {
     return {
       duration: this.activeCombat ? Date.now() - this.combatStartTime : 0,
       actionsPerformed: this.actionQueue.length,
-      isActive: this.activeCombat
+      isActive: this.activeCombat,
     };
   }
 
@@ -396,7 +392,7 @@ export class CombatSystem {
       isActive: this.activeCombat,
       player: this.player,
       enemies: this.enemies,
-      actionQueue: this.actionQueue
+      actionQueue: this.actionQueue,
     };
   }
 
@@ -407,15 +403,20 @@ export class CombatSystem {
       player: this.player,
       enemies: this.enemies,
       round: 1, // TODO: implement proper round tracking
-      actionQueue: this.actionQueue
+      actionQueue: this.actionQueue,
     };
   }
 
   /** Queue an action by name and return result */
-  queueActionByName(actor: Actor, actionType: string, options?: any): { success: boolean; message: string } {
+  queueActionByName(
+    actor: Actor,
+    actionType: string,
+    options?: any,
+  ): { success: boolean; message: string } {
     try {
       // Get costs from BALANCE config
-      const staminaCost = BALANCE.staminaCosts[actionType as keyof typeof BALANCE.staminaCosts] || 0;
+      const staminaCost =
+        BALANCE.staminaCosts[actionType as keyof typeof BALANCE.staminaCosts] || 0;
       const focusCost = BALANCE.focusCosts[actionType as keyof typeof BALANCE.focusCosts] || 0;
       const timing = BALANCE.timing[actionType as keyof typeof BALANCE.timing] || 300;
 
@@ -424,19 +425,19 @@ export class CombatSystem {
         id: actionType,
         costs: {
           stamina: staminaCost,
-          focus: focusCost
+          focus: focusCost,
         },
         timing: {
           windup: Array.isArray(timing) ? timing[0] : Math.floor(timing * 0.3),
           active: Array.isArray(timing) ? timing[1] : Math.floor(timing * 0.4),
-          recovery: Array.isArray(timing) ? timing[2] : Math.floor(timing * 0.3)
-        }
+          recovery: Array.isArray(timing) ? timing[2] : Math.floor(timing * 0.3),
+        },
       };
 
       const success = this.queueAction(actor, action, options?.target?.id);
-      return { 
-        success, 
-        message: success ? `${actionType} queued successfully` : `Failed to queue ${actionType}` 
+      return {
+        success,
+        message: success ? `${actionType} queued successfully` : `Failed to queue ${actionType}`,
       };
     } catch (error) {
       return { success: false, message: `Failed to queue ${actionType}: ${error}` };

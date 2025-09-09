@@ -25,20 +25,20 @@ interface CreditsScreenProps {
 
 const CreditsScreen: React.FC<CreditsScreenProps> = ({ onRestart }) => {
   const [lines] = useState([
-    "🎮 GORSTAN ADVENTURE COMPLETE",
-    "",
-    "Created by Geoff Webster",
-    "© 2025 All Rights Reserved",
-    "",
-    "Special Thanks:",
-    "• The TypeScript Community",
-    "• React Development Team", 
-    "• Open Source Contributors",
-    "",
-    "☕ Buy Geoff a Coffee",
-    "📚 Buy the Books",
-    "",
-    "🔁 Play Again?"
+    '🎮 GORSTAN ADVENTURE COMPLETE',
+    '',
+    'Created by Geoff Webster',
+    '© 2025 All Rights Reserved',
+    '',
+    'Special Thanks:',
+    '• The TypeScript Community',
+    '• React Development Team',
+    '• Open Source Contributors',
+    '',
+    '☕ Buy Geoff a Coffee',
+    '📚 Buy the Books',
+    '',
+    '🔁 Play Again?',
   ]);
 
   const [visibleLines, setVisibleLines] = useState<string[]>([]);
@@ -47,7 +47,7 @@ const CreditsScreen: React.FC<CreditsScreenProps> = ({ onRestart }) => {
     let index = 0;
     const interval = setInterval(() => {
       if (index < lines.length) {
-        setVisibleLines(prev => [...prev, lines[index]]);
+        setVisibleLines((prev) => [...prev, lines[index]]);
         index++;
       } else {
         clearInterval(interval);
@@ -62,16 +62,29 @@ const CreditsScreen: React.FC<CreditsScreenProps> = ({ onRestart }) => {
       <div className="max-w-lg w-full">
         {visibleLines.map((line, i) => (
           <div key={i} className="mb-2 text-center">
-            {line === "☕ Buy Geoff a Coffee" ? (
-              <a href="https://buymeacoffee.com/gorstan" target="_blank" rel="noopener noreferrer" className="text-yellow-400 hover:text-yellow-300 underline">
+            {line === '☕ Buy Geoff a Coffee' ? (
+              <a
+                href="https://buymeacoffee.com/gorstan"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-yellow-400 hover:text-yellow-300 underline"
+              >
                 {line}
               </a>
-            ) : line === "📚 Buy the Books" ? (
-              <a href="https://geoffwebsterbooks.com" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">
+            ) : line === '📚 Buy the Books' ? (
+              <a
+                href="https://geoffwebsterbooks.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:text-blue-300 underline"
+              >
                 {line}
               </a>
-            ) : line === "🔁 Play Again?" ? (
-              <button onClick={onRestart} className="mt-4 px-4 py-2 bg-green-700 hover:bg-green-600 rounded transition-colors">
+            ) : line === '🔁 Play Again?' ? (
+              <button
+                onClick={onRestart}
+                className="mt-4 px-4 py-2 bg-green-700 hover:bg-green-600 rounded transition-colors"
+              >
                 {line}
               </button>
             ) : (

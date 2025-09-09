@@ -19,12 +19,11 @@ import { vi } from 'vitest';
 // Tests for NPC Performance Optimizer
 // Gorstan Game Beta 1 - Code Licence MIT
 
-import { 
-  NPCPerformanceOptimizer, 
+import {
+  NPCPerformanceOptimizer,
   DEFAULT_PERFORMANCE_THRESHOLDS,
-  PerformanceMetrics,
   getPerformanceOptimizer,
-  resetPerformanceOptimizer
+  resetPerformanceOptimizer,
 } from '../performanceOptimizer';
 
 describe('NPCPerformanceOptimizer', () => {
@@ -43,16 +42,18 @@ describe('NPCPerformanceOptimizer', () => {
   describe('Initialization', () => {
     test('should initialize with default thresholds', () => {
       const stats = optimizer.getDetailedStats();
-      
+
       expect(stats.thresholds.maxMemoryMB).toBe(DEFAULT_PERFORMANCE_THRESHOLDS.maxMemoryMB);
-      expect(stats.thresholds.maxMovementTimeMs).toBe(DEFAULT_PERFORMANCE_THRESHOLDS.maxMovementTimeMs);
+      expect(stats.thresholds.maxMovementTimeMs).toBe(
+        DEFAULT_PERFORMANCE_THRESHOLDS.maxMovementTimeMs,
+      );
       expect(stats.isMonitoring).toBe(false);
     });
 
     test('should allow custom thresholds', () => {
       const customOptimizer = new NPCPerformanceOptimizer({
         maxMemoryMB: 100,
-        maxMovementTimeMs: 200
+        maxMovementTimeMs: 200,
       });
 
       const stats = customOptimizer.getDetailedStats();
@@ -80,7 +81,7 @@ describe('NPCPerformanceOptimizer', () => {
 
     test('should provide performance metrics', () => {
       const metrics = optimizer.getMetrics();
-      
+
       expect(metrics).toHaveProperty('memoryUsageMB');
       expect(metrics).toHaveProperty('npcCount');
       expect(metrics).toHaveProperty('averageMovementTimeMs');
@@ -92,10 +93,10 @@ describe('NPCPerformanceOptimizer', () => {
   describe('Path Optimization', () => {
     test('should cache and retrieve room paths', () => {
       const roomRegistry = {
-        'room1': ['room2', 'room3'],
-        'room2': ['room1', 'room4'],
-        'room3': ['room1', 'room4'],
-        'room4': ['room2', 'room3']
+        room1: ['room2', 'room3'],
+        room2: ['room1', 'room4'],
+        room3: ['room1', 'room4'],
+        room4: ['room2', 'room3'],
       };
 
       // First call should calculate and cache
@@ -111,10 +112,10 @@ describe('NPCPerformanceOptimizer', () => {
 
     test('should handle unreachable rooms', () => {
       const roomRegistry = {
-        'room1': ['room2'],
-        'room2': ['room1'],
-        'room3': ['room4'],
-        'room4': ['room3']
+        room1: ['room2'],
+        room2: ['room1'],
+        room3: ['room4'],
+        room4: ['room3'],
       };
 
       const path = optimizer.getOptimizedRoomPath('room1', 'room3', roomRegistry);
@@ -123,7 +124,7 @@ describe('NPCPerformanceOptimizer', () => {
 
     test('should handle same room request', () => {
       const roomRegistry = {
-        'room1': ['room2']
+        room1: ['room2'],
       };
 
       const path = optimizer.getOptimizedRoomPath('room1', 'room1', roomRegistry);
@@ -151,7 +152,7 @@ describe('NPCPerformanceOptimizer', () => {
         add: vi.fn(),
         flush: vi.fn(),
         clear: vi.fn(),
-        getStats: () => ({ queueSize: 0, batchSize: 5, intervalMs: 200, isScheduled: false })
+        getStats: () => ({ queueSize: 0, batchSize: 5, intervalMs: 200, isScheduled: false }),
       };
 
       // Test batching behavior conceptually
@@ -163,9 +164,9 @@ describe('NPCPerformanceOptimizer', () => {
   describe('Error Handling', () => {
     test('should record and track errors', () => {
       const initialStats = optimizer.getDetailedStats();
-      
+
       optimizer.recordError('Test error occurred');
-      
+
       // Error should be recorded (internal tracking)
       // This is mostly for coverage as the method logs internally
       expect(true).toBe(true); // Placeholder assertion
@@ -176,7 +177,7 @@ describe('NPCPerformanceOptimizer', () => {
     test('should provide optimization suggestions based on metrics', () => {
       const suggestions = optimizer.getOptimizationSuggestions();
       expect(Array.isArray(suggestions)).toBe(true);
-      
+
       // Initially should have no suggestions for good performance
       expect(suggestions.length).toBe(0);
     });
@@ -186,9 +187,9 @@ describe('NPCPerformanceOptimizer', () => {
     test('should cleanup all resources', () => {
       optimizer.startMonitoring();
       optimizer.batchMovement({ test: 'data' });
-      
+
       optimizer.cleanup();
-      
+
       const stats = optimizer.getDetailedStats();
       expect(stats.isMonitoring).toBe(false);
       expect(stats.cache.size).toBe(0);
@@ -199,11 +200,11 @@ describe('NPCPerformanceOptimizer', () => {
     test('should provide singleton instance', () => {
       const instance1 = getPerformanceOptimizer();
       const instance2 = getPerformanceOptimizer();
-      
+
       expect(instance1).toBe(instance2);
-      
+
       resetPerformanceOptimizer();
-      
+
       const instance3 = getPerformanceOptimizer();
       expect(instance3).not.toBe(instance1);
     });
@@ -213,26 +214,26 @@ describe('NPCPerformanceOptimizer', () => {
     test('should evict least recently used items', () => {
       // Create optimizer with small cache for testing
       const testOptimizer = new NPCPerformanceOptimizer();
-      
+
       const roomRegistry = {
-        'A': ['B'],
-        'B': ['C'],
-        'C': ['D'],
-        'D': ['E'],
-        'E': ['F']
+        A: ['B'],
+        B: ['C'],
+        C: ['D'],
+        D: ['E'],
+        E: ['F'],
       };
 
       // Fill cache beyond capacity (if internal cache size is small)
       for (let i = 0; i < 10; i++) {
-        testOptimizer.getOptimizedRoomPath(`room${i}`, `room${i+1}`, {
-          [`room${i}`]: [`room${i+1}`],
-          [`room${i+1}`]: []
+        testOptimizer.getOptimizedRoomPath(`room${i}`, `room${i + 1}`, {
+          [`room${i}`]: [`room${i + 1}`],
+          [`room${i + 1}`]: [],
         });
       }
 
       const stats = testOptimizer.getDetailedStats();
       expect(stats.cache.size).toBeGreaterThan(0);
-      
+
       testOptimizer.cleanup();
     });
   });
@@ -241,7 +242,7 @@ describe('NPCPerformanceOptimizer', () => {
     test('should handle batch processing errors gracefully', async () => {
       // This tests the internal batch processor error handling
       const data = { npcId: 'test', fromRoom: 'A', toRoom: 'B' };
-      
+
       // Should not throw even if internal processing has issues
       expect(() => {
         optimizer.batchMovement(data);
@@ -255,7 +256,7 @@ describe('Performance Integration', () => {
     const optimizer = new NPCPerformanceOptimizer({
       maxMemoryMB: 1, // Very low threshold to trigger warnings
       maxMovementTimeMs: 1,
-      maxErrorsPerMinute: 1
+      maxErrorsPerMinute: 1,
     });
 
     optimizer.startMonitoring();
@@ -274,23 +275,23 @@ describe('Performance Integration', () => {
 
   test('should handle concurrent pathfinding requests', async () => {
     const optimizer = getPerformanceOptimizer();
-    
+
     const roomRegistry = {
-      'start': ['mid1', 'mid2'],
-      'mid1': ['end'],
-      'mid2': ['end'],
-      'end': []
+      start: ['mid1', 'mid2'],
+      mid1: ['end'],
+      mid2: ['end'],
+      end: [],
     };
 
     // Simulate concurrent requests
-    const promises = Array.from({ length: 10 }, (_, i) => 
-      Promise.resolve(optimizer.getOptimizedRoomPath('start', 'end', roomRegistry))
+    const promises = Array.from({ length: 10 }, (_, i) =>
+      Promise.resolve(optimizer.getOptimizedRoomPath('start', 'end', roomRegistry)),
     );
 
     const results = await Promise.all(promises);
-    
+
     // All should succeed and return the same path
-    results.forEach(result => {
+    results.forEach((result) => {
       expect(result).toBeTruthy();
       expect(result![0]).toBe('start');
       expect(result![result!.length - 1]).toBe('end');

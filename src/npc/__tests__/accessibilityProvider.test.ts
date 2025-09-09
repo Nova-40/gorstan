@@ -19,10 +19,10 @@
 // Gorstan Game Beta 1 - Code Licence MIT
 
 import { describe, test, expect, vi, Mock } from 'vitest';
-import { 
+import {
   NPCAccessibilityProvider,
   getAccessibilityProvider,
-  resetAccessibilityProvider 
+  resetAccessibilityProvider,
 } from '../accessibilityProvider';
 
 // Mock DOM methods for testing
@@ -30,7 +30,7 @@ const mockDiv = {
   setAttribute: vi.fn(),
   style: { cssText: '' },
   textContent: '',
-  remove: vi.fn()
+  remove: vi.fn(),
 };
 
 const mockBody = {
@@ -40,15 +40,15 @@ const mockBody = {
     add: vi.fn(),
     remove: vi.fn(),
     toggle: vi.fn(),
-    contains: vi.fn().mockReturnValue(false)
-  }
+    contains: vi.fn().mockReturnValue(false),
+  },
 };
 
 const mockDocumentElement = {
   style: {
     setProperty: vi.fn(),
-    removeProperty: vi.fn()
-  }
+    removeProperty: vi.fn(),
+  },
 };
 
 describe('NPCAccessibilityProvider', () => {
@@ -57,19 +57,19 @@ describe('NPCAccessibilityProvider', () => {
   beforeEach(() => {
     // Reset and setup fresh mocks for each test
     vi.clearAllMocks();
-    
+
     // Mock createElement to return our mock div
     vi.spyOn(document, 'createElement').mockReturnValue(mockDiv as any);
-    
+
     // Mock document.body methods
     if (document.body) {
       vi.spyOn(document.body, 'appendChild').mockImplementation(vi.fn());
       vi.spyOn(document.body, 'removeChild').mockImplementation(vi.fn());
     }
-    
+
     // Mock querySelectorAll
     vi.spyOn(document, 'querySelectorAll').mockReturnValue([] as any);
-    
+
     resetAccessibilityProvider();
     provider = new NPCAccessibilityProvider();
   });
@@ -82,7 +82,7 @@ describe('NPCAccessibilityProvider', () => {
   describe('Initialization', () => {
     test('should initialize with default settings', () => {
       const settings = provider.getSettings();
-      
+
       expect(settings.reduceMotion).toBe(false);
       expect(settings.screenReaderEnabled).toBe(false);
       expect(settings.soundEnabled).toBe(true);
@@ -93,7 +93,7 @@ describe('NPCAccessibilityProvider', () => {
       const customProvider = new NPCAccessibilityProvider({
         reduceMotion: true,
         highContrast: true,
-        soundEnabled: false
+        soundEnabled: false,
       });
 
       const settings = customProvider.getSettings();
@@ -115,9 +115,9 @@ describe('NPCAccessibilityProvider', () => {
 
       const providerWithDetection = new NPCAccessibilityProvider();
       const settings = providerWithDetection.getSettings();
-      
+
       expect(settings.reduceMotion).toBe(true);
-      
+
       providerWithDetection.cleanup();
     });
   });
@@ -126,7 +126,7 @@ describe('NPCAccessibilityProvider', () => {
     test('should enable and disable accessibility features', () => {
       provider.enable();
       // Should apply settings (mocked DOM calls)
-      
+
       provider.disable();
       // Should clear screen reader content (mocked)
       expect(true).toBe(true); // Placeholder since DOM is mocked
@@ -143,7 +143,7 @@ describe('NPCAccessibilityProvider', () => {
     test('should update settings', () => {
       provider.updateSettings({
         reduceMotion: true,
-        soundVolume: 0.5
+        soundVolume: 0.5,
       });
 
       const settings = provider.getSettings();
@@ -153,18 +153,18 @@ describe('NPCAccessibilityProvider', () => {
 
     test('should apply settings when enabled', () => {
       provider.enable();
-      
+
       // Mock classList methods properly
       const toggleSpy = vi.spyOn(document.body.classList, 'toggle');
-      
+
       provider.updateSettings({
         highContrast: true,
-        largeText: true
+        largeText: true,
       });
 
       // Should trigger DOM updates (since we're setting visual accessibility options)
       expect(toggleSpy).toHaveBeenCalled();
-      
+
       toggleSpy.mockRestore();
     });
   });
@@ -174,13 +174,7 @@ describe('NPCAccessibilityProvider', () => {
       provider.enable();
       provider.updateSettings({ liveRegionUpdates: true });
 
-      provider.announceNPCMovement(
-        'test-npc',
-        'Test NPC',
-        'room1',
-        'room2',
-        'arrival'
-      );
+      provider.announceNPCMovement('test-npc', 'Test NPC', 'room1', 'room2', 'arrival');
 
       // Announcement should be processed
       const metrics = provider.getMetrics();
@@ -190,13 +184,7 @@ describe('NPCAccessibilityProvider', () => {
     test('should not announce when disabled', () => {
       provider.disable();
 
-      provider.announceNPCMovement(
-        'test-npc',
-        'Test NPC',
-        'room1',
-        'room2',
-        'arrival'
-      );
+      provider.announceNPCMovement('test-npc', 'Test NPC', 'room1', 'room2', 'arrival');
 
       const metrics = provider.getMetrics();
       expect(metrics.announcementCount).toBe(0);
@@ -206,13 +194,7 @@ describe('NPCAccessibilityProvider', () => {
       provider.enable();
       provider.updateSettings({ liveRegionUpdates: false });
 
-      provider.announceNPCMovement(
-        'test-npc',
-        'Test NPC',
-        'room1',
-        'room2',
-        'arrival'
-      );
+      provider.announceNPCMovement('test-npc', 'Test NPC', 'room1', 'room2', 'arrival');
 
       const metrics = provider.getMetrics();
       expect(metrics.announcementCount).toBe(0);
@@ -220,18 +202,12 @@ describe('NPCAccessibilityProvider', () => {
 
     test('should create verbose descriptions when enabled', () => {
       provider.enable();
-      provider.updateSettings({ 
+      provider.updateSettings({
         verboseDescriptions: true,
-        liveRegionUpdates: true 
+        liveRegionUpdates: true,
       });
 
-      provider.announceNPCMovement(
-        'test-npc',
-        'Test NPC',
-        'room1',
-        'room2',
-        'arrival'
-      );
+      provider.announceNPCMovement('test-npc', 'Test NPC', 'room1', 'room2', 'arrival');
 
       // Should create verbose text (tested internally)
       expect(provider.getMetrics().announcementCount).toBe(1);
@@ -242,22 +218,10 @@ describe('NPCAccessibilityProvider', () => {
       provider.updateSettings({ liveRegionUpdates: true });
 
       // Test high priority NPC
-      provider.announceNPCMovement(
-        'morthos',
-        'Morthos',
-        'room1',
-        'room2',
-        'arrival'
-      );
+      provider.announceNPCMovement('morthos', 'Morthos', 'room1', 'room2', 'arrival');
 
       // Test low priority NPC
-      provider.announceNPCMovement(
-        'random-npc',
-        'Random NPC',
-        'room1',
-        'room2',
-        'departure'
-      );
+      provider.announceNPCMovement('random-npc', 'Random NPC', 'room1', 'room2', 'departure');
 
       const metrics = provider.getMetrics();
       expect(metrics.announcementCount).toBe(2);
@@ -267,9 +231,9 @@ describe('NPCAccessibilityProvider', () => {
   describe('Movement Speed Adjustment', () => {
     test('should return normal speed by default', () => {
       // Ensure provider starts with default settings (no accessibility features)
-      provider.updateSettings({ 
+      provider.updateSettings({
         reduceMotion: false,
-        slowMovement: false 
+        slowMovement: false,
       });
       provider.enable();
       const multiplier = provider.getMovementSpeedMultiplier();
@@ -278,11 +242,11 @@ describe('NPCAccessibilityProvider', () => {
 
     test('should reduce speed for slow movement setting', () => {
       provider.enable();
-      provider.updateSettings({ 
+      provider.updateSettings({
         slowMovement: true,
-        reduceMotion: false // Ensure only slow movement affects speed
+        reduceMotion: false, // Ensure only slow movement affects speed
       });
-      
+
       const multiplier = provider.getMovementSpeedMultiplier();
       expect(multiplier).toBe(0.5);
     });
@@ -290,29 +254,29 @@ describe('NPCAccessibilityProvider', () => {
     test('should reduce speed more for reduced motion', () => {
       provider.enable();
       provider.updateSettings({ reduceMotion: true });
-      
+
       const multiplier = provider.getMovementSpeedMultiplier();
       expect(multiplier).toBe(0.3);
     });
 
     test('should combine speed reductions', () => {
       provider.enable();
-      provider.updateSettings({ 
+      provider.updateSettings({
         slowMovement: true,
-        reduceMotion: true 
+        reduceMotion: true,
       });
-      
+
       const multiplier = provider.getMovementSpeedMultiplier();
       expect(multiplier).toBe(0.15); // 0.5 * 0.3
     });
 
     test('should return 1.0 when disabled', () => {
       provider.disable();
-      provider.updateSettings({ 
+      provider.updateSettings({
         slowMovement: true,
-        reduceMotion: true 
+        reduceMotion: true,
       });
-      
+
       const multiplier = provider.getMovementSpeedMultiplier();
       expect(multiplier).toBe(1.0);
     });
@@ -322,10 +286,10 @@ describe('NPCAccessibilityProvider', () => {
     test('should extend timeouts when enabled', () => {
       provider.enable();
       provider.updateSettings({ extendedTimeouts: true });
-      
+
       const extension = provider.requestTimeoutExtension('test-timeout', 5000);
       expect(extension).toBe(5000);
-      
+
       const metrics = provider.getMetrics();
       expect(metrics.timeoutExtensions).toBe(1);
     });
@@ -333,7 +297,7 @@ describe('NPCAccessibilityProvider', () => {
     test('should not extend timeouts when disabled', () => {
       provider.enable();
       provider.updateSettings({ extendedTimeouts: false });
-      
+
       const extension = provider.requestTimeoutExtension('test-timeout');
       expect(extension).toBe(0);
     });
@@ -343,9 +307,9 @@ describe('NPCAccessibilityProvider', () => {
     test('should pause on focus when enabled', () => {
       provider.enable();
       provider.updateSettings({ pauseOnFocus: true });
-      
+
       provider.pauseOnFocus();
-      
+
       const metrics = provider.getMetrics();
       expect(metrics.pauseEvents).toBe(1);
     });
@@ -353,9 +317,9 @@ describe('NPCAccessibilityProvider', () => {
     test('should not pause when setting disabled', () => {
       provider.enable();
       provider.updateSettings({ pauseOnFocus: false });
-      
+
       provider.pauseOnFocus();
-      
+
       const metrics = provider.getMetrics();
       expect(metrics.pauseEvents).toBe(0);
     });
@@ -364,7 +328,7 @@ describe('NPCAccessibilityProvider', () => {
       provider.enable();
       provider.pauseOnFocus();
       provider.resumeFromFocus();
-      
+
       // Should call resume methods (mocked DOM)
       expect(true).toBe(true);
     });
@@ -374,7 +338,7 @@ describe('NPCAccessibilityProvider', () => {
     test('should play sounds when enabled', () => {
       provider.enable();
       provider.updateSettings({ soundEnabled: true, soundVolume: 0.8 });
-      
+
       // Should not throw
       expect(() => {
         provider.playMovementSound('arrival', 1.0);
@@ -384,7 +348,7 @@ describe('NPCAccessibilityProvider', () => {
     test('should not play sounds when disabled', () => {
       provider.enable();
       provider.updateSettings({ soundEnabled: false });
-      
+
       // Should not throw and should be silent
       expect(() => {
         provider.playMovementSound('arrival', 1.0);
@@ -396,12 +360,12 @@ describe('NPCAccessibilityProvider', () => {
     test('should track accessibility metrics', () => {
       provider.enable();
       provider.updateSettings({ liveRegionUpdates: true });
-      
+
       provider.announceNPCMovement('npc1', 'NPC 1', 'A', 'B', 'arrival');
       provider.announceNPCMovement('npc2', 'NPC 2', 'B', 'C', 'departure');
       provider.requestTimeoutExtension('test', 1000);
       provider.pauseOnFocus();
-      
+
       const metrics = provider.getMetrics();
       expect(metrics.announcementCount).toBe(2);
       expect(metrics.timeoutExtensions).toBe(0); // Extended timeouts not enabled
@@ -412,9 +376,9 @@ describe('NPCAccessibilityProvider', () => {
     test('should reset metrics', () => {
       provider.enable();
       provider.announceNPCMovement('npc1', 'NPC 1', 'A', 'B', 'arrival');
-      
+
       provider.resetMetrics();
-      
+
       const metrics = provider.getMetrics();
       expect(metrics.announcementCount).toBe(0);
       expect(metrics.averageAnnouncementLength).toBe(0);
@@ -425,7 +389,7 @@ describe('NPCAccessibilityProvider', () => {
     test('should detect screen reader', () => {
       provider.updateSettings({ screenReaderEnabled: true });
       expect(provider.isScreenReaderDetected()).toBe(true);
-      
+
       provider.updateSettings({ screenReaderEnabled: false });
       expect(provider.isScreenReaderDetected()).toBe(false);
     });
@@ -433,7 +397,7 @@ describe('NPCAccessibilityProvider', () => {
     test('should check pause on focus setting', () => {
       provider.updateSettings({ pauseOnFocus: true });
       expect(provider.shouldPauseOnFocus()).toBe(true);
-      
+
       provider.updateSettings({ pauseOnFocus: false });
       expect(provider.shouldPauseOnFocus()).toBe(false);
     });
@@ -441,7 +405,7 @@ describe('NPCAccessibilityProvider', () => {
     test('should check extended timeouts setting', () => {
       provider.updateSettings({ extendedTimeouts: true });
       expect(provider.shouldUseExtendedTimeouts()).toBe(true);
-      
+
       provider.updateSettings({ extendedTimeouts: false });
       expect(provider.shouldUseExtendedTimeouts()).toBe(false);
     });
@@ -450,9 +414,9 @@ describe('NPCAccessibilityProvider', () => {
       provider.updateSettings({
         reduceMotion: true,
         highContrast: true,
-        screenReaderEnabled: true
+        screenReaderEnabled: true,
       });
-      
+
       const status = provider.getAccessibilityStatus();
       expect(status).toContain('Reduced Motion');
       expect(status).toContain('High Contrast');
@@ -473,9 +437,9 @@ describe('NPCAccessibilityProvider', () => {
         simplifiedInterface: false,
         extendedTimeouts: false,
         confirmationPrompts: false,
-        pauseOnFocus: false // This defaults to true, so explicitly set to false
+        pauseOnFocus: false, // This defaults to true, so explicitly set to false
       });
-      
+
       const status = provider.getAccessibilityStatus();
       expect(status).toBe('Standard accessibility');
     });
@@ -485,9 +449,9 @@ describe('NPCAccessibilityProvider', () => {
     test('should cleanup all resources', () => {
       provider.enable();
       provider.announceNPCMovement('npc1', 'NPC 1', 'A', 'B', 'arrival');
-      
+
       provider.cleanup();
-      
+
       // Should be disabled and metrics reset
       const metrics = provider.getMetrics();
       expect(metrics.announcementCount).toBe(0);
@@ -498,11 +462,11 @@ describe('NPCAccessibilityProvider', () => {
     test('should provide singleton instance', () => {
       const instance1 = getAccessibilityProvider();
       const instance2 = getAccessibilityProvider();
-      
+
       expect(instance1).toBe(instance2);
-      
+
       resetAccessibilityProvider();
-      
+
       const instance3 = getAccessibilityProvider();
       expect(instance3).not.toBe(instance1);
     });
@@ -513,9 +477,9 @@ describe('Screen Reader Integration', () => {
   test('should handle screen reader announcements in order', async () => {
     const provider = new NPCAccessibilityProvider({
       liveRegionUpdates: true,
-      verboseDescriptions: true
+      verboseDescriptions: true,
     });
-    
+
     provider.enable();
 
     // Queue multiple announcements
@@ -533,14 +497,14 @@ describe('Screen Reader Integration', () => {
   test('should handle different movement types correctly', () => {
     const provider = new NPCAccessibilityProvider({
       liveRegionUpdates: true,
-      verboseDescriptions: false
+      verboseDescriptions: false,
     });
-    
+
     provider.enable();
 
     // Test all movement types
     provider.announceNPCMovement('npc1', 'NPC 1', 'A', 'B', 'arrival');
-    provider.announceNPCMovement('npc2', 'NPC 2', 'B', 'C', 'departure'); 
+    provider.announceNPCMovement('npc2', 'NPC 2', 'B', 'C', 'departure');
     provider.announceNPCMovement('npc3', 'NPC 3', 'C', 'D', 'transit');
 
     const metrics = provider.getMetrics();
@@ -559,7 +523,7 @@ describe('Performance Integration', () => {
     for (let i = 0; i < 100; i++) {
       provider.updateSettings({
         soundVolume: Math.random(),
-        reduceMotion: i % 2 === 0
+        reduceMotion: i % 2 === 0,
       });
     }
 
@@ -573,7 +537,7 @@ describe('Performance Integration', () => {
 
   test('should handle many concurrent announcements', () => {
     const provider = new NPCAccessibilityProvider({
-      liveRegionUpdates: true
+      liveRegionUpdates: true,
     });
     provider.enable();
 
@@ -584,7 +548,7 @@ describe('Performance Integration', () => {
         `NPC ${i}`,
         `room${i}`,
         `room${i + 1}`,
-        i % 3 === 0 ? 'arrival' : i % 3 === 1 ? 'departure' : 'transit'
+        i % 3 === 0 ? 'arrival' : i % 3 === 1 ? 'departure' : 'transit',
       );
     }
 

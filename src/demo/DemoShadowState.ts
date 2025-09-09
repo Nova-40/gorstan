@@ -8,14 +8,22 @@ export class DemoShadowState {
   private overrides: Record<string, any> = {};
 
   attach(game: { state: LocalGameState; dispatch: (a: any) => void }) {
-    if (!game?.dispatch) return;
+    if (!game?.dispatch) {
+      return;
+    }
     this.originalDispatch = game.dispatch;
 
     const self = this;
     game.dispatch = function (action: any) {
       // Intercept persistent state changes
       if (action?.type) {
-        const persistentActions = ['ADD_TO_INVENTORY', 'USE_ITEM', 'USE_ITEM_WITH', 'SET_FLAG', 'SET_PLAYER_NAME'];
+        const persistentActions = [
+          'ADD_TO_INVENTORY',
+          'USE_ITEM',
+          'USE_ITEM_WITH',
+          'SET_FLAG',
+          'SET_PLAYER_NAME',
+        ];
         if (persistentActions.includes(action.type)) {
           self.overrides[action.type] = self.overrides[action.type] || [];
           self.overrides[action.type].push(action.payload);

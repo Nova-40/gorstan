@@ -10,7 +10,7 @@ describe('Essential Hooks', () => {
 
       const { result, rerender } = renderHook(
         ({ cb }: { cb: () => string }) => useStableCallback(cb),
-        { initialProps: { cb: callback } }
+        { initialProps: { cb: callback } },
       );
 
       const firstReference = result.current;
@@ -24,7 +24,7 @@ describe('Essential Hooks', () => {
 
       // Reference should be stable
       expect(firstReference).toBe(secondReference);
-      
+
       // But should call the latest version
       expect(result.current()).toBe('updated');
     });
@@ -32,12 +32,12 @@ describe('Essential Hooks', () => {
     test('calls latest callback version', () => {
       const callbacks = {
         v1: vi.fn(() => 'v1'),
-        v2: vi.fn(() => 'v2')
+        v2: vi.fn(() => 'v2'),
       };
 
       const { result, rerender } = renderHook(
         ({ cb }: { cb: () => string }) => useStableCallback(cb),
-        { initialProps: { cb: callbacks.v1 } }
+        { initialProps: { cb: callbacks.v1 } },
       );
 
       // Call initial version
@@ -47,7 +47,7 @@ describe('Essential Hooks', () => {
       // Update callback and call again
       rerender({ cb: callbacks.v2 });
       result.current();
-      
+
       expect(callbacks.v1).toHaveBeenCalledTimes(1); // Not called again
       expect(callbacks.v2).toHaveBeenCalledTimes(1); // New callback called
     });
@@ -59,9 +59,7 @@ describe('Essential Hooks', () => {
       const addEventListenerSpy = vi.spyOn(window, 'addEventListener');
       const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener');
 
-      const { unmount } = renderHook(() => 
-        useEventListener('resize', handler)
-      );
+      const { unmount } = renderHook(() => useEventListener('resize', handler));
 
       expect(addEventListenerSpy).toHaveBeenCalledWith('resize', expect.any(Function));
 
@@ -75,7 +73,7 @@ describe('Essential Hooks', () => {
 
     test('calls handler when event fires', () => {
       const handler = vi.fn();
-      
+
       renderHook(() => useEventListener('resize', handler));
 
       // Simulate resize event
@@ -92,9 +90,8 @@ describe('Essential Hooks', () => {
       const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener');
 
       const { rerender } = renderHook(
-        ({ handler }: { handler: (e: Event) => void }) => 
-          useEventListener('resize', handler),
-        { initialProps: { handler: handler1 } }
+        ({ handler }: { handler: (e: Event) => void }) => useEventListener('resize', handler),
+        { initialProps: { handler: handler1 } },
       );
 
       // Should only add listener once
@@ -120,7 +117,7 @@ describe('Essential Hooks', () => {
 
     test('handles null element gracefully', () => {
       const handler = vi.fn();
-      
+
       // Should not throw when element is null
       expect(() => {
         renderHook(() => useEventListener('click', handler, null));

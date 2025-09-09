@@ -55,8 +55,8 @@ const DEFAULT_CONFIG: WanderSchedulerConfig = {
     cutscenes: true,
     modals: true,
     teleport: true,
-    death: true
-  }
+    death: true,
+  },
 };
 
 export class WanderScheduler {
@@ -95,7 +95,7 @@ export class WanderScheduler {
     console.log('[WanderScheduler] Started with config:', {
       baseTickMs: this.config.baseTickMs,
       jitterRange: this.config.jitterRangeMs,
-      registeredNPCs: this.npcStates.size
+      registeredNPCs: this.npcStates.size,
     });
   }
 
@@ -108,7 +108,7 @@ export class WanderScheduler {
     }
 
     this.isRunning = false;
-    
+
     if (this.intervalId !== null) {
       clearInterval(this.intervalId);
       this.intervalId = null;
@@ -150,7 +150,7 @@ export class WanderScheduler {
   resume(scope: PauseScope): void {
     const scopeId = this.generateScopeId(scope);
     const existingScope = this.pauseScopes.get(scopeId);
-    
+
     if (!existingScope) {
       console.warn('[WanderScheduler] Cannot resume unknown scope:', scope.reason);
       return;
@@ -160,7 +160,7 @@ export class WanderScheduler {
 
     if (scope.global) {
       // Check if any other global pauses exist
-      const hasGlobalPause = Array.from(this.pauseScopes.values()).some(s => s.global);
+      const hasGlobalPause = Array.from(this.pauseScopes.values()).some((s) => s.global);
       if (!hasGlobalPause) {
         for (const state of this.npcStates.values()) {
           state.isPaused = false;
@@ -187,17 +187,17 @@ export class WanderScheduler {
   registerNPC(npcId: string, callback: (npcId: string) => Promise<void>): void {
     const jitterMs = this.getJitterForNPC(npcId);
     const now = Date.now();
-    
+
     this.npcStates.set(npcId, {
       npcId,
       nextMoveTime: now + this.config.baseTickMs + jitterMs,
       lastMoveTime: 0,
       jitterMs,
-      isPaused: false
+      isPaused: false,
     });
 
     this.moveCallbacks.set(npcId, callback);
-    
+
     console.log(`[WanderScheduler] Registered NPC: ${npcId} (jitter: ${jitterMs}ms)`);
   }
 
@@ -228,15 +228,15 @@ export class WanderScheduler {
     activePauseScopes: number;
     uptime: number;
   } {
-    const pausedCount = Array.from(this.npcStates.values()).filter(s => s.isPaused).length;
-    
+    const pausedCount = Array.from(this.npcStates.values()).filter((s) => s.isPaused).length;
+
     return {
       isRunning: this.isRunning,
       totalTicks: this.tickCount,
       registeredNPCs: this.npcStates.size,
       pausedNPCs: pausedCount,
       activePauseScopes: this.pauseScopes.size,
-      uptime: this.lastTickTime - (this.lastTickTime - (this.tickCount * this.config.baseTickMs))
+      uptime: this.lastTickTime - (this.lastTickTime - this.tickCount * this.config.baseTickMs),
     };
   }
 
@@ -246,14 +246,16 @@ export class WanderScheduler {
   async forceMove(npcId: string): Promise<void> {
     const state = this.npcStates.get(npcId);
     const callback = this.moveCallbacks.get(npcId);
-    
+
     if (!state || !callback) {
       console.warn(`[WanderScheduler] Cannot force move unknown NPC: ${npcId}`);
       return;
     }
 
     if (state.isPaused) {
-      console.warn(`[WanderScheduler] Cannot force move paused NPC: ${npcId} (${state.pauseReason})`);
+      console.warn(
+        `[WanderScheduler] Cannot force move paused NPC: ${npcId} (${state.pauseReason})`,
+      );
       return;
     }
 
@@ -303,8 +305,8 @@ export class WanderScheduler {
 
     // Wait for all moves to complete (optional - for debugging)
     if (movePromises.length > 0) {
-      Promise.allSettled(movePromises).then(results => {
-        const failed = results.filter(r => r.status === 'rejected').length;
+      Promise.allSettled(movePromises).then((results) => {
+        const failed = results.filter((r) => r.status === 'rejected').length;
         if (failed > 0) {
           console.warn(`[WanderScheduler] ${failed}/${results.length} moves failed this tick`);
         }
@@ -316,24 +318,26 @@ export class WanderScheduler {
    * Execute a single NPC move
    */
   private async executeMove(
-    npcId: string, 
-    state: NPCWanderState, 
+    npcId: string,
+    state: NPCWanderState,
     callback: (npcId: string) => Promise<void>,
-    now: number
+    now: number,
   ): Promise<void> {
     try {
       await callback(npcId);
       state.lastMoveTime = now;
       state.nextMoveTime = now + this.config.baseTickMs + state.jitterMs;
-      
+
       // DEV logging
       if (this.config.seed.includes('debug')) {
-        console.log(`[WanderScheduler] DEV:WANDER ${npcId} moved (next: ${state.nextMoveTime - now}ms)`);
+        console.log(
+          `[WanderScheduler] DEV:WANDER ${npcId} moved (next: ${state.nextMoveTime - now}ms)`,
+        );
       }
     } catch (error) {
       console.error(`[WanderScheduler] Error moving ${npcId}:`, error);
       // Back off on error - double the wait time
-      state.nextMoveTime = now + (this.config.baseTickMs * 2) + state.jitterMs;
+      state.nextMoveTime = now + this.config.baseTickMs * 2 + state.jitterMs;
     }
   }
 
@@ -344,10 +348,10 @@ export class WanderScheduler {
     let hash = 0;
     for (let i = 0; i < seed.length; i++) {
       const char = seed.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
-    
+
     return () => {
       hash = (hash * 9301 + 49297) % 233280;
       return hash / 233280;
@@ -361,7 +365,7 @@ export class WanderScheduler {
     const [min, max] = this.config.jitterRangeMs;
     const npcSeed = this.config.seed + npcId;
     const npcRng = this.createSeededRNG(npcSeed);
-    return Math.floor(min + (npcRng() * (max - min)));
+    return Math.floor(min + npcRng() * (max - min));
   }
 
   /**
@@ -441,7 +445,7 @@ export function resumeNPCWandering(npcIds: string[], reason: string): void {
  */
 export function initializeGameWandering(): void {
   const scheduler = getWanderScheduler({
-    seed: `gorstan-${Date.now()}-${Math.random()}` // Unique per session
+    seed: `gorstan-${Date.now()}-${Math.random()}`, // Unique per session
   });
 
   // Auto-pause during common overlay states
@@ -452,7 +456,7 @@ export function initializeGameWandering(): void {
   (window as any).wanderScheduler = {
     pause: originalPause,
     resume: originalResume,
-    scheduler
+    scheduler,
   };
 
   console.log('[WanderScheduler] Initialized for game');

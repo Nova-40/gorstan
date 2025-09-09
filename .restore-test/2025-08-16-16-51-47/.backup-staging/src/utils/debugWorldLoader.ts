@@ -20,13 +20,13 @@
 export async function debugWorldLoader(): Promise<Record<string, any>> {
   try {
     console.log('[DEBUG] Starting world load...');
-    
+
     // Mock room loading - in a real implementation this would load from files
     const rooms: Record<string, any> = {
       start: { id: 'start', name: 'Starting Room' },
-      reset: { id: 'reset', name: 'Reset Room' }
+      reset: { id: 'reset', name: 'Reset Room' },
     };
-    
+
     if (!rooms || Object.keys(rooms).length === 0) {
       console.error('[ERROR] No rooms loaded. Possible directory or schema issue.');
     } else {

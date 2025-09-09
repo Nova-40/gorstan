@@ -27,20 +27,20 @@ export function tutorialParry(): Encounter {
           poiseRegen: 10,
           stamina: 100,
           focus: 0,
-          resists: {}
+          resists: {},
         },
         archetype: AIArchetype.Brute.toString(),
-        position: { x: 0, y: 0 }
-      }
+        position: { x: 0, y: 0 },
+      },
     ],
     victory: (actors) => {
-      const enemies = actors.filter(a => a.faction === 'enemy');
-      return enemies.every(e => e.hp <= 0);
+      const enemies = actors.filter((a) => a.faction === 'enemy');
+      return enemies.every((e) => e.hp <= 0);
     },
     defeat: (actors) => {
-      const player = actors.find(a => a.faction === 'player');
+      const player = actors.find((a) => a.faction === 'player');
       return !player || player.hp <= 0;
-    }
+    },
   };
 }
 
@@ -66,11 +66,11 @@ export function tutorialSynergy(): Encounter {
           focus: 40,
           resists: {
             [Element.Frost]: 0.5,
-            [Element.Fire]: -0.3
-          }
+            [Element.Fire]: -0.3,
+          },
         },
         archetype: AIArchetype.Skirmisher.toString(),
-        position: { x: -1, y: 0 }
+        position: { x: -1, y: 0 },
       },
       {
         id: 'fire_sprite',
@@ -87,21 +87,21 @@ export function tutorialSynergy(): Encounter {
           focus: 50,
           resists: {
             [Element.Fire]: 0.8,
-            [Element.Frost]: -0.5
-          }
+            [Element.Frost]: -0.5,
+          },
         },
         archetype: AIArchetype.Caster.toString(),
-        position: { x: 1, y: 0 }
-      }
+        position: { x: 1, y: 0 },
+      },
     ],
     victory: (actors) => {
-      const enemies = actors.filter(a => a.faction === 'enemy');
-      return enemies.every(e => e.hp <= 0);
+      const enemies = actors.filter((a) => a.faction === 'enemy');
+      return enemies.every((e) => e.hp <= 0);
     },
     defeat: (actors) => {
-      const player = actors.find(a => a.faction === 'player');
+      const player = actors.find((a) => a.faction === 'player');
       return !player || player.hp <= 0;
-    }
+    },
   };
 }
 
@@ -129,21 +129,21 @@ export function miniBossWarden(): Encounter {
             [Element.Physical]: 0.2,
             [Element.Fire]: 0.1,
             [Element.Frost]: 0.1,
-            [Element.Shock]: -0.2 // Vulnerable to shock
-          }
+            [Element.Shock]: -0.2, // Vulnerable to shock
+          },
         },
         archetype: AIArchetype.Caster.toString(),
-        position: { x: 0, y: 0 }
-      }
+        position: { x: 0, y: 0 },
+      },
     ],
     victory: (actors) => {
-      const warden = actors.find(a => a.id === 'aevira_warden');
+      const warden = actors.find((a) => a.id === 'aevira_warden');
       return !warden || warden.hp <= 0;
     },
     defeat: (actors) => {
-      const player = actors.find(a => a.faction === 'player');
+      const player = actors.find((a) => a.faction === 'player');
       return !player || player.hp <= 0;
-    }
+    },
   };
 }
 

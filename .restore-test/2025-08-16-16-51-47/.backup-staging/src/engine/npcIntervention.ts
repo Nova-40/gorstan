@@ -19,15 +19,6 @@
 
 import { NPC } from '../types/NPCTypes';
 
-
-
-
-
-
-
-
-
-
 export interface PlayerState {
   traits?: string[];
   inventory?: string[];
@@ -90,9 +81,7 @@ export interface InterventionHistory {
   lastHourReset: number;
 }
 
-
 const interventionHistory: Map<string, InterventionHistory> = new Map();
-
 
 const MAX_RECENT_INTERVENTIONS = 50;
 
@@ -102,12 +91,6 @@ const recentInterventions: Array<{
   context: string;
 }> = [];
 
-
-
-
-
-
-  
 // Helper functions for conditions
 export const ConditionHelpers = {
   hasTrait: (playerState: PlayerState | undefined, traitName: string): boolean => {
@@ -130,8 +113,7 @@ export const ConditionHelpers = {
 
   inRoom: (currentRoom: string | undefined, roomPattern: string): boolean => {
     try {
-      return Boolean(currentRoom &&
-        currentRoom.toLowerCase().includes(roomPattern.toLowerCase()));
+      return Boolean(currentRoom && currentRoom.toLowerCase().includes(roomPattern.toLowerCase()));
     } catch (error) {
       console.error(`[NPCIntervention] Error checking room ${roomPattern}:`, error);
       return false;
@@ -151,7 +133,9 @@ export const ConditionHelpers = {
 
   hasFlag: (flags: Record<string, unknown>, flagName: string): boolean => {
     try {
-      return Boolean(flags && Object.prototype.hasOwnProperty.call(flags, flagName) && flags[flagName]);
+      return Boolean(
+        flags && Object.prototype.hasOwnProperty.call(flags, flagName) && flags[flagName],
+      );
     } catch (error) {
       console.error(`[NPCIntervention] Error checking flag ${flagName}:`, error);
       return false;
@@ -179,9 +163,8 @@ export const ConditionHelpers = {
       console.error('[NPCIntervention] Error getting reputation:', error);
       return 0;
     }
-  }
+  },
 };
-
 
 const interventionRules: InterventionRule[] = [
   {
@@ -190,16 +173,12 @@ const interventionRules: InterventionRule[] = [
     targetNPCs: ['mr wendell', 'morthos', 'polly', 'dominic'],
     conditions: (context: InterventionContext) => {
       try {
-        
-        
-        
-        
-// JSX return block or main return
+        // JSX return block or main return
         return (
           ConditionHelpers.hasFlag(context.flags, 'tension_rising') ||
           ConditionHelpers.hasFlag(context.flags, 'argument_detected') ||
           ConditionHelpers.hasFlag(context.flags, 'violence_threatened') ||
-          context.npcsInRoom.length >= 3 
+          context.npcsInRoom.length >= 3
         );
       } catch (error) {
         console.error('[NPCIntervention] Error in albie_peacekeeper condition:', error);
@@ -207,22 +186,22 @@ const interventionRules: InterventionRule[] = [
       }
     },
     priority: 10,
-    cooldown: 30000, 
+    cooldown: 30000,
     maxOccurrences: 3,
     timeRestrictions: {
-      maxPerHour: 5
+      maxPerHour: 5,
     },
     messages: {
       intervention: "Albie steps in: 'Let's all remain civil, shall we?'",
       suppressed: [
-        "nods and steps back reluctantly.",
+        'nods and steps back reluctantly.',
         "grumbles but complies with Albie's request.",
         "looks annoyed but respects Albie's authority.",
-        "maintains composure under Albie's watchful eye."
+        "maintains composure under Albie's watchful eye.",
       ],
       success: "The tension in the room dissipates under Albie's authority.",
-      failure: "Albie's intervention seems to have little effect."
-    }
+      failure: "Albie's intervention seems to have little effect.",
+    },
   },
   {
     id: 'ayla_scholar_mediation',
@@ -230,12 +209,7 @@ const interventionRules: InterventionRule[] = [
     targetNPCs: ['morthos', 'mr wendell'],
     conditions: (context: InterventionContext) => {
       try {
-        
-        
-        
-        
-        
-// JSX return block or main return
+        // JSX return block or main return
         return (
           ConditionHelpers.inRoom(context.currentRoom, 'library') ||
           ConditionHelpers.inRoom(context.currentRoom, 'study') ||
@@ -254,16 +228,17 @@ const interventionRules: InterventionRule[] = [
     priority: 8,
     cooldown: 45000,
     messages: {
-      intervention: "Ayla raises her hand: 'Perhaps we should approach this with scholarly discourse.'",
+      intervention:
+        "Ayla raises her hand: 'Perhaps we should approach this with scholarly discourse.'",
       suppressed: [
         "considers Ayla's words and moderates their tone.",
         "respects Ayla's wisdom and steps back.",
         "acknowledges the merit in Ayla's suggestion.",
-        "adopts a more academic approach to the discussion."
+        'adopts a more academic approach to the discussion.',
       ],
-      success: "The discussion becomes more academic and less heated.",
-      failure: "The scholarly approach doesn't seem to resonate."
-    }
+      success: 'The discussion becomes more academic and less heated.',
+      failure: "The scholarly approach doesn't seem to resonate.",
+    },
   },
   {
     id: 'al_earth_calming',
@@ -271,12 +246,7 @@ const interventionRules: InterventionRule[] = [
     targetNPCs: ['morthos', 'polly', 'dominic'],
     conditions: (context: InterventionContext) => {
       try {
-        
-        
-        
-        
-        
-// JSX return block or main return
+        // JSX return block or main return
         return (
           ConditionHelpers.hasTrait(context.playerState, 'nature_lover') ||
           ConditionHelpers.hasTrait(context.playerState, 'druid') ||
@@ -301,12 +271,12 @@ const interventionRules: InterventionRule[] = [
       suppressed: [
         "feels the earth's calming influence and relaxes.",
         "is soothed by Al's earthbound presence.",
-        "connects with the natural harmony Al represents.",
-        "takes a deep breath and finds inner peace."
+        'connects with the natural harmony Al represents.',
+        'takes a deep breath and finds inner peace.',
       ],
-      success: "A sense of natural calm settles over the group.",
-      failure: "The natural harmony doesn't quite take hold."
-    }
+      success: 'A sense of natural calm settles over the group.',
+      failure: "The natural harmony doesn't quite take hold.",
+    },
   },
   {
     id: 'player_reputation_intervention',
@@ -314,13 +284,7 @@ const interventionRules: InterventionRule[] = [
     targetNPCs: ['morthos', 'mr wendell', 'polly'],
     conditions: (context: InterventionContext) => {
       try {
-        
-        
-        
-        
-        
-
-// JSX return block or main return
+        // JSX return block or main return
         const reputation = ConditionHelpers.getReputation(context.playerState);
         return (
           reputation >= 15 ||
@@ -333,23 +297,26 @@ const interventionRules: InterventionRule[] = [
           ConditionHelpers.hasFlag(context.flags, 'proven_worthy')
         );
       } catch (error) {
-        console.error('[NPCIntervention] Error in player_reputation_intervention condition:', error);
+        console.error(
+          '[NPCIntervention] Error in player_reputation_intervention condition:',
+          error,
+        );
         return false;
       }
     },
     priority: 5,
     minReputation: 15,
     messages: {
-      intervention: "Your reputation precedes you, and the NPCs show you respect.",
+      intervention: 'Your reputation precedes you, and the NPCs show you respect.',
       suppressed: [
-        "acknowledges your standing and moderates their behavior.",
-        "shows deference to your established reputation.",
-        "respects your proven worth and steps back.",
-        "recognizes your authority and complies."
+        'acknowledges your standing and moderates their behavior.',
+        'shows deference to your established reputation.',
+        'respects your proven worth and steps back.',
+        'recognizes your authority and complies.',
       ],
-      success: "Your influence brings calm to the situation.",
-      failure: "Despite your reputation, tensions remain high."
-    }
+      success: 'Your influence brings calm to the situation.',
+      failure: 'Despite your reputation, tensions remain high.',
+    },
   },
   {
     id: 'polly_dominic_protection',
@@ -357,31 +324,24 @@ const interventionRules: InterventionRule[] = [
     targetNPCs: ['morthos', 'mr wendell', 'player'],
     conditions: (context: InterventionContext) => {
       try {
-        
-        
-        
-        
-        
-// JSX return block or main return
+        // JSX return block or main return
         return (
           ConditionHelpers.hasNPC(
-            context.npcsInRoom.map(name => ({ name } as NPC)),
-            'dominic'
+            context.npcsInRoom.map((name) => ({ name }) as NPC),
+            'dominic',
           ) &&
-          (
-            ConditionHelpers.hasFlag(context.flags, 'dominic_threatened') ||
+          (ConditionHelpers.hasFlag(context.flags, 'dominic_threatened') ||
             ConditionHelpers.hasFlag(context.flags, 'violence_threatened') ||
             ConditionHelpers.hasFlag(context.flags, 'dominic_in_danger') ||
             ConditionHelpers.hasFlag(context.flags, 'hostility_detected') ||
-            ConditionHelpers.hasFlag(context.flags, 'protective_instinct')
-          )
+            ConditionHelpers.hasFlag(context.flags, 'protective_instinct'))
         );
       } catch (error) {
         console.error('[NPCIntervention] Error in polly_dominic_protection condition:', error);
         return false;
       }
     },
-    priority: 9, 
+    priority: 9,
     cooldown: 20000,
     maxOccurrences: 5,
     blockedFlags: ['polly_defeated', 'polly_incapacitated'],
@@ -390,12 +350,12 @@ const interventionRules: InterventionRule[] = [
       suppressed: [
         "backs away from Polly's fierce protection.",
         "recognizes Polly's determination and retreats.",
-        "respects the bond between Polly and Dominic.",
-        "is intimidated by Polly's protective stance."
+        'respects the bond between Polly and Dominic.',
+        "is intimidated by Polly's protective stance.",
       ],
       success: "Polly's protective stance successfully defuses the threat.",
-      failure: "Polly's intervention only increases the tension."
-    }
+      failure: "Polly's intervention only increases the tension.",
+    },
   },
   {
     id: 'wendell_authority_assertion',
@@ -403,21 +363,14 @@ const interventionRules: InterventionRule[] = [
     targetNPCs: ['morthos', 'polly', 'player'],
     conditions: (context: InterventionContext) => {
       try {
-        
-        
-        
-        
-        
-// JSX return block or main return
+        // JSX return block or main return
         return (
           ConditionHelpers.hasFlag(context.flags, 'disrespected_wendell') ||
           ConditionHelpers.hasFlag(context.flags, 'academic_protocol_violated') ||
           ConditionHelpers.hasFlag(context.flags, 'authority_challenged') ||
           ConditionHelpers.hasFlag(context.flags, 'wendell_offended') ||
-          (
-            ConditionHelpers.hasFlag(context.flags, 'wendell_riddle_failed') &&
-            !ConditionHelpers.hasFlag(context.flags, 'wendell_forgiveness')
-          )
+          (ConditionHelpers.hasFlag(context.flags, 'wendell_riddle_failed') &&
+            !ConditionHelpers.hasFlag(context.flags, 'wendell_forgiveness'))
         );
       } catch (error) {
         console.error('[NPCIntervention] Error in wendell_authority_assertion condition:', error);
@@ -429,16 +382,17 @@ const interventionRules: InterventionRule[] = [
     maxOccurrences: 2,
     blockedFlags: ['wendell_humbled', 'wendell_defeated'],
     messages: {
-      intervention: "Mr Wendell draws himself up imperiously: 'I will not tolerate such insubordination!'",
+      intervention:
+        "Mr Wendell draws himself up imperiously: 'I will not tolerate such insubordination!'",
       suppressed: [
         "grudgingly acknowledges Wendell's authority.",
         "shows reluctant respect for Wendell's position.",
         "defers to Wendell's academic standing.",
-        "is cowed by Wendell's imperious manner."
+        "is cowed by Wendell's imperious manner.",
       ],
       success: "Wendell's authority brings order to the situation.",
-      failure: "Wendell's pompous display falls flat."
-    }
+      failure: "Wendell's pompous display falls flat.",
+    },
   },
   {
     id: 'morthos_cynical_observation',
@@ -446,13 +400,7 @@ const interventionRules: InterventionRule[] = [
     targetNPCs: ['ayla', 'mr wendell', 'polly'],
     conditions: (context: InterventionContext) => {
       try {
-        
-        
-        
-        
-        
-        
-// JSX return block or main return
+        // JSX return block or main return
         return (
           ConditionHelpers.hasFlag(context.flags, 'philosophical_discussion') ||
           ConditionHelpers.hasFlag(context.flags, 'hope_expressed') ||
@@ -472,16 +420,17 @@ const interventionRules: InterventionRule[] = [
     priority: 4,
     cooldown: 50000,
     messages: {
-      intervention: "Morthos interjects with dark wisdom: 'How... optimistic. Reality has a way of correcting such notions.'",
+      intervention:
+        "Morthos interjects with dark wisdom: 'How... optimistic. Reality has a way of correcting such notions.'",
       suppressed: [
         "considers Morthos's cynical perspective soberly.",
         "is given pause by Morthos's dark wisdom.",
         "reluctantly acknowledges the truth in Morthos's words.",
-        "finds their optimism tempered by harsh reality."
+        'finds their optimism tempered by harsh reality.',
       ],
       success: "Morthos's grim reality check tempers the discussion.",
-      failure: "Morthos's cynicism is dismissed as mere pessimism."
-    }
+      failure: "Morthos's cynicism is dismissed as mere pessimism.",
+    },
   },
   {
     id: 'dominic_innocent_defusion',
@@ -489,21 +438,14 @@ const interventionRules: InterventionRule[] = [
     targetNPCs: ['morthos', 'mr wendell', 'polly'],
     conditions: (context: InterventionContext) => {
       try {
-        
-        
-        
-        
-        
-// JSX return block or main return
+        // JSX return block or main return
         return (
           ConditionHelpers.hasFlag(context.flags, 'tension_rising') &&
           !ConditionHelpers.hasFlag(context.flags, 'violence_threatened') &&
           !ConditionHelpers.hasFlag(context.flags, 'dominic_scared') &&
-          (
-            ConditionHelpers.hasFlag(context.flags, 'argument_about_dominic') ||
+          (ConditionHelpers.hasFlag(context.flags, 'argument_about_dominic') ||
             ConditionHelpers.hasFlag(context.flags, 'mild_disagreement') ||
-            ConditionHelpers.hasFlag(context.flags, 'confusion_detected')
-          )
+            ConditionHelpers.hasFlag(context.flags, 'confusion_detected'))
         );
       } catch (error) {
         console.error('[NPCIntervention] Error in dominic_innocent_defusion condition:', error);
@@ -520,21 +462,19 @@ const interventionRules: InterventionRule[] = [
         "is disarmed by Dominic's innocent question.",
         "can't help but smile at Dominic's childlike wonder.",
         "finds their anger melting away at Dominic's innocence.",
-        "is reminded of what's truly important by Dominic's presence."
+        "is reminded of what's truly important by Dominic's presence.",
       ],
       success: "Dominic's innocent charm defuses the tension naturally.",
-      failure: "Even Dominic's innocence can't lighten the mood."
-    }
-  }
+      failure: "Even Dominic's innocence can't lighten the mood.",
+    },
+  },
 ];
-
-
 
 // --- Function: checkAlbieIntervention ---
 export function checkAlbieIntervention(
   npcsInRoom: string[],
   flags: Record<string, unknown>,
-  appendMessage: (msg: string) => void
+  appendMessage: (msg: string) => void,
 ): boolean {
   try {
     if (!validateBasicParameters(npcsInRoom, flags, appendMessage)) {
@@ -542,10 +482,10 @@ export function checkAlbieIntervention(
     }
 
     const context: InterventionContext = {
-      npcsInRoom: [...npcsInRoom], 
-      flags: { ...flags }, 
+      npcsInRoom: [...npcsInRoom],
+      flags: { ...flags },
       appendMessage,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
 
     // Use the main intervention logic and return whether Albie's rule triggered
@@ -557,8 +497,6 @@ export function checkAlbieIntervention(
   }
 }
 
-
-
 // --- Function: checkNPCInterventions ---
 export function checkNPCInterventions(context: InterventionContext): InterventionResult {
   try {
@@ -567,9 +505,9 @@ export function checkNPCInterventions(context: InterventionContext): Interventio
     }
 
     // Determine which rules are available based on NPCs present in the room
-    const lowerNpcs = context.npcsInRoom.map(npc => npc.toLowerCase().trim());
-    const availableRules = interventionRules.filter(rule =>
-      lowerNpcs.includes(rule.interventionNPC.toLowerCase())
+    const lowerNpcs = context.npcsInRoom.map((npc) => npc.toLowerCase().trim());
+    const availableRules = interventionRules.filter((rule) =>
+      lowerNpcs.includes(rule.interventionNPC.toLowerCase()),
     );
 
     if (availableRules.length === 0) {
@@ -581,23 +519,24 @@ export function checkNPCInterventions(context: InterventionContext): Interventio
     for (const rule of availableRules) {
       try {
         // Find which target NPCs are present and can be suppressed
-        const targetNPCsLower = rule.targetNPCs.map(n => n.toLowerCase().trim());
+        const targetNPCsLower = rule.targetNPCs.map((n) => n.toLowerCase().trim());
         const interventionNPCLower = rule.interventionNPC.toLowerCase().trim();
-        const suppressedNPCs = lowerNpcs.filter(npc =>
-          targetNPCsLower.includes(npc) && npc !== interventionNPCLower
+        const suppressedNPCs = lowerNpcs.filter(
+          (npc) => targetNPCsLower.includes(npc) && npc !== interventionNPCLower,
         );
 
         if (canTriggerIntervention(rule, context)) {
-
           if (suppressedNPCs.length > 0) {
-            
             if (rule.conditions) {
               try {
                 if (!rule.conditions(context)) {
                   continue;
                 }
               } catch (conditionError) {
-                console.error(`[NPCIntervention] Error in condition for rule ${rule.id}:`, conditionError);
+                console.error(
+                  `[NPCIntervention] Error in condition for rule ${rule.id}:`,
+                  conditionError,
+                );
                 continue;
               }
             }
@@ -618,39 +557,37 @@ export function checkNPCInterventions(context: InterventionContext): Interventio
   }
 }
 
-
-
 // --- Function: validateBasicParameters ---
 function validateBasicParameters(
   npcsInRoom: unknown,
   flags: unknown,
-  appendMessage: unknown
+  appendMessage: unknown,
 ): boolean {
-  return Array.isArray(npcsInRoom) &&
-         npcsInRoom.length > 0 &&
-         typeof flags === 'object' &&
-         flags !== null &&
-         typeof appendMessage === 'function';
+  return (
+    Array.isArray(npcsInRoom) &&
+    npcsInRoom.length > 0 &&
+    typeof flags === 'object' &&
+    flags !== null &&
+    typeof appendMessage === 'function'
+  );
 }
-
-
 
 // --- Function: validateInterventionContext ---
 function validateInterventionContext(context: InterventionContext): boolean {
   try {
-    return context &&
-           Array.isArray(context.npcsInRoom) &&
-           context.npcsInRoom.length > 0 &&
-           typeof context.flags === 'object' &&
-           context.flags !== null &&
-           typeof context.appendMessage === 'function';
+    return (
+      context &&
+      Array.isArray(context.npcsInRoom) &&
+      context.npcsInRoom.length > 0 &&
+      typeof context.flags === 'object' &&
+      context.flags !== null &&
+      typeof context.appendMessage === 'function'
+    );
   } catch (error) {
     console.error('[NPCIntervention] Error validating context:', error);
     return false;
   }
 }
-
-
 
 // --- Function: createEmptyResult ---
 function createEmptyResult(): InterventionResult {
@@ -658,11 +595,9 @@ function createEmptyResult(): InterventionResult {
     occurred: false,
     suppressedNPCs: [],
     messages: [],
-    timestamp: Date.now()
+    timestamp: Date.now(),
   };
 }
-
-
 
 // --- Function: canTriggerIntervention ---
 function canTriggerIntervention(rule: InterventionRule, context: InterventionContext): boolean {
@@ -670,41 +605,37 @@ function canTriggerIntervention(rule: InterventionRule, context: InterventionCon
     const now = Date.now();
     let history = interventionHistory.get(rule.id);
 
-    
     if (!history) {
       history = {
         count: 0,
         lastOccurrence: 0,
         cooldownUntil: 0,
         hourlyCount: 0,
-        lastHourReset: now
+        lastHourReset: now,
       };
       interventionHistory.set(rule.id, history);
     }
 
-    
-    if (now - history.lastHourReset > 3600000) { 
+    if (now - history.lastHourReset > 3600000) {
       history.hourlyCount = 0;
       history.lastHourReset = now;
     }
 
-    
     if (rule.cooldown && now < history.cooldownUntil) {
       return false;
     }
 
-    
     if (rule.maxOccurrences && history.count >= rule.maxOccurrences) {
       return false;
     }
 
-    
-    if (rule.timeRestrictions?.maxPerHour &&
-        history.hourlyCount >= rule.timeRestrictions.maxPerHour) {
+    if (
+      rule.timeRestrictions?.maxPerHour &&
+      history.hourlyCount >= rule.timeRestrictions.maxPerHour
+    ) {
       return false;
     }
 
-    
     if (rule.requiredFlags) {
       for (const flag of rule.requiredFlags) {
         if (!ConditionHelpers.hasFlag(context.flags, flag)) {
@@ -713,7 +644,6 @@ function canTriggerIntervention(rule: InterventionRule, context: InterventionCon
       }
     }
 
-    
     if (rule.blockedFlags) {
       for (const flag of rule.blockedFlags) {
         if (ConditionHelpers.hasFlag(context.flags, flag)) {
@@ -722,7 +652,6 @@ function canTriggerIntervention(rule: InterventionRule, context: InterventionCon
       }
     }
 
-    
     if (rule.requiredTraits) {
       for (const trait of rule.requiredTraits) {
         if (!ConditionHelpers.hasTrait(context.playerState, trait)) {
@@ -731,7 +660,6 @@ function canTriggerIntervention(rule: InterventionRule, context: InterventionCon
       }
     }
 
-    
     if (rule.requiredItems) {
       for (const item of rule.requiredItems) {
         if (!ConditionHelpers.hasItem(context.playerState, item)) {
@@ -740,7 +668,6 @@ function canTriggerIntervention(rule: InterventionRule, context: InterventionCon
       }
     }
 
-    
     if (rule.minReputation) {
       const reputation = ConditionHelpers.getReputation(context.playerState);
       if (reputation < rule.minReputation) {
@@ -748,11 +675,10 @@ function canTriggerIntervention(rule: InterventionRule, context: InterventionCon
       }
     }
 
-    
     if (rule.roomRestrictions && rule.roomRestrictions.length > 0) {
       const currentRoom = context.currentRoom || '';
-      const roomAllowed = rule.roomRestrictions.some(roomPattern =>
-        ConditionHelpers.inRoom(currentRoom, roomPattern)
+      const roomAllowed = rule.roomRestrictions.some((roomPattern) =>
+        ConditionHelpers.inRoom(currentRoom, roomPattern),
       );
       if (!roomAllowed) {
         return false;
@@ -766,62 +692,52 @@ function canTriggerIntervention(rule: InterventionRule, context: InterventionCon
   }
 }
 
-
-
 // --- Function: findSuppressedNPCs ---
 function findSuppressedNPCs(rule: InterventionRule, lowerNpcs: string[]): string[] {
   try {
-    const targetNPCsLower = rule.targetNPCs.map(n => n.toLowerCase().trim());
+    const targetNPCsLower = rule.targetNPCs.map((n) => n.toLowerCase().trim());
     const interventionNPCLower = rule.interventionNPC.toLowerCase().trim();
 
-    return lowerNpcs.filter(npc =>
-      targetNPCsLower.includes(npc) && npc !== interventionNPCLower
-    );
+    return lowerNpcs.filter((npc) => targetNPCsLower.includes(npc) && npc !== interventionNPCLower);
   } catch (error) {
     console.error('[NPCIntervention] Error finding suppressed NPCs:', error);
     return [];
   }
 }
 
-
-
 // --- Function: executeIntervention ---
 function executeIntervention(
   rule: InterventionRule,
   suppressedNPCs: string[],
-  context: InterventionContext
+  context: InterventionContext,
 ): InterventionResult {
   try {
     const messages: string[] = [];
     const now = Date.now();
 
-    
     messages.push(rule.messages.intervention);
     context.appendMessage(rule.messages.intervention, 'intervention');
 
-    
     suppressedNPCs.forEach((npc, index) => {
       const npcName = capitalizeNPCName(npc);
-      const suppressedMsg =
-        rule.messages.suppressed[index % rule.messages.suppressed.length];
+      const suppressedMsg = rule.messages.suppressed[index % rule.messages.suppressed.length];
       const fullMessage = `${npcName} ${suppressedMsg}`;
       messages.push(fullMessage);
       context.appendMessage(fullMessage, 'suppression');
     });
 
-    
     if (rule.messages.success) {
       messages.push(rule.messages.success);
       context.appendMessage(rule.messages.success, 'intervention_success');
     }
 
-    
     updateInterventionHistory(rule, now);
 
-    
     trackRecentIntervention(rule.id, context);
 
-    console.log(`[NPCIntervention] ${rule.interventionNPC} intervened (${rule.id}) - suppressed: ${suppressedNPCs.join(', ')}`);
+    console.log(
+      `[NPCIntervention] ${rule.interventionNPC} intervened (${rule.id}) - suppressed: ${suppressedNPCs.join(', ')}`,
+    );
 
     return {
       occurred: true,
@@ -830,7 +746,7 @@ function executeIntervention(
       messages,
       effectDuration: rule.cooldown,
       ruleId: rule.id,
-      timestamp: now
+      timestamp: now,
     };
   } catch (error) {
     console.error('[NPCIntervention] Error executing intervention:', error);
@@ -838,19 +754,17 @@ function executeIntervention(
   }
 }
 
-
-
 // --- Function: capitalizeNPCName ---
 function capitalizeNPCName(npc: string): string {
   try {
     const specialCases: Record<string, string> = {
       'mr wendell': 'Mr Wendell',
-      'al': 'Al',
-      'ayla': 'Ayla',
-      'morthos': 'Morthos',
-      'polly': 'Polly',
-      'dominic': 'Dominic',
-      'albie': 'Albie'
+      al: 'Al',
+      ayla: 'Ayla',
+      morthos: 'Morthos',
+      polly: 'Polly',
+      dominic: 'Dominic',
+      albie: 'Albie',
     };
 
     const lowerNpc = npc.toLowerCase().trim();
@@ -865,8 +779,6 @@ function capitalizeNPCName(npc: string): string {
   }
 }
 
-
-
 // --- Function: updateInterventionHistory ---
 function updateInterventionHistory(rule: InterventionRule, now: number): void {
   try {
@@ -877,7 +789,7 @@ function updateInterventionHistory(rule: InterventionRule, now: number): void {
         lastOccurrence: 0,
         cooldownUntil: 0,
         hourlyCount: 0,
-        lastHourReset: now
+        lastHourReset: now,
       };
     }
 
@@ -892,18 +804,15 @@ function updateInterventionHistory(rule: InterventionRule, now: number): void {
   }
 }
 
-
-
 // --- Function: trackRecentIntervention ---
 function trackRecentIntervention(ruleId: string, context: InterventionContext): void {
   try {
     recentInterventions.push({
       ruleId,
       timestamp: Date.now(),
-      context: `${context.currentRoom || 'unknown'}_${context.npcsInRoom.length}npcs`
+      context: `${context.currentRoom || 'unknown'}_${context.npcsInRoom.length}npcs`,
     });
 
-    
     if (recentInterventions.length > MAX_RECENT_INTERVENTIONS) {
       recentInterventions.splice(0, recentInterventions.length - MAX_RECENT_INTERVENTIONS);
     }
@@ -911,8 +820,6 @@ function trackRecentIntervention(ruleId: string, context: InterventionContext): 
     console.error('[NPCIntervention] Error tracking recent intervention:', error);
   }
 }
-
-
 
 // --- Function: addInterventionRule ---
 export function addInterventionRule(rule: InterventionRule): boolean {
@@ -922,8 +829,7 @@ export function addInterventionRule(rule: InterventionRule): boolean {
       return false;
     }
 
-    
-    const existingIndex = interventionRules.findIndex(r => r.id === rule.id);
+    const existingIndex = interventionRules.findIndex((r) => r.id === rule.id);
     if (existingIndex >= 0) {
       interventionRules[existingIndex] = rule;
       console.log(`[NPCIntervention] Updated intervention rule: ${rule.id}`);
@@ -939,33 +845,31 @@ export function addInterventionRule(rule: InterventionRule): boolean {
   }
 }
 
-
-
 // --- Function: validateInterventionRule ---
 function validateInterventionRule(rule: InterventionRule): boolean {
   try {
-    return typeof rule === 'object' &&
-           rule !== null &&
-           typeof rule.id === 'string' &&
-           rule.id.length > 0 &&
-           typeof rule.interventionNPC === 'string' &&
-           rule.interventionNPC.length > 0 &&
-           Array.isArray(rule.targetNPCs) &&
-           rule.targetNPCs.length > 0 &&
-           typeof rule.priority === 'number' &&
-           rule.priority >= 0 &&
-           typeof rule.messages === 'object' &&
-           rule.messages !== null &&
-           typeof rule.messages.intervention === 'string' &&
-           Array.isArray(rule.messages.suppressed) &&
-           rule.messages.suppressed.length > 0;
+    return (
+      typeof rule === 'object' &&
+      rule !== null &&
+      typeof rule.id === 'string' &&
+      rule.id.length > 0 &&
+      typeof rule.interventionNPC === 'string' &&
+      rule.interventionNPC.length > 0 &&
+      Array.isArray(rule.targetNPCs) &&
+      rule.targetNPCs.length > 0 &&
+      typeof rule.priority === 'number' &&
+      rule.priority >= 0 &&
+      typeof rule.messages === 'object' &&
+      rule.messages !== null &&
+      typeof rule.messages.intervention === 'string' &&
+      Array.isArray(rule.messages.suppressed) &&
+      rule.messages.suppressed.length > 0
+    );
   } catch (error) {
     console.error('[NPCIntervention] Error validating rule:', error);
     return false;
   }
 }
-
-
 
 // --- Function: removeInterventionRule ---
 export function removeInterventionRule(ruleId: string): boolean {
@@ -974,13 +878,13 @@ export function removeInterventionRule(ruleId: string): boolean {
       return false;
     }
 
-    const index = interventionRules.findIndex(r => r.id === ruleId);
+    const index = interventionRules.findIndex((r) => r.id === ruleId);
     if (index >= 0) {
       interventionRules.splice(index, 1);
       interventionHistory.delete(ruleId);
 
       // Remove recent interventions for this rule
-      const filteredRecent = recentInterventions.filter(r => r.ruleId !== ruleId);
+      const filteredRecent = recentInterventions.filter((r) => r.ruleId !== ruleId);
       recentInterventions.splice(0, recentInterventions.length, ...filteredRecent);
 
       console.log(`[NPCIntervention] Removed intervention rule: ${ruleId}`);
@@ -993,8 +897,6 @@ export function removeInterventionRule(ruleId: string): boolean {
   }
 }
 
-
-
 // --- Function: getInterventionRules ---
 export function getInterventionRules(): InterventionRule[] {
   try {
@@ -1004,8 +906,6 @@ export function getInterventionRules(): InterventionRule[] {
     return [];
   }
 }
-
-
 
 // --- Function: getInterventionHistory ---
 export function getInterventionHistory(): Record<string, InterventionHistory> {
@@ -1021,8 +921,6 @@ export function getInterventionHistory(): Record<string, InterventionHistory> {
   }
 }
 
-
-
 // --- Function: resetInterventionHistory ---
 export function resetInterventionHistory(): void {
   try {
@@ -1034,32 +932,29 @@ export function resetInterventionHistory(): void {
   }
 }
 
-
-
 // --- Function: canNPCIntervene ---
-export function canNPCIntervene(
-  npcName: string,
-  context: InterventionContext
-): boolean {
+export function canNPCIntervene(npcName: string, context: InterventionContext): boolean {
   try {
     if (!npcName || typeof npcName !== 'string' || !validateInterventionContext(context)) {
       return false;
     }
 
-    const lowerNpcs = context.npcsInRoom.map(npc => npc.toLowerCase().trim());
+    const lowerNpcs = context.npcsInRoom.map((npc) => npc.toLowerCase().trim());
     if (!lowerNpcs.includes(npcName.toLowerCase().trim())) {
       return false;
     }
 
-    const applicableRules = interventionRules.filter(rule =>
-      rule.interventionNPC.toLowerCase().trim() === npcName.toLowerCase().trim()
+    const applicableRules = interventionRules.filter(
+      (rule) => rule.interventionNPC.toLowerCase().trim() === npcName.toLowerCase().trim(),
     );
 
-    return applicableRules.some(rule => {
+    return applicableRules.some((rule) => {
       const suppressedNPCs = findSuppressedNPCs(rule, lowerNpcs);
-      return suppressedNPCs.length > 0 &&
-             canTriggerIntervention(rule, context) &&
-             (!rule.conditions || rule.conditions(context));
+      return (
+        suppressedNPCs.length > 0 &&
+        canTriggerIntervention(rule, context) &&
+        (!rule.conditions || rule.conditions(context))
+      );
     });
   } catch (error) {
     console.error('[NPCIntervention] Error checking if NPC can intervene:', error);
@@ -1067,12 +962,8 @@ export function canNPCIntervene(
   }
 }
 
-
-
 // --- Function: getPotentialInterventions ---
-export function getPotentialInterventions(
-  context: InterventionContext
-): Array<{
+export function getPotentialInterventions(context: InterventionContext): Array<{
   rule: InterventionRule;
   canTrigger: boolean;
   suppressedCount: number;
@@ -1084,45 +975,45 @@ export function getPotentialInterventions(
       return [];
     }
 
-    return interventionRules.map(rule => {
-      const lowerNpcs = context.npcsInRoom.map(npc => npc.toLowerCase().trim());
-      const isNPCPresent = lowerNpcs.includes(rule.interventionNPC.toLowerCase().trim());
-      const suppressedNPCs = findSuppressedNPCs(rule, lowerNpcs);
-      const canTrigger = canTriggerIntervention(rule, context);
+    return interventionRules
+      .map((rule) => {
+        const lowerNpcs = context.npcsInRoom.map((npc) => npc.toLowerCase().trim());
+        const isNPCPresent = lowerNpcs.includes(rule.interventionNPC.toLowerCase().trim());
+        const suppressedNPCs = findSuppressedNPCs(rule, lowerNpcs);
+        const canTrigger = canTriggerIntervention(rule, context);
 
-      let conditionsMet = true;
-      let conditionError = '';
+        let conditionsMet = true;
+        let conditionError = '';
 
-      if (rule.conditions) {
-        try {
-          conditionsMet = rule.conditions(context);
-        } catch (error) {
-          conditionsMet = false;
-          conditionError = ' (condition error)';
+        if (rule.conditions) {
+          try {
+            conditionsMet = rule.conditions(context);
+          } catch (error) {
+            conditionsMet = false;
+            conditionError = ' (condition error)';
+          }
         }
-      }
 
-      let reason: string | undefined;
-      if (!isNPCPresent) reason = 'NPC not present';
-      else if (suppressedNPCs.length === 0) reason = 'No targets to suppress';
-      else if (!canTrigger) reason = 'Cooldown/limit reached';
-      else if (!conditionsMet) reason = `Conditions not met${conditionError}`;
+        let reason: string | undefined;
+        if (!isNPCPresent) reason = 'NPC not present';
+        else if (suppressedNPCs.length === 0) reason = 'No targets to suppress';
+        else if (!canTrigger) reason = 'Cooldown/limit reached';
+        else if (!conditionsMet) reason = `Conditions not met${conditionError}`;
 
-      return {
-        rule,
-        canTrigger: isNPCPresent && suppressedNPCs.length > 0 && canTrigger && conditionsMet,
-        suppressedCount: suppressedNPCs.length,
-        reason,
-        priority: rule.priority
-      };
-    }).sort((a, b) => b.priority - a.priority); 
+        return {
+          rule,
+          canTrigger: isNPCPresent && suppressedNPCs.length > 0 && canTrigger && conditionsMet,
+          suppressedCount: suppressedNPCs.length,
+          reason,
+          priority: rule.priority,
+        };
+      })
+      .sort((a, b) => b.priority - a.priority);
   } catch (error) {
     console.error('[NPCIntervention] Error getting potential interventions:', error);
     return [];
   }
 }
-
-
 
 // --- Function: getRecentInterventionPatterns ---
 export function getRecentInterventionPatterns(): Array<{
@@ -1137,8 +1028,6 @@ export function getRecentInterventionPatterns(): Array<{
     return [];
   }
 }
-
-
 
 // --- Function: getInterventionStats ---
 export function getInterventionStats(): {
@@ -1158,7 +1047,7 @@ export function getInterventionStats(): {
     } = {
       totalRules: interventionRules.length,
       activeHistory: interventionHistory.size,
-      recentInterventions: recentInterventions.length
+      recentInterventions: recentInterventions.length,
     };
     let maxCount = 0;
     interventionHistory.forEach((history, ruleId) => {
@@ -1172,7 +1061,8 @@ export function getInterventionStats(): {
       for (let i = 1; i < recentInterventions.length; i++) {
         intervals.push(recentInterventions[i].timestamp - recentInterventions[i - 1].timestamp);
       }
-      stats.averageInterval = intervals.reduce((sum, interval) => sum + interval, 0) / intervals.length;
+      stats.averageInterval =
+        intervals.reduce((sum, interval) => sum + interval, 0) / intervals.length;
     }
     // Map to expected return type
     return {
@@ -1180,14 +1070,14 @@ export function getInterventionStats(): {
       activeHistory: stats.activeHistory,
       recentInterventions: stats.recentInterventions,
       mostActiveRule: stats.mostActiveRule,
-      averageInterval: stats.averageInterval
+      averageInterval: stats.averageInterval,
     };
   } catch (error) {
     console.error('[NPCIntervention] Error getting intervention stats:', error);
     return {
       totalRules: 0,
       activeHistory: 0,
-      recentInterventions: 0
+      recentInterventions: 0,
     };
   }
 }

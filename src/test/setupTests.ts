@@ -4,7 +4,7 @@ import { vi } from 'vitest';
 // Mock browser APIs that are not available in test environment
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
-  value: vi.fn().mockImplementation(query => ({
+  value: vi.fn().mockImplementation((query) => ({
     matches: false,
     media: query,
     onchange: null,
@@ -18,12 +18,12 @@ Object.defineProperty(window, 'matchMedia', {
 
 Object.defineProperty(window, 'requestAnimationFrame', {
   writable: true,
-  value: vi.fn().mockImplementation(callback => setTimeout(callback, 16)),
+  value: vi.fn().mockImplementation((callback) => setTimeout(callback, 16)),
 });
 
 Object.defineProperty(window, 'cancelAnimationFrame', {
   writable: true,
-  value: vi.fn().mockImplementation(id => clearTimeout(id)),
+  value: vi.fn().mockImplementation((id) => clearTimeout(id)),
 });
 
 Object.defineProperty(window, 'performance', {

@@ -66,31 +66,43 @@ interface AnimatedBackdropProps {
 }
 
 // Particles component
-const Particles: React.FC<ParticlesFX> = ({ count = 20, color = '#00ffff', speed = 1, particleSize = 2, opacity = 0.6 }) => {
-  const [particles, setParticles] = useState<Array<{ x: number; y: number; vx: number; vy: number; id: number }>>([]);
+const Particles: React.FC<ParticlesFX> = ({
+  count = 20,
+  color = '#00ffff',
+  speed = 1,
+  particleSize = 2,
+  opacity = 0.6,
+}) => {
+  const [particles, setParticles] = useState<
+    Array<{ x: number; y: number; vx: number; vy: number; id: number }>
+  >([]);
   const animationRef = useRef<number | undefined>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Check for reduced motion preference
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) return;
+    if (prefersReducedMotion) {
+      return;
+    }
 
     const initialParticles = Array.from({ length: count }, (_, i) => ({
       x: Math.random() * 100,
       y: Math.random() * 100,
       vx: (Math.random() - 0.5) * speed,
       vy: (Math.random() - 0.5) * speed,
-      id: i
+      id: i,
     }));
     setParticles(initialParticles);
 
     const animate = () => {
-      setParticles(prev => prev.map(particle => ({
-        ...particle,
-        x: (particle.x + particle.vx + 100) % 100,
-        y: (particle.y + particle.vy + 100) % 100
-      })));
+      setParticles((prev) =>
+        prev.map((particle) => ({
+          ...particle,
+          x: (particle.x + particle.vx + 100) % 100,
+          y: (particle.y + particle.vy + 100) % 100,
+        })),
+      );
       animationRef.current = requestAnimationFrame(animate);
     };
 
@@ -105,7 +117,7 @@ const Particles: React.FC<ParticlesFX> = ({ count = 20, color = '#00ffff', speed
 
   return (
     <div ref={containerRef} className="absolute inset-0 pointer-events-none" style={{ opacity }}>
-      {particles.map(particle => (
+      {particles.map((particle) => (
         <div
           key={particle.id}
           className="absolute rounded-full"
@@ -124,7 +136,13 @@ const Particles: React.FC<ParticlesFX> = ({ count = 20, color = '#00ffff', speed
 };
 
 // Blinking LED component
-const BlinkLed: React.FC<BlinkLedFX> = ({ color = '#ff0000', interval = 1000, opacity = 0.8, position, size }) => {
+const BlinkLed: React.FC<BlinkLedFX> = ({
+  color = '#ff0000',
+  interval = 1000,
+  opacity = 0.8,
+  position,
+  size,
+}) => {
   const [isOn, setIsOn] = useState(true);
 
   useEffect(() => {
@@ -135,7 +153,7 @@ const BlinkLed: React.FC<BlinkLedFX> = ({ color = '#ff0000', interval = 1000, op
     }
 
     const timer = setInterval(() => {
-      setIsOn(prev => !prev);
+      setIsOn((prev) => !prev);
     }, interval);
 
     return () => clearInterval(timer);
@@ -158,34 +176,43 @@ const BlinkLed: React.FC<BlinkLedFX> = ({ color = '#ff0000', interval = 1000, op
 };
 
 // CRT Scroller component
-const CRTScroller: React.FC<CRTScrollerFX> = ({ text, color = '#00ff00', speed = 50, opacity = 0.3, size }) => {
+const CRTScroller: React.FC<CRTScrollerFX> = ({
+  text,
+  color = '#00ff00',
+  speed = 50,
+  opacity = 0.3,
+  size,
+}) => {
   const [scrollText, setScrollText] = useState('');
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    
+
     if (prefersReducedMotion) {
       setScrollText(text || 'SYSTEM_READY');
       return;
     }
 
-    const charset = "░▒▓*#/|\\\\<>_=-+{}[]()01";
-    const lines = Array.from({ length: 5 }, () => 
-      Array.from({ length: 20 }, () => charset[Math.floor(Math.random() * charset.length)]).join('')
+    const charset = '░▒▓*#/|\\\\<>_=-+{}[]()01';
+    const lines = Array.from({ length: 5 }, () =>
+      Array.from({ length: 20 }, () => charset[Math.floor(Math.random() * charset.length)]).join(
+        '',
+      ),
     );
 
-    let currentText = text || 'SYSTEM_READY';
+    const currentText = text || 'SYSTEM_READY';
     let index = 0;
 
     const updateScroll = () => {
       const displayLines = lines.map((line, i) => {
-        if (i === 2) { // Middle line shows the actual text
+        if (i === 2) {
+          // Middle line shows the actual text
           return currentText.slice(index, index + 20).padEnd(20, ' ');
         }
         return line;
       });
 
-      setScrollText(displayLines.join("\\n"));
+      setScrollText(displayLines.join('\\n'));
       index = (index + 1) % (currentText.length + 20);
     };
 
@@ -214,14 +241,22 @@ const CRTScroller: React.FC<CRTScrollerFX> = ({ text, color = '#00ff00', speed =
 };
 
 // Floating Orb component
-const FloatingOrb: React.FC<FloatingOrbFX> = ({ color = '#ffffff', orbSize = 20, speed = 1, opacity = 0.4, position }) => {
+const FloatingOrb: React.FC<FloatingOrbFX> = ({
+  color = '#ffffff',
+  orbSize = 20,
+  speed = 1,
+  opacity = 0.4,
+  position,
+}) => {
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const animationRef = useRef<number | undefined>(undefined);
   const timeRef = useRef(0);
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) return;
+    if (prefersReducedMotion) {
+      return;
+    }
 
     const animate = () => {
       timeRef.current += 0.02 * speed;
@@ -266,7 +301,8 @@ const StaticOverlay: React.FC<StaticOverlayFX> = ({ opacity = 0.1, pattern = 'do
       backgroundSize: '20px 20px',
     },
     lines: {
-      backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 4px)',
+      backgroundImage:
+        'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 4px)',
     },
     grid: {
       backgroundImage: `
@@ -291,14 +327,13 @@ const StaticOverlay: React.FC<StaticOverlayFX> = ({ opacity = 0.1, pattern = 'do
 // Main AnimatedBackdrop component
 const AnimatedBackdrop: React.FC<AnimatedBackdropProps> = ({ spec, className = '' }) => {
   return (
-    <div className={`relative overflow-hidden ${className}`} style={{ willChange: "transform, opacity" }}>
+    <div
+      className={`relative overflow-hidden ${className}`}
+      style={{ willChange: 'transform, opacity' }}
+    >
       {/* Base image */}
-      <img
-        src={spec.baseImage}
-        alt="Room backdrop"
-        className="w-full h-full object-cover"
-      />
-      
+      <img src={spec.baseImage} alt="Room backdrop" className="w-full h-full object-cover" />
+
       {/* FX Layers */}
       {spec.layers.map((layer) => {
         const LayerComponent = (() => {

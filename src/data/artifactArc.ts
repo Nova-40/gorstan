@@ -8,7 +8,7 @@ import {
   type DiscoveryNarrative,
   type ArtifactVision,
   type ArtifactEvolution,
-  type ArtifactArcConfig
+  type ArtifactArcConfig,
 } from '../types/artifactArc';
 
 // Artifact Lore Entries
@@ -27,15 +27,15 @@ The ancient texts speak of the "Silent Architects," beings who existed in the ti
 When reality finally chose its form, these fragments were scattered across dimensions, waiting to remind future travelers that even in a world of fixed laws, the void between thoughts remains malleable.`,
       unlockConditions: {
         artifactLevel: 1,
-        experienceThreshold: 0
+        experienceThreshold: 0,
       },
       metadata: {
         author: 'Archive of the Silent Architects',
         timestamp: 'Before the First Age',
         location: 'The Space Between Spaces',
         discoveryMethod: 'Quantum resonance scanning',
-        significance: 'critical'
-      }
+        significance: 'critical',
+      },
     },
     {
       id: 'void_fragment_discovery_1',
@@ -52,13 +52,13 @@ The fragment doesn't speak. It listens. It remembers every possibility I've ever
 Sometimes, when I'm very still, I can feel it offering me glimpses of what might have been. Not regret—never regret—but wonder at the infinite branches of existence.`,
       unlockConditions: {
         artifactLevel: 1,
-        usageCount: 5
+        usageCount: 5,
       },
       metadata: {
         author: 'Personal Journal Entry',
         discoveryMethod: 'Direct experience',
-        significance: 'high'
-      }
+        significance: 'high',
+      },
     },
     {
       id: 'void_fragment_mastery_1',
@@ -79,14 +79,14 @@ The most fascinating aspect is the fragment's apparent ability to "remember" qua
 Further research needed into potential applications for possibility navigation and alternate timeline perception.`,
       unlockConditions: {
         artifactLevel: 2,
-        experienceThreshold: 500
+        experienceThreshold: 500,
       },
       metadata: {
         author: 'Dr. Sarah Chen, Quantum Research Division',
         discoveryMethod: 'Scientific analysis',
-        significance: 'high'
-      }
-    }
+        significance: 'high',
+      },
+    },
   ],
 
   flux_crystal: [
@@ -105,15 +105,15 @@ Each crystal contains within it the essence of a thousand transformations: the m
 Legend speaks of a great Crystal Garden where all the flux crystals once grew together, singing harmonies of perpetual transformation. Though the garden is lost, its children remain, carrying forward the eternal song of becoming.`,
       unlockConditions: {
         artifactLevel: 1,
-        experienceThreshold: 0
+        experienceThreshold: 0,
       },
       metadata: {
         author: 'The Wanderer Sages',
         timestamp: 'The Age of Flowing',
         location: 'The Crystal Garden of Becoming',
         discoveryMethod: 'Ancient chronicles',
-        significance: 'critical'
-      }
+        significance: 'critical',
+      },
     },
     {
       id: 'flux_crystal_awakening_1',
@@ -133,14 +133,14 @@ I'm beginning to understand that I don't just carry this crystal. We carry each 
       unlockConditions: {
         artifactLevel: 3,
         timeWithArtifact: 86400000, // 24 hours
-        usageCount: 20
+        usageCount: 20,
       },
       metadata: {
         author: 'Personal Journal Entry',
         discoveryMethod: 'Bonding experience',
-        significance: 'high'
-      }
-    }
+        significance: 'high',
+      },
+    },
   ],
 
   resonance_tuner: [
@@ -159,15 +159,15 @@ Unlike other quantum artifacts that work through force or manipulation, Resonanc
 Each tuner contains within it a complete map of universal frequencies, constantly updating itself as reality evolves and grows more complex. They are not merely tools—they are the universe's gift to itself, a way for existence to fine-tune its own song.`,
       unlockConditions: {
         artifactLevel: 1,
-        experienceThreshold: 0
+        experienceThreshold: 0,
       },
       metadata: {
         author: 'Archive of the Builders',
         timestamp: 'The First Resonance',
         location: 'The Harmonic Observatory',
         discoveryMethod: 'Frequency analysis',
-        significance: 'critical'
-      }
+        significance: 'critical',
+      },
     },
     {
       id: 'resonance_tuner_mastery_1',
@@ -187,14 +187,14 @@ I understand now why the ancients called this mastery "Becoming the Bridge." The
       unlockConditions: {
         artifactLevel: 4,
         experienceThreshold: 1500,
-        otherArtifacts: ['flux_crystal']
+        otherArtifacts: ['flux_crystal'],
       },
       metadata: {
         author: 'Master Resonant Keela Varn',
         discoveryMethod: 'Deep meditation practice',
-        significance: 'critical'
-      }
-    }
+        significance: 'critical',
+      },
+    },
   ],
 
   entropy_lens: [
@@ -215,15 +215,15 @@ The lenses formed naturally in the aftermath of their transcendence—or destruc
 The lenses remain as both gift and curse—invaluable tools for those who would understand the deeper patterns of reality, but dangerous beyond measure for those unprepared for the weight of such knowledge.`,
       unlockConditions: {
         artifactLevel: 1,
-        experienceThreshold: 0
+        experienceThreshold: 0,
       },
       metadata: {
         author: 'The Final Observer',
         timestamp: 'The Last Sight',
         location: 'The Observatory of Endings',
         discoveryMethod: 'Archaeological discovery',
-        significance: 'critical'
-      }
+        significance: 'critical',
+      },
     },
     {
       id: 'entropy_lens_discovery_1',
@@ -243,14 +243,14 @@ The lens is teaching me to hold both birth and death in the same thought, to lov
       unlockConditions: {
         artifactLevel: 2,
         usageCount: 10,
-        experienceThreshold: 300
+        experienceThreshold: 300,
       },
       metadata: {
         author: 'Personal Journal Entry',
         discoveryMethod: 'Direct experience',
-        significance: 'high'
-      }
-    }
+        significance: 'high',
+      },
+    },
   ],
 
   nexus_stabilizer: [
@@ -271,15 +271,15 @@ The process of creating even one Stabilizer required the voluntary sacrifice of 
 Each Stabilizer carries within it the wisdom of thousands of minds and the weight of cosmic responsibility. They are not mere artifacts—they are the guardians of reality's structural integrity.`,
       unlockConditions: {
         artifactLevel: 1,
-        experienceThreshold: 0
+        experienceThreshold: 0,
       },
       metadata: {
         author: 'Chronicle of the Third Age',
         timestamp: 'The Great Convergence',
         location: 'The Stability Complex',
         discoveryMethod: 'Historical archives',
-        significance: 'critical'
-      }
+        significance: 'critical',
+      },
     },
     {
       id: 'nexus_stabilizer_awakening_1',
@@ -301,14 +301,14 @@ It's overwhelming to be welcomed into such an ancient and wise community. But al
       unlockConditions: {
         artifactLevel: 5,
         timeWithArtifact: 259200000, // 72 hours
-        experienceThreshold: 2000
+        experienceThreshold: 2000,
       },
       metadata: {
         author: 'Personal Journal Entry',
         discoveryMethod: 'Consciousness bonding',
-        significance: 'critical'
-      }
-    }
+        significance: 'critical',
+      },
+    },
   ],
 
   reality_anchor: [
@@ -329,15 +329,15 @@ The future-children who created them paid a terrible price: to forge an Anchor, 
 Each Anchor is both a tool and a memorial—a reminder that someone, somewhere in the web of time, loved existence enough to die so it could continue. They are hope made manifest, the ultimate expression of faith in tomorrow.`,
       unlockConditions: {
         artifactLevel: 1,
-        experienceThreshold: 0
+        experienceThreshold: 0,
       },
       metadata: {
         author: 'The Future-Children',
         timestamp: 'The End of Days That Never Were',
         location: 'The Temporal Foundry',
         discoveryMethod: 'Temporal archaeology',
-        significance: 'critical'
-      }
+        significance: 'critical',
+      },
     },
     {
       id: 'reality_anchor_legacy_1',
@@ -359,14 +359,14 @@ The Anchor has taught me that we are all connected across time, that every act o
       unlockConditions: {
         artifactLevel: 8,
         experienceThreshold: 5000,
-        routeCompletions: 10
+        routeCompletions: 10,
       },
       metadata: {
         author: 'Personal Journal Entry',
         discoveryMethod: 'Temporal communion',
-        significance: 'critical'
-      }
-    }
+        significance: 'critical',
+      },
+    },
   ],
 
   quantum_core: [
@@ -387,15 +387,15 @@ Those who have bonded deeply with Core fragments report experiences beyond descr
 The Core does not judge, does not demand, does not command. It simply is, and in its being, allows all other being to flourish. It is the answer to questions we haven't learned to ask, the solution to problems we cannot yet perceive.`,
       unlockConditions: {
         artifactLevel: 1,
-        experienceThreshold: 0
+        experienceThreshold: 0,
       },
       metadata: {
         author: 'The Eternal Codex',
         timestamp: 'Before Time',
         location: 'The Center of Everything',
         discoveryMethod: 'Direct revelation',
-        significance: 'critical'
-      }
+        significance: 'critical',
+      },
     },
     {
       id: 'quantum_core_transcendence_1',
@@ -417,15 +417,22 @@ The Core whispers to me now, not in words but in pure understanding: "You are ho
       unlockConditions: {
         artifactLevel: 10,
         experienceThreshold: 10000,
-        otherArtifacts: ['void_fragment', 'flux_crystal', 'resonance_tuner', 'entropy_lens', 'nexus_stabilizer', 'reality_anchor']
+        otherArtifacts: [
+          'void_fragment',
+          'flux_crystal',
+          'resonance_tuner',
+          'entropy_lens',
+          'nexus_stabilizer',
+          'reality_anchor',
+        ],
       },
       metadata: {
         author: 'Personal Journal Entry',
         discoveryMethod: 'Transcendent experience',
-        significance: 'critical'
-      }
-    }
-  ]
+        significance: 'critical',
+      },
+    },
+  ],
 };
 
 // Discovery Narratives
@@ -440,27 +447,44 @@ export const DISCOVERY_NARRATIVES: Record<string, DiscoveryNarrative[]> = {
       preDiscoveryHints: [
         'A strange silence in the corner of the room',
         'The feeling that something invisible is watching',
-        'A patch of darkness that seems deeper than shadows'
+        'A patch of darkness that seems deeper than shadows',
       ],
       discoveryMoment: {
-        description: 'As you examine the seemingly empty corner more closely, your fingers brush against something that shouldn\'t exist—a fragment of nothingness that has somehow gained substance.',
+        description:
+          "As you examine the seemingly empty corner more closely, your fingers brush against something that shouldn't exist—a fragment of nothingness that has somehow gained substance.",
         playerActions: ['investigate corner', 'reach into shadow', 'feel carefully'],
         environmentalFactors: ['unusual quiet', 'temperature drop', 'light seems dimmer'],
-        quantumSignatures: ['void resonance detected', 'probability flux at 0.00', 'quantum vacuum fluctuation']
+        quantumSignatures: [
+          'void resonance detected',
+          'probability flux at 0.00',
+          'quantum vacuum fluctuation',
+        ],
       },
       firstContact: {
-        initialReaction: 'A moment of vertigo as your mind tries to process touching something that exists in the space between existence and non-existence.',
-        artifactBehavior: 'The fragment seems to absorb light and sound around it, creating a small pocket of profound stillness.',
+        initialReaction:
+          'A moment of vertigo as your mind tries to process touching something that exists in the space between existence and non-existence.',
+        artifactBehavior:
+          'The fragment seems to absorb light and sound around it, creating a small pocket of profound stillness.',
         immediateEffects: ['enhanced focus', 'time seems to slow', 'background noise fades'],
-        playerThoughts: 'I\'ve found something impossible—a piece of the void itself, somehow made solid.'
+        playerThoughts:
+          "I've found something impossible—a piece of the void itself, somehow made solid.",
       },
       integration: {
-        learningProcess: 'Gradually learning to appreciate the fragment\'s gift of silence and the clarity it brings to decision-making.',
-        challenges: ['initial disorientation', 'fear of the unknown', 'adjusting to enhanced perception'],
-        breakthroughs: ['understanding silence as fullness rather than emptiness', 'using stillness to solve problems'],
-        mastery: 'Becoming comfortable with the paradox of holding nothingness, using its insights to navigate complex situations with unusual clarity.'
-      }
-    }
+        learningProcess:
+          "Gradually learning to appreciate the fragment's gift of silence and the clarity it brings to decision-making.",
+        challenges: [
+          'initial disorientation',
+          'fear of the unknown',
+          'adjusting to enhanced perception',
+        ],
+        breakthroughs: [
+          'understanding silence as fullness rather than emptiness',
+          'using stillness to solve problems',
+        ],
+        mastery:
+          'Becoming comfortable with the paradox of holding nothingness, using its insights to navigate complex situations with unusual clarity.',
+      },
+    },
   ],
 
   flux_crystal: [
@@ -471,30 +495,52 @@ export const DISCOVERY_NARRATIVES: Record<string, DiscoveryNarrative[]> = {
       circumstance: 'puzzle',
       rarity: 'uncommon',
       preDiscoveryHints: [
-        'Patterns that shift when you\'re not looking directly',
+        "Patterns that shift when you're not looking directly",
         'A puzzle that seems to change its solution',
-        'The feeling that the room itself is alive and thinking'
+        'The feeling that the room itself is alive and thinking',
       ],
       discoveryMoment: {
-        description: 'The moment you stop trying to force the puzzle\'s solution and instead flow with its changing patterns, a crystal materializes from the flux of possibilities.',
+        description:
+          "The moment you stop trying to force the puzzle's solution and instead flow with its changing patterns, a crystal materializes from the flux of possibilities.",
         playerActions: ['stop forcing solutions', 'embrace change', 'flow with patterns'],
-        environmentalFactors: ['shifting light patterns', 'walls seem to breathe', 'reality feels fluid'],
-        quantumSignatures: ['flux cascade initiated', 'probability streams converging', 'transformation matrix active']
+        environmentalFactors: [
+          'shifting light patterns',
+          'walls seem to breathe',
+          'reality feels fluid',
+        ],
+        quantumSignatures: [
+          'flux cascade initiated',
+          'probability streams converging',
+          'transformation matrix active',
+        ],
       },
       firstContact: {
-        initialReaction: 'A surge of energy and possibility, like standing at the confluence of infinite rivers of change.',
-        artifactBehavior: 'The crystal pulses with inner light, its facets constantly shifting to show new angles and reflections.',
-        immediateEffects: ['increased adaptability', 'enhanced pattern recognition', 'comfort with uncertainty'],
-        playerThoughts: 'This crystal embodies change itself—not random chaos, but purposeful transformation.'
+        initialReaction:
+          'A surge of energy and possibility, like standing at the confluence of infinite rivers of change.',
+        artifactBehavior:
+          'The crystal pulses with inner light, its facets constantly shifting to show new angles and reflections.',
+        immediateEffects: [
+          'increased adaptability',
+          'enhanced pattern recognition',
+          'comfort with uncertainty',
+        ],
+        playerThoughts:
+          'This crystal embodies change itself—not random chaos, but purposeful transformation.',
       },
       integration: {
-        learningProcess: 'Learning to work with change rather than against it, using the crystal\'s energy to navigate transitions smoothly.',
-        challenges: ['managing constant change', 'finding stability in flux', 'trusting the process'],
+        learningProcess:
+          "Learning to work with change rather than against it, using the crystal's energy to navigate transitions smoothly.",
+        challenges: [
+          'managing constant change',
+          'finding stability in flux',
+          'trusting the process',
+        ],
         breakthroughs: ['understanding change as growth', 'finding rhythm in transformation'],
-        mastery: 'Becoming a master of adaptation, able to flow through any situation with grace and purpose.'
-      }
-    }
-  ]
+        mastery:
+          'Becoming a master of adaptation, able to flow through any situation with grace and purpose.',
+      },
+    },
+  ],
 };
 
 // Artifact Visions
@@ -506,24 +552,25 @@ export const ARTIFACT_VISIONS: Record<string, ArtifactVision[]> = {
       triggerConditions: {
         quantumResonance: 70,
         playerStress: 40,
-        timeOfDay: 'dusk'
+        timeOfDay: 'dusk',
       },
       visionType: 'warning',
       intensity: 8,
       duration: 15000,
       content: {
-        narrative: 'Through the lens, you witness the slow entropy of the room around you—not destruction, but the natural conclusion of all cycles. Dust to dust, energy to equilibrium, complexity to simplicity. Yet in this ending, you sense the seeds of new beginnings.',
+        narrative:
+          'Through the lens, you witness the slow entropy of the room around you—not destruction, but the natural conclusion of all cycles. Dust to dust, energy to equilibrium, complexity to simplicity. Yet in this ending, you sense the seeds of new beginnings.',
         imagery: ['fading colors', 'gentle dissolution', 'peaceful endings', 'new growth emerging'],
         emotions: ['melancholy', 'acceptance', 'peace', 'hope'],
-        symbols: ['spiral', 'falling leaves', 'setting sun', 'sprouting seed']
+        symbols: ['spiral', 'falling leaves', 'setting sun', 'sprouting seed'],
       },
       aftermath: {
         experienceGain: 100,
         stressChange: -20,
         artifactBondIncrease: 15,
-        unlockedLore: ['entropy_lens_mastery_1']
-      }
-    }
+        unlockedLore: ['entropy_lens_mastery_1'],
+      },
+    },
   ],
 
   quantum_core: [
@@ -532,25 +579,26 @@ export const ARTIFACT_VISIONS: Record<string, ArtifactVision[]> = {
       artifactId: 'quantum_core',
       triggerConditions: {
         quantumResonance: 95,
-        otherArtifactsPresent: ['void_fragment', 'flux_crystal', 'resonance_tuner']
+        otherArtifactsPresent: ['void_fragment', 'flux_crystal', 'resonance_tuner'],
       },
       visionType: 'prophecy',
       intensity: 10,
       duration: 30000,
       content: {
-        narrative: 'Reality dissolves into its fundamental components, revealing the underlying unity that connects all things. You see yourself as part of an infinite web of consciousness, each thought and action rippling across dimensions to touch countless other lives.',
+        narrative:
+          'Reality dissolves into its fundamental components, revealing the underlying unity that connects all things. You see yourself as part of an infinite web of consciousness, each thought and action rippling across dimensions to touch countless other lives.',
         imagery: ['infinite web of light', 'breathing cosmos', 'unified field', 'dancing energies'],
         emotions: ['wonder', 'unity', 'love', 'transcendence'],
-        symbols: ['infinite loop', 'tree of life', 'cosmic dance', 'heart chakra']
+        symbols: ['infinite loop', 'tree of life', 'cosmic dance', 'heart chakra'],
       },
       aftermath: {
         experienceGain: 500,
         stressChange: -50,
         artifactBondIncrease: 25,
-        unlockedLore: ['quantum_core_transcendence_1']
-      }
-    }
-  ]
+        unlockedLore: ['quantum_core_transcendence_1'],
+      },
+    },
+  ],
 };
 
 // Artifact Evolution Data
@@ -563,7 +611,7 @@ export const ARTIFACT_EVOLUTIONS: ArtifactEvolution[] = [
     requirements: {
       bondLevel: 60,
       experiencePoints: 2000,
-      timeThreshold: 604800000 // 7 days
+      timeThreshold: 604800000, // 7 days
     },
     evolutionProcess: {
       phases: [
@@ -571,31 +619,44 @@ export const ARTIFACT_EVOLUTIONS: ArtifactEvolution[] = [
           name: 'Awakening',
           description: 'The fragment begins to resonate with your consciousness',
           duration: 3600000, // 1 hour
-          effects: ['increased void sensitivity', 'enhanced meditation abilities']
+          effects: ['increased void sensitivity', 'enhanced meditation abilities'],
         },
         {
           name: 'Integration',
           description: 'Your understanding of void principles deepens',
           duration: 7200000, // 2 hours
-          effects: ['void mastery unlocked', 'reality anchoring improved']
+          effects: ['void mastery unlocked', 'reality anchoring improved'],
         },
         {
           name: 'Transcendence',
           description: 'The fragment evolves into a true Void Relic',
           duration: 1800000, // 30 minutes
-          effects: ['major power increase', 'new abilities unlocked']
-        }
+          effects: ['major power increase', 'new abilities unlocked'],
+        },
       ],
-      finalTransformation: 'The fragment expands into a crystalline void matrix, capable of manipulating space-time discontinuities.',
+      finalTransformation:
+        'The fragment expands into a crystalline void matrix, capable of manipulating space-time discontinuities.',
       newAbilities: ['void walking', 'probability nullification', 'silence field generation'],
-      personalityChanges: ['more communicative', 'protective instincts', 'philosophical tendencies']
+      personalityChanges: [
+        'more communicative',
+        'protective instincts',
+        'philosophical tendencies',
+      ],
     },
     consequences: {
-      playerImpact: ['enhanced void mastery', 'increased quantum sensitivity', 'deeper universe understanding'],
-      worldImpact: ['reality stabilization', 'void phenomenon reduction', 'space-time integrity improvement'],
-      relationshipChanges: ['stronger artifact bond', 'enhanced empathy', 'cosmic perspective']
-    }
-  }
+      playerImpact: [
+        'enhanced void mastery',
+        'increased quantum sensitivity',
+        'deeper universe understanding',
+      ],
+      worldImpact: [
+        'reality stabilization',
+        'void phenomenon reduction',
+        'space-time integrity improvement',
+      ],
+      relationshipChanges: ['stronger artifact bond', 'enhanced empathy', 'cosmic perspective'],
+    },
+  },
 ];
 
 // Default Configuration
@@ -609,5 +670,5 @@ export const DEFAULT_ARTIFACT_ARC_CONFIG: ArtifactArcConfig = {
   synthesisEnabled: true,
   personalityDevelopment: true,
   narrativeDepth: 'rich',
-  playerChoiceImpact: true
+  playerChoiceImpact: true,
 };

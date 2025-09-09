@@ -23,56 +23,41 @@ import { GameAction, GameMessage } from '../types/GameTypes';
 
 import { LocalGameState } from '../state/gameState';
 
-import type { Miniquest } from '../types/GameTypes';
-
-
-
-
-
-
-
-
-
-
-
 export interface MiniquestCommandResult {
   messages: GameMessage[];
   miniquestModal?: MiniquestControllerResult;
   updates?: Partial<LocalGameState>;
 }
 
-
-
 // --- Function: createGameMessage ---
 function createGameMessage(
   text: string,
   type: GameMessage['type'] = 'system',
-  speaker?: string
+  speaker?: string,
 ): GameMessage {
   return {
     id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
     text,
     type,
     timestamp: Date.now(),
-    speaker
+    speaker,
   };
 }
-
 
 export async function processMiniquestCommand(
   command: string,
   gameState: LocalGameState,
   currentRoomId: string,
-  dispatch: React.Dispatch<GameAction>
+  dispatch: React.Dispatch<GameAction>,
 ): Promise<MiniquestCommandResult | null> {
-// Variable declaration
+  // Variable declaration
   const commandWords = command.toLowerCase().trim().split(/\s+/);
-// Variable declaration
+  // Variable declaration
   const verb = commandWords[0];
-// Variable declaration
+  // Variable declaration
   const noun = commandWords.slice(1).join(' ');
 
-// Variable declaration
+  // Variable declaration
   const miniquestController = MiniquestController.getInstance();
   miniquestController.setDispatch(dispatch);
 
@@ -80,28 +65,32 @@ export async function processMiniquestCommand(
     case 'miniquest':
     case 'miniquests': {
       if (!noun || noun === 'list') {
-        
-// Variable declaration
-        const interfaceData = await miniquestController.openMiniquestInterface(currentRoomId, gameState);
+        // Variable declaration
+        const interfaceData = await miniquestController.openMiniquestInterface(
+          currentRoomId,
+          gameState,
+        );
 
         return {
           messages: [
             createGameMessage('🎯 **Opening Miniquest Interface...**'),
             createGameMessage(`Found ${interfaceData.miniquests.length} quests in this area`),
-            createGameMessage(`${interfaceData.availableCount} available, ${interfaceData.completedCount} completed`)
+            createGameMessage(
+              `${interfaceData.availableCount} available, ${interfaceData.completedCount} completed`,
+            ),
           ],
-          miniquestModal: interfaceData
+          miniquestModal: interfaceData,
         };
       }
 
       if (noun.startsWith('attempt ')) {
-// Variable declaration
+        // Variable declaration
         const questId = noun.substring(8).trim();
         return await handleMiniquestAttempt(questId, currentRoomId, gameState, miniquestController);
       }
 
       if (noun === 'stats' || noun === 'statistics') {
-// Variable declaration
+        // Variable declaration
         const globalStats = miniquestController.getGlobalStats(gameState);
         return {
           messages: [
@@ -109,21 +98,23 @@ export async function processMiniquestCommand(
             createGameMessage(`Total Completed: ${globalStats.totalCompleted}`),
             createGameMessage(`Total Score: ${globalStats.totalScore} points`),
             createGameMessage(`Rooms Explored: ${globalStats.roomsWithQuests}`),
-            createGameMessage(`Available Quests: ${globalStats.totalAvailable}`)
-          ]
+            createGameMessage(`Available Quests: ${globalStats.totalAvailable}`),
+          ],
         };
       }
 
       if (noun === 'progress') {
-// Variable declaration
+        // Variable declaration
         const roomProgress = miniquestController.getRoomProgress(currentRoomId, gameState);
         return {
           messages: [
             createGameMessage(`🎯 **Miniquest Progress for ${currentRoomId}:**`),
             createGameMessage(`Completed: ${roomProgress.completed}/${roomProgress.total}`),
             createGameMessage(`Available: ${roomProgress.available}`),
-            createGameMessage(`Completion: ${roomProgress.total > 0 ? Math.round((roomProgress.completed / roomProgress.total) * 100) : 0}%`)
-          ]
+            createGameMessage(
+              `Completion: ${roomProgress.total > 0 ? Math.round((roomProgress.completed / roomProgress.total) * 100) : 0}%`,
+            ),
+          ],
         };
       }
 
@@ -134,15 +125,20 @@ export async function processMiniquestCommand(
           createGameMessage('  miniquests list - Same as above'),
           createGameMessage('  miniquests attempt [name] - Try a specific quest'),
           createGameMessage('  miniquests progress - Show room completion'),
-          createGameMessage('  miniquests stats - Show global statistics')
-        ]
+          createGameMessage('  miniquests stats - Show global statistics'),
+        ],
       };
     }
 
     case 'attempt': {
       if (!noun) {
         return {
-          messages: [createGameMessage('What miniquest do you want to attempt? Use "miniquests" to see available options.', 'error')]
+          messages: [
+            createGameMessage(
+              'What miniquest do you want to attempt? Use "miniquests" to see available options.',
+              'error',
+            ),
+          ],
         };
       }
 
@@ -150,22 +146,23 @@ export async function processMiniquestCommand(
     }
 
     case 'quests': {
-      
-// Variable declaration
-      const interfaceData = await miniquestController.openMiniquestInterface(currentRoomId, gameState);
+      // Variable declaration
+      const interfaceData = await miniquestController.openMiniquestInterface(
+        currentRoomId,
+        gameState,
+      );
 
       return {
         messages: [
           createGameMessage('🎯 **Opening Quest Interface...**'),
-          createGameMessage('Enhanced miniquest browser with filtering and details')
+          createGameMessage('Enhanced miniquest browser with filtering and details'),
         ],
-        miniquestModal: interfaceData
+        miniquestModal: interfaceData,
       };
     }
 
     case 'hint': {
-      
-// Variable declaration
+      // Variable declaration
       const roomProgress = miniquestController.getRoomProgress(currentRoomId, gameState);
 
       if (roomProgress.total > 0) {
@@ -177,35 +174,39 @@ export async function processMiniquestCommand(
             createGameMessage('• Look for environmental cues in room descriptions'),
             createGameMessage('• Some quests become available after story progression'),
             createGameMessage('• Completed quests award score and may unlock new areas'),
-            createGameMessage('• Try examining, listening, or interacting with objects')
-          ]
+            createGameMessage('• Try examining, listening, or interacting with objects'),
+          ],
         };
       }
 
-      return null; 
+      return null;
     }
 
     case 'objectives': {
-      
-// Variable declaration
-      const interfaceData = await miniquestController.openMiniquestInterface(currentRoomId, gameState);
-// Variable declaration
-      const availableQuests = interfaceData.miniquests.filter(q =>
-        interfaceData.progress[q.id]?.available && !interfaceData.progress[q.id]?.completed
+      // Variable declaration
+      const interfaceData = await miniquestController.openMiniquestInterface(
+        currentRoomId,
+        gameState,
+      );
+      // Variable declaration
+      const availableQuests = interfaceData.miniquests.filter(
+        (q) => interfaceData.progress[q.id]?.available && !interfaceData.progress[q.id]?.completed,
       );
 
       if (availableQuests.length === 0) {
         return {
           messages: [
             createGameMessage('🎯 No immediate objectives in this area.'),
-            createGameMessage('Explore other locations or progress the main story to unlock new quests.')
-          ]
+            createGameMessage(
+              'Explore other locations or progress the main story to unlock new quests.',
+            ),
+          ],
         };
       }
 
-// Variable declaration
+      // Variable declaration
       const messages = [createGameMessage('🎯 **Current Objectives:**')];
-      availableQuests.slice(0, 3).forEach(quest => {
+      availableQuests.slice(0, 3).forEach((quest) => {
         messages.push(createGameMessage(`• ${quest.title} - ${quest.description}`));
         if (quest.triggerAction) {
           messages.push(createGameMessage(`  Try: ${quest.triggerAction}`));
@@ -213,83 +214,82 @@ export async function processMiniquestCommand(
       });
 
       if (availableQuests.length > 3) {
-        messages.push(createGameMessage(`...and ${availableQuests.length - 3} more. Use "miniquests" to see all.`));
+        messages.push(
+          createGameMessage(
+            `...and ${availableQuests.length - 3} more. Use "miniquests" to see all.`,
+          ),
+        );
       }
 
       return { messages };
     }
 
     default:
-      return null; 
+      return null;
   }
 }
-
 
 async function handleMiniquestAttempt(
   questId: string,
   currentRoomId: string,
   gameState: LocalGameState,
-  miniquestController: MiniquestController
+  miniquestController: MiniquestController,
 ): Promise<MiniquestCommandResult> {
   try {
-// Variable declaration
+    // Variable declaration
     const result = await miniquestController.attemptQuest(questId, currentRoomId, gameState);
 
-// Variable declaration
-    const messages = [
-      createGameMessage(result.message, result.success ? 'system' : 'error')
-    ];
+    // Variable declaration
+    const messages = [createGameMessage(result.message, result.success ? 'system' : 'error')];
 
     if (result.success && result.scoreAwarded) {
-      messages.push(createGameMessage(`🏆 Quest completed! +${result.scoreAwarded} points`, 'achievement'));
+      messages.push(
+        createGameMessage(`🏆 Quest completed! +${result.scoreAwarded} points`, 'achievement'),
+      );
     }
 
     return { messages };
-
   } catch (error) {
     console.error('Error attempting miniquest:', error);
     return {
       messages: [
         createGameMessage(`Miniquest "${questId}" not found in this area.`, 'error'),
-        createGameMessage('Use "miniquests" to see available quests.', 'system')
-      ]
+        createGameMessage('Use "miniquests" to see available quests.', 'system'),
+      ],
     };
   }
 }
 
-
-
 // --- Function: isMiniquestCommand ---
 export function isMiniquestCommand(command: string): boolean {
-// Variable declaration
+  // Variable declaration
   const commandWords = command.toLowerCase().trim().split(/\s+/);
-// Variable declaration
+  // Variable declaration
   const verb = commandWords[0];
 
   return ['miniquest', 'miniquests', 'attempt', 'quests', 'objectives'].includes(verb);
 }
 
-
-
 // --- Function: getMiniquestContextualInfo ---
 export function getMiniquestContextualInfo(roomId: string, gameState: LocalGameState): string[] {
-// Variable declaration
+  // Variable declaration
   const miniquestController = MiniquestController.getInstance();
-// Variable declaration
+  // Variable declaration
   const progress = miniquestController.getRoomProgress(roomId, gameState);
 
   const messages: string[] = [];
 
   if (progress.total > 0) {
     if (progress.available > 0) {
-      messages.push(`🎯 ${progress.available} miniquest${progress.available !== 1 ? 's' : ''} available (type "miniquests" to explore)`);
+      messages.push(
+        `🎯 ${progress.available} miniquest${progress.available !== 1 ? 's' : ''} available (type "miniquests" to explore)`,
+      );
     }
 
     if (progress.completed > 0) {
       messages.push(`✅ ${progress.completed}/${progress.total} miniquests completed in this area`);
     }
 
-    
     if (progress.available > 0 && progress.completed === 0) {
       messages.push(`💡 Look around carefully - this area holds secrets waiting to be discovered`);
     }
@@ -297,8 +297,6 @@ export function getMiniquestContextualInfo(roomId: string, gameState: LocalGameS
 
   return messages;
 }
-
-
 
 // --- Function: getMiniquestHelpMessages ---
 export function getMiniquestHelpMessages(): GameMessage[] {
@@ -318,6 +316,6 @@ export function getMiniquestHelpMessages(): GameMessage[] {
     createGameMessage('• Some quests require specific items or story progress'),
     createGameMessage('• Repeatable quests can be completed multiple times'),
     createGameMessage('• Use the interface to track progress and view hints'),
-    createGameMessage('• Completed quests award score and may unlock new content')
+    createGameMessage('• Completed quests award score and may unlock new content'),
   ];
 }

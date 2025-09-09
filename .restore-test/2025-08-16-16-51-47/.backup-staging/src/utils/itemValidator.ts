@@ -28,8 +28,8 @@ import type { Room, RoomItem } from '../types/Room';
  */
 function extractItemIds(items: RoomItem[] | string[] | undefined): string[] {
   if (!items) return [];
-  
-  return items.map(item => {
+
+  return items.map((item) => {
     if (typeof item === 'string') {
       return item;
     } else {
@@ -38,28 +38,12 @@ function extractItemIds(items: RoomItem[] | string[] | undefined): string[] {
   });
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 export interface ItemValidationResult {
   isValid: boolean;
   errors: string[];
   warnings: string[];
   suggestions: string[];
 }
-
 
 export interface RoomValidationResult {
   roomId: string;
@@ -73,7 +57,6 @@ export interface RoomValidationResult {
   recommendations: string[];
 }
 
-
 export interface InventoryValidationResult {
   isValid: boolean;
   issues: {
@@ -85,15 +68,12 @@ export interface InventoryValidationResult {
   suggestions: string[];
 }
 
-
-
 // --- Function: validateItem ---
 export function validateItem(itemId: string, itemName?: string): ItemValidationResult {
   const errors: string[] = [];
   const warnings: string[] = [];
   const suggestions: string[] = [];
 
-  
   if (!itemId || typeof itemId !== 'string') {
     errors.push('Item ID must be a non-empty string');
   } else {
@@ -101,18 +81,18 @@ export function validateItem(itemId: string, itemName?: string): ItemValidationR
       warnings.push('Item ID is very short - consider using more descriptive names');
     }
     if (!/^[a-zA-Z0-9_-]+$/.test(itemId)) {
-      warnings.push('Item ID contains special characters - consider using only letters, numbers, underscores, and hyphens');
+      warnings.push(
+        'Item ID contains special characters - consider using only letters, numbers, underscores, and hyphens',
+      );
     }
   }
 
-  
   if (itemName && typeof itemName !== 'string') {
     errors.push('Item name must be a string if provided');
   } else if (itemName && itemName.length < 2) {
     warnings.push('Item name is very short - players may not understand what it is');
   }
 
-  
   if (itemId && !itemName) {
     suggestions.push('Consider providing a display name for better player experience');
   }
@@ -125,11 +105,9 @@ export function validateItem(itemId: string, itemName?: string): ItemValidationR
     isValid: errors.length === 0,
     errors,
     warnings,
-    suggestions
+    suggestions,
   };
 }
-
-
 
 // --- Function: validateRoomItems ---
 export function validateRoomItems(room: Room): RoomValidationResult {
@@ -147,17 +125,18 @@ export function validateRoomItems(room: Room): RoomValidationResult {
         duplicateItems,
         invalidItemIds,
         missingDescriptions,
-        conflictingFlags
+        conflictingFlags,
       },
-      recommendations: ['Room has no items - consider adding interactive elements if appropriate']
+      recommendations: ['Room has no items - consider adding interactive elements if appropriate'],
     };
   }
 
   // Variable declaration
   const seenItemIds = new Set<string>();
-  const itemIds = extractItemIds(room.items);  for (const itemId of itemIds) {
+  const itemIds = extractItemIds(room.items);
+  for (const itemId of itemIds) {
     // itemId is now guaranteed to be a string
-    
+
     if (seenItemIds.has(itemId)) {
       duplicateItems.push(itemId);
     } else {
@@ -171,7 +150,6 @@ export function validateRoomItems(room: Room): RoomValidationResult {
     }
   }
 
-  
   if (room.items.length > 10) {
     recommendations.push('Room has many items - consider if this enhances or clutters gameplay');
   }
@@ -181,21 +159,23 @@ export function validateRoomItems(room: Room): RoomValidationResult {
 
   return {
     roomId: room.id,
-    isValid: duplicateItems.length === 0 && invalidItemIds.length === 0 && conflictingFlags.length === 0,
+    isValid:
+      duplicateItems.length === 0 && invalidItemIds.length === 0 && conflictingFlags.length === 0,
     issues: {
       duplicateItems,
       invalidItemIds,
       missingDescriptions,
-      conflictingFlags
+      conflictingFlags,
     },
-    recommendations
+    recommendations,
   };
 }
 
-
-
 // --- Function: validatePlayerInventory ---
-export function validatePlayerInventory(player: Player, knownItems?: string[]): InventoryValidationResult {
+export function validatePlayerInventory(
+  player: Player,
+  knownItems?: string[],
+): InventoryValidationResult {
   const unknownItems: string[] = [];
   const duplicateItems: string[] = [];
   const invalidItemNames: string[] = [];
@@ -207,38 +187,33 @@ export function validatePlayerInventory(player: Player, knownItems?: string[]): 
       isValid: true,
       issues: { unknownItems, duplicateItems, invalidItemNames },
       cleanedInventory: [],
-      suggestions: ['Player has no items - this is fine for new players']
+      suggestions: ['Player has no items - this is fine for new players'],
     };
   }
 
-// Variable declaration
+  // Variable declaration
   const seenItems = new Set<string>();
 
   for (const item of player.inventory) {
-    
     if (!item || typeof item !== 'string') {
       invalidItemNames.push(String(item));
       continue;
     }
 
-    
     if (seenItems.has(item)) {
       duplicateItems.push(item);
-      continue; 
+      continue;
     }
 
     seenItems.add(item);
 
-    
     if (knownItems && !knownItems.includes(item)) {
       unknownItems.push(item);
     }
 
-    
     cleanedInventory.push(item);
   }
 
-  
   if (cleanedInventory.length > 20) {
     suggestions.push('Player has many items - consider adding inventory management features');
   }
@@ -252,19 +227,18 @@ export function validatePlayerInventory(player: Player, knownItems?: string[]): 
   }
 
   return {
-    isValid: unknownItems.length === 0 && duplicateItems.length === 0 && invalidItemNames.length === 0,
+    isValid:
+      unknownItems.length === 0 && duplicateItems.length === 0 && invalidItemNames.length === 0,
     issues: { unknownItems, duplicateItems, invalidItemNames },
     cleanedInventory,
-    suggestions
+    suggestions,
   };
 }
-
-
 
 // --- Function: runFullItemValidation ---
 export function runFullItemValidation(
   rooms: Record<string, Room>,
-  player: Player
+  player: Player,
 ): {
   overallValid: boolean;
   roomValidations: RoomValidationResult[];
@@ -276,18 +250,15 @@ export function runFullItemValidation(
   const globalIssues: string[] = [];
   const recommendations: string[] = [];
 
-  
-// Variable declaration
+  // Variable declaration
   const allKnownItems = new Set<string>();
 
-  
   for (const [roomId, room] of Object.entries(rooms)) {
     try {
-// Variable declaration
+      // Variable declaration
       const roomValidation = validateRoomItems(room);
       roomValidations.push(roomValidation);
 
-      
       if (room.items) {
         const roomItemIds = extractItemIds(room.items);
         for (const itemId of roomItemIds) {
@@ -299,58 +270,63 @@ export function runFullItemValidation(
     }
   }
 
-  
-// Variable declaration
+  // Variable declaration
   const inventoryValidation = validatePlayerInventory(player, Array.from(allKnownItems));
 
-  
-// Variable declaration
+  // Variable declaration
   const totalItems = Array.from(allKnownItems).length;
   if (totalItems === 0) {
     globalIssues.push('No items found in any room - game may lack interactive elements');
   }
 
-// Variable declaration
-  const invalidRooms = roomValidations.filter(r => !r.isValid).length;
+  // Variable declaration
+  const invalidRooms = roomValidations.filter((r) => !r.isValid).length;
   if (invalidRooms > 0) {
     globalIssues.push(`${invalidRooms} rooms have item validation issues`);
   }
 
-  
   if (totalItems > 200) {
     recommendations.push('Large number of items in game - ensure they all serve a purpose');
   }
 
-// Variable declaration
-  const roomsWithItems = roomValidations.filter(r => {
-// Variable declaration
+  // Variable declaration
+  const roomsWithItems = roomValidations.filter((r) => {
+    // Variable declaration
     const room = rooms[r.roomId];
     return room && room.items && room.items.length > 0;
   }).length;
-// Variable declaration
+  // Variable declaration
   const totalRooms = Object.keys(rooms).length;
-// Variable declaration
+  // Variable declaration
   const itemCoverage = roomsWithItems / totalRooms;
 
   if (itemCoverage < 0.3) {
-    recommendations.push('Less than 30% of rooms have items - consider adding more interactive elements');
+    recommendations.push(
+      'Less than 30% of rooms have items - consider adding more interactive elements',
+    );
   } else if (itemCoverage > 0.8) {
-    recommendations.push('More than 80% of rooms have items - ensure this doesn\'t overwhelm players');
+    recommendations.push(
+      "More than 80% of rooms have items - ensure this doesn't overwhelm players",
+    );
   }
 
   return {
-    overallValid: globalIssues.length === 0 && inventoryValidation.isValid && roomValidations.every(r => r.isValid),
+    overallValid:
+      globalIssues.length === 0 &&
+      inventoryValidation.isValid &&
+      roomValidations.every((r) => r.isValid),
     roomValidations,
     inventoryValidation,
     globalIssues,
-    recommendations
+    recommendations,
   };
 }
 
-
-
 // --- Function: quickItemCheck ---
-export function quickItemCheck(itemId: string, context: 'room' | 'inventory' | 'codex' = 'room'): string[] {
+export function quickItemCheck(
+  itemId: string,
+  context: 'room' | 'inventory' | 'codex' = 'room',
+): string[] {
   const issues: string[] = [];
 
   if (!itemId) {
@@ -358,7 +334,7 @@ export function quickItemCheck(itemId: string, context: 'room' | 'inventory' | '
     return issues;
   }
 
-// Variable declaration
+  // Variable declaration
   const validation = validateItem(itemId);
   issues.push(...validation.errors);
   issues.push(...validation.warnings);
@@ -384,8 +360,6 @@ export function quickItemCheck(itemId: string, context: 'room' | 'inventory' | '
   return issues;
 }
 
-
-
 // --- Function: autoFixInventory ---
 export function autoFixInventory(inventory: string[]): {
   fixedInventory: string[];
@@ -393,7 +367,7 @@ export function autoFixInventory(inventory: string[]): {
 } {
   const changesApplied: string[] = [];
   const fixedInventory: string[] = [];
-// Variable declaration
+  // Variable declaration
   const seen = new Set<string>();
 
   for (const item of inventory) {
@@ -402,7 +376,7 @@ export function autoFixInventory(inventory: string[]): {
       continue;
     }
 
-// Variable declaration
+    // Variable declaration
     const trimmedItem = item.trim();
     if (trimmedItem !== item) {
       changesApplied.push(`Trimmed whitespace from: "${item}" -> "${trimmedItem}"`);

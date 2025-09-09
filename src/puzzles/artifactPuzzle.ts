@@ -15,8 +15,8 @@ const artifactPuzzle: Puzzle = {
   hints: [
     'The solution is related to quantum mechanics.',
     'Think about the artifact and its purpose.',
-    'The code contains the word "QUANTUM" followed by numbers.'
-  ]
+    'The code contains the word "QUANTUM" followed by numbers.',
+  ],
 };
 
 export default artifactPuzzle;

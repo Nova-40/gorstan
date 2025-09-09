@@ -34,7 +34,7 @@ export class HitResolver {
       wasCritical: false,
       wasBlocked: false,
       wardAbsorption: 0,
-      poiseDamage: 0
+      poiseDamage: 0,
     };
 
     // Check for invincibility frames
@@ -56,19 +56,19 @@ export class HitResolver {
 
     // Apply elemental resistances
     const resistance = this.calculateResistance(target.stats, packet.element);
-    baseDamage *= (1 - resistance);
+    baseDamage *= 1 - resistance;
 
     // Apply armor reduction for physical damage
     if (packet.element === Element.Physical) {
       const armorReduction = Math.min(
         target.stats.armor * BALANCE.resistance.armorReduction,
-        BALANCE.resistance.maxReduction
+        BALANCE.resistance.maxReduction,
       );
-      baseDamage *= (1 - armorReduction);
+      baseDamage *= 1 - armorReduction;
     }
 
     // Check ward absorption
-    const wardStatus = target.statuses.find(s => s.id === 'Ward' as any);
+    const wardStatus = target.statuses.find((s) => s.id === ('Ward' as any));
     if (wardStatus?.data?.absorption && wardStatus.data.absorption > 0) {
       const absorbed = Math.min(baseDamage, wardStatus.data.absorption);
       wardStatus.data.absorption -= absorbed;
@@ -140,19 +140,22 @@ export class HitResolver {
   private static applyElementalEffects(target: Actor, packet: DamagePacket): void {
     switch (packet.element) {
       case Element.Fire:
-        if (Math.random() < 0.6) { // 60% chance to apply burn
+        if (Math.random() < 0.6) {
+          // 60% chance to apply burn
           statusSystem.applyStatus(target, () => StatusEffects.burn(1));
         }
         break;
 
       case Element.Frost:
-        if (Math.random() < 0.8) { // 80% chance to apply chill
+        if (Math.random() < 0.8) {
+          // 80% chance to apply chill
           statusSystem.applyStatus(target, () => StatusEffects.chill(1));
         }
         break;
 
       case Element.Shock:
-        if (Math.random() < 0.7) { // 70% chance to apply shock
+        if (Math.random() < 0.7) {
+          // 70% chance to apply shock
           statusSystem.applyStatus(target, StatusEffects.shock);
           this.triggerShockArc(target);
         }
@@ -204,7 +207,7 @@ export class HitResolver {
   static resolveHealing(target: Actor, amount: number): number {
     const finalHealing = Math.floor(amount * BALANCE.global.TUNING_MULTIPLIER);
     const actualHealing = Math.min(finalHealing, target.stats.maxHP - target.hp);
-    
+
     target.hp += actualHealing;
     return actualHealing;
   }
@@ -231,7 +234,7 @@ export class HitResolver {
     statusSystem.removeStatus(target, 'Frozen' as any);
     const shatterDamage = 25;
     target.hp = Math.max(0, target.hp - shatterDamage);
-    
+
     showCombatCue(COMBAT_CUES.shatter);
     combatAudio.statusEffect('freeze');
   }
@@ -244,28 +247,28 @@ export const DamageUtils = {
     base,
     element: Element.Physical,
     sourceId,
-    tags
+    tags,
   }),
 
   /** Create a fire damage packet */
   fire: (base: number, sourceId: string): DamagePacket => ({
     base,
     element: Element.Fire,
-    sourceId
+    sourceId,
   }),
 
   /** Create a frost damage packet */
   frost: (base: number, sourceId: string): DamagePacket => ({
     base,
     element: Element.Frost,
-    sourceId
+    sourceId,
   }),
 
   /** Create a shock damage packet */
   shock: (base: number, sourceId: string): DamagePacket => ({
     base,
     element: Element.Shock,
-    sourceId
+    sourceId,
   }),
 
   /** Create a critical hit packet */
@@ -273,6 +276,6 @@ export const DamageUtils = {
     base,
     element,
     sourceId,
-    crit: true
-  })
+    crit: true,
+  }),
 };

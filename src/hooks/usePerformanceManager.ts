@@ -7,7 +7,10 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import PerformanceManager from '../services/PerformanceManager';
-import DeviceProfiler, { type DeviceCapabilities, type PerformanceSettings } from '../services/DeviceProfiler';
+import DeviceProfiler, {
+  type DeviceCapabilities,
+  type PerformanceSettings,
+} from '../services/DeviceProfiler';
 
 export interface PerformanceAlert {
   type: 'memory' | 'fps' | 'network' | 'battery';
@@ -54,12 +57,12 @@ export function usePerformanceManager(): [PerformanceState, PerformanceActions] 
     settings: null,
     alerts: [],
     currentProfile: null,
-    summary: null
+    summary: null,
   });
 
   const performanceManager = useRef<PerformanceManager | null>(null);
   const deviceProfiler = useRef<DeviceProfiler | null>(null);
-  
+
   // Refs for avoiding stale closures
   const summaryUpdateInterval = useRef<number | null>(null);
 
@@ -68,7 +71,7 @@ export function usePerformanceManager(): [PerformanceState, PerformanceActions] 
    */
   const initializePerformance = useCallback(async () => {
     try {
-      setState(prev => ({ ...prev, isLoading: true }));
+      setState((prev) => ({ ...prev, isLoading: true }));
 
       // Get singletons
       performanceManager.current = PerformanceManager.getInstance();
@@ -85,9 +88,9 @@ export function usePerformanceManager(): [PerformanceState, PerformanceActions] 
 
       // Set up settings change listener
       performanceManager.current.onSettingsChanged((newSettings) => {
-        setState(prev => ({
+        setState((prev) => ({
           ...prev,
-          settings: newSettings
+          settings: newSettings,
         }));
       });
 
@@ -98,17 +101,16 @@ export function usePerformanceManager(): [PerformanceState, PerformanceActions] 
         settings,
         alerts,
         currentProfile: summary.activeProfile,
-        summary
+        summary,
       });
 
       console.log('[usePerformanceManager] Performance management initialized');
-
     } catch (error) {
       console.error('[usePerformanceManager] Initialization failed:', error);
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         isLoading: false,
-        isInitialized: false
+        isInitialized: false,
       }));
     }
   }, []);
@@ -120,11 +122,11 @@ export function usePerformanceManager(): [PerformanceState, PerformanceActions] 
     if (performanceManager.current) {
       const summary = performanceManager.current.getPerformanceSummary();
       const alerts = performanceManager.current.getAlerts();
-      
-      setState(prev => ({
+
+      setState((prev) => ({
         ...prev,
         summary,
-        alerts
+        alerts,
       }));
     }
   }, []);
@@ -143,11 +145,11 @@ export function usePerformanceManager(): [PerformanceState, PerformanceActions] 
       // Update state immediately
       const settings = performanceManager.current.getSettings();
       const summary = performanceManager.current.getPerformanceSummary();
-      
-      setState(prev => ({
+
+      setState((prev) => ({
         ...prev,
         settings,
-        summary
+        summary,
       }));
     }
 
@@ -164,15 +166,15 @@ export function usePerformanceManager(): [PerformanceState, PerformanceActions] 
     }
 
     performanceManager.current.setSettings(newSettings);
-    
+
     // Update state
     const settings = performanceManager.current.getSettings();
     const summary = performanceManager.current.getPerformanceSummary();
-    
-    setState(prev => ({
+
+    setState((prev) => ({
       ...prev,
       settings,
-      summary
+      summary,
     }));
   }, []);
 
@@ -182,9 +184,9 @@ export function usePerformanceManager(): [PerformanceState, PerformanceActions] 
   const clearAlerts = useCallback(() => {
     if (performanceManager.current) {
       performanceManager.current.clearAlerts();
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
-        alerts: []
+        alerts: [],
       }));
     }
   }, []);
@@ -214,9 +216,9 @@ export function usePerformanceManager(): [PerformanceState, PerformanceActions] 
     if (performanceManager.current) {
       const success = performanceManager.current.applyProfile(profileName);
       if (success) {
-        setState(prev => ({
+        setState((prev) => ({
           ...prev,
-          currentProfile: profileName
+          currentProfile: profileName,
         }));
       }
     }
@@ -232,7 +234,7 @@ export function usePerformanceManager(): [PerformanceState, PerformanceActions] 
     if (state.isInitialized) {
       // Update summary every 10 seconds
       summaryUpdateInterval.current = window.setInterval(updateSummary, 10000);
-      
+
       return () => {
         if (summaryUpdateInterval.current) {
           clearInterval(summaryUpdateInterval.current);
@@ -248,7 +250,7 @@ export function usePerformanceManager(): [PerformanceState, PerformanceActions] 
       if (summaryUpdateInterval.current) {
         clearInterval(summaryUpdateInterval.current);
       }
-      
+
       // Note: We don't shutdown the performance manager as it's a singleton
       // that might be used by other components
     };
@@ -260,7 +262,7 @@ export function usePerformanceManager(): [PerformanceState, PerformanceActions] 
     updateSettings,
     clearAlerts,
     forceGarbageCollection,
-    refreshSummary
+    refreshSummary,
   };
 
   return [state, actions];
@@ -275,11 +277,11 @@ export function usePerformanceSettings(): {
   updateSettings: (settings: Partial<PerformanceSettings>) => void;
 } {
   const [fullState, actions] = usePerformanceManager();
-  
+
   return {
     settings: fullState.settings,
     isLoading: fullState.isLoading,
-    updateSettings: actions.updateSettings
+    updateSettings: actions.updateSettings,
   };
 }
 
@@ -293,12 +295,12 @@ export function usePerformanceMonitoring(): {
   refreshSummary: () => void;
 } {
   const [state, actions] = usePerformanceManager();
-  
+
   return {
     alerts: state.alerts,
     summary: state.summary,
     clearAlerts: actions.clearAlerts,
-    refreshSummary: actions.refreshSummary
+    refreshSummary: actions.refreshSummary,
   };
 }
 
@@ -310,10 +312,10 @@ export function useDeviceCapabilities(): {
   isLoading: boolean;
 } {
   const [state] = usePerformanceManager();
-  
+
   return {
     capabilities: state.capabilities,
-    isLoading: state.isLoading
+    isLoading: state.isLoading,
   };
 }
 

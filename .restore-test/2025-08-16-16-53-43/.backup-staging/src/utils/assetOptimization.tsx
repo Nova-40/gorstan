@@ -46,7 +46,7 @@ export const useLazyImage = (src: string) => {
   React.useEffect(() => {
     setIsLoading(true);
     setError(null);
-    
+
     preloadImage(src)
       .then((img) => {
         setImage(img);
@@ -106,10 +106,10 @@ export const LazyImage: React.FC<LazyImageProps> = ({
   width,
   height,
   onLoad,
-  onError
+  onError,
 }) => {
   const { isLoading, error } = useLazyImage(src);
-  
+
   React.useEffect(() => {
     if (!isLoading && !error && onLoad) {
       onLoad();
@@ -120,28 +120,20 @@ export const LazyImage: React.FC<LazyImageProps> = ({
   }, [isLoading, error, onLoad, onError]);
 
   if (error) {
-    return (
-      <img 
-        src={fallback} 
-        alt={alt} 
-        className={className}
-        width={width}
-        height={height}
-      />
-    );
+    return <img src={fallback} alt={alt} className={className} width={width} height={height} />;
   }
 
   if (isLoading) {
     return (
-      <div 
+      <div
         className={`lazy-image-placeholder ${className || ''}`}
-        style={{ 
+        style={{
           width: width ? `${width}px` : undefined,
           height: height ? `${height}px` : undefined,
           backgroundColor: '#f0f0f0',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
         }}
       >
         Loading...
@@ -149,15 +141,7 @@ export const LazyImage: React.FC<LazyImageProps> = ({
     );
   }
 
-  return (
-    <img 
-      src={src} 
-      alt={alt} 
-      className={className}
-      width={width}
-      height={height}
-    />
-  );
+  return <img src={src} alt={alt} className={className} width={width} height={height} />;
 };
 
 /**
@@ -165,7 +149,7 @@ export const LazyImage: React.FC<LazyImageProps> = ({
  */
 export const useIntersectionObserver = (
   callback: (isIntersecting: boolean) => void,
-  options?: IntersectionObserverInit
+  options?: IntersectionObserverInit,
 ) => {
   const targetRef = React.useRef<HTMLElement>(null);
 
@@ -173,14 +157,11 @@ export const useIntersectionObserver = (
     const target = targetRef.current;
     if (!target) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => callback(entry.isIntersecting),
-      {
-        threshold: 0.1,
-        rootMargin: '50px',
-        ...options
-      }
-    );
+    const observer = new IntersectionObserver(([entry]) => callback(entry.isIntersecting), {
+      threshold: 0.1,
+      rootMargin: '50px',
+      ...options,
+    });
 
     observer.observe(target);
     return () => observer.unobserve(target);
@@ -206,20 +187,20 @@ export const preloadCriticalAssets = async (roomId: string, npcs: string[] = [])
       `/images/gorstanZone_${roomId}.png`,
       `/images/londonZone_${roomId}.png`,
       `/images/latticeZone_${roomId}.png`,
-      `/images/mazeZone_${roomId}.png`
+      `/images/mazeZone_${roomId}.png`,
     ];
-    
+
     criticalImages.push(...roomImagePatterns);
   }
 
   // Add NPC portraits
-  npcs.forEach(npc => {
+  npcs.forEach((npc) => {
     criticalImages.push(`/images/${npc}.png`);
   });
 
   // Filter to only attempt loading images that are likely to exist
-  const validImages = criticalImages.filter(img => 
-    !img.includes('undefined') && !img.includes('null')
+  const validImages = criticalImages.filter(
+    (img) => !img.includes('undefined') && !img.includes('null'),
   );
 
   try {

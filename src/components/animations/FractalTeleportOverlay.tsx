@@ -14,7 +14,7 @@
   Full licence terms: see EULA.md in the project root.
 */
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from 'react';
 
 const FractalTeleportOverlay: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
   useEffect(() => {

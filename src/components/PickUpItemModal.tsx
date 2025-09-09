@@ -34,7 +34,7 @@ const PickUpItemModal: React.FC<PickUpItemModalProps> = ({ isOpen, items, onClos
   // Variable declaration
   const toggleItemSelection = (item: string) => {
     setSelectedItems((prev) =>
-      prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item]
+      prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item],
     );
   };
 
@@ -53,7 +53,9 @@ const PickUpItemModal: React.FC<PickUpItemModalProps> = ({ isOpen, items, onClos
     onClose();
   };
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
 
   // JSX return block or main return
   return (
@@ -70,21 +72,19 @@ const PickUpItemModal: React.FC<PickUpItemModalProps> = ({ isOpen, items, onClos
         </div>
 
         <div className="modal-body">
-          <p className="instruction-text">
-            Select the items you want to pick up from this room:
-          </p>
+          <p className="instruction-text">Select the items you want to pick up from this room:</p>
 
           {items.length > 1 && (
             <div className="selection-controls">
-              <button 
-                className="control-button" 
+              <button
+                className="control-button"
                 onClick={selectAll}
                 disabled={selectedItems.length === items.length}
               >
                 Select All
               </button>
-              <button 
-                className="control-button" 
+              <button
+                className="control-button"
                 onClick={selectNone}
                 disabled={selectedItems.length === 0}
               >
@@ -97,8 +97,8 @@ const PickUpItemModal: React.FC<PickUpItemModalProps> = ({ isOpen, items, onClos
             {items.map((item) => {
               const isSelected = selectedItems.includes(item);
               return (
-                <div 
-                  key={item} 
+                <div
+                  key={item}
                   className={`item-option ${isSelected ? 'selected' : ''}`}
                   onClick={() => toggleItemSelection(item)}
                 >
@@ -120,14 +120,16 @@ const PickUpItemModal: React.FC<PickUpItemModalProps> = ({ isOpen, items, onClos
         <div className="modal-footer">
           <div className="selection-summary">
             {selectedItems.length > 0 ? (
-              <span>{selectedItems.length} of {items.length} items selected</span>
+              <span>
+                {selectedItems.length} of {items.length} items selected
+              </span>
             ) : (
               <span>No items selected</span>
             )}
           </div>
-          <button 
-            className="pickup-button console-button" 
-            onClick={handlePickUp} 
+          <button
+            className="pickup-button console-button"
+            onClick={handlePickUp}
             disabled={selectedItems.length === 0}
           >
             Pick Up {selectedItems.length > 0 ? `(${selectedItems.length})` : ''}

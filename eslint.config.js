@@ -9,9 +9,17 @@ import tseslint from '@typescript-eslint/eslint-plugin';
 import tsparser from '@typescript-eslint/parser';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
+import unusedImportsPlugin from 'eslint-plugin-unused-imports';
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default [
   js.configs.recommended,
+  // Ignore declaration files globally to avoid type-aware parser-project mismatches
+  {
+  ignores: ['**/*.d.ts', 'src/**/*.d.ts', 'src/utils/performanceOptimization.tsx'],
+  },
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
     languageOptions: {
@@ -22,7 +30,6 @@ export default [
         ecmaFeatures: {
           jsx: true,
         },
-        project: './tsconfig.json',
       },
       globals: {
         ...globals.browser,
@@ -34,6 +41,7 @@ export default [
       '@typescript-eslint': tseslint,
       react: reactPlugin,
       'react-hooks': reactHooksPlugin,
+  'unused-imports': unusedImportsPlugin,
     },
     rules: {
       // TypeScript specific rules
@@ -63,6 +71,8 @@ export default [
       // Relaxed rules for game development
       'no-case-declarations': 'off',
       'no-fallthrough': 'warn',
+  // remove unused imports automatically
+  'unused-imports/no-unused-imports': 'error',
     },
     settings: {
       react: {
@@ -71,8 +81,32 @@ export default [
     },
   },
   {
-    // Specific overrides for certain file patterns
+    // TypeScript files: enable type-aware parser project
+    files: ['**/*.{ts,tsx}'],
+    languageOptions: {
+      parser: tsparser,
+      parserOptions: {
+        ecmaFeatures: { jsx: true },
+        project: './tsconfig.eslint.json',
+        tsconfigRootDir: __dirname,
+      },
+    },
+  },
+  {
+    // Specific helper that confuses the type-aware parser: parse with espree instead
+    files: ['src/utils/performanceOptimization.tsx'],
+    languageOptions: {
+      parser: 'espree',
+      parserOptions: { ecmaVersion: 2023, sourceType: 'module', ecmaFeatures: { jsx: true } },
+    },
+  },
+  {
+    // Specific overrides for declaration files: avoid type-aware parsing here
     files: ['src/**/*.d.ts'],
+    languageOptions: {
+      // do not set parserOptions.project so the parser won't require a TSConfig that lists this file
+      parserOptions: { ecmaVersion: 2023, sourceType: 'module' },
+    },
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
     },

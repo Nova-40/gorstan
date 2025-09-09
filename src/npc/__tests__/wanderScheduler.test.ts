@@ -25,7 +25,7 @@ vi.useFakeTimers();
 
 describe('WanderScheduler', () => {
   let mockMoveCallback: Mock;
-  
+
   beforeEach(() => {
     vi.clearAllTimers();
     vi.clearAllMocks();
@@ -39,23 +39,23 @@ describe('WanderScheduler', () => {
   describe('Basic Operations', () => {
     test('should start and stop scheduler', () => {
       const scheduler = new WanderScheduler();
-      
+
       expect(scheduler.getStats().isRunning).toBe(false);
-      
+
       scheduler.start();
       expect(scheduler.getStats().isRunning).toBe(true);
-      
+
       scheduler.stop('test');
       expect(scheduler.getStats().isRunning).toBe(false);
     });
 
     test('should register and unregister NPCs', () => {
       const scheduler = new WanderScheduler();
-      
+
       scheduler.registerNPC('test-npc', mockMoveCallback);
       expect(scheduler.getStats().registeredNPCs).toBe(1);
       expect(scheduler.getNPCState('test-npc')).toBeTruthy();
-      
+
       scheduler.unregisterNPC('test-npc');
       expect(scheduler.getStats().registeredNPCs).toBe(0);
       expect(scheduler.getNPCState('test-npc')).toBeNull();
@@ -66,41 +66,41 @@ describe('WanderScheduler', () => {
     test('should enforce one move per tick invariant', async () => {
       const config: Partial<WanderSchedulerConfig> = {
         baseTickMs: 100,
-        jitterRangeMs: [0, 0] // No jitter for predictable testing
+        jitterRangeMs: [0, 0], // No jitter for predictable testing
       };
-      
+
       const scheduler = new WanderScheduler(config);
-      
+
       // Register multiple NPCs
       scheduler.registerNPC('npc1', mockMoveCallback);
       scheduler.registerNPC('npc2', mockMoveCallback);
       scheduler.registerNPC('npc3', mockMoveCallback);
-      
+
       scheduler.start();
-      
+
       // Advance time by more than one tick to trigger moves
       vi.advanceTimersByTime(150);
-      
+
       // Process all pending microtasks
       await Promise.resolve();
-      
+
       const stats = scheduler.getStats();
       expect(stats.totalTicks).toBe(1);
-      
+
       // Should have moved each NPC once
       expect(mockMoveCallback).toHaveBeenCalledTimes(3);
       expect(mockMoveCallback).toHaveBeenCalledWith('npc1');
       expect(mockMoveCallback).toHaveBeenCalledWith('npc2');
       expect(mockMoveCallback).toHaveBeenCalledWith('npc3');
-      
+
       // Advance another tick
       mockMoveCallback.mockClear();
       vi.advanceTimersByTime(100);
       await Promise.resolve();
-      
+
       // Should move again
       expect(mockMoveCallback).toHaveBeenCalledTimes(3);
-      
+
       scheduler.stop('test cleanup');
     }, 15000); // Increased timeout
   });
@@ -109,26 +109,26 @@ describe('WanderScheduler', () => {
     test('should pause and resume global wandering', async () => {
       const config: Partial<WanderSchedulerConfig> = {
         baseTickMs: 100,
-        jitterRangeMs: [0, 0]
+        jitterRangeMs: [0, 0],
       };
-      
+
       const scheduler = new WanderScheduler(config);
       scheduler.registerNPC('test-npc', mockMoveCallback);
       scheduler.start();
-      
+
       // Pause globally
       scheduler.pause({ global: true, reason: 'test pause' });
       expect(scheduler.getStats().pausedNPCs).toBe(1);
-      
+
       // Advance time - should not move
       vi.advanceTimersByTime(150);
       await Promise.resolve();
       expect(mockMoveCallback).not.toHaveBeenCalled();
-      
+
       // Resume
       scheduler.resume({ global: true, reason: 'test pause' });
       expect(scheduler.getStats().pausedNPCs).toBe(0);
-      
+
       // Advance time - should move
       vi.advanceTimersByTime(100); // Exactly one tick
       await Promise.resolve();
@@ -138,58 +138,58 @@ describe('WanderScheduler', () => {
     test('should pause and resume specific NPCs', async () => {
       const config: Partial<WanderSchedulerConfig> = {
         baseTickMs: 100,
-        jitterRangeMs: [0, 0]
+        jitterRangeMs: [0, 0],
       };
-      
+
       const scheduler = new WanderScheduler(config);
-      
+
       const callback1 = vi.fn().mockResolvedValue(undefined);
       const callback2 = vi.fn().mockResolvedValue(undefined);
-      
+
       scheduler.registerNPC('npc1', callback1);
       scheduler.registerNPC('npc2', callback2);
       scheduler.start();
-      
+
       // Pause only npc1
       scheduler.pause({ npcIds: ['npc1'], reason: 'test selective pause' });
-      
+
       vi.advanceTimersByTime(100);
       await Promise.resolve();
-      
+
       // Only npc2 should move
       expect(callback1).not.toHaveBeenCalled();
       expect(callback2).toHaveBeenCalledTimes(1);
-      
+
       // Resume npc1
       scheduler.resume({ npcIds: ['npc1'], reason: 'test selective pause' });
-      
+
       callback1.mockClear();
       callback2.mockClear();
-      
+
       vi.advanceTimersByTime(100);
       await Promise.resolve();
-      
+
       // Both should move now
       expect(callback1).toHaveBeenCalledTimes(1);
       expect(callback2).toHaveBeenCalledTimes(1);
-      
+
       scheduler.stop('test cleanup');
     }, 10000);
 
     test('should handle multiple overlapping pause scopes', async () => {
       const scheduler = new WanderScheduler();
       scheduler.registerNPC('test-npc', mockMoveCallback);
-      
+
       // Apply multiple pauses
       scheduler.pause({ global: true, reason: 'overlay' });
       scheduler.pause({ npcIds: ['test-npc'], reason: 'cutscene' });
-      
+
       expect(scheduler.getStats().pausedNPCs).toBe(1);
-      
+
       // Resume one scope - should still be paused
       scheduler.resume({ npcIds: ['test-npc'], reason: 'cutscene' });
       expect(scheduler.getStats().pausedNPCs).toBe(1);
-      
+
       // Resume global - should be unpaused
       scheduler.resume({ global: true, reason: 'overlay' });
       expect(scheduler.getStats().pausedNPCs).toBe(0);
@@ -200,28 +200,28 @@ describe('WanderScheduler', () => {
     test('should handle move callback errors gracefully', async () => {
       const config: Partial<WanderSchedulerConfig> = {
         baseTickMs: 100,
-        jitterRangeMs: [0, 0]
+        jitterRangeMs: [0, 0],
       };
-      
+
       const failingCallback = vi.fn().mockRejectedValue(new Error('Move failed'));
       const scheduler = new WanderScheduler(config);
-      
+
       scheduler.registerNPC('failing-npc', failingCallback);
       scheduler.start();
-      
+
       // Should not throw
       vi.advanceTimersByTime(100);
       await Promise.resolve();
-      
+
       expect(failingCallback).toHaveBeenCalledTimes(1);
-      
+
       // Should try again on next tick (with backoff)
       failingCallback.mockClear();
       vi.advanceTimersByTime(200); // More time to handle backoff
       await Promise.resolve();
-      
+
       expect(failingCallback).toHaveBeenCalledTimes(1);
-      
+
       scheduler.stop('test cleanup');
     }, 10000);
   });
@@ -230,18 +230,18 @@ describe('WanderScheduler', () => {
     test('should produce consistent jitter with same seed', () => {
       const config: Partial<WanderSchedulerConfig> = {
         seed: 'test-seed-123',
-        jitterRangeMs: [100, 300]
+        jitterRangeMs: [100, 300],
       };
-      
+
       const scheduler1 = new WanderScheduler(config);
       scheduler1.registerNPC('test-npc', mockMoveCallback);
       const state1 = scheduler1.getNPCState('test-npc');
-      
+
       // Create new scheduler with same seed
       const scheduler2 = new WanderScheduler(config);
       scheduler2.registerNPC('test-npc', mockMoveCallback);
       const state2 = scheduler2.getNPCState('test-npc');
-      
+
       // Should have same jitter
       expect(state1?.jitterMs).toBe(state2?.jitterMs);
     });
@@ -250,31 +250,31 @@ describe('WanderScheduler', () => {
   describe('Statistics and Monitoring', () => {
     test('should track scheduler statistics correctly', () => {
       const scheduler = new WanderScheduler();
-      
+
       // Ensure clean state
       const registeredNPCs = (scheduler as any).npcs || new Map();
       for (const npcId of registeredNPCs.keys()) {
         scheduler.unregisterNPC(npcId);
       }
-      
+
       const stats = scheduler.getStats();
       expect(stats.isRunning).toBe(false);
       expect(stats.registeredNPCs).toBe(0);
       expect(stats.pausedNPCs).toBe(0);
       expect(stats.totalTicks).toBe(0);
-      
+
       scheduler.registerNPC('npc1', mockMoveCallback);
       scheduler.registerNPC('npc2', mockMoveCallback);
       scheduler.start();
-      
+
       const runningStats = scheduler.getStats();
       expect(runningStats.isRunning).toBe(true);
       expect(runningStats.registeredNPCs).toBe(2);
-      
+
       scheduler.pause({ global: true, reason: 'test' });
       const pausedStats = scheduler.getStats();
       expect(pausedStats.pausedNPCs).toBe(2);
-      
+
       scheduler.stop('test cleanup');
     });
   });

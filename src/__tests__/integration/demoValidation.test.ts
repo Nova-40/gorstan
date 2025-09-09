@@ -18,7 +18,7 @@ describe('Demo Mode Functionality Validation', () => {
     it('should support stage transitions to demo', () => {
       const mockGameAction = {
         type: 'ADVANCE_STAGE' as const,
-        payload: STAGES.DEMO
+        payload: STAGES.DEMO,
       };
 
       expect(mockGameAction.payload).toBe('demo');
@@ -28,7 +28,7 @@ describe('Demo Mode Functionality Validation', () => {
     it('should handle demo player setup', () => {
       const demoPlayerAction = {
         type: 'SET_PLAYER_NAME' as const,
-        payload: 'Demo Player'
+        payload: 'Demo Player',
       };
 
       expect(demoPlayerAction.payload).toBe('Demo Player');
@@ -51,16 +51,16 @@ describe('Demo Mode Functionality Validation', () => {
       { command: 'north', delay: 1000 },
       { command: 'use key', delay: 2000 },
       { command: 'inventory', delay: 1500 },
-      { command: 'help', delay: 2000 }
+      { command: 'help', delay: 2000 },
     ];
 
     it('should execute complete demo sequence', () => {
       expect(expectedDemoCommands).toHaveLength(14);
-      
+
       // Test sequence integrity
       expect(expectedDemoCommands[0].command).toBe('look');
       expect(expectedDemoCommands[expectedDemoCommands.length - 1].command).toBe('help');
-      
+
       // Test all commands have valid structure
       expectedDemoCommands.forEach((cmd, index) => {
         expect(cmd).toHaveProperty('command');
@@ -73,20 +73,20 @@ describe('Demo Mode Functionality Validation', () => {
     });
 
     it('should demonstrate core gameplay mechanics', () => {
-      const commands = expectedDemoCommands.map(cmd => cmd.command);
-      
+      const commands = expectedDemoCommands.map((cmd) => cmd.command);
+
       // Movement commands
       expect(commands).toContain('north');
       expect(commands).toContain('south');
       expect(commands).toContain('east');
       expect(commands).toContain('west');
-      
+
       // Interaction commands
       expect(commands).toContain('examine statue');
       expect(commands).toContain('talk to ayla');
       expect(commands).toContain('take key');
       expect(commands).toContain('use key');
-      
+
       // Information commands
       expect(commands).toContain('look');
       expect(commands).toContain('inventory');
@@ -94,16 +94,16 @@ describe('Demo Mode Functionality Validation', () => {
     });
 
     it('should have appropriate command timing', () => {
-      expectedDemoCommands.forEach(cmd => {
+      expectedDemoCommands.forEach((cmd) => {
         expect(cmd.delay).toBeGreaterThan(0);
         expect(cmd.delay).toBeLessThanOrEqual(3000);
       });
-      
+
       // Special timing checks
-      const talkCommand = expectedDemoCommands.find(cmd => cmd.command === 'talk to ayla');
+      const talkCommand = expectedDemoCommands.find((cmd) => cmd.command === 'talk to ayla');
       expect(talkCommand?.delay).toBe(2500); // Dialogue should have longer delay
-      
-      const lookCommands = expectedDemoCommands.filter(cmd => cmd.command === 'look');
+
+      const lookCommands = expectedDemoCommands.filter((cmd) => cmd.command === 'look');
       expect(lookCommands.length).toBeGreaterThan(1); // Multiple look commands
     });
   });
@@ -114,26 +114,28 @@ describe('Demo Mode Functionality Validation', () => {
         id: `demo-${Date.now()}`,
         text: type === 'input' ? `🤖 Demo: ${command}` : command,
         type,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
 
       const inputMessage = createDemoMessage('look', 'input');
       expect(inputMessage.text).toBe('🤖 Demo: look');
       expect(inputMessage.type).toBe('input');
-      
+
       const systemMessage = createDemoMessage('Welcome message', 'system');
       expect(systemMessage.text).toBe('Welcome message');
       expect(systemMessage.type).toBe('system');
     });
 
     it('should have standard demo message templates', () => {
-      const welcomeMessage = "🎭 Ayla: \"Welcome to your guided tour of Gorstan! Watch as I demonstrate the core gameplay...\"";
-      const completionMessage = "🎮 Demo complete! Ayla: \"You've seen a glimpse of what Gorstan offers. Ready to explore on your own?\"";
-      
+      const welcomeMessage =
+        '🎭 Ayla: "Welcome to your guided tour of Gorstan! Watch as I demonstrate the core gameplay..."';
+      const completionMessage =
+        '🎮 Demo complete! Ayla: "You\'ve seen a glimpse of what Gorstan offers. Ready to explore on your own?"';
+
       expect(welcomeMessage).toContain('guided tour');
       expect(welcomeMessage).toContain('Ayla');
       expect(welcomeMessage).toMatch(/🎭/);
-      
+
       expect(completionMessage).toContain('Demo complete');
       expect(completionMessage).toContain('Ready to explore');
       expect(completionMessage).toMatch(/🎮/);
@@ -151,38 +153,38 @@ describe('Demo Mode Functionality Validation', () => {
 
     it('should handle auto-demo timing', () => {
       const mockAutoDemo = vi.fn();
-      
+
       // Auto-demo triggers after 1 minute
       setTimeout(mockAutoDemo, 60000);
-      
+
       vi.advanceTimersByTime(59999);
       expect(mockAutoDemo).not.toHaveBeenCalled();
-      
+
       vi.advanceTimersByTime(1);
       expect(mockAutoDemo).toHaveBeenCalled();
     });
 
     it('should handle demo startup sequence timing', () => {
       const mockStartSequence = vi.fn();
-      
+
       // Demo starts after welcome message (2 seconds)
       setTimeout(mockStartSequence, 2000);
-      
+
       vi.advanceTimersByTime(1999);
       expect(mockStartSequence).not.toHaveBeenCalled();
-      
+
       vi.advanceTimersByTime(1);
       expect(mockStartSequence).toHaveBeenCalled();
     });
 
     it('should handle command execution timing', () => {
       const mockExecuteCommand = vi.fn();
-      
+
       // Commands execute with 500ms initial delay
       setTimeout(() => {
         mockExecuteCommand('look');
       }, 500);
-      
+
       vi.advanceTimersByTime(500);
       expect(mockExecuteCommand).toHaveBeenCalledWith('look');
     });
@@ -197,11 +199,11 @@ describe('Demo Mode Functionality Validation', () => {
           name: 'Demo Player',
           currentRoom: 'controlnexus',
           inventory: [],
-          health: 100
+          health: 100,
         },
         currentRoomId: 'controlnexus',
         history: [],
-        flags: {}
+        flags: {},
       };
 
       expect(demoGameState.stage).toBe('demo');
@@ -213,12 +215,12 @@ describe('Demo Mode Functionality Validation', () => {
       const demoProps = {
         onBegin: vi.fn(),
         onLoadGame: vi.fn(),
-        onStartDemo: vi.fn()
+        onStartDemo: vi.fn(),
       };
 
       expect(typeof demoProps.onStartDemo).toBe('function');
       expect(demoProps.onStartDemo).toBeDefined();
-      
+
       // Test prop invocation
       demoProps.onStartDemo();
       expect(demoProps.onStartDemo).toHaveBeenCalled();
@@ -227,14 +229,14 @@ describe('Demo Mode Functionality Validation', () => {
     it('should handle demo completion gracefully', () => {
       let currentCommandIndex = 0;
       const totalCommands = 14;
-      
+
       // Simulate demo progression
       while (currentCommandIndex < totalCommands) {
         currentCommandIndex++;
       }
-      
+
       expect(currentCommandIndex).toBe(totalCommands);
-      
+
       // Demo completion check
       const isDemoComplete = currentCommandIndex >= totalCommands;
       expect(isDemoComplete).toBe(true);
@@ -244,8 +246,10 @@ describe('Demo Mode Functionality Validation', () => {
   describe('Demo Error Handling and Edge Cases', () => {
     it('should handle demo interruption gracefully', () => {
       let demoRunning = true;
-      const stopDemo = () => { demoRunning = false; };
-      
+      const stopDemo = () => {
+        demoRunning = false;
+      };
+
       expect(demoRunning).toBe(true);
       stopDemo();
       expect(demoRunning).toBe(false);
@@ -256,10 +260,10 @@ describe('Demo Mode Functionality Validation', () => {
         { command: '', delay: 1000 }, // Empty command
         { command: 'look', delay: 0 }, // Zero delay
         { command: 'look' }, // Missing delay
-        { delay: 1000 } // Missing command
+        { delay: 1000 }, // Missing command
       ];
 
-      invalidCommands.forEach(cmd => {
+      invalidCommands.forEach((cmd) => {
         const isValid = cmd.command && cmd.command.length > 0 && cmd.delay && cmd.delay > 0;
         expect(isValid).toBeFalsy();
       });
@@ -268,10 +272,10 @@ describe('Demo Mode Functionality Validation', () => {
     it('should handle demo state transitions', () => {
       const validTransitions = [
         { from: STAGES.WELCOME, to: STAGES.DEMO },
-        { from: STAGES.DEMO, to: STAGES.GAME }
+        { from: STAGES.DEMO, to: STAGES.GAME },
       ];
 
-      validTransitions.forEach(transition => {
+      validTransitions.forEach((transition) => {
         expect(transition.from).toBeDefined();
         expect(transition.to).toBeDefined();
         expect(Object.values(STAGES)).toContain(transition.from);

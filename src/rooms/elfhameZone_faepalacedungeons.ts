@@ -19,14 +19,6 @@
 
 import { Room } from '../types/Room';
 
-
-
-
-
-
-
-
-
 const faepalacedungeons: Room = {
   id: 'faepalacedungeons',
   zone: 'elfhameZone',
@@ -58,31 +50,30 @@ const faepalacedungeons: Room = {
     north: 'faepalacemainhall',
   },
 
-  items: [
-    'silver_chain',
-    'reality_anchor',
-    'dungeon_key',
-    'containment_crystal',
-  ],
+  items: ['silver_chain', 'reality_anchor', 'dungeon_key', 'containment_crystal'],
 
   interactables: {
-    'dimensional_cells': {
-      description: 'Prison cells that exist in multiple dimensions, their bars shifting between solid metal and ethereal mist.',
+    dimensional_cells: {
+      description:
+        'Prison cells that exist in multiple dimensions, their bars shifting between solid metal and ethereal mist.',
       actions: ['examine', 'touch', 'peer into'],
       requires: [],
     },
-    'starlight_chains': {
-      description: 'Chains made of silver and starlight that hang from the ceiling, humming with contained power.',
+    starlight_chains: {
+      description:
+        'Chains made of silver and starlight that hang from the ceiling, humming with contained power.',
       actions: ['examine', 'touch', 'manipulate'],
       requires: ['dungeon_key'],
     },
-    'reality_symbols': {
-      description: 'Strange symbols carved into the floor that glow with cold blue light and form painful patterns.',
+    reality_symbols: {
+      description:
+        'Strange symbols carved into the floor that glow with cold blue light and form painful patterns.',
       actions: ['examine', 'trace', 'decipher'],
       requires: [],
     },
-    'living_stone_walls': {
-      description: 'Walls carved from living stone that pulse with faint, eerie light and seem to breathe.',
+    living_stone_walls: {
+      description:
+        'Walls carved from living stone that pulse with faint, eerie light and seem to breathe.',
       actions: ['examine', 'touch', 'listen'],
       requires: [],
     },
@@ -90,5 +81,3 @@ const faepalacedungeons: Room = {
 };
 
 export default faepalacedungeons;
-
-

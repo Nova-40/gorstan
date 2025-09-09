@@ -46,18 +46,16 @@ export function RouteBadge({
         </span>
         {routeConfig.label}
       </Badge>
-      
+
       {difficulty && difficultyConfig && (
         <Badge variant="outline" size="sm">
           <span className="mr-1" aria-hidden="true">
             {difficultyConfig.icon}
           </span>
-          <span className={difficultyConfig.color}>
-            {difficultyConfig.label}
-          </span>
+          <span className={difficultyConfig.color}>{difficultyConfig.label}</span>
         </Badge>
       )}
-      
+
       {duration && (
         <Badge variant="secondary" size="sm">
           <span className="mr-1" aria-hidden="true">
@@ -66,7 +64,7 @@ export function RouteBadge({
           {duration}m
         </Badge>
       )}
-      
+
       {children}
     </div>
   );

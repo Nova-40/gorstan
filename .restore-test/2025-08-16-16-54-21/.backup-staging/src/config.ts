@@ -21,24 +21,24 @@ export const config = {
   // Game settings
   debug: import.meta.env.DEV,
   version: '1.0.0',
-  
+
   // Feature flags
   enableSeasonal: true,
-  forceSeason: null as null | "easter" | "christmas" | "may13",
-  
+  forceSeason: null as null | 'easter' | 'christmas' | 'may13',
+
   // Audio settings
   sfxEnabled: true,
   musicEnabled: true,
-  
+
   // Performance settings
   maxConcurrentAnimations: 20,
-  
+
   // UI settings
   defaultTheme: 'dark' as 'dark' | 'light',
-  
+
   // Development overrides
   ...(import.meta.env.DEV && {
     // Add dev-specific overrides here
-    forceSeason: import.meta.env.VITE_FORCE_SEASON as null | "easter" | "christmas" | "may13"
-  })
+    forceSeason: import.meta.env.VITE_FORCE_SEASON as null | 'easter' | 'christmas' | 'may13',
+  }),
 };

@@ -23,10 +23,18 @@ body {
   padding: 10px;
 }
 
-.quad1 { grid-area: 1 / 1 / 2 / 2; } /* Top-left */
-.quad2 { grid-area: 1 / 2 / 2 / 3; } /* Top-right */
-.quad3 { grid-area: 2 / 1 / 3 / 2; } /* Bottom-left */
-.quad4 { grid-area: 2 / 2 / 3 / 3; } /* Bottom-right */
+.quad1 {
+  grid-area: 1 / 1 / 2 / 2;
+} /* Top-left */
+.quad2 {
+  grid-area: 1 / 2 / 2 / 3;
+} /* Top-right */
+.quad3 {
+  grid-area: 2 / 1 / 3 / 2;
+} /* Bottom-left */
+.quad4 {
+  grid-area: 2 / 2 / 3 / 3;
+} /* Bottom-right */
 
 .terminal-console {
   background-color: #000;
@@ -109,10 +117,18 @@ body {
   background-color: #000;
 }
 
-.quad-1 { grid-area: 1 / 1 / 2 / 2; } /* Top-left - Room Renderer */
-.quad-2 { grid-area: 1 / 2 / 2 / 3; } /* Top-right - Terminal Console */
-.quad-3 { grid-area: 2 / 1 / 3 / 2; } /* Bottom-left - Command Input & NPCs */
-.quad-4 { grid-area: 2 / 2 / 3 / 3; } /* Bottom-right - Direction Icons & Actions */
+.quad-1 {
+  grid-area: 1 / 1 / 2 / 2;
+} /* Top-left - Room Renderer */
+.quad-2 {
+  grid-area: 1 / 2 / 2 / 3;
+} /* Top-right - Terminal Console */
+.quad-3 {
+  grid-area: 2 / 1 / 3 / 2;
+} /* Bottom-left - Command Input & NPCs */
+.quad-4 {
+  grid-area: 2 / 2 / 3 / 3;
+} /* Bottom-right - Direction Icons & Actions */
 
 /* Panel styles */
 .quick-actions-panel {

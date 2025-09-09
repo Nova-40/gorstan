@@ -46,17 +46,20 @@ const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ isVisible, 
   const generateReport = useCallback(() => {
     const report = performanceMonitor.generateReport();
     const optimizerReport = gameStateOptimizer.generateReport();
-    
+
     const fullReport = `${report}\n\n${optimizerReport}`;
-    
+
     // Copy to clipboard
-    navigator.clipboard.writeText(fullReport).then(() => {
-      alert('Performance report copied to clipboard!');
-    }).catch(() => {
-      // Fallback: show in console
-      console.log(fullReport);
-      alert('Performance report logged to console');
-    });
+    navigator.clipboard
+      .writeText(fullReport)
+      .then(() => {
+        alert('Performance report copied to clipboard!');
+      })
+      .catch(() => {
+        // Fallback: show in console
+        console.log(fullReport);
+        alert('Performance report logged to console');
+      });
   }, []);
 
   const clearWarnings = useCallback(() => {
@@ -67,8 +70,12 @@ const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ isVisible, 
   if (!isVisible) return null;
 
   const summary = performanceMonitor.getPerformanceSummary();
-  const statusColor = summary.status === 'good' ? 'text-green-400' : 
-                     summary.status === 'warning' ? 'text-yellow-400' : 'text-red-400';
+  const statusColor =
+    summary.status === 'good'
+      ? 'text-green-400'
+      : summary.status === 'warning'
+        ? 'text-yellow-400'
+        : 'text-red-400';
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
@@ -108,7 +115,9 @@ const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ isVisible, 
 
           <div className="bg-gray-800 p-4 rounded">
             <h3 className="text-lg font-semibold mb-2">Frame Rate</h3>
-            <div className={`text-2xl font-bold ${metrics.frameRate < 30 ? 'text-red-400' : 'text-green-400'}`}>
+            <div
+              className={`text-2xl font-bold ${metrics.frameRate < 30 ? 'text-red-400' : 'text-green-400'}`}
+            >
               {metrics.frameRate} FPS
             </div>
             <div className="text-sm text-gray-400">Target: 60 FPS</div>
@@ -116,7 +125,9 @@ const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ isVisible, 
 
           <div className="bg-gray-800 p-4 rounded">
             <h3 className="text-lg font-semibold mb-2">Memory Usage</h3>
-            <div className={`text-2xl font-bold ${metrics.memoryUsage > 100 ? 'text-red-400' : 'text-green-400'}`}>
+            <div
+              className={`text-2xl font-bold ${metrics.memoryUsage > 100 ? 'text-red-400' : 'text-green-400'}`}
+            >
               {metrics.memoryUsage} MB
             </div>
             <div className="text-sm text-gray-400">Limit: 100 MB</div>
@@ -141,7 +152,9 @@ const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ isVisible, 
               </div>
               <div className="flex justify-between">
                 <span>NPC Processing:</span>
-                <span className={metrics.npcProcessingTime > 10 ? 'text-red-400' : 'text-green-400'}>
+                <span
+                  className={metrics.npcProcessingTime > 10 ? 'text-red-400' : 'text-green-400'}
+                >
                   {metrics.npcProcessingTime.toFixed(2)}ms
                 </span>
               </div>
@@ -167,10 +180,9 @@ const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ isVisible, 
               <div className="flex justify-between">
                 <span>Last Optimization:</span>
                 <span>
-                  {optimizerMetrics.lastOptimization 
+                  {optimizerMetrics.lastOptimization
                     ? new Date(optimizerMetrics.lastOptimization).toLocaleTimeString()
-                    : 'Never'
-                  }
+                    : 'Never'}
                 </span>
               </div>
             </div>
@@ -188,7 +200,9 @@ const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ isVisible, 
               </div>
               <div className="flex justify-between">
                 <span>Viewport:</span>
-                <span>{window.innerWidth}x{window.innerHeight}</span>
+                <span>
+                  {window.innerWidth}x{window.innerHeight}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span>Device Pixel Ratio:</span>

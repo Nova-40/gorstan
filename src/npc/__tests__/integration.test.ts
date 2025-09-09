@@ -14,9 +14,9 @@ describe('NPC Integration Tests', () => {
     const npcData = {
       name: 'Test NPC',
       location: 'test_room',
-      active: true
+      active: true,
     };
-    
+
     expect(npcData.name).toBe('Test NPC');
     expect(npcData.active).toBe(true);
   });

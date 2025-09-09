@@ -23,12 +23,12 @@ import { NPCMemory, NPCMood } from './NPCTypes';
  * Game stage enumeration for tracking player progress
  * Core Logic Preserved: All original stages maintained
  */
-export type GameStage = 
-  | 'splash' 
-  | 'welcome' 
-  | 'nameCapture' 
-  | 'intro' 
-  | 'game' 
+export type GameStage =
+  | 'splash'
+  | 'welcome'
+  | 'nameCapture'
+  | 'intro'
+  | 'game'
   | 'transition'
   | 'ending'
   | 'credits';
@@ -38,33 +38,81 @@ export type GameStage =
  * Core Logic Preserved: All original actions maintained
  */
 export type GameAction =
-  | 'move' | 'look' | 'take' | 'drop' | 'use' | 'examine'
-  | 'talk' | 'listen' | 'smell' | 'taste' | 'touch'
-  | 'open' | 'close' | 'push' | 'pull' | 'turn'
-  | 'sit' | 'stand' | 'jump' | 'climb' | 'swim'
-  | 'coffee' | 'press' | 'wait' | 'save' | 'load'
-  | 'inventory' | 'help' | 'quit' | string;
+  | 'move'
+  | 'look'
+  | 'take'
+  | 'drop'
+  | 'use'
+  | 'examine'
+  | 'talk'
+  | 'listen'
+  | 'smell'
+  | 'taste'
+  | 'touch'
+  | 'open'
+  | 'close'
+  | 'push'
+  | 'pull'
+  | 'turn'
+  | 'sit'
+  | 'stand'
+  | 'jump'
+  | 'climb'
+  | 'swim'
+  | 'coffee'
+  | 'press'
+  | 'wait'
+  | 'save'
+  | 'load'
+  | 'inventory'
+  | 'help'
+  | 'quit'
+  | string;
 
 /**
  * Direction types for room navigation
  * Includes standard compass directions and game-specific directions
  */
 export type Direction =
-  | 'north' | 'south' | 'east' | 'west'
-  | 'northeast' | 'northwest' | 'southeast' | 'southwest'
-  | 'up' | 'down' | 'in' | 'out'
-  | 'jump' | 'portal' | 'climb' | 'swim'
-  | 'coffee' | 'chair' | 'green' | 'church' 
-  | 'sit' | string;
+  | 'north'
+  | 'south'
+  | 'east'
+  | 'west'
+  | 'northeast'
+  | 'northwest'
+  | 'southeast'
+  | 'southwest'
+  | 'up'
+  | 'down'
+  | 'in'
+  | 'out'
+  | 'jump'
+  | 'portal'
+  | 'climb'
+  | 'swim'
+  | 'coffee'
+  | 'chair'
+  | 'green'
+  | 'church'
+  | 'sit'
+  | string;
 
 /**
  * Item category enumeration for inventory management
  * Core Logic Preserved: All original categories maintained
  */
 export type ItemCategory =
-  | 'consumable' | 'tool' | 'weapon' | 'armor' | 'key'
-  | 'document' | 'container' | 'misc' | 'quest'
-  | 'coffee' | 'special';
+  | 'consumable'
+  | 'tool'
+  | 'weapon'
+  | 'armor'
+  | 'key'
+  | 'document'
+  | 'container'
+  | 'misc'
+  | 'quest'
+  | 'coffee'
+  | 'special';
 
 /**
  * Enhanced GameState interface with comprehensive typing

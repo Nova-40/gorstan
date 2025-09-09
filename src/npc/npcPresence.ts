@@ -103,7 +103,7 @@ export class NPCPresenceProvider {
       npcId,
       currentRoom: initialRoom,
       lastMoveTime: Date.now(),
-      isMoving: false
+      isMoving: false,
     };
 
     this.npcStates.set(npcId, state);
@@ -159,7 +159,7 @@ export class NPCPresenceProvider {
       npcId,
       roomId: toRoom,
       previousRoom: fromRoom,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     console.log(`[NPCPresence] Started move: ${npcId} from ${fromRoom} to ${toRoom}`);
@@ -200,14 +200,14 @@ export class NPCPresenceProvider {
       npcId,
       roomId: toRoom,
       previousRoom: fromRoom,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     this.emitUpdate({
       type: 'npc_left',
       npcId,
       roomId: fromRoom,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     console.log(`[NPCPresence] Completed move: ${npcId} from ${fromRoom} to ${toRoom}`);
@@ -231,7 +231,7 @@ export class NPCPresenceProvider {
       type: 'npc_stopped',
       npcId,
       roomId: state.currentRoom,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     console.log(`[NPCPresence] Cancelled move for ${npcId}`);
@@ -259,12 +259,12 @@ export class NPCPresenceProvider {
   getRoomOccupancy(roomId: string): RoomOccupancy {
     const npcSet = this.roomOccupancy.get(roomId) || new Set();
     const capacity = this.roomCapacities.get(roomId);
-    
+
     return {
       roomId,
       npcIds: Array.from(npcSet),
       capacity,
-      isFull: capacity ? npcSet.size >= capacity : false
+      isFull: capacity ? npcSet.size >= capacity : false,
     };
   }
 
@@ -281,7 +281,9 @@ export class NPCPresenceProvider {
    */
   isRoomFull(roomId: string): boolean {
     const capacity = this.roomCapacities.get(roomId);
-    if (!capacity) return false;
+    if (!capacity) {
+      return false;
+    }
 
     const occupancy = this.roomOccupancy.get(roomId) || new Set();
     return occupancy.size >= capacity;
@@ -292,12 +294,9 @@ export class NPCPresenceProvider {
    */
   getAllRoomOccupancy(): Map<string, RoomOccupancy> {
     const result = new Map<string, RoomOccupancy>();
-    
+
     // Include all rooms that have capacity set or NPCs present
-    const allRooms = new Set([
-      ...this.roomCapacities.keys(),
-      ...this.roomOccupancy.keys()
-    ]);
+    const allRooms = new Set([...this.roomCapacities.keys(), ...this.roomOccupancy.keys()]);
 
     for (const roomId of allRooms) {
       result.set(roomId, this.getRoomOccupancy(roomId));
@@ -341,14 +340,14 @@ export class NPCPresenceProvider {
    * Get system statistics
    */
   getStats() {
-    const movingNPCs = Array.from(this.npcStates.values()).filter(s => s.isMoving).length;
-    
+    const movingNPCs = Array.from(this.npcStates.values()).filter((s) => s.isMoving).length;
+
     return {
       isActive: this.isActive,
       totalNPCs: this.npcStates.size,
       movingNPCs,
       totalRooms: this.roomOccupancy.size,
-      listeners: this.listeners.size
+      listeners: this.listeners.size,
     };
   }
 

@@ -21,24 +21,25 @@ import React, { useEffect, useState } from 'react';
 
 import { motion, AnimatePresence } from 'framer-motion';
 
-
-
-
-
-
-
-
-
 interface DramaticWaitTransitionProps {
   onComplete: () => void;
 }
 
 const DramaticWaitTransition: React.FC<DramaticWaitTransitionProps> = ({ onComplete }) => {
-  const [phase, setPhase] = useState<'tension' | 'approaching' | 'impact' | 'aftermath' | 'splat' | 'void' | 'reconstruction' | 'awakening'>('tension');
+  const [phase, setPhase] = useState<
+    | 'tension'
+    | 'approaching'
+    | 'impact'
+    | 'aftermath'
+    | 'splat'
+    | 'void'
+    | 'reconstruction'
+    | 'awakening'
+  >('tension');
 
-// React effect hook
+  // React effect hook
   useEffect(() => {
-// Variable declaration
+    // Variable declaration
     const timers = [
       setTimeout(() => setPhase('approaching'), 1000),
       setTimeout(() => setPhase('impact'), 3000),
@@ -49,11 +50,11 @@ const DramaticWaitTransition: React.FC<DramaticWaitTransitionProps> = ({ onCompl
       setTimeout(() => setPhase('awakening'), 10000),
       setTimeout(() => onComplete(), 12000),
     ];
-// JSX return block or main return
+    // JSX return block or main return
     return () => timers.forEach(clearTimeout);
   }, [onComplete]);
 
-// JSX return block or main return
+  // JSX return block or main return
   return (
     <AnimatePresence>
       <motion.div
@@ -62,13 +63,14 @@ const DramaticWaitTransition: React.FC<DramaticWaitTransitionProps> = ({ onCompl
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         style={{
-          background: phase === 'void'
-            ? '#000000'
-            : phase === 'reconstruction'
-              ? 'linear-gradient(45deg, #001122, #003366, #001122)'
-              : phase === 'awakening'
-                ? 'linear-gradient(180deg, #003366, #0066cc)'
-                : 'linear-gradient(180deg, #1a1a1a, #000000)',
+          background:
+            phase === 'void'
+              ? '#000000'
+              : phase === 'reconstruction'
+                ? 'linear-gradient(45deg, #001122, #003366, #001122)'
+                : phase === 'awakening'
+                  ? 'linear-gradient(180deg, #003366, #0066cc)'
+                  : 'linear-gradient(180deg, #1a1a1a, #000000)',
         }}
       >
         {}
@@ -91,12 +93,12 @@ const DramaticWaitTransition: React.FC<DramaticWaitTransitionProps> = ({ onCompl
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{
                   opacity: [0, 0.3, 0],
-                  scale: [0.8, 1.2, 0.8]
+                  scale: [0.8, 1.2, 0.8],
                 }}
                 transition={{
                   duration: 1.5,
                   delay: i * 0.5,
-                  repeat: Infinity
+                  repeat: Infinity,
                 }}
                 style={{
                   background: `radial-gradient(circle at ${80 + i * 5}% ${20 + i * 10}%, #660000 0%, transparent 50%)`,
@@ -116,7 +118,8 @@ const DramaticWaitTransition: React.FC<DramaticWaitTransitionProps> = ({ onCompl
               animate={{ opacity: [0, 0.8, 1] }}
               transition={{ duration: 2 }}
               style={{
-                background: 'radial-gradient(ellipse at 80% 50%, #990000 0%, #440000 50%, transparent 80%)',
+                background:
+                  'radial-gradient(ellipse at 80% 50%, #990000 0%, #440000 50%, transparent 80%)',
               }}
             />
 
@@ -129,7 +132,7 @@ const DramaticWaitTransition: React.FC<DramaticWaitTransitionProps> = ({ onCompl
                 animate={{
                   opacity: [0, 1, 1],
                   scale: [0.3, 1.5, 2],
-                  rotate: [0, i * 5, i * 10]
+                  rotate: [0, i * 5, i * 10],
                 }}
                 transition={{ duration: 2, delay: i * 0.2 }}
                 style={{
@@ -205,7 +208,8 @@ const DramaticWaitTransition: React.FC<DramaticWaitTransitionProps> = ({ onCompl
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               style={{
-                background: 'radial-gradient(circle at 85% 50%, #330000 0%, #110000 50%, #000000 100%)',
+                background:
+                  'radial-gradient(circle at 85% 50%, #330000 0%, #110000 50%, #000000 100%)',
               }}
             />
 
@@ -241,18 +245,19 @@ const DramaticWaitTransition: React.FC<DramaticWaitTransitionProps> = ({ onCompl
               className="absolute inset-0"
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: [0, 2, 3], opacity: [0, 1, 0.8] }}
-              transition={{ duration: 2, ease: "easeOut" }}
+              transition={{ duration: 2, ease: 'easeOut' }}
               style={{
-                background: 'radial-gradient(circle, #cc0000 0%, #880000 25%, #440000 50%, #220000 75%, transparent 100%)',
+                background:
+                  'radial-gradient(circle, #cc0000 0%, #880000 25%, #440000 50%, #220000 75%, transparent 100%)',
                 transformOrigin: '85% 50%',
               }}
             />
 
             {}
             {[...Array(8)].map((_, i) => {
-// Variable declaration
-              const angle = (i * 45) + Math.random() * 30;
-// JSX return block or main return
+              // Variable declaration
+              const angle = i * 45 + Math.random() * 30;
+              // JSX return block or main return
               return (
                 <motion.div
                   key={i}
@@ -292,7 +297,7 @@ const DramaticWaitTransition: React.FC<DramaticWaitTransitionProps> = ({ onCompl
                 transition={{
                   duration: 2,
                   delay: i * 0.05,
-                  ease: "easeOut"
+                  ease: 'easeOut',
                 }}
               />
             ))}
@@ -439,7 +444,11 @@ const DramaticWaitTransition: React.FC<DramaticWaitTransitionProps> = ({ onCompl
           <motion.div
             className="text-center font-mono"
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: phase === 'void' || phase === 'reconstruction' || phase === 'awakening' ? 0 : 1, y: 0 }}
+            animate={{
+              opacity:
+                phase === 'void' || phase === 'reconstruction' || phase === 'awakening' ? 0 : 1,
+              y: 0,
+            }}
             transition={{ delay: 0.1, duration: 0.6 }}
           >
             {phase === 'tension' && (
@@ -491,7 +500,7 @@ const DramaticWaitTransition: React.FC<DramaticWaitTransitionProps> = ({ onCompl
                 animate={{
                   scale: [0, 1.5, 1.2],
                   rotate: [0, 10, -5, 0],
-                  y: [0, -20, 0]
+                  y: [0, -20, 0],
                 }}
                 transition={{ duration: 1.5 }}
                 style={{ textShadow: '0 0 30px #ff3333' }}

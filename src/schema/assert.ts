@@ -6,7 +6,7 @@ import { ZodError } from 'zod';
 export function assert<T>(
   value: unknown,
   schema: { parse: (value: unknown) => T },
-  context?: string
+  context?: string,
 ): asserts value is T {
   try {
     schema.parse(value);
@@ -14,7 +14,7 @@ export function assert<T>(
     if (error instanceof ZodError) {
       const contextMsg = context ? ` (${context})` : '';
       const errorMsg = `Invalid data structure${contextMsg}: ${error.issues
-        .map(issue => `${issue.path.join('.')}: ${issue.message}`)
+        .map((issue) => `${issue.path.join('.')}: ${issue.message}`)
         .join(', ')}`;
       throw new Error(errorMsg);
     }
@@ -27,19 +27,19 @@ export function assert<T>(
  */
 export function safeParse<T>(
   value: unknown,
-  schema: { safeParse: (value: unknown) => { success: boolean; data?: T; error?: ZodError } }
+  schema: { safeParse: (value: unknown) => { success: boolean; data?: T; error?: ZodError } },
 ): { success: true; data: T } | { success: false; error: string } {
   const result = schema.safeParse(value);
-  
+
   if (result.success) {
     return { success: true, data: result.data! };
   }
-  
+
   return {
     success: false,
-    error: result.error!.issues
-      .map(issue => `${issue.path.join('.')}: ${issue.message}`)
-      .join(', ')
+    error: result
+      .error!.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`)
+      .join(', '),
   };
 }
 
@@ -48,7 +48,7 @@ export function safeParse<T>(
  */
 export function isValid<T>(
   value: unknown,
-  schema: { safeParse: (value: unknown) => { success: boolean; data?: T } }
+  schema: { safeParse: (value: unknown) => { success: boolean; data?: T } },
 ): value is T {
   return schema.safeParse(value).success;
 }

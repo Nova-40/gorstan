@@ -23,8 +23,13 @@
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }
 
 .timer-text {
@@ -43,7 +48,9 @@
 
 .timer-fill {
   height: 100%;
-  transition: width 1s linear, background-color 0.3s ease;
+  transition:
+    width 1s linear,
+    background-color 0.3s ease;
 }
 
 .trap-info {
@@ -81,24 +88,24 @@
   text-align: center;
 }
 
-.risk-low { 
-  background-color: #065f46; 
-  color: #10b981; 
+.risk-low {
+  background-color: #065f46;
+  color: #10b981;
 }
 
-.risk-medium { 
-  background-color: #92400e; 
-  color: #f59e0b; 
+.risk-medium {
+  background-color: #92400e;
+  color: #f59e0b;
 }
 
-.risk-high { 
-  background-color: #b91c1c; 
-  color: #ef4444; 
+.risk-high {
+  background-color: #b91c1c;
+  color: #ef4444;
 }
 
-.risk-extreme { 
-  background-color: #7c2d12; 
-  color: #dc2626; 
+.risk-extreme {
+  background-color: #7c2d12;
+  color: #dc2626;
 }
 
 .action-buttons {

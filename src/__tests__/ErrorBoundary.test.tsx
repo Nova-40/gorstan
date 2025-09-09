@@ -17,7 +17,7 @@ describe('ErrorBoundary', () => {
   beforeEach(() => {
     console.error = vi.fn();
   });
-  
+
   afterEach(() => {
     console.error = originalError;
   });
@@ -26,7 +26,7 @@ describe('ErrorBoundary', () => {
     render(
       <ErrorBoundary>
         <div>Test content</div>
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(screen.getByText('Test content')).toBeInTheDocument();
@@ -36,7 +36,7 @@ describe('ErrorBoundary', () => {
     render(
       <ErrorBoundary>
         <ThrowError shouldThrow={true} />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(screen.getByText('Something went wrong')).toBeInTheDocument();
@@ -46,11 +46,11 @@ describe('ErrorBoundary', () => {
 
   test('renders custom fallback when provided', () => {
     const fallback = <div>Custom error message</div>;
-    
+
     render(
       <ErrorBoundary fallback={fallback}>
         <ThrowError shouldThrow={true} />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(screen.getByText('Custom error message')).toBeInTheDocument();
@@ -59,17 +59,14 @@ describe('ErrorBoundary', () => {
 
   test('calls onError callback when error occurs', () => {
     const onError = vi.fn();
-    
+
     render(
       <ErrorBoundary onError={onError}>
         <ThrowError shouldThrow={true} />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
-    expect(onError).toHaveBeenCalledWith(
-      expect.any(Error),
-      expect.stringContaining('ThrowError')
-    );
+    expect(onError).toHaveBeenCalledWith(expect.any(Error), expect.stringContaining('ThrowError'));
   });
 
   test('retry button resets error state', async () => {
@@ -83,7 +80,7 @@ describe('ErrorBoundary', () => {
     const { rerender } = render(
       <ErrorBoundary>
         <TestComponent />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     // Error should be displayed
@@ -97,7 +94,7 @@ describe('ErrorBoundary', () => {
     rerender(
       <ErrorBoundary>
         <ThrowError shouldThrow={false} />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(screen.getByText('No error')).toBeInTheDocument();

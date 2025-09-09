@@ -17,17 +17,6 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Game module.
 
-import { NPC } from '../types/NPCTypes';
-
-
-
-
-
-
-
-
-
-
 export interface PlayerInteraction {
   npcId: string;
   timestamp: number;
@@ -43,6 +32,6 @@ export interface PlayerState {
   traits?: string[];
   flags?: Record<string, boolean>;
   interactions?: PlayerInteraction[];
-  reputation?: Record<string, number>; 
-  relationships?: Record<string, number>; 
+  reputation?: Record<string, number>;
+  relationships?: Record<string, number>;
 }

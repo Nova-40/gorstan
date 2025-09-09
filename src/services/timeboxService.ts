@@ -42,23 +42,27 @@ export class TimeboxService {
   }
 
   start(): void {
-    if (this.isActive) return;
-    
+    if (this.isActive) {
+      return;
+    }
+
     this.isActive = true;
     this.startTime = Date.now();
-    
+
     // Update every 10 seconds for performance
     this.intervalId = window.setInterval(() => {
       this.tick();
     }, 10000);
-    
+
     // Initial tick
     this.tick();
   }
 
   stop(): void {
-    if (!this.isActive) return;
-    
+    if (!this.isActive) {
+      return;
+    }
+
     this.isActive = false;
     if (this.intervalId) {
       clearInterval(this.intervalId);
@@ -74,8 +78,10 @@ export class TimeboxService {
   }
 
   resume(): void {
-    if (!this.isActive) return;
-    
+    if (!this.isActive) {
+      return;
+    }
+
     this.intervalId = window.setInterval(() => {
       this.tick();
     }, 10000);
@@ -86,11 +92,13 @@ export class TimeboxService {
     const elapsedMs = now - this.startTime;
     const currentMinutes = Math.floor(elapsedMs / 60000);
     const remainingMinutes = Math.max(0, this.config.targetMinutes - currentMinutes);
-    
+
     const isOvertime = currentMinutes > this.config.targetMinutes;
     const overtimeMinutes = Math.max(0, currentMinutes - this.config.targetMinutes);
-    const isExpired = this.config.allowOvertime 
-      ? (this.config.overtimeGracePeriod ? overtimeMinutes > this.config.overtimeGracePeriod : false)
+    const isExpired = this.config.allowOvertime
+      ? this.config.overtimeGracePeriod
+        ? overtimeMinutes > this.config.overtimeGracePeriod
+        : false
       : isOvertime;
 
     const warningLevel = this.getWarningLevel(remainingMinutes);
@@ -110,32 +118,40 @@ export class TimeboxService {
 
   private getWarningLevel(remainingMinutes: number): TimeboxState['warningLevel'] {
     const thresholds = [...this.config.warningThresholds].sort((a, b) => b - a);
-    
-    if (remainingMinutes <= 0) return 'critical';
-    if (thresholds.length >= 3 && remainingMinutes <= thresholds[2]) return 'critical';
-    if (thresholds.length >= 2 && remainingMinutes <= thresholds[1]) return 'urgent';
-    if (thresholds.length >= 1 && remainingMinutes <= thresholds[0]) return 'early';
-    
+
+    if (remainingMinutes <= 0) {
+      return 'critical';
+    }
+    if (thresholds.length >= 3 && remainingMinutes <= thresholds[2]) {
+      return 'critical';
+    }
+    if (thresholds.length >= 2 && remainingMinutes <= thresholds[1]) {
+      return 'urgent';
+    }
+    if (thresholds.length >= 1 && remainingMinutes <= thresholds[0]) {
+      return 'early';
+    }
+
     return 'none';
   }
 
   private tick(): void {
     const state = this.getState();
-    
+
     // Call general tick callback
     this.callbacks.onTick?.(state);
-    
+
     // Check for state changes and call appropriate callbacks
     if (state.isExpired && this.callbacks.onExpired) {
       this.callbacks.onExpired(state);
       this.stop(); // Auto-stop when expired
       return;
     }
-    
+
     if (state.isOvertime && this.callbacks.onOvertime) {
       this.callbacks.onOvertime(state);
     }
-    
+
     if (state.isWarning && this.callbacks.onWarning) {
       this.callbacks.onWarning(state);
     }
@@ -143,38 +159,50 @@ export class TimeboxService {
 
   // Static factory methods for common configurations
   static forDemo(callbacks?: TimeboxCallbacks): TimeboxService {
-    return new TimeboxService({
-      targetMinutes: 7,
-      warningThresholds: [3, 1],
-      allowOvertime: true,
-      overtimeGracePeriod: 3,
-    }, callbacks);
+    return new TimeboxService(
+      {
+        targetMinutes: 7,
+        warningThresholds: [3, 1],
+        allowOvertime: true,
+        overtimeGracePeriod: 3,
+      },
+      callbacks,
+    );
   }
 
   static forShort10(callbacks?: TimeboxCallbacks): TimeboxService {
-    return new TimeboxService({
-      targetMinutes: 10,
-      warningThresholds: [5, 2, 1],
-      allowOvertime: true,
-      overtimeGracePeriod: 2,
-    }, callbacks);
+    return new TimeboxService(
+      {
+        targetMinutes: 10,
+        warningThresholds: [5, 2, 1],
+        allowOvertime: true,
+        overtimeGracePeriod: 2,
+      },
+      callbacks,
+    );
   }
 
   static forShort30(callbacks?: TimeboxCallbacks): TimeboxService {
-    return new TimeboxService({
-      targetMinutes: 30,
-      warningThresholds: [10, 5, 2],
-      allowOvertime: true,
-      overtimeGracePeriod: 5,
-    }, callbacks);
+    return new TimeboxService(
+      {
+        targetMinutes: 30,
+        warningThresholds: [10, 5, 2],
+        allowOvertime: true,
+        overtimeGracePeriod: 5,
+      },
+      callbacks,
+    );
   }
 
   static forFull(callbacks?: TimeboxCallbacks): TimeboxService {
-    return new TimeboxService({
-      targetMinutes: 999,
-      warningThresholds: [],
-      allowOvertime: true,
-    }, callbacks);
+    return new TimeboxService(
+      {
+        targetMinutes: 999,
+        warningThresholds: [],
+        allowOvertime: true,
+      },
+      callbacks,
+    );
   }
 }
 

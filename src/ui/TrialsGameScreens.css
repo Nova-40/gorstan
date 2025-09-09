@@ -257,35 +257,35 @@
     padding: 25px;
     margin: 10px;
   }
-  
+
   .start-content h1 {
     font-size: 2.2rem;
   }
-  
+
   .start-controls {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .controls-grid {
     grid-template-columns: 1fr;
     gap: 15px;
     text-align: center;
   }
-  
+
   .controls-grid span:nth-child(even) {
     text-align: center;
   }
-  
+
   .game-over-content {
     padding: 25px;
     margin: 10px;
   }
-  
+
   .game-over-content h1 {
     font-size: 2rem;
   }
-  
+
   .game-over-actions {
     flex-direction: column;
     align-items: center;
@@ -299,7 +299,7 @@
   .quit-btn {
     transition: none;
   }
-  
+
   .start-btn:hover,
   .retry-btn:hover,
   .quit-btn:hover {
@@ -314,12 +314,12 @@
     background: #000000;
     border-color: #ffffff;
   }
-  
+
   .start-content h1,
   .game-over-content h1 {
     color: #ffffff;
   }
-  
+
   .controls-grid span:nth-child(odd) {
     background: #2d2d2d;
     color: #ffffff;

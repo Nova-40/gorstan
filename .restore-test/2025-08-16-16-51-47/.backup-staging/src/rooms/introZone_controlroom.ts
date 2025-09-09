@@ -19,14 +19,6 @@
 
 import { Room } from '../types/Room';
 
-
-
-
-
-
-
-
-
 const controlroom: Room = {
   id: 'controlroom',
   zone: 'introZone',
@@ -40,7 +32,6 @@ const controlroom: Room = {
   image: 'introZone_controlroom.png',
   ambientAudio: 'control_room_ambience.mp3',
 
-  
   consoleIntro: [
     '>> PRIMARY CONTROL ROOM - TACTICAL OPERATIONS CENTER',
     '>> Security clearance verified... Access: EMERGENCY OVERRIDE',
@@ -67,7 +58,6 @@ const controlroom: Room = {
     'operator_badge',
   ],
 
-  
   traps: [
     {
       id: 'voltage_spike',
@@ -77,55 +67,59 @@ const controlroom: Room = {
       trigger: 'enter',
       effect: {
         damage: 15,
-        flagsSet: ['hasBeenZapped']
+        flagsSet: ['hasBeenZapped'],
       },
       triggered: false,
       disarmable: false,
       hidden: false,
-    }
+    },
   ],
 
-  
   interactables: {
-    'tactical_display': {
-      description: 'A massive wall-mounted display showing the dimensional network as interconnected nodes and pathways.',
+    tactical_display: {
+      description:
+        'A massive wall-mounted display showing the dimensional network as interconnected nodes and pathways.',
       actions: ['examine', 'activate', 'analyze'],
       requires: [],
     },
-    'monitoring_stations': {
-      description: 'Advanced workstations with multiple screens and control interfaces for network oversight.',
+    monitoring_stations: {
+      description:
+        'Advanced workstations with multiple screens and control interfaces for network oversight.',
       actions: ['activate', 'examine', 'operate'],
       requires: ['operator_badge'],
     },
-    'emergency_panel': {
+    emergency_panel: {
       description: 'A red-illuminated emergency control panel with critical system overrides.',
       actions: ['activate', 'examine', 'use'],
       requires: ['emergency_override_key'],
     },
-    'communication_array': {
-      description: 'A sophisticated communication system for contact with other dimensional stations.',
+    communication_array: {
+      description:
+        'A sophisticated communication system for contact with other dimensional stations.',
       actions: ['activate', 'examine', 'broadcast'],
       requires: [],
     },
-    'central_console': {
+    central_console: {
       description: 'The primary control interface with master controls for the entire facility.',
       actions: ['activate', 'examine', 'operate'],
       requires: ['operator_badge'],
     },
-    'hidden_hatch': {
+    hidden_hatch: {
       description: 'A concealed floor hatch that leads to the hidden laboratory below.',
       actions: ['examine', 'open', 'use'],
       requires: ['emergency_override_key'],
     },
   },
 
-  
-  npcs: [
-    
-  ],
+  npcs: [],
 
   events: {
-    onEnter: ['showControlRoomIntro', 'checkEmergencyStatus', 'updateTacticalDisplay', 'checkMorthosAlEncounter'],
+    onEnter: [
+      'showControlRoomIntro',
+      'checkEmergencyStatus',
+      'updateTacticalDisplay',
+      'checkMorthosAlEncounter',
+    ],
     onExit: ['saveOperationalData'],
     onInteract: {
       tactical_display: ['showNetworkStatus', 'analyzeDimensionalDrift'],
@@ -137,7 +131,6 @@ const controlroom: Room = {
     },
   },
 
-  
   flags: {
     emergencyActive: true,
     tacticalDisplayOnline: true,
@@ -148,7 +141,6 @@ const controlroom: Room = {
     masterControlsAccessed: false,
   },
 
-  
   quests: {
     main: 'Assess Facility Status',
     optional: [
@@ -159,7 +151,6 @@ const controlroom: Room = {
     ],
   },
 
-  
   environmental: {
     lighting: 'emergency_red_and_blue',
     temperature: 'warm_from_electronics',
@@ -168,7 +159,6 @@ const controlroom: Room = {
     hazards: ['electrical_hazards_near_damaged_equipment'],
   },
 
-  
   security: {
     level: 'maximum',
     accessRequirements: ['emergency_override', 'operator_clearance'],
@@ -176,7 +166,6 @@ const controlroom: Room = {
     surveillanceActive: true,
   },
 
-  
   metadata: {
     created: '2025-07-09',
     lastModified: '2025-07-09',
@@ -194,7 +183,6 @@ const controlroom: Room = {
     ],
   },
 
-  
   secrets: {
     operator_logs: {
       description: 'Personal logs from facility operators during the crisis',
@@ -213,19 +201,18 @@ const controlroom: Room = {
     },
   },
 
-  
   customActions: {
-    'emergency_lockdown': {
+    emergency_lockdown: {
       description: 'Initiate facility-wide emergency lockdown protocols',
       requirements: ['emergency_override_key', 'master_controls_accessed'],
       effects: ['secure_all_exits', 'activate_containment_procedures'],
     },
-    'network_diagnostic': {
+    network_diagnostic: {
       description: 'Run comprehensive diagnostic on the dimensional network',
       requirements: ['monitoring_stations_active', 'tactical_display_analyzed'],
       effects: ['reveal_network_status', 'identify_failure_points'],
     },
-    'coordinate_evacuation': {
+    coordinate_evacuation: {
       description: 'Coordinate evacuation procedures for connected facilities',
       requirements: ['communications_established', 'emergency_protocols_activated'],
       effects: ['initiate_evacuation_sequence', 'broadcast_emergency_instructions'],
@@ -240,13 +227,13 @@ const controlroom: Room = {
       }
 
       const messages = [];
-      
+
       // Initial atmosphere
       messages.push({
         id: `encounter-start-${Date.now()}`,
         text: '🌫️ The shadows in the control room suddenly deepen, and the air grows thick with tension...',
         type: 'narrative',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
 
       // Morthos appears
@@ -255,29 +242,29 @@ const controlroom: Room = {
         id: `morthos-appear-${Date.now()}`,
         text: '🌑 From the darkest corner of the room, a figure emerges. Morthos steps forward, shadows writhing around his form like living things.',
         type: 'narrative',
-        timestamp: Date.now() + 6000
+        timestamp: Date.now() + 6000,
       });
 
       messages.push({
         id: `morthos-speak-${Date.now()}`,
         text: '🗣️ MORTHOS: "So... another operator discovers our little sanctuary. How deliciously... inevitable."',
         type: 'dialogue',
-        timestamp: Date.now() + 7000
+        timestamp: Date.now() + 7000,
       });
 
-      // Al appears  
+      // Al appears
       messages.push({
         id: `al-appear-${Date.now()}`,
         text: '📋 A bureaucratic figure in a slightly rumpled suit materializes near the monitoring stations, adjusting his glasses with practiced efficiency.',
         type: 'narrative',
-        timestamp: Date.now() + 8000
+        timestamp: Date.now() + 8000,
       });
 
       messages.push({
         id: `al-speak-${Date.now()}`,
         text: '🗣️ AL: "Ah, excellent timing. We have protocols to discuss, forms to file, and reality to stabilize. In that order."',
         type: 'dialogue',
-        timestamp: Date.now() + 9000
+        timestamp: Date.now() + 9000,
       });
 
       // The tension
@@ -285,29 +272,29 @@ const controlroom: Room = {
         id: `tension-build-${Date.now()}`,
         text: '⚡ The room crackles with dimensional energy as these two powerful entities regard each other—and you—with interest.',
         type: 'narrative',
-        timestamp: Date.now() + 10000
+        timestamp: Date.now() + 10000,
       });
 
       messages.push({
         id: `encounter-complete-${Date.now()}`,
         text: '✨ You sense this encounter will shape your journey through the multiverse...',
         type: 'system',
-        timestamp: Date.now() + 11000
+        timestamp: Date.now() + 11000,
       });
 
       return {
         messages,
-        updates: { 
-          flags: { 
+        updates: {
+          flags: {
             hasMetMorthosAl: true,
             metMorthos: true,
             metAl: true,
-            firstEncounterComplete: true
+            firstEncounterComplete: true,
           },
-          npcsInRoom: [...(gameState.npcsInRoom || []), 'morthos', 'al_escape_artist']
-        }
+          npcsInRoom: [...(gameState.npcsInRoom || []), 'morthos', 'al_escape_artist'],
+        },
       };
-    }
+    },
   },
 
   // Custom command handlers for this room
@@ -317,23 +304,25 @@ const controlroom: Room = {
       handler: (gameState: any) => {
         if (gameState.flags?.hasMetMorthosAl) {
           return {
-            messages: [{
-              id: `encounter-already-complete-${Date.now()}`,
-              text: 'You remember your previous encounter with Morthos and Al in this room.',
-              type: 'system',
-              timestamp: Date.now()
-            }]
+            messages: [
+              {
+                id: `encounter-already-complete-${Date.now()}`,
+                text: 'You remember your previous encounter with Morthos and Al in this room.',
+                type: 'system',
+                timestamp: Date.now(),
+              },
+            ],
           };
         }
 
         const messages = [];
-        
+
         // Initial atmosphere
         messages.push({
           id: `encounter-start-${Date.now()}`,
           text: '🌫️ The shadows in the control room suddenly deepen, and the air grows thick with tension...',
           type: 'narrative',
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
 
         // Morthos appears
@@ -341,29 +330,29 @@ const controlroom: Room = {
           id: `morthos-appear-${Date.now()}`,
           text: '🌑 From the darkest corner of the room, a figure emerges. Morthos steps forward, shadows writhing around his form like living things.',
           type: 'narrative',
-          timestamp: Date.now() + 1000
+          timestamp: Date.now() + 1000,
         });
 
         messages.push({
           id: `morthos-speak-${Date.now()}`,
           text: '🗣️ MORTHOS: "So... another operator discovers our little sanctuary. How deliciously... inevitable."',
           type: 'dialogue',
-          timestamp: Date.now() + 2000
+          timestamp: Date.now() + 2000,
         });
 
-        // Al appears  
+        // Al appears
         messages.push({
           id: `al-appear-${Date.now()}`,
           text: '📋 A bureaucratic figure in a slightly rumpled suit materializes near the monitoring stations, adjusting his glasses with practiced efficiency.',
           type: 'narrative',
-          timestamp: Date.now() + 3000
+          timestamp: Date.now() + 3000,
         });
 
         messages.push({
           id: `al-speak-${Date.now()}`,
           text: '🗣️ AL: "Ah, excellent timing. We have protocols to discuss, forms to file, and reality to stabilize. In that order."',
           type: 'dialogue',
-          timestamp: Date.now() + 4000
+          timestamp: Date.now() + 4000,
         });
 
         // The tension
@@ -371,33 +360,31 @@ const controlroom: Room = {
           id: `tension-build-${Date.now()}`,
           text: '⚡ The room crackles with dimensional energy as these two powerful entities regard each other—and you—with interest.',
           type: 'narrative',
-          timestamp: Date.now() + 5000
+          timestamp: Date.now() + 5000,
         });
 
         messages.push({
           id: `encounter-complete-${Date.now()}`,
           text: '✨ You sense this encounter will shape your journey through the multiverse...',
           type: 'system',
-          timestamp: Date.now() + 6000
+          timestamp: Date.now() + 6000,
         });
 
         return {
           messages,
-          updates: { 
-            flags: { 
+          updates: {
+            flags: {
               hasMetMorthosAl: true,
               metMorthos: true,
               metAl: true,
-              firstEncounterComplete: true
+              firstEncounterComplete: true,
             },
-            npcsInRoom: [...(gameState.npcsInRoom || []), 'morthos', 'al_escape_artist']
-          }
+            npcsInRoom: [...(gameState.npcsInRoom || []), 'morthos', 'al_escape_artist'],
+          },
         };
-      }
-    }
-  }
+      },
+    },
+  },
 };
 
 export default controlroom;
-
-

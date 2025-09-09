@@ -8,7 +8,8 @@ import { Room } from '../types/Room';
 const artifactChamber: Room = {
   id: 'artifactChamber',
   title: 'Artifact Chamber',
-  description: 'A hidden chamber filled with ancient runes and a glowing pedestal at its center. The artifact rests here, waiting for a worthy challenger.',
+  description:
+    'A hidden chamber filled with ancient runes and a glowing pedestal at its center. The artifact rests here, waiting for a worthy challenger.',
   image: 'artifactChamber.png',
   zone: 'glitchZone',
   flags: {},
@@ -26,7 +27,8 @@ const artifactChamber: Room = {
       requires: ['dispelBarrierSpell'],
     },
     artifact: {
-      description: 'The artifact glows with immense magical energy, ready to empower a worthy challenger.',
+      description:
+        'The artifact glows with immense magical energy, ready to empower a worthy challenger.',
       actions: ['absorbMagic'],
       effects: ['boostMagic'],
     },

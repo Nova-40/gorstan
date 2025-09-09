@@ -6,12 +6,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import ShadowEntityDisplay from './ui/ShadowEntityDisplay';
 import ShadowEncounterLog from './ui/ShadowEncounterLog';
-import { 
-  type ShadowEntity, 
-  type ShadowEncounter, 
+import {
+  type ShadowEntity,
+  type ShadowEncounter,
   type ShadowInteraction,
   type ShadowInteractionType,
-  type ShadowEvent
+  type ShadowEvent,
 } from '../types/shadowEncounters';
 
 interface ShadowEncountersScreenProps {
@@ -25,7 +25,7 @@ const ShadowEncountersScreen: React.FC<ShadowEncountersScreenProps> = ({
   shadowService,
   quantumArtifacts,
   onClose,
-  className = ''
+  className = '',
 }) => {
   const [activeEntities, setActiveEntities] = useState<ShadowEntity[]>([]);
   // @ts-ignore - activeEncounters for future use
@@ -39,73 +39,113 @@ const ShadowEncountersScreen: React.FC<ShadowEncountersScreenProps> = ({
 
   // Update state from shadow service
   const updateFromService = useCallback(() => {
-    if (!shadowService) return;
-    
+    if (!shadowService) {
+      return;
+    }
+
     setActiveEntities(shadowService.getActiveEntities());
     setActiveEncounters(shadowService.getActiveEncounters());
     setEncounterHistory(shadowService.getEncounterHistory());
     setPlayerStress(shadowService.getPlayerStress());
     setPlayerFear(shadowService.getPlayerFearLevel());
-    
+
     const state = shadowService.getShadowState();
     setInteractionHistory(state.interactionHistory || []);
   }, [shadowService]);
 
   // Handle shadow events
-  const handleShadowEvent = useCallback((event: ShadowEvent) => {
-    setRecentEvent(event);
-    updateFromService();
-    
-    // Clear event after showing it
-    setTimeout(() => setRecentEvent(null), 5000);
-  }, [updateFromService]);
+  const handleShadowEvent = useCallback(
+    (event: ShadowEvent) => {
+      setRecentEvent(event);
+      updateFromService();
+
+      // Clear event after showing it
+      setTimeout(() => setRecentEvent(null), 5000);
+    },
+    [updateFromService],
+  );
 
   // Set up event listener and initial load
   useEffect(() => {
-    if (!shadowService) return;
-    
+    if (!shadowService) {
+      return;
+    }
+
     shadowService.addEventListener(handleShadowEvent);
     updateFromService();
-    
+
     return () => {
       shadowService.removeEventListener(handleShadowEvent);
     };
   }, [shadowService, handleShadowEvent, updateFromService]);
 
-  const handleInteraction = (entityId: string, interactionType: ShadowInteractionType, artifactIds?: string[]) => {
-    if (!shadowService) return;
-    
-    const interaction = shadowService.interactWithShadow(entityId, interactionType, artifactIds || []);
+  const handleInteraction = (
+    entityId: string,
+    interactionType: ShadowInteractionType,
+    artifactIds?: string[],
+  ) => {
+    if (!shadowService) {
+      return;
+    }
+
+    const interaction = shadowService.interactWithShadow(
+      entityId,
+      interactionType,
+      artifactIds || [],
+    );
     if (interaction) {
       updateFromService();
     }
   };
 
   const getStressColor = (stress: number) => {
-    if (stress > 80) return 'text-red-400';
-    if (stress > 60) return 'text-orange-400';
-    if (stress > 40) return 'text-yellow-400';
-    if (stress > 20) return 'text-blue-400';
+    if (stress > 80) {
+      return 'text-red-400';
+    }
+    if (stress > 60) {
+      return 'text-orange-400';
+    }
+    if (stress > 40) {
+      return 'text-yellow-400';
+    }
+    if (stress > 20) {
+      return 'text-blue-400';
+    }
     return 'text-green-400';
   };
 
   const getFearDescription = (fear: number) => {
-    if (fear > 80) return 'Overwhelming dread';
-    if (fear > 60) return 'Significant unease';
-    if (fear > 40) return 'Growing anxiety';
-    if (fear > 20) return 'Mild apprehension';
+    if (fear > 80) {
+      return 'Overwhelming dread';
+    }
+    if (fear > 60) {
+      return 'Significant unease';
+    }
+    if (fear > 40) {
+      return 'Growing anxiety';
+    }
+    if (fear > 20) {
+      return 'Mild apprehension';
+    }
     return 'Calm and composed';
   };
 
   const getEventIcon = (eventType: string) => {
     switch (eventType) {
-      case 'spawn': return '👻';
-      case 'manifest': return '🌟';
-      case 'interact': return '🤝';
-      case 'banish': return '✨';
-      case 'escape': return '🏃';
-      case 'victory': return '🏆';
-      default: return '❓';
+      case 'spawn':
+        return '👻';
+      case 'manifest':
+        return '🌟';
+      case 'interact':
+        return '🤝';
+      case 'banish':
+        return '✨';
+      case 'escape':
+        return '🏃';
+      case 'victory':
+        return '🏆';
+      default:
+        return '❓';
     }
   };
 
@@ -128,10 +168,7 @@ const ShadowEncountersScreen: React.FC<ShadowEncountersScreenProps> = ({
       <div className="bg-gray-800 border-b border-gray-700 p-4">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold">Shadow Encounters</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-white transition-colors"
-          >
+          <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
             ✕
           </button>
         </div>
@@ -153,9 +190,7 @@ const ShadowEncountersScreen: React.FC<ShadowEncountersScreenProps> = ({
           <div className="flex items-center space-x-6">
             <div className="flex items-center space-x-2">
               <span className="text-gray-400">Stress:</span>
-              <span className={`font-bold ${getStressColor(playerStress)}`}>
-                {playerStress}%
-              </span>
+              <span className={`font-bold ${getStressColor(playerStress)}`}>{playerStress}%</span>
             </div>
             <div className="flex items-center space-x-2">
               <span className="text-gray-400">Fear:</span>
@@ -217,12 +252,13 @@ const ShadowEncountersScreen: React.FC<ShadowEncountersScreenProps> = ({
               <div className="text-center py-12">
                 <div className="text-gray-400 text-lg mb-4">No active shadow encounters</div>
                 <div className="text-sm text-gray-500">
-                  Shadows may appear based on your actions, quantum artifacts, and time spent in rooms.
+                  Shadows may appear based on your actions, quantum artifacts, and time spent in
+                  rooms.
                 </div>
               </div>
             ) : (
               <div className="grid gap-6">
-                {activeEntities.map(entity => (
+                {activeEntities.map((entity) => (
                   <ShadowEntityDisplay
                     key={entity.id}
                     entity={entity}
@@ -256,12 +292,17 @@ const ShadowEncountersScreen: React.FC<ShadowEncountersScreenProps> = ({
                     {playerStress}%
                   </div>
                   <div className="w-full bg-gray-700 rounded-full h-2 mt-2">
-                    <div 
+                    <div
                       className={`h-2 rounded-full transition-all duration-300 ${
-                        playerStress > 80 ? 'bg-red-500' :
-                        playerStress > 60 ? 'bg-orange-500' :
-                        playerStress > 40 ? 'bg-yellow-500' :
-                        playerStress > 20 ? 'bg-blue-500' : 'bg-green-500'
+                        playerStress > 80
+                          ? 'bg-red-500'
+                          : playerStress > 60
+                            ? 'bg-orange-500'
+                            : playerStress > 40
+                              ? 'bg-yellow-500'
+                              : playerStress > 20
+                                ? 'bg-blue-500'
+                                : 'bg-green-500'
                       }`}
                       style={{ width: `${playerStress}%` }}
                     />
@@ -285,13 +326,13 @@ const ShadowEncountersScreen: React.FC<ShadowEncountersScreenProps> = ({
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-green-400">
-                    {encounterHistory.filter(e => e.outcome === 'success').length}
+                    {encounterHistory.filter((e) => e.outcome === 'success').length}
                   </div>
                   <div className="text-sm text-gray-400">Successful</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-yellow-400">
-                    {encounterHistory.filter(e => e.outcome === 'escape').length}
+                    {encounterHistory.filter((e) => e.outcome === 'escape').length}
                   </div>
                   <div className="text-sm text-gray-400">Escaped</div>
                 </div>
@@ -305,7 +346,7 @@ const ShadowEncountersScreen: React.FC<ShadowEncountersScreenProps> = ({
                 <div className="text-gray-400">No quantum artifacts available</div>
               ) : (
                 <div className="flex flex-wrap gap-2">
-                  {quantumArtifacts.map(artifactId => (
+                  {quantumArtifacts.map((artifactId) => (
                     <div
                       key={artifactId}
                       className="bg-purple-900 border border-purple-700 rounded px-3 py-2 text-sm"

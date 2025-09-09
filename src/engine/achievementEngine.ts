@@ -57,14 +57,14 @@ export function logAchievement(achievementId: string, context?: Record<string, a
       payload: {
         id: achievementId,
         timestamp: Date.now(),
-        context: context || {}
-      }
+        context: context || {},
+      },
     });
-    
+
     // Also log to console
     globalDispatch({
       type: 'ADD_CONSOLE_LINE',
-      payload: `🏆 Achievement Unlocked: ${achievementId}`
+      payload: `🏆 Achievement Unlocked: ${achievementId}`,
     });
   } else {
     console.warn('Achievement dispatch not available:', achievementId);
@@ -76,8 +76,10 @@ export function logAchievement(achievementId: string, context?: Record<string, a
  */
 export function hasAchievement(achievementId: string): boolean {
   const achievements = localStorage.getItem('achievements');
-  if (!achievements) return false;
-  
+  if (!achievements) {
+    return false;
+  }
+
   try {
     const parsed = JSON.parse(achievements);
     return Array.isArray(parsed) && parsed.includes(achievementId);
@@ -91,8 +93,10 @@ export function hasAchievement(achievementId: string): boolean {
  */
 export function getUnlockedAchievements(): string[] {
   const achievements = localStorage.getItem('achievements');
-  if (!achievements) return [];
-  
+  if (!achievements) {
+    return [];
+  }
+
   try {
     const parsed = JSON.parse(achievements);
     return Array.isArray(parsed) ? parsed : [];

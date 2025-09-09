@@ -19,7 +19,7 @@ interface TrialsGameProps {
 export const TrialsGame: React.FC<TrialsGameProps> = ({
   onComplete,
   onQuit,
-  autoStart = false
+  autoStart = false,
 }) => {
   const {
     gameState,
@@ -30,7 +30,7 @@ export const TrialsGame: React.FC<TrialsGameProps> = ({
     pauseGame,
     resumeGame,
     movePlayer,
-    performAction
+    performAction,
   } = useTrialsGameState();
 
   // Auto-start if requested
@@ -68,7 +68,9 @@ export const TrialsGame: React.FC<TrialsGameProps> = ({
     movePlayer(direction);
   };
 
-  const handlePlayerAction = (action: 'rest' | 'trigger-mushroom' | 'hide' | 'sprint' | 'examine') => {
+  const handlePlayerAction = (
+    action: 'rest' | 'trigger-mushroom' | 'hide' | 'sprint' | 'examine',
+  ) => {
     performAction(action);
   };
 
@@ -78,17 +80,20 @@ export const TrialsGame: React.FC<TrialsGameProps> = ({
       <div className="trials-start-screen">
         <div className="start-content">
           <h1>Trials of Gorstan</h1>
-          <p>
-            Navigate through three challenging phases to prove your worth:
-          </p>
+          <p>Navigate through three challenging phases to prove your worth:</p>
           <ul>
-            <li><strong>Rock Field</strong> - Master basic navigation and energy management</li>
-            <li><strong>Random Rocks</strong> - Dodge falling obstacles with precise timing</li>
-            <li><strong>Mushroom Field</strong> - Strategically trigger mushrooms while evading six-legged mutants</li>
+            <li>
+              <strong>Rock Field</strong> - Master basic navigation and energy management
+            </li>
+            <li>
+              <strong>Random Rocks</strong> - Dodge falling obstacles with precise timing
+            </li>
+            <li>
+              <strong>Mushroom Field</strong> - Strategically trigger mushrooms while evading
+              six-legged mutants
+            </li>
           </ul>
-          <p>
-            Complete all phases within the time limit to unlock the cave maze finale!
-          </p>
+          <p>Complete all phases within the time limit to unlock the cave maze finale!</p>
           <div className="start-controls">
             <button onClick={startGame} className="start-btn">
               Begin Trials
@@ -100,13 +105,20 @@ export const TrialsGame: React.FC<TrialsGameProps> = ({
           <div className="controls-info">
             <h3>Controls:</h3>
             <div className="controls-grid">
-              <span>WASD / Arrow Keys</span><span>Move</span>
-              <span>Space</span><span>Rest at blue rocks</span>
-              <span>E</span><span>Trigger mushrooms</span>
-              <span>H</span><span>Hide from creatures</span>
-              <span>Shift</span><span>Sprint (costs stamina)</span>
-              <span>X</span><span>Examine surroundings</span>
-              <span>P</span><span>Pause game</span>
+              <span>WASD / Arrow Keys</span>
+              <span>Move</span>
+              <span>Space</span>
+              <span>Rest at blue rocks</span>
+              <span>E</span>
+              <span>Trigger mushrooms</span>
+              <span>H</span>
+              <span>Hide from creatures</span>
+              <span>Shift</span>
+              <span>Sprint (costs stamina)</span>
+              <span>X</span>
+              <span>Examine surroundings</span>
+              <span>P</span>
+              <span>Pause game</span>
             </div>
           </div>
         </div>
@@ -119,9 +131,7 @@ export const TrialsGame: React.FC<TrialsGameProps> = ({
     return (
       <div className="trials-game-over">
         <div className="game-over-content">
-          <h1>
-            {gameState.timeRemaining <= 0 ? 'Time\'s Up!' : 'Trial Failed'}
-          </h1>
+          <h1>{gameState.timeRemaining <= 0 ? "Time's Up!" : 'Trial Failed'}</h1>
           <div className="final-stats">
             <div className="stat">
               <span>Final Score:</span>

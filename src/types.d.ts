@@ -17,11 +17,10 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Game module.
 
-import { Direction, Room, RoomCollection } from './types/RoomTypes';
 
-import { NPC, NPCMood, NPCMemory } from './NPCTypes';
+import { NPC, NPCMood } from './NPCTypes';
 
-import { Trap, Puzzle, Miniquest, Achievement, ScoreData } from './GameTypes';
+import type { GameState } from './types/GameTypes';
 
 
 

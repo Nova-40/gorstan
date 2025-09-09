@@ -68,7 +68,7 @@ export class AIUsageMonitor {
       hintsRequested: 0,
       miniquestsCompleted: 0,
       currentStreak: 0,
-      explorationScore: 0
+      explorationScore: 0,
     };
     this.aiStats = {
       totalRequests: 0,
@@ -76,7 +76,7 @@ export class AIUsageMonitor {
       averageResponseTime: 0,
       playerSatisfactionScore: 0,
       mostUsefulFeature: 'ayla_hints',
-      commonTriggers: []
+      commonTriggers: [],
     };
   }
 
@@ -93,20 +93,20 @@ export class AIUsageMonitor {
   public recordAIUsage(
     type: AIUsageEvent['type'],
     context: AIUsageEvent['context'],
-    details: AIUsageEvent['details']
+    details: AIUsageEvent['details'],
   ): string {
     const eventId = `ai_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    
+
     const event: AIUsageEvent = {
       id: eventId,
       timestamp: Date.now(),
       type,
       context,
-      details
+      details,
     };
 
     this.events.push(event);
-    
+
     // Update stats
     this.aiStats.totalRequests++;
     if (details.confidence > 0.5) {
@@ -122,7 +122,7 @@ export class AIUsageMonitor {
     // Notify listeners
     this.notifyUpdate({
       type: 'ai_interaction',
-      data: { event, currentStats: this.getAIStats() }
+      data: { event, currentStats: this.getAIStats() },
     });
 
     return eventId;
@@ -134,19 +134,19 @@ export class AIUsageMonitor {
   public recordPlayerFeedback(
     eventId: string,
     action: string,
-    helpfulness: 'positive' | 'negative' | 'neutral'
+    helpfulness: 'positive' | 'negative' | 'neutral',
   ): void {
-    const event = this.events.find(e => e.id === eventId);
+    const event = this.events.find((e) => e.id === eventId);
     if (event) {
       event.playerResponse = {
         action,
         helpfulness,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       // Update satisfaction score
       const feedbackWeight = helpfulness === 'positive' ? 1 : helpfulness === 'negative' ? -1 : 0;
-      this.aiStats.playerSatisfactionScore = 
+      this.aiStats.playerSatisfactionScore =
         (this.aiStats.playerSatisfactionScore + feedbackWeight) / 2;
     }
   }
@@ -156,10 +156,10 @@ export class AIUsageMonitor {
    */
   public updateMetrics(update: Partial<GameplayMetrics>): void {
     Object.assign(this.metrics, update);
-    
+
     this.notifyUpdate({
       type: 'metrics_update',
-      data: { metrics: this.metrics }
+      data: { metrics: this.metrics },
     });
   }
 
@@ -169,14 +169,14 @@ export class AIUsageMonitor {
   public trackRoomVisit(roomId: string, _gameState: LocalGameState): void {
     this.metrics.roomsVisited++;
     this.metrics.totalPlayTime = Date.now() - this.sessionStartTime;
-    
+
     // Calculate exploration score
-    const uniqueRooms = new Set([...this.events.map(e => e.context.roomId), roomId]);
+    const uniqueRooms = new Set([...this.events.map((e) => e.context.roomId), roomId]);
     this.metrics.explorationScore = uniqueRooms.size * 10;
 
     this.notifyUpdate({
       type: 'room_visit',
-      data: { roomId, metrics: this.metrics }
+      data: { roomId, metrics: this.metrics },
     });
   }
 
@@ -185,7 +185,7 @@ export class AIUsageMonitor {
    */
   public trackCommand(command: string, success: boolean, _roomId: string): void {
     this.metrics.commandsExecuted++;
-    
+
     if (success) {
       this.metrics.currentStreak++;
     } else {
@@ -194,7 +194,7 @@ export class AIUsageMonitor {
 
     this.notifyUpdate({
       type: 'command_executed',
-      data: { command, success, streak: this.metrics.currentStreak }
+      data: { command, success, streak: this.metrics.currentStreak },
     });
   }
 
@@ -204,14 +204,14 @@ export class AIUsageMonitor {
   public getAIStats(): AIPerformanceStats & { recentEvents: AIUsageEvent[] } {
     const recentEvents = this.events.slice(-10);
     const triggerCounts: Record<string, number> = {};
-    
-    this.events.forEach(event => {
+
+    this.events.forEach((event) => {
       const trigger = event.context.trigger;
       triggerCounts[trigger] = (triggerCounts[trigger] || 0) + 1;
     });
 
     const commonTriggers = Object.entries(triggerCounts)
-      .sort(([,a], [,b]) => b - a)
+      .sort(([, a], [, b]) => b - a)
       .slice(0, 5)
       .map(([trigger]) => trigger);
 
@@ -219,7 +219,7 @@ export class AIUsageMonitor {
       ...this.aiStats,
       commonTriggers,
       recentEvents,
-      averageResponseTime: this.calculateAverageResponseTime()
+      averageResponseTime: this.calculateAverageResponseTime(),
     };
   }
 
@@ -241,7 +241,7 @@ export class AIUsageMonitor {
   } {
     const stats = this.getAIStats();
     const metrics = this.getMetrics();
-    
+
     const summary = `AI Usage Report:
 • Total AI interactions: ${stats.totalRequests}
 • Success rate: ${Math.round((stats.successfulResponses / stats.totalRequests) * 100)}%
@@ -254,7 +254,9 @@ export class AIUsageMonitor {
     const insights: string[] = [];
 
     if (stats.playerSatisfactionScore < 0.3) {
-      recommendations.push("AI assistance could be more helpful - consider adjusting hint sensitivity");
+      recommendations.push(
+        'AI assistance could be more helpful - consider adjusting hint sensitivity',
+      );
     }
 
     if (metrics.currentStreak > 10) {
@@ -262,7 +264,7 @@ export class AIUsageMonitor {
     }
 
     if (stats.commonTriggers.includes('stuck')) {
-      insights.push("Player frequently gets stuck - consider improving guidance systems");
+      insights.push('Player frequently gets stuck - consider improving guidance systems');
     }
 
     return { summary, recommendations, insights };
@@ -295,7 +297,7 @@ export class AIUsageMonitor {
       hintsRequested: 0,
       miniquestsCompleted: 0,
       currentStreak: 0,
-      explorationScore: 0
+      explorationScore: 0,
     };
     this.aiStats = {
       totalRequests: 0,
@@ -303,24 +305,24 @@ export class AIUsageMonitor {
       averageResponseTime: 0,
       playerSatisfactionScore: 0,
       mostUsefulFeature: 'ayla_hints',
-      commonTriggers: []
+      commonTriggers: [],
     };
   }
 
   private calculateAverageResponseTime(): number {
     const recentEvents = this.events.slice(-20);
     if (recentEvents.length < 2) return 0;
-    
+
     let totalTime = 0;
     for (let i = 1; i < recentEvents.length; i++) {
-      totalTime += recentEvents[i].timestamp - recentEvents[i-1].timestamp;
+      totalTime += recentEvents[i].timestamp - recentEvents[i - 1].timestamp;
     }
-    
+
     return totalTime / (recentEvents.length - 1);
   }
 
   private notifyUpdate(update: GameplayUpdate): void {
-    this.updateCallbacks.forEach(callback => {
+    this.updateCallbacks.forEach((callback) => {
       try {
         callback(update);
       } catch (error) {
@@ -344,6 +346,6 @@ if (typeof window !== 'undefined') {
     getStats: () => aiUsageMonitor.getAIStats(),
     getMetrics: () => aiUsageMonitor.getMetrics(),
     generateReport: () => aiUsageMonitor.generateUsageReport(),
-    resetSession: () => aiUsageMonitor.resetSession()
+    resetSession: () => aiUsageMonitor.resetSession(),
   };
 }

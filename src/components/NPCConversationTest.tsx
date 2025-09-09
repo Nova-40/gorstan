@@ -32,7 +32,9 @@ const NPCConversationTest: React.FC<NPCConversationTestProps> = ({ enabled = fal
   const currentRoomId = state.currentRoomId || 'controlnexus';
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled) {
+      return;
+    }
 
     // Test scripted conversations when component mounts
     const timer = setTimeout(() => {
@@ -42,13 +44,13 @@ const NPCConversationTest: React.FC<NPCConversationTestProps> = ({ enabled = fal
     return () => clearTimeout(timer);
   }, [enabled, state, dispatch, currentRoomId]);
 
-  if (!enabled) return null;
+  if (!enabled) {
+    return null;
+  }
 
   return (
     <div className="fixed top-4 right-4 bg-yellow-100 border border-yellow-400 rounded p-2 text-sm z-50">
-      <div className="text-yellow-800">
-        🧪 NPC Conversation Test Active
-      </div>
+      <div className="text-yellow-800">🧪 NPC Conversation Test Active</div>
       <div className="text-xs text-yellow-600 mt-1">
         Room: {currentRoomId} | NPCs: {state.npcsInRoom?.length || 0}
       </div>

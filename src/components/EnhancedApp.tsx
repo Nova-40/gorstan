@@ -19,10 +19,7 @@ interface EnhancedAppProps {
   onGameStateChange?: (state: any) => void;
 }
 
-const EnhancedApp: React.FC<EnhancedAppProps> = ({
-  initialGameState = {},
-  onGameStateChange
-}) => {
+const EnhancedApp: React.FC<EnhancedAppProps> = ({ initialGameState = {}, onGameStateChange }) => {
   const [gameState, setGameState] = useState(initialGameState);
   const [isAccessibilityEnabled, setIsAccessibilityEnabled] = useState(false);
   const [accessibilityFeatures, setAccessibilityFeatures] = useState<any>(null);
@@ -30,7 +27,7 @@ const EnhancedApp: React.FC<EnhancedAppProps> = ({
   // Initialize mobile optimizations and accessibility
   useEffect(() => {
     const deviceInfo = detectDevice();
-    
+
     // Setup mobile viewport and optimizations
     if (deviceInfo.isMobile || deviceInfo.isTablet) {
       setupMobileViewport();
@@ -100,22 +97,22 @@ const EnhancedApp: React.FC<EnhancedAppProps> = ({
   const handleGameStateUpdate = (newState: any) => {
     setGameState(newState);
     onGameStateChange?.(newState);
-    
+
     // Announce important state changes to screen readers
     if (accessibilityFeatures?.screenReader && isAccessibilityEnabled) {
       if (newState.currentRoom?.name !== gameState.currentRoom?.name) {
         accessibilityFeatures.screenReader.announceRoomEntry(
           newState.currentRoom.name,
-          newState.currentRoom.description
+          newState.currentRoom.description,
         );
       }
-      
+
       if (newState.player?.health !== gameState.player?.health) {
         const healthChange = (newState.player?.health || 0) - (gameState.player?.health || 0);
         accessibilityFeatures.screenReader.announceHealthChange(
           newState.player.health,
           newState.player.maxHealth || 100,
-          healthChange
+          healthChange,
         );
       }
     }
@@ -134,20 +131,24 @@ const EnhancedApp: React.FC<EnhancedAppProps> = ({
       <p>Current Room: {gameState.currentRoom?.name || 'Starting Room'}</p>
       <p>Player Health: {gameState.player?.health || 100}</p>
       <div className="mt-4 space-y-2">
-        <button 
-          onClick={() => handleGameStateUpdate({
-            ...gameState,
-            currentRoom: { name: 'Forest', description: 'A dark and mysterious forest' }
-          })}
+        <button
+          onClick={() =>
+            handleGameStateUpdate({
+              ...gameState,
+              currentRoom: { name: 'Forest', description: 'A dark and mysterious forest' },
+            })
+          }
           className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors"
         >
           Explore Forest
         </button>
-        <button 
-          onClick={() => handleGameStateUpdate({
-            ...gameState,
-            player: { ...gameState.player, health: (gameState.player?.health || 100) - 10 }
-          })}
+        <button
+          onClick={() =>
+            handleGameStateUpdate({
+              ...gameState,
+              player: { ...gameState.player, health: (gameState.player?.health || 100) - 10 },
+            })
+          }
           className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors"
         >
           Take Damage
@@ -189,14 +190,14 @@ const EnhancedApp: React.FC<EnhancedAppProps> = ({
 
   const FloatingActions = () => (
     <div className="space-y-2">
-      <button 
+      <button
         className="w-12 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center text-xl shadow-lg"
         onClick={() => accessibilityFeatures?.screenReader?.describeGameState(gameState)}
         title="Describe current game state"
       >
         🔊
       </button>
-      <button 
+      <button
         className="w-12 h-12 bg-purple-600 hover:bg-purple-700 text-white rounded-full flex items-center justify-center text-xl shadow-lg"
         onClick={() => {
           const help = `
@@ -230,10 +231,18 @@ const EnhancedApp: React.FC<EnhancedAppProps> = ({
       <div className="enhanced-app min-h-screen bg-gray-900">
         {/* Skip links for accessibility */}
         <div className="sr-only">
-          <a href="#main-content" className="skip-link">Skip to main content</a>
-          <a href="#game-area" className="skip-link">Skip to game area</a>
-          <a href="#inventory" className="skip-link">Skip to inventory</a>
-          <a href="#actions" className="skip-link">Skip to actions</a>
+          <a href="#main-content" className="skip-link">
+            Skip to main content
+          </a>
+          <a href="#game-area" className="skip-link">
+            Skip to game area
+          </a>
+          <a href="#inventory" className="skip-link">
+            Skip to inventory
+          </a>
+          <a href="#actions" className="skip-link">
+            Skip to actions
+          </a>
         </div>
 
         <MobileGameLayout
@@ -251,7 +260,12 @@ const EnhancedApp: React.FC<EnhancedAppProps> = ({
 
         {/* Accessibility announcements region */}
         <div aria-live="polite" aria-atomic="true" className="sr-only" id="announcements"></div>
-        <div aria-live="assertive" aria-atomic="true" className="sr-only" id="urgent-announcements"></div>
+        <div
+          aria-live="assertive"
+          aria-atomic="true"
+          className="sr-only"
+          id="urgent-announcements"
+        ></div>
       </div>
     </ResponsiveProvider>
   );

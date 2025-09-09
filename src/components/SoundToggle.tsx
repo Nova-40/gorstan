@@ -46,9 +46,10 @@ const SoundToggle: React.FC<SoundToggleProps> = ({ soundEnabled, setSoundEnabled
       onMouseLeave={() => setHovered(false)}
       className={`
         px-3 py-2 rounded-lg border transition-all duration-200
-        ${soundEnabled 
-          ? 'bg-green-600 border-green-500 text-white' 
-          : 'bg-gray-600 border-gray-500 text-gray-300'
+        ${
+          soundEnabled
+            ? 'bg-green-600 border-green-500 text-white'
+            : 'bg-gray-600 border-gray-500 text-gray-300'
         }
         ${hovered ? 'shadow-lg transform scale-105' : ''}
         hover:border-opacity-80
@@ -56,9 +57,7 @@ const SoundToggle: React.FC<SoundToggleProps> = ({ soundEnabled, setSoundEnabled
       title={soundEnabled ? 'Turn sound off' : 'Turn sound on'}
     >
       {soundEnabled ? '🔊' : '🔇'}
-      <span className="ml-2 text-sm">
-        {soundEnabled ? 'Sound On' : 'Sound Off'}
-      </span>
+      <span className="ml-2 text-sm">{soundEnabled ? 'Sound On' : 'Sound Off'}</span>
     </button>
   );
 };

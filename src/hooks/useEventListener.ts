@@ -7,25 +7,25 @@ import { useEffect, useRef } from 'react';
 export function useEventListener<K extends keyof WindowEventMap>(
   eventName: K,
   handler: (event: WindowEventMap[K]) => void,
-  element?: undefined
+  element?: undefined,
 ): void;
 
 export function useEventListener<K extends keyof DocumentEventMap>(
   eventName: K,
   handler: (event: DocumentEventMap[K]) => void,
-  element: Document
+  element: Document,
 ): void;
 
 export function useEventListener<K extends keyof HTMLElementEventMap>(
   eventName: K,
   handler: (event: HTMLElementEventMap[K]) => void,
-  element: HTMLElement | null
+  element: HTMLElement | null,
 ): void;
 
 export function useEventListener(
   eventName: string,
   handler: (event: Event) => void,
-  element?: HTMLElement | Document | Window | null
+  element?: HTMLElement | Document | Window | null,
 ): void {
   // Create a ref that stores handler
   const savedHandler = useRef<(event: Event) => void>(handler);
@@ -38,7 +38,7 @@ export function useEventListener(
   useEffect(() => {
     // Define the listening target
     const targetElement = element ?? window;
-    
+
     if (!(targetElement && targetElement.addEventListener)) {
       return;
     }
@@ -59,20 +59,20 @@ export function useEventListener(
 
 /**
  * Example usage:
- * 
+ *
  * function Component() {
  *   // Window events
  *   useEventListener('resize', () => {
  *     console.log('Window resized');
  *   });
- *   
+ *
  *   // Document events
  *   useEventListener('keydown', (e) => {
  *     if (e.key === 'Escape') {
  *       closeModal();
  *     }
  *   }, document);
- *   
+ *
  *   // Element events
  *   const buttonRef = useRef<HTMLButtonElement>(null);
  *   useEventListener('click', handleClick, buttonRef.current);

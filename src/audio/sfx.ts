@@ -26,113 +26,113 @@ export const SFX_REGISTRY: Record<string, SoundEffect> = {
   swordSwing: {
     src: '/audio/sword_swing.wav',
     volume: 0.6,
-    playbackRate: 1.0
+    playbackRate: 1.0,
   },
-  
+
   swordHit: {
     src: '/audio/sword_hit.wav',
     volume: 0.7,
-    playbackRate: 1.0
+    playbackRate: 1.0,
   },
-  
+
   parrySuccess: {
     src: '/audio/parry_success.wav',
     volume: 0.8,
-    playbackRate: 1.0
+    playbackRate: 1.0,
   },
-  
+
   parryFail: {
     src: '/audio/parry_fail.wav',
     volume: 0.5,
-    playbackRate: 1.0
+    playbackRate: 1.0,
   },
-  
+
   dodge: {
     src: '/audio/dodge.wav',
     volume: 0.4,
-    playbackRate: 1.2
+    playbackRate: 1.2,
   },
-  
+
   // Spell casting
   spellCast: {
     src: '/audio/spell_cast.wav',
     volume: 0.6,
-    playbackRate: 1.0
+    playbackRate: 1.0,
   },
-  
+
   fireBolt: {
     src: '/audio/fire_bolt.wav',
     volume: 0.7,
-    playbackRate: 1.0
+    playbackRate: 1.0,
   },
-  
+
   frostNova: {
     src: '/audio/frost_nova.wav',
     volume: 0.6,
-    playbackRate: 1.0
+    playbackRate: 1.0,
   },
-  
+
   chainLightning: {
     src: '/audio/chain_lightning.wav',
     volume: 0.8,
-    playbackRate: 1.0
+    playbackRate: 1.0,
   },
-  
+
   blink: {
     src: '/audio/blink.wav',
     volume: 0.5,
-    playbackRate: 1.1
+    playbackRate: 1.1,
   },
-  
+
   ward: {
     src: '/audio/ward.wav',
     volume: 0.6,
-    playbackRate: 1.0
+    playbackRate: 1.0,
   },
-  
+
   timeDilation: {
     src: '/audio/time_dilation.wav',
     volume: 0.4,
-    playbackRate: 0.8
+    playbackRate: 0.8,
   },
-  
+
   // Status effects
   burn: {
     src: '/audio/burn.wav',
     volume: 0.3,
-    playbackRate: 1.0
+    playbackRate: 1.0,
   },
-  
+
   freeze: {
     src: '/audio/freeze.wav',
     volume: 0.5,
-    playbackRate: 1.0
+    playbackRate: 1.0,
   },
-  
+
   shock: {
     src: '/audio/shock.wav',
     volume: 0.6,
-    playbackRate: 1.0
+    playbackRate: 1.0,
   },
-  
+
   // Combat feedback
   criticalHit: {
     src: '/audio/critical_hit.wav',
     volume: 0.9,
-    playbackRate: 1.0
+    playbackRate: 1.0,
   },
-  
+
   stagger: {
     src: '/audio/stagger.wav',
     volume: 0.7,
-    playbackRate: 0.9
+    playbackRate: 0.9,
   },
-  
+
   riposte: {
     src: '/audio/riposte.wav',
     volume: 0.8,
-    playbackRate: 1.0
-  }
+    playbackRate: 1.0,
+  },
 };
 
 /** Audio manager for game sounds */
@@ -164,8 +164,10 @@ class AudioManager {
 
   /** Load audio file into cache */
   async loadAudio(src: string): Promise<AudioBuffer | null> {
-    if (!this.audioContext) return null;
-    
+    if (!this.audioContext) {
+      return null;
+    }
+
     if (this.audioCache.has(src)) {
       return this.audioCache.get(src)!;
     }
@@ -185,11 +187,15 @@ class AudioManager {
   /** Play sound effect */
   async playSFX(id: string, options?: Partial<SoundEffect>): Promise<void> {
     const sfx = SFX_REGISTRY[id];
-    if (!sfx || !this.audioContext) return;
+    if (!sfx || !this.audioContext) {
+      return;
+    }
 
     const config = { ...sfx, ...options };
     const audioBuffer = await this.loadAudio(config.src);
-    if (!audioBuffer) return;
+    if (!audioBuffer) {
+      return;
+    }
 
     const source = this.audioContext.createBufferSource();
     const gainNode = this.audioContext.createGain();
@@ -206,7 +212,7 @@ class AudioManager {
       gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
       gainNode.gain.linearRampToValueAtTime(
         finalVolume,
-        this.audioContext.currentTime + config.fadeIn / 1000
+        this.audioContext.currentTime + config.fadeIn / 1000,
       );
     }
 
@@ -215,9 +221,13 @@ class AudioManager {
 
     // Handle fade out
     if (config.fadeOut && !config.loop) {
-      const fadeOutStart = this.audioContext.currentTime + audioBuffer.duration - config.fadeOut / 1000;
+      const fadeOutStart =
+        this.audioContext.currentTime + audioBuffer.duration - config.fadeOut / 1000;
       gainNode.gain.setValueAtTime(finalVolume, fadeOutStart);
-      gainNode.gain.linearRampToValueAtTime(0, this.audioContext.currentTime + audioBuffer.duration);
+      gainNode.gain.linearRampToValueAtTime(
+        0,
+        this.audioContext.currentTime + audioBuffer.duration,
+      );
     }
 
     // Store for potential stopping
@@ -264,19 +274,19 @@ export function playCombatSFX(id: string, options?: Partial<SoundEffect>): void 
 export const combatAudio = {
   /** Play weapon swing sound */
   weaponSwing: () => playCombatSFX('swordSwing'),
-  
+
   /** Play weapon hit sound */
   weaponHit: () => playCombatSFX('swordHit'),
-  
+
   /** Play parry success sound */
   parrySuccess: () => playCombatSFX('parrySuccess'),
-  
+
   /** Play parry failure sound */
   parryFail: () => playCombatSFX('parryFail'),
-  
+
   /** Play dodge sound */
   dodge: () => playCombatSFX('dodge'),
-  
+
   /** Play spell casting sound */
   spellCast: (spellId?: string) => {
     if (spellId && SFX_REGISTRY[spellId]) {
@@ -285,21 +295,21 @@ export const combatAudio = {
       playCombatSFX('spellCast');
     }
   },
-  
+
   /** Play critical hit sound */
   criticalHit: () => playCombatSFX('criticalHit'),
-  
+
   /** Play stagger sound */
   stagger: () => playCombatSFX('stagger'),
-  
+
   /** Play riposte sound */
   riposte: () => playCombatSFX('riposte'),
-  
+
   /** Play status effect sound */
   statusEffect: (statusId: string) => {
     const sfxId = statusId.toLowerCase();
     if (SFX_REGISTRY[sfxId]) {
       playCombatSFX(sfxId);
     }
-  }
+  },
 };

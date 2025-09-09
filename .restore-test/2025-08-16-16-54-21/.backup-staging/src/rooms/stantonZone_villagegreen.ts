@@ -47,25 +47,20 @@ export const villagegreen: Room = {
     west: 'glitchStanton',
   },
 
-  items: [
-    'lily_pad',
-    'oak_leaf',
-    'lantern_fragment',
-    'pond_stone',
-  ],
+  items: ['lily_pad', 'oak_leaf', 'lantern_fragment', 'pond_stone'],
 
   interactables: {
-    'gazebo': {
+    gazebo: {
       description: 'A quaint gazebo adorned with hanging lanterns.',
       actions: ['examine', 'enter', 'light'],
       requires: [],
     },
-    'pond': {
+    pond: {
       description: 'A small pond glimmering under the sunlight, dotted with lily pads.',
       actions: ['examine', 'touch', 'collect'],
       requires: [],
     },
-    'oak_trees': {
+    oak_trees: {
       description: 'Towering oak trees surrounding the green, their leaves rustling gently.',
       actions: ['examine', 'climb', 'listen'],
       requires: [],
@@ -74,5 +69,3 @@ export const villagegreen: Room = {
 };
 
 export default villagegreen;
-
-

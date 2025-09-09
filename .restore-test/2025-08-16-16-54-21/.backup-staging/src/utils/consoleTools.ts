@@ -37,10 +37,14 @@ export function setConsoleDispatch(dispatch: DispatchFunction): void {
 /**
  * Write a message to the game console (with dispatch parameter)
  */
-export function consoleWriteWithDispatch(dispatch: DispatchFunction, message: string, _type: 'info' | 'error' | 'success' = 'info'): void {
+export function consoleWriteWithDispatch(
+  dispatch: DispatchFunction,
+  message: string,
+  _type: 'info' | 'error' | 'success' = 'info',
+): void {
   dispatch({
     type: 'ADD_CONSOLE_LINE',
-    payload: message
+    payload: message,
   });
 }
 
@@ -51,7 +55,7 @@ export function consoleWrite(message: string, _type: 'info' | 'error' | 'success
   if (globalDispatch) {
     globalDispatch({
       type: 'ADD_CONSOLE_LINE',
-      payload: message
+      payload: message,
     });
   } else {
     console.warn('Console dispatch not available:', message);
@@ -75,13 +79,20 @@ export function consoleSuccess(message: string): void {
 /**
  * Push a console message with enhanced formatting (with dispatch parameter)
  */
-export function pushConsoleMessageWithDispatch(dispatch: DispatchFunction, message: string, type: 'info' | 'error' | 'success' = 'info'): void {
+export function pushConsoleMessageWithDispatch(
+  dispatch: DispatchFunction,
+  message: string,
+  type: 'info' | 'error' | 'success' = 'info',
+): void {
   consoleWriteWithDispatch(dispatch, message, type);
 }
 
 /**
  * Push a console message with enhanced formatting (using global dispatch)
  */
-export function pushConsoleMessage(message: string, type: 'info' | 'error' | 'success' = 'info'): void {
+export function pushConsoleMessage(
+  message: string,
+  type: 'info' | 'error' | 'success' = 'info',
+): void {
   consoleWrite(message, type);
 }

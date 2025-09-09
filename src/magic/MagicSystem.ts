@@ -81,7 +81,7 @@ export class MagicSystem {
       actor: caster,
       spell,
       startTime: Date.now(),
-      target
+      target,
     };
 
     this.activeCasts.push(castState);
@@ -102,22 +102,22 @@ export class MagicSystem {
   /** Check if spell is on cooldown */
   isSpellOnCooldown(actorId: string, spellId: string): boolean {
     const actorCooldowns = this.cooldowns.get(actorId) || [];
-    return actorCooldowns.some(cd => cd.spellId === spellId && cd.remainingMs > 0);
+    return actorCooldowns.some((cd) => cd.spellId === spellId && cd.remainingMs > 0);
   }
 
   /** Get remaining cooldown for spell */
   getSpellCooldown(actorId: string, spellId: string): number {
     const actorCooldowns = this.cooldowns.get(actorId) || [];
-    const cooldown = actorCooldowns.find(cd => cd.spellId === spellId);
+    const cooldown = actorCooldowns.find((cd) => cd.spellId === spellId);
     return cooldown ? cooldown.remainingMs : 0;
   }
 
   /** Start cooldown for spell */
   private startCooldown(actorId: string, spellId: string, durationMs: number): void {
     const actorCooldowns = this.cooldowns.get(actorId) || [];
-    
+
     // Update existing or add new cooldown
-    const existingIndex = actorCooldowns.findIndex(cd => cd.spellId === spellId);
+    const existingIndex = actorCooldowns.findIndex((cd) => cd.spellId === spellId);
     if (existingIndex >= 0) {
       actorCooldowns[existingIndex].remainingMs = durationMs;
     } else {
@@ -177,7 +177,7 @@ export class MagicSystem {
 
   /** Cancel active cast for actor */
   cancelCast(actorId: string): boolean {
-    const castIndex = this.activeCasts.findIndex(cs => cs.actor.id === actorId);
+    const castIndex = this.activeCasts.findIndex((cs) => cs.actor.id === actorId);
     if (castIndex >= 0) {
       const castState = this.activeCasts[castIndex];
       castState.actor.state = CombatState.Idle;
@@ -189,37 +189,59 @@ export class MagicSystem {
 
   /** Get active cast for actor */
   getActiveCast(actorId: string): CastState | undefined {
-    return this.activeCasts.find(cs => cs.actor.id === actorId);
+    return this.activeCasts.find((cs) => cs.actor.id === actorId);
   }
 
   /** Check if actor is casting */
   isCasting(actorId: string): boolean {
-    return this.activeCasts.some(cs => cs.actor.id === actorId);
+    return this.activeCasts.some((cs) => cs.actor.id === actorId);
   }
 
   /** Cast a spell by name with result */
-  castSpellByName(actor: Actor, spellName: string, options?: any): { success: boolean; message: string } {
+  castSpellByName(
+    actor: Actor,
+    spellName: string,
+    options?: any,
+  ): { success: boolean; message: string } {
     try {
       // Import individual spell implementations
       switch (spellName.toLowerCase()) {
         case 'firebolt':
           const { FireBolt } = require('./spells/FireBolt');
-          return { success: this.castSpell(actor, FireBolt, options?.target), message: `Cast ${spellName}` };
+          return {
+            success: this.castSpell(actor, FireBolt, options?.target),
+            message: `Cast ${spellName}`,
+          };
         case 'frostnova':
           const { FrostNova } = require('./spells/FrostNova');
-          return { success: this.castSpell(actor, FrostNova, options?.target), message: `Cast ${spellName}` };
+          return {
+            success: this.castSpell(actor, FrostNova, options?.target),
+            message: `Cast ${spellName}`,
+          };
         case 'chainlightning':
           const { ChainLightning } = require('./spells/ChainLightning');
-          return { success: this.castSpell(actor, ChainLightning, options?.target), message: `Cast ${spellName}` };
+          return {
+            success: this.castSpell(actor, ChainLightning, options?.target),
+            message: `Cast ${spellName}`,
+          };
         case 'blink':
           const { Blink } = require('./spells/Blink');
-          return { success: this.castSpell(actor, Blink, options?.target), message: `Cast ${spellName}` };
+          return {
+            success: this.castSpell(actor, Blink, options?.target),
+            message: `Cast ${spellName}`,
+          };
         case 'ward':
           const { Ward } = require('./spells/Ward');
-          return { success: this.castSpell(actor, Ward, options?.target), message: `Cast ${spellName}` };
+          return {
+            success: this.castSpell(actor, Ward, options?.target),
+            message: `Cast ${spellName}`,
+          };
         case 'timedilation':
           const { TimeDilation } = require('./spells/TimeDilation');
-          return { success: this.castSpell(actor, TimeDilation, options?.target), message: `Cast ${spellName}` };
+          return {
+            success: this.castSpell(actor, TimeDilation, options?.target),
+            message: `Cast ${spellName}`,
+          };
         default:
           return { success: false, message: `Unknown spell: ${spellName}` };
       }

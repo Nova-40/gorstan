@@ -32,29 +32,32 @@ export const AITestPanel: React.FC = () => {
   const status = groqAI.getStatus();
 
   return (
-    <div style={{ 
-      position: 'fixed', 
-      top: '10px', 
-      right: '10px', 
-      background: 'rgba(0,0,0,0.8)', 
-      color: 'white',
-      padding: '15px',
-      borderRadius: '8px',
-      zIndex: 1000,
-      maxWidth: '300px',
-      fontSize: '12px'
-    }}>
+    <div
+      style={{
+        position: 'fixed',
+        top: '10px',
+        right: '10px',
+        background: 'rgba(0,0,0,0.8)',
+        color: 'white',
+        padding: '15px',
+        borderRadius: '8px',
+        zIndex: 1000,
+        maxWidth: '300px',
+        fontSize: '12px',
+      }}
+    >
       <h3>🤖 Groq AI Test Panel</h3>
-      
+
       <div style={{ marginBottom: '10px' }}>
-        <strong>Status:</strong> {status.enabled ? '🟢 Active' : '🔴 Disabled'}<br/>
+        <strong>Status:</strong> {status.enabled ? '🟢 Active' : '🔴 Disabled'}
+        <br />
         <strong>Requests Left:</strong> {status.requestsRemaining}
       </div>
 
       <div style={{ marginBottom: '10px' }}>
         <label>NPC:</label>
-        <select 
-          value={selectedNPC} 
+        <select
+          value={selectedNPC}
           onChange={(e) => setSelectedNPC(e.target.value)}
           style={{ marginLeft: '5px', color: 'black' }}
         >
@@ -78,31 +81,34 @@ export const AITestPanel: React.FC = () => {
         />
       </div>
 
-      <button 
+      <button
         onClick={testAI}
         disabled={isLoading}
-        style={{ 
-          width: '100%', 
-          padding: '8px', 
+        style={{
+          width: '100%',
+          padding: '8px',
           backgroundColor: isLoading ? '#666' : '#007bff',
           color: 'white',
           border: 'none',
           borderRadius: '4px',
-          cursor: isLoading ? 'not-allowed' : 'pointer'
+          cursor: isLoading ? 'not-allowed' : 'pointer',
         }}
       >
         {isLoading ? 'Testing AI...' : 'Test AI Response'}
       </button>
 
       {response && (
-        <div style={{ 
-          marginTop: '10px', 
-          padding: '8px', 
-          backgroundColor: 'rgba(255,255,255,0.1)',
-          borderRadius: '4px',
-          fontSize: '11px'
-        }}>
-          <strong>Response:</strong><br/>
+        <div
+          style={{
+            marginTop: '10px',
+            padding: '8px',
+            backgroundColor: 'rgba(255,255,255,0.1)',
+            borderRadius: '4px',
+            fontSize: '11px',
+          }}
+        >
+          <strong>Response:</strong>
+          <br />
           {response}
         </div>
       )}

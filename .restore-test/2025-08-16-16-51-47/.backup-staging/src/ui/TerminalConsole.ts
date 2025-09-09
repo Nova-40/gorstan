@@ -41,7 +41,7 @@ export function appendToConsole(message: string): void {
   if (globalDispatch) {
     globalDispatch({
       type: 'ADD_CONSOLE_LINE',
-      payload: message
+      payload: message,
     });
   } else {
     console.warn('Console dispatch not available:', message);
@@ -52,5 +52,5 @@ export function appendToConsole(message: string): void {
  * Append multiple lines to the console
  */
 export function appendLinesToConsole(lines: string[]): void {
-  lines.forEach(line => appendToConsole(line));
+  lines.forEach((line) => appendToConsole(line));
 }

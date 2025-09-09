@@ -30,11 +30,15 @@ export const startQuest = (id: string) => {
 };
 
 export const completeQuest = (id: string) => {
-  if (quests[id]) quests[id] = 'completed';
+  if (quests[id]) {
+    quests[id] = 'completed';
+  }
 };
 
 export const failQuest = (id: string) => {
-  if (quests[id]) quests[id] = 'failed';
+  if (quests[id]) {
+    quests[id] = 'failed';
+  }
 };
 
 export const getQuestStatus = (id: string): QuestState | undefined => quests[id];

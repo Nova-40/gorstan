@@ -14,7 +14,6 @@
   Full licence terms: see EULA.md in the project root.
 */
 
-
 import UnifiedModal from './UnifiedModal';
 
 const DramaticWaitTransitionOverlay = () => (

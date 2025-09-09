@@ -57,7 +57,7 @@ export class ObjectivesService {
       lastSaved: Date.now(),
       objectives: {
         completed: [],
-        total: this.manifest.nodes.map(node => node.id),
+        total: this.manifest.nodes.map((node) => node.id),
       },
     };
   }
@@ -73,7 +73,7 @@ export class ObjectivesService {
         progress: 0,
         skipped: false,
       };
-      
+
       this.objectives.set(node.id, objective);
     });
 
@@ -92,7 +92,7 @@ export class ObjectivesService {
 
     const baseLabel = typeLabels[node.type] || 'Complete';
     const friendlyName = this.formatNodeName(node.id);
-    
+
     return `${baseLabel} ${friendlyName}`;
   }
 
@@ -111,17 +111,20 @@ export class ObjectivesService {
   private formatNodeName(nodeId: string): string {
     // Convert node IDs to readable names
     return nodeId
-      .replace(/^(demo_|runesprint_|catacomb_|faeglade_|trials_|trentpark_|nexus_|glitch_|fae_)/, '')
+      .replace(
+        /^(demo_|runesprint_|catacomb_|faeglade_|trials_|trentpark_|nexus_|glitch_|fae_)/,
+        '',
+      )
       .replace(/_/g, ' ')
-      .replace(/\b\w/g, l => l.toUpperCase());
+      .replace(/\b\w/g, (l) => l.toUpperCase());
   }
 
   getProgress(): ObjectivesProgress {
     const objectives = Array.from(this.objectives.values());
-    const completed = objectives.filter(obj => obj.completed).length;
+    const completed = objectives.filter((obj) => obj.completed).length;
     const total = objectives.length;
-    const required = objectives.filter(obj => obj.required).length;
-    const completedRequired = objectives.filter(obj => obj.required && obj.completed).length;
+    const required = objectives.filter((obj) => obj.required).length;
+    const completedRequired = objectives.filter((obj) => obj.required && obj.completed).length;
     const canComplete = completedRequired === required;
     const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
 
@@ -138,7 +141,9 @@ export class ObjectivesService {
 
   completeObjective(nodeId: string, partialProgress?: number): boolean {
     const objective = this.objectives.get(nodeId);
-    if (!objective) return false;
+    if (!objective) {
+      return false;
+    }
 
     if (partialProgress !== undefined) {
       objective.progress = Math.max(0, Math.min(100, partialProgress));
@@ -157,7 +162,7 @@ export class ObjectivesService {
     }
 
     const currentProgress = this.getProgress();
-    
+
     this.callbacks.onObjectiveComplete?.(objective, currentProgress);
     this.notifyProgressUpdate();
 
@@ -171,7 +176,9 @@ export class ObjectivesService {
 
   skipObjective(nodeId: string): boolean {
     const objective = this.objectives.get(nodeId);
-    if (!objective || objective.required) return false; // Can't skip required objectives
+    if (!objective || objective.required) {
+      return false;
+    } // Can't skip required objectives
 
     objective.skipped = true;
     objective.completed = false;
@@ -184,7 +191,7 @@ export class ObjectivesService {
     }
 
     const currentProgress = this.getProgress();
-    
+
     this.callbacks.onObjectiveSkip?.(objective, currentProgress);
     this.notifyProgressUpdate();
 
@@ -194,7 +201,7 @@ export class ObjectivesService {
   setCurrentObjective(nodeId: string): void {
     this.progress.currentNodeId = nodeId;
     // Update currentNodeIndex to match
-    const nodeIndex = this.manifest.nodes.findIndex(node => node.id === nodeId);
+    const nodeIndex = this.manifest.nodes.findIndex((node) => node.id === nodeId);
     if (nodeIndex >= 0) {
       this.progress.currentNodeIndex = nodeIndex;
     }
@@ -212,7 +219,7 @@ export class ObjectivesService {
 
   getNextRequiredObjective(): ObjectiveState | undefined {
     const objectives = Array.from(this.objectives.values());
-    return objectives.find(obj => obj.required && !obj.completed && !obj.skipped);
+    return objectives.find((obj) => obj.required && !obj.completed && !obj.skipped);
   }
 
   canSkipObjectives(): boolean {
@@ -237,12 +244,14 @@ export class ObjectivesService {
   }
 
   importProgress(savedProgress: RouteProgress): void {
-    if (savedProgress.routeId !== this.manifest.id) return;
+    if (savedProgress.routeId !== this.manifest.id) {
+      return;
+    }
 
     this.progress = savedProgress;
 
     // Update objective states based on saved progress
-    savedProgress.completedNodes.forEach(nodeId => {
+    savedProgress.completedNodes.forEach((nodeId) => {
       const objective = this.objectives.get(nodeId);
       if (objective) {
         objective.completed = true;

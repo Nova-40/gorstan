@@ -19,14 +19,6 @@
 
 import { Room } from '../types/Room';
 
-
-
-
-
-
-
-
-
 const failure: Room = {
   id: 'failure',
   zone: 'glitchZone',
@@ -55,34 +47,27 @@ const failure: Room = {
     west: 'moreissues',
   },
 
-  items: [
-    'broken_code_fragment',
-    'error_log',
-    'null_pointer',
-    'lost_packet',
-  ],
+  items: ['broken_code_fragment', 'error_log', 'null_pointer', 'lost_packet'],
 
   interactables: {
-    'error_screen': {
+    error_screen: {
       description: 'A floating screen displaying endless streams of error messages.',
       actions: ['examine', 'debug', 'clear'],
       requires: [],
     },
-    'corrupted_ground': {
+    corrupted_ground: {
       description: 'The ground is unstable, made up of failed code and broken logic.',
       actions: ['examine', 'stabilize', 'search'],
       requires: [],
     },
-    'abandoned_process': {
+    abandoned_process: {
       description: 'A ghostly remnant of a process that never completed.',
       actions: ['examine', 'restart', 'terminate'],
       requires: [],
     },
   },
 
-  npcs: [
-    
-  ],
+  npcs: [],
 
   events: {
     onEnter: ['triggerFailureEffects', 'showFailureWarning'],
@@ -115,12 +100,7 @@ const failure: Room = {
     lighting: 'dim_with_flickering_errors',
     temperature: 'cold_and_unnerving',
     airQuality: 'static_and_heavy',
-    soundscape: [
-      'error_buzz',
-      'fragmented_whispers',
-      'glitch_static',
-      'distant_crashes',
-    ],
+    soundscape: ['error_buzz', 'fragmented_whispers', 'glitch_static', 'distant_crashes'],
     hazards: ['unstable_ground', 'logic_loops', 'hope_drain'],
   },
 
@@ -161,12 +141,12 @@ const failure: Room = {
   },
 
   customActions: {
-    'attempt_reboot': {
+    attempt_reboot: {
       description: 'Try to reboot the system from within the node.',
       requirements: ['error_log', 'broken_code_fragment'],
       effects: ['temporary_stability', 'unlock_exit'],
     },
-    'accept_failure': {
+    accept_failure: {
       description: 'Embrace the lessons of failure to find a new path.',
       requirements: [],
       effects: ['gain_insight', 'reduce_hazards'],
@@ -175,5 +155,3 @@ const failure: Room = {
 };
 
 export default failure;
-
-

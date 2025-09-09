@@ -17,21 +17,6 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Controls NPC dialogue trees and responses.
 
-import { NPC } from '../types/NPCTypes';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 export interface DialogueState {
   trust?: number;
   flags?: Record<string, any>;
@@ -46,14 +31,12 @@ export interface DialogueState {
   [key: string]: unknown;
 }
 
-
 export interface DialogueOption {
   text: string;
   conditions?: DialogueCondition[];
   effects?: DialogueEffect[];
   nextDialogue?: string;
 }
-
 
 export interface DialogueCondition {
   type: 'flag' | 'trait' | 'item' | 'trust' | 'stat' | 'room' | 'quest';
@@ -62,14 +45,12 @@ export interface DialogueCondition {
   operator?: 'equals' | 'greater' | 'less' | 'contains' | 'not_equals';
 }
 
-
 export interface DialogueEffect {
   type: 'flag' | 'trait' | 'trust' | 'item' | 'quest';
   key: string;
   value: any;
   operation?: 'set' | 'add' | 'remove' | 'increment';
 }
-
 
 export interface DialogueNode {
   id: string;
@@ -80,7 +61,6 @@ export interface DialogueNode {
   priority?: number;
 }
 
-
 export interface NPCDialogueSet {
   greeting: DialogueNode[];
   general: DialogueNode[];
@@ -88,7 +68,6 @@ export interface NPCDialogueSet {
   special: DialogueNode[];
   farewell: DialogueNode[];
 }
-
 
 const npcDialogues: Record<string, NPCDialogueSet> = {
   ayla: {
@@ -101,21 +80,21 @@ const npcDialogues: Record<string, NPCDialogueSet> = {
           {
             text: 'Who are you exactly?',
             effects: [{ type: 'flag', key: 'asked_ayla_identity', value: true }],
-            nextDialogue: 'ayla_identity_explanation'
+            nextDialogue: 'ayla_identity_explanation',
           },
           {
             text: 'I need guidance.',
-            nextDialogue: 'ayla_guidance_offer'
-          }
+            nextDialogue: 'ayla_guidance_offer',
+          },
         ],
-        priority: 10
+        priority: 10,
       },
       {
         id: 'ayla_return_greeting',
         text: 'You return to me. The lattice brings you back when you need guidance most.',
         conditions: [{ type: 'flag', key: 'met_ayla', value: true }],
-        priority: 5
-      }
+        priority: 5,
+      },
     ],
 
     general: [
@@ -123,32 +102,32 @@ const npcDialogues: Record<string, NPCDialogueSet> = {
         id: 'ayla_trust_high',
         text: 'I see wisdom growing in your choices. The multiverse responds to those who think before they act.',
         conditions: [{ type: 'trust', key: 'trust', value: 5, operator: 'greater' }],
-        priority: 8
+        priority: 8,
       },
       {
         id: 'ayla_trust_medium',
         text: 'You show promise. Each decision shapes not just your path, but the very fabric of possibility.',
         conditions: [{ type: 'trust', key: 'trust', value: 3, operator: 'greater' }],
-        priority: 6
+        priority: 6,
       },
       {
         id: 'ayla_trust_low',
         text: 'Patience. Understanding comes through experience, and experience through choices - both wise and foolish.',
         conditions: [{ type: 'trust', key: 'trust', value: 2, operator: 'less' }],
-        priority: 4
+        priority: 4,
       },
       {
         id: 'ayla_curious_trait',
         text: 'Your curiosity serves you well. Questions open doors that assumptions keep locked.',
         conditions: [{ type: 'trait', key: 'traits', value: 'curious', operator: 'contains' }],
-        priority: 7
+        priority: 7,
       },
       {
         id: 'ayla_careful_trait',
         text: 'Caution is wisdom, but paralysis is its shadow. Know when to step forward.',
         conditions: [{ type: 'trait', key: 'traits', value: 'careful', operator: 'contains' }],
-        priority: 7
-      }
+        priority: 7,
+      },
     ],
 
     quest: [
@@ -156,14 +135,14 @@ const npcDialogues: Record<string, NPCDialogueSet> = {
         id: 'ayla_constitution_quest',
         text: 'The Constitution Scroll contains the framework of moral reasoning. Find it, read it, understand it. The future depends on such understanding.',
         conditions: [{ type: 'flag', key: 'constitution_quest_active', value: true }],
-        priority: 9
+        priority: 9,
       },
       {
         id: 'ayla_redemption_path',
         text: 'Redemption is not about erasing the past, but transforming its meaning through present action. Polly holds a key to this transformation.',
         conditions: [{ type: 'quest', key: 'questState', value: 'redemption' }],
-        priority: 9
-      }
+        priority: 9,
+      },
     ],
 
     special: [
@@ -171,48 +150,48 @@ const npcDialogues: Record<string, NPCDialogueSet> = {
         id: 'ayla_multiple_deaths',
         text: 'Death here is... educational. Each ending teaches something new about the nature of choice and consequence.',
         conditions: [{ type: 'stat', key: 'deathCount', value: 3, operator: 'greater' }],
-        priority: 8
+        priority: 8,
       },
       {
         id: 'ayla_many_resets',
-        text: 'I see you\'ve reset many times. Sometimes the answer isn\'t in trying harder, but in trying differently.',
+        text: "I see you've reset many times. Sometimes the answer isn't in trying harder, but in trying differently.",
         conditions: [{ type: 'stat', key: 'resetCount', value: 5, operator: 'greater' }],
-        priority: 8
-      }
+        priority: 8,
+      },
     ],
 
     farewell: [
       {
         id: 'ayla_standard_farewell',
         text: 'Go well. Remember that every choice creates ripples across infinite possibilities.',
-        priority: 1
-      }
-    ]
+        priority: 1,
+      },
+    ],
   },
 
   polly: {
     greeting: [
       {
         id: 'polly_first_meeting',
-        text: 'Oh. You\'re new. How... refreshing. I\'m Polly. I used to care about things.',
+        text: "Oh. You're new. How... refreshing. I'm Polly. I used to care about things.",
         conditions: [{ type: 'flag', key: 'met_polly', value: false }],
-        priority: 10
+        priority: 10,
       },
       {
         id: 'polly_return_bitter',
         text: 'Back again? How wonderfully predictable. What do you want this time?',
         conditions: [
           { type: 'flag', key: 'met_polly', value: true },
-          { type: 'flag', key: 'polly_forgiveness', value: false }
+          { type: 'flag', key: 'polly_forgiveness', value: false },
         ],
-        priority: 7
+        priority: 7,
       },
       {
         id: 'polly_forgiven_greeting',
-        text: 'Hello again. I... I\'m glad you came back. That means something.',
+        text: "Hello again. I... I'm glad you came back. That means something.",
         conditions: [{ type: 'flag', key: 'polly_forgiveness', value: true }],
-        priority: 9
-      }
+        priority: 9,
+      },
     ],
 
     general: [
@@ -220,47 +199,47 @@ const npcDialogues: Record<string, NPCDialogueSet> = {
         id: 'polly_dominic_pain',
         text: 'Dominic was everything good in this place. Then he was gone. Then he came back wrong. Some losses echo forever.',
         conditions: [{ type: 'flag', key: 'asked_about_dominic', value: true }],
-        priority: 8
+        priority: 8,
       },
       {
         id: 'polly_cynical_response',
-        text: 'Oh, you\'re still alive. How... quaint. Most people here have the good sense to die quickly.',
+        text: "Oh, you're still alive. How... quaint. Most people here have the good sense to die quickly.",
         conditions: [{ type: 'trait', key: 'traits', value: 'cynical', operator: 'contains' }],
-        priority: 6
+        priority: 6,
       },
       {
         id: 'polly_empathy_softening',
-        text: 'You... you understand loss, don\'t you? I can see it in how you listen.',
+        text: "You... you understand loss, don't you? I can see it in how you listen.",
         conditions: [{ type: 'trait', key: 'traits', value: 'empathetic', operator: 'contains' }],
-        priority: 7
-      }
+        priority: 7,
+      },
     ],
 
     quest: [
       {
         id: 'polly_redemption_arc',
-        text: 'You want forgiveness? Prove you understand what was lost. Show me you\'re not just another player in this cosmic game.',
+        text: "You want forgiveness? Prove you understand what was lost. Show me you're not just another player in this cosmic game.",
         conditions: [{ type: 'quest', key: 'questState', value: 'redemption' }],
-        priority: 9
+        priority: 9,
       },
       {
         id: 'polly_scroll_importance',
         text: 'The scrolls? Ha. Knowledge without wisdom is just educated ignorance. But... find them anyway. Someone should care about truth.',
         conditions: [{ type: 'flag', key: 'scroll_quest_active', value: true }],
-        priority: 8
-      }
+        priority: 8,
+      },
     ],
 
     special: [
       {
         id: 'polly_respect_earned',
-        text: 'You\'ve been through hell and kept your humanity. That\'s... rare. I respect that.',
+        text: "You've been through hell and kept your humanity. That's... rare. I respect that.",
         conditions: [
           { type: 'stat', key: 'deathCount', value: 5, operator: 'greater' },
-          { type: 'trait', key: 'traits', value: 'compassionate', operator: 'contains' }
+          { type: 'trait', key: 'traits', value: 'compassionate', operator: 'contains' },
         ],
-        priority: 9
-      }
+        priority: 9,
+      },
     ],
 
     farewell: [
@@ -268,15 +247,15 @@ const npcDialogues: Record<string, NPCDialogueSet> = {
         id: 'polly_bitter_farewell',
         text: 'Off you go then. Try not to break anything important. The universe has enough problems.',
         conditions: [{ type: 'flag', key: 'polly_forgiveness', value: false }],
-        priority: 5
+        priority: 5,
       },
       {
         id: 'polly_forgiven_farewell',
         text: 'Be safe out there. And... thank you. For caring enough to try.',
         conditions: [{ type: 'flag', key: 'polly_forgiveness', value: true }],
-        priority: 8
-      }
-    ]
+        priority: 8,
+      },
+    ],
   },
 
   dominic: {
@@ -284,22 +263,22 @@ const npcDialogues: Record<string, NPCDialogueSet> = {
       {
         id: 'dominic_temporal_awareness',
         text: 'I remember you from seventeen different timelines. In three of them, we were friends. In one, you saved my life. Which version are you?',
-        priority: 8
-      }
+        priority: 8,
+      },
     ],
 
     general: [
       {
         id: 'dominic_memory_burden',
         text: 'Memory is a curse when you remember every possible version of events. I know what Polly was like before the pain broke her.',
-        priority: 7
+        priority: 7,
       },
       {
         id: 'dominic_reset_wisdom',
         text: 'Each reset teaches something new. But be careful - some lessons come at the cost of who you used to be.',
         conditions: [{ type: 'stat', key: 'resetCount', value: 2, operator: 'greater' }],
-        priority: 8
-      }
+        priority: 8,
+      },
     ],
 
     quest: [],
@@ -308,9 +287,9 @@ const npcDialogues: Record<string, NPCDialogueSet> = {
       {
         id: 'dominic_temporal_farewell',
         text: 'Until we meet again - and we will, in one timeline or another.',
-        priority: 1
-      }
-    ]
+        priority: 1,
+      },
+    ],
   },
 
   wendell: {
@@ -319,8 +298,8 @@ const npcDialogues: Record<string, NPCDialogueSet> = {
         id: 'wendell_academic_greeting',
         text: 'Ah, a visitor! Welcome to my sanctuary of knowledge. I am Wendell, keeper of the scrolls and guardian of academic integrity.',
         conditions: [{ type: 'flag', key: 'met_wendell', value: false }],
-        priority: 10
-      }
+        priority: 10,
+      },
     ],
 
     general: [
@@ -328,13 +307,13 @@ const npcDialogues: Record<string, NPCDialogueSet> = {
         id: 'wendell_scholarly_respect',
         text: 'Your scholarly pursuits are commendable. Knowledge is the only currency that appreciates through sharing.',
         conditions: [{ type: 'trait', key: 'traits', value: 'scholar', operator: 'contains' }],
-        priority: 8
+        priority: 8,
       },
       {
         id: 'wendell_library_pride',
         text: 'This library contains the accumulated wisdom of countless civilizations. Each scroll is a universe of thought.',
-        priority: 6
-      }
+        priority: 6,
+      },
     ],
 
     quest: [
@@ -342,8 +321,8 @@ const npcDialogues: Record<string, NPCDialogueSet> = {
         id: 'wendell_scroll_requirements',
         text: 'The scrolls you seek require proof of academic worth. Bring me evidence of your scholarly nature, and I shall consider your request.',
         conditions: [{ type: 'flag', key: 'scroll_quest_active', value: true }],
-        priority: 9
-      }
+        priority: 9,
+      },
     ],
 
     special: [],
@@ -351,13 +330,11 @@ const npcDialogues: Record<string, NPCDialogueSet> = {
       {
         id: 'wendell_academic_farewell',
         text: 'May your quest for knowledge be fruitful. Remember - wisdom is knowledge applied with compassion.',
-        priority: 1
-      }
-    ]
-  }
+        priority: 1,
+      },
+    ],
+  },
 };
-
-
 
 // --- Function: getDialogue ---
 export function getDialogue(npc: string, state: DialogueState): string {
@@ -369,17 +346,21 @@ export function getDialogue(npc: string, state: DialogueState): string {
       return handleUnknownNPC(npc, state);
     }
 
-    const contexts: (keyof NPCDialogueSet)[] = ['greeting', 'quest', 'special', 'general', 'farewell'];
+    const contexts: (keyof NPCDialogueSet)[] = [
+      'greeting',
+      'quest',
+      'special',
+      'general',
+      'farewell',
+    ];
 
     for (const context of contexts) {
       const dialogue = findMatchingDialogue(dialogueSet[context], state);
       if (dialogue) {
-        
         if (dialogue.oneTime) {
           markDialogueAsUsed(npc, dialogue.id, state);
         }
 
-        
         if (dialogue.responses && dialogue.responses.length === 1) {
           applyDialogueEffects(dialogue.responses[0].effects || [], state);
         }
@@ -388,51 +369,47 @@ export function getDialogue(npc: string, state: DialogueState): string {
       }
     }
 
-    
     return getFallbackDialogue(npcKey, state);
-
   } catch (error) {
     console.error('[DialogueEngine] Error generating dialogue:', error);
     return `${npc} seems lost in thought.`;
   }
 }
 
-
-
 // --- Function: findMatchingDialogue ---
 function findMatchingDialogue(
   dialogues: DialogueNode[],
-  state: DialogueState
+  state: DialogueState,
 ): DialogueNode | null {
-  const validDialogues = dialogues.filter(dialogue => {
+  const validDialogues = dialogues.filter((dialogue) => {
     // Check if dialogue has already been used (for oneTime dialogues)
-    if (dialogue.oneTime && state.flags?.usedDialogues?.[state.playerName || 'unknown']?.includes(dialogue.id)) {
+    if (
+      dialogue.oneTime &&
+      state.flags?.usedDialogues?.[state.playerName || 'unknown']?.includes(dialogue.id)
+    ) {
       return false;
     }
-    
+
     // Check conditions
     if (dialogue.conditions && dialogue.conditions.length > 0) {
       return checkDialogueConditions(dialogue.conditions, state);
     }
-    
+
     return true;
   });
 
-  if (validDialogues.length === 0) return null;
+  if (validDialogues.length === 0) {
+    return null;
+  }
 
   // Sort by priority (highest first)
   validDialogues.sort((a: DialogueNode, b: DialogueNode) => (b.priority || 0) - (a.priority || 0));
   return validDialogues[0];
 }
 
-
-
 // --- Function: checkDialogueConditions ---
-function checkDialogueConditions(
-  conditions: DialogueCondition[],
-  state: DialogueState
-): boolean {
-  return conditions.every(condition => {
+function checkDialogueConditions(conditions: DialogueCondition[], state: DialogueState): boolean {
+  return conditions.every((condition) => {
     switch (condition.type) {
       case 'flag':
         return state.flags?.[condition.key] === condition.value;
@@ -471,45 +448,49 @@ function checkDialogueConditions(
   });
 }
 
-
-
 // --- Function: compareValues ---
 function compareValues(actual: any, expected: any, operator: string): boolean {
   switch (operator) {
-    case 'equals': return actual === expected;
-    case 'not_equals': return actual !== expected;
-    case 'greater': return actual > expected;
-    case 'less': return actual < expected;
-    case 'contains': return Array.isArray(actual) ? actual.includes(expected) : false;
-    default: return actual === expected;
+    case 'equals':
+      return actual === expected;
+    case 'not_equals':
+      return actual !== expected;
+    case 'greater':
+      return actual > expected;
+    case 'less':
+      return actual < expected;
+    case 'contains':
+      return Array.isArray(actual) ? actual.includes(expected) : false;
+    default:
+      return actual === expected;
   }
 }
 
-
-
 // --- Function: getStateValue ---
 function getStateValue(state: DialogueState, key: string): any {
-// JSX return block or main return
+  // JSX return block or main return
   return (state as any)[key];
 }
 
-
-
 // --- Function: applyDialogueEffects ---
 function applyDialogueEffects(effects: DialogueEffect[], state: DialogueState): void {
-  effects.forEach(effect => {
+  effects.forEach((effect) => {
     switch (effect.type) {
       case 'flag':
-        if (!state.flags) state.flags = {};
+        if (!state.flags) {
+          state.flags = {};
+        }
         state.flags[effect.key] = effect.value;
         break;
 
       case 'trait':
-        if (!state.traits) state.traits = [];
+        if (!state.traits) {
+          state.traits = [];
+        }
         if (effect.operation === 'add' && !state.traits.includes(effect.value)) {
           state.traits.push(effect.value);
         } else if (effect.operation === 'remove') {
-          state.traits = state.traits.filter(trait => trait !== effect.value);
+          state.traits = state.traits.filter((trait) => trait !== effect.value);
         }
         break;
 
@@ -525,22 +506,24 @@ function applyDialogueEffects(effects: DialogueEffect[], state: DialogueState): 
   });
 }
 
-
-
 // --- Function: markDialogueAsUsed ---
 function markDialogueAsUsed(npc: string, dialogueId: string, state: DialogueState): void {
-  if (!state.flags) state.flags = {};
-  if (!state.flags.usedDialogues) state.flags.usedDialogues = {};
+  if (!state.flags) {
+    state.flags = {};
+  }
+  if (!state.flags.usedDialogues) {
+    state.flags.usedDialogues = {};
+  }
 
   const usedDialogues = state.flags.usedDialogues;
-  if (!usedDialogues[npc]) usedDialogues[npc] = [];
+  if (!usedDialogues[npc]) {
+    usedDialogues[npc] = [];
+  }
 
   if (!usedDialogues[npc].includes(dialogueId)) {
     usedDialogues[npc].push(dialogueId);
   }
 }
-
-
 
 // --- Function: handleUnknownNPC ---
 function handleUnknownNPC(npc: string, state: DialogueState): string {
@@ -548,14 +531,12 @@ function handleUnknownNPC(npc: string, state: DialogueState): string {
     `${npc} doesn't seem to want to talk right now.`,
     `${npc} looks at you with confusion.`,
     `${npc} seems distracted by something else.`,
-    `${npc} gives you a brief nod but says nothing.`
+    `${npc} gives you a brief nod but says nothing.`,
   ];
-  
+
   const responseIndex = Math.floor(Math.random() * unknownResponses.length);
   return unknownResponses[responseIndex];
 }
-
-
 
 // --- Function: getFallbackDialogue ---
 function getFallbackDialogue(npc: string, state: DialogueState): string {
@@ -563,53 +544,52 @@ function getFallbackDialogue(npc: string, state: DialogueState): string {
     ayla: [
       'The lattice flows in mysterious ways.',
       'Every choice creates new possibilities.',
-      'Wisdom comes through experience, both pleasant and painful.'
+      'Wisdom comes through experience, both pleasant and painful.',
     ],
-    polly: [
-      'What now?',
-      'Still here, I see.',
-      'Life continues, unfortunately.'
-    ],
+    polly: ['What now?', 'Still here, I see.', 'Life continues, unfortunately.'],
     dominic: [
       'Time moves strangely here.',
       'I remember this conversation from another timeline.',
-      'The past and future blur together.'
+      'The past and future blur together.',
     ],
     wendell: [
       'Knowledge is power, but wisdom is knowing how to use it.',
       'The library holds many secrets.',
-      'Academic pursuit is its own reward.'
-    ]
+      'Academic pursuit is its own reward.',
+    ],
   };
 
   const responses = fallbackDialogues[npc] || [
     `${npc} seems lost in thought.`,
-    `${npc} doesn't have much to say right now.`
+    `${npc} doesn't have much to say right now.`,
   ];
-  
+
   const responseIndex = Math.floor(Math.random() * responses.length);
   return responses[responseIndex];
 }
 
-
-
 // --- Function: getDialogueOptions ---
-export function getDialogueOptions(
-  npc: string,
-  state: DialogueState
-): DialogueOption[] {
+export function getDialogueOptions(npc: string, state: DialogueState): DialogueOption[] {
   const npcKey = npc.toLowerCase();
   const dialogueSet = npcDialogues[npcKey];
 
-  if (!dialogueSet) return [];
+  if (!dialogueSet) {
+    return [];
+  }
 
-  const contexts: (keyof NPCDialogueSet)[] = ['greeting', 'quest', 'special', 'general', 'farewell'];
+  const contexts: (keyof NPCDialogueSet)[] = [
+    'greeting',
+    'quest',
+    'special',
+    'general',
+    'farewell',
+  ];
 
   for (const context of contexts) {
     const dialogue = findMatchingDialogue(dialogueSet[context], state);
     if (dialogue?.responses) {
       return dialogue.responses.filter((option: DialogueOption) =>
-        checkDialogueConditions(option.conditions || [], state)
+        checkDialogueConditions(option.conditions || [], state),
       );
     }
   }
@@ -617,13 +597,11 @@ export function getDialogueOptions(
   return [];
 }
 
-
-
 // --- Function: processDialogueChoice ---
 export function processDialogueChoice(
   npc: string,
   choiceIndex: number,
-  state: DialogueState
+  state: DialogueState,
 ): { response: string; effects: DialogueEffect[] } {
   const options = getDialogueOptions(npc, state);
   const choice = options[choiceIndex];
@@ -631,7 +609,7 @@ export function processDialogueChoice(
   if (!choice) {
     return {
       response: `${npc} doesn't understand your choice.`,
-      effects: []
+      effects: [],
     };
   }
 
@@ -640,17 +618,15 @@ export function processDialogueChoice(
 
   return {
     response: choice.text,
-    effects: effects
+    effects: effects,
   };
 }
-
-
 
 // --- Function: addDialogue ---
 export function addDialogue(
   npc: string,
   context: keyof NPCDialogueSet,
-  dialogue: DialogueNode
+  dialogue: DialogueNode,
 ): boolean {
   const npcKey = npc.toLowerCase();
 
@@ -660,7 +636,7 @@ export function addDialogue(
       general: [],
       quest: [],
       special: [],
-      farewell: []
+      farewell: [],
     };
   }
 
@@ -668,18 +644,15 @@ export function addDialogue(
   return true;
 }
 
-
-
 // --- Function: validateDialogueState ---
 export function validateDialogueState(state: any): state is DialogueState {
   return typeof state === 'object' && state !== null;
 }
-
 
 export default {
   getDialogue,
   getDialogueOptions,
   processDialogueChoice,
   addDialogue,
-  validateDialogueState
+  validateDialogueState,
 };

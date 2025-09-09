@@ -28,7 +28,7 @@ export interface ChristmasOverlayProps {
 
 /**
  * ChristmasOverlay - Festive Christmas Day overlay
- * 
+ *
  * Features:
  * - Accessible dialog with focus management
  * - Motion-safe animations
@@ -39,22 +39,16 @@ export const ChristmasOverlay: React.FC<ChristmasOverlayProps> = ({ isOpen, onCl
   if (!isOpen) return null;
 
   return (
-    <BaseDialog
-      onClose={onClose}
-      title="🎄 Christmas Day"
-    >
+    <BaseDialog onClose={onClose} title="🎄 Christmas Day">
       <div className="seasonal-content">
         <div className="seasonal-icon text-3xl mb-4">🎄🎁🎅</div>
         <h2 className="text-xl font-bold mb-4">Merry Christmas!</h2>
         <p className="mb-4">
-          The author wishes you joy, wonder, and the magic of discovery this Christmas Day.
-          May your adventures in Gorstan be filled with as much mystery and delight
-          as the season itself.
+          The author wishes you joy, wonder, and the magic of discovery this Christmas Day. May your
+          adventures in Gorstan be filled with as much mystery and delight as the season itself.
         </p>
-        <p className="mb-6 italic">
-          From the author's desk to your screen - Happy Christmas! 🎄
-        </p>
-        <button 
+        <p className="mb-6 italic">From the author's desk to your screen - Happy Christmas! 🎄</p>
+        <button
           className="seasonal-close-btn px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg font-semibold"
           onClick={onClose}
           autoFocus

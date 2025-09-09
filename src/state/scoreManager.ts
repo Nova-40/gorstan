@@ -17,34 +17,16 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Game module.
 
+import React from 'react';
 import { GameAction } from '../types/GameTypes';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 let globalDispatch: React.Dispatch<GameAction> | null = null;
 let lastScore = 0; // Track last score for milestone detection
-
-
 
 // --- Function: initializeScoreManager ---
 export function initializeScoreManager(dispatch: React.Dispatch<GameAction>): void {
   globalDispatch = dispatch;
 }
-
-
 
 // --- Function: updateScore ---
 export function updateScore(delta: number): void {
@@ -54,12 +36,12 @@ export function updateScore(delta: number): void {
 
     // Check for score milestones
     checkScoreMilestones(lastScore, newScore);
-    
+
     // Check for level ups
     checkLevelUp(lastScore, newScore);
-    
+
     lastScore = newScore;
-    
+
     if (delta > 0) {
       globalDispatch({
         type: 'ADD_MESSAGE',
@@ -68,19 +50,20 @@ export function updateScore(delta: number): void {
           text: `+${delta} points`,
           type: 'system',
           timestamp: Date.now(),
-        }
+        },
       });
 
       // Trigger notification for score gains
-      if (delta >= 25) { // Only for meaningful gains
+      if (delta >= 25) {
+        // Only for meaningful gains
         const event = new CustomEvent('gorstan-notification', {
           detail: {
             type: 'score_milestone',
             title: `+${delta} Points!`,
             description: getScoreGainMessage(delta),
             points: delta,
-            duration: 3000
-          }
+            duration: 3000,
+          },
         });
         window.dispatchEvent(event);
       }
@@ -92,7 +75,7 @@ export function updateScore(delta: number): void {
           text: `${delta} points`,
           type: 'error',
           timestamp: Date.now(),
-        }
+        },
       });
     }
   }
@@ -101,7 +84,7 @@ export function updateScore(delta: number): void {
 // --- Function: checkScoreMilestones ---
 function checkScoreMilestones(oldScore: number, newScore: number): void {
   const milestones = [100, 300, 500, 750, 1000, 1500, 2000];
-  
+
   for (const milestone of milestones) {
     if (oldScore < milestone && newScore >= milestone) {
       // Trigger milestone notification
@@ -111,8 +94,8 @@ function checkScoreMilestones(oldScore: number, newScore: number): void {
           title: `Milestone Reached!`,
           description: `You've reached ${milestone} points!`,
           points: 0,
-          duration: 5000
-        }
+          duration: 5000,
+        },
       });
       window.dispatchEvent(event);
       break; // Only trigger one milestone at a time
@@ -124,7 +107,7 @@ function checkScoreMilestones(oldScore: number, newScore: number): void {
 function checkLevelUp(oldScore: number, newScore: number): void {
   const oldLevel = Math.floor(oldScore / 200) + 1;
   const newLevel = Math.floor(newScore / 200) + 1;
-  
+
   if (newLevel > oldLevel) {
     // Trigger level up notification
     const event = new CustomEvent('gorstan-notification', {
@@ -133,8 +116,8 @@ function checkLevelUp(oldScore: number, newScore: number): void {
         title: `Level Up!`,
         description: `You've reached Level ${newLevel}!`,
         points: 0,
-        duration: 6000
-      }
+        duration: 6000,
+      },
     });
     window.dispatchEvent(event);
   }
@@ -142,14 +125,20 @@ function checkLevelUp(oldScore: number, newScore: number): void {
 
 // --- Function: getScoreGainMessage ---
 function getScoreGainMessage(points: number): string {
-  if (points >= 100) return 'Excellent work!';
-  if (points >= 75) return 'Great achievement!';
-  if (points >= 50) return 'Well done!';
-  if (points >= 25) return 'Nice work!';
+  if (points >= 100) {
+    return 'Excellent work!';
+  }
+  if (points >= 75) {
+    return 'Great achievement!';
+  }
+  if (points >= 50) {
+    return 'Well done!';
+  }
+  if (points >= 25) {
+    return 'Nice work!';
+  }
   return 'Good job!';
 }
-
-
 
 // --- Function: setScore ---
 export function setScore(value: number): void {
@@ -157,8 +146,6 @@ export function setScore(value: number): void {
     globalDispatch({ type: 'SET_SCORE', payload: value });
   }
 }
-
-
 
 // --- Function: resetScore ---
 export function resetScore(): void {
@@ -171,21 +158,15 @@ export function resetScore(): void {
         text: 'Score reset to 0',
         type: 'system',
         timestamp: Date.now(),
-      }
+      },
     });
   }
 }
 
-
-
 // --- Function: getCurrentScore ---
 export function getCurrentScore(): number {
-  
-  
   return 0;
 }
-
-
 
 // --- Function: applyScoreBonus ---
 export function applyScoreBonus(reason: string, amount: number): void {
@@ -198,17 +179,15 @@ export function applyScoreBonus(reason: string, amount: number): void {
         text: `Bonus: ${reason} (+${amount} points)`,
         type: 'achievement',
         timestamp: Date.now(),
-      }
+      },
     });
   }
 }
 
-
-
 // --- Function: applyScorePenalty ---
 export function applyScorePenalty(reason: string, amount: number): void {
   if (globalDispatch) {
-    updateScore(-Math.abs(amount)); 
+    updateScore(-Math.abs(amount));
     globalDispatch({
       type: 'ADD_MESSAGE',
       payload: {
@@ -216,7 +195,7 @@ export function applyScorePenalty(reason: string, amount: number): void {
         text: `Penalty: ${reason} (-${Math.abs(amount)} points)`,
         type: 'error',
         timestamp: Date.now(),
-      }
+      },
     });
   }
 }

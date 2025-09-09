@@ -19,22 +19,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 
-
-
-import { useGameState } from "../state/gameState";
-
-
-
-
-
-
-
-
-
-
-
-
-
+import { useGameState } from '../state/gameState';
 
 // Variable declaration
 const GorstanIcon = () => (
@@ -42,7 +27,7 @@ const GorstanIcon = () => (
     src="/images/gorstanicon.png"
     alt="Gorstan Terminal Logo"
     className="w-16 h-16 animate-pulse mb-2"
-    style={{ filter: "drop-shadow(0 0 8px #00FFBC)" }}
+    style={{ filter: 'drop-shadow(0 0 8px #00FFBC)' }}
   />
 );
 
@@ -96,60 +81,60 @@ Available commands and toggles (cheat/debug mode only):
 WARNING: Using cheat/debug mode may irreversibly alter your story state, and summon Aevira auditors or make Albie sigh pointedly.
 `;
 
-const PlayerNameCapture: React.FC<{ onNameSubmit: (name: string) => void }> = ({ onNameSubmit }) => {
+const PlayerNameCapture: React.FC<{ onNameSubmit: (name: string) => void }> = ({
+  onNameSubmit,
+}) => {
   const { state, dispatch } = useGameState();
-// React state declaration
-  const [name, setName] = useState(state.player?.name || "");
-  const [modal, setModal] = useState<null | "instructions" | "cheat">(null);
-// React state declaration
+  // React state declaration
+  const [name, setName] = useState(state.player?.name || '');
+  const [modal, setModal] = useState<null | 'instructions' | 'cheat'>(null);
+  // React state declaration
   const [screen, setScreen] = useState(0);
 
-// Variable declaration
+  // Variable declaration
   const closeModal = useCallback(() => {
     setModal(null);
     setScreen(0);
   }, []);
 
-  
-// React effect hook
+  // React effect hook
   useEffect(() => {
     if (!modal) return;
-// Variable declaration
+    // Variable declaration
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
+      if (e.key === 'Escape') {
         closeModal();
-      } else if (modal === "instructions") {
-        if (e.key === "ArrowRight") {
+      } else if (modal === 'instructions') {
+        if (e.key === 'ArrowRight') {
           setScreen((s) => Math.min(s + 1, instructionsScreens.length - 1));
-        } else if (e.key === "ArrowLeft") {
+        } else if (e.key === 'ArrowLeft') {
           setScreen((s) => Math.max(s - 1, 0));
         }
       }
     };
-    window.addEventListener("keydown", handleKey);
-// JSX return block or main return
-    return () => window.removeEventListener("keydown", handleKey);
+    window.addEventListener('keydown', handleKey);
+    // JSX return block or main return
+    return () => window.removeEventListener('keydown', handleKey);
   }, [modal, closeModal]);
 
-// Variable declaration
+  // Variable declaration
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (name.trim()) onNameSubmit(name.trim());
   };
 
-  
-// Variable declaration
+  // Variable declaration
   const handleInstructionsClick = (e: React.MouseEvent) => {
     if (e.ctrlKey || e.metaKey) {
-      setModal("cheat");
-      
+      setModal('cheat');
+
       dispatch({ type: 'ENABLE_DEBUG_MODE' });
     } else {
-      setModal("instructions");
+      setModal('instructions');
     }
   };
 
-// JSX return block or main return
+  // JSX return block or main return
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#060f17]">
       <div className="rounded-2xl border border-green-400 bg-[#101B24] shadow-xl max-w-md w-full p-8 relative">
@@ -193,9 +178,9 @@ const PlayerNameCapture: React.FC<{ onNameSubmit: (name: string) => void }> = ({
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
             <div className="bg-[#101B24] border border-green-400 p-6 rounded-xl max-w-lg w-full relative shadow-xl flex flex-col">
               <h2 className="text-green-300 text-lg font-mono mb-2">
-                {modal === "instructions" ? "How to Play" : "Cheat/Debug Mode"}
+                {modal === 'instructions' ? 'How to Play' : 'Cheat/Debug Mode'}
               </h2>
-              {modal === "instructions" ? (
+              {modal === 'instructions' ? (
                 <>
                   <pre className="text-green-400 text-sm whitespace-pre-line font-mono mb-2">
                     {instructionsScreens[screen]}
@@ -204,8 +189,8 @@ const PlayerNameCapture: React.FC<{ onNameSubmit: (name: string) => void }> = ({
                     <button
                       className={`px-2 py-1 rounded font-mono ${
                         screen === 0
-                          ? "bg-gray-700 text-gray-400 cursor-not-allowed"
-                          : "bg-green-700 hover:bg-green-600 text-white"
+                          ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                          : 'bg-green-700 hover:bg-green-600 text-white'
                       }`}
                       onClick={() => setScreen((s) => Math.max(s - 1, 0))}
                       disabled={screen === 0}
@@ -218,9 +203,7 @@ const PlayerNameCapture: React.FC<{ onNameSubmit: (name: string) => void }> = ({
                         <span
                           key={i}
                           className={`inline-block w-2 h-2 rounded-full ${
-                            i === screen
-                              ? "bg-green-400"
-                              : "bg-green-900"
+                            i === screen ? 'bg-green-400' : 'bg-green-900'
                           }`}
                         ></span>
                       ))}
@@ -228,13 +211,11 @@ const PlayerNameCapture: React.FC<{ onNameSubmit: (name: string) => void }> = ({
                     <button
                       className={`px-2 py-1 rounded font-mono ${
                         screen === instructionsScreens.length - 1
-                          ? "bg-gray-700 text-gray-400 cursor-not-allowed"
-                          : "bg-green-700 hover:bg-green-600 text-white"
+                          ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                          : 'bg-green-700 hover:bg-green-600 text-white'
                       }`}
                       onClick={() =>
-                        setScreen((s) =>
-                          Math.min(s + 1, instructionsScreens.length - 1)
-                        )
+                        setScreen((s) => Math.min(s + 1, instructionsScreens.length - 1))
                       }
                       disabled={screen === instructionsScreens.length - 1}
                       tabIndex={-1}
@@ -251,9 +232,7 @@ const PlayerNameCapture: React.FC<{ onNameSubmit: (name: string) => void }> = ({
                   <pre className="text-green-400 text-sm whitespace-pre-line font-mono mb-2">
                     {cheatInstructions}
                   </pre>
-                  <div className="text-green-500 text-xs mt-2 font-mono">
-                    [Press Esc to return]
-                  </div>
+                  <div className="text-green-500 text-xs mt-2 font-mono">[Press Esc to return]</div>
                 </>
               )}
               <button

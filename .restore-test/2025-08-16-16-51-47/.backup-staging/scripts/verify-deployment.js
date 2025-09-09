@@ -25,8 +25,8 @@ const options = {
   method: 'GET',
   headers: {
     'Cache-Control': 'no-cache',
-    'User-Agent': 'Deployment-Checker/1.0'
-  }
+    'User-Agent': 'Deployment-Checker/1.0',
+  },
 };
 
 const req = https.request(options, (res) => {
@@ -40,9 +40,9 @@ const req = https.request(options, (res) => {
     // Check for asset hash patterns
     const assetMatch = data.match(/assets\/index-([A-Za-z0-9_-]+)\.js/);
     const currentAssetHash = assetMatch ? assetMatch[1] : 'unknown';
-    
+
     console.log(`📦 Current asset hash: ${currentAssetHash}`);
-    
+
     // Get build artifact hash for comparison
     const distPath = path.join(process.cwd(), 'dist');
     if (fs.existsSync(distPath)) {
@@ -51,9 +51,9 @@ const req = https.request(options, (res) => {
         const distContent = fs.readFileSync(distIndexPath, 'utf8');
         const distAssetMatch = distContent.match(/assets\/index-([A-Za-z0-9_-]+)\.js/);
         const localAssetHash = distAssetMatch ? distAssetMatch[1] : 'unknown';
-        
+
         console.log(`🏠 Local asset hash: ${localAssetHash}`);
-        
+
         if (currentAssetHash === localAssetHash) {
           console.log(`✅ SUCCESS: Latest version ${expectedVersion} is deployed!`);
           console.log(`🌐 Live at: https://gorstan-game.vercel.app`);
@@ -65,7 +65,7 @@ const req = https.request(options, (res) => {
         }
       }
     }
-    
+
     console.log(`ℹ️  Cannot compare with local build. Asset hash: ${currentAssetHash}`);
   });
 });

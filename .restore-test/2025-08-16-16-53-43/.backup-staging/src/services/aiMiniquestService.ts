@@ -12,11 +12,11 @@ import { MiniquestEngine } from '../engine/miniquestInitializer';
 
 export interface PlayerProfile {
   skillLevels: {
-    puzzle: number;        // 0-1 scale
-    exploration: number;   // 0-1 scale
-    social: number;        // 0-1 scale
-    combat: number;        // 0-1 scale
-    story: number;         // 0-1 scale
+    puzzle: number; // 0-1 scale
+    exploration: number; // 0-1 scale
+    social: number; // 0-1 scale
+    combat: number; // 0-1 scale
+    story: number; // 0-1 scale
   };
   preferences: {
     preferredDifficulty: 'easy' | 'medium' | 'hard' | 'adaptive';
@@ -35,8 +35,8 @@ export interface PlayerProfile {
 
 export interface AIMiniquestRecommendation {
   questId: string;
-  confidence: number;        // 0-1 how confident AI is in this recommendation
-  reasoning: string;         // Why this quest was recommended
+  confidence: number; // 0-1 how confident AI is in this recommendation
+  reasoning: string; // Why this quest was recommended
   difficulty: 'trivial' | 'easy' | 'medium' | 'hard';
   estimatedCompletionTime: number; // minutes
   prerequisites: string[];
@@ -45,7 +45,7 @@ export interface AIMiniquestRecommendation {
 }
 
 export interface AIMiniquestAnalysis {
-  playerFrustrationLevel: number;  // 0-1 scale
+  playerFrustrationLevel: number; // 0-1 scale
   suggestedBreak: boolean;
   shouldOfferHelp: boolean;
   recommendedActions: string[];
@@ -68,12 +68,12 @@ export class AIMiniquestService {
   async getRecommendedQuests(
     roomId: string,
     gameState: LocalGameState,
-    maxRecommendations: number = 3
+    maxRecommendations: number = 3,
   ): Promise<AIMiniquestRecommendation[]> {
     try {
       // Always get fallback recommendations first
       const fallbackQuests = this.fallbackEngine.getAvailableQuests(roomId, gameState as any);
-      
+
       if (!this.aiEnabled || !this.canMakeAIRequest(gameState.player.name)) {
         return this.convertToAIRecommendations(fallbackQuests);
       }
@@ -84,11 +84,12 @@ export class AIMiniquestService {
         fallbackQuests,
         playerProfile,
         gameState,
-        maxRecommendations
+        maxRecommendations,
       );
 
-      return aiRecommendations.length > 0 ? aiRecommendations : this.convertToAIRecommendations(fallbackQuests);
-
+      return aiRecommendations.length > 0
+        ? aiRecommendations
+        : this.convertToAIRecommendations(fallbackQuests);
     } catch (error) {
       console.warn('AI quest recommendation failed, using fallback:', error);
       const fallbackQuests = this.fallbackEngine.getAvailableQuests(roomId, gameState as any);
@@ -109,7 +110,6 @@ export class AIMiniquestService {
       const aiAnalysis = await this.generateAIAnalysis(playerProfile, gameState);
 
       return aiAnalysis || this.getFallbackAnalysis(gameState);
-
     } catch (error) {
       console.warn('AI player analysis failed, using fallback:', error);
       return this.getFallbackAnalysis(gameState);
@@ -121,7 +121,7 @@ export class AIMiniquestService {
    */
   async getAdaptedDifficulty(
     quest: Miniquest,
-    gameState: LocalGameState
+    gameState: LocalGameState,
   ): Promise<{ difficulty: string; adaptedHints: string[]; reasoning: string }> {
     try {
       if (!this.aiEnabled || !this.canMakeAIRequest(gameState.player.name)) {
@@ -132,7 +132,6 @@ export class AIMiniquestService {
       const aiAdaptation = await this.generateDifficultyAdaptation(quest, playerProfile, gameState);
 
       return aiAdaptation || this.getFallbackDifficulty(quest);
-
     } catch (error) {
       console.warn('AI difficulty adaptation failed, using fallback:', error);
       return this.getFallbackDifficulty(quest);
@@ -147,7 +146,7 @@ export class AIMiniquestService {
     availableQuests: Miniquest[],
     playerProfile: PlayerProfile,
     gameState: LocalGameState,
-    maxRecommendations: number
+    maxRecommendations: number,
   ): Promise<AIMiniquestRecommendation[]> {
     const prompt = `You are an intelligent quest recommendation system for a text adventure game called Gorstan. 
 
@@ -161,7 +160,7 @@ CURRENT CONTEXT:
 - Current Flags: ${Object.keys(gameState.flags || {}).length} active
 
 AVAILABLE QUESTS:
-${availableQuests.map(q => `- ${q.id}: ${q.title} (${q.type}, ${q.difficulty}) - ${q.description}`).join('\n')}
+${availableQuests.map((q) => `- ${q.id}: ${q.title} (${q.type}, ${q.difficulty}) - ${q.description}`).join('\n')}
 
 TASK: Recommend the ${maxRecommendations} most suitable quests for this player based on:
 1. Player's demonstrated skill levels and preferences
@@ -187,7 +186,7 @@ Focus on creating a smooth, engaging experience that builds player confidence wh
     try {
       this.recordAIRequest(gameState.player.name);
       const response = await groqAI.generateAIResponse(prompt, 'miniquests', gameState);
-      
+
       if (response) {
         const parsed = JSON.parse(response);
         return Array.isArray(parsed) ? parsed.slice(0, maxRecommendations) : [];
@@ -204,11 +203,11 @@ Focus on creating a smooth, engaging experience that builds player confidence wh
    */
   private async generateAIAnalysis(
     playerProfile: PlayerProfile,
-    gameState: LocalGameState
+    gameState: LocalGameState,
   ): Promise<AIMiniquestAnalysis | null> {
     const recentMessages = gameState.messages?.slice(-10) || [];
     const recentCommands = (gameState as any).recentCommands?.slice(-5) || [];
-    
+
     const prompt = `Analyze this player's current state in the text adventure game Gorstan:
 
 PLAYER PROFILE:
@@ -219,7 +218,10 @@ PLAYER PROFILE:
 
 RECENT ACTIVITY:
 - Recent Commands: ${recentCommands.join(', ')}
-- Recent Messages: ${recentMessages.map(m => m.text).slice(-3).join(' | ')}
+- Recent Messages: ${recentMessages
+      .map((m) => m.text)
+      .slice(-3)
+      .join(' | ')}
 - Session Length: ${Math.floor((Date.now() - (gameState as any).sessionStart || Date.now()) / 60000)} minutes
 
 TASK: Provide psychological analysis and guidance recommendations.
@@ -238,7 +240,7 @@ Be encouraging and supportive while providing actionable guidance.`;
     try {
       this.recordAIRequest(gameState.player.name);
       const response = await groqAI.generateAIResponse(prompt, 'analysis', gameState);
-      
+
       if (response) {
         return JSON.parse(response);
       }
@@ -255,7 +257,7 @@ Be encouraging and supportive while providing actionable guidance.`;
   private async generateDifficultyAdaptation(
     quest: Miniquest,
     playerProfile: PlayerProfile,
-    gameState: LocalGameState
+    gameState: LocalGameState,
   ): Promise<{ difficulty: string; adaptedHints: string[]; reasoning: string } | null> {
     const prompt = `Adapt the difficulty and hints for this quest based on the player's profile:
 
@@ -287,7 +289,7 @@ Make hints progressive (start subtle, get more specific) and encouraging.`;
     try {
       this.recordAIRequest(gameState.player.name);
       const response = await groqAI.generateAIResponse(prompt, 'difficulty', gameState);
-      
+
       if (response) {
         return JSON.parse(response);
       }
@@ -312,7 +314,7 @@ Make hints progressive (start subtle, get more specific) and encouraging.`;
 
     // Update profile based on recent performance
     this.updateProfileFromGameState(profile, gameState);
-    
+
     return profile;
   }
 
@@ -326,21 +328,21 @@ Make hints progressive (start subtle, get more specific) and encouraging.`;
         exploration: 0.5,
         social: 0.5,
         combat: 0.5,
-        story: 0.5
+        story: 0.5,
       },
       preferences: {
         preferredDifficulty: 'adaptive',
         preferredTypes: [],
-        playStyle: 'methodical'
+        playStyle: 'methodical',
       },
       currentProgress: {
         questsCompleted: 0,
         averageCompletionTime: 0,
         failureRate: 0,
-        lastPlaySession: Date.now()
+        lastPlaySession: Date.now(),
       },
       strugglingAreas: [],
-      strengths: []
+      strengths: [],
     };
   }
 
@@ -351,7 +353,7 @@ Make hints progressive (start subtle, get more specific) and encouraging.`;
     // Update quest completion stats
     const miniquestState = (gameState as any).miniquestState || {};
     let totalCompleted = 0;
-    
+
     Object.values(miniquestState).forEach((roomState: any) => {
       if (roomState?.completedQuests) {
         totalCompleted += roomState.completedQuests.length;
@@ -363,10 +365,12 @@ Make hints progressive (start subtle, get more specific) and encouraging.`;
     // Analyze play style from recent commands
     const recentCommands = (gameState as any).recentCommands || [];
     if (recentCommands.length > 0) {
-      const examineCount = recentCommands.filter((cmd: string) => cmd.includes('examine') || cmd.includes('look')).length;
+      const examineCount = recentCommands.filter(
+        (cmd: string) => cmd.includes('examine') || cmd.includes('look'),
+      ).length;
       const talkCount = recentCommands.filter((cmd: string) => cmd.includes('talk')).length;
-      const rushingCommands = recentCommands.filter((cmd: string) => 
-        ['go', 'north', 'south', 'east', 'west'].includes(cmd.toLowerCase())
+      const rushingCommands = recentCommands.filter((cmd: string) =>
+        ['go', 'north', 'south', 'east', 'west'].includes(cmd.toLowerCase()),
       ).length;
 
       if (examineCount > rushingCommands) profile.preferences.playStyle = 'methodical';
@@ -382,15 +386,17 @@ Make hints progressive (start subtle, get more specific) and encouraging.`;
    * Convert regular quests to AI recommendation format
    */
   private convertToAIRecommendations(quests: Miniquest[]): AIMiniquestRecommendation[] {
-    return quests.slice(0, 3).map(quest => ({
+    return quests.slice(0, 3).map((quest) => ({
       questId: quest.id,
       confidence: 0.7, // Default confidence for fallback
       reasoning: `Available ${quest.type} quest with ${quest.difficulty} difficulty`,
       difficulty: quest.difficulty as any,
       estimatedCompletionTime: this.estimateCompletionTime(quest),
       prerequisites: quest.requiredItems || [],
-      hints: quest.hint ? [quest.hint] : ['Try examining objects in the room', 'Look for interactive elements'],
-      adaptedDescription: quest.description
+      hints: quest.hint
+        ? [quest.hint]
+        : ['Try examining objects in the room', 'Look for interactive elements'],
+      adaptedDescription: quest.description,
     }));
   }
 
@@ -399,8 +405,10 @@ Make hints progressive (start subtle, get more specific) and encouraging.`;
    */
   private getFallbackAnalysis(gameState: LocalGameState): AIMiniquestAnalysis {
     const recentMessages = gameState.messages?.slice(-5) || [];
-    const hasErrors = recentMessages.some(m => m.type === 'error');
-    const sessionTime = Math.floor((Date.now() - (gameState as any).sessionStart || Date.now()) / 60000);
+    const hasErrors = recentMessages.some((m) => m.type === 'error');
+    const sessionTime = Math.floor(
+      (Date.now() - (gameState as any).sessionStart || Date.now()) / 60000,
+    );
 
     return {
       playerFrustrationLevel: hasErrors ? 0.6 : 0.3,
@@ -409,24 +417,30 @@ Make hints progressive (start subtle, get more specific) and encouraging.`;
       recommendedActions: [
         'Try "miniquests" to see available objectives',
         'Use "look" to examine your surroundings',
-        'Talk to NPCs for guidance'
+        'Talk to NPCs for guidance',
       ],
-      personalizedEncouragement: 'Keep exploring! There are always new discoveries waiting.'
+      personalizedEncouragement: 'Keep exploring! There are always new discoveries waiting.',
     };
   }
 
   /**
    * Get fallback difficulty adaptation
    */
-  private getFallbackDifficulty(quest: Miniquest): { difficulty: string; adaptedHints: string[]; reasoning: string } {
+  private getFallbackDifficulty(quest: Miniquest): {
+    difficulty: string;
+    adaptedHints: string[];
+    reasoning: string;
+  } {
     return {
       difficulty: quest.difficulty || 'medium',
-      adaptedHints: quest.hint ? [quest.hint] : [
-        'Look for clues in the room description',
-        'Try interacting with objects mentioned in the quest',
-        'Some quests require specific items or conditions'
-      ],
-      reasoning: 'Standard difficulty based on quest design'
+      adaptedHints: quest.hint
+        ? [quest.hint]
+        : [
+            'Look for clues in the room description',
+            'Try interacting with objects mentioned in the quest',
+            'Some quests require specific items or conditions',
+          ],
+      reasoning: 'Standard difficulty based on quest design',
     };
   }
 
@@ -435,12 +449,12 @@ Make hints progressive (start subtle, get more specific) and encouraging.`;
    */
   private estimateCompletionTime(quest: Miniquest): number {
     const baseTime = {
-      'trivial': 2,
-      'easy': 5,
-      'medium': 10,
-      'hard': 20
+      trivial: 2,
+      easy: 5,
+      medium: 10,
+      hard: 20,
     };
-    
+
     return baseTime[quest.difficulty as keyof typeof baseTime] || 10;
   }
 
@@ -450,9 +464,9 @@ Make hints progressive (start subtle, get more specific) and encouraging.`;
   private canMakeAIRequest(playerName: string): boolean {
     const lastRequest = this.requestCooldown.get(playerName) || 0;
     const now = Date.now();
-    
+
     // 30 second cooldown between AI requests per player
-    return (now - lastRequest) > 30000;
+    return now - lastRequest > 30000;
   }
 
   /**
@@ -475,7 +489,7 @@ Make hints progressive (start subtle, get more specific) and encouraging.`;
   public getAIStatus(): { enabled: boolean; fallbackMode: boolean } {
     return {
       enabled: this.aiEnabled,
-      fallbackMode: !this.aiEnabled
+      fallbackMode: !this.aiEnabled,
     };
   }
 }

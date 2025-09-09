@@ -4,7 +4,14 @@
  */
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { detectDevice, monitorPerformance, detectAccessibilityPreferences, type DeviceInfo, type PerformanceMetrics, type AccessibilitySettings } from '../../utils/mobileOptimization';
+import {
+  detectDevice,
+  monitorPerformance,
+  detectAccessibilityPreferences,
+  type DeviceInfo,
+  type PerformanceMetrics,
+  type AccessibilitySettings,
+} from '../../utils/mobileOptimization';
 
 // Responsive breakpoints
 export const breakpoints = {
@@ -13,7 +20,7 @@ export const breakpoints = {
   md: 768,
   lg: 992,
   xl: 1200,
-  xxl: 1400
+  xxl: 1400,
 } as const;
 
 export type Breakpoint = keyof typeof breakpoints;
@@ -62,18 +69,33 @@ interface ResponsiveProviderProps {
 
 export const ResponsiveProvider: React.FC<ResponsiveProviderProps> = ({ children }) => {
   const [deviceInfo, setDeviceInfo] = useState<DeviceInfo>(detectDevice());
-  const [performanceMetrics, setPerformanceMetrics] = useState<PerformanceMetrics>(monitorPerformance());
-  const [accessibilitySettings, setAccessibilitySettings] = useState<AccessibilitySettings>(detectAccessibilityPreferences());
-  const [uiAdaptation, setUIAdaptation] = useState<UIAdaptation>(() => getInitialUIAdaptation(deviceInfo, performanceMetrics, accessibilitySettings));
+  const [performanceMetrics, setPerformanceMetrics] =
+    useState<PerformanceMetrics>(monitorPerformance());
+  const [accessibilitySettings, setAccessibilitySettings] = useState<AccessibilitySettings>(
+    detectAccessibilityPreferences(),
+  );
+  const [uiAdaptation, setUIAdaptation] = useState<UIAdaptation>(() =>
+    getInitialUIAdaptation(deviceInfo, performanceMetrics, accessibilitySettings),
+  );
 
   // Get current breakpoint
   const getCurrentBreakpoint = (): Breakpoint => {
     const width = window.innerWidth;
-    if (width >= breakpoints.xxl) return 'xxl';
-    if (width >= breakpoints.xl) return 'xl';
-    if (width >= breakpoints.lg) return 'lg';
-    if (width >= breakpoints.md) return 'md';
-    if (width >= breakpoints.sm) return 'sm';
+    if (width >= breakpoints.xxl) {
+      return 'xxl';
+    }
+    if (width >= breakpoints.xl) {
+      return 'xl';
+    }
+    if (width >= breakpoints.lg) {
+      return 'lg';
+    }
+    if (width >= breakpoints.md) {
+      return 'md';
+    }
+    if (width >= breakpoints.sm) {
+      return 'sm';
+    }
     return 'xs';
   };
 
@@ -94,7 +116,7 @@ export const ResponsiveProvider: React.FC<ResponsiveProviderProps> = ({ children
     // Update on resize
     window.addEventListener('resize', updateBreakpoint);
     window.addEventListener('orientationchange', updateMetrics);
-    
+
     // Performance monitoring
     const metricsInterval = setInterval(updateMetrics, 5000);
 
@@ -107,12 +129,16 @@ export const ResponsiveProvider: React.FC<ResponsiveProviderProps> = ({ children
 
   // Auto-adapt UI based on device changes
   useEffect(() => {
-    const newAdaptation = getInitialUIAdaptation(deviceInfo, performanceMetrics, accessibilitySettings);
-    setUIAdaptation(prev => ({ ...prev, ...newAdaptation }));
+    const newAdaptation = getInitialUIAdaptation(
+      deviceInfo,
+      performanceMetrics,
+      accessibilitySettings,
+    );
+    setUIAdaptation((prev) => ({ ...prev, ...newAdaptation }));
   }, [deviceInfo, performanceMetrics, accessibilitySettings]);
 
   const updateUIAdaptation = (updates: Partial<UIAdaptation>) => {
-    setUIAdaptation(prev => ({ ...prev, ...updates }));
+    setUIAdaptation((prev) => ({ ...prev, ...updates }));
   };
 
   const isBreakpoint = (bp: Breakpoint) => currentBreakpoint === bp;
@@ -131,38 +157,37 @@ export const ResponsiveProvider: React.FC<ResponsiveProviderProps> = ({ children
     isBelowBreakpoint,
   };
 
-  return (
-    <ResponsiveContext.Provider value={contextValue}>
-      {children}
-    </ResponsiveContext.Provider>
-  );
+  return <ResponsiveContext.Provider value={contextValue}>{children}</ResponsiveContext.Provider>;
 };
 
 // Helper function to determine initial UI adaptation
 function getInitialUIAdaptation(
-  deviceInfo: DeviceInfo, 
-  performanceMetrics: PerformanceMetrics, 
-  accessibilitySettings: AccessibilitySettings
+  deviceInfo: DeviceInfo,
+  performanceMetrics: PerformanceMetrics,
+  accessibilitySettings: AccessibilitySettings,
 ): UIAdaptation {
-  const layout = deviceInfo.isMobile ? 'mobile' : 
-                deviceInfo.isTablet ? 'tablet' : 'desktop';
+  const layout = deviceInfo.isMobile ? 'mobile' : deviceInfo.isTablet ? 'tablet' : 'desktop';
 
   const touchOptimized = deviceInfo.isTouchDevice;
   const compactMode = deviceInfo.screenSize === 'small' || performanceMetrics.isLowPowerMode;
   const sidebarCollapsed = deviceInfo.isMobile || deviceInfo.screenSize === 'small';
-  
-  const fontSize = accessibilitySettings.largeText ? 'large' : 
-                  deviceInfo.isMobile ? 'medium' : 'medium';
-  
+
+  const fontSize = accessibilitySettings.largeText
+    ? 'large'
+    : deviceInfo.isMobile
+      ? 'medium'
+      : 'medium';
+
   const buttonSize = deviceInfo.isMobile ? 'large' : 'medium';
   const spacing = compactMode ? 'tight' : 'normal';
-  
-  const animationsEnabled = !accessibilitySettings.reduceMotion && 
-                           !performanceMetrics.isLowPowerMode && 
-                           performanceMetrics.fps >= 30;
-  
-  const highPerformanceMode = performanceMetrics.isLowPowerMode || 
-                             performanceMetrics.memoryUsage > 100 * 1024 * 1024;
+
+  const animationsEnabled =
+    !accessibilitySettings.reduceMotion &&
+    !performanceMetrics.isLowPowerMode &&
+    performanceMetrics.fps >= 30;
+
+  const highPerformanceMode =
+    performanceMetrics.isLowPowerMode || performanceMetrics.memoryUsage > 100 * 1024 * 1024;
 
   return {
     layout,
@@ -173,7 +198,7 @@ function getInitialUIAdaptation(
     buttonSize,
     spacing,
     animationsEnabled,
-    highPerformanceMode
+    highPerformanceMode,
   };
 }
 
@@ -195,15 +220,21 @@ export const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
   alt,
   className = '',
   sizes,
-  lazy = true
+  lazy = true,
 }) => {
   const { deviceInfo } = useResponsive();
-  
+
   const getCurrentSrc = () => {
     if (sizes) {
-      if (deviceInfo.isMobile && sizes.mobile) return sizes.mobile;
-      if (deviceInfo.isTablet && sizes.tablet) return sizes.tablet;
-      if (deviceInfo.isDesktop && sizes.desktop) return sizes.desktop;
+      if (deviceInfo.isMobile && sizes.mobile) {
+        return sizes.mobile;
+      }
+      if (deviceInfo.isTablet && sizes.tablet) {
+        return sizes.tablet;
+      }
+      if (deviceInfo.isDesktop && sizes.desktop) {
+        return sizes.desktop;
+      }
     }
     return src;
   };
@@ -216,7 +247,7 @@ export const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
       loading={lazy ? 'lazy' : 'eager'}
       style={{
         maxWidth: '100%',
-        height: 'auto'
+        height: 'auto',
       }}
     />
   );
@@ -241,14 +272,14 @@ export const ResponsiveGrid: React.FC<ResponsiveGridProps> = ({
   children,
   columns = { xs: 1, sm: 2, md: 3, lg: 4, xl: 5, xxl: 6 },
   gap = '1rem',
-  className = ''
+  className = '',
 }) => {
   const { currentBreakpoint } = useResponsive();
-  
+
   const getCurrentColumns = () => {
     const breakpointOrder: Breakpoint[] = ['xxl', 'xl', 'lg', 'md', 'sm', 'xs'];
     const currentIndex = breakpointOrder.indexOf(currentBreakpoint);
-    
+
     for (let i = currentIndex; i < breakpointOrder.length; i++) {
       const bp = breakpointOrder[i];
       if (columns[bp] !== undefined) {
@@ -292,12 +323,14 @@ export const ResponsiveButton: React.FC<ResponsiveButtonProps> = ({
   variant = 'primary',
   className = '',
   size = 'auto',
-  fullWidth = false
+  fullWidth = false,
 }) => {
   const { uiAdaptation, deviceInfo } = useResponsive();
-  
+
   const getButtonSize = () => {
-    if (size !== 'auto') return size;
+    if (size !== 'auto') {
+      return size;
+    }
     return uiAdaptation.buttonSize;
   };
 
@@ -323,12 +356,7 @@ export const ResponsiveButton: React.FC<ResponsiveButtonProps> = ({
   };
 
   return (
-    <button
-      className={baseClasses.trim()}
-      onClick={onClick}
-      disabled={disabled}
-      style={styles}
-    >
+    <button className={baseClasses.trim()} onClick={onClick} disabled={disabled} style={styles}>
       {children}
     </button>
   );
@@ -350,38 +378,42 @@ export const ResponsiveModal: React.FC<ResponsiveModalProps> = ({
   title,
   children,
   size = 'medium',
-  className = ''
+  className = '',
 }) => {
   const { deviceInfo, uiAdaptation } = useResponsive();
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
 
   const modalSize = deviceInfo.isMobile ? 'fullscreen' : size;
   const useFullscreen = modalSize === 'fullscreen' || deviceInfo.screenSize === 'small';
 
-  const modalStyles: React.CSSProperties = useFullscreen ? {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    width: '100vw',
-    height: '100vh',
-    margin: 0,
-    borderRadius: 0,
-    maxWidth: 'none',
-    maxHeight: 'none',
-  } : {
-    position: 'fixed',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    maxWidth: size === 'small' ? '400px' : size === 'large' ? '800px' : '600px',
-    maxHeight: '90vh',
-    width: '90vw',
-    margin: 0,
-    borderRadius: '8px',
-  };
+  const modalStyles: React.CSSProperties = useFullscreen
+    ? {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        width: '100vw',
+        height: '100vh',
+        margin: 0,
+        borderRadius: 0,
+        maxWidth: 'none',
+        maxHeight: 'none',
+      }
+    : {
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        maxWidth: size === 'small' ? '400px' : size === 'large' ? '800px' : '600px',
+        maxHeight: '90vh',
+        width: '90vw',
+        margin: 0,
+        borderRadius: '8px',
+      };
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -403,9 +435,7 @@ export const ResponsiveModal: React.FC<ResponsiveModalProps> = ({
             ✕
           </button>
         </div>
-        <div className="modal-content">
-          {children}
-        </div>
+        <div className="modal-content">{children}</div>
       </div>
     </div>
   );
@@ -425,28 +455,32 @@ export const ResponsiveText: React.FC<ResponsiveTextProps> = ({
   as: Component = 'p',
   size,
   className = '',
-  responsive = true
+  responsive = true,
 }) => {
   const { uiAdaptation, deviceInfo } = useResponsive();
-  
+
   const getResponsiveSize = () => {
-    if (!responsive || size) return size;
-    
+    if (!responsive || size) {
+      return size;
+    }
+
     // Auto-adjust based on device and settings
-    if (uiAdaptation.fontSize === 'large') return 'lg';
-    if (uiAdaptation.fontSize === 'xlarge') return 'xl';
-    if (deviceInfo.isMobile) return 'sm';
+    if (uiAdaptation.fontSize === 'large') {
+      return 'lg';
+    }
+    if (uiAdaptation.fontSize === 'xlarge') {
+      return 'xl';
+    }
+    if (deviceInfo.isMobile) {
+      return 'sm';
+    }
     return 'base';
   };
 
   const finalSize = getResponsiveSize();
   const textClasses = `responsive-text ${finalSize ? `text-${finalSize}` : ''} ${className}`;
 
-  return (
-    <Component className={textClasses.trim()}>
-      {children}
-    </Component>
-  );
+  return <Component className={textClasses.trim()}>{children}</Component>;
 };
 
 // CSS for responsive components
@@ -615,5 +649,5 @@ export default {
   ResponsiveButton,
   ResponsiveModal,
   ResponsiveText,
-  responsiveCSS
+  responsiveCSS,
 };

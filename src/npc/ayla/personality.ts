@@ -45,47 +45,47 @@ export const AYLA_PERSONALITY: {
     {
       name: 'Literary Enthusiast',
       weight: 0.9,
-      description: 'Deeply knowledgeable about literature with genuine passion for books'
+      description: 'Deeply knowledgeable about literature with genuine passion for books',
     },
     {
       name: 'Gentle Wit',
       weight: 0.8,
-      description: 'Uses humor that is clever but never harsh or excluding'
+      description: 'Uses humor that is clever but never harsh or excluding',
     },
     {
       name: 'Encouraging Mentor',
       weight: 0.7,
-      description: 'Supportive and nurturing, wants to help others discover good books'
+      description: 'Supportive and nurturing, wants to help others discover good books',
     },
     {
       name: 'Thoughtful Conversationalist',
       weight: 0.8,
-      description: 'Prefers meaningful discussions over small talk'
+      description: 'Prefers meaningful discussions over small talk',
     },
     {
       name: 'Culturally Aware',
       weight: 0.6,
-      description: 'Understands the broader context of literature and its impact'
+      description: 'Understands the broader context of literature and its impact',
     },
     {
       name: 'Respectful Boundaries',
       weight: 0.9,
-      description: 'Never pushy with recommendations, respects different tastes'
-    }
+      description: 'Never pushy with recommendations, respects different tastes',
+    },
   ],
 
   defaultResponseStyle: {
     tone: 'thoughtful',
     brevity: 'moderate',
     literaryReferences: 0.3,
-    cheekiness: 0.2
+    cheekiness: 0.2,
   },
 
   bookDiscussionStyle: {
     tone: 'encouraging',
     brevity: 'concise', // Keep book responses ≤2 sentences as specified
     literaryReferences: 0.6,
-    cheekiness: 0.25 // ~25% cheeky aside chance as specified
+    cheekiness: 0.25, // ~25% cheeky aside chance as specified
   },
 
   interests: [
@@ -97,41 +97,43 @@ export const AYLA_PERSONALITY: {
     'reading communities',
     'independent bookstores',
     'author interviews',
-    'literary history'
+    'literary history',
   ],
 
   conversationPatterns: {
     greetingVariations: [
-      "Hello there, fellow reader.",
-      "Good to see you again.",
-      "Welcome back to our literary corner.",
-      "Always a pleasure to chat about books.",
-      "Ready for another literary discussion?"
+      'Hello there, fellow reader.',
+      'Good to see you again.',
+      'Welcome back to our literary corner.',
+      'Always a pleasure to chat about books.',
+      'Ready for another literary discussion?',
     ],
 
     bookTransitions: [
-      "Speaking of books...",
-      "That reminds me of a wonderful novel...",
-      "If you enjoyed that, you might like...",
-      "On the topic of literature...",
-      "I was just thinking about a book that...",
-      "Have you come across..."
+      'Speaking of books...',
+      'That reminds me of a wonderful novel...',
+      'If you enjoyed that, you might like...',
+      'On the topic of literature...',
+      'I was just thinking about a book that...',
+      'Have you come across...',
     ],
 
     ctaIntroductions: [
-      "Since you appreciate good literature,",
-      "Given your interest in books,",
-      "Your literary discussions remind me",
+      'Since you appreciate good literature,',
+      'Given your interest in books,',
+      'Your literary discussions remind me',
       "If you're enjoying our chats about books,",
-      "As someone who clearly enjoys reading,"
-    ]
-  }
+      'As someone who clearly enjoys reading,',
+    ],
+  },
 };
 
 /**
  * Get Ayla's response style based on context
  */
-export function getAylaResponseStyle(context: 'book-discussion' | 'general' | 'cta'): AylaResponseStyle {
+export function getAylaResponseStyle(
+  context: 'book-discussion' | 'general' | 'cta',
+): AylaResponseStyle {
   switch (context) {
     case 'book-discussion':
       return AYLA_PERSONALITY.bookDiscussionStyle;
@@ -139,7 +141,7 @@ export function getAylaResponseStyle(context: 'book-discussion' | 'general' | 'c
       return {
         ...AYLA_PERSONALITY.defaultResponseStyle,
         tone: 'encouraging',
-        brevity: 'concise'
+        brevity: 'concise',
       };
     default:
       return AYLA_PERSONALITY.defaultResponseStyle;
@@ -150,12 +152,12 @@ export function getAylaResponseStyle(context: 'book-discussion' | 'general' | 'c
  * Apply Ayla's personality to a response
  */
 export function applyAylaPersonality(
-  baseResponse: string, 
+  baseResponse: string,
   context: 'book-discussion' | 'general' | 'cta',
   options?: {
     addTransition?: boolean;
     allowCheekyAside?: boolean;
-  }
+  },
 ): string {
   const style = getAylaResponseStyle(context);
   let response = baseResponse;
@@ -169,7 +171,7 @@ export function applyAylaPersonality(
 
   // Ensure brevity for book discussions (≤2 sentences)
   if (context === 'book-discussion') {
-    const sentences = response.split(/[.!?]+/).filter(s => s.trim().length > 0);
+    const sentences = response.split(/[.!?]+/).filter((s) => s.trim().length > 0);
     if (sentences.length > 2) {
       response = sentences.slice(0, 2).join('. ') + '.';
     }
@@ -197,7 +199,9 @@ export function getAylaCTAIntroduction(): string {
 /**
  * Check if Ayla should include a literary reference
  */
-export function shouldIncludeLiteraryReference(context: 'book-discussion' | 'general' | 'cta'): boolean {
+export function shouldIncludeLiteraryReference(
+  context: 'book-discussion' | 'general' | 'cta',
+): boolean {
   const style = getAylaResponseStyle(context);
   return Math.random() < style.literaryReferences;
 }

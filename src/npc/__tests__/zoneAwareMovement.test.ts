@@ -22,7 +22,6 @@ import {
   getMovementExecutor,
   resetMovementExecutor,
   setupNPCMovement,
-  NPCMovementConfig
 } from '../movementExecution';
 import { resetNPCPresenceProvider } from '../npcPresence';
 import { resetZoneAwarenessProvider } from '../zoneAwareness';
@@ -46,31 +45,31 @@ describe('Zone-Aware Movement Integration', () => {
     beforeEach(() => {
       setupNPCMovement({
         roomRegistry: {
-          'town1': ['town2', 'forest1'],
-          'town2': ['town1', 'castle1'],
-          'forest1': ['town1', 'forest2'],
-          'forest2': ['forest1'],
-          'castle1': ['town2']
+          town1: ['town2', 'forest1'],
+          town2: ['town1', 'castle1'],
+          forest1: ['town1', 'forest2'],
+          forest2: ['forest1'],
+          castle1: ['town2'],
         },
         npcs: [
           {
             npcId: 'wanderer1',
             npcType: 'wanderer',
             homeRoom: 'town1',
-            roamRadius: 3
+            roamRadius: 3,
           },
           {
             npcId: 'guard1',
             npcType: 'guard',
             homeRoom: 'castle1',
-            roamRadius: 2
+            roamRadius: 2,
           },
           {
             npcId: 'hermit1',
             npcType: 'hermit',
             homeRoom: 'forest2',
-            roamRadius: 1
-          }
+            roamRadius: 1,
+          },
         ],
         zoneConfig: {
           zones: [
@@ -81,7 +80,7 @@ describe('Zone-Aware Movement Integration', () => {
               difficulty: 1,
               allowedNPCTypes: ['wanderer', 'guard', 'merchant'],
               restrictedNPCTypes: ['hermit'],
-              environmentalFactors: { accessibility: 'public' }
+              environmentalFactors: { accessibility: 'public' },
             },
             {
               zoneId: 'forest',
@@ -90,7 +89,7 @@ describe('Zone-Aware Movement Integration', () => {
               difficulty: 3,
               allowedNPCTypes: ['wanderer', 'hermit'],
               restrictedNPCTypes: ['guard'],
-              environmentalFactors: { danger: 'moderate' }
+              environmentalFactors: { danger: 'moderate' },
             },
             {
               zoneId: 'castle',
@@ -99,29 +98,29 @@ describe('Zone-Aware Movement Integration', () => {
               difficulty: 5,
               allowedNPCTypes: ['guard'],
               restrictedNPCTypes: ['wanderer', 'hermit'],
-              environmentalFactors: { accessibility: 'restricted' }
-            }
+              environmentalFactors: { accessibility: 'restricted' },
+            },
           ],
           roomMappings: [
             { roomId: 'town1', zoneId: 'town', isZoneBoundary: true, connectedZones: ['forest'] },
             { roomId: 'town2', zoneId: 'town', isZoneBoundary: true, connectedZones: ['castle'] },
             { roomId: 'forest1', zoneId: 'forest', isZoneBoundary: true, connectedZones: ['town'] },
             { roomId: 'forest2', zoneId: 'forest', isZoneBoundary: false },
-            { roomId: 'castle1', zoneId: 'castle', isZoneBoundary: true, connectedZones: ['town'] }
+            { roomId: 'castle1', zoneId: 'castle', isZoneBoundary: true, connectedZones: ['town'] },
           ],
           transitionRules: [
             {
               fromZone: 'town',
               toZone: 'forest',
               allowedNPCTypes: ['wanderer'],
-              transitionType: 'open'
+              transitionType: 'open',
             },
             {
               fromZone: 'town',
               toZone: 'castle',
               allowedNPCTypes: ['guard'],
-              transitionType: 'guarded'
-            }
+              transitionType: 'guarded',
+            },
           ],
           npcPreferences: [
             {
@@ -131,7 +130,7 @@ describe('Zone-Aware Movement Integration', () => {
               avoidedZones: [],
               cannotEnterZones: ['castle'],
               homeZone: 'town',
-              roamingBehavior: 'explore-preferred'
+              roamingBehavior: 'explore-preferred',
             },
             {
               npcId: 'hermit1',
@@ -140,10 +139,10 @@ describe('Zone-Aware Movement Integration', () => {
               avoidedZones: ['town'],
               cannotEnterZones: ['castle'],
               homeZone: 'forest',
-              roamingBehavior: 'stay-home'
-            }
-          ]
-        }
+              roamingBehavior: 'stay-home',
+            },
+          ],
+        },
       });
     });
 
@@ -201,18 +200,18 @@ describe('Zone-Aware Movement Integration', () => {
     beforeEach(() => {
       setupNPCMovement({
         roomRegistry: {
-          'town1': ['forest1', 'castle1'],
-          'forest1': ['town1', 'forest2'],
-          'forest2': ['forest1'],
-          'castle1': ['town1']
+          town1: ['forest1', 'castle1'],
+          forest1: ['town1', 'forest2'],
+          forest2: ['forest1'],
+          castle1: ['town1'],
         },
         npcs: [
           {
             npcId: 'nature-lover',
             npcType: 'wanderer',
             homeRoom: 'town1',
-            roamRadius: 3
-          }
+            roamRadius: 3,
+          },
         ],
         zoneConfig: {
           zones: [
@@ -223,7 +222,7 @@ describe('Zone-Aware Movement Integration', () => {
               difficulty: 1,
               allowedNPCTypes: ['wanderer'],
               restrictedNPCTypes: [],
-              environmentalFactors: {}
+              environmentalFactors: {},
             },
             {
               zoneId: 'forest',
@@ -232,7 +231,7 @@ describe('Zone-Aware Movement Integration', () => {
               difficulty: 2,
               allowedNPCTypes: ['wanderer'],
               restrictedNPCTypes: [],
-              environmentalFactors: {}
+              environmentalFactors: {},
             },
             {
               zoneId: 'castle',
@@ -241,14 +240,14 @@ describe('Zone-Aware Movement Integration', () => {
               difficulty: 5,
               allowedNPCTypes: ['wanderer'],
               restrictedNPCTypes: [],
-              environmentalFactors: {}
-            }
+              environmentalFactors: {},
+            },
           ],
           roomMappings: [
             { roomId: 'town1', zoneId: 'town', isZoneBoundary: false },
             { roomId: 'forest1', zoneId: 'forest', isZoneBoundary: false },
             { roomId: 'forest2', zoneId: 'forest', isZoneBoundary: false },
-            { roomId: 'castle1', zoneId: 'castle', isZoneBoundary: false }
+            { roomId: 'castle1', zoneId: 'castle', isZoneBoundary: false },
           ],
           npcPreferences: [
             {
@@ -258,24 +257,24 @@ describe('Zone-Aware Movement Integration', () => {
               avoidedZones: [],
               cannotEnterZones: [],
               homeZone: 'town',
-              roamingBehavior: 'explore-preferred'
-            }
-          ]
-        }
+              roamingBehavior: 'explore-preferred',
+            },
+          ],
+        },
       });
     });
 
     test('should prioritize preferred zones in room selection', () => {
       const availableRooms = ['town1', 'forest1', 'forest2', 'castle1'];
       const preferredRooms = executor.getPreferredRoomsForNPC('nature-lover', availableRooms);
-      
+
       // Forest rooms should come first
       expect(preferredRooms[0]).toBe('forest1');
       expect(preferredRooms[1]).toBe('forest2');
-      
+
       // Town should come next (neutral)
       expect(preferredRooms[2]).toBe('town1');
-      
+
       // Castle should come last (neutral but not preferred)
       expect(preferredRooms[3]).toBe('castle1');
     });
@@ -283,7 +282,7 @@ describe('Zone-Aware Movement Integration', () => {
     test('should handle NPCs without preferences', () => {
       const availableRooms = ['town1', 'forest1', 'castle1'];
       const preferredRooms = executor.getPreferredRoomsForNPC('unknown-npc', availableRooms);
-      
+
       // Should return rooms unchanged
       expect(preferredRooms).toEqual(availableRooms);
     });
@@ -292,7 +291,7 @@ describe('Zone-Aware Movement Integration', () => {
   describe('Zone Configuration Integration', () => {
     test('should work with minimal zone configuration', () => {
       setupNPCMovement({
-        roomRegistry: { 'room1': ['room2'], 'room2': ['room1'] },
+        roomRegistry: { room1: ['room2'], room2: ['room1'] },
         npcs: [{ npcId: 'npc1', npcType: 'wanderer', homeRoom: 'room1' }],
         zoneConfig: {
           zones: [
@@ -303,14 +302,14 @@ describe('Zone-Aware Movement Integration', () => {
               difficulty: 1,
               allowedNPCTypes: ['wanderer'],
               restrictedNPCTypes: [],
-              environmentalFactors: {}
-            }
+              environmentalFactors: {},
+            },
           ],
           roomMappings: [
             { roomId: 'room1', zoneId: 'zone1', isZoneBoundary: false },
-            { roomId: 'room2', zoneId: 'zone1', isZoneBoundary: false }
-          ]
-        }
+            { roomId: 'room2', zoneId: 'zone1', isZoneBoundary: false },
+          ],
+        },
       });
 
       const result = executor.canNPCMoveToRoom('npc1', 'room1', 'room2');
@@ -319,8 +318,8 @@ describe('Zone-Aware Movement Integration', () => {
 
     test('should work without zone configuration', () => {
       setupNPCMovement({
-        roomRegistry: { 'room1': ['room2'], 'room2': ['room1'] },
-        npcs: [{ npcId: 'npc1', npcType: 'wanderer', homeRoom: 'room1' }]
+        roomRegistry: { room1: ['room2'], room2: ['room1'] },
+        npcs: [{ npcId: 'npc1', npcType: 'wanderer', homeRoom: 'room1' }],
         // No zoneConfig provided
       });
 

@@ -35,7 +35,9 @@ export default function StartPromptDialog({ open, onStart, onCancel }: Props) {
     return () => document.removeEventListener('keydown', onKey);
   }, [open, onCancel]);
 
-  if (!open) return null;
+  if (!open) {
+    return null;
+  }
 
   return (
     <AnimatePresence>
@@ -48,10 +50,7 @@ export default function StartPromptDialog({ open, onStart, onCancel }: Props) {
         aria-modal="true"
         aria-labelledby="start-dialog-title"
       >
-        <motion.div 
-          className="absolute inset-0 bg-black bg-opacity-70" 
-          onClick={onCancel}
-        />
+        <motion.div className="absolute inset-0 bg-black bg-opacity-70" onClick={onCancel} />
         <motion.div
           ref={dialogRef}
           initial={{ scale: 0.95 }}
@@ -62,9 +61,7 @@ export default function StartPromptDialog({ open, onStart, onCancel }: Props) {
           <h2 id="start-dialog-title" className="text-xl font-bold text-cyan-300 mb-3">
             Ready to Begin?
           </h2>
-          <p className="text-gray-300 mb-6 text-sm">
-            Start your adventure or continue the demo.
-          </p>
+          <p className="text-gray-300 mb-6 text-sm">Start your adventure or continue the demo.</p>
           <div className="flex gap-3 justify-end">
             <button
               className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors focus:ring-2 focus:ring-cyan-400"

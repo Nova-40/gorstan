@@ -26,9 +26,9 @@ export const al: NPC = {
     lastInteraction: 0,
     playerActions: [],
     relationship: 0,
-    knownFacts: []
+    knownFacts: [],
   },
-  currentRoom: 'controlroom'
+  currentRoom: 'controlroom',
 } as any;
 
 export const morthos: NPC = {
@@ -41,9 +41,9 @@ export const morthos: NPC = {
     lastInteraction: 0,
     playerActions: [],
     relationship: 0,
-    knownFacts: []
+    knownFacts: [],
   },
-  currentRoom: 'glitchgate'
+  currentRoom: 'glitchgate',
 } as any;
 
 export const polly: NPC = {
@@ -56,9 +56,9 @@ export const polly: NPC = {
     lastInteraction: 0,
     playerActions: [],
     relationship: 0,
-    knownFacts: []
+    knownFacts: [],
   },
-  currentRoom: 'glitchgate'
+  currentRoom: 'glitchgate',
 } as any;
 
 export const wendell: NPC = {
@@ -71,9 +71,9 @@ export const wendell: NPC = {
     lastInteraction: 0,
     playerActions: [],
     relationship: 0,
-    knownFacts: []
+    knownFacts: [],
   },
-  currentRoom: 'stantonhub'
+  currentRoom: 'stantonhub',
 } as any;
 
 export const dominic: NPC = {
@@ -86,9 +86,9 @@ export const dominic: NPC = {
     lastInteraction: 0,
     playerActions: [],
     relationship: 0,
-    knownFacts: []
+    knownFacts: [],
   },
-  currentRoom: 'burgerjoint'
+  currentRoom: 'burgerjoint',
 } as any;
 
 export const wanderers = [al, morthos, polly, wendell, dominic];

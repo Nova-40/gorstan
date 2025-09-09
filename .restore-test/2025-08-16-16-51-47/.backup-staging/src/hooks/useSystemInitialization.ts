@@ -31,7 +31,6 @@ import { useModuleLoader } from './useModuleLoader';
 
 import { useTimers } from './useTimers';
 
-
 export const useSystemInitialization = () => {
   const { state, dispatch } = useGameState();
   const { hasFlag, setFlag, clearFlag } = useFlags();
@@ -72,8 +71,8 @@ export const useSystemInitialization = () => {
             payload: {
               text: 'System initialization failed. Some features may not work correctly.',
               type: 'error',
-              timestamp: Date.now()
-            }
+              timestamp: Date.now(),
+            },
           });
         }
       };
@@ -94,14 +93,21 @@ export const useSystemInitialization = () => {
           });
         },
         delay: 5 * 60 * 1000,
-        repeat: true
+        repeat: true,
       });
 
       return () => {
         clearTimer('auto_save');
       };
     }
-  }, [hasFlag(FlagRegistryType.transition.systemsReady), state.stage, state, setTimer, clearTimer, loadModule]);
+  }, [
+    hasFlag(FlagRegistryType.transition.systemsReady),
+    state.stage,
+    state,
+    setTimer,
+    clearTimer,
+    loadModule,
+  ]);
 
   useEffect(() => {
     const transitionType = state.transition;
@@ -112,7 +118,7 @@ export const useSystemInitialization = () => {
         callback: () => {
           setFlag(SYSTEM_FLAGS.READY_FOR_TRANSITION, true);
         },
-        delay: 100
+        delay: 100,
       });
 
       setTimer({
@@ -121,10 +127,17 @@ export const useSystemInitialization = () => {
           dispatch({ type: 'SET_TRANSITION', payload: null });
           clearFlag(SYSTEM_FLAGS.READY_FOR_TRANSITION);
         },
-        delay: 10000
+        delay: 10000,
       });
     }
-  }, [state.transition, hasFlag(FlagRegistryType.transition.systemsReady), setTimer, setFlag, dispatch, clearFlag]);
+  }, [
+    state.transition,
+    hasFlag(FlagRegistryType.transition.systemsReady),
+    setTimer,
+    setFlag,
+    dispatch,
+    clearFlag,
+  ]);
 
   useEffect(() => {
     if (hasFlag(SYSTEM_FLAGS.REFRESH_ROOM_MAP)) {
@@ -137,8 +150,8 @@ export const useSystemInitialization = () => {
           payload: {
             text: 'Room map refreshed successfully.',
             type: 'system',
-            timestamp: Date.now()
-          }
+            timestamp: Date.now(),
+          },
         });
       } catch (error) {
         console.error('[SYSTEM] Failed to refresh room map:', error);
@@ -147,8 +160,8 @@ export const useSystemInitialization = () => {
           payload: {
             text: 'Failed to refresh room map.',
             type: 'error',
-            timestamp: Date.now()
-          }
+            timestamp: Date.now(),
+          },
         });
       }
 
@@ -171,8 +184,8 @@ export const useSystemInitialization = () => {
         payload: {
           text: 'System status logged to console.',
           type: 'system',
-          timestamp: Date.now()
-        }
+          timestamp: Date.now(),
+        },
       });
 
       clearFlag(FlagRegistryType.debug.debugSystemStatus);
@@ -202,10 +215,9 @@ export const useSystemInitialization = () => {
   return {
     isInitialized: systemsInitialized.current,
     isReady: hasFlag(FlagRegistryType.transition.systemsReady),
-    roomMapReady: hasFlag(FlagRegistryType.transition.roomMapReady)
+    roomMapReady: hasFlag(FlagRegistryType.transition.roomMapReady),
   };
 };
-
 
 export const SYSTEM_FLAGS = {
   ROOM_MAP_READY: 'roomMapReady',
@@ -213,5 +225,5 @@ export const SYSTEM_FLAGS = {
   READY_FOR_TRANSITION: 'readyForTransition',
   REFRESH_ROOM_MAP: 'refreshRoomMap',
   DEBUG_SYSTEM_STATUS: 'debugSystemStatus',
-  RESET_SYSTEMS: 'resetSystems'
+  RESET_SYSTEMS: 'resetSystems',
 } as const;

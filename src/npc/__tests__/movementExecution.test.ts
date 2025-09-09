@@ -18,13 +18,13 @@ import { vi } from 'vitest';
 // src/npc/__tests__/movementExecution.test.ts
 // Tests for the movement execution layer
 
-import { 
-  MovementExecutor, 
-  getMovementExecutor, 
+import {
+  MovementExecutor,
+  getMovementExecutor,
   resetMovementExecutor,
   setupNPCMovement,
   shutdownNPCMovement,
-  NPCMovementConfig 
+  NPCMovementConfig,
 } from '../movementExecution';
 import { resetNPCPresenceProvider } from '../npcPresence';
 
@@ -50,11 +50,11 @@ describe('MovementExecutor', () => {
   describe('Basic Operations', () => {
     test('should start and stop correctly', () => {
       expect(executor.getStats().totalNPCs).toBe(0);
-      
+
       executor.start();
       // System should be running but no NPCs yet
       expect(executor.getStats().totalNPCs).toBe(0);
-      
+
       executor.stop();
       // Should still remember NPCs after stop
       expect(executor.getStats().totalNPCs).toBe(0);
@@ -62,23 +62,23 @@ describe('MovementExecutor', () => {
 
     test('should register and unregister NPCs', () => {
       executor.start();
-      
+
       const config: NPCMovementConfig = {
         npcId: 'test-npc',
         npcType: 'wanderer',
         homeRoom: 'home',
-        roamRadius: 2
+        roamRadius: 2,
       };
 
       executor.registerNPC(config);
       expect(executor.getStats().totalNPCs).toBe(1);
       expect(executor.getStats().activeNPCs).toBe(1);
-      
+
       const retrievedConfig = executor.getNPCConfig('test-npc');
       expect(retrievedConfig).toBeTruthy();
       expect(retrievedConfig!.npcType).toBe('wanderer');
       expect(retrievedConfig!.homeRoom).toBe('home');
-      
+
       executor.unregisterNPC('test-npc');
       expect(executor.getStats().totalNPCs).toBe(0);
       expect(executor.getNPCConfig('test-npc')).toBeNull();
@@ -88,7 +88,7 @@ describe('MovementExecutor', () => {
       const config: NPCMovementConfig = {
         npcId: 'test-npc',
         npcType: 'wanderer',
-        homeRoom: 'home'
+        homeRoom: 'home',
       };
 
       executor.registerNPC(config);
@@ -106,15 +106,15 @@ describe('MovementExecutor', () => {
         { npcId: 'wanderer1', npcType: 'wanderer', homeRoom: 'room1' },
         { npcId: 'guard1', npcType: 'guard', homeRoom: 'room2' },
         { npcId: 'seeker1', npcType: 'seeker', homeRoom: 'room3' },
-        { npcId: 'hermit1', npcType: 'hermit', homeRoom: 'room4' }
+        { npcId: 'hermit1', npcType: 'hermit', homeRoom: 'room4' },
       ];
 
-      configs.forEach(config => executor.registerNPC(config));
-      
+      configs.forEach((config) => executor.registerNPC(config));
+
       expect(executor.getStats().totalNPCs).toBe(4);
       expect(executor.getStats().activeNPCs).toBe(4);
-      
-      configs.forEach(config => {
+
+      configs.forEach((config) => {
         const retrieved = executor.getNPCConfig(config.npcId);
         expect(retrieved!.npcType).toBe(config.npcType);
       });
@@ -125,16 +125,16 @@ describe('MovementExecutor', () => {
         npcId: 'test-npc',
         npcType: 'wanderer',
         homeRoom: 'home',
-        roamRadius: 2
+        roamRadius: 2,
       };
 
       executor.registerNPC(config);
-      
+
       executor.updateNPCConfig('test-npc', {
         roamRadius: 5,
-        preferRooms: ['preferred1', 'preferred2']
+        preferRooms: ['preferred1', 'preferred2'],
       });
-      
+
       const updated = executor.getNPCConfig('test-npc');
       expect(updated!.roamRadius).toBe(5);
       expect(updated!.preferRooms).toEqual(['preferred1', 'preferred2']);
@@ -146,15 +146,15 @@ describe('MovementExecutor', () => {
         npcId: 'test-npc',
         npcType: 'wanderer',
         homeRoom: 'home',
-        isActive: true
+        isActive: true,
       };
 
       executor.registerNPC(config);
       expect(executor.getStats().activeNPCs).toBe(1);
-      
+
       executor.setNPCActive('test-npc', false);
       expect(executor.getStats().activeNPCs).toBe(0);
-      
+
       executor.setNPCActive('test-npc', true);
       expect(executor.getStats().activeNPCs).toBe(1);
     });
@@ -163,7 +163,7 @@ describe('MovementExecutor', () => {
       const config: NPCMovementConfig = {
         npcId: 'test-npc',
         npcType: 'wanderer',
-        homeRoom: 'home'
+        homeRoom: 'home',
         // isActive not specified, should default to true
       };
 
@@ -181,41 +181,41 @@ describe('MovementExecutor', () => {
       executor.setRoomAdjacency('room1', ['room2', 'room3']);
       executor.setRoomAdjacency('room2', ['room1', 'room3']);
       executor.setRoomAdjacency('room3', ['room1', 'room2']);
-      
+
       // No direct way to test this, but it should not throw
       expect(() => {
         executor.registerNPC({
           npcId: 'test-npc',
           npcType: 'wanderer',
-          homeRoom: 'room1'
+          homeRoom: 'room1',
         });
       }).not.toThrow();
     });
 
     test('should set bulk room registry', () => {
       const registry = {
-        'room1': ['room2', 'room3'],
-        'room2': ['room1', 'room3'],
-        'room3': ['room1', 'room2'],
-        'room4': ['room5'],
-        'room5': ['room4']
+        room1: ['room2', 'room3'],
+        room2: ['room1', 'room3'],
+        room3: ['room1', 'room2'],
+        room4: ['room5'],
+        room5: ['room4'],
       };
 
       executor.setRoomRegistry(registry);
-      
+
       // Should be able to register NPCs in these rooms
       executor.registerNPC({
         npcId: 'npc1',
         npcType: 'wanderer',
-        homeRoom: 'room1'
+        homeRoom: 'room1',
       });
-      
+
       executor.registerNPC({
         npcId: 'npc2',
         npcType: 'guard',
-        homeRoom: 'room4'
+        homeRoom: 'room4',
       });
-      
+
       expect(executor.getStats().totalNPCs).toBe(2);
     });
   });
@@ -230,21 +230,21 @@ describe('MovementExecutor', () => {
       expect(executor.getStats().activeNPCs).toBe(0);
       expect(executor.getStats().successfulMoves).toBe(0);
       expect(executor.getStats().failedMoves).toBe(0);
-      
+
       executor.registerNPC({
         npcId: 'npc1',
         npcType: 'wanderer',
         homeRoom: 'room1',
-        isActive: true
+        isActive: true,
       });
-      
+
       executor.registerNPC({
         npcId: 'npc2',
         npcType: 'guard',
         homeRoom: 'room2',
-        isActive: false
+        isActive: false,
       });
-      
+
       const stats = executor.getStats();
       expect(stats.totalNPCs).toBe(2);
       expect(stats.activeNPCs).toBe(1);
@@ -255,15 +255,15 @@ describe('MovementExecutor', () => {
       executor.registerNPC({
         npcId: 'npc1',
         npcType: 'wanderer',
-        homeRoom: 'room1'
+        homeRoom: 'room1',
       });
-      
+
       executor.registerNPC({
         npcId: 'npc2',
         npcType: 'guard',
-        homeRoom: 'room2'
+        homeRoom: 'room2',
       });
-      
+
       const registeredNPCs = executor.getRegisteredNPCs();
       expect(registeredNPCs).toEqual(expect.arrayContaining(['npc1', 'npc2']));
       expect(registeredNPCs).toHaveLength(2);
@@ -277,20 +277,20 @@ describe('MovementExecutor', () => {
 
     test('should clear all data', () => {
       executor.setRoomRegistry({
-        'room1': ['room2'],
-        'room2': ['room1']
+        room1: ['room2'],
+        room2: ['room1'],
       });
-      
+
       executor.registerNPC({
         npcId: 'npc1',
         npcType: 'wanderer',
-        homeRoom: 'room1'
+        homeRoom: 'room1',
       });
-      
+
       expect(executor.getStats().totalNPCs).toBe(1);
-      
+
       executor.clear();
-      
+
       expect(executor.getStats().totalNPCs).toBe(0);
       expect(executor.getRegisteredNPCs()).toEqual([]);
     });
@@ -305,7 +305,7 @@ describe('MovementExecutor', () => {
       expect(() => {
         executor.updateNPCConfig('unknown-npc', { roamRadius: 5 });
       }).not.toThrow();
-      
+
       expect(() => {
         executor.setNPCActive('unknown-npc', false);
       }).not.toThrow();
@@ -315,19 +315,19 @@ describe('MovementExecutor', () => {
       const config: NPCMovementConfig = {
         npcId: 'test-npc',
         npcType: 'wanderer',
-        homeRoom: 'room1'
+        homeRoom: 'room1',
       };
 
       executor.registerNPC(config);
       expect(executor.getStats().totalNPCs).toBe(1);
-      
+
       // Register again with different config
       executor.registerNPC({
         ...config,
         npcType: 'guard',
-        homeRoom: 'room2'
+        homeRoom: 'room2',
       });
-      
+
       // Should replace the old one
       expect(executor.getStats().totalNPCs).toBe(1);
       const finalConfig = executor.getNPCConfig('test-npc');
@@ -340,7 +340,7 @@ describe('MovementExecutor', () => {
     test('should provide singleton instance', () => {
       const executor1 = getMovementExecutor();
       const executor2 = getMovementExecutor();
-      
+
       expect(executor1).toBe(executor2);
     });
 
@@ -350,7 +350,7 @@ describe('MovementExecutor', () => {
       executor1.registerNPC({
         npcId: 'test-npc',
         npcType: 'wanderer',
-        homeRoom: 'room1'
+        homeRoom: 'room1',
       });
 
       resetMovementExecutor();
@@ -364,9 +364,9 @@ describe('MovementExecutor', () => {
   describe('High-level Setup Functions', () => {
     test('should set up complete movement system', () => {
       const roomRegistry = {
-        'room1': ['room2', 'room3'],
-        'room2': ['room1', 'room3'],
-        'room3': ['room1', 'room2']
+        room1: ['room2', 'room3'],
+        room2: ['room1', 'room3'],
+        room3: ['room1', 'room2'],
       };
 
       const npcs: NPCMovementConfig[] = [
@@ -374,40 +374,40 @@ describe('MovementExecutor', () => {
           npcId: 'wanderer1',
           npcType: 'wanderer',
           homeRoom: 'room1',
-          roamRadius: 2
+          roamRadius: 2,
         },
         {
           npcId: 'guard1',
           npcType: 'guard',
           homeRoom: 'room2',
-          preferRooms: ['room2', 'room3']
-        }
+          preferRooms: ['room2', 'room3'],
+        },
       ];
 
       const roomCapacities = {
-        'room1': 3,
-        'room2': 2,
-        'room3': 4
+        room1: 3,
+        room2: 2,
+        room3: 4,
       };
 
       setupNPCMovement({
         roomRegistry,
         npcs,
-        roomCapacities
+        roomCapacities,
       });
 
       const executor = getMovementExecutor();
       expect(executor.getStats().totalNPCs).toBe(2);
       expect(executor.getStats().activeNPCs).toBe(2);
-      
+
       expect(executor.getNPCConfig('wanderer1')).toBeTruthy();
       expect(executor.getNPCConfig('guard1')).toBeTruthy();
     });
 
     test('should shutdown movement system', () => {
       setupNPCMovement({
-        roomRegistry: { 'room1': ['room2'] },
-        npcs: [{ npcId: 'npc1', npcType: 'wanderer', homeRoom: 'room1' }]
+        roomRegistry: { room1: ['room2'] },
+        npcs: [{ npcId: 'npc1', npcType: 'wanderer', homeRoom: 'room1' }],
       });
 
       let executor = getMovementExecutor();

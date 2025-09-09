@@ -32,18 +32,13 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
     return (
       <div
         ref={ref}
-        className={cn(
-          'rounded-lg',
-          cardVariants[variant],
-          cardPadding[padding],
-          className
-        )}
+        className={cn('rounded-lg', cardVariants[variant], cardPadding[padding], className)}
         {...props}
       >
         {children}
       </div>
     );
-  }
+  },
 );
 
 Card.displayName = 'Card';
@@ -55,15 +50,11 @@ export interface CardHeaderProps extends HTMLAttributes<HTMLDivElement> {
 export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
   ({ className, children, ...props }, ref) => {
     return (
-      <div
-        ref={ref}
-        className={cn('mb-4', className)}
-        {...props}
-      >
+      <div ref={ref} className={cn('mb-4', className)} {...props}>
         {children}
       </div>
     );
-  }
+  },
 );
 
 CardHeader.displayName = 'CardHeader';
@@ -75,15 +66,11 @@ export interface CardContentProps extends HTMLAttributes<HTMLDivElement> {
 export const CardContent = forwardRef<HTMLDivElement, CardContentProps>(
   ({ className, children, ...props }, ref) => {
     return (
-      <div
-        ref={ref}
-        className={cn(className)}
-        {...props}
-      >
+      <div ref={ref} className={cn(className)} {...props}>
         {children}
       </div>
     );
-  }
+  },
 );
 
 CardContent.displayName = 'CardContent';
@@ -95,15 +82,11 @@ export interface CardFooterProps extends HTMLAttributes<HTMLDivElement> {
 export const CardFooter = forwardRef<HTMLDivElement, CardFooterProps>(
   ({ className, children, ...props }, ref) => {
     return (
-      <div
-        ref={ref}
-        className={cn('mt-4 pt-4 border-t border-neutral-200', className)}
-        {...props}
-      >
+      <div ref={ref} className={cn('mt-4 pt-4 border-t border-neutral-200', className)} {...props}>
         {children}
       </div>
     );
-  }
+  },
 );
 
 CardFooter.displayName = 'CardFooter';

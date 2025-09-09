@@ -42,7 +42,7 @@ export function getNPCResponse(npc: NPC, input: string): string {
   if (key.includes('what should i do')) {
     return npc.id === 'ayla'
       ? 'Remain curious. Stay mobile. Avoid Polly.'
-      : 'Depends what you\'re trying to survive. Or break.';
+      : "Depends what you're trying to survive. Or break.";
   }
 
   return "I'm not sure how to answer that. Try asking something else.";

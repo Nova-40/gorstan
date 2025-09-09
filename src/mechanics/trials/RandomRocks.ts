@@ -28,21 +28,21 @@ export class RandomRocks {
 
   async run(): Promise<void> {
     console.log('[RandomRocks] Starting random-rocks phase');
-    
+
     return new Promise((resolve) => {
       this.displayPhaseIntro();
       this.running = true;
-      
+
       // Start rock movement simulation
       const moveInterval = setInterval(() => {
         this.updateRocks();
         this.checkCollisions();
-        
+
         // Simulate player movement toward exit
         if (Math.random() < 0.3) {
           this.movePlayerTowardExit();
         }
-        
+
         // Check if player reached exit
         if (this.isNearExit()) {
           clearInterval(moveInterval);
@@ -66,7 +66,7 @@ export class RandomRocks {
 
   private initializeRocks(): void {
     const rockCount = 12;
-    
+
     for (let i = 0; i < rockCount; i++) {
       this.rocks.push({
         id: i,
@@ -75,7 +75,7 @@ export class RandomRocks {
         vx: (Math.random() - 0.5) * 2,
         vy: (Math.random() - 0.5) * 2,
         size: 1 + Math.random() * 2,
-        active: true
+        active: true,
       });
     }
   }
@@ -91,8 +91,10 @@ export class RandomRocks {
   }
 
   private updateRocks(): void {
-    this.rocks.forEach(rock => {
-      if (!rock.active) return;
+    this.rocks.forEach((rock) => {
+      if (!rock.active) {
+        return;
+      }
 
       // Update position
       rock.x += rock.vx;
@@ -112,7 +114,7 @@ export class RandomRocks {
       if (Math.random() < 0.05) {
         rock.vx += (Math.random() - 0.5) * 0.5;
         rock.vy += (Math.random() - 0.5) * 0.5;
-        
+
         // Keep velocity reasonable
         const speed = Math.sqrt(rock.vx * rock.vx + rock.vy * rock.vy);
         if (speed > 3) {
@@ -129,7 +131,7 @@ export class RandomRocks {
         'Stones tumble in chaotic patterns...',
         'You spot a brief opening ahead...',
         'Rocks ricochet off each other nearby...',
-        'The ground trembles with rolling stone...'
+        'The ground trembles with rolling stone...',
       ];
       console.log(`[RandomRocks] ${messages[Math.floor(Math.random() * messages.length)]}`);
     }
@@ -137,12 +139,11 @@ export class RandomRocks {
 
   private checkCollisions(): void {
     // Check for near-misses (creates tension)
-    this.rocks.forEach(rock => {
+    this.rocks.forEach((rock) => {
       const distance = Math.sqrt(
-        Math.pow(rock.x - this.playerPos.x, 2) + 
-        Math.pow(rock.y - this.playerPos.y, 2)
+        Math.pow(rock.x - this.playerPos.x, 2) + Math.pow(rock.y - this.playerPos.y, 2),
       );
-      
+
       if (distance < rock.size + 1.5 && distance > rock.size + 0.5) {
         if (Math.random() < 0.3) {
           console.log('[RandomRocks] Close call! A rock whizzes past...');
@@ -154,7 +155,7 @@ export class RandomRocks {
   private movePlayerTowardExit(): void {
     const dx = this.exitPos.x - this.playerPos.x;
     const dy = this.exitPos.y - this.playerPos.y;
-    
+
     // Move cautiously toward exit, avoiding rocks
     const stepSize = 0.5;
     if (Math.abs(dx) > Math.abs(dy)) {
@@ -166,8 +167,8 @@ export class RandomRocks {
 
   private isNearExit(): boolean {
     const distance = Math.sqrt(
-      Math.pow(this.exitPos.x - this.playerPos.x, 2) + 
-      Math.pow(this.exitPos.y - this.playerPos.y, 2)
+      Math.pow(this.exitPos.x - this.playerPos.x, 2) +
+        Math.pow(this.exitPos.y - this.playerPos.y, 2),
     );
     return distance < 2;
   }

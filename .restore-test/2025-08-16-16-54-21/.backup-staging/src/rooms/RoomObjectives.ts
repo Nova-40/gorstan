@@ -24,7 +24,7 @@ export class RoomObjectivesManager {
   markObjectiveCompleted(roomId: string, objectiveId: string): void {
     const roomObjectives = this.objectives[roomId];
     if (roomObjectives) {
-      const objective = roomObjectives.find(obj => obj.id === objectiveId);
+      const objective = roomObjectives.find((obj) => obj.id === objectiveId);
       if (objective) {
         objective.isCompleted = true;
       }

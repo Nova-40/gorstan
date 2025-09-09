@@ -9,10 +9,13 @@ let fixedCount = 0;
 for (const file of files) {
   try {
     const content = readFileSync(file, 'utf8');
-    const fixedContent = content.replace(/import\s+([^'"]+)\s+from\s+['"]([^'"]+)\.js['"];?/g, (match, importPart, path) => {
-      return `import ${importPart} from '${path}';`;
-    });
-    
+    const fixedContent = content.replace(
+      /import\s+([^'"]+)\s+from\s+['"]([^'"]+)\.js['"];?/g,
+      (match, importPart, path) => {
+        return `import ${importPart} from '${path}';`;
+      },
+    );
+
     if (content !== fixedContent) {
       writeFileSync(file, fixedContent, 'utf8');
       console.log(`Fixed imports in ${file}`);

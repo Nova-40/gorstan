@@ -24,7 +24,6 @@ interface MobileMenuProps {
 }
 
 const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, children }) => {
-  
   return (
     <div className={`mobile-menu ${isOpen ? 'open' : 'closed'}`}>
       <div className="mobile-menu-overlay" onClick={onClose} />
@@ -34,9 +33,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, children }) =>
             ✕
           </ResponsiveButton>
         </div>
-        <div className="mobile-menu-body">
-          {children}
-        </div>
+        <div className="mobile-menu-body">{children}</div>
       </div>
     </div>
   );
@@ -49,14 +46,16 @@ const MobileGameLayout: React.FC<MobileGameLayoutProps> = ({
   floatingActions,
   onMenuToggle,
   gameState,
-  className = ''
+  className = '',
 }) => {
   const { deviceInfo } = useResponsive();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [currentPanel, setCurrentPanel] = useState<'game' | 'inventory' | 'map' | 'settings'>('game');
+  const [currentPanel, setCurrentPanel] = useState<'game' | 'inventory' | 'map' | 'settings'>(
+    'game',
+  );
   const [isBottomPanelExpanded, setIsBottomPanelExpanded] = useState(false);
   const [orientation, setOrientation] = useState<'portrait' | 'landscape'>(deviceInfo.orientation);
-  
+
   const gameAreaRef = useRef<HTMLDivElement>(null);
   const bottomPanelRef = useRef<HTMLDivElement>(null);
 
@@ -106,12 +105,18 @@ const MobileGameLayout: React.FC<MobileGameLayoutProps> = ({
         onLongPress: (x, y) => {
           // Show context menu or action palette
           console.log('Long press at', x, y);
-        }
+        },
       };
 
       setupGestureHandling(gameAreaRef.current, gestureHandlers);
     }
-  }, [gameAreaRef.current, deviceInfo.isTouchDevice, orientation, bottomPanel, isBottomPanelExpanded]);
+  }, [
+    gameAreaRef.current,
+    deviceInfo.isTouchDevice,
+    orientation,
+    bottomPanel,
+    isBottomPanelExpanded,
+  ]);
 
   const handleMenuToggle = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -128,30 +133,22 @@ const MobileGameLayout: React.FC<MobileGameLayoutProps> = ({
   const renderMobileHeader = () => (
     <div className="mobile-header">
       <div className="mobile-header-content">
-        <ResponsiveButton
-          onClick={handleMenuToggle}
-          className="menu-button"
-          size="large"
-        >
+        <ResponsiveButton onClick={handleMenuToggle} className="menu-button" size="large">
           ☰
         </ResponsiveButton>
-        
+
         <div className="game-status">
           {gameState?.currentRoom && (
             <span className="current-room">{gameState.currentRoom.name}</span>
           )}
           {gameState?.player?.health !== undefined && (
-            <span className="health-indicator">
-              ❤️ {gameState.player.health}
-            </span>
+            <span className="health-indicator">❤️ {gameState.player.health}</span>
           )}
         </div>
-        
+
         <div className="header-actions">
           {gameState?.player?.experience !== undefined && (
-            <span className="xp-indicator">
-              ⭐ {gameState.player.experience}
-            </span>
+            <span className="xp-indicator">⭐ {gameState.player.experience}</span>
           )}
         </div>
       </div>
@@ -167,7 +164,7 @@ const MobileGameLayout: React.FC<MobileGameLayoutProps> = ({
       >
         🎮 Game
       </ResponsiveButton>
-      
+
       <ResponsiveButton
         onClick={() => handlePanelSwitch('inventory')}
         className={`tab-button ${currentPanel === 'inventory' ? 'active' : ''}`}
@@ -175,7 +172,7 @@ const MobileGameLayout: React.FC<MobileGameLayoutProps> = ({
       >
         🎒 Items
       </ResponsiveButton>
-      
+
       <ResponsiveButton
         onClick={() => handlePanelSwitch('map')}
         className={`tab-button ${currentPanel === 'map' ? 'active' : ''}`}
@@ -183,7 +180,7 @@ const MobileGameLayout: React.FC<MobileGameLayoutProps> = ({
       >
         🗺️ Map
       </ResponsiveButton>
-      
+
       <ResponsiveButton
         onClick={() => handlePanelSwitch('settings')}
         className={`tab-button ${currentPanel === 'settings' ? 'active' : ''}`}
@@ -195,51 +192,41 @@ const MobileGameLayout: React.FC<MobileGameLayoutProps> = ({
   );
 
   const renderBottomPanel = () => {
-    if (!bottomPanel) return null;
-    
+    if (!bottomPanel) {
+      return null;
+    }
+
     return (
-      <div 
+      <div
         ref={bottomPanelRef}
         className={`mobile-bottom-panel ${isBottomPanelExpanded ? 'expanded' : 'collapsed'}`}
       >
-        <div 
+        <div
           className="panel-handle"
           onClick={() => setIsBottomPanelExpanded(!isBottomPanelExpanded)}
         >
           <div className="handle-indicator" />
         </div>
-        <div className="panel-content">
-          {bottomPanel}
-        </div>
+        <div className="panel-content">{bottomPanel}</div>
       </div>
     );
   };
 
   const renderFloatingActions = () => {
-    if (!floatingActions || !deviceInfo.isMobile) return null;
-    
-    return (
-      <div className="floating-actions">
-        {floatingActions}
-      </div>
-    );
+    if (!floatingActions || !deviceInfo.isMobile) {
+      return null;
+    }
+
+    return <div className="floating-actions">{floatingActions}</div>;
   };
 
   if (deviceInfo.isDesktop) {
     // Desktop layout
     return (
       <div className={`game-layout desktop-layout ${className}`}>
-        <div className="desktop-sidebar">
-          {sidebar}
-        </div>
-        <div className="desktop-main">
-          {children}
-        </div>
-        {bottomPanel && (
-          <div className="desktop-bottom-panel">
-            {bottomPanel}
-          </div>
-        )}
+        <div className="desktop-sidebar">{sidebar}</div>
+        <div className="desktop-main">{children}</div>
+        {bottomPanel && <div className="desktop-bottom-panel">{bottomPanel}</div>}
       </div>
     );
   }
@@ -249,12 +236,12 @@ const MobileGameLayout: React.FC<MobileGameLayoutProps> = ({
     return (
       <div className={`game-layout tablet-landscape ${className}`}>
         {renderMobileHeader()}
-        
+
         <div className="tablet-main">
           <div className="tablet-game-area" ref={gameAreaRef}>
             {children}
           </div>
-          
+
           <div className="tablet-sidebar">
             <div className="panel-switcher">
               <ResponsiveButton
@@ -272,14 +259,14 @@ const MobileGameLayout: React.FC<MobileGameLayoutProps> = ({
                 Map
               </ResponsiveButton>
             </div>
-            
+
             <div className="panel-content">
               {currentPanel === 'inventory' && sidebar}
               {currentPanel === 'map' && <div>Map content</div>}
             </div>
           </div>
         </div>
-        
+
         {renderBottomPanel()}
         {renderFloatingActions()}
       </div>
@@ -290,7 +277,7 @@ const MobileGameLayout: React.FC<MobileGameLayoutProps> = ({
   return (
     <div className={`game-layout mobile-layout ${orientation} ${className}`}>
       {renderMobileHeader()}
-      
+
       <div className="mobile-main">
         <div className="mobile-game-area" ref={gameAreaRef}>
           {currentPanel === 'game' && children}
@@ -299,11 +286,11 @@ const MobileGameLayout: React.FC<MobileGameLayoutProps> = ({
           {currentPanel === 'settings' && <div>Settings content</div>}
         </div>
       </div>
-      
+
       {renderTabBar()}
       {renderBottomPanel()}
       {renderFloatingActions()}
-      
+
       <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)}>
         {sidebar}
       </MobileMenu>
@@ -312,14 +299,10 @@ const MobileGameLayout: React.FC<MobileGameLayoutProps> = ({
 };
 
 // Safe area utilities for mobile browsers
-const SafeAreaContainer: React.FC<{ children: React.ReactNode; className?: string }> = ({ 
-  children, 
-  className = '' 
-}) => (
-  <div className={`safe-area-container ${className}`}>
-    {children}
-  </div>
-);
+const SafeAreaContainer: React.FC<{ children: React.ReactNode; className?: string }> = ({
+  children,
+  className = '',
+}) => <div className={`safe-area-container ${className}`}>{children}</div>;
 
 // Virtual keyboard utilities
 const useVirtualKeyboard = () => {
@@ -330,7 +313,7 @@ const useVirtualKeyboard = () => {
     const handleResize = () => {
       const newHeight = window.innerHeight;
       const heightDifference = viewportHeight - newHeight;
-      
+
       // If height decreased significantly, assume virtual keyboard opened
       setIsVirtualKeyboardOpen(heightDifference > 150);
       setViewportHeight(newHeight);

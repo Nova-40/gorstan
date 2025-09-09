@@ -28,13 +28,11 @@ const GROUP_CONVERSATION_NPCS = ['al', 'morthos', 'ayla', 'polly', 'wendell'];
 
 export function useGroupConversation(): GroupConversationState {
   const { state } = useGameState();
-  
+
   return useMemo(() => {
     const npcsInRoom = state.npcsInRoom || [];
-    const relevantNpcs = npcsInRoom.filter(npc => 
-      GROUP_CONVERSATION_NPCS.includes(npc.id)
-    );
-    
+    const relevantNpcs = npcsInRoom.filter((npc) => GROUP_CONVERSATION_NPCS.includes(npc.id));
+
     // Single NPC conversation
     if (relevantNpcs.length <= 1) {
       return {
@@ -42,19 +40,19 @@ export function useGroupConversation(): GroupConversationState {
         groupNpcs: relevantNpcs,
         isCompetitiveGroup: false,
         primaryNpcId: relevantNpcs[0]?.id,
-        conversationType: 'single'
+        conversationType: 'single',
       };
     }
-    
+
     // Multiple NPCs - check for competitive dynamics
-    const npcIds = relevantNpcs.map(npc => npc.id);
-    const isCompetitive = COMPETITIVE_PAIRS.some(pair =>
-      pair.every(npcId => npcIds.includes(npcId))
+    const npcIds = relevantNpcs.map((npc) => npc.id);
+    const isCompetitive = COMPETITIVE_PAIRS.some((pair) =>
+      pair.every((npcId) => npcIds.includes(npcId)),
     );
-    
+
     // Determine primary NPC for group conversations
     let primaryNpcId: string | undefined;
-    
+
     if (isCompetitive) {
       // In competitive groups, prioritize based on context
       if (npcIds.includes('al') && npcIds.includes('morthos')) {
@@ -63,16 +61,16 @@ export function useGroupConversation(): GroupConversationState {
       }
     } else {
       // Non-competitive groups - prioritize mediators
-      const mediator = relevantNpcs.find(npc => MEDIATOR_NPCS.includes(npc.id));
+      const mediator = relevantNpcs.find((npc) => MEDIATOR_NPCS.includes(npc.id));
       primaryNpcId = mediator?.id || relevantNpcs[0]?.id;
     }
-    
+
     return {
       hasGroupConversation: true,
       groupNpcs: relevantNpcs,
       isCompetitiveGroup: isCompetitive,
       primaryNpcId,
-      conversationType: isCompetitive ? 'competitive' : 'group'
+      conversationType: isCompetitive ? 'competitive' : 'group',
     };
   }, [state.npcsInRoom]);
 }
@@ -91,27 +89,23 @@ export function useConversationContext(npcIds: string[]): {
           'recruitment_rivalry',
           'bureaucracy_vs_mysticism',
           'structure_vs_chaos',
-          'safety_vs_power'
-        ]
+          'safety_vs_power',
+        ],
       };
     }
-    
+
     // Ayla mediating conflicts
     if (npcIds.includes('ayla') && (npcIds.includes('al') || npcIds.includes('morthos'))) {
       return {
         context: 'cooperative',
-        dynamics: [
-          'mediation',
-          'balanced_perspective',
-          'guide_role'
-        ]
+        dynamics: ['mediation', 'balanced_perspective', 'guide_role'],
       };
     }
-    
+
     // Default neutral group
     return {
       context: 'neutral',
-      dynamics: ['friendly_exchange', 'collaborative']
+      dynamics: ['friendly_exchange', 'collaborative'],
     };
   }, [npcIds]);
 }
@@ -124,30 +118,29 @@ export function useConversationTriggers(): {
 } {
   const { state } = useGameState();
   const groupState = useGroupConversation();
-  
+
   return useMemo(() => {
     // Trigger group greeting when player enters room with multiple NPCs
-    const shouldTriggerGroupGreeting = 
-      groupState.hasGroupConversation && 
-      groupState.groupNpcs.length > 1;
-    
+    const shouldTriggerGroupGreeting =
+      groupState.hasGroupConversation && groupState.groupNpcs.length > 1;
+
     // Show competitive dialogue when Al and Morthos are together
-    const shouldShowCompetitiveDialogue = 
-      groupState.isCompetitiveGroup && 
-      groupState.groupNpcs.some(npc => npc.id === 'al') &&
-      groupState.groupNpcs.some(npc => npc.id === 'morthos');
-    
+    const shouldShowCompetitiveDialogue =
+      groupState.isCompetitiveGroup &&
+      groupState.groupNpcs.some((npc) => npc.id === 'al') &&
+      groupState.groupNpcs.some((npc) => npc.id === 'morthos');
+
     let triggerReason: string | undefined;
     if (shouldShowCompetitiveDialogue) {
       triggerReason = 'al_morthos_rivalry';
     } else if (shouldTriggerGroupGreeting) {
       triggerReason = 'multiple_npcs_present';
     }
-    
+
     return {
       shouldTriggerGroupGreeting,
       shouldShowCompetitiveDialogue,
-      triggerReason
+      triggerReason,
     };
   }, [groupState, state.currentRoomId]);
 }
@@ -160,7 +153,7 @@ export function getConsoleProps(npc: NPC | null): {
   activeNpcId?: string;
 } {
   const groupState = useGroupConversation();
-  
+
   if (!npc) {
     return {
       useEnhancedConsole: false,
@@ -168,16 +161,15 @@ export function getConsoleProps(npc: NPC | null): {
       npcs: [],
     };
   }
-  
+
   // Use enhanced console for group conversations or competitive scenarios
-  const useEnhancedConsole = 
-    groupState.hasGroupConversation || 
-    GROUP_CONVERSATION_NPCS.includes(npc.id);
-  
+  const useEnhancedConsole =
+    groupState.hasGroupConversation || GROUP_CONVERSATION_NPCS.includes(npc.id);
+
   return {
     useEnhancedConsole,
     isGroupConversation: groupState.hasGroupConversation,
     npcs: groupState.hasGroupConversation ? groupState.groupNpcs : [npc],
-    activeNpcId: groupState.primaryNpcId || npc.id
+    activeNpcId: groupState.primaryNpcId || npc.id,
   };
 }

@@ -105,7 +105,7 @@ export class SaveManager {
       if (!this.validate(saveFile)) {
         return {
           success: false,
-          message: 'Save validation failed - invalid save data structure'
+          message: 'Save validation failed - invalid save data structure',
         };
       }
 
@@ -118,12 +118,8 @@ export class SaveManager {
           ...saveFile.metadata,
           saveVersion: this.CURRENT_VERSION,
           gameVersion: '3.8.8',
-          features: [
-            'modern_save_system',
-            'data_integrity_checking',
-            'automatic_optimization'
-          ]
-        }
+          features: ['modern_save_system', 'data_integrity_checking', 'automatic_optimization'],
+        },
       };
 
       // Generate checksum if game state exists
@@ -137,17 +133,16 @@ export class SaveManager {
 
       const key = `save_slot_${slot}`;
       localStorage.setItem(key, JSON.stringify(finalSaveFile));
-      
+
       return {
         success: true,
-        message: `Game saved successfully to slot ${slot}`
+        message: `Game saved successfully to slot ${slot}`,
       };
-
     } catch (error) {
       return {
         success: false,
         message: `Save failed: ${error}`,
-        warnings: ['Save operation failed - please try again']
+        warnings: ['Save operation failed - please try again'],
       };
     }
   }
@@ -159,10 +154,12 @@ export class SaveManager {
     try {
       const key = `save_slot_${slot}`;
       const data = localStorage.getItem(key);
-      if (!data) return null;
+      if (!data) {
+        return null;
+      }
 
       const saveFile: SaveFile = JSON.parse(data);
-      
+
       // Basic validation
       if (!this.validate(saveFile)) {
         console.warn(`[SaveManager] Invalid save file in slot ${slot}`);
@@ -170,7 +167,6 @@ export class SaveManager {
       }
 
       return saveFile;
-
     } catch (error) {
       console.error('[SaveManager] Load failed:', error);
       return null;
@@ -182,15 +178,15 @@ export class SaveManager {
    */
   static async listSlots(): Promise<SaveSlotInfo[]> {
     const slots: SaveSlotInfo[] = [];
-    
+
     for (let i = 0; i < 10; i++) {
       try {
         const key = `save_slot_${i}`;
         const data = localStorage.getItem(key);
-        
+
         if (data) {
           const saveFile: SaveFile = JSON.parse(data);
-          
+
           if (this.validate(saveFile)) {
             slots.push({
               slot: i,
@@ -200,7 +196,7 @@ export class SaveManager {
               needsMigration: false, // No migration needed in modern system
               compatible: true, // All modern saves are compatible
               size: data.length,
-              migrationSummary: 'Modern save format'
+              migrationSummary: 'Modern save format',
             });
           }
         }
@@ -208,7 +204,7 @@ export class SaveManager {
         console.warn(`[SaveManager] Error reading slot ${i}:`, error);
       }
     }
-    
+
     return slots;
   }
 
@@ -234,7 +230,7 @@ export class SaveManager {
     let hash = 0;
     for (let i = 0; i < jsonString.length; i++) {
       const char = jsonString.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
     return Math.abs(hash).toString(36);

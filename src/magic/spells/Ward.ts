@@ -17,11 +17,11 @@ export const Ward: Spell = {
   cooldownMs: 12000,
   cast: {
     windupMs: 600,
-    recoveryMs: 400
+    recoveryMs: 400,
   },
   requiresTarget: false,
   description: 'Creates a magical barrier that absorbs incoming damage.',
-  
+
   execute: (caster: Actor) => {
     // Apply ward protection
     const wardAbsorption = BALANCE.status.wardAbsorb * caster.stats.power;
@@ -29,5 +29,5 @@ export const Ward: Spell = {
 
     // Play sound effect
     combatAudio.spellCast('ward');
-  }
+  },
 };

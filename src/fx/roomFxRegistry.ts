@@ -1,5 +1,5 @@
-import type { RoomFXSpec } from "../components/AmbientFX/AnimatedBackdrop";
-import { builtinFxByRoomId } from "../components/AmbientFX/specs";
+import type { RoomFXSpec } from '../components/AmbientFX/AnimatedBackdrop';
+import { builtinFxByRoomId } from '../components/AmbientFX/specs';
 
 // If you have RoomId type, use it instead of string
 const overrides: Record<string, RoomFXSpec | null> = {

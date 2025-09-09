@@ -44,7 +44,7 @@ export function paradoxDeathSequence(): void {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 9999
+    zIndex: 9999,
   });
   document.body.appendChild(overlay);
   setTimeout(() => triggerDeath('temporal_paradox'), 3000);
@@ -74,7 +74,7 @@ export function pollyDeathSequence(): void {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 9999
+    zIndex: 9999,
   });
   document.body.appendChild(overlay);
   setTimeout(() => triggerDeath('npc'), 3000);
@@ -98,7 +98,6 @@ export function checkHiddenEnding(): void {
     document.body.appendChild(overlay);
   }
 }
-
 
 export function startPollyCountdown(): void {
   const existing = document.getElementById('polly-timer');

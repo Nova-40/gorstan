@@ -6,7 +6,9 @@
   border-radius: 1rem;
   padding: 1rem;
   box-shadow: 0 0 12px rgba(0, 255, 153, 0.2); /* soft neon glow */
-  transition: border-color 0.3s ease, box-shadow 0.4s ease;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.4s ease;
 }
 
 /* When waiting: red pulse around border */
@@ -17,7 +19,8 @@
 }
 
 @keyframes pulse-glow {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
   }
   50% {

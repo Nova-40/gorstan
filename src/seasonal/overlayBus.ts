@@ -22,7 +22,7 @@ type OverlayEventHandler = (overlayType: string) => void;
 
 /**
  * Simple event bus for seasonal overlay coordination
- * 
+ *
  * Provides a decoupled way for the seasonal controller to request
  * overlay display without direct component coupling.
  */
@@ -64,7 +64,7 @@ class OverlayBus {
   emit(event: string, overlayType: string): void {
     const eventHandlers = this.handlers.get(event);
     if (eventHandlers) {
-      eventHandlers.forEach(handler => handler(overlayType));
+      eventHandlers.forEach((handler) => handler(overlayType));
     }
   }
 

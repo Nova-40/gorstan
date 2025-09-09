@@ -25,7 +25,7 @@ import { Span, multiDaySpan } from './util';
  */
 export async function diwali(years: number[]): Promise<Span[]> {
   const spans: Span[] = [];
-  
+
   // Known dates for Diwali (typically October/November)
   const knownDates: Record<number, string> = {
     2025: '2025-10-20',
@@ -53,16 +53,16 @@ export async function diwali(years: number[]): Promise<Span[]> {
     2047: '2047-10-18',
     2048: '2048-11-05',
     2049: '2049-10-25',
-    2050: '2050-10-14'
+    2050: '2050-10-14',
   };
-  
+
   for (const year of years) {
     if (knownDates[year]) {
       const date = new Date(knownDates[year]);
       spans.push(multiDaySpan(date, 5, `Diwali ${year}`));
     }
   }
-  
+
   return spans;
 }
 
@@ -72,7 +72,7 @@ export async function diwali(years: number[]): Promise<Span[]> {
  */
 export async function holi(years: number[]): Promise<Span[]> {
   const spans: Span[] = [];
-  
+
   // Known dates for Holi (typically February/March)
   const knownDates: Record<number, string> = {
     2025: '2025-03-13',
@@ -100,20 +100,20 @@ export async function holi(years: number[]): Promise<Span[]> {
     2047: '2047-03-11',
     2048: '2048-02-29',
     2049: '2049-03-18',
-    2050: '2050-03-08'
+    2050: '2050-03-08',
   };
-  
+
   for (const year of years) {
     if (knownDates[year]) {
       const date = new Date(knownDates[year]);
       spans.push(multiDaySpan(date, 2, `Holi ${year}`));
     }
   }
-  
+
   return spans;
 }
 
 export const buildHindu = {
   diwali,
-  holi
+  holi,
 };

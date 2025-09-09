@@ -31,7 +31,7 @@ export interface SeasonalOverlayProps {
 
 /**
  * OverlayPortal - Manages seasonal overlay display and modal state
- * 
+ *
  * Features:
  * - Event bus integration for overlay triggers
  * - Accessibility compliance with focus management
@@ -65,7 +65,7 @@ export const OverlayPortal: React.FC = () => {
   const renderOverlay = () => {
     const commonProps = {
       isOpen: Boolean(activeOverlay),
-      onClose: handleClose
+      onClose: handleClose,
     };
 
     switch (activeOverlay) {
@@ -80,9 +80,5 @@ export const OverlayPortal: React.FC = () => {
     }
   };
 
-  return (
-    <>
-      {activeOverlay && renderOverlay()}
-    </>
-  );
+  return <>{activeOverlay && renderOverlay()}</>;
 };

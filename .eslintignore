@@ -1,0 +1,8 @@
+# Ignore helper with parser quirks
+# Ignore helper with parser quirks
+src/utils/performanceOptimization.tsx
+
+# Ignore build and backup artifacts
+backup/
+.restore-test/
+node_modules/

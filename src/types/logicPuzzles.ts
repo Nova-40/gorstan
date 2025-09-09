@@ -7,31 +7,31 @@ import { type QuantumElement } from './quantumMagic';
 import { type RouteId } from './routes';
 
 // Core Puzzle Types
-export type PuzzleType = 
-  | 'sequence'      // Pattern recognition and completion
-  | 'grid'          // Spatial arrangement puzzles
-  | 'logic'         // Deductive reasoning puzzles
-  | 'cipher'        // Encryption/decryption challenges
-  | 'quantum'       // Quantum mechanics based puzzles
-  | 'artifact'      // Artifact-specific interaction puzzles
-  | 'hybrid';       // Multi-type combined puzzles
+export type PuzzleType =
+  | 'sequence' // Pattern recognition and completion
+  | 'grid' // Spatial arrangement puzzles
+  | 'logic' // Deductive reasoning puzzles
+  | 'cipher' // Encryption/decryption challenges
+  | 'quantum' // Quantum mechanics based puzzles
+  | 'artifact' // Artifact-specific interaction puzzles
+  | 'hybrid'; // Multi-type combined puzzles
 
-export type PuzzleDifficulty = 
-  | 'trivial'       // 1-2 steps, immediate solution
-  | 'easy'          // 3-4 steps, basic logic
-  | 'medium'        // 5-7 steps, multiple concepts
-  | 'hard'          // 8-12 steps, complex reasoning
-  | 'expert'        // 13+ steps, advanced patterns
-  | 'quantum';      // Requires quantum artifact assistance
+export type PuzzleDifficulty =
+  | 'trivial' // 1-2 steps, immediate solution
+  | 'easy' // 3-4 steps, basic logic
+  | 'medium' // 5-7 steps, multiple concepts
+  | 'hard' // 8-12 steps, complex reasoning
+  | 'expert' // 13+ steps, advanced patterns
+  | 'quantum'; // Requires quantum artifact assistance
 
 export type PuzzleCategory =
-  | 'tutorial'      // Teaching basic concepts
-  | 'exploration'   // Found during room exploration
-  | 'progression'   // Required for story advancement
-  | 'optional'      // Bonus content with rewards
-  | 'artifact'      // Unlocked by artifact interaction
-  | 'seasonal'      // Time-limited special puzzles
-  | 'master';       // Ultimate challenge puzzles
+  | 'tutorial' // Teaching basic concepts
+  | 'exploration' // Found during room exploration
+  | 'progression' // Required for story advancement
+  | 'optional' // Bonus content with rewards
+  | 'artifact' // Unlocked by artifact interaction
+  | 'seasonal' // Time-limited special puzzles
+  | 'master'; // Ultimate challenge puzzles
 
 // Puzzle Structure
 export interface LogicPuzzle {
@@ -41,35 +41,35 @@ export interface LogicPuzzle {
   difficulty: PuzzleDifficulty;
   title: string;
   description: string;
-  
+
   // Core puzzle data
   puzzle: {
-    data: any;           // Puzzle-specific data structure
-    solution: any;       // Expected solution
-    hints: string[];     // Progressive hint system
+    data: any; // Puzzle-specific data structure
+    solution: any; // Expected solution
+    hints: string[]; // Progressive hint system
     explanation: string; // Solution explanation
   };
-  
+
   // Generation parameters
   generation: {
-    seed: string;        // Reproducible generation
-    algorithm: string;   // Generator algorithm used
-    parameters: any;     // Algorithm-specific parameters
-    complexity: number;  // Computed complexity score
+    seed: string; // Reproducible generation
+    algorithm: string; // Generator algorithm used
+    parameters: any; // Algorithm-specific parameters
+    complexity: number; // Computed complexity score
   };
-  
+
   // Quantum integration
   quantumAspects?: {
-    requiredArtifacts: string[];     // Artifacts needed to solve
+    requiredArtifacts: string[]; // Artifacts needed to solve
     quantumElements: QuantumElement[]; // Elements involved
-    resonanceRequired: number;       // Minimum resonance level
+    resonanceRequired: number; // Minimum resonance level
     artifactInteractions: {
       artifactId: string;
       interactionType: 'analyze' | 'resonate' | 'channel' | 'combine';
       effect: string;
     }[];
   };
-  
+
   // Progression and rewards
   progression: {
     prerequisites: {
@@ -90,12 +90,12 @@ export interface LogicPuzzle {
       items?: string[];
     };
     timeConstraints?: {
-      timeLimit?: number;      // milliseconds
-      optimalTime?: number;    // for bonus rewards
+      timeLimit?: number; // milliseconds
+      optimalTime?: number; // for bonus rewards
       penaltyThreshold?: number;
     };
   };
-  
+
   // Analytics and learning
   analytics: {
     attempts: number;
@@ -105,7 +105,7 @@ export interface LogicPuzzle {
     hintUsage: number[];
     difficultyRating?: number; // Player feedback
   };
-  
+
   // Metadata
   metadata: {
     created: number;
@@ -198,14 +198,14 @@ export interface PuzzleGenerator {
   description: string;
   supportedTypes: PuzzleType[];
   supportedDifficulties: PuzzleDifficulty[];
-  
+
   configuration: {
-    randomization: number;     // 0-1, how much randomness
-    coherence: number;         // 0-1, logical consistency
-    accessibility: number;     // 0-1, how approachable
-    innovation: number;        // 0-1, use novel patterns
+    randomization: number; // 0-1, how much randomness
+    coherence: number; // 0-1, logical consistency
+    accessibility: number; // 0-1, how approachable
+    innovation: number; // 0-1, use novel patterns
   };
-  
+
   algorithms: {
     [difficulty: string]: {
       name: string;
@@ -242,7 +242,7 @@ export interface PuzzleSession {
   playerId: string;
   startTime: number;
   endTime?: number;
-  
+
   progress: {
     currentState: any;
     moves: {
@@ -254,19 +254,19 @@ export interface PuzzleSession {
     hintsUsed: number[];
     mistakes: number;
   };
-  
+
   result?: {
     solved: boolean;
     timeToSolve?: number;
     score: number;
-    efficiency: number;    // Solution optimality
-    creativity: number;    // Non-standard approach
+    efficiency: number; // Solution optimality
+    creativity: number; // Non-standard approach
     artifacts: {
       used: string[];
       effectiveness: { [artifactId: string]: number };
     };
   };
-  
+
   quantumInteractions?: {
     artifactActivations: {
       artifactId: string;
@@ -288,10 +288,10 @@ export interface PuzzleCollection {
   name: string;
   description: string;
   theme: string;
-  
+
   puzzles: string[]; // Puzzle IDs
   ordering: 'sequential' | 'branching' | 'open' | 'adaptive';
-  
+
   progression: {
     unlockConditions: any;
     completionRewards: any;
@@ -302,7 +302,7 @@ export interface PuzzleCollection {
       artifactMastery?: { [artifactId: string]: number };
     };
   };
-  
+
   analytics: {
     totalAttempts: number;
     completionRate: number;
@@ -319,9 +319,9 @@ export interface PuzzleCollection {
 // Adaptive Difficulty System
 export interface AdaptiveDifficulty {
   playerId: string;
-  currentLevel: number;        // 0-100 skill level
-  confidence: number;          // Confidence in level assessment
-  
+  currentLevel: number; // 0-100 skill level
+  confidence: number; // Confidence in level assessment
+
   performance: {
     recentSolves: {
       puzzleId: string;
@@ -331,7 +331,7 @@ export interface AdaptiveDifficulty {
       score: number;
       timestamp: number;
     }[];
-    
+
     trends: {
       improvementRate: number;
       consistencyScore: number;
@@ -339,14 +339,14 @@ export interface AdaptiveDifficulty {
       struggleAreas: string[];
     };
   };
-  
+
   recommendations: {
     nextDifficulty: PuzzleDifficulty;
     suggestedTypes: PuzzleType[];
     skillGaps: string[];
     practiceAreas: string[];
   };
-  
+
   quantumAptitude: {
     artifactSynergy: { [artifactId: string]: number };
     elementalAffinity: { [element: string]: number };
@@ -364,7 +364,7 @@ export interface PuzzleIntegration {
       atmosphericElements: string[];
     };
   };
-  
+
   storyIntegration: {
     narrativePuzzles: {
       puzzleId: string;
@@ -372,7 +372,7 @@ export interface PuzzleIntegration {
       characterInvolvement: string[];
       plotRelevance: 'minor' | 'major' | 'critical';
     }[];
-    
+
     characterReactions: {
       [characterId: string]: {
         onPuzzleStart: string[];
@@ -382,7 +382,7 @@ export interface PuzzleIntegration {
       };
     };
   };
-  
+
   artifactEvolution: {
     puzzleInfluence: {
       [puzzleId: string]: {
@@ -403,21 +403,21 @@ export interface PuzzleSystemConfig {
     difficultyRange: [PuzzleDifficulty, PuzzleDifficulty];
     progressionRate: number;
   };
-  
+
   generation: {
     proceduralGeneration: boolean;
     templateVariation: number;
     quantumIntegration: boolean;
     customPuzzleSupport: boolean;
   };
-  
+
   presentation: {
     animationSpeed: number;
     hintSystem: boolean;
     progressIndicators: boolean;
     accessibilityMode: boolean;
   };
-  
+
   analytics: {
     trackPerformance: boolean;
     collectFeedback: boolean;
@@ -428,11 +428,18 @@ export interface PuzzleSystemConfig {
 
 // Events and Notifications
 export interface PuzzleEvent {
-  type: 'started' | 'progress' | 'hint_used' | 'mistake' | 'solved' | 'abandoned' | 'quantum_interaction';
+  type:
+    | 'started'
+    | 'progress'
+    | 'hint_used'
+    | 'mistake'
+    | 'solved'
+    | 'abandoned'
+    | 'quantum_interaction';
   puzzleId: string;
   playerId: string;
   timestamp: number;
-  
+
   data: {
     sessionId?: string;
     currentState?: any;
@@ -449,17 +456,22 @@ export interface PuzzleEvent {
 
 export interface PuzzleNotification {
   id: string;
-  type: 'new_puzzle' | 'collection_complete' | 'milestone' | 'difficulty_adjusted' | 'artifact_synergy';
+  type:
+    | 'new_puzzle'
+    | 'collection_complete'
+    | 'milestone'
+    | 'difficulty_adjusted'
+    | 'artifact_synergy';
   title: string;
   message: string;
   priority: 'low' | 'medium' | 'high';
-  
+
   actions?: {
     label: string;
     action: string;
     data?: any;
   }[];
-  
+
   metadata: {
     puzzleId?: string;
     collectionId?: string;

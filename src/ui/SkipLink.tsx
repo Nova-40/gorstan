@@ -6,10 +6,10 @@ interface SkipLinkProps {
   children?: React.ReactNode;
 }
 
-export default function SkipLink({ 
-  href = "#main-content", 
-  className = "",
-  children = "Skip to main content" 
+export default function SkipLink({
+  href = '#main-content',
+  className = '',
+  children = 'Skip to main content',
 }: SkipLinkProps) {
   const skipLinkStyles: React.CSSProperties = {
     position: 'absolute',
@@ -27,7 +27,7 @@ export default function SkipLink({
   };
 
   const skipLinkFocusStyles: React.CSSProperties = {
-    top: '6px'
+    top: '6px',
   };
 
   return (

@@ -3,13 +3,13 @@
  * Definitions for shadow entities, abilities, and encounter configurations
  */
 
-import { 
-  type ShadowEntity, 
-  type ShadowAbility, 
+import {
+  type ShadowEntity,
+  type ShadowAbility,
   type ShadowSystemConfig,
   type RouteSpecificShadowConfig,
   type EncounterDifficulty,
-  type QuantumShadowEffect
+  type QuantumShadowEffect,
 } from '../types/shadowEncounters';
 
 // Shadow Ability Definitions
@@ -25,22 +25,22 @@ export const SHADOW_ABILITIES: Record<string, ShadowAbility> = {
       type: 'phase',
       duration: 8000,
       intensity: 70,
-      target: 'self'
-    }
+      target: 'self',
+    },
   },
 
   whisper_echo: {
     id: 'whisper_echo',
     name: 'Memory Echo',
-    description: 'Repeats the player\'s last action as a ghostly echo',
+    description: "Repeats the player's last action as a ghostly echo",
     energyCost: 15,
     cooldown: 20000,
     effect: {
       type: 'mimic',
       duration: 5000,
       intensity: 30,
-      target: 'player'
-    }
+      target: 'player',
+    },
   },
 
   // Wraith abilities (medium shadows)
@@ -54,8 +54,8 @@ export const SHADOW_ABILITIES: Record<string, ShadowAbility> = {
       type: 'drain',
       duration: 15000,
       intensity: 45,
-      target: 'artifacts'
-    }
+      target: 'artifacts',
+    },
   },
 
   wraith_phase: {
@@ -68,8 +68,8 @@ export const SHADOW_ABILITIES: Record<string, ShadowAbility> = {
       type: 'teleport',
       duration: 3000,
       intensity: 60,
-      target: 'self'
-    }
+      target: 'self',
+    },
   },
 
   // Shade abilities (strong shadows)
@@ -83,8 +83,8 @@ export const SHADOW_ABILITIES: Record<string, ShadowAbility> = {
       type: 'corrupt',
       duration: 20000,
       intensity: 75,
-      target: 'environment'
-    }
+      target: 'environment',
+    },
   },
 
   shade_multiply: {
@@ -97,8 +97,8 @@ export const SHADOW_ABILITIES: Record<string, ShadowAbility> = {
       type: 'multiply',
       duration: 25000,
       intensity: 80,
-      target: 'self'
-    }
+      target: 'self',
+    },
   },
 
   // Umbral abilities (elite shadows)
@@ -112,8 +112,8 @@ export const SHADOW_ABILITIES: Record<string, ShadowAbility> = {
       type: 'silence',
       duration: 30000,
       intensity: 90,
-      target: 'environment'
-    }
+      target: 'environment',
+    },
   },
 
   umbral_corrupt: {
@@ -126,8 +126,8 @@ export const SHADOW_ABILITIES: Record<string, ShadowAbility> = {
       type: 'corrupt',
       duration: 40000,
       intensity: 95,
-      target: 'environment'
-    }
+      target: 'environment',
+    },
   },
 
   // Void Spawn abilities (legendary shadows)
@@ -141,9 +141,9 @@ export const SHADOW_ABILITIES: Record<string, ShadowAbility> = {
       type: 'corrupt',
       duration: 60000,
       intensity: 100,
-      target: 'environment'
-    }
-  }
+      target: 'environment',
+    },
+  },
 };
 
 // Shadow Entity Definitions
@@ -162,7 +162,7 @@ export const SHADOW_ENTITIES: Record<string, ShadowEntity> = {
       manifestation: 15,
       aggression: 10,
       awareness: 30,
-      speed: 40
+      speed: 40,
     },
     behavior: 'curious',
     weaknesses: ['light', 'sound', 'movement'],
@@ -170,16 +170,16 @@ export const SHADOW_ENTITIES: Record<string, ShadowEntity> = {
     spawnConditions: {
       timeInRoom: 30000, // 30 seconds
       playerActions: ['look', 'examine', 'think'],
-      quantumLevel: 0
+      quantumLevel: 0,
     },
     manifestationTriggers: {
       timeThreshold: 45000,
-      playerStress: false
+      playerStress: false,
     },
     rewards: {
       experience: 25,
-      quantumElement: 'void'
-    }
+      quantumElement: 'void',
+    },
   },
 
   lost_whisper: {
@@ -195,7 +195,7 @@ export const SHADOW_ENTITIES: Record<string, ShadowEntity> = {
       manifestation: 20,
       aggression: 5,
       awareness: 25,
-      speed: 35
+      speed: 35,
     },
     behavior: 'passive',
     weaknesses: ['light', 'time', 'resonance'],
@@ -203,14 +203,14 @@ export const SHADOW_ENTITIES: Record<string, ShadowEntity> = {
     spawnConditions: {
       timeInRoom: 60000,
       playerActions: ['say', 'tell', 'ask'],
-      quantumLevel: 0
+      quantumLevel: 0,
     },
     manifestationTriggers: {
-      timeThreshold: 90000
+      timeThreshold: 90000,
     },
     rewards: {
-      experience: 20
-    }
+      experience: 20,
+    },
   },
 
   // Wraith Entities (Tier 2)
@@ -227,7 +227,7 @@ export const SHADOW_ENTITIES: Record<string, ShadowEntity> = {
       manifestation: 45,
       aggression: 30,
       awareness: 50,
-      speed: 60
+      speed: 60,
     },
     behavior: 'curious',
     weaknesses: ['quantum', 'artifacts', 'resonance'],
@@ -235,24 +235,24 @@ export const SHADOW_ENTITIES: Record<string, ShadowEntity> = {
     spawnConditions: {
       timeInRoom: 120000,
       quantumLevel: 2,
-      artifactPresence: ['void_fragment', 'flux_crystal']
+      artifactPresence: ['void_fragment', 'flux_crystal'],
     },
     manifestationTriggers: {
       quantumActivity: true,
-      playerStress: true
+      playerStress: true,
     },
     rewards: {
       experience: 60,
       quantumElement: 'flux',
-      artifactDiscoveryBonus: 10
-    }
+      artifactDiscoveryBonus: 10,
+    },
   },
 
   echo_wraith: {
     id: 'echo_wraith',
     type: 'wraith',
     name: 'Echo Wraith',
-    description: 'Mirrors the player\'s actions with spectral precision',
+    description: "Mirrors the player's actions with spectral precision",
     stats: {
       health: 60,
       maxHealth: 60,
@@ -261,7 +261,7 @@ export const SHADOW_ENTITIES: Record<string, ShadowEntity> = {
       manifestation: 50,
       aggression: 20,
       awareness: 70,
-      speed: 55
+      speed: 55,
     },
     behavior: 'mimic',
     weaknesses: ['movement', 'artifacts'],
@@ -269,15 +269,15 @@ export const SHADOW_ENTITIES: Record<string, ShadowEntity> = {
     spawnConditions: {
       timeInRoom: 90000,
       playerActions: ['move', 'go', 'walk'],
-      quantumLevel: 1
+      quantumLevel: 1,
     },
     manifestationTriggers: {
-      playerStress: true
+      playerStress: true,
     },
     rewards: {
       experience: 50,
-      quantumElement: 'resonance'
-    }
+      quantumElement: 'resonance',
+    },
   },
 
   // Shade Entities (Tier 3)
@@ -294,7 +294,7 @@ export const SHADOW_ENTITIES: Record<string, ShadowEntity> = {
       manifestation: 75,
       aggression: 60,
       awareness: 80,
-      speed: 45
+      speed: 45,
     },
     behavior: 'territorial',
     weaknesses: ['light', 'quantum'],
@@ -302,18 +302,18 @@ export const SHADOW_ENTITIES: Record<string, ShadowEntity> = {
     spawnConditions: {
       timeInRoom: 300000, // 5 minutes
       quantumLevel: 5,
-      routeSpecific: ['short30_mystery', 'short30_puzzle', 'full']
+      routeSpecific: ['short30_mystery', 'short30_puzzle', 'full'],
     },
     manifestationTriggers: {
       timeThreshold: 180000,
       quantumActivity: true,
-      lowLight: true
+      lowLight: true,
     },
     rewards: {
       experience: 120,
       quantumElement: 'entropy',
-      artifactDiscoveryBonus: 25
-    }
+      artifactDiscoveryBonus: 25,
+    },
   },
 
   collective_shade: {
@@ -329,7 +329,7 @@ export const SHADOW_ENTITIES: Record<string, ShadowEntity> = {
       manifestation: 60,
       aggression: 45,
       awareness: 90,
-      speed: 70
+      speed: 70,
     },
     behavior: 'collective',
     weaknesses: ['resonance', 'artifacts'],
@@ -337,17 +337,17 @@ export const SHADOW_ENTITIES: Record<string, ShadowEntity> = {
     spawnConditions: {
       timeInRoom: 240000,
       quantumLevel: 4,
-      artifactPresence: ['resonance_tuner', 'entropy_lens']
+      artifactPresence: ['resonance_tuner', 'entropy_lens'],
     },
     manifestationTriggers: {
       quantumActivity: true,
-      playerStress: true
+      playerStress: true,
     },
     rewards: {
       experience: 100,
       quantumElement: 'nexus',
-      artifactDiscoveryBonus: 20
-    }
+      artifactDiscoveryBonus: 20,
+    },
   },
 
   // Umbral Entities (Tier 4)
@@ -364,7 +364,7 @@ export const SHADOW_ENTITIES: Record<string, ShadowEntity> = {
       manifestation: 90,
       aggression: 80,
       awareness: 95,
-      speed: 80
+      speed: 80,
     },
     behavior: 'aggressive',
     weaknesses: ['artifacts'],
@@ -373,18 +373,18 @@ export const SHADOW_ENTITIES: Record<string, ShadowEntity> = {
       timeInRoom: 600000, // 10 minutes
       quantumLevel: 8,
       artifactPresence: ['nexus_stabilizer', 'reality_anchor'],
-      routeSpecific: ['full']
+      routeSpecific: ['full'],
     },
     manifestationTriggers: {
       quantumActivity: true,
       lowLight: true,
-      playerStress: true
+      playerStress: true,
     },
     rewards: {
       experience: 250,
       quantumElement: 'void',
-      artifactDiscoveryBonus: 50
-    }
+      artifactDiscoveryBonus: 50,
+    },
   },
 
   // Void Spawn Entities (Tier 5)
@@ -401,7 +401,7 @@ export const SHADOW_ENTITIES: Record<string, ShadowEntity> = {
       manifestation: 100,
       aggression: 95,
       awareness: 100,
-      speed: 60
+      speed: 60,
     },
     behavior: 'phase',
     weaknesses: ['artifacts', 'quantum'],
@@ -410,20 +410,20 @@ export const SHADOW_ENTITIES: Record<string, ShadowEntity> = {
       timeInRoom: 1200000, // 20 minutes
       quantumLevel: 15,
       artifactPresence: ['quantum_core'],
-      routeSpecific: ['full']
+      routeSpecific: ['full'],
     },
     manifestationTriggers: {
       quantumActivity: true,
       lowLight: true,
       playerStress: true,
-      timeThreshold: 900000
+      timeThreshold: 900000,
     },
     rewards: {
       experience: 500,
       quantumElement: 'nexus',
-      artifactDiscoveryBonus: 100
-    }
-  }
+      artifactDiscoveryBonus: 100,
+    },
+  },
 };
 
 // Default Shadow System Configuration
@@ -436,7 +436,7 @@ export const DEFAULT_SHADOW_CONFIG: ShadowSystemConfig = {
   adaptiveDifficulty: true,
   fearSystem: true,
   persistentEncounters: true,
-  encounterTimeout: 300000 // 5 minutes
+  encounterTimeout: 300000, // 5 minutes
 };
 
 // Route-Specific Shadow Configurations
@@ -449,8 +449,8 @@ export const ROUTE_SHADOW_CONFIGS: RouteSpecificShadowConfig[] = [
     specialConditions: {
       timeBasedSpawns: true,
       progressionGated: false,
-      quantumRequired: false
-    }
+      quantumRequired: false,
+    },
   },
   {
     routeId: 'short10_adventure',
@@ -459,8 +459,8 @@ export const ROUTE_SHADOW_CONFIGS: RouteSpecificShadowConfig[] = [
     difficultyModifier: 0.9,
     specialConditions: {
       timeBasedSpawns: true,
-      quantumRequired: false
-    }
+      quantumRequired: false,
+    },
   },
   {
     routeId: 'short10_mystery',
@@ -469,8 +469,8 @@ export const ROUTE_SHADOW_CONFIGS: RouteSpecificShadowConfig[] = [
     difficultyModifier: 1.0,
     specialConditions: {
       timeBasedSpawns: true,
-      quantumRequired: true
-    }
+      quantumRequired: true,
+    },
   },
   {
     routeId: 'short30_adventure',
@@ -480,8 +480,8 @@ export const ROUTE_SHADOW_CONFIGS: RouteSpecificShadowConfig[] = [
     specialConditions: {
       timeBasedSpawns: true,
       progressionGated: true,
-      quantumRequired: true
-    }
+      quantumRequired: true,
+    },
   },
   {
     routeId: 'short30_mystery',
@@ -491,8 +491,8 @@ export const ROUTE_SHADOW_CONFIGS: RouteSpecificShadowConfig[] = [
     specialConditions: {
       timeBasedSpawns: true,
       progressionGated: true,
-      quantumRequired: true
-    }
+      quantumRequired: true,
+    },
   },
   {
     routeId: 'short30_puzzle',
@@ -502,8 +502,8 @@ export const ROUTE_SHADOW_CONFIGS: RouteSpecificShadowConfig[] = [
     specialConditions: {
       timeBasedSpawns: false,
       progressionGated: true,
-      quantumRequired: true
-    }
+      quantumRequired: true,
+    },
   },
   {
     routeId: 'full',
@@ -513,9 +513,9 @@ export const ROUTE_SHADOW_CONFIGS: RouteSpecificShadowConfig[] = [
     specialConditions: {
       timeBasedSpawns: true,
       progressionGated: true,
-      quantumRequired: true
-    }
-  }
+      quantumRequired: true,
+    },
+  },
 ];
 
 // Difficulty Scaling Configurations
@@ -525,29 +525,29 @@ export const DIFFICULTY_CONFIGS: Record<string, EncounterDifficulty> = {
     difficultyMultiplier: 0.6,
     maxConcurrentEncounters: 1,
     stressDecayRate: 2.0,
-    quantumInterference: 0.8
+    quantumInterference: 0.8,
   },
   normal: {
     baseSpawnRate: 0.1,
     difficultyMultiplier: 1.0,
     maxConcurrentEncounters: 2,
     stressDecayRate: 1.0,
-    quantumInterference: 1.0
+    quantumInterference: 1.0,
   },
   challenging: {
     baseSpawnRate: 0.15,
     difficultyMultiplier: 1.4,
     maxConcurrentEncounters: 3,
     stressDecayRate: 0.7,
-    quantumInterference: 1.2
+    quantumInterference: 1.2,
   },
   expert: {
     baseSpawnRate: 0.2,
     difficultyMultiplier: 1.8,
     maxConcurrentEncounters: 4,
     stressDecayRate: 0.5,
-    quantumInterference: 1.5
-  }
+    quantumInterference: 1.5,
+  },
 };
 
 // Quantum Artifact Effects on Shadows
@@ -558,7 +558,7 @@ export const QUANTUM_SHADOW_EFFECTS: Record<string, QuantumShadowEffect> = {
     effectiveness: 30,
     duration: 15000,
     energyCost: 10,
-    description: 'Creates a small void field that makes shadows uncomfortable'
+    description: 'Creates a small void field that makes shadows uncomfortable',
   },
   flux_crystal_reveal: {
     artifactId: 'flux_crystal',
@@ -566,7 +566,7 @@ export const QUANTUM_SHADOW_EFFECTS: Record<string, QuantumShadowEffect> = {
     effectiveness: 50,
     duration: 20000,
     energyCost: 15,
-    description: 'Flux energy illuminates hidden shadow entities'
+    description: 'Flux energy illuminates hidden shadow entities',
   },
   resonance_tuner_communicate: {
     artifactId: 'resonance_tuner',
@@ -574,7 +574,7 @@ export const QUANTUM_SHADOW_EFFECTS: Record<string, QuantumShadowEffect> = {
     effectiveness: 60,
     duration: 30000,
     energyCost: 20,
-    description: 'Enables limited communication with shadow entities'
+    description: 'Enables limited communication with shadow entities',
   },
   entropy_lens_study: {
     artifactId: 'entropy_lens',
@@ -582,7 +582,7 @@ export const QUANTUM_SHADOW_EFFECTS: Record<string, QuantumShadowEffect> = {
     effectiveness: 70,
     duration: 25000,
     energyCost: 25,
-    description: 'Reveals shadow weaknesses and behavioral patterns'
+    description: 'Reveals shadow weaknesses and behavioral patterns',
   },
   nexus_stabilizer_weaken: {
     artifactId: 'nexus_stabilizer',
@@ -590,7 +590,7 @@ export const QUANTUM_SHADOW_EFFECTS: Record<string, QuantumShadowEffect> = {
     effectiveness: 80,
     duration: 40000,
     energyCost: 35,
-    description: 'Disrupts shadow manifestation and reduces their power'
+    description: 'Disrupts shadow manifestation and reduces their power',
   },
   reality_anchor_banish: {
     artifactId: 'reality_anchor',
@@ -598,7 +598,7 @@ export const QUANTUM_SHADOW_EFFECTS: Record<string, QuantumShadowEffect> = {
     effectiveness: 90,
     duration: 60000,
     energyCost: 50,
-    description: 'Anchors reality, making it impossible for shadows to manifest'
+    description: 'Anchors reality, making it impossible for shadows to manifest',
   },
   quantum_core_banish: {
     artifactId: 'quantum_core',
@@ -606,6 +606,6 @@ export const QUANTUM_SHADOW_EFFECTS: Record<string, QuantumShadowEffect> = {
     effectiveness: 100,
     duration: 120000,
     energyCost: 75,
-    description: 'Creates a quantum field that completely banishes all shadow entities'
-  }
+    description: 'Creates a quantum field that completely banishes all shadow entities',
+  },
 };

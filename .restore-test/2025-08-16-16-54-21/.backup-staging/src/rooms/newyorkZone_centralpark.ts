@@ -19,20 +19,12 @@
 
 import { Room } from '../types/Room';
 
-
-
-
-
-
-
-
-
 const centralpark: Room = {
   id: 'centralpark',
   zone: 'newyorkZone',
   title: 'Central Park - New York City',
   description: [
-    'You emerge from the portal into the heart of Central Park, New York City. The transition from London\'s Thames-side dock to Manhattan\'s green oasis is jarring but somehow feels natural.',
+    "You emerge from the portal into the heart of Central Park, New York City. The transition from London's Thames-side dock to Manhattan's green oasis is jarring but somehow feels natural.",
     'Tall skyscrapers frame the park on all sides, their glass and steel facades a stark contrast to the ancient trees and winding paths. Joggers, dog walkers, and tourists move through the space with typical New York energy.',
     'That persistent feeling of being watched has followed you across the Atlantic - perhaps even intensified. Eyes seem to track your every movement from the shadows between trees and from behind park benches.',
     'A piece of paper on the ground catches your attention, held down by a smooth stone to prevent it from blowing away in the Manhattan breeze. Even from here, you can see a single word written on it in bold letters - your name.',
@@ -57,8 +49,8 @@ const centralpark: Room = {
     west: 'burgerjoint',
     east: 'aevirawarehouse',
     south: 'manhattenhub',
-    
-    'portal': 'stkatherinesdock',
+
+    portal: 'stkatherinesdock',
   },
 
   items: [
@@ -71,41 +63,45 @@ const centralpark: Room = {
   ],
 
   interactables: {
-    'personal_note': {
-      description: 'A folded piece of paper with your name clearly visible on the outside. The handwriting looks familiar but you can\'t place it.',
+    personal_note: {
+      description:
+        "A folded piece of paper with your name clearly visible on the outside. The handwriting looks familiar but you can't place it.",
       actions: ['examine', 'read', 'pick_up', 'study_handwriting'],
       requires: [],
     },
-    'message_stone': {
-      description: 'A smooth, dark stone that was holding down the note. It feels warm to the touch and seems to pulse with subtle energy.',
+    message_stone: {
+      description:
+        'A smooth, dark stone that was holding down the note. It feels warm to the touch and seems to pulse with subtle energy.',
       actions: ['examine', 'pick_up', 'feel_warmth', 'sense_energy'],
       requires: [],
     },
-    'watching_shadows': {
-      description: 'Dark shapes that seem to move independently between the trees and benches. The watchers from London have followed you here.',
+    watching_shadows: {
+      description:
+        'Dark shapes that seem to move independently between the trees and benches. The watchers from London have followed you here.',
       actions: ['observe', 'try_to_spot', 'acknowledge_presence', 'call_out'],
       requires: [],
     },
-    'manhattan_skyline': {
-      description: 'The iconic New York City skyline surrounds the park, a testament to human ambition reaching toward the sky.',
+    manhattan_skyline: {
+      description:
+        'The iconic New York City skyline surrounds the park, a testament to human ambition reaching toward the sky.',
       actions: ['examine', 'admire', 'orient_yourself', 'identify_buildings'],
       requires: [],
     },
-    'park_benches': {
-      description: 'Typical New York park benches where people sit to rest, read, or watch the world go by. Some seem to have watchers lingering nearby.',
+    park_benches: {
+      description:
+        'Typical New York park benches where people sit to rest, read, or watch the world go by. Some seem to have watchers lingering nearby.',
       actions: ['examine', 'sit', 'check_for_observers', 'rest'],
       requires: [],
     },
-    'busy_pathways': {
-      description: 'Central Park\'s paths are filled with the constant flow of New Yorkers and tourists going about their daily routines.',
+    busy_pathways: {
+      description:
+        "Central Park's paths are filled with the constant flow of New Yorkers and tourists going about their daily routines.",
       actions: ['observe', 'join_flow', 'people_watch', 'blend_in'],
       requires: [],
     },
   },
 
-  npcs: [
-    
-  ],
+  npcs: [],
 
   events: {
     onEnter: ['confirmPortalArrival', 'activateNYCWatchers', 'revealPersonalNote'],
@@ -132,7 +128,7 @@ const centralpark: Room = {
       'Investigate the Message Stone',
       'Acknowledge the Watching Entities',
       'Follow the Burger Joint Instructions',
-      'Understand Why You\'re Being Watched',
+      "Understand Why You're Being Watched",
     ],
   },
 
@@ -145,7 +141,7 @@ const centralpark: Room = {
       'park_visitors_chatter',
       'city_birds_calls',
       'footsteps_on_paths',
-      'watchful_silence'
+      'watchful_silence',
     ],
     hazards: ['continued_surveillance_risk', 'urban_environment_challenges'],
   },
@@ -177,7 +173,7 @@ const centralpark: Room = {
 
   secrets: {
     note_author: {
-      description: 'Who wrote the personal note and how they knew you\'d arrive here',
+      description: "Who wrote the personal note and how they knew you'd arrive here",
       requirements: ['study handwriting thoroughly', 'examine message_stone'],
       rewards: ['author_identity_clue', 'connection_understanding'],
     },
@@ -194,17 +190,21 @@ const centralpark: Room = {
   },
 
   customActions: {
-    'read_full_note': {
+    read_full_note: {
       description: 'Read the complete message and instructions for the burger joint',
       requirements: ['pick up personal_note'],
       effects: ['reveal_burger_joint_mission', 'gain_password_aevira', 'understand_next_step'],
     },
-    'acknowledge_watchers': {
+    acknowledge_watchers: {
       description: 'Directly acknowledge the entities that have followed you to New York',
       requirements: ['observe watching_shadows'],
-      effects: ['establish_watcher_communication', 'understand_surveillance_reason', 'gain_protection_or_warning'],
+      effects: [
+        'establish_watcher_communication',
+        'understand_surveillance_reason',
+        'gain_protection_or_warning',
+      ],
     },
-    'prepare_for_burger_joint': {
+    prepare_for_burger_joint: {
       description: 'Mentally prepare for the mission at 233 Bleecker Street',
       requirements: ['read_full_note', 'understand_instructions'],
       effects: ['mission_clarity', 'password_memorized', 'direction_confirmed'],
@@ -213,5 +213,3 @@ const centralpark: Room = {
 };
 
 export default centralpark;
-
-

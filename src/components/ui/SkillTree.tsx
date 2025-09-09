@@ -48,35 +48,29 @@ const SkillNode: React.FC<SkillNodeProps> = ({
   onSelect,
   onUpgrade,
 }) => {
-  const experiencePercent = skill.experienceToNext > 0 
-    ? Math.round((skill.experience / skill.experienceToNext) * 100)
-    : 100;
+  const experiencePercent =
+    skill.experienceToNext > 0
+      ? Math.round((skill.experience / skill.experienceToNext) * 100)
+      : 100;
 
   return (
-    <Card 
-      variant={isUnlocked ? "elevated" : "outlined"}
+    <Card
+      variant={isUnlocked ? 'elevated' : 'outlined'}
       className={cn(
         'skill-node cursor-pointer transition-all duration-200',
         isUnlocked ? 'hover:shadow-elevation-lg' : 'opacity-60 hover:opacity-80',
-        !isUnlocked && 'border-dashed'
+        !isUnlocked && 'border-dashed',
       )}
       onClick={() => onSelect?.(skill)}
     >
       <div className="p-space-4">
         {/* Header */}
         <div className="flex items-center gap-space-3 mb-space-3">
-          <div className="text-2xl">
-            {elementIcons[skill.element]}
-          </div>
+          <div className="text-2xl">{elementIcons[skill.element]}</div>
           <div className="flex-1">
-            <h4 className="text-heading-xs font-semibold text-color-text-primary">
-              {skill.name}
-            </h4>
+            <h4 className="text-heading-xs font-semibold text-color-text-primary">{skill.name}</h4>
             <div className="flex items-center gap-space-2 mt-space-1">
-              <Badge 
-                variant="outline" 
-                className={cn('text-xs', categoryColors[skill.category])}
-              >
+              <Badge variant="outline" className={cn('text-xs', categoryColors[skill.category])}>
                 {skill.category}
               </Badge>
               {isUnlocked && (
@@ -89,19 +83,19 @@ const SkillNode: React.FC<SkillNodeProps> = ({
         </div>
 
         {/* Description */}
-        <p className="text-body-xs text-color-text-secondary mb-space-3">
-          {skill.description}
-        </p>
+        <p className="text-body-xs text-color-text-secondary mb-space-3">{skill.description}</p>
 
         {/* Progress (if unlocked) */}
         {isUnlocked && skill.currentLevel < skill.maxLevel && (
           <div className="mb-space-3">
             <div className="flex items-center justify-between text-body-xs text-color-text-tertiary mb-space-1">
               <span>Experience</span>
-              <span>{skill.experience}/{skill.experienceToNext}</span>
+              <span>
+                {skill.experience}/{skill.experienceToNext}
+              </span>
             </div>
             <div className="w-full bg-color-surface-elevated rounded-full h-1.5">
-              <div 
+              <div
                 className="bg-color-primary h-1.5 rounded-full transition-all duration-300"
                 style={{ width: `${experiencePercent}%` }}
               />
@@ -164,26 +158,26 @@ const SkillNode: React.FC<SkillNodeProps> = ({
   );
 };
 
-export const SkillTree: React.FC<SkillTreeProps> = ({
-  skills,
-  onSkillSelect,
-  className,
-}) => {
+export const SkillTree: React.FC<SkillTreeProps> = ({ skills, onSkillSelect, className }) => {
   const [selectedSkill, setSelectedSkill] = useState<QuantumSkill | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<SkillCategory | 'all'>('all');
 
   // Group skills by category
-  const skillsByCategory = Array.from(skills.values()).reduce((acc, skill) => {
-    if (!acc[skill.category]) {
-      acc[skill.category] = [];
-    }
-    acc[skill.category].push(skill);
-    return acc;
-  }, {} as Record<SkillCategory, QuantumSkill[]>);
+  const skillsByCategory = Array.from(skills.values()).reduce(
+    (acc, skill) => {
+      if (!acc[skill.category]) {
+        acc[skill.category] = [];
+      }
+      acc[skill.category].push(skill);
+      return acc;
+    },
+    {} as Record<SkillCategory, QuantumSkill[]>,
+  );
 
-  const filteredSkills = selectedCategory === 'all' 
-    ? Array.from(skills.values())
-    : skillsByCategory[selectedCategory] || [];
+  const filteredSkills =
+    selectedCategory === 'all'
+      ? Array.from(skills.values())
+      : skillsByCategory[selectedCategory] || [];
 
   const handleSkillSelect = (skill: QuantumSkill) => {
     setSelectedSkill(skill);
@@ -221,7 +215,7 @@ export const SkillTree: React.FC<SkillTreeProps> = ({
                 size="sm"
                 onClick={() => setSelectedCategory(category as SkillCategory)}
                 className={cn(
-                  selectedCategory === category && categoryColors[category as SkillCategory]
+                  selectedCategory === category && categoryColors[category as SkillCategory],
                 )}
               >
                 {category.charAt(0).toUpperCase() + category.slice(1)}
@@ -251,10 +245,9 @@ export const SkillTree: React.FC<SkillTreeProps> = ({
               No Skills Available
             </h4>
             <p className="text-body-md text-color-text-secondary">
-              {selectedCategory === 'all' 
+              {selectedCategory === 'all'
                 ? 'Discover artifacts to unlock your first quantum skills!'
-                : `No ${selectedCategory} skills unlocked yet.`
-              }
+                : `No ${selectedCategory} skills unlocked yet.`}
             </p>
           </div>
         )}
@@ -271,14 +264,9 @@ export const SkillTree: React.FC<SkillTreeProps> = ({
           <div className="space-y-space-4">
             {/* Element and Category */}
             <div className="flex items-center gap-space-3">
-              <div className="text-3xl">
-                {elementIcons[selectedSkill.element]}
-              </div>
+              <div className="text-3xl">{elementIcons[selectedSkill.element]}</div>
               <div>
-                <Badge 
-                  variant="outline" 
-                  className={categoryColors[selectedSkill.category]}
-                >
+                <Badge variant="outline" className={categoryColors[selectedSkill.category]}>
                   {selectedSkill.category}
                 </Badge>
                 <Badge variant="secondary" className="ml-space-2">
@@ -288,9 +276,7 @@ export const SkillTree: React.FC<SkillTreeProps> = ({
             </div>
 
             {/* Description */}
-            <p className="text-body-md text-color-text-secondary">
-              {selectedSkill.description}
-            </p>
+            <p className="text-body-md text-color-text-secondary">{selectedSkill.description}</p>
 
             {/* Progression Info */}
             <div className="grid grid-cols-2 gap-space-4">
@@ -323,9 +309,7 @@ export const SkillTree: React.FC<SkillTreeProps> = ({
                     <h6 className="font-medium text-color-text-primary">
                       {effect.type.replace(/_/g, ' ').toUpperCase()}
                     </h6>
-                    <p className="text-body-sm text-color-text-secondary">
-                      {effect.description}
-                    </p>
+                    <p className="text-body-sm text-color-text-secondary">{effect.description}</p>
                     {effect.conditions && effect.conditions.length > 0 && (
                       <p className="text-body-xs text-color-text-tertiary mt-space-1">
                         Conditions: {effect.conditions.join(', ')}
@@ -367,9 +351,7 @@ export const SkillTree: React.FC<SkillTreeProps> = ({
             </div>
 
             <div className="flex justify-end">
-              <Button onClick={() => setSelectedSkill(null)}>
-                Close
-              </Button>
+              <Button onClick={() => setSelectedSkill(null)}>Close</Button>
             </div>
           </div>
         )}

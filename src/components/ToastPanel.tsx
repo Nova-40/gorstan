@@ -37,12 +37,14 @@ export default function ToastPanel({ message, type = 'info', onClear }: ToastPan
       const timeout = setTimeout(() => {
         onClear();
       }, 3000);
-      
+
       return () => clearTimeout(timeout);
     }
   }, [message, onClear]);
 
-  if (!message) return null;
+  if (!message) {
+    return null;
+  }
 
   return (
     <div

@@ -21,83 +21,67 @@ import React, { useState, useEffect } from 'react';
 
 import { useGameState } from '../state/gameState';
 
-
-
-
-
-
-
-
-
-
 const RoomRenderer: React.FC = () => {
   const { state, dispatch } = useGameState();
-// Variable declaration
+  // Variable declaration
   const room = state.roomMap?.[state.currentRoomId];
-// React state declaration
+  // React state declaration
   const [_looked, setLooked] = useState(false);
   const [lastRoomId, setLastRoomId] = useState<string | null>(null);
 
-// React effect hook
+  // React effect hook
   useEffect(() => {
     setLooked(false);
 
-    
     if (room && room.id !== lastRoomId) {
       setLastRoomId(room.id);
 
-// Variable declaration
+      // Variable declaration
       const descriptionLines = Array.isArray(room.description)
         ? room.description
         : [room.description ?? 'You see nothing of note.'];
 
-      
-// Variable declaration
+      // Variable declaration
       const entryMessages = [
         { text: `--- ${room.title} ---`, type: 'narrative' },
-        ...descriptionLines.map(line => ({ text: line, type: 'narrative' }))
+        ...descriptionLines.map((line) => ({ text: line, type: 'narrative' })),
       ];
 
-      
       if (room.consoleIntro && room.consoleIntro.length > 0) {
-        
-// Variable declaration
+        // Variable declaration
         const interpolateText = (text: string): string => {
           return text.replace(/\{\{PLAYER_NAME\}\}/g, state.player?.name || 'Player');
         };
 
-// Variable declaration
+        // Variable declaration
         const consoleIntroMessages = [
-          { text: '', type: 'system' }, 
+          { text: '', type: 'system' },
           { text: `=== ${room.title.toUpperCase()} ===`, type: 'system' },
-          ...room.consoleIntro.map(line => ({ text: interpolateText(line), type: 'system' })),
-          { text: '', type: 'system' } 
+          ...room.consoleIntro.map((line) => ({ text: interpolateText(line), type: 'system' })),
+          { text: '', type: 'system' },
         ];
         entryMessages.push(...consoleIntroMessages);
       }
 
-      
-// Variable declaration
-      const roomData = room as any; 
+      // Variable declaration
+      const roomData = room as any;
       if (roomData.traps && roomData.traps.length > 0 && !state.player?.flags?.trapsDisabled) {
-        
-// Variable declaration
+        // Variable declaration
         const activeTrap = roomData.traps.find((trap: any) => !trap.triggered);
         if (activeTrap) {
           dispatch({ type: 'TRIGGER_TRAP', payload: activeTrap });
         }
       }
 
-      
-// Variable declaration
+      // Variable declaration
       const entryTimestamp = Date.now();
       entryMessages.forEach((msg, index) => {
-// Variable declaration
+        // Variable declaration
         const message = {
           id: `room-entry-${room.id}-${entryTimestamp}-${index}`,
           text: msg.text,
           type: msg.type as any,
-          timestamp: entryTimestamp + index, 
+          timestamp: entryTimestamp + index,
         };
         dispatch({ type: 'RECORD_MESSAGE', payload: message });
       });
@@ -105,7 +89,7 @@ const RoomRenderer: React.FC = () => {
   }, [room?.id, lastRoomId, room, dispatch]);
 
   if (!room || !room.id) {
-// JSX return block or main return
+    // JSX return block or main return
     return (
       <div className="room-container p-4 text-center text-red-500">
         Error: No room data available.
@@ -116,8 +100,7 @@ const RoomRenderer: React.FC = () => {
     );
   }
 
-
-// JSX return block or main return
+  // JSX return block or main return
   return (
     <div className="room-container flex flex-col h-full bg-black rounded-lg shadow-inner overflow-hidden border border-green-600">
       {}

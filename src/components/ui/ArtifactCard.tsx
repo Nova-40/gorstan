@@ -47,9 +47,10 @@ export const ArtifactCard: React.FC<ArtifactCardProps> = ({
   compact = false,
   className,
 }) => {
-  const experiencePercent = artifact.maxLevel > 1 
-    ? Math.round((artifact.experience / (artifact.level * 200 + 100)) * 100)
-    : 100;
+  const experiencePercent =
+    artifact.maxLevel > 1
+      ? Math.round((artifact.experience / (artifact.level * 200 + 100)) * 100)
+      : 100;
 
   const handleToggleActive = () => {
     if (isActive) {
@@ -61,41 +62,38 @@ export const ArtifactCard: React.FC<ArtifactCardProps> = ({
 
   if (compact) {
     return (
-      <div className={cn(
-        'artifact-card-compact',
-        'flex items-center gap-space-3 p-space-3 rounded-lg border',
-        tierStyles[artifact.tier],
-        isActive ? 'bg-color-surface-elevated' : 'bg-color-surface',
-        className
-      )}>
+      <div
+        className={cn(
+          'artifact-card-compact',
+          'flex items-center gap-space-3 p-space-3 rounded-lg border',
+          tierStyles[artifact.tier],
+          isActive ? 'bg-color-surface-elevated' : 'bg-color-surface',
+          className,
+        )}
+      >
         {/* Element indicator */}
-        <div className={cn(
-          'w-4 h-4 rounded-full',
-          elementColors[artifact.element]
-        )} />
-        
+        <div className={cn('w-4 h-4 rounded-full', elementColors[artifact.element])} />
+
         {/* Info */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-space-2">
-            <span className="font-medium text-color-text-primary truncate">
-              {artifact.name}
-            </span>
+            <span className="font-medium text-color-text-primary truncate">{artifact.name}</span>
             <Badge variant="outline" className="text-xs">
               Lv.{artifact.level}
             </Badge>
           </div>
-          <p className="text-body-xs text-color-text-secondary truncate">
-            {artifact.description}
-          </p>
+          <p className="text-body-xs text-color-text-secondary truncate">{artifact.description}</p>
         </div>
 
         {/* Status */}
         <div className="flex items-center gap-space-2">
           {isActive && (
-            <Badge variant="success" className="text-xs">Active</Badge>
+            <Badge variant="success" className="text-xs">
+              Active
+            </Badge>
           )}
           <Button
-            variant={isActive ? "outline" : "primary"}
+            variant={isActive ? 'outline' : 'primary'}
             size="sm"
             onClick={handleToggleActive}
             disabled={!isActive && !canActivate}
@@ -108,23 +106,25 @@ export const ArtifactCard: React.FC<ArtifactCardProps> = ({
   }
 
   return (
-    <Card 
-      variant={isActive ? "elevated" : "outlined"}
+    <Card
+      variant={isActive ? 'elevated' : 'outlined'}
       className={cn(
         'artifact-card',
         tierStyles[artifact.tier],
         isActive && 'ring-2 ring-color-primary',
-        className
+        className,
       )}
     >
       <div className="p-space-4">
         {/* Header */}
         <div className="flex items-start justify-between mb-space-3">
           <div className="flex items-center gap-space-3">
-            <div className={cn(
-              'w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold',
-              elementColors[artifact.element]
-            )}>
+            <div
+              className={cn(
+                'w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold',
+                elementColors[artifact.element],
+              )}
+            >
               {artifact.element[0].toUpperCase()}
             </div>
             <div>
@@ -135,21 +135,15 @@ export const ArtifactCard: React.FC<ArtifactCardProps> = ({
                 <Badge variant="outline">
                   {artifact.tier.charAt(0).toUpperCase() + artifact.tier.slice(1)}
                 </Badge>
-                <Badge variant="secondary">
-                  Level {artifact.level}
-                </Badge>
-                {isActive && (
-                  <Badge variant="success">Active</Badge>
-                )}
+                <Badge variant="secondary">Level {artifact.level}</Badge>
+                {isActive && <Badge variant="success">Active</Badge>}
               </div>
             </div>
           </div>
         </div>
 
         {/* Description */}
-        <p className="text-body-sm text-color-text-secondary mb-space-4">
-          {artifact.description}
-        </p>
+        <p className="text-body-sm text-color-text-secondary mb-space-4">{artifact.description}</p>
 
         {/* Experience Progress */}
         {artifact.maxLevel > 1 && (
@@ -159,7 +153,7 @@ export const ArtifactCard: React.FC<ArtifactCardProps> = ({
               <span>{experiencePercent}%</span>
             </div>
             <div className="w-full bg-color-surface-elevated rounded-full h-2">
-              <div 
+              <div
                 className="bg-color-primary h-2 rounded-full transition-all duration-300"
                 style={{ width: `${experiencePercent}%` }}
               />
@@ -169,9 +163,7 @@ export const ArtifactCard: React.FC<ArtifactCardProps> = ({
 
         {/* Effects */}
         <div className="mb-space-4">
-          <h4 className="text-body-sm font-medium text-color-text-primary mb-space-2">
-            Effects:
-          </h4>
+          <h4 className="text-body-sm font-medium text-color-text-primary mb-space-2">Effects:</h4>
           <div className="space-y-space-1">
             {artifact.effects.map((effect, index) => (
               <div key={index} className="text-body-xs text-color-text-secondary">
@@ -208,20 +200,17 @@ export const ArtifactCard: React.FC<ArtifactCardProps> = ({
         {/* Actions */}
         <div className="flex gap-space-3">
           <Button
-            variant={isActive ? "outline" : "primary"}
+            variant={isActive ? 'outline' : 'primary'}
             onClick={handleToggleActive}
             disabled={!isActive && !canActivate}
             className="flex-1"
           >
             {isActive ? 'Deactivate' : 'Activate'}
           </Button>
-          
+
           {onViewDetails && (
             <Tooltip content="View detailed lore and mechanics">
-              <Button
-                variant="ghost"
-                onClick={() => onViewDetails(artifact)}
-              >
+              <Button variant="ghost" onClick={() => onViewDetails(artifact)}>
                 Details
               </Button>
             </Tooltip>

@@ -17,7 +17,6 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Renders room descriptions and image logic.
 
-import { NPC } from '../types/NPCTypes';
 
 import { Room } from 'src/types/Room';
 

@@ -21,7 +21,9 @@ export const healScroll: Item = {
   description: 'A scroll containing the secrets to casting a healing spell.',
   effect: (player) => {
     player.health += 25;
-    if (player.health > 100) player.health = 100;
+    if (player.health > 100) {
+      player.health = 100;
+    }
     console.log('Heal applied to player');
   },
 };

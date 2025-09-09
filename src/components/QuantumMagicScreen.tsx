@@ -53,22 +53,26 @@ export const QuantumMagicScreen: React.FC<QuantumMagicScreenProps> = ({
   };
 
   // Calculate completion statistics
-  const totalRouteCompletions = 
+  const totalRouteCompletions =
     progression.routeCompletions.demo +
     progression.routeCompletions.short10.length +
     progression.routeCompletions.short30.length +
     progression.routeCompletions.full;
 
-  const totalSkillLevels = Array.from(skills.values())
-    .reduce((sum, skill) => sum + skill.currentLevel, 0);
+  const totalSkillLevels = Array.from(skills.values()).reduce(
+    (sum, skill) => sum + skill.currentLevel,
+    0,
+  );
 
   return (
     <>
-      <div className={cn(
-        'quantum-magic-screen',
-        'flex flex-col h-full bg-color-background',
-        className
-      )}>
+      <div
+        className={cn(
+          'quantum-magic-screen',
+          'flex flex-col h-full bg-color-background',
+          className,
+        )}
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-space-6 border-b border-color-border">
           <div>
@@ -87,7 +91,7 @@ export const QuantumMagicScreen: React.FC<QuantumMagicScreenProps> = ({
               </span>
             </div>
           </div>
-          
+
           {onClose && (
             <Button variant="outline" onClick={onClose}>
               Close
@@ -102,7 +106,7 @@ export const QuantumMagicScreen: React.FC<QuantumMagicScreenProps> = ({
               'px-space-6 py-space-4 text-body-md font-medium border-b-2 transition-colors',
               activeTab === 'artifacts'
                 ? 'border-color-primary text-color-primary'
-                : 'border-transparent text-color-text-secondary hover:text-color-text-primary'
+                : 'border-transparent text-color-text-secondary hover:text-color-text-primary',
             )}
             onClick={() => setActiveTab('artifacts')}
           >
@@ -113,7 +117,7 @@ export const QuantumMagicScreen: React.FC<QuantumMagicScreenProps> = ({
               'px-space-6 py-space-4 text-body-md font-medium border-b-2 transition-colors',
               activeTab === 'skills'
                 ? 'border-color-primary text-color-primary'
-                : 'border-transparent text-color-text-secondary hover:text-color-text-primary'
+                : 'border-transparent text-color-text-secondary hover:text-color-text-primary',
             )}
             onClick={() => setActiveTab('skills')}
           >
@@ -124,7 +128,7 @@ export const QuantumMagicScreen: React.FC<QuantumMagicScreenProps> = ({
               'px-space-6 py-space-4 text-body-md font-medium border-b-2 transition-colors',
               activeTab === 'progress'
                 ? 'border-color-primary text-color-primary'
-                : 'border-transparent text-color-text-secondary hover:text-color-text-primary'
+                : 'border-transparent text-color-text-secondary hover:text-color-text-primary',
             )}
             onClick={() => setActiveTab('progress')}
           >
@@ -145,7 +149,9 @@ export const QuantumMagicScreen: React.FC<QuantumMagicScreenProps> = ({
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-space-4">
                     {activeArtifacts.map((artifactId) => {
                       const artifact = progression.artifacts.get(artifactId);
-                      if (!artifact) return null;
+                      if (!artifact) {
+                        return null;
+                      }
                       return (
                         <ArtifactCard
                           key={artifactId}
@@ -167,7 +173,7 @@ export const QuantumMagicScreen: React.FC<QuantumMagicScreenProps> = ({
                 <h2 className="text-heading-lg font-bold text-color-text-primary mb-space-4">
                   Artifact Collection
                 </h2>
-                
+
                 {artifacts.length === 0 ? (
                   <Card variant="outlined" className="p-space-8 text-center">
                     <div className="text-4xl mb-space-4">🔮</div>
@@ -197,9 +203,7 @@ export const QuantumMagicScreen: React.FC<QuantumMagicScreenProps> = ({
             </div>
           )}
 
-          {activeTab === 'skills' && (
-            <SkillTree skills={skills} />
-          )}
+          {activeTab === 'skills' && <SkillTree skills={skills} />}
 
           {activeTab === 'progress' && (
             <div className="space-y-space-6">
@@ -213,33 +217,25 @@ export const QuantumMagicScreen: React.FC<QuantumMagicScreenProps> = ({
                     <div className="text-heading-xl font-bold text-color-primary mb-space-1">
                       {progression.quantumLevel}
                     </div>
-                    <div className="text-body-sm text-color-text-secondary">
-                      Quantum Level
-                    </div>
+                    <div className="text-body-sm text-color-text-secondary">Quantum Level</div>
                   </div>
                   <div className="text-center">
                     <div className="text-heading-xl font-bold text-color-primary mb-space-1">
                       {progression.totalExperience.toLocaleString()}
                     </div>
-                    <div className="text-body-sm text-color-text-secondary">
-                      Total Experience
-                    </div>
+                    <div className="text-body-sm text-color-text-secondary">Total Experience</div>
                   </div>
                   <div className="text-center">
                     <div className="text-heading-xl font-bold text-color-primary mb-space-1">
                       {artifacts.length}
                     </div>
-                    <div className="text-body-sm text-color-text-secondary">
-                      Artifacts Found
-                    </div>
+                    <div className="text-body-sm text-color-text-secondary">Artifacts Found</div>
                   </div>
                   <div className="text-center">
                     <div className="text-heading-xl font-bold text-color-primary mb-space-1">
                       {totalSkillLevels}
                     </div>
-                    <div className="text-body-sm text-color-text-secondary">
-                      Skill Levels
-                    </div>
+                    <div className="text-body-sm text-color-text-secondary">Skill Levels</div>
                   </div>
                 </div>
               </Card>
@@ -254,33 +250,25 @@ export const QuantumMagicScreen: React.FC<QuantumMagicScreenProps> = ({
                     <div className="text-heading-lg font-bold text-color-text-primary mb-space-1">
                       {progression.routeCompletions.demo}
                     </div>
-                    <div className="text-body-sm text-color-text-secondary">
-                      Demo Runs
-                    </div>
+                    <div className="text-body-sm text-color-text-secondary">Demo Runs</div>
                   </div>
                   <div className="text-center p-space-4 bg-color-surface-elevated rounded">
                     <div className="text-heading-lg font-bold text-color-text-primary mb-space-1">
                       {progression.routeCompletions.short10.length}
                     </div>
-                    <div className="text-body-sm text-color-text-secondary">
-                      10-min Adventures
-                    </div>
+                    <div className="text-body-sm text-color-text-secondary">10-min Adventures</div>
                   </div>
                   <div className="text-center p-space-4 bg-color-surface-elevated rounded">
                     <div className="text-heading-lg font-bold text-color-text-primary mb-space-1">
                       {progression.routeCompletions.short30.length}
                     </div>
-                    <div className="text-body-sm text-color-text-secondary">
-                      30-min Adventures
-                    </div>
+                    <div className="text-body-sm text-color-text-secondary">30-min Adventures</div>
                   </div>
                   <div className="text-center p-space-4 bg-color-surface-elevated rounded">
                     <div className="text-heading-lg font-bold text-color-text-primary mb-space-1">
                       {progression.routeCompletions.full}
                     </div>
-                    <div className="text-body-sm text-color-text-secondary">
-                      Full Game
-                    </div>
+                    <div className="text-body-sm text-color-text-secondary">Full Game</div>
                   </div>
                 </div>
               </Card>
@@ -292,15 +280,22 @@ export const QuantumMagicScreen: React.FC<QuantumMagicScreenProps> = ({
                 </h3>
                 <div className="grid grid-cols-5 gap-space-4">
                   {['void', 'flux', 'resonance', 'entropy', 'nexus'].map((element) => {
-                    const artifactCount = artifacts.filter(a => a.element === element).length;
-                    const skillCount = Array.from(skills.values()).filter(s => s.element === element).length;
+                    const artifactCount = artifacts.filter((a) => a.element === element).length;
+                    const skillCount = Array.from(skills.values()).filter(
+                      (s) => s.element === element,
+                    ).length;
                     return (
                       <div key={element} className="text-center">
                         <div className="text-2xl mb-space-2">
-                          {element === 'void' ? '🌌' :
-                           element === 'flux' ? '⚡' :
-                           element === 'resonance' ? '🔮' :
-                           element === 'entropy' ? '🌪️' : '⭐'}
+                          {element === 'void'
+                            ? '🌌'
+                            : element === 'flux'
+                              ? '⚡'
+                              : element === 'resonance'
+                                ? '🔮'
+                                : element === 'entropy'
+                                  ? '🌪️'
+                                  : '⭐'}
                         </div>
                         <div className="text-heading-sm font-semibold text-color-text-primary mb-space-1">
                           {element.charAt(0).toUpperCase() + element.slice(1)}
@@ -322,7 +317,9 @@ export const QuantumMagicScreen: React.FC<QuantumMagicScreenProps> = ({
                 <div className="text-body-md text-color-text-secondary">
                   <p>Total Discoveries: {progression.discoveries.length}</p>
                   <p className="mt-space-2">
-                    Preferred Element: {progression.preferredElement.charAt(0).toUpperCase() + progression.preferredElement.slice(1)}
+                    Preferred Element:{' '}
+                    {progression.preferredElement.charAt(0).toUpperCase() +
+                      progression.preferredElement.slice(1)}
                   </p>
                 </div>
               </Card>
@@ -345,16 +342,16 @@ export const QuantumMagicScreen: React.FC<QuantumMagicScreenProps> = ({
                 {selectedArtifact.tier.charAt(0).toUpperCase() + selectedArtifact.tier.slice(1)}
               </Badge>
               <Badge variant="secondary">
-                {selectedArtifact.element.charAt(0).toUpperCase() + selectedArtifact.element.slice(1)} Element
+                {selectedArtifact.element.charAt(0).toUpperCase() +
+                  selectedArtifact.element.slice(1)}{' '}
+                Element
               </Badge>
               <Badge variant="info">
                 Level {selectedArtifact.level}/{selectedArtifact.maxLevel}
               </Badge>
             </div>
 
-            <p className="text-body-md text-color-text-secondary">
-              {selectedArtifact.description}
-            </p>
+            <p className="text-body-md text-color-text-secondary">{selectedArtifact.description}</p>
 
             <div className="p-space-4 bg-color-surface-elevated rounded">
               <h4 className="text-heading-sm font-semibold text-color-text-primary mb-space-2">
@@ -408,9 +405,7 @@ export const QuantumMagicScreen: React.FC<QuantumMagicScreenProps> = ({
             )}
 
             <div className="flex justify-end">
-              <Button onClick={() => setShowArtifactDetails(false)}>
-                Close
-              </Button>
+              <Button onClick={() => setShowArtifactDetails(false)}>Close</Button>
             </div>
           </div>
         )}

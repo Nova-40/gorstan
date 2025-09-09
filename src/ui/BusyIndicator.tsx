@@ -1,3 +1,5 @@
+import React from 'react';
+
 interface BusyIndicatorProps {
   isVisible: boolean;
   message?: string;
@@ -29,12 +31,14 @@ const spinnerStyles: React.CSSProperties = {
   animation: 'spin 1s linear infinite',
 };
 
-export default function BusyIndicator({ 
-  isVisible, 
-  message = "Loading...", 
-  className = "" 
+export default function BusyIndicator({
+  isVisible,
+  message = 'Loading...',
+  className = '',
 }: BusyIndicatorProps) {
-  if (!isVisible) return null;
+  if (!isVisible) {
+    return null;
+  }
 
   return (
     <>
@@ -51,7 +55,7 @@ export default function BusyIndicator({
           }
         }
       `}</style>
-      
+
       <div style={busyIndicatorStyles} className={className}>
         <div style={spinnerStyles} className="busy-spinner-ring"></div>
         {message && <span style={{ fontSize: '14px', fontWeight: 500 }}>{message}</span>}

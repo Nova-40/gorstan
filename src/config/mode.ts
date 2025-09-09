@@ -16,12 +16,12 @@ export const CONFIG = {
   isBeta: IS_BETA,
   isProd: IS_PROD,
   storagePrefix: STORAGE_PREFIX,
-  
+
   // Demo-specific configuration
   demo: {
     hintCadence: IS_DEMO ? 6000 : 15000, // 6s in demo, 15s in full game
     showRibbon: IS_DEMO,
     reducedAnimations: true,
     defaultSfxOff: IS_DEMO,
-  }
+  },
 } as const;

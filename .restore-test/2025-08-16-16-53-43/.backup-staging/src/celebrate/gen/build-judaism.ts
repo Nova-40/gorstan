@@ -25,7 +25,7 @@ import { Span, multiDaySpan } from './util';
  */
 export function roshHashanah(years: number[]): Span[] {
   const spans: Span[] = [];
-  
+
   // Known dates for Rosh Hashanah (typically Sept/Oct)
   const knownDates: Record<number, string> = {
     2025: '2025-09-15',
@@ -53,16 +53,16 @@ export function roshHashanah(years: number[]): Span[] {
     2047: '2047-09-06',
     2048: '2048-09-25',
     2049: '2049-09-12',
-    2050: '2050-10-01'
+    2050: '2050-10-01',
   };
-  
+
   for (const year of years) {
     if (knownDates[year]) {
       const date = new Date(knownDates[year]);
       spans.push(multiDaySpan(date, 2, `Rosh Hashanah ${year}`));
     }
   }
-  
+
   return spans;
 }
 
@@ -72,7 +72,7 @@ export function roshHashanah(years: number[]): Span[] {
  */
 export function passover(years: number[]): Span[] {
   const spans: Span[] = [];
-  
+
   // Known dates for Passover (typically March/April)
   const knownDates: Record<number, string> = {
     2025: '2025-04-12',
@@ -100,16 +100,16 @@ export function passover(years: number[]): Span[] {
     2047: '2047-04-09',
     2048: '2048-03-29',
     2049: '2049-04-16',
-    2050: '2050-04-06'
+    2050: '2050-04-06',
   };
-  
+
   for (const year of years) {
     if (knownDates[year]) {
       const date = new Date(knownDates[year]);
       spans.push(multiDaySpan(date, 8, `Passover ${year}`));
     }
   }
-  
+
   return spans;
 }
 
@@ -119,7 +119,7 @@ export function passover(years: number[]): Span[] {
  */
 export function hanukkah(years: number[]): Span[] {
   const spans: Span[] = [];
-  
+
   // Known dates for Hanukkah (typically November/December)
   const knownDates: Record<number, string> = {
     2025: '2025-12-24',
@@ -147,21 +147,21 @@ export function hanukkah(years: number[]): Span[] {
     2047: '2047-12-19',
     2048: '2048-12-08',
     2049: '2049-11-27',
-    2050: '2050-12-16'
+    2050: '2050-12-16',
   };
-  
+
   for (const year of years) {
     if (knownDates[year]) {
       const date = new Date(knownDates[year]);
       spans.push(multiDaySpan(date, 8, `Hanukkah ${year}`));
     }
   }
-  
+
   return spans;
 }
 
 export const buildJudaism = {
   roshHashanah,
   passover,
-  hanukkah
+  hanukkah,
 };

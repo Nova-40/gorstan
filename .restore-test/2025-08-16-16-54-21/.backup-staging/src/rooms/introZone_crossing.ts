@@ -19,20 +19,12 @@
 
 import { Room } from '../types/Room';
 
-
-
-
-
-
-
-
-
 const crossing: Room = {
   id: 'crossing',
   zone: 'introZone',
   title: 'The Infinite Crossing',
   description: [
-    'You find yourself in a pristine white chamber that seems to stretch impossibly in all directions. The walls, floor, and ceiling are a seamless, brilliant white that somehow doesn\'t hurt your eyes.',
+    "You find yourself in a pristine white chamber that seems to stretch impossibly in all directions. The walls, floor, and ceiling are a seamless, brilliant white that somehow doesn't hurt your eyes.",
     'In the center of this endless space sits a single white chair, its simple design both inviting and somehow ominous. The chair appears to be the only fixed point in this reality.',
     'Near the chair, a crystalline control panel shimmers into existence, its surface covered with glowing teleportation symbols. For those carrying navigation devices, an additional ethereal console phases in and out of reality, waiting to interface with dimensional travel tools.',
     'All around you, countless doors rotate and shift in a mesmerizing dance. They appear and disappear, change position and orientation, creating an endless kaleidoscope of possibilities. Each door is unique - some ornate, some simple, some that seem to be made of light itself.',
@@ -56,14 +48,12 @@ const crossing: Room = {
   ],
 
   exits: {
-    
-    'chair': 'londonhub',  
-    'door1': 'controlnexus',
-    'door2': 'introreset',
-    'door3': 'hiddenlab',
-    
-    'apartment_door': 'dalesapartment',  
-    
+    chair: 'londonhub',
+    door1: 'controlnexus',
+    door2: 'introreset',
+    door3: 'hiddenlab',
+
+    apartment_door: 'dalesapartment',
   },
 
   items: [
@@ -71,62 +61,69 @@ const crossing: Room = {
     'reality_compass',
     'dimensional_map_fragment',
     'portal_stabilizer',
-    
+
     'quantum_coffee',
     'dales_apartment_key',
   ],
 
   interactables: {
-    'chair': {
-      description: 'A simple white chair that radiates a sense of purpose. Sitting in it would transport you away from this infinite space.',
+    chair: {
+      description:
+        'A simple white chair that radiates a sense of purpose. Sitting in it would transport you away from this infinite space.',
       actions: ['examine', 'sit', 'touch'],
       requires: [],
     },
-    'control_panel': {
-      description: 'A sleek crystalline control panel materializes near the chair when you approach. Its surface glows with teleportation symbols and destination codes.',
+    control_panel: {
+      description:
+        'A sleek crystalline control panel materializes near the chair when you approach. Its surface glows with teleportation symbols and destination codes.',
       actions: ['examine', 'press', 'activate', 'touch'],
       requires: [],
     },
-    'navigation_console': {
-      description: 'An ethereal console that appears to phase in and out of reality. It responds to devices that can navigate dimensional space.',
+    navigation_console: {
+      description:
+        'An ethereal console that appears to phase in and out of reality. It responds to devices that can navigate dimensional space.',
       actions: ['examine', 'press', 'use', 'interface'],
       requires: ['remote_control', 'navigation_crystal'],
     },
-    'rotating_doors': {
-      description: 'Countless doors in constant motion, each one a gateway to a different reality. They shift and change too quickly to focus on any single one.',
+    rotating_doors: {
+      description:
+        'Countless doors in constant motion, each one a gateway to a different reality. They shift and change too quickly to focus on any single one.',
       actions: ['examine', 'focus', 'reach_for'],
       requires: [],
     },
-    'stable_portal': {
-      description: 'A door that remains fixed while others rotate around it. This one seems safe to approach.',
+    stable_portal: {
+      description:
+        'A door that remains fixed while others rotate around it. This one seems safe to approach.',
       actions: ['examine', 'enter', 'activate'],
       requires: ['portal_stabilizer'],
     },
-    'white_walls': {
-      description: 'Seamless white surfaces that seem to extend infinitely in all directions. They feel both solid and ethereal.',
+    white_walls: {
+      description:
+        'Seamless white surfaces that seem to extend infinitely in all directions. They feel both solid and ethereal.',
       actions: ['examine', 'touch', 'listen'],
       requires: [],
     },
-    'floating_symbols': {
-      description: 'Occasionally, glowing symbols appear in the air near certain doors, providing clues about their destinations.',
+    floating_symbols: {
+      description:
+        'Occasionally, glowing symbols appear in the air near certain doors, providing clues about their destinations.',
       actions: ['examine', 'decipher', 'memorize'],
       requires: ['reality_compass'],
     },
-    'quantum_coffee': {
-      description: 'A steaming cup of quantum coffee that somehow survived the lorry impact. It defies several laws of physics just by existing.',
+    quantum_coffee: {
+      description:
+        'A steaming cup of quantum coffee that somehow survived the lorry impact. It defies several laws of physics just by existing.',
       actions: ['examine', 'drink', 'smell', 'hold'],
       requires: [],
     },
-    'apartment_door': {
-      description: 'A familiar-looking door with a brass nameplate reading "Dale & Polly". This door only appears if you possess the apartment key.',
+    apartment_door: {
+      description:
+        'A familiar-looking door with a brass nameplate reading "Dale & Polly". This door only appears if you possess the apartment key.',
       actions: ['examine', 'enter', 'unlock'],
       requires: ['dales_apartment_key'],
     },
   },
 
-  npcs: [
-    
-  ],
+  npcs: [],
 
   events: {
     onEnter: ['activateInfiniteSpace', 'startDoorRotation', 'showNavigationOptions'],
@@ -151,7 +148,7 @@ const crossing: Room = {
     main: 'Choose Your Destination',
     optional: [
       'Decipher the Door Symbols',
-      'Understand the Chair\'s Purpose',
+      "Understand the Chair's Purpose",
       'Communicate with the Guardian',
       'Map the Stable Portals',
     ],
@@ -209,17 +206,17 @@ const crossing: Room = {
   },
 
   customActions: {
-    'sit_in_chair': {
+    sit_in_chair: {
       description: 'Sit in the white chair to begin transportation',
       requirements: [],
       effects: ['transport_to_trent_park', 'end_crossing_sequence'],
     },
-    'stabilize_door': {
+    stabilize_door: {
       description: 'Use equipment to stabilize a specific rotating door',
       requirements: ['portal_stabilizer', 'navigation_crystal'],
       effects: ['create_stable_exit', 'access_chosen_destination'],
     },
-    'meditate': {
+    meditate: {
       description: 'Sit quietly and contemplate the infinite possibilities',
       requirements: ['infinite_patience'],
       effects: ['gain_cosmic_insight', 'reveal_hidden_doors'],
@@ -228,5 +225,3 @@ const crossing: Room = {
 };
 
 export default crossing;
-
-

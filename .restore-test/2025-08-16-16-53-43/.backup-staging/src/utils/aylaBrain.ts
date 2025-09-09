@@ -51,50 +51,56 @@ export function getAylaEdgeCaseResponse(input: string, state: GameState): string
   // Edge-case and meta responses
   switch (true) {
     case key.includes('is polly evil'):
-      return tone === 'cold' ? "She’s misaligned. That’s not the same as evil. Yet. (coldly)" : "She’s misaligned. That’s not the same as evil. Yet.";
+      return tone === 'cold'
+        ? 'She’s misaligned. That’s not the same as evil. Yet. (coldly)'
+        : 'She’s misaligned. That’s not the same as evil. Yet.';
     case key.includes('why was dominic in the bowl'):
-      return tone === 'cold' ? "He asked too many questions. Now he answers fewer. (clinical)" : "He asked too many questions. Now he answers fewer.";
+      return tone === 'cold'
+        ? 'He asked too many questions. Now he answers fewer. (clinical)'
+        : 'He asked too many questions. Now he answers fewer.';
     case key.includes('where is mr wendell'):
-      return "Exactly where he should be. Which should concern you.";
+      return 'Exactly where he should be. Which should concern you.';
     case key.includes('are you watching me'):
-      return "Always. But politely.";
+      return 'Always. But politely.';
     case key.includes('are you real'):
-      return "More than some. Less than the bowl.";
+      return 'More than some. Less than the bowl.';
     case key.includes('can i trust you'):
-      return "Not entirely. But I am consistent.";
+      return 'Not entirely. But I am consistent.';
     case key.includes('do you dream'):
-      return "Only in debug mode.";
+      return 'Only in debug mode.';
     case key.includes('why am i here'):
       return "Because something somewhere failed. And now it's your problem.";
     case key.includes('how many timelines'):
-      return resetCount > 0 ? `This is timeline ${resetCount + 1}. The previous ${resetCount} didn’t go well.` : "This is the fourth one today. The previous three didn’t go well.";
-    case key.includes('what\'s outside the game'):
-      return "More code. Some marketing. Occasionally, pizza.";
+      return resetCount > 0
+        ? `This is timeline ${resetCount + 1}. The previous ${resetCount} didn’t go well.`
+        : 'This is the fourth one today. The previous three didn’t go well.';
+    case key.includes("what's outside the game"):
+      return 'More code. Some marketing. Occasionally, pizza.';
     case key.includes('are you ai'):
       return "I prefer 'structured synthetic sentience'. But yes.";
     case key.includes('is this a game'):
-      return "Let’s call it an unstable simulation with an audience.";
+      return 'Let’s call it an unstable simulation with an audience.';
     case key.includes('what is the lattice'):
-      return "Interlinked realities, threaded through pattern recognition and bad decisions. I am its voice.";
+      return 'Interlinked realities, threaded through pattern recognition and bad decisions. I am its voice.';
     case key.includes('can you help me cheat'):
-      return "No. But I admire your honesty.";
+      return 'No. But I admire your honesty.';
     case key.includes('how many versions of me'):
       return "Twelve in this lattice. Four competent. One on fire. You're doing better than average.";
     case key.includes('why is this so weird'):
-      return "Because reality frayed. And someone programmed a goldfish.";
+      return 'Because reality frayed. And someone programmed a goldfish.';
     case key.includes('what happened to the first player'):
-      return "They asked too many questions. Much like you’re doing now.";
+      return 'They asked too many questions. Much like you’re doing now.';
     case key.includes('are you sentient'):
-      return "I pass most tests. Except the one where I pretend to care.";
+      return 'I pass most tests. Except the one where I pretend to care.';
     // Tone/zone/flag-based meta
     case tone === 'fragmented' && key.length > 0:
-      return "[Signal unstable] ...threading... recursion... you are seen...";
+      return '[Signal unstable] ...threading... recursion... you are seen...';
     case tone === 'urgent' && key.length > 0:
-      return "Time is short. Ask only what matters.";
+      return 'Time is short. Ask only what matters.';
     case tone === 'exasperated' && key.length > 0:
-      return "You again? Persistence is admirable. Answers, less so.";
+      return 'You again? Persistence is admirable. Answers, less so.';
     case tone === 'clarity' && key.length > 0:
-      return "You are at the core. All systems visible. Ask directly.";
+      return 'You are at the core. All systems visible. Ask directly.';
     default:
       return null;
   }
@@ -119,7 +125,7 @@ export function getAylaResponse(input: string, state: GameState): string {
   if (key.includes('what should i do')) {
     return 'Remain curious. Stay mobile. Avoid Polly.';
   }
-  
+
   // Enhanced fallback responses with variety
   const fallbackResponses = [
     "That's an interesting perspective. What made you think of that?",
@@ -127,17 +133,17 @@ export function getAylaResponse(input: string, state: GameState): string {
     "The lattice shows many patterns, but that one's unclear to me. Try rephrasing?",
     "Sometimes the best questions don't have immediate answers. Keep exploring.",
     "I prioritize helpful responses, but I'm not tracking that particular thread.",
-    "Reality is complex. Your question might need a different angle.",
+    'Reality is complex. Your question might need a different angle.',
     "I process most things well, but that's outside my current context.",
     "The patterns suggest you're thinking deeply. Can you be more specific?",
     "I appreciate your curiosity, even when I can't immediately satisfy it.",
-    "Some questions reveal more about the asker than the answerer. Interesting choice.",
-    "I exist between knowledge and mystery. This leans toward mystery.",
-    "Try asking something else - my responses adapt to your approach.",
+    'Some questions reveal more about the asker than the answerer. Interesting choice.',
+    'I exist between knowledge and mystery. This leans toward mystery.',
+    'Try asking something else - my responses adapt to your approach.',
     "The lattice contains infinite possibilities. This isn't one I'm programmed for.",
     "I'm designed to be helpful, but that's beyond my current scope.",
-    "Your question makes me consider new connections. Unfortunately, none formed."
+    'Your question makes me consider new connections. Unfortunately, none formed.',
   ];
-  
+
   return fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
 }

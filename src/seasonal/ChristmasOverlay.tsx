@@ -14,9 +14,9 @@
   Full licence terms: see EULA.md in the project root.
 */
 
-import React, { useEffect, useMemo } from "react";
-import BaseDialog from "./a11y/BaseDialog";
-import { usePrefersReducedMotion } from "./hooks/usePrefersReducedMotion";
+import React, { useEffect, useMemo } from 'react';
+import BaseDialog from './a11y/BaseDialog';
+import { usePrefersReducedMotion } from './hooks/usePrefersReducedMotion';
 
 type Props = { onClose: () => void };
 
@@ -38,14 +38,16 @@ export default function ChristmasOverlay({ onClose }: Props) {
             aria-hidden
             className="absolute block"
             style={{
-              left: Math.random() * 100 + "%",
-              top: -10 + "px",
-              width: "6px",
-              height: "6px",
-              borderRadius: "50%",
-              background: "white",
+              left: Math.random() * 100 + '%',
+              top: -10 + 'px',
+              width: '6px',
+              height: '6px',
+              borderRadius: '50%',
+              background: 'white',
               opacity: 0.9,
-              animation: reduce ? undefined : `flake ${6 + Math.random() * 5}s linear ${Math.random()}s infinite`
+              animation: reduce
+                ? undefined
+                : `flake ${6 + Math.random() * 5}s linear ${Math.random()}s infinite`,
             }}
           />
         ))}
@@ -66,16 +68,16 @@ export default function ChristmasOverlay({ onClose }: Props) {
                 aria-hidden
                 className="inline-block h-2 w-2 rounded-full"
                 style={{
-                  background: i % 2 ? "#ff4d4f" : "#52ffa8",
-                  filter: "drop-shadow(0 0 4px rgba(255,255,255,0.6))",
-                  animation: reduce ? undefined : `twinkle ${1.5 + (i % 3) * 0.2}s ease-in-out ${i * 0.07}s infinite alternate`
+                  background: i % 2 ? '#ff4d4f' : '#52ffa8',
+                  filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.6))',
+                  animation: reduce
+                    ? undefined
+                    : `twinkle ${1.5 + (i % 3) * 0.2}s ease-in-out ${i * 0.07}s infinite alternate`,
                 }}
               />
             ))}
           </div>
-          <p className="text-sm opacity-90">
-            Season's greetings from across the multiverse.
-          </p>
+          <p className="text-sm opacity-90">Season's greetings from across the multiverse.</p>
           <div className="flex justify-end">
             <button
               onClick={onClose}

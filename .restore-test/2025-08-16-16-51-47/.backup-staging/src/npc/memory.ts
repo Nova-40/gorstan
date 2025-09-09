@@ -65,7 +65,7 @@ const SEMANTIC_MEMORY_PERSIST_KEYS = [
   'DominicKilled',
   'PlayerMetBefore',
   'ImportantChoicesMade',
-  'EthicalStance'
+  'EthicalStance',
 ];
 
 // In-memory storage (could be moved to game state)
@@ -87,10 +87,10 @@ export function initializeNPCMemory(npcId: string): NPCMemoryState {
       likes_hints: true,
       impatient: false,
       explores_thoroughly: true,
-      asks_for_help: false
-    }
+      asks_for_help: false,
+    },
   };
-  
+
   npcMemories.set(npcId, memory);
   return memory;
 }
@@ -112,26 +112,26 @@ export function addConversationTurn(
   npcId: string,
   speaker: 'player' | 'npc',
   message: string,
-  context?: ConversationTurn['context']
+  context?: ConversationTurn['context'],
 ): void {
   const memory = getNPCMemory(npcId);
-  
+
   const turn: ConversationTurn = {
     id: `${npcId}-${Date.now()}-${Math.random()}`,
     timestamp: Date.now(),
     speaker,
     message,
     npcId: speaker === 'npc' ? npcId : undefined,
-    context
+    context,
   };
-  
+
   memory.conversationBuffer.push(turn);
-  
+
   // Trim buffer to size
   if (memory.conversationBuffer.length > CONVERSATION_BUFFER_SIZE) {
     memory.conversationBuffer = memory.conversationBuffer.slice(-CONVERSATION_BUFFER_SIZE);
   }
-  
+
   // Update interaction stats
   if (speaker === 'player') {
     memory.lastInteraction = Date.now();
@@ -149,10 +149,10 @@ export function addEpisodicMemory(
   participants: string[] = [],
   location: string = '',
   significance: number = 0.5,
-  tags: string[] = []
+  tags: string[] = [],
 ): void {
   const memory = getNPCMemory(npcId);
-  
+
   const episode: EpisodicMemory = {
     id: `${npcId}-${eventType}-${Date.now()}`,
     timestamp: Date.now(),
@@ -161,11 +161,11 @@ export function addEpisodicMemory(
     participants: ['player', ...participants],
     location,
     significance,
-    tags
+    tags,
   };
-  
+
   memory.episodicMemories.push(episode);
-  
+
   // Clean up old, low-significance memories
   cleanupEpisodicMemories(npcId);
 }
@@ -201,13 +201,13 @@ export function findRelevantMemories(
   npcId: string,
   tags: string[] = [],
   eventTypes: string[] = [],
-  maxResults: number = 5
+  maxResults: number = 5,
 ): EpisodicMemory[] {
   const memory = getNPCMemory(npcId);
-  
+
   return memory.episodicMemories
-    .filter(episode => {
-      const hasMatchingTag = tags.length === 0 || tags.some(tag => episode.tags.includes(tag));
+    .filter((episode) => {
+      const hasMatchingTag = tags.length === 0 || tags.some((tag) => episode.tags.includes(tag));
       const hasMatchingEvent = eventTypes.length === 0 || eventTypes.includes(episode.event_type);
       return hasMatchingTag && hasMatchingEvent;
     })
@@ -218,7 +218,11 @@ export function findRelevantMemories(
 /**
  * Update player preference based on behavior
  */
-export function updatePlayerPreference(npcId: string, preference: keyof NPCMemoryState['playerPreferences'], value: boolean): void {
+export function updatePlayerPreference(
+  npcId: string,
+  preference: keyof NPCMemoryState['playerPreferences'],
+  value: boolean,
+): void {
   const memory = getNPCMemory(npcId);
   memory.playerPreferences[preference] = value;
 }
@@ -237,12 +241,12 @@ export function adjustRelationship(npcId: string, delta: number): void {
 function cleanupEpisodicMemories(npcId: string): void {
   const memory = getNPCMemory(npcId);
   const now = Date.now();
-  
-  memory.episodicMemories = memory.episodicMemories.filter(episode => {
+
+  memory.episodicMemories = memory.episodicMemories.filter((episode) => {
     const age = now - episode.timestamp;
     const isImportant = episode.significance > 0.7;
     const isRecent = age < EPISODIC_MEMORY_TTL;
-    
+
     return isImportant || isRecent;
   });
 }
@@ -252,20 +256,20 @@ function cleanupEpisodicMemories(npcId: string): void {
  */
 export function serializeNPCMemory(npcId: string): any {
   const memory = getNPCMemory(npcId);
-  
+
   return {
     npcId: memory.npcId,
     conversationBuffer: memory.conversationBuffer.slice(-6), // Only recent conversations
-    episodicMemories: memory.episodicMemories.filter(e => e.significance > 0.5), // Only important memories
+    episodicMemories: memory.episodicMemories.filter((e) => e.significance > 0.5), // Only important memories
     semanticMemory: Object.fromEntries(
-      Object.entries(memory.semanticMemory).filter(([key]) => 
-        SEMANTIC_MEMORY_PERSIST_KEYS.includes(key)
-      )
+      Object.entries(memory.semanticMemory).filter(([key]) =>
+        SEMANTIC_MEMORY_PERSIST_KEYS.includes(key),
+      ),
     ),
     lastInteraction: memory.lastInteraction,
     totalInteractions: memory.totalInteractions,
     relationshipLevel: memory.relationshipLevel,
-    playerPreferences: memory.playerPreferences
+    playerPreferences: memory.playerPreferences,
   };
 }
 
@@ -277,7 +281,7 @@ export function deserializeNPCMemory(npcId: string, data: any): void {
     initializeNPCMemory(npcId);
     return;
   }
-  
+
   const memory: NPCMemoryState = {
     npcId,
     conversationBuffer: data.conversationBuffer || [],
@@ -291,10 +295,10 @@ export function deserializeNPCMemory(npcId: string, data: any): void {
       impatient: false,
       explores_thoroughly: true,
       asks_for_help: false,
-      ...data.playerPreferences
-    }
+      ...data.playerPreferences,
+    },
   };
-  
+
   npcMemories.set(npcId, memory);
 }
 
@@ -308,38 +312,40 @@ export function getMemorySummary(npcId: string): {
   playerStyle: string;
 } {
   const memory = getNPCMemory(npcId);
-  
+
   // Extract recent topics from conversation
   const recentTopics = memory.conversationBuffer
     .slice(-4)
-    .map(turn => turn.context?.entities || [])
+    .map((turn) => turn.context?.entities || [])
     .flat()
     .filter((topic, index, arr) => arr.indexOf(topic) === index)
     .slice(0, 3);
-  
+
   // Determine relationship status
   let relationshipStatus = 'neutral';
   if (memory.relationshipLevel > 0.3) relationshipStatus = 'friendly';
   else if (memory.relationshipLevel > 0.6) relationshipStatus = 'trusted';
   else if (memory.relationshipLevel < -0.3) relationshipStatus = 'suspicious';
   else if (memory.relationshipLevel < -0.6) relationshipStatus = 'hostile';
-  
+
   // Get important semantic facts
   const importantFacts = Object.fromEntries(
-    Object.entries(memory.semanticMemory).filter(([_, value]) => value !== undefined && value !== null)
+    Object.entries(memory.semanticMemory).filter(
+      ([_, value]) => value !== undefined && value !== null,
+    ),
   );
-  
+
   // Determine player style
   const prefs = memory.playerPreferences;
   let playerStyle = 'explorer';
   if (prefs.impatient && !prefs.explores_thoroughly) playerStyle = 'rusher';
   else if (prefs.asks_for_help && prefs.likes_hints) playerStyle = 'guidance_seeker';
   else if (!prefs.likes_hints && prefs.explores_thoroughly) playerStyle = 'independent';
-  
+
   return {
     recentTopics,
     relationshipStatus,
     importantFacts,
-    playerStyle
+    playerStyle,
   };
 }

@@ -45,12 +45,14 @@ const SaveGameModal: React.FC<SaveGameModalProps> = ({
   onSave,
   onLoad,
   onDelete,
-  saveSlots
+  saveSlots,
 }) => {
   const [newSaveName, setNewSaveName] = useState('');
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
 
   const formatTimestamp = (timestamp: number) => {
     const date = new Date(timestamp);
@@ -88,7 +90,9 @@ const SaveGameModal: React.FC<SaveGameModalProps> = ({
             <Save className="modal-icon" />
             Save & Load Game
           </h2>
-          <button className="modal-close" onClick={onClose}>×</button>
+          <button className="modal-close" onClick={onClose}>
+            ×
+          </button>
         </div>
 
         <div className="modal-body">
@@ -105,11 +109,7 @@ const SaveGameModal: React.FC<SaveGameModalProps> = ({
                 className="save-name-input"
                 maxLength={50}
               />
-              <button
-                onClick={handleSave}
-                disabled={!newSaveName.trim()}
-                className="save-button"
-              >
+              <button onClick={handleSave} disabled={!newSaveName.trim()} className="save-button">
                 <Save size={16} />
                 Save
               </button>

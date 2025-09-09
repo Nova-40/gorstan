@@ -19,7 +19,7 @@ const colors = {
   yellow: '\x1b[33m',
   blue: '\x1b[34m',
   reset: '\x1b[0m',
-  bold: '\x1b[1m'
+  bold: '\x1b[1m',
 };
 
 function log(color, message) {
@@ -69,16 +69,18 @@ function commandExists(command) {
 
 // Find latest backup files
 async function findLatestBackupFiles() {
-  if (!await fs.pathExists(BACKUP_DIR)) {
+  if (!(await fs.pathExists(BACKUP_DIR))) {
     error(`Backup directory ${BACKUP_DIR} does not exist`);
     process.exit(1);
   }
 
   const files = await fs.readdir(BACKUP_DIR);
-  
+
   // Find latest timestamp
-  const backupFiles = files.filter(f => f.match(/^gorstan-\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2}-src\./));
-  
+  const backupFiles = files.filter((f) =>
+    f.match(/^gorstan-\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2}-src\./),
+  );
+
   if (backupFiles.length === 0) {
     error('No backup files found');
     process.exit(1);
@@ -86,9 +88,11 @@ async function findLatestBackupFiles() {
 
   // Sort by timestamp (newest first)
   backupFiles.sort().reverse();
-  
-  const latestTimestamp = backupFiles[0].match(/gorstan-(\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2})-src\./)[1];
-  
+
+  const latestTimestamp = backupFiles[0].match(
+    /gorstan-(\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2})-src\./,
+  )[1];
+
   const zipFile = path.join(BACKUP_DIR, `gorstan-${latestTimestamp}-src.zip`);
   const sevenZipFile = path.join(BACKUP_DIR, `gorstan-${latestTimestamp}-src.7z`);
   const gpgFile = path.join(BACKUP_DIR, `gorstan-${latestTimestamp}-src.tar.gz.gpg`);
@@ -96,9 +100,9 @@ async function findLatestBackupFiles() {
 
   const result = {
     timestamp: latestTimestamp,
-    zipFile: await fs.pathExists(zipFile) ? zipFile : null,
+    zipFile: (await fs.pathExists(zipFile)) ? zipFile : null,
     encryptedFile: null,
-    checksumFile: await fs.pathExists(checksumFile) ? checksumFile : null
+    checksumFile: (await fs.pathExists(checksumFile)) ? checksumFile : null,
   };
 
   if (await fs.pathExists(sevenZipFile)) {
@@ -114,32 +118,32 @@ async function findLatestBackupFiles() {
 async function parseChecksums(checksumFile) {
   const content = await fs.readFile(checksumFile, 'utf-8');
   const checksums = new Map();
-  
+
   for (const line of content.trim().split('\n')) {
     const [hash, filename] = line.split(/\s+/, 2);
     if (hash && filename) {
       checksums.set(filename, hash);
     }
   }
-  
+
   return checksums;
 }
 
 // Verify file checksums
 async function verifyChecksums(files, checksumFile) {
   info('Verifying SHA256 checksums...');
-  
+
   const expectedChecksums = await parseChecksums(checksumFile);
   let allValid = true;
 
   for (const [type, filePath] of Object.entries(files)) {
-    if (!filePath || !await fs.pathExists(filePath)) {
+    if (!filePath || !(await fs.pathExists(filePath))) {
       continue;
     }
 
     const filename = path.basename(filePath);
     const expectedHash = expectedChecksums.get(filename);
-    
+
     if (!expectedHash) {
       warn(`No checksum found for ${filename}`);
       continue;
@@ -147,7 +151,7 @@ async function verifyChecksums(files, checksumFile) {
 
     info(`Verifying ${filename}...`);
     const actualHash = await calculateFileHash(filePath);
-    
+
     if (actualHash === expectedHash) {
       success(`${filename}: checksum valid`);
     } else {
@@ -164,7 +168,7 @@ async function verifyChecksums(files, checksumFile) {
 // Test encrypted archive by extracting it
 async function testEncryptedArchive(encryptedFile) {
   const backupPass = process.env.BACKUP_PASS;
-  
+
   if (!backupPass) {
     warn('BACKUP_PASS not set - skipping encrypted archive test');
     return true;
@@ -191,8 +195,9 @@ async function testEncryptedArchive(encryptedFile) {
       success('7z archive integrity test passed');
 
       // Quick extract test for key files
-      execSync(`${sevenZipPath} x -p"${backupPass}" -o"${TEMP_TEST_DIR}" "${encryptedFile}"`, { stdio: 'inherit' });
-      
+      execSync(`${sevenZipPath} x -p"${backupPass}" -o"${TEMP_TEST_DIR}" "${encryptedFile}"`, {
+        stdio: 'inherit',
+      });
     } else if (encryptedFile.endsWith('.gpg')) {
       // Test GPG archive
       if (!commandExists('gpg')) {
@@ -201,10 +206,10 @@ async function testEncryptedArchive(encryptedFile) {
       }
 
       const tempTar = path.join(TEMP_TEST_DIR, 'test.tar.gz');
-      
+
       // Decrypt to temp file
       await $`gpg --quiet --batch --yes --decrypt --passphrase ${backupPass} --output ${tempTar} ${encryptedFile}`;
-      
+
       // Test tar integrity
       await $`tar -tzf ${tempTar} > /dev/null`;
       success('GPG archive integrity test passed');
@@ -217,31 +222,30 @@ async function testEncryptedArchive(encryptedFile) {
     const packagePath = path.join(TEMP_TEST_DIR, 'package.json');
     const mainPath = path.join(TEMP_TEST_DIR, 'src', 'main.tsx');
 
-    if (await fs.pathExists(packagePath) && await fs.pathExists(mainPath)) {
+    if ((await fs.pathExists(packagePath)) && (await fs.pathExists(mainPath))) {
       success('Critical files extracted successfully');
       return true;
     } else {
       // List what files were actually extracted for debugging
       const extractedFiles = await fs.readdir(TEMP_TEST_DIR);
       warn(`Files in extraction directory: ${extractedFiles.join(', ')}`);
-      
+
       if (extractedFiles.length > 0) {
         // Check if files are in a subdirectory
         const firstItem = path.join(TEMP_TEST_DIR, extractedFiles[0]);
         if ((await fs.stat(firstItem)).isDirectory()) {
           const subDirPath = path.join(firstItem, 'package.json');
           const subMainPath = path.join(firstItem, 'src', 'main.tsx');
-          if (await fs.pathExists(subDirPath) && await fs.pathExists(subMainPath)) {
+          if ((await fs.pathExists(subDirPath)) && (await fs.pathExists(subMainPath))) {
             success('Critical files found in subdirectory structure');
             return true;
           }
         }
       }
-      
+
       error('Critical files missing from encrypted archive');
       return false;
     }
-
   } catch (err) {
     error(`Encrypted archive test failed: ${err.message}`);
     return false;
@@ -261,7 +265,7 @@ async function main() {
 
     // Find latest backup files
     const files = await findLatestBackupFiles();
-    
+
     console.log(`📅 Verifying backup: ${files.timestamp}`);
     console.log(`📄 ZIP file: ${files.zipFile ? '✓' : '✗'}`);
     console.log(`🔐 Encrypted file: ${files.encryptedFile ? '✓' : '✗'}`);
@@ -275,7 +279,7 @@ async function main() {
 
     // Verify checksums
     const checksumsValid = await verifyChecksums(files, files.checksumFile);
-    
+
     if (!checksumsValid) {
       error('Checksum verification failed');
       process.exit(1);
@@ -284,7 +288,7 @@ async function main() {
     // Test encrypted archive if available
     if (files.encryptedFile) {
       const encryptedValid = await testEncryptedArchive(files.encryptedFile);
-      
+
       if (!encryptedValid) {
         error('Encrypted archive test failed');
         process.exit(1);
@@ -293,7 +297,6 @@ async function main() {
 
     console.log();
     success('All verifications passed! Backup is valid and restorable.');
-
   } catch (err) {
     error(`Verification failed: ${err.message}`);
     process.exit(1);

@@ -33,8 +33,10 @@ export class TargetingSystem {
 
   /** Get current target */
   getCurrentTarget(): Actor | null {
-    if (!this.currentTarget) return null;
-    return this.availableTargets.find(a => a.id === this.currentTarget) || null;
+    if (!this.currentTarget) {
+      return null;
+    }
+    return this.availableTargets.find((a) => a.id === this.currentTarget) || null;
   }
 
   /** Set current target by ID */
@@ -44,7 +46,7 @@ export class TargetingSystem {
       return true;
     }
 
-    const target = this.availableTargets.find(a => a.id === targetId);
+    const target = this.availableTargets.find((a) => a.id === targetId);
     if (target) {
       this.currentTarget = targetId;
       return true;
@@ -53,12 +55,11 @@ export class TargetingSystem {
   }
 
   /** Find nearest valid target */
-  findNearestTarget(
-    from: Actor,
-    options: TargetingOptions = {}
-  ): Actor | null {
+  findNearestTarget(from: Actor, options: TargetingOptions = {}): Actor | null {
     const validTargets = this.getValidTargets(from, options);
-    if (validTargets.length === 0) return null;
+    if (validTargets.length === 0) {
+      return null;
+    }
 
     // If no position data, return first valid target
     if (!from.position) {
@@ -70,11 +71,13 @@ export class TargetingSystem {
     let nearestDistance = Infinity;
 
     for (const target of validTargets) {
-      if (!target.position) continue;
+      if (!target.position) {
+        continue;
+      }
 
       const distance = Math.sqrt(
         Math.pow(target.position.x - from.position.x, 2) +
-        Math.pow(target.position.y - from.position.y, 2)
+          Math.pow(target.position.y - from.position.y, 2),
       );
 
       if (distance < nearestDistance) {
@@ -94,8 +97,8 @@ export class TargetingSystem {
       return null;
     }
 
-    const currentIndex = this.currentTarget 
-      ? validTargets.findIndex(t => t.id === this.currentTarget)
+    const currentIndex = this.currentTarget
+      ? validTargets.findIndex((t) => t.id === this.currentTarget)
       : -1;
 
     const nextIndex = (currentIndex + 1) % validTargets.length;
@@ -108,18 +111,19 @@ export class TargetingSystem {
   /** Get target by name (fuzzy matching) */
   getTargetByName(name: string): Actor | null {
     const normalizedName = name.toLowerCase().trim();
-    
-    // Exact match first
-    let target = this.availableTargets.find(a => 
-      a.name.toLowerCase() === normalizedName
-    );
 
-    if (target) return target;
+    // Exact match first
+    let target = this.availableTargets.find((a) => a.name.toLowerCase() === normalizedName);
+
+    if (target) {
+      return target;
+    }
 
     // Partial match
-    target = this.availableTargets.find(a => 
-      a.name.toLowerCase().includes(normalizedName) ||
-      normalizedName.includes(a.name.toLowerCase())
+    target = this.availableTargets.find(
+      (a) =>
+        a.name.toLowerCase().includes(normalizedName) ||
+        normalizedName.includes(a.name.toLowerCase()),
     );
 
     return target || null;
@@ -132,10 +136,10 @@ export class TargetingSystem {
       includeEnemies = true,
       includeSelf = false,
       maxRange,
-      filter
+      filter,
     } = options;
 
-    let targets = this.availableTargets.filter(actor => {
+    const targets = this.availableTargets.filter((actor) => {
       // Skip self unless explicitly included
       if (actor.id === from.id && !includeSelf) {
         return false;
@@ -145,23 +149,33 @@ export class TargetingSystem {
       const isAlly = actor.faction === from.faction;
       const isEnemy = actor.faction !== from.faction && actor.faction !== Faction.Neutral;
 
-      if (isAlly && !includeAllies) return false;
-      if (isEnemy && !includeEnemies) return false;
+      if (isAlly && !includeAllies) {
+        return false;
+      }
+      if (isEnemy && !includeEnemies) {
+        return false;
+      }
 
       // Check if actor is alive
-      if (actor.hp <= 0) return false;
+      if (actor.hp <= 0) {
+        return false;
+      }
 
       // Check range if specified
       if (maxRange && from.position && actor.position) {
         const distance = Math.sqrt(
           Math.pow(actor.position.x - from.position.x, 2) +
-          Math.pow(actor.position.y - from.position.y, 2)
+            Math.pow(actor.position.y - from.position.y, 2),
         );
-        if (distance > maxRange) return false;
+        if (distance > maxRange) {
+          return false;
+        }
       }
 
       // Apply custom filter
-      if (filter && !filter(actor)) return false;
+      if (filter && !filter(actor)) {
+        return false;
+      }
 
       return true;
     });
@@ -174,7 +188,7 @@ export class TargetingSystem {
     return this.getValidTargets(from, {
       includeEnemies: true,
       includeAllies: false,
-      maxRange: range
+      maxRange: range,
     });
   }
 
@@ -183,7 +197,7 @@ export class TargetingSystem {
     return this.getValidTargets(from, {
       includeEnemies: false,
       includeAllies: true,
-      maxRange: range
+      maxRange: range,
     });
   }
 
@@ -200,15 +214,15 @@ export class TargetingSystem {
   /** Check if target is valid for action */
   isValidTarget(from: Actor, target: Actor, options: TargetingOptions = {}): boolean {
     const validTargets = this.getValidTargets(from, options);
-    return validTargets.some(t => t.id === target.id);
+    return validTargets.some((t) => t.id === target.id);
   }
 
   /** Get targeting suggestions for auto-complete */
   getTargetingSuggestions(query: string): string[] {
     const normalizedQuery = query.toLowerCase();
     return this.availableTargets
-      .filter(a => a.name.toLowerCase().includes(normalizedQuery))
-      .map(a => a.name)
+      .filter((a) => a.name.toLowerCase().includes(normalizedQuery))
+      .map((a) => a.name)
       .slice(0, 5); // Limit to 5 suggestions
   }
 }

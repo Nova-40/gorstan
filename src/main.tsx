@@ -29,19 +29,7 @@ import { createRoot } from 'react-dom/client';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { Analytics } from '@vercel/analytics/react';
 
-
-
-
-
-
-
-
-
-
-
-
-
-console.log("🔥 Gorstan main.tsx executing...");
+console.log('🔥 Gorstan main.tsx executing...');
 
 // Variable declaration
 const rootElement = document.getElementById('root');
@@ -73,7 +61,6 @@ if (!rootElement) {
   throw new Error(errorMessage);
 }
 
-
 // Variable declaration
 const root = createRoot(rootElement);
 root.render(
@@ -81,5 +68,5 @@ root.render(
     <App />
     <SpeedInsights />
     <Analytics />
-  </>
+  </>,
 );

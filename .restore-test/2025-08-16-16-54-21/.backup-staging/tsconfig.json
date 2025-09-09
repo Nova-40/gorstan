@@ -20,6 +20,13 @@
     "checkJs": false
   },
   "include": ["src", "vite.config.ts"],
-  "exclude": ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx", "**/jest.setup.ts", "**/setupTests.ts"],
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/jest.setup.ts",
+    "**/setupTests.ts"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -9,12 +9,12 @@ on:
 permissions:
   contents: write
   packages: write
-  id-token: write  # Required for cosign keyless signing
+  id-token: write # Required for cosign keyless signing
 
 jobs:
   secure-backup:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -50,7 +50,7 @@ jobs:
         run: |
           # Create staging directory
           mkdir -p .backup-staging
-          
+
           # Copy included files based on configuration
           # Source files
           cp -r src .backup-staging/ 2>/dev/null || true
@@ -61,7 +61,7 @@ jobs:
           cp -r docs .backup-staging/ 2>/dev/null || true
           cp -r backup .backup-staging/ 2>/dev/null || true
           cp -r .github .backup-staging/ 2>/dev/null || true
-          
+
           # Configuration files
           cp package.json .backup-staging/ 2>/dev/null || true
           cp package-lock.json .backup-staging/ 2>/dev/null || true
@@ -86,12 +86,12 @@ jobs:
           cp vercel.json .backup-staging/ 2>/dev/null || true
           cp index.html .backup-staging/ 2>/dev/null || true
           cp sbom.json .backup-staging/ 2>/dev/null || true
-          
+
           # Create archive
           cd .backup-staging
           zip -r ../gorstan-${{ steps.version.outputs.VERSION }}-src.zip . -x "*.git*" "node_modules/*" "dist/*" ".vercel/*" ".aws/*" ".env" ".env.local" ".env.production"
           cd ..
-          
+
           # Verify archive
           echo "Archive contents:"
           unzip -l gorstan-${{ steps.version.outputs.VERSION }}-src.zip | head -20
@@ -123,20 +123,20 @@ jobs:
           release_name: Gorstan ${{ steps.version.outputs.VERSION }}
           body: |
             ## Gorstan ${{ steps.version.outputs.VERSION }}
-            
+
             Secure backup release with cryptographic signatures.
-            
+
             ### Artifacts
             - `gorstan-${{ steps.version.outputs.VERSION }}-src.zip` - Complete source archive
             - `sbom.json` - Software Bill of Materials
             - `SHA256SUMS.txt` - SHA-256 checksums for all artifacts
             - `SHA256SUMS.txt.sig` - Cosign signature (keyless)
-            
+
             ### Verification
             ```bash
             # Verify checksums
             sha256sum -c SHA256SUMS.txt
-            
+
             # Verify signature (requires cosign)
             cosign verify-blob \
               --certificate-identity-regexp=".*" \
@@ -144,7 +144,7 @@ jobs:
               --signature SHA256SUMS.txt.sig \
               SHA256SUMS.txt
             ```
-            
+
             ### Restore
             ```bash
             unzip gorstan-${{ steps.version.outputs.VERSION }}-src.zip
@@ -152,7 +152,7 @@ jobs:
             npm ci
             npm run build
             ```
-            
+
             For detailed restore instructions, see [README_BACKUP.md](README_BACKUP.md).
           draft: false
           prerelease: false
@@ -213,19 +213,19 @@ jobs:
           aws s3 cp gorstan-${{ steps.version.outputs.VERSION }}-src.zip s3://${{ secrets.AWS_BUCKET }}/backups/ \
             --sse aws:kms \
             --sse-kms-key-id ${{ secrets.AWS_KMS_KEY_ID }}
-          
+
           aws s3 cp sbom.json s3://${{ secrets.AWS_BUCKET }}/backups/ \
             --sse aws:kms \
             --sse-kms-key-id ${{ secrets.AWS_KMS_KEY_ID }}
-          
+
           aws s3 cp SHA256SUMS.txt s3://${{ secrets.AWS_BUCKET }}/backups/ \
             --sse aws:kms \
             --sse-kms-key-id ${{ secrets.AWS_KMS_KEY_ID }}
-          
+
           aws s3 cp SHA256SUMS.txt.sig s3://${{ secrets.AWS_BUCKET }}/backups/ \
             --sse aws:kms \
             --sse-kms-key-id ${{ secrets.AWS_KMS_KEY_ID }}
-          
+
           echo "Backup uploaded to S3 with KMS encryption"
         env:
           AWS_BUCKET: ${{ secrets.AWS_BUCKET }}

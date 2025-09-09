@@ -14,7 +14,6 @@
   Full licence terms: see EULA.md in the project root.
 */
 
-
 import React from 'react';
 import './modalStyles.css';
 
@@ -24,9 +23,7 @@ interface ModalProps {
 
 const UnifiedModal: React.FC<ModalProps> = ({ children }) => (
   <div className="modal-overlay">
-    <div className="modal-content">
-      {children}
-    </div>
+    <div className="modal-content">{children}</div>
   </div>
 );
 

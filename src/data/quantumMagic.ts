@@ -3,18 +3,18 @@
  * Defines all artifacts, skills, and their relationships
  */
 
-import { 
-  type QuantumArtifact, 
-  type QuantumSkill, 
+import {
+  type QuantumArtifact,
+  type QuantumSkill,
   type ArtifactTier,
   type QuantumElement,
-  type SkillCategory 
+  type SkillCategory,
 } from '../types/quantumMagic';
 
 // Artifact definitions by tier and element
 export const quantumArtifacts: Record<string, QuantumArtifact> = {
   // SHARD TIER - Found in Demo and Short routes
-  'void_fragment': {
+  void_fragment: {
     id: 'void_fragment',
     name: 'Void Fragment',
     tier: 'shard',
@@ -26,16 +26,16 @@ export const quantumArtifacts: Record<string, QuantumArtifact> = {
         type: 'skill_unlock',
         target: 'shadow_sight',
         value: 1,
-        description: 'Unlocks basic shadow detection abilities'
-      }
+        description: 'Unlocks basic shadow detection abilities',
+      },
     ],
     experience: 0,
     level: 1,
     maxLevel: 3,
-    isActive: false
+    isActive: false,
   },
 
-  'flux_crystal': {
+  flux_crystal: {
     id: 'flux_crystal',
     name: 'Flux Crystal',
     tier: 'shard',
@@ -47,16 +47,16 @@ export const quantumArtifacts: Record<string, QuantumArtifact> = {
         type: 'ability_enhance',
         target: 'puzzle_solving',
         value: 10,
-        description: 'Provides hints for logic puzzles'
-      }
+        description: 'Provides hints for logic puzzles',
+      },
     ],
     experience: 0,
     level: 1,
     maxLevel: 3,
-    isActive: false
+    isActive: false,
   },
 
-  'resonance_tuner': {
+  resonance_tuner: {
     id: 'resonance_tuner',
     name: 'Resonance Tuner',
     tier: 'shard',
@@ -68,17 +68,17 @@ export const quantumArtifacts: Record<string, QuantumArtifact> = {
         type: 'detection',
         target: 'artifacts',
         value: 'nearby',
-        description: 'Reveals nearby hidden artifacts and quantum signatures'
-      }
+        description: 'Reveals nearby hidden artifacts and quantum signatures',
+      },
     ],
     experience: 0,
     level: 1,
     maxLevel: 3,
-    isActive: false
+    isActive: false,
   },
 
   // RELIC TIER - Found in 30-minute routes and rare 10-minute discoveries
-  'entropy_lens': {
+  entropy_lens: {
     id: 'entropy_lens',
     name: 'Entropy Lens',
     tier: 'relic',
@@ -90,30 +90,30 @@ export const quantumArtifacts: Record<string, QuantumArtifact> = {
         type: 'skill_unlock',
         target: 'temporal_perception',
         value: 1,
-        description: 'Unlocks ability to perceive temporal anomalies'
+        description: 'Unlocks ability to perceive temporal anomalies',
       },
       {
         type: 'ability_enhance',
         target: 'combat_strategy',
         value: 20,
-        description: 'Predicts enemy movement patterns'
-      }
+        description: 'Predicts enemy movement patterns',
+      },
     ],
     requirements: [
       {
         type: 'skill',
         target: 'shadow_sight',
-        level: 2
-      }
+        level: 2,
+      },
     ],
     synergies: ['void_fragment'],
     experience: 0,
     level: 1,
     maxLevel: 5,
-    isActive: false
+    isActive: false,
   },
 
-  'nexus_stabilizer': {
+  nexus_stabilizer: {
     id: 'nexus_stabilizer',
     name: 'Nexus Stabilizer',
     tier: 'relic',
@@ -125,31 +125,31 @@ export const quantumArtifacts: Record<string, QuantumArtifact> = {
         type: 'traversal',
         target: 'fast_travel',
         value: 'enabled',
-        description: 'Enables fast travel between discovered locations'
+        description: 'Enables fast travel between discovered locations',
       },
       {
         type: 'skill_unlock',
         target: 'quantum_mastery',
         value: 1,
-        description: 'Unlocks advanced quantum manipulation'
-      }
+        description: 'Unlocks advanced quantum manipulation',
+      },
     ],
     requirements: [
       {
         type: 'route_completion',
         target: 'short30',
-        level: 1
-      }
+        level: 1,
+      },
     ],
     synergies: ['flux_crystal', 'resonance_tuner'],
     experience: 0,
     level: 1,
     maxLevel: 5,
-    isActive: false
+    isActive: false,
   },
 
   // NEXUS TIER - Found in full game with special discovery conditions
-  'reality_anchor': {
+  reality_anchor: {
     id: 'reality_anchor',
     name: 'Reality Anchor',
     tier: 'nexus',
@@ -161,36 +161,36 @@ export const quantumArtifacts: Record<string, QuantumArtifact> = {
         type: 'ability_enhance',
         target: 'all_skills',
         value: 25,
-        description: 'Enhances all quantum abilities significantly'
+        description: 'Enhances all quantum abilities significantly',
       },
       {
         type: 'resistance',
         target: 'quantum_interference',
         value: 80,
-        description: 'Provides strong resistance to hostile quantum effects'
-      }
+        description: 'Provides strong resistance to hostile quantum effects',
+      },
     ],
     requirements: [
       {
         type: 'artifact',
         target: 'nexus_stabilizer',
-        level: 3
+        level: 3,
       },
       {
         type: 'route_completion',
         target: 'full',
-        level: 1
-      }
+        level: 1,
+      },
     ],
     synergies: ['entropy_lens', 'nexus_stabilizer'],
     experience: 0,
     level: 1,
     maxLevel: 7,
-    isActive: false
+    isActive: false,
   },
 
   // LEGENDARY TIER - Ultimate discoveries requiring deep progression
-  'quantum_core': {
+  quantum_core: {
     id: 'quantum_core',
     name: 'Quantum Core',
     tier: 'legendary',
@@ -202,39 +202,39 @@ export const quantumArtifacts: Record<string, QuantumArtifact> = {
         type: 'skill_unlock',
         target: 'reality_manipulation',
         value: 1,
-        description: 'Unlocks the ultimate quantum mastery skills'
+        description: 'Unlocks the ultimate quantum mastery skills',
       },
       {
         type: 'ability_enhance',
         target: 'discovery_rate',
         value: 100,
-        description: 'Dramatically increases discovery chances'
-      }
+        description: 'Dramatically increases discovery chances',
+      },
     ],
     requirements: [
       {
         type: 'artifact',
         target: 'reality_anchor',
-        level: 5
+        level: 5,
       },
       {
         type: 'discovery',
         target: 'all_quantum_lore',
-        level: 1
-      }
+        level: 1,
+      },
     ],
     synergies: ['void_fragment', 'entropy_lens', 'reality_anchor'],
     experience: 0,
     level: 1,
     maxLevel: 10,
-    isActive: false
-  }
+    isActive: false,
+  },
 };
 
 // Skill tree definitions
 export const quantumSkills: Record<string, QuantumSkill> = {
   // PERCEPTION SKILLS
-  'shadow_sight': {
+  shadow_sight: {
     id: 'shadow_sight',
     name: 'Shadow Sight',
     category: 'perception',
@@ -247,8 +247,8 @@ export const quantumSkills: Record<string, QuantumSkill> = {
     requirements: [
       {
         type: 'artifact',
-        target: 'void_fragment'
-      }
+        target: 'void_fragment',
+      },
     ],
     unlockedBy: ['void_fragment'],
     unlocks: ['temporal_perception'],
@@ -257,13 +257,13 @@ export const quantumSkills: Record<string, QuantumSkill> = {
         type: 'detection_range',
         description: 'Reveals hidden passages and quantum anomalies',
         value: 20,
-        conditions: ['in_dark_areas']
-      }
+        conditions: ['in_dark_areas'],
+      },
     ],
-    availableInRoutes: ['demo', 'short10', 'short30', 'full']
+    availableInRoutes: ['demo', 'short10', 'short30', 'full'],
   },
 
-  'temporal_perception': {
+  temporal_perception: {
     id: 'temporal_perception',
     name: 'Temporal Perception',
     category: 'perception',
@@ -277,12 +277,12 @@ export const quantumSkills: Record<string, QuantumSkill> = {
       {
         type: 'skill',
         target: 'shadow_sight',
-        level: 2
+        level: 2,
       },
       {
         type: 'artifact',
-        target: 'entropy_lens'
-      }
+        target: 'entropy_lens',
+      },
     ],
     unlockedBy: ['entropy_lens'],
     unlocks: ['quantum_mastery'],
@@ -291,14 +291,14 @@ export const quantumSkills: Record<string, QuantumSkill> = {
         type: 'puzzle_hint',
         description: 'Provides advanced timing-based puzzle hints',
         value: 15,
-        conditions: ['time_pressure']
-      }
+        conditions: ['time_pressure'],
+      },
     ],
-    availableInRoutes: ['short30', 'full']
+    availableInRoutes: ['short30', 'full'],
   },
 
   // MANIPULATION SKILLS
-  'quantum_mastery': {
+  quantum_mastery: {
     id: 'quantum_mastery',
     name: 'Quantum Mastery',
     category: 'mastery',
@@ -312,12 +312,12 @@ export const quantumSkills: Record<string, QuantumSkill> = {
       {
         type: 'skill',
         target: 'temporal_perception',
-        level: 3
+        level: 3,
       },
       {
         type: 'artifact',
-        target: 'nexus_stabilizer'
-      }
+        target: 'nexus_stabilizer',
+      },
     ],
     unlockedBy: ['nexus_stabilizer'],
     unlocks: ['reality_manipulation'],
@@ -326,19 +326,19 @@ export const quantumSkills: Record<string, QuantumSkill> = {
         type: 'skip_unlock',
         description: 'Grants additional skip opportunities',
         value: 1,
-        conditions: ['quantum_puzzle']
+        conditions: ['quantum_puzzle'],
       },
       {
         type: 'fast_travel',
         description: 'Enables quantum tunneling between locations',
         value: 'unlimited',
-        conditions: ['stabilizer_active']
-      }
+        conditions: ['stabilizer_active'],
+      },
     ],
-    availableInRoutes: ['full']
+    availableInRoutes: ['full'],
   },
 
-  'reality_manipulation': {
+  reality_manipulation: {
     id: 'reality_manipulation',
     name: 'Reality Manipulation',
     category: 'mastery',
@@ -352,12 +352,12 @@ export const quantumSkills: Record<string, QuantumSkill> = {
       {
         type: 'skill',
         target: 'quantum_mastery',
-        level: 5
+        level: 5,
       },
       {
         type: 'artifact',
-        target: 'quantum_core'
-      }
+        target: 'quantum_core',
+      },
     ],
     unlockedBy: ['quantum_core'],
     unlocks: [],
@@ -366,17 +366,17 @@ export const quantumSkills: Record<string, QuantumSkill> = {
         type: 'puzzle_hint',
         description: 'Can bypass most puzzle mechanics',
         value: 90,
-        conditions: ['reality_unstable']
+        conditions: ['reality_unstable'],
       },
       {
         type: 'combat_bonus',
         description: 'Overwhelming advantage in quantum combat',
         value: 50,
-        conditions: ['quantum_entities']
-      }
+        conditions: ['quantum_entities'],
+      },
     ],
-    availableInRoutes: ['full']
-  }
+    availableInRoutes: ['full'],
+  },
 };
 
 // Discovery progression data - which artifacts/skills are available in which routes
@@ -385,32 +385,32 @@ export const routeDiscoveryPools = {
     guaranteedArtifacts: ['void_fragment'],
     possibleArtifacts: ['flux_crystal'],
     maxDiscoveries: 2,
-    experienceMultiplier: 1.5 // Bonus for new players
+    experienceMultiplier: 1.5, // Bonus for new players
   },
-  
+
   short10: {
     guaranteedArtifacts: [],
     possibleArtifacts: ['void_fragment', 'flux_crystal', 'resonance_tuner'],
     rareArtifacts: ['entropy_lens'], // 10% chance
     maxDiscoveries: 3,
-    experienceMultiplier: 1.2
+    experienceMultiplier: 1.2,
   },
-  
+
   short30: {
     guaranteedArtifacts: ['entropy_lens'], // One guaranteed relic
     possibleArtifacts: ['void_fragment', 'flux_crystal', 'resonance_tuner', 'nexus_stabilizer'],
     rareArtifacts: ['reality_anchor'], // 5% chance
     maxDiscoveries: 4,
-    experienceMultiplier: 1.0
+    experienceMultiplier: 1.0,
   },
-  
+
   full: {
     guaranteedArtifacts: ['reality_anchor'],
     possibleArtifacts: Object.keys(quantumArtifacts),
     legendaryArtifacts: ['quantum_core'], // Special discovery conditions
     maxDiscoveries: 10,
-    experienceMultiplier: 1.0
-  }
+    experienceMultiplier: 1.0,
+  },
 };
 
 // Experience values for different activities
@@ -419,29 +419,29 @@ export const experienceValues = {
     easy: 50,
     medium: 100,
     hard: 200,
-    expert: 350
+    expert: 350,
   },
-  
+
   combatWon: {
     easy: 75,
     medium: 150,
     hard: 300,
-    expert: 500
+    expert: 500,
   },
-  
+
   discovery: {
     artifact: 200,
     lore: 50,
     synergy: 300,
-    location: 100
+    location: 100,
   },
-  
+
   routeCompleted: {
     demo: 300,
     short10: 500,
     short30: 1000,
-    full: 2500
-  }
+    full: 2500,
+  },
 };
 
 // Helper functions for progression calculation
@@ -455,13 +455,13 @@ export function getExperienceForLevel(level: number): number {
 }
 
 export function getArtifactsByTier(tier: ArtifactTier): QuantumArtifact[] {
-  return Object.values(quantumArtifacts).filter(artifact => artifact.tier === tier);
+  return Object.values(quantumArtifacts).filter((artifact) => artifact.tier === tier);
 }
 
 export function getSkillsByCategory(category: SkillCategory): QuantumSkill[] {
-  return Object.values(quantumSkills).filter(skill => skill.category === category);
+  return Object.values(quantumSkills).filter((skill) => skill.category === category);
 }
 
 export function getSkillsByElement(element: QuantumElement): QuantumSkill[] {
-  return Object.values(quantumSkills).filter(skill => skill.element === element);
+  return Object.values(quantumSkills).filter((skill) => skill.element === element);
 }

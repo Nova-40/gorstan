@@ -17,17 +17,7 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Renders room descriptions and image logic.
 
-import { Puzzle } from '../types/GameTypes';
-
 import { Room } from '../types/Room';
-
-
-
-
-
-
-
-
 
 const manhattanhub: Room = {
   id: 'manhattanhub',
@@ -36,7 +26,7 @@ const manhattanhub: Room = {
   description: [
     'You ascend into what appears to be a familiar New York subway station, but something feels distinctly off. The tile work is slightly different, the platform layout subtly altered, and the air hums with an energy that has nothing to do with trains.',
     'This is clearly the same physical location as a real Manhattan subway station, but shifted dimensionally into something far more significant. Advanced technology seamlessly blends with the familiar underground architecture.',
-    'Multiple tunnel entrances lead off in different directions, each marked with destinations that definitely don\'t appear on any MTA map. Digital displays show arrival times for routes to places that shouldn\'t exist.',
+    "Multiple tunnel entrances lead off in different directions, each marked with destinations that definitely don't appear on any MTA map. Digital displays show arrival times for routes to places that shouldn't exist.",
     'A security checkpoint stands between you and the main platform area, staffed by the same professional guard you recognize from the warehouse. Albie nods in acknowledgment - but his eyes clearly check for the medallion that grants access to the restricted areas.',
   ],
   image: 'newyorkZone_manhattanhub.png',
@@ -57,55 +47,54 @@ const manhattanhub: Room = {
 
   exits: {
     north: 'centralpark',
-    
-    'east_tunnel': 'liminalhub',
-    'west_tunnel': 'crossing',
-    'south_tunnel': 'latticehub',
+
+    east_tunnel: 'liminalhub',
+    west_tunnel: 'crossing',
+    south_tunnel: 'latticehub',
   },
 
-  items: [
-    'dimensional_map',
-    'station_schedule',
-    'quantum_transit_guide',
-    'emergency_beacon',
-  ],
+  items: ['dimensional_map', 'station_schedule', 'quantum_transit_guide', 'emergency_beacon'],
 
   interactables: {
-    'security_checkpoint': {
-      description: 'A sophisticated security station that controls access to the main platform. Advanced scanners and verification systems are built into the familiar subway aesthetic.',
+    security_checkpoint: {
+      description:
+        'A sophisticated security station that controls access to the main platform. Advanced scanners and verification systems are built into the familiar subway aesthetic.',
       actions: ['approach', 'present_medallion', 'request_passage'],
       requires: [],
     },
-    'albie_security_guard': {
-      description: 'The same professional security guard from the warehouse, now manning this crucial dimensional transit hub.',
+    albie_security_guard: {
+      description:
+        'The same professional security guard from the warehouse, now manning this crucial dimensional transit hub.',
       actions: ['talk', 'show_medallion', 'request_platform_access'],
       requires: [],
     },
-    'dimensional_displays': {
-      description: 'Digital boards showing departure times and destinations that include places like "Quantum Library", "Crystal Gardens", and "Temporal Nexus".',
+    dimensional_displays: {
+      description:
+        'Digital boards showing departure times and destinations that include places like "Quantum Library", "Crystal Gardens", and "Temporal Nexus".',
       actions: ['examine', 'read_destinations', 'study_schedules'],
       requires: ['medallion_verified'],
     },
-    'platform_access_gate': {
-      description: 'A high-tech security gate disguised as a standard subway turnstile. It only responds to proper authorization.',
+    platform_access_gate: {
+      description:
+        'A high-tech security gate disguised as a standard subway turnstile. It only responds to proper authorization.',
       actions: ['examine', 'attempt_passage', 'scan_medallion'],
       requires: [],
     },
-    'tunnel_entrances': {
-      description: 'Multiple tunnel mouths leading to different dimensional zones. Each is clearly marked but access is strictly controlled.',
+    tunnel_entrances: {
+      description:
+        'Multiple tunnel mouths leading to different dimensional zones. Each is clearly marked but access is strictly controlled.',
       actions: ['examine', 'read_signs', 'choose_destination'],
       requires: ['platform_access_granted'],
     },
-    'familiar_subway_elements': {
-      description: 'Standard NYC subway fixtures - tile work, benches, and signage - but with subtle differences that mark this as a dimensional variant.',
+    familiar_subway_elements: {
+      description:
+        'Standard NYC subway fixtures - tile work, benches, and signage - but with subtle differences that mark this as a dimensional variant.',
       actions: ['examine', 'compare_to_memory', 'notice_differences'],
       requires: [],
     },
   },
 
-  npcs: [
-    
-  ],
+  npcs: [],
 
   events: {
     onEnter: ['checkMedallionStatus', 'activateHubSecurity', 'assessClearanceLevel'],
@@ -145,7 +134,7 @@ const manhattanhub: Room = {
       'dimensional_energy_humming',
       'security_equipment_beeping',
       'platform_announcements',
-      'quantum_transit_ambience'
+      'quantum_transit_ambience',
     ],
     hazards: ['dimensional_displacement_risk', 'unauthorized_access_consequences'],
   },
@@ -187,24 +176,29 @@ const manhattanhub: Room = {
       rewards: ['secret_zone_knowledge', 'advanced_transit_options'],
     },
     albie_hub_role: {
-      description: 'Understanding Albie\'s role in the broader interdimensional network',
+      description: "Understanding Albie's role in the broader interdimensional network",
       requirements: ['complete multiple interactions', 'demonstrate trustworthiness'],
       rewards: ['network_insight', 'security_system_understanding'],
     },
   },
 
   customActions: {
-    'present_medallion_to_albie': {
-      description: 'Show the medallion obtained from the warehouse briefcase to gain platform access',
+    present_medallion_to_albie: {
+      description:
+        'Show the medallion obtained from the warehouse briefcase to gain platform access',
       requirements: ['medallion_from_warehouse_puzzle'],
-      effects: ['gain_platform_access', 'unlock_dimensional_destinations', 'activate_transit_options'],
+      effects: [
+        'gain_platform_access',
+        'unlock_dimensional_destinations',
+        'activate_transit_options',
+      ],
     },
-    'solve_hub_transit_puzzle': {
+    solve_hub_transit_puzzle: {
       description: 'Complete the dimensional routing puzzle to unlock access to the next zones',
       requirements: ['platform_access_granted', 'study_destination_options'],
       effects: ['unlock_next_zone_access', 'gain_transit_mastery', 'complete_hub_challenge'],
     },
-    'attempt_unauthorized_access': {
+    attempt_unauthorized_access: {
       description: 'Try to bypass security without proper credentials',
       requirements: [],
       effects: ['trigger_albie_expulsion', 'return_to_central_park', 'receive_stern_warning'],
@@ -213,5 +207,3 @@ const manhattanhub: Room = {
 };
 
 export default manhattanhub;
-
-

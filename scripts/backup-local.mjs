@@ -21,7 +21,7 @@ const colors = {
   yellow: '\x1b[33m',
   blue: '\x1b[34m',
   reset: '\x1b[0m',
-  bold: '\x1b[1m'
+  bold: '\x1b[1m',
 };
 
 function log(color, message) {
@@ -88,8 +88,8 @@ async function loadConfig() {
 // Ensure SBOM is generated
 async function ensureSBOM() {
   info('Ensuring SBOM is generated...');
-  
-  if (!await fs.pathExists(SBOM_FILE)) {
+
+  if (!(await fs.pathExists(SBOM_FILE))) {
     info('Generating SBOM...');
     try {
       await $`npm run sbom`;
@@ -97,32 +97,34 @@ async function ensureSBOM() {
     } catch (err) {
       warn(`SBOM generation failed: ${err.message}`);
       warn('Creating minimal SBOM as fallback...');
-      
+
       // Create a minimal SBOM as fallback
       const packageJson = JSON.parse(await fs.readFile('package.json', 'utf-8'));
       const minimalSBOM = {
-        bomFormat: "CycloneDX",
-        specVersion: "1.6",
+        bomFormat: 'CycloneDX',
+        specVersion: '1.6',
         serialNumber: `urn:uuid:${randomUUID()}`,
         version: 1,
         metadata: {
           timestamp: new Date().toISOString(),
-          tools: [{
-            vendor: "Gorstan Backup System",
-            name: "backup-local.mjs",
-            version: "1.0.0"
-          }],
+          tools: [
+            {
+              vendor: 'Gorstan Backup System',
+              name: 'backup-local.mjs',
+              version: '1.0.0',
+            },
+          ],
           component: {
-            type: "application",
-            "bom-ref": `${packageJson.name}@${packageJson.version}`,
+            type: 'application',
+            'bom-ref': `${packageJson.name}@${packageJson.version}`,
             name: packageJson.name,
             version: packageJson.version,
-            description: packageJson.description
-          }
+            description: packageJson.description,
+          },
         },
-        components: []
+        components: [],
       };
-      
+
       await fs.writeFile(SBOM_FILE, JSON.stringify(minimalSBOM, null, 2));
       success('Minimal SBOM created as fallback');
     }
@@ -134,7 +136,7 @@ async function ensureSBOM() {
 // Create staging directory with filtered files
 async function createStaging(config) {
   info('Creating staging directory...');
-  
+
   // Clean staging directory
   if (await fs.pathExists(STAGING_DIR)) {
     await fs.remove(STAGING_DIR);
@@ -142,15 +144,15 @@ async function createStaging(config) {
   await fs.ensureDir(STAGING_DIR);
 
   const { include, exclude } = config;
-  
+
   // Create exclude patterns for fast-glob
   const globby = await import('globby');
-  
+
   try {
     const files = await globby.globby(include, {
       ignore: exclude,
       dot: true,
-      gitignore: false
+      gitignore: false,
     });
 
     info(`Found ${files.length} files to backup`);
@@ -173,9 +175,9 @@ async function createStaging(config) {
 // Create zip archive
 async function createZipArchive(timestamp) {
   const zipFile = path.join(BACKUP_DIR, `gorstan-${timestamp}-src.zip`);
-  
+
   info('Creating ZIP archive...');
-  
+
   try {
     // Use 7-Zip if available, otherwise Node's built-in
     if (commandExists('7z')) {
@@ -185,22 +187,22 @@ async function createZipArchive(timestamp) {
       // Fallback to Node archiver
       const archiver = await import('archiver');
       const archive = archiver.default('zip', { zlib: { level: 9 } });
-      
+
       const output = fs.createWriteStream(zipFile);
-      
+
       return new Promise((resolve, reject) => {
         output.on('close', () => {
           success(`ZIP archive created: ${zipFile}`);
           resolve(zipFile);
         });
-        
+
         archive.on('error', reject);
         archive.pipe(output);
         archive.directory(STAGING_DIR, false);
         archive.finalize();
       });
     }
-    
+
     success(`ZIP archive created: ${zipFile}`);
     return zipFile;
   } catch (err) {
@@ -212,7 +214,7 @@ async function createZipArchive(timestamp) {
 // Create encrypted archive
 async function createEncryptedArchive(timestamp) {
   const backupPass = process.env.BACKUP_PASS;
-  
+
   if (!backupPass) {
     warn('BACKUP_PASS environment variable not set - skipping encrypted backup');
     return null;
@@ -224,10 +226,13 @@ async function createEncryptedArchive(timestamp) {
   if (commandExists('7z')) {
     encryptedFile = path.join(BACKUP_DIR, `gorstan-${timestamp}-src.7z`);
     info('Creating encrypted 7z archive...');
-    
+
     try {
       const sevenZipPath = '"C:\\Program Files\\7-Zip\\7z.exe"';
-      execSync(`${sevenZipPath} a -t7z -p"${backupPass}" -mhe=on -mx=9 "${encryptedFile}" "${STAGING_DIR}\\*"`, { stdio: 'inherit' });
+      execSync(
+        `${sevenZipPath} a -t7z -p"${backupPass}" -mhe=on -mx=9 "${encryptedFile}" "${STAGING_DIR}\\*"`,
+        { stdio: 'inherit' },
+      );
       success(`Encrypted 7z archive created: ${encryptedFile}`);
     } catch (err) {
       error(`Failed to create 7z archive: ${err.message}`);
@@ -238,19 +243,19 @@ async function createEncryptedArchive(timestamp) {
   else if (commandExists('gpg')) {
     const tarFile = path.join(BACKUP_DIR, `gorstan-${timestamp}-src.tar.gz`);
     encryptedFile = `${tarFile}.gpg`;
-    
+
     info('Creating encrypted GPG archive...');
-    
+
     try {
       // Create tar.gz first
       await $`tar -czf ${tarFile} -C ${STAGING_DIR} .`;
-      
+
       // Encrypt with GPG
       await $`gpg --symmetric --cipher-algo AES256 --compress-algo 1 --s2k-mode 3 --s2k-digest-algo SHA512 --s2k-count 65536 --force-mdc --quiet --batch --passphrase ${backupPass} --output ${encryptedFile} ${tarFile}`;
-      
+
       // Remove unencrypted tar
       await fs.remove(tarFile);
-      
+
       success(`Encrypted GPG archive created: ${encryptedFile}`);
     } catch (err) {
       error(`Failed to create GPG archive: ${err.message}`);
@@ -271,7 +276,7 @@ async function generateChecksums(files) {
   info('Generating SHA256 checksums...');
 
   for (const file of files) {
-    if (file && await fs.pathExists(file)) {
+    if (file && (await fs.pathExists(file))) {
       const hash = await calculateFileHash(file);
       const basename = path.basename(file);
       checksums.push(`${hash}  ${basename}`);
@@ -281,7 +286,7 @@ async function generateChecksums(files) {
 
   await fs.writeFile(checksumFile, checksums.join('\n') + '\n');
   success(`Checksums written to: ${checksumFile}`);
-  
+
   return checksumFile;
 }
 
@@ -329,7 +334,6 @@ async function main() {
     console.log(`🔍 Checksums: ${path.basename(checksumFile)}`);
     console.log();
     success('Backup completed successfully!');
-
   } catch (err) {
     error(`Backup failed: ${err.message}`);
     process.exit(1);

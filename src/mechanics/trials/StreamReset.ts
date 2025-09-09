@@ -5,17 +5,16 @@
 */
 
 export class StreamReset {
-  
   async run(): Promise<void> {
     console.log('[StreamReset] Entering the cleansing stream...');
-    
+
     return new Promise((resolve) => {
       this.displayStreamSequence();
-      
+
       // Stream cleansing sequence
       setTimeout(() => {
         this.triggerCleaners();
-        
+
         setTimeout(() => {
           this.completeReset();
           resolve();
@@ -39,16 +38,16 @@ export class StreamReset {
     console.log('[StreamReset] Ethereal forms rise from the stream!');
     console.log('[StreamReset] The Cleaners have awakened...');
     console.log('');
-    
+
     // Simulate cleaner activity
     const cleanerMessages = [
       'Translucent beings drift across the mushroom field...',
       'Where they pass, the corrupted fungi wither away...',
       'Creature packs scatter and dissolve into mist...',
       'The very air grows lighter and cleaner...',
-      'Ancient magic restores the natural balance...'
+      'Ancient magic restores the natural balance...',
     ];
-    
+
     cleanerMessages.forEach((message, index) => {
       setTimeout(() => {
         console.log(`[StreamReset] ${message}`);
@@ -73,20 +72,20 @@ export class StreamReset {
   // Static utility for triggering reset from anywhere
   static async triggerFieldReset(): Promise<void> {
     console.log('[StreamReset] Emergency field reset triggered!');
-    
+
     // Clear any existing creature packs
     // Reset mushroom states
     // Restore safe state
-    
+
     const messages = [
-      'The stream\'s power surges through the field...',
+      "The stream's power surges through the field...",
       'All creatures flee or dissolve...',
       'Mushrooms return to dormant state...',
-      'The field is safe once more.'
+      'The field is safe once more.',
     ];
-    
+
     for (let i = 0; i < messages.length; i++) {
-      await new Promise(resolve => {
+      await new Promise((resolve) => {
         setTimeout(() => {
           console.log(`[StreamReset] ${messages[i]}`);
           resolve(void 0);

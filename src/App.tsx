@@ -22,22 +22,10 @@ import { CelebrationController } from './celebrate';
 
 import React from 'react';
 
-import { GameStateProvider } from './state/gameState'; 
-
-
-
-
-
-
-
-
-
-
-
-
+import { GameStateProvider } from './state/gameState';
 
 const App: React.FC = () => {
-// JSX return block or main return
+  // JSX return block or main return
   return (
     <GameStateProvider>
       <CelebrationController>

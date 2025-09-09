@@ -21,14 +21,6 @@ import React, { useState, useEffect } from 'react';
 
 import { motion, AnimatePresence } from 'framer-motion';
 
-
-
-
-
-
-
-
-
 interface TeleportTransitionProps {
   isActive: boolean;
   destinationName?: string;
@@ -38,31 +30,32 @@ interface TeleportTransitionProps {
 const TeleportTransition: React.FC<TeleportTransitionProps> = ({
   isActive,
   destinationName,
-  onComplete
+  onComplete,
 }) => {
-  const [phase, setPhase] = useState<'start' | 'dissolve' | 'transport' | 'materialize' | 'complete'>('start');
+  const [phase, setPhase] = useState<
+    'start' | 'dissolve' | 'transport' | 'materialize' | 'complete'
+  >('start');
 
-// React effect hook
+  // React effect hook
   useEffect(() => {
     if (!isActive) {
       setPhase('complete');
       return;
     }
 
-    
-// Variable declaration
+    // Variable declaration
     const timer1 = setTimeout(() => setPhase('dissolve'), 200);
-// Variable declaration
+    // Variable declaration
     const timer2 = setTimeout(() => setPhase('transport'), 1600);
-// Variable declaration
+    // Variable declaration
     const timer3 = setTimeout(() => setPhase('materialize'), 3000);
-// Variable declaration
+    // Variable declaration
     const timer4 = setTimeout(() => {
       setPhase('complete');
       onComplete();
     }, 4400);
 
-// JSX return block or main return
+    // JSX return block or main return
     return () => {
       clearTimeout(timer1);
       clearTimeout(timer2);
@@ -73,16 +66,15 @@ const TeleportTransition: React.FC<TeleportTransitionProps> = ({
 
   if (!isActive || phase === 'complete') return null;
 
-// Variable declaration
+  // Variable declaration
   const getAnimationProps = () => {
     switch (phase) {
-
       case 'dissolve':
         return {
           opacity: [1, 0.3, 0],
           scale: [1, 1.1, 0.9],
           filter: ['blur(0px)', 'blur(2px)', 'blur(4px)'],
-          transition: { duration: 1.4, ease: "easeInOut" as const }
+          transition: { duration: 1.4, ease: 'easeInOut' as const },
         };
 
       case 'transport':
@@ -91,7 +83,7 @@ const TeleportTransition: React.FC<TeleportTransitionProps> = ({
           scale: [0.5, 2, 0.5],
           rotate: [0, 180, 360],
           filter: ['blur(8px)', 'blur(4px)', 'blur(8px)'],
-          transition: { duration: 1.4, ease: "easeInOut" as const }
+          transition: { duration: 1.4, ease: 'easeInOut' as const },
         };
 
       case 'materialize':
@@ -99,19 +91,19 @@ const TeleportTransition: React.FC<TeleportTransitionProps> = ({
           opacity: [0, 0.3, 1],
           scale: [1.2, 0.9, 1],
           filter: ['blur(4px)', 'blur(2px)', 'blur(0px)'],
-          transition: { duration: 1.4, ease: "easeOut" as const }
+          transition: { duration: 1.4, ease: 'easeOut' as const },
         };
 
       default:
         return {
           opacity: 1,
           scale: 1,
-          transition: { duration: 0.1 }
+          transition: { duration: 0.1 },
         };
     }
   };
 
-// Variable declaration
+  // Variable declaration
   const getBackgroundStyle = () => {
     switch (phase) {
       case 'dissolve':
@@ -125,7 +117,7 @@ const TeleportTransition: React.FC<TeleportTransitionProps> = ({
     }
   };
 
-// JSX return block or main return
+  // JSX return block or main return
   return (
     <AnimatePresence>
       <motion.div
@@ -151,13 +143,18 @@ const TeleportTransition: React.FC<TeleportTransitionProps> = ({
             className="w-32 h-32 rounded-full bg-gradient-to-r from-cyan-400 to-purple-600"
             animate={{
               scale: phase === 'transport' ? [1, 1.5, 1] : [1, 1.2, 1],
-              opacity: phase === 'dissolve' ? [1, 0.5, 0] : phase === 'materialize' ? [0, 0.5, 1] : [0.8, 1, 0.8],
+              opacity:
+                phase === 'dissolve'
+                  ? [1, 0.5, 0]
+                  : phase === 'materialize'
+                    ? [0, 0.5, 1]
+                    : [0.8, 1, 0.8],
               rotate: [0, 360],
             }}
             transition={{
               duration: phase === 'transport' ? 0.5 : 1,
               repeat: phase === 'transport' ? Infinity : 0,
-              ease: "linear" as const
+              ease: 'linear' as const,
             }}
             style={{
               filter: 'blur(2px)',
@@ -176,15 +173,16 @@ const TeleportTransition: React.FC<TeleportTransitionProps> = ({
               top: '50%',
             }}
             animate={{
-              x: Math.cos(i * Math.PI / 4) * (phase === 'transport' ? 150 : 80),
-              y: Math.sin(i * Math.PI / 4) * (phase === 'transport' ? 150 : 80),
-              opacity: phase === 'dissolve' ? [1, 0] : phase === 'materialize' ? [0, 1] : [0.5, 1, 0.5],
+              x: Math.cos((i * Math.PI) / 4) * (phase === 'transport' ? 150 : 80),
+              y: Math.sin((i * Math.PI) / 4) * (phase === 'transport' ? 150 : 80),
+              opacity:
+                phase === 'dissolve' ? [1, 0] : phase === 'materialize' ? [0, 1] : [0.5, 1, 0.5],
               scale: phase === 'transport' ? [1, 2, 1] : [1, 1.5, 1],
             }}
             transition={{
               duration: 0.8,
               repeat: phase === 'transport' ? Infinity : 0,
-              ease: "easeInOut" as const
+              ease: 'easeInOut' as const,
             }}
           />
         ))}
@@ -200,12 +198,8 @@ const TeleportTransition: React.FC<TeleportTransitionProps> = ({
             }}
             transition={{ duration: 0.5 }}
           >
-            <div className="text-cyan-300 text-xl font-bold tracking-wide">
-              Teleporting to
-            </div>
-            <div className="text-white text-2xl font-bold mt-2 glow">
-              {destinationName}
-            </div>
+            <div className="text-cyan-300 text-xl font-bold tracking-wide">Teleporting to</div>
+            <div className="text-white text-2xl font-bold mt-2 glow">{destinationName}</div>
           </motion.div>
         )}
 
@@ -223,13 +217,18 @@ const TeleportTransition: React.FC<TeleportTransitionProps> = ({
             }}
             animate={{
               scale: phase === 'transport' ? [1, 1.5, 1] : [1, 1.1, 1],
-              opacity: phase === 'dissolve' ? [0.3, 0] : phase === 'materialize' ? [0, 0.3] : [0.1, 0.3, 0.1],
+              opacity:
+                phase === 'dissolve'
+                  ? [0.3, 0]
+                  : phase === 'materialize'
+                    ? [0, 0.3]
+                    : [0.1, 0.3, 0.1],
               rotate: [0, 360],
             }}
             transition={{
               duration: 1 + i * 0.2,
               repeat: phase === 'transport' ? Infinity : 0,
-              ease: "linear" as const,
+              ease: 'linear' as const,
               delay: i * 0.1,
             }}
           />

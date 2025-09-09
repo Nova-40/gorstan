@@ -8,22 +8,24 @@ export function useImagePreload(imagePath: string | null, preload: boolean = fal
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (!imagePath || !preload || isLoaded) return;
+    if (!imagePath || !preload || isLoaded) {
+      return;
+    }
 
     setIsLoading(true);
-    
+
     const img = new Image();
-    
+
     img.onload = () => {
       setIsLoaded(true);
       setIsLoading(false);
     };
-    
+
     img.onerror = () => {
       setIsLoading(false);
       console.warn(`Failed to preload image: ${imagePath}`);
     };
-    
+
     img.src = imagePath;
 
     return () => {

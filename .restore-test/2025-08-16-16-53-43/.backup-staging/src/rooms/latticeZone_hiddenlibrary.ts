@@ -19,14 +19,6 @@
 
 import { Room } from '../types/Room';
 
-
-
-
-
-
-
-
-
 const hiddenlibrary: Room = {
   id: 'hiddenlibrary',
   zone: 'latticeZone',
@@ -56,5 +48,3 @@ const hiddenlibrary: Room = {
 };
 
 export default hiddenlibrary;
-
-

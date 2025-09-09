@@ -4,22 +4,22 @@
   Demo state management for adventure routes and unattended demos
 */
 
-export type DemoKind = "short" | "long" | "unattended" | "featured";
+export type DemoKind = 'short' | 'long' | 'unattended' | 'featured';
 
 export interface DemoRoute {
-  id: string;                // e.g., "trials-of-gorstan"
-  title: string;             // UI label
-  kind: DemoKind;            // short, long, unattended, or featured
-  durationMin: number;       // target runtime for the demo
-  entry: () => Promise<void>;// boot function to start sequence
-  summary: string;           // shown on CYA screen
+  id: string; // e.g., "trials-of-gorstan"
+  title: string; // UI label
+  kind: DemoKind; // short, long, unattended, or featured
+  durationMin: number; // target runtime for the demo
+  entry: () => Promise<void>; // boot function to start sequence
+  summary: string; // shown on CYA screen
 }
 
 export interface DemoState {
   activeRouteId: string | null;
   startedAt: number | null;
   unattended: boolean;
-  demoMode: boolean;         // flag to avoid overwriting main save
+  demoMode: boolean; // flag to avoid overwriting main save
 }
 
 export const demoState: DemoState = {

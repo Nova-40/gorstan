@@ -25,7 +25,7 @@ import { Span, daySpan } from './util';
  */
 export async function vesak(years: number[]): Promise<Span[]> {
   const spans: Span[] = [];
-  
+
   // Known dates for Vesak (typically May full moon)
   const knownDates: Record<number, string> = {
     2025: '2025-05-12',
@@ -53,19 +53,19 @@ export async function vesak(years: number[]): Promise<Span[]> {
     2047: '2047-05-10',
     2048: '2048-05-28',
     2049: '2049-05-17',
-    2050: '2050-05-06'
+    2050: '2050-05-06',
   };
-  
+
   for (const year of years) {
     if (knownDates[year]) {
       const date = new Date(knownDates[year]);
       spans.push(daySpan(date, `Vesak ${year}`));
     }
   }
-  
+
   return spans;
 }
 
 export const buildBuddhist = {
-  vesak
+  vesak,
 };
