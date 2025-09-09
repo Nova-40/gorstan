@@ -25,7 +25,7 @@ import { pushConsoleMessage } from '../utils/consoleTools';
  */
 export function teleportToRoom(roomId: string): void {
   pushConsoleMessage(`Teleporting to ${roomId}...`, 'info');
-  
+
   // This would typically dispatch a room change action
   // For now, we'll use console message as placeholder
   pushConsoleMessage(`You find yourself in: ${roomId}`, 'success');
@@ -36,7 +36,10 @@ export function teleportToRoom(roomId: string): void {
  * @param roomId - The ID of the room to navigate to
  * @param transitionType - Type of transition effect
  */
-export function navigateToRoom(roomId: string, transitionType: 'instant' | 'fade' | 'slide' = 'instant'): void {
+export function navigateToRoom(
+  roomId: string,
+  transitionType: 'instant' | 'fade' | 'slide' = 'instant',
+): void {
   switch (transitionType) {
     case 'fade':
       pushConsoleMessage('The world fades to black...', 'info');
@@ -47,7 +50,7 @@ export function navigateToRoom(roomId: string, transitionType: 'instant' | 'fade
     default:
       break;
   }
-  
+
   teleportToRoom(roomId);
 }
 

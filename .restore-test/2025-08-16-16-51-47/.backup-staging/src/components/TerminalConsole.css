@@ -7,7 +7,9 @@
   padding: 10px;
   border: 1px solid #1aff1a;
   border-radius: 6px;
-  box-shadow: 0 0 10px #1aff1a inset, 0 0 40px #1aff1a;
+  box-shadow:
+    0 0 10px #1aff1a inset,
+    0 0 40px #1aff1a;
   filter: contrast(1.2) brightness(0.9);
   position: relative;
 }
@@ -28,9 +30,22 @@
   pointer-events: none;
 }
 
-
-.message-info { color: #ccc; }
-.message-error { color: red; font-weight: bold; }
-.message-system { color: cyan; font-style: italic; }
-.message-lore { color: violet; font-family: 'Georgia', serif; }
-.message-npc { color: lime; font-family: 'Lucida Console', monospace; }
+.message-info {
+  color: #ccc;
+}
+.message-error {
+  color: red;
+  font-weight: bold;
+}
+.message-system {
+  color: cyan;
+  font-style: italic;
+}
+.message-lore {
+  color: violet;
+  font-family: 'Georgia', serif;
+}
+.message-npc {
+  color: lime;
+  font-family: 'Lucida Console', monospace;
+}

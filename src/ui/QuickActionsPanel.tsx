@@ -29,7 +29,7 @@ const AVAILABLE_SPELLS: SpellButton[] = [
     focusCost: 15,
     cooldown: 2000,
     icon: '🔥',
-    description: 'Launch a burning projectile that inflicts fire damage over time'
+    description: 'Launch a burning projectile that inflicts fire damage over time',
   },
   {
     id: 'frostnova',
@@ -37,7 +37,7 @@ const AVAILABLE_SPELLS: SpellButton[] = [
     focusCost: 25,
     cooldown: 4000,
     icon: '❄️',
-    description: 'Create an explosion of frost that chills nearby enemies'
+    description: 'Create an explosion of frost that chills nearby enemies',
   },
   {
     id: 'chainlightning',
@@ -45,7 +45,7 @@ const AVAILABLE_SPELLS: SpellButton[] = [
     focusCost: 30,
     cooldown: 5000,
     icon: '⚡',
-    description: 'Shock that arcs between multiple targets'
+    description: 'Shock that arcs between multiple targets',
   },
   {
     id: 'blink',
@@ -53,7 +53,7 @@ const AVAILABLE_SPELLS: SpellButton[] = [
     focusCost: 20,
     cooldown: 8000,
     icon: '✨',
-    description: 'Instantly teleport with brief invulnerability'
+    description: 'Instantly teleport with brief invulnerability',
   },
   {
     id: 'ward',
@@ -61,7 +61,7 @@ const AVAILABLE_SPELLS: SpellButton[] = [
     focusCost: 35,
     cooldown: 12000,
     icon: '🛡️',
-    description: 'Create a protective barrier that absorbs damage'
+    description: 'Create a protective barrier that absorbs damage',
   },
   {
     id: 'timedilation',
@@ -69,13 +69,11 @@ const AVAILABLE_SPELLS: SpellButton[] = [
     focusCost: 50,
     cooldown: 15000,
     icon: '⏱️',
-    description: 'Slow down time for precise timing (accessibility safe)'
-  }
+    description: 'Slow down time for precise timing (accessibility safe)',
+  },
 ];
 
-export const CombatActionsPanel: React.FC<QuickActionsPanelProps> = ({ 
-  isVisible = true 
-}) => {
+export const CombatActionsPanel: React.FC<QuickActionsPanelProps> = ({ isVisible = true }) => {
   const { state, dispatch } = useGameState();
 
   // Only show during combat
@@ -92,19 +90,19 @@ export const CombatActionsPanel: React.FC<QuickActionsPanelProps> = ({
     const result = processCommand({
       input: `cast ${spellId}`,
       currentRoom,
-      gameState: state
+      gameState: state,
     });
 
     // Add messages to history
-    result.messages.forEach(message => {
+    result.messages.forEach((message) => {
       dispatch({
         type: 'ADD_MESSAGE',
         payload: {
           id: `spell-${Date.now()}-${Math.random()}`,
           text: message.text,
           type: 'system',
-          timestamp: Date.now()
-        }
+          timestamp: Date.now(),
+        },
       });
     });
 
@@ -114,7 +112,7 @@ export const CombatActionsPanel: React.FC<QuickActionsPanelProps> = ({
         if (key === 'combat') {
           dispatch({
             type: 'UPDATE_COMBAT_STATE',
-            payload: value
+            payload: value,
           });
         }
       });
@@ -126,18 +124,18 @@ export const CombatActionsPanel: React.FC<QuickActionsPanelProps> = ({
     const result = processCommand({
       input: 'melee',
       currentRoom,
-      gameState: state
+      gameState: state,
     });
 
-    result.messages.forEach(message => {
+    result.messages.forEach((message) => {
       dispatch({
         type: 'ADD_MESSAGE',
         payload: {
           id: `melee-${Date.now()}-${Math.random()}`,
           text: message.text,
           type: 'system',
-          timestamp: Date.now()
-        }
+          timestamp: Date.now(),
+        },
       });
     });
 
@@ -146,7 +144,7 @@ export const CombatActionsPanel: React.FC<QuickActionsPanelProps> = ({
         if (key === 'combat') {
           dispatch({
             type: 'UPDATE_COMBAT_STATE',
-            payload: value
+            payload: value,
           });
         }
       });
@@ -158,18 +156,18 @@ export const CombatActionsPanel: React.FC<QuickActionsPanelProps> = ({
     const result = processCommand({
       input: 'parry',
       currentRoom,
-      gameState: state
+      gameState: state,
     });
 
-    result.messages.forEach(message => {
+    result.messages.forEach((message) => {
       dispatch({
         type: 'ADD_MESSAGE',
         payload: {
           id: `parry-${Date.now()}-${Math.random()}`,
           text: message.text,
           type: 'system',
-          timestamp: Date.now()
-        }
+          timestamp: Date.now(),
+        },
       });
     });
 
@@ -178,7 +176,7 @@ export const CombatActionsPanel: React.FC<QuickActionsPanelProps> = ({
         if (key === 'combat') {
           dispatch({
             type: 'UPDATE_COMBAT_STATE',
-            payload: value
+            payload: value,
           });
         }
       });
@@ -190,18 +188,18 @@ export const CombatActionsPanel: React.FC<QuickActionsPanelProps> = ({
     const result = processCommand({
       input: 'dodge',
       currentRoom,
-      gameState: state
+      gameState: state,
     });
 
-    result.messages.forEach(message => {
+    result.messages.forEach((message) => {
       dispatch({
         type: 'ADD_MESSAGE',
         payload: {
           id: `dodge-${Date.now()}-${Math.random()}`,
           text: message.text,
           type: 'system',
-          timestamp: Date.now()
-        }
+          timestamp: Date.now(),
+        },
       });
     });
 
@@ -210,7 +208,7 @@ export const CombatActionsPanel: React.FC<QuickActionsPanelProps> = ({
         if (key === 'combat') {
           dispatch({
             type: 'UPDATE_COMBAT_STATE',
-            payload: value
+            payload: value,
           });
         }
       });
@@ -227,7 +225,7 @@ export const CombatActionsPanel: React.FC<QuickActionsPanelProps> = ({
         <div className="flex items-center gap-2 text-sm">
           <span className="text-blue-400 font-medium">Focus:</span>
           <div className="flex-1 h-2 bg-gray-700 rounded-full overflow-hidden">
-            <div 
+            <div
               className={`h-full bg-blue-500 transition-all ${prefersReducedMotion ? '' : 'duration-300'}`}
               style={{ width: `${(currentFocus / maxFocus) * 100}%` }}
             />
@@ -264,7 +262,7 @@ export const CombatActionsPanel: React.FC<QuickActionsPanelProps> = ({
 
         {/* Spell buttons */}
         <div className="grid grid-cols-3 gap-2">
-          {AVAILABLE_SPELLS.map(spell => {
+          {AVAILABLE_SPELLS.map((spell) => {
             const canCast = currentFocus >= spell.focusCost;
             return (
               <button
@@ -274,9 +272,10 @@ export const CombatActionsPanel: React.FC<QuickActionsPanelProps> = ({
                 className={`
                   p-2 rounded text-sm font-medium transition-all
                   ${prefersReducedMotion ? '' : 'duration-200'}
-                  ${canCast 
-                    ? 'bg-purple-700 hover:bg-purple-600 text-white' 
-                    : 'bg-gray-800 text-gray-500 cursor-not-allowed'
+                  ${
+                    canCast
+                      ? 'bg-purple-700 hover:bg-purple-600 text-white'
+                      : 'bg-gray-800 text-gray-500 cursor-not-allowed'
                   }
                 `}
                 title={`${spell.description} (${spell.focusCost} focus)`}

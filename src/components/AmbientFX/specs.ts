@@ -1,11 +1,11 @@
-import { RoomFXSpec } from "./AnimatedBackdrop";
+import { RoomFXSpec } from './AnimatedBackdrop';
 
-const base = import.meta.env.BASE_URL ?? "/";
+const base = import.meta.env.BASE_URL ?? '/';
 const img = (name: string) => `${base}images/rooms/${name}`;
 
 // Control Nexus - High-tech control room with blinking indicators and data streams
 export const controlNexusFX: RoomFXSpec = {
-  baseImage: img("control-nexus.png"),
+  baseImage: img('control-nexus.png'),
   layers: [
     {
       type: 'blink-led',
@@ -13,7 +13,7 @@ export const controlNexusFX: RoomFXSpec = {
       color: '#00ff00',
       interval: 1500,
       position: { top: '20%', left: '15%' },
-      size: { width: '6px', height: '6px' }
+      size: { width: '6px', height: '6px' },
     },
     {
       type: 'blink-led',
@@ -21,7 +21,7 @@ export const controlNexusFX: RoomFXSpec = {
       color: '#ff6600',
       interval: 2000,
       position: { top: '25%', right: '20%' },
-      size: { width: '8px', height: '8px' }
+      size: { width: '8px', height: '8px' },
     },
     {
       type: 'crt-scroller',
@@ -31,20 +31,20 @@ export const controlNexusFX: RoomFXSpec = {
       speed: 100,
       opacity: 0.3,
       position: { bottom: '10%', left: '10%' },
-      size: { width: '200px', height: '60px' }
+      size: { width: '200px', height: '60px' },
     },
     {
       type: 'static-overlay',
       id: 'interference',
       pattern: 'lines',
-      opacity: 0.05
-    }
-  ]
+      opacity: 0.05,
+    },
+  ],
 };
 
 // Burger Joint - Cozy diner with warm lighting and floating steam
 export const burgerJointFX: RoomFXSpec = {
-  baseImage: img("burger-joint.png"),
+  baseImage: img('burger-joint.png'),
   layers: [
     {
       type: 'floating-orb',
@@ -53,7 +53,7 @@ export const burgerJointFX: RoomFXSpec = {
       orbSize: 12,
       speed: 0.5,
       opacity: 0.3,
-      position: { top: '30%', left: '60%' }
+      position: { top: '30%', left: '60%' },
     },
     {
       type: 'floating-orb',
@@ -62,7 +62,7 @@ export const burgerJointFX: RoomFXSpec = {
       orbSize: 8,
       speed: 0.7,
       opacity: 0.25,
-      position: { top: '35%', left: '65%' }
+      position: { top: '35%', left: '65%' },
     },
     {
       type: 'blink-led',
@@ -70,7 +70,7 @@ export const burgerJointFX: RoomFXSpec = {
       color: '#ff3366',
       interval: 3000,
       position: { top: '10%', left: '50%' },
-      size: { width: '4px', height: '4px' }
+      size: { width: '4px', height: '4px' },
     },
     {
       type: 'particles',
@@ -79,14 +79,14 @@ export const burgerJointFX: RoomFXSpec = {
       color: '#ffaa44',
       speed: 0.3,
       particleSize: 1,
-      opacity: 0.4
-    }
-  ]
+      opacity: 0.4,
+    },
+  ],
 };
 
 // Cafe - Relaxing coffee shop with subtle ambient effects
 export const cafeFX: RoomFXSpec = {
-  baseImage: img("cafe.png"),
+  baseImage: img('cafe.png'),
   layers: [
     {
       type: 'floating-orb',
@@ -95,13 +95,13 @@ export const cafeFX: RoomFXSpec = {
       orbSize: 10,
       speed: 0.4,
       opacity: 0.2,
-      position: { top: '40%', left: '70%' }
+      position: { top: '40%', left: '70%' },
     },
     {
       type: 'static-overlay',
       id: 'ambient-texture',
       pattern: 'dots',
-      opacity: 0.03
+      opacity: 0.03,
     },
     {
       type: 'particles',
@@ -110,7 +110,7 @@ export const cafeFX: RoomFXSpec = {
       color: '#f4e6d3',
       speed: 0.2,
       particleSize: 1,
-      opacity: 0.3
+      opacity: 0.3,
     },
     {
       type: 'blink-led',
@@ -118,14 +118,14 @@ export const cafeFX: RoomFXSpec = {
       color: '#44aa88',
       interval: 4000,
       position: { top: '50%', right: '25%' },
-      size: { width: '3px', height: '3px' }
-    }
-  ]
+      size: { width: '3px', height: '3px' },
+    },
+  ],
 };
 
 // Hub - Central area with dynamic energy flows
 export const hubFX: RoomFXSpec = {
-  baseImage: img("hub.png"),
+  baseImage: img('hub.png'),
   layers: [
     {
       type: 'particles',
@@ -134,7 +134,7 @@ export const hubFX: RoomFXSpec = {
       color: '#00aaff',
       speed: 0.8,
       particleSize: 2,
-      opacity: 0.5
+      opacity: 0.5,
     },
     {
       type: 'floating-orb',
@@ -143,7 +143,7 @@ export const hubFX: RoomFXSpec = {
       orbSize: 16,
       speed: 0.6,
       opacity: 0.4,
-      position: { top: '30%', left: '40%' }
+      position: { top: '30%', left: '40%' },
     },
     {
       type: 'floating-orb',
@@ -152,7 +152,7 @@ export const hubFX: RoomFXSpec = {
       orbSize: 12,
       speed: 0.8,
       opacity: 0.3,
-      position: { top: '60%', right: '30%' }
+      position: { top: '60%', right: '30%' },
     },
     {
       type: 'crt-scroller',
@@ -162,15 +162,15 @@ export const hubFX: RoomFXSpec = {
       speed: 80,
       opacity: 0.25,
       position: { top: '5%', right: '5%' },
-      size: { width: '180px', height: '40px' }
+      size: { width: '180px', height: '40px' },
     },
     {
       type: 'static-overlay',
       id: 'energy-grid',
       pattern: 'grid',
-      opacity: 0.08
-    }
-  ]
+      opacity: 0.08,
+    },
+  ],
 };
 
 // Export a map for convenience

@@ -28,7 +28,7 @@ interface OverlayState {
 
 const overlayState: OverlayState = {
   current: null,
-  listeners: []
+  listeners: [],
 };
 
 /**
@@ -36,7 +36,7 @@ const overlayState: OverlayState = {
  */
 export function showOverlay(component: OverlayComponent): void {
   overlayState.current = component;
-  overlayState.listeners.forEach(listener => listener(component));
+  overlayState.listeners.forEach((listener) => listener(component));
 }
 
 /**
@@ -44,15 +44,17 @@ export function showOverlay(component: OverlayComponent): void {
  */
 export function hideOverlay(): void {
   overlayState.current = null;
-  overlayState.listeners.forEach(listener => listener(null));
+  overlayState.listeners.forEach((listener) => listener(null));
 }
 
 /**
  * Subscribe to overlay changes
  */
-export function subscribeToOverlay(listener: (overlay: OverlayComponent | null) => void): () => void {
+export function subscribeToOverlay(
+  listener: (overlay: OverlayComponent | null) => void,
+): () => void {
   overlayState.listeners.push(listener);
-  
+
   // Return unsubscribe function
   return () => {
     const index = overlayState.listeners.indexOf(listener);

@@ -14,9 +14,9 @@
   Full licence terms: see EULA.md in the project root.
 */
 
-import { useEffect } from "react";
-import BaseDialog from "./a11y/BaseDialog";
-import { usePrefersReducedMotion } from "./hooks/usePrefersReducedMotion";
+import { useEffect } from 'react';
+import BaseDialog from './a11y/BaseDialog';
+import { usePrefersReducedMotion } from './hooks/usePrefersReducedMotion';
 
 type Props = { onClose: () => void };
 
@@ -36,10 +36,9 @@ export default function EasterEggOverlay({ onClose }: Props) {
           aria-hidden
           className="mx-auto h-28 w-20"
           style={{
-            background:
-              "radial-gradient(circle at 50% 30%, #ffe08a, #ffb347 60%, #d98c2e 100%)",
-            borderRadius: "50% 50% 45% 45% / 60% 60% 40% 40%",
-            animation: reduce ? undefined : "egg-bounce 1.6s ease-in-out infinite"
+            background: 'radial-gradient(circle at 50% 30%, #ffe08a, #ffb347 60%, #d98c2e 100%)',
+            borderRadius: '50% 50% 45% 45% / 60% 60% 40% 40%',
+            animation: reduce ? undefined : 'egg-bounce 1.6s ease-in-out infinite',
           }}
         />
         <p className="text-sm opacity-90">

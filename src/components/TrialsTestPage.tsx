@@ -25,34 +25,28 @@ export const TrialsTestPage: React.FC = () => {
   };
 
   if (showTrials) {
-    return (
-      <TrialsGame
-        onComplete={handleComplete}
-        onQuit={handleQuit}
-        autoStart={false}
-      />
-    );
+    return <TrialsGame onComplete={handleComplete} onQuit={handleQuit} autoStart={false} />;
   }
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      minHeight: '100vh',
-      background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
-      color: '#e0e6ed',
-      fontFamily: 'Consolas, Monaco, monospace'
-    }}>
-      <h1 style={{ color: '#00ff88', marginBottom: '30px' }}>
-        Trials of Gorstan - Test Interface
-      </h1>
-      
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
+        color: '#e0e6ed',
+        fontFamily: 'Consolas, Monaco, monospace',
+      }}
+    >
+      <h1 style={{ color: '#00ff88', marginBottom: '30px' }}>Trials of Gorstan - Test Interface</h1>
+
       <p style={{ textAlign: 'center', maxWidth: '600px', marginBottom: '30px' }}>
-        This is a test page for the Trials of Gorstan interactive interface. 
-        Click the button below to experience the engaging human-player interface 
-        with visual feedback, real-time controls, and immersive gameplay.
+        This is a test page for the Trials of Gorstan interactive interface. Click the button below
+        to experience the engaging human-player interface with visual feedback, real-time controls,
+        and immersive gameplay.
       </p>
 
       <div style={{ marginBottom: '30px' }}>
@@ -83,7 +77,7 @@ export const TrialsTestPage: React.FC = () => {
           borderRadius: '10px',
           cursor: 'pointer',
           transition: 'all 0.3s ease',
-          boxShadow: '0 5px 15px rgba(0, 255, 136, 0.3)'
+          boxShadow: '0 5px 15px rgba(0, 255, 136, 0.3)',
         }}
         onMouseOver={(e) => {
           e.currentTarget.style.transform = 'translateY(-3px)';
@@ -97,22 +91,39 @@ export const TrialsTestPage: React.FC = () => {
         🚀 Launch Trials Interface
       </button>
 
-      <div style={{ 
-        marginTop: '40px', 
-        padding: '20px', 
-        background: 'rgba(0, 255, 136, 0.05)',
-        borderRadius: '10px',
-        border: '1px solid rgba(0, 255, 136, 0.2)',
-        maxWidth: '600px'
-      }}>
+      <div
+        style={{
+          marginTop: '40px',
+          padding: '20px',
+          background: 'rgba(0, 255, 136, 0.05)',
+          borderRadius: '10px',
+          border: '1px solid rgba(0, 255, 136, 0.2)',
+          maxWidth: '600px',
+        }}
+      >
         <h4 style={{ color: '#00ff88', marginBottom: '10px' }}>Human Enjoyment Features:</h4>
         <ul style={{ fontSize: '0.9rem', lineHeight: '1.6' }}>
-          <li><strong>Visual Feedback:</strong> Smooth animations, particle effects, and responsive UI elements</li>
-          <li><strong>Strategic Depth:</strong> Energy management, creature AI, and tactical positioning</li>
-          <li><strong>Progressive Challenge:</strong> Three distinct phases with increasing complexity</li>
-          <li><strong>Immediate Response:</strong> All controls are responsive with instant visual feedback</li>
-          <li><strong>Clear Goals:</strong> Objectives and hints guide players without hand-holding</li>
-          <li><strong>Sense of Progress:</strong> Phase progression, achievements, and score tracking</li>
+          <li>
+            <strong>Visual Feedback:</strong> Smooth animations, particle effects, and responsive UI
+            elements
+          </li>
+          <li>
+            <strong>Strategic Depth:</strong> Energy management, creature AI, and tactical
+            positioning
+          </li>
+          <li>
+            <strong>Progressive Challenge:</strong> Three distinct phases with increasing complexity
+          </li>
+          <li>
+            <strong>Immediate Response:</strong> All controls are responsive with instant visual
+            feedback
+          </li>
+          <li>
+            <strong>Clear Goals:</strong> Objectives and hints guide players without hand-holding
+          </li>
+          <li>
+            <strong>Sense of Progress:</strong> Phase progression, achievements, and score tracking
+          </li>
         </ul>
       </div>
     </div>

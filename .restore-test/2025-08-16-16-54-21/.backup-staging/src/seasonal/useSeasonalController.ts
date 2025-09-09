@@ -23,13 +23,13 @@ import { maybeShowSeasonalOverlay } from './seasonalController';
 
 /**
  * useSeasonalController - Hook for integrating seasonal overlays into AppCore
- * 
+ *
  * Features:
  * - Checks for seasonal overlays on boot
  * - Monitors for day rollover events
  * - Integrates with existing game state management
  * - Prevents duplicate checks with ref tracking
- * 
+ *
  * @param dispatch - Game state dispatch function for May 13 NPC banter
  */
 export const useSeasonalController = (dispatch?: any) => {
@@ -50,9 +50,11 @@ export const useSeasonalController = (dispatch?: any) => {
   useEffect(() => {
     const checkDateRollover = () => {
       const currentDateString = new Date().toDateString();
-      
+
       if (lastCheckedDate.current && lastCheckedDate.current !== currentDateString) {
-        console.log('[useSeasonalController] Day rollover detected, checking for seasonal overlays');
+        console.log(
+          '[useSeasonalController] Day rollover detected, checking for seasonal overlays',
+        );
         maybeShowSeasonalOverlay(dispatch);
         lastCheckedDate.current = currentDateString;
       }

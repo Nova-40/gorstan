@@ -5,7 +5,11 @@
   Coordinates AI between Ayla hints, miniquest recommendations, and dynamic content generation
 */
 
-import { aiMiniquestService, type AIMiniquestRecommendation, type PlayerProfile } from './aiMiniquestService';
+import {
+  aiMiniquestService,
+  type AIMiniquestRecommendation,
+  type PlayerProfile,
+} from './aiMiniquestService';
 import { aylaHints, type AylaHintContext, type AylaHintResponse } from './aylaHintSystem';
 import { groqAI } from './groqAI';
 import { dynamicContentGenerator, type GeneratedContent } from './dynamicContentGenerator';
@@ -76,15 +80,15 @@ export class UnifiedAIIntelligence {
       const [aylaResponse, miniquestInsights, dynamicOpportunities] = await Promise.all([
         this.getAylaGuidance(context),
         this.getMiniquestGuidance(context),
-        this.analyzeDynamicOpportunities(context)
+        this.analyzeDynamicOpportunities(context),
       ]);
 
       // Prioritize responses based on player needs
       const prioritizedResponse = this.prioritizeGuidance(
-        aylaResponse, 
-        miniquestInsights, 
-        dynamicOpportunities, 
-        context
+        aylaResponse,
+        miniquestInsights,
+        dynamicOpportunities,
+        context,
       );
 
       if (prioritizedResponse) {
@@ -110,7 +114,7 @@ export class UnifiedAIIntelligence {
       recentCommands: context.recentCommands,
       timeInRoom: context.timeInRoom,
       failedAttempts: context.failedAttempts,
-      stuckDuration: context.timeInRoom
+      stuckDuration: context.timeInRoom,
     };
 
     const aylaHint = await aylaHints.shouldAylaInterrupt(aylaContext);
@@ -119,9 +123,9 @@ export class UnifiedAIIntelligence {
     // Enhance Ayla's hint with miniquest awareness
     if (context.activeMiniquests && context.activeMiniquests.length > 0) {
       const enhancedHint = await this.enhanceAylaHintWithMiniquests(
-        aylaHint, 
-        context.activeMiniquests, 
-        context.gameState
+        aylaHint,
+        context.activeMiniquests,
+        context.gameState,
       );
       if (enhancedHint) {
         return {
@@ -133,8 +137,8 @@ export class UnifiedAIIntelligence {
           metadata: {
             confidence: 0.8,
             reasoning: 'Ayla guidance enhanced with miniquest awareness',
-            category: aylaHint.hintType
-          }
+            category: aylaHint.hintType,
+          },
         };
       }
     }
@@ -148,36 +152,35 @@ export class UnifiedAIIntelligence {
       metadata: {
         confidence: 0.7,
         reasoning: 'Standard Ayla guidance',
-        category: aylaHint.hintType
-      }
+        category: aylaHint.hintType,
+      },
     };
   }
 
   /**
    * Get miniquest-specific guidance with Ayla personality
    */
-  private async getMiniquestGuidance(context: UnifiedAIContext): Promise<AIGuidanceResponse | null> {
+  private async getMiniquestGuidance(
+    context: UnifiedAIContext,
+  ): Promise<AIGuidanceResponse | null> {
     try {
       const miniquestController = MiniquestController.getInstance();
       const miniquestStatus = miniquestController.getAIStatus();
-      
+
       if (!miniquestStatus.enabled) return null;
 
       // Get AI miniquest recommendations
       const recommendations = await aiMiniquestService.getRecommendedQuests(
-        context.currentRoom.id, 
-        context.gameState, 
-        2
+        context.currentRoom.id,
+        context.gameState,
+        2,
       );
 
       if (recommendations && recommendations.length > 0) {
         const topRecommendation = recommendations[0];
-        
+
         // Frame miniquest guidance through Ayla's personality
-        const aylaFramedGuidance = await this.frameMiniquestInAylaVoice(
-          topRecommendation, 
-          context
-        );
+        const aylaFramedGuidance = await this.frameMiniquestInAylaVoice(topRecommendation, context);
 
         return {
           type: 'miniquest',
@@ -188,8 +191,8 @@ export class UnifiedAIIntelligence {
           metadata: {
             confidence: topRecommendation.confidence,
             reasoning: topRecommendation.reasoning,
-            category: 'quest_guidance'
-          }
+            category: 'quest_guidance',
+          },
         };
       }
 
@@ -206,10 +209,10 @@ export class UnifiedAIIntelligence {
   private async enhanceAylaHintWithMiniquests(
     aylaHint: AylaHintResponse,
     activeMiniquests: any[],
-    gameState: LocalGameState
+    gameState: LocalGameState,
   ): Promise<string | null> {
-    const questContext = activeMiniquests.map(q => `${q.title}: ${q.description}`).join('; ');
-    
+    const questContext = activeMiniquests.map((q) => `${q.title}: ${q.description}`).join('; ');
+
     const prompt = `Enhance this Ayla hint with awareness of active miniquests:
 
 ORIGINAL HINT: "${aylaHint.hintText}"
@@ -221,7 +224,12 @@ Rewrite the hint to subtly reference relevant quests without being heavy-handed.
 Enhanced hint:`;
 
     try {
-      const enhancedHint = await groqAI.generateAIResponse(prompt, 'hint_enhancement', gameState, 200);
+      const enhancedHint = await groqAI.generateAIResponse(
+        prompt,
+        'hint_enhancement',
+        gameState,
+        200,
+      );
       return enhancedHint && enhancedHint.length > 20 ? enhancedHint : null;
     } catch (error) {
       console.warn('[Unified AI] Hint enhancement failed:', error);
@@ -234,7 +242,7 @@ Enhanced hint:`;
    */
   private async frameMiniquestInAylaVoice(
     recommendation: AIMiniquestRecommendation,
-    context: UnifiedAIContext
+    context: UnifiedAIContext,
   ): Promise<string> {
     const prompt = `Frame this miniquest recommendation in Ayla's cosmic, wise voice:
 
@@ -248,7 +256,12 @@ Transform this into Ayla's style - cosmic, guiding, mysterious but helpful. Refe
 Ayla's guidance:`;
 
     try {
-      const aylaVoice = await groqAI.generateAIResponse(prompt, 'ayla_framing', context.gameState, 200);
+      const aylaVoice = await groqAI.generateAIResponse(
+        prompt,
+        'ayla_framing',
+        context.gameState,
+        200,
+      );
       if (aylaVoice && aylaVoice.length > 20) {
         return aylaVoice;
       }
@@ -263,14 +276,16 @@ Ayla's guidance:`;
   /**
    * Analyze opportunities for dynamic content generation
    */
-  private async analyzeDynamicOpportunities(context: UnifiedAIContext): Promise<AIGuidanceResponse | null> {
+  private async analyzeDynamicOpportunities(
+    context: UnifiedAIContext,
+  ): Promise<AIGuidanceResponse | null> {
     // Use the new dynamic content generator
     try {
       const dynamicContent = await dynamicContentGenerator.generateContent(
         context.gameState,
         context.currentRoom,
         context.recentCommands,
-        context.timeInRoom
+        context.timeInRoom,
       );
 
       if (dynamicContent) {
@@ -283,8 +298,8 @@ Ayla's guidance:`;
             confidence: dynamicContent.metadata.confidence,
             reasoning: dynamicContent.metadata.reasoning,
             category: dynamicContent.type,
-            dynamicContent
-          }
+            dynamicContent,
+          },
         };
       }
     } catch (error) {
@@ -299,11 +314,11 @@ Ayla's guidance:`;
    */
   private mapDynamicContentPriority(contentType: string): 'low' | 'medium' | 'high' | 'urgent' {
     const priorityMap: Record<string, 'low' | 'medium' | 'high' | 'urgent'> = {
-      'ambient_event': 'low',
-      'room_enhancement': 'medium',
-      'contextual_story': 'medium',
-      'adaptive_dialogue': 'high',
-      'seasonal_content': 'low'
+      ambient_event: 'low',
+      room_enhancement: 'medium',
+      contextual_story: 'medium',
+      adaptive_dialogue: 'high',
+      seasonal_content: 'low',
     };
     return priorityMap[contentType] || 'low';
   }
@@ -315,20 +330,20 @@ Ayla's guidance:`;
     aylaResponse: AIGuidanceResponse | null,
     miniquestResponse: AIGuidanceResponse | null,
     dynamicResponse: AIGuidanceResponse | null,
-    _context: UnifiedAIContext
+    _context: UnifiedAIContext,
   ): AIGuidanceResponse | null {
     const responses = [aylaResponse, miniquestResponse, dynamicResponse].filter(Boolean);
     if (responses.length === 0) return null;
 
     // Prioritization logic
     const priorities = { urgent: 4, high: 3, medium: 2, low: 1 };
-    
+
     responses.sort((a, b) => {
       const aPriority = priorities[a!.priority];
       const bPriority = priorities[b!.priority];
-      
+
       if (aPriority !== bPriority) return bPriority - aPriority;
-      
+
       // If same priority, prefer based on confidence
       const aConfidence = a!.metadata?.confidence || 0.5;
       const bConfidence = b!.metadata?.confidence || 0.5;
@@ -349,7 +364,7 @@ Ayla's guidance:`;
       responseType: response.type,
       playerCommands: context.recentCommands.slice(-5),
       confidence: response.metadata?.confidence || 0.5,
-      effectiveness: null // Will be updated based on player response
+      effectiveness: null, // Will be updated based on player response
     };
 
     this.crossSystemLearning.set(learningKey, learningData);
@@ -360,7 +375,7 @@ Ayla's guidance:`;
    */
   private async _generateDynamicContent(
     content: DynamicContent,
-    context: UnifiedAIContext
+    context: UnifiedAIContext,
   ): Promise<string | null> {
     const prompt = `Generate dynamic ${content.type} for the current context:
 
@@ -381,7 +396,10 @@ Dynamic content:`;
     }
   }
 
-  private _shouldTriggerDynamicContent(content: DynamicContent, context: UnifiedAIContext): boolean {
+  private _shouldTriggerDynamicContent(
+    content: DynamicContent,
+    context: UnifiedAIContext,
+  ): boolean {
     if (content.lastTriggered && Date.now() - content.lastTriggered < content.cooldown) {
       return false;
     }
@@ -390,12 +408,14 @@ Dynamic content:`;
       return false;
     }
 
-    return content.triggers.some(trigger => 
-      context.recentCommands.some(cmd => cmd.includes(trigger))
+    return content.triggers.some((trigger) =>
+      context.recentCommands.some((cmd) => cmd.includes(trigger)),
     );
   }
 
-  private async _createNewDynamicContent(context: UnifiedAIContext): Promise<AIGuidanceResponse | null> {
+  private async _createNewDynamicContent(
+    context: UnifiedAIContext,
+  ): Promise<AIGuidanceResponse | null> {
     const prompt = `Create subtle atmospheric content for this room:
 
 ROOM: ${context.currentRoom.title}
@@ -407,7 +427,12 @@ Generate a brief, atmospheric observation that adds to immersion. Could be envir
 Atmospheric content:`;
 
     try {
-      const content = await groqAI.generateAIResponse(prompt, 'atmospheric', context.gameState, 120);
+      const content = await groqAI.generateAIResponse(
+        prompt,
+        'atmospheric',
+        context.gameState,
+        120,
+      );
       if (content && content.length > 10) {
         return {
           type: 'dynamic_content',
@@ -417,8 +442,8 @@ Atmospheric content:`;
           metadata: {
             confidence: 0.5,
             reasoning: 'Atmospheric enhancement',
-            category: 'ambient'
-          }
+            category: 'ambient',
+          },
         };
       }
     } catch (error) {
@@ -471,7 +496,7 @@ Atmospheric content:`;
       enabled: this.aiEnabled,
       lastGuidance: this.lastGuidanceTime ? new Date(this.lastGuidanceTime) : null,
       crossSystemLearnings: this.crossSystemLearning.size,
-      dynamicContentStats: dynamicContentGenerator.getStats()
+      dynamicContentStats: dynamicContentGenerator.getStats(),
     };
   }
 }

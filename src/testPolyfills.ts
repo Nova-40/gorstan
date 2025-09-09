@@ -8,17 +8,19 @@ if (typeof globalThis.AbortController === 'undefined') {
       aborted: false,
       addEventListener() {},
       removeEventListener() {},
-      dispatchEvent() { return true; },
+      dispatchEvent() {
+        return true;
+      },
       onabort: null,
       reason: undefined,
       throwIfAborted() {},
     };
-    
+
     abort() {
       this.signal.aborted = true;
     }
   }
-  
+
   (globalThis as any).AbortController = MockAbortController;
 }
 

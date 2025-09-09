@@ -19,7 +19,7 @@ export class Storage {
   static clear(): void {
     // Only clear items with our prefix
     const keys = Object.keys(localStorage);
-    keys.forEach(key => {
+    keys.forEach((key) => {
       if (key.startsWith(STORAGE_PREFIX)) {
         localStorage.removeItem(key);
       }
@@ -29,8 +29,8 @@ export class Storage {
   static getAllKeys(): string[] {
     const keys = Object.keys(localStorage);
     return keys
-      .filter(key => key.startsWith(STORAGE_PREFIX))
-      .map(key => key.substring(STORAGE_PREFIX.length));
+      .filter((key) => key.startsWith(STORAGE_PREFIX))
+      .map((key) => key.substring(STORAGE_PREFIX.length));
   }
 }
 

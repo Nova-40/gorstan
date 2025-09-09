@@ -10,7 +10,11 @@ interface ShadowEntityDisplayProps {
   entity: ShadowEntity;
   playerStress: number;
   availableArtifacts: string[];
-  onInteract: (entityId: string, interactionType: ShadowInteractionType, artifactIds?: string[]) => void;
+  onInteract: (
+    entityId: string,
+    interactionType: ShadowInteractionType,
+    artifactIds?: string[],
+  ) => void;
   className?: string;
 }
 
@@ -19,7 +23,7 @@ const ShadowEntityDisplay: React.FC<ShadowEntityDisplayProps> = ({
   playerStress,
   availableArtifacts,
   onInteract,
-  className = ''
+  className = '',
 }) => {
   const [selectedArtifacts, setSelectedArtifacts] = useState<string[]>([]);
   const [showDetails, setShowDetails] = useState(false);
@@ -30,53 +34,78 @@ const ShadowEntityDisplay: React.FC<ShadowEntityDisplayProps> = ({
 
   const getEntitySizeClass = () => {
     switch (entity.type) {
-      case 'whisper': return 'text-sm';
-      case 'wraith': return 'text-base';
-      case 'shade': return 'text-lg';
-      case 'umbral': return 'text-xl';
-      case 'void_spawn': return 'text-2xl';
-      default: return 'text-base';
+      case 'whisper':
+        return 'text-sm';
+      case 'wraith':
+        return 'text-base';
+      case 'shade':
+        return 'text-lg';
+      case 'umbral':
+        return 'text-xl';
+      case 'void_spawn':
+        return 'text-2xl';
+      default:
+        return 'text-base';
     }
   };
 
   const getEntityColorClass = () => {
     switch (entity.type) {
-      case 'whisper': return 'text-gray-400 border-gray-500';
-      case 'wraith': return 'text-purple-400 border-purple-500';
-      case 'shade': return 'text-blue-400 border-blue-500';
-      case 'umbral': return 'text-red-400 border-red-500';
-      case 'void_spawn': return 'text-black border-black dark:text-white dark:border-white';
-      default: return 'text-gray-400 border-gray-500';
+      case 'whisper':
+        return 'text-gray-400 border-gray-500';
+      case 'wraith':
+        return 'text-purple-400 border-purple-500';
+      case 'shade':
+        return 'text-blue-400 border-blue-500';
+      case 'umbral':
+        return 'text-red-400 border-red-500';
+      case 'void_spawn':
+        return 'text-black border-black dark:text-white dark:border-white';
+      default:
+        return 'text-gray-400 border-gray-500';
     }
   };
 
   const getBehaviorDescription = () => {
     switch (entity.behavior) {
-      case 'passive': return 'observing quietly';
-      case 'curious': return 'watching with interest';
-      case 'territorial': return 'guarding this space';
-      case 'aggressive': return 'moving menacingly';
-      case 'mimic': return 'copying your movements';
-      case 'phase': return 'flickering in and out';
-      case 'collective': return 'moving as one entity';
-      default: return 'present';
+      case 'passive':
+        return 'observing quietly';
+      case 'curious':
+        return 'watching with interest';
+      case 'territorial':
+        return 'guarding this space';
+      case 'aggressive':
+        return 'moving menacingly';
+      case 'mimic':
+        return 'copying your movements';
+      case 'phase':
+        return 'flickering in and out';
+      case 'collective':
+        return 'moving as one entity';
+      default:
+        return 'present';
     }
   };
 
   const getStressEffect = () => {
-    if (playerStress > 80) return 'The shadow seems more solid and threatening.';
-    if (playerStress > 50) return 'Your stress makes the shadow more noticeable.';
-    if (playerStress > 20) return 'You feel uneasy in the shadow\'s presence.';
+    if (playerStress > 80) {
+      return 'The shadow seems more solid and threatening.';
+    }
+    if (playerStress > 50) {
+      return 'Your stress makes the shadow more noticeable.';
+    }
+    if (playerStress > 20) {
+      return "You feel uneasy in the shadow's presence.";
+    }
     return 'The shadow appears calm and distant.';
   };
 
   const handleInteraction = (interactionType: ShadowInteractionType) => {
-    const artifactIds = interactionType === 'activate' || interactionType === 'banish' 
-      ? selectedArtifacts 
-      : [];
-    
+    const artifactIds =
+      interactionType === 'activate' || interactionType === 'banish' ? selectedArtifacts : [];
+
     onInteract(entity.id, interactionType, artifactIds);
-    
+
     // Reset artifact selection after use
     if (artifactIds.length > 0) {
       setSelectedArtifacts([]);
@@ -84,15 +113,13 @@ const ShadowEntityDisplay: React.FC<ShadowEntityDisplayProps> = ({
   };
 
   const toggleArtifactSelection = (artifactId: string) => {
-    setSelectedArtifacts(prev => 
-      prev.includes(artifactId)
-        ? prev.filter(id => id !== artifactId)
-        : [...prev, artifactId]
+    setSelectedArtifacts((prev) =>
+      prev.includes(artifactId) ? prev.filter((id) => id !== artifactId) : [...prev, artifactId],
     );
   };
 
   return (
-    <div 
+    <div
       className={`border-2 border-dashed rounded-lg p-4 transition-all duration-500 ${getEntityColorClass()} ${className}`}
       style={{ opacity: getEntityOpacity() }}
     >
@@ -103,9 +130,7 @@ const ShadowEntityDisplay: React.FC<ShadowEntityDisplayProps> = ({
       </div>
 
       {/* Entity Description */}
-      <div className="text-sm text-gray-300 mb-3">
-        {entity.description}
-      </div>
+      <div className="text-sm text-gray-300 mb-3">{entity.description}</div>
 
       {/* Behavior Status */}
       <div className="text-xs text-gray-400 mb-3 italic">
@@ -127,7 +152,7 @@ const ShadowEntityDisplay: React.FC<ShadowEntityDisplayProps> = ({
         <div className="mb-3">
           <div className="text-xs text-gray-400 mb-1">Available Quantum Artifacts:</div>
           <div className="flex flex-wrap gap-1">
-            {availableArtifacts.map(artifactId => (
+            {availableArtifacts.map((artifactId) => (
               <button
                 key={artifactId}
                 onClick={() => toggleArtifactSelection(artifactId)}
@@ -152,14 +177,14 @@ const ShadowEntityDisplay: React.FC<ShadowEntityDisplayProps> = ({
         >
           Observe
         </button>
-        
+
         <button
           onClick={() => handleInteraction('approach')}
           className="text-xs px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded transition-colors"
         >
           Approach
         </button>
-        
+
         <button
           onClick={() => handleInteraction('retreat')}
           className="text-xs px-3 py-1 bg-yellow-600 hover:bg-yellow-700 text-white rounded transition-colors"
@@ -176,7 +201,7 @@ const ShadowEntityDisplay: React.FC<ShadowEntityDisplayProps> = ({
             >
               Activate ({selectedArtifacts.length})
             </button>
-            
+
             <button
               onClick={() => handleInteraction('banish')}
               disabled={selectedArtifacts.length === 0}

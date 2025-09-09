@@ -17,11 +17,11 @@
 // src/engine/livesManager.ts
 // Handles life count, death tracking, and full reset when out of lives
 
-const LIVES_KEY = "playerLives";
+const LIVES_KEY = 'playerLives';
 const DEFAULT_LIVES = 9;
 
 export function getRemainingLives(): number {
-  const lives = parseInt(localStorage.getItem(LIVES_KEY) || "", 10);
+  const lives = parseInt(localStorage.getItem(LIVES_KEY) || '', 10);
   return isNaN(lives) ? DEFAULT_LIVES : lives;
 }
 

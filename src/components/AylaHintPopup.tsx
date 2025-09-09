@@ -14,11 +14,7 @@ interface AylaHintPopupProps {
   onTalkToAyla?: () => void;
 }
 
-const AylaHintPopup: React.FC<AylaHintPopupProps> = ({ 
-  hint, 
-  onDismiss, 
-  onTalkToAyla 
-}) => {
+const AylaHintPopup: React.FC<AylaHintPopupProps> = ({ hint, onDismiss, onTalkToAyla }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -26,13 +22,13 @@ const AylaHintPopup: React.FC<AylaHintPopupProps> = ({
     if (hint) {
       setIsVisible(true);
       setIsAnimating(true);
-      
+
       // Auto-dismiss after 15 seconds for low urgency hints
       if (hint.urgency === 'low') {
         const timer = setTimeout(() => {
           handleDismiss();
         }, 15000);
-        
+
         return () => clearTimeout(timer);
       }
     }
@@ -76,30 +72,32 @@ const AylaHintPopup: React.FC<AylaHintPopupProps> = ({
     }
   };
 
-  if (!hint || !isVisible) return null;
+  if (!hint || !isVisible) {
+    return null;
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 pointer-events-none">
       {/* Backdrop */}
-      <div 
+      <div
         className={`fixed inset-0 bg-black transition-opacity duration-300 ${
           isAnimating ? 'bg-opacity-20' : 'bg-opacity-0'
         }`}
       />
-      
+
       {/* Hint Popup */}
-      <div 
+      <div
         className={`relative pointer-events-auto max-w-md mx-4 transform transition-all duration-300 ${
-          isAnimating 
-            ? 'translate-y-0 opacity-100 scale-100' 
-            : '-translate-y-4 opacity-0 scale-95'
+          isAnimating ? 'translate-y-0 opacity-100 scale-100' : '-translate-y-4 opacity-0 scale-95'
         }`}
       >
-        <div className={`
+        <div
+          className={`
           bg-gradient-to-br ${getUrgencyColors(hint.urgency)}
           border-2 rounded-lg shadow-2xl overflow-hidden
           backdrop-blur-sm bg-opacity-95
-        `}>
+        `}
+        >
           {/* Header */}
           <div className="flex items-center justify-between p-3 border-b border-opacity-30 border-white">
             <div className="flex items-center gap-2">
@@ -109,7 +107,8 @@ const AylaHintPopup: React.FC<AylaHintPopupProps> = ({
               <div>
                 <h3 className="text-sm font-semibold text-white">Ayla's Guidance</h3>
                 <p className="text-xs text-blue-200">
-                  {getHintIcon(hint.hintType)} {hint.hintType.charAt(0).toUpperCase() + hint.hintType.slice(1)} Hint
+                  {getHintIcon(hint.hintType)}{' '}
+                  {hint.hintType.charAt(0).toUpperCase() + hint.hintType.slice(1)} Hint
                 </p>
               </div>
             </div>
@@ -123,15 +122,9 @@ const AylaHintPopup: React.FC<AylaHintPopupProps> = ({
 
           {/* Hint Content */}
           <div className="p-4">
-            <p className="text-white text-sm leading-relaxed mb-3">
-              {hint.hintText}
-            </p>
-            
-            {hint.followUp && (
-              <p className="text-blue-200 text-xs italic mb-3">
-                {hint.followUp}
-              </p>
-            )}
+            <p className="text-white text-sm leading-relaxed mb-3">{hint.hintText}</p>
+
+            {hint.followUp && <p className="text-blue-200 text-xs italic mb-3">{hint.followUp}</p>}
 
             {/* Action Buttons */}
             <div className="flex gap-2">
@@ -141,7 +134,7 @@ const AylaHintPopup: React.FC<AylaHintPopupProps> = ({
               >
                 Thanks, Ayla
               </button>
-              
+
               {onTalkToAyla && (
                 <button
                   onClick={() => {

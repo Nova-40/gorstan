@@ -19,20 +19,12 @@
 
 import { Room } from '../types/Room';
 
-
-
-
-
-
-
-
-
 const londonhub: Room = {
   id: 'londonhub',
   zone: 'londonZone',
   title: 'Interdimensional London Hub',
   description: [
-    'You stand in what looks almost exactly like Canary Wharf tube station, but something is fundamentally different. The familiar curved walls and industrial lighting are all there, but where the tracks should be, there\'s only smooth, polished floor extending into shadowed archways.',
+    "You stand in what looks almost exactly like Canary Wharf tube station, but something is fundamentally different. The familiar curved walls and industrial lighting are all there, but where the tracks should be, there's only smooth, polished floor extending into shadowed archways.",
     'Multiple doorways line the platform walls, each one sliding open with a soft hiss as you approach, revealing glimpses of impossibly varied destinations beyond. Some doors show glimpses of alien skies, others reveal familiar but subtly wrong versions of London streets.',
     'The electronic departure boards flicker constantly, displaying destinations that shouldn\'t exist: "Platform ∞ - All Realities", "Platform Ω - Temporal Nexus", "Platform ? - [DESTINATION UNKNOWN]".',
     'Most remarkably, a working escalator rises upward at the far end of the station. Looking up, you can see it gradually transforms from this interdimensional space into what appears to be the real Canary Wharf station above.',
@@ -54,12 +46,12 @@ const londonhub: Room = {
   ],
 
   exits: {
-    up: 'trentpark',  
-    
-    'platform_1': 'london_prime',
-    'platform_2': 'london_mirror',
-    'platform_omega': 'temporal_nexus',
-    'platform_infinity': 'reality_core',
+    up: 'trentpark',
+
+    platform_1: 'london_prime',
+    platform_2: 'london_mirror',
+    platform_omega: 'temporal_nexus',
+    platform_infinity: 'reality_core',
   },
 
   items: [
@@ -71,41 +63,45 @@ const londonhub: Room = {
   ],
 
   interactables: {
-    'escalator': {
-      description: 'A working escalator that rises toward the real Canary Wharf station above. The transition from interdimensional hub to normal reality is visible as you look up.',
+    escalator: {
+      description:
+        'A working escalator that rises toward the real Canary Wharf station above. The transition from interdimensional hub to normal reality is visible as you look up.',
       actions: ['examine', 'ride', 'look_up'],
       requires: [],
     },
-    'departure_boards': {
-      description: 'Electronic displays that constantly flicker and change, showing impossible destinations across the multiverse.',
+    departure_boards: {
+      description:
+        'Electronic displays that constantly flicker and change, showing impossible destinations across the multiverse.',
       actions: ['examine', 'read', 'focus_on'],
       requires: [],
     },
-    'dimensional_doors': {
-      description: 'Multiple doorways that open automatically as you approach, each revealing a different reality beyond.',
+    dimensional_doors: {
+      description:
+        'Multiple doorways that open automatically as you approach, each revealing a different reality beyond.',
       actions: ['examine', 'approach', 'peer_through', 'enter'],
       requires: ['travel_pass_multiverse'],
     },
-    'platform_edge': {
-      description: 'Where the railway tracks should be, there\'s only smooth floor leading to mysterious archways.',
+    platform_edge: {
+      description:
+        "Where the railway tracks should be, there's only smooth floor leading to mysterious archways.",
       actions: ['examine', 'look_down', 'step_onto'],
       requires: [],
     },
-    'warning_signs': {
-      description: 'Familiar London Underground safety signs, but with additional warnings about dimensional travel.',
+    warning_signs: {
+      description:
+        'Familiar London Underground safety signs, but with additional warnings about dimensional travel.',
       actions: ['examine', 'read'],
       requires: [],
     },
-    'station_announcements': {
-      description: 'The familiar London Underground announcement system, but the messages are distinctly otherworldly.',
+    station_announcements: {
+      description:
+        'The familiar London Underground announcement system, but the messages are distinctly otherworldly.',
       actions: ['listen', 'focus_on'],
       requires: [],
     },
   },
 
-  npcs: [
-    
-  ],
+  npcs: [],
 
   events: {
     onEnter: ['activateHubSystems', 'showDepartureBoards', 'startAnnouncements'],
@@ -145,7 +141,7 @@ const londonhub: Room = {
       'door_opening_sounds',
       'escalator_humming',
       'dimensional_static',
-      'muffled_announcements'
+      'muffled_announcements',
     ],
     hazards: ['dimensional_displacement_risk', 'unauthorized_travel_consequences'],
   },
@@ -187,24 +183,24 @@ const londonhub: Room = {
       rewards: ['reality_bridge_understanding', 'transition_control'],
     },
     overseer_knowledge: {
-      description: 'Deep knowledge about the hub\'s operation and purpose',
+      description: "Deep knowledge about the hub's operation and purpose",
       requirements: ['communicate extensively with hub_overseer'],
       rewards: ['hub_operational_manual', 'dimensional_clearance_upgrade'],
     },
   },
 
   customActions: {
-    'ride_escalator': {
+    ride_escalator: {
       description: 'Take the escalator up to the real Canary Wharf station',
       requirements: [],
       effects: ['transport_to_trentpark', 'transition_to_baseline_reality'],
     },
-    'check_departures': {
+    check_departures: {
       description: 'Study the departure boards for available destinations',
       requirements: [],
       effects: ['reveal_travel_options', 'update_destination_knowledge'],
     },
-    'acquire_travel_pass': {
+    acquire_travel_pass: {
       description: 'Obtain proper documentation for interdimensional travel',
       requirements: ['communicate_with_overseer', 'prove_dimensional_awareness'],
       effects: ['gain_travel_clearance', 'unlock_restricted_destinations'],
@@ -213,5 +209,3 @@ const londonhub: Room = {
 };
 
 export default londonhub;
-
-

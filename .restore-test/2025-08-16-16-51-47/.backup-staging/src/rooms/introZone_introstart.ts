@@ -19,7 +19,6 @@
 
 import { Room } from '../types/Room';
 
-
 const introstart: Room = {
   id: 'introstart',
   zone: 'introZone',
@@ -27,7 +26,7 @@ const introstart: Room = {
   description: [
     'You find yourself standing in what appears to be an ordinary street corner, but something feels fundamentally wrong. The air carries an eerie stillness, as if the world itself is holding its breath.',
     'A coffee cup lies on the ground nearby, steam still rising from its contents despite the unnatural quiet. The liquid inside seems to shimmer with an otherworldly quality.',
-    'The shadows here are deeper than they should be, and you can\'t shake the feeling that you\'re being watched. Shapes seem to move at the edge of your vision, but when you turn to look, there\'s nothing there.',
+    "The shadows here are deeper than they should be, and you can't shake the feeling that you're being watched. Shapes seem to move at the edge of your vision, but when you turn to look, there's nothing there.",
     'This place feels like the echo of something significant - a moment frozen in time where reality itself might have shifted. The very air hums with residual energy from some cosmic event.',
   ],
   image: 'introZone_introreset.png',
@@ -52,44 +51,42 @@ const introstart: Room = {
     east: 'dalesapartment',
   },
 
-  items: [
-    'dimensional_coffee',
-    'memory_fragment',
-    'reality_shard',
-    'temporal_residue',
-  ],
+  items: ['dimensional_coffee', 'memory_fragment', 'reality_shard', 'temporal_residue'],
 
   interactables: {
-    'coffee_cup': {
-      description: 'A steaming cup of coffee lying on the ground. Despite everything, it\'s still warm and seems to pulse with strange energy.',
+    coffee_cup: {
+      description:
+        "A steaming cup of coffee lying on the ground. Despite everything, it's still warm and seems to pulse with strange energy.",
       actions: ['examine', 'pick_up', 'drink', 'smell'],
       requires: [],
     },
-    'shadows': {
-      description: 'The shadows here are unnaturally deep and seem to move independently of any light source. You sense ancient eyes watching from within.',
+    shadows: {
+      description:
+        'The shadows here are unnaturally deep and seem to move independently of any light source. You sense ancient eyes watching from within.',
       actions: ['examine', 'approach', 'call_out'],
       requires: [],
     },
-    'street_corner': {
-      description: 'An ordinary street corner that feels like the center of something extraordinary. Reality feels thin here.',
+    street_corner: {
+      description:
+        'An ordinary street corner that feels like the center of something extraordinary. Reality feels thin here.',
       actions: ['examine', 'listen', 'feel'],
       requires: [],
     },
-    'shimmer_spots': {
-      description: 'Certain areas of the ground seem to shimmer slightly, as if reality hasn\'t quite settled back into place.',
+    shimmer_spots: {
+      description:
+        "Certain areas of the ground seem to shimmer slightly, as if reality hasn't quite settled back into place.",
       actions: ['examine', 'touch', 'step_on'],
       requires: [],
     },
-    'air_distortion': {
-      description: 'Subtle distortions in the air hint at the massive forces that recently passed through this space.',
+    air_distortion: {
+      description:
+        'Subtle distortions in the air hint at the massive forces that recently passed through this space.',
       actions: ['examine', 'wave_hand_through', 'analyze'],
       requires: ['reality_shard'],
     },
   },
 
-  npcs: [
-    
-  ],
+  npcs: [],
 
   events: {
     onEnter: ['checkResetStatus', 'activateShadowWatchers', 'stabilizeReality'],
@@ -172,17 +169,17 @@ const introstart: Room = {
   },
 
   customActions: {
-    'pick_up_coffee': {
+    pick_up_coffee: {
       description: 'Carefully pick up the dimensional coffee from the ground',
       requirements: [],
       effects: ['gain_dimensional_coffee', 'trigger_memory_restoration'],
     },
-    'commune_with_shadows': {
+    commune_with_shadows: {
       description: 'Attempt to communicate with the watching entities',
       requirements: ['examine shadows', 'call_out to shadows'],
       effects: ['reveal_shadow_watchers', 'gain_cosmic_insight'],
     },
-    'piece_together_memories': {
+    piece_together_memories: {
       description: 'Try to understand what happened using the evidence around you',
       requirements: ['examine all shimmer_spots', 'analyze air_distortion'],
       effects: ['restore_partial_memories', 'understand_reset_event'],
@@ -191,5 +188,3 @@ const introstart: Room = {
 };
 
 export default introstart;
-
-

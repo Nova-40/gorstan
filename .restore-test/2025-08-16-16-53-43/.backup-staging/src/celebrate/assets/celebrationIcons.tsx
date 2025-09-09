@@ -60,7 +60,10 @@ export const EidIcon: React.FC<IconProps> = ({ className = '', size = 24 }) => (
       {/* Crescent moon */}
       <path d="M12 2C8 2 5 5 5 9s3 7 7 7c1 0 2-.2 3-.6C13.8 16.2 13 15.1 13 14c0-2.8 2.2-5 5-5 .4 0 .8.1 1.2.2C18.4 5.8 15.5 2 12 2z" />
       {/* Star */}
-      <polygon points="19,8 20,10 22,10 20.5,11.5 21,14 19,12.5 17,14 17.5,11.5 16,10 18,10" fill="#FFD700" />
+      <polygon
+        points="19,8 20,10 22,10 20.5,11.5 21,14 19,12.5 17,14 17.5,11.5 16,10 18,10"
+        fill="#FFD700"
+      />
     </g>
   </svg>
 );
@@ -70,8 +73,10 @@ export const JewishIcon: React.FC<IconProps> = ({ className = '', size = 24 }) =
   <svg width={size} height={size} viewBox="0 0 24 24" className={className}>
     <g fill="currentColor">
       {/* Star of David */}
-      <path d="M12 2l2.5 4.5H19l-2.5 4.5L19 16h-4.5L12 20.5 9.5 16H5l2.5-4.5L5 7h4.5L12 2z" 
-            fillRule="evenodd" />
+      <path
+        d="M12 2l2.5 4.5H19l-2.5 4.5L19 16h-4.5L12 20.5 9.5 16H5l2.5-4.5L5 7h4.5L12 2z"
+        fillRule="evenodd"
+      />
     </g>
   </svg>
 );
@@ -170,8 +175,12 @@ export const SunIcon: React.FC<IconProps> = ({ className = '', size = 24 }) => (
       {/* Sun center */}
       <circle cx="12" cy="12" r="4" />
       {/* Rays */}
-      <path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" 
-            stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <path
+        d="M12 2v4M12 18v4M2 12h4M18 12h4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
     </g>
   </svg>
 );
@@ -203,7 +212,7 @@ export const celebrationIcons = {
   diya: DiwalIcon,
   lotus: LotusIcon,
   sun: SunIcon,
-  snowflake: SnowflakeIcon
+  snowflake: SnowflakeIcon,
 };
 
 export type CelebrationIconName = keyof typeof celebrationIcons;

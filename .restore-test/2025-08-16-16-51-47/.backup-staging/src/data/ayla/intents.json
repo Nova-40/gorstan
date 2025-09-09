@@ -1,7 +1,16 @@
 {
   "lore": {
     "gorstan_history": {
-      "keywords": ["gorstan", "history", "world", "universe", "creation", "how was this made", "who built", "what is gorstan"],
+      "keywords": [
+        "gorstan",
+        "history",
+        "world",
+        "universe",
+        "creation",
+        "how was this made",
+        "who built",
+        "what is gorstan"
+      ],
       "synonyms": ["background", "lore", "story", "origin", "beginning"],
       "responses": [
         "Gorstan is a multiverse nexus where realities converge. It was designed as a testing ground for consciousness and choice.",

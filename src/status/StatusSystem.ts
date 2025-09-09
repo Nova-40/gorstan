@@ -23,7 +23,7 @@ export const StatusEffects = {
         actor.hp = Math.max(0, actor.hp - damage);
         showCombatCue(COMBAT_CUES.burn);
         combatAudio.statusEffect('burn');
-      }
+      },
     };
   },
 
@@ -35,7 +35,7 @@ export const StatusEffects = {
       durationMs: 3000,
       onApply: (actor: Actor) => {
         // Apply movement/action speed reduction
-        if (!actor.statuses.find(s => s.id === StatusType.Frozen)) {
+        if (!actor.statuses.find((s) => s.id === StatusType.Frozen)) {
           // Only apply slow if not frozen
           const slowAmount = BALANCE.status.chillSlow * (stacks || 1);
           actor.data = actor.data || {};
@@ -44,12 +44,12 @@ export const StatusEffects = {
       },
       onRemove: (actor: Actor) => {
         // Remove speed reduction if no other chill stacks
-        const remainingChill = actor.statuses.filter(s => s.id === StatusType.Chill);
+        const remainingChill = actor.statuses.filter((s) => s.id === StatusType.Chill);
         if (remainingChill.length === 0) {
           actor.data = actor.data || {};
           actor.data.speedMultiplier = 1.0;
         }
-      }
+      },
     };
   },
 
@@ -69,7 +69,7 @@ export const StatusEffects = {
         actor.data = actor.data || {};
         actor.data.speedMultiplier = 1.0;
         actor.data.canAct = true;
-      }
+      },
     };
   },
 
@@ -82,7 +82,7 @@ export const StatusEffects = {
       onApply: () => {
         showCombatCue(COMBAT_CUES.shock);
         combatAudio.statusEffect('shock');
-      }
+      },
     };
   },
 
@@ -91,7 +91,7 @@ export const StatusEffects = {
     return {
       id: StatusType.Wet,
       durationMs: 5000,
-      data: { conductivity: 2.0 } // Doubles shock effects
+      data: { conductivity: 2.0 }, // Doubles shock effects
     };
   },
 
@@ -115,7 +115,7 @@ export const StatusEffects = {
         actor.data = actor.data || {};
         actor.data.canParry = true;
         actor.data.canDodge = true;
-      }
+      },
     };
   },
 
@@ -126,7 +126,7 @@ export const StatusEffects = {
       durationMs: BALANCE.status.riposteWindowMs,
       onApply: () => {
         showCombatCue(COMBAT_CUES.riposteReady);
-      }
+      },
     };
   },
 
@@ -135,7 +135,7 @@ export const StatusEffects = {
     return {
       id: StatusType.Ward,
       durationMs: 10000,
-      data: { absorption }
+      data: { absorption },
     };
   },
 
@@ -144,7 +144,7 @@ export const StatusEffects = {
     return {
       id: StatusType.IFrames,
       durationMs,
-      data: { invulnerable: true }
+      data: { invulnerable: true },
     };
   },
 
@@ -153,9 +153,9 @@ export const StatusEffects = {
     return {
       id: StatusType.ParryWindow,
       durationMs: BALANCE.timing.parryWindow,
-      data: { canParry: true }
+      data: { canParry: true },
     };
-  }
+  },
 };
 
 /** Status system manager */
@@ -166,18 +166,18 @@ export class StatusSystem {
   /** Apply a status effect to an actor */
   applyStatus(actor: Actor, statusFactory: () => Status): void {
     const newStatus = statusFactory();
-    
+
     // Handle stackable statuses
-    const existingIndex = actor.statuses.findIndex(s => s.id === newStatus.id);
-    
+    const existingIndex = actor.statuses.findIndex((s) => s.id === newStatus.id);
+
     if (existingIndex >= 0) {
       const existing = actor.statuses[existingIndex];
-      
+
       if (newStatus.stacks !== undefined && existing.stacks !== undefined) {
         // Stack the effect
         existing.stacks += newStatus.stacks;
         existing.durationMs = Math.max(existing.durationMs, newStatus.durationMs);
-        
+
         // Check for special stack thresholds
         this.checkStackThresholds(actor, existing);
       } else {
@@ -189,14 +189,14 @@ export class StatusSystem {
       actor.statuses.push(newStatus);
       newStatus.onApply?.(actor);
     }
-    
+
     // Check for elemental synergies
     this.checkSynergies(actor);
   }
 
   /** Remove a status effect from an actor */
   removeStatus(actor: Actor, statusId: StatusType): void {
-    const index = actor.statuses.findIndex(s => s.id === statusId);
+    const index = actor.statuses.findIndex((s) => s.id === statusId);
     if (index >= 0) {
       const status = actor.statuses[index];
       status.onRemove?.(actor);
@@ -207,22 +207,22 @@ export class StatusSystem {
   /** Update status effects for an actor */
   updateStatuses(actor: Actor, deltaTime: number): void {
     const currentTime = Date.now();
-    
+
     // Update durations
     for (let i = actor.statuses.length - 1; i >= 0; i--) {
       const status = actor.statuses[i];
       status.durationMs -= deltaTime;
-      
+
       if (status.durationMs <= 0) {
         status.onRemove?.(actor);
         actor.statuses.splice(i, 1);
       }
     }
-    
+
     // Handle ticking effects
     if (currentTime - this.lastTick >= this.tickInterval) {
       this.lastTick = currentTime;
-      
+
       for (const status of actor.statuses) {
         status.onTick?.(actor);
       }
@@ -231,12 +231,12 @@ export class StatusSystem {
 
   /** Check if actor has a specific status */
   hasStatus(actor: Actor, statusId: StatusType): boolean {
-    return actor.statuses.some(s => s.id === statusId);
+    return actor.statuses.some((s) => s.id === statusId);
   }
 
   /** Get status stacks for stackable effects */
   getStatusStacks(actor: Actor, statusId: StatusType): number {
-    const status = actor.statuses.find(s => s.id === statusId);
+    const status = actor.statuses.find((s) => s.id === statusId);
     return status?.stacks || 0;
   }
 
@@ -255,12 +255,12 @@ export class StatusSystem {
     const hasShock = this.hasStatus(actor, StatusType.Shock);
     const hasOil = this.hasStatus(actor, StatusType.Oil);
     const hasBurn = this.hasStatus(actor, StatusType.Burn);
-    
+
     // Wet + Shock = Overload
     if (hasWet && hasShock) {
       this.triggerOverload(actor);
     }
-    
+
     // Oil + Fire = Conflagration
     if (hasOil && hasBurn) {
       this.triggerConflagration(actor);
@@ -272,11 +272,11 @@ export class StatusSystem {
     // Remove consumed statuses
     this.removeStatus(actor, StatusType.Wet);
     this.removeStatus(actor, StatusType.Shock);
-    
+
     // Apply AoE shock damage to nearby enemies
     const overloadDamage = 30 * (1 + BALANCE.status.overloadBonus);
     actor.hp = Math.max(0, actor.hp - overloadDamage);
-    
+
     showCombatCue(COMBAT_CUES.overload);
     combatAudio.statusEffect('shock');
   }
@@ -284,7 +284,7 @@ export class StatusSystem {
   /** Trigger Conflagration synergy effect */
   private triggerConflagration(actor: Actor): void {
     // Enhance existing burn effect
-    const burnStatus = actor.statuses.find(s => s.id === StatusType.Burn);
+    const burnStatus = actor.statuses.find((s) => s.id === StatusType.Burn);
     if (burnStatus) {
       burnStatus.durationMs += 2000; // Extend duration
       burnStatus.data = { enhanced: true }; // Mark as enhanced

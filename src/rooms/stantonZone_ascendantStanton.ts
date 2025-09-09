@@ -19,14 +19,6 @@
 
 import { Room } from '../types/Room';
 
-
-
-
-
-
-
-
-
 export const ascendantStanton: Room = {
   image: 'stantonZone_ascendantStanton.png',
   description: [
@@ -55,25 +47,20 @@ export const ascendantStanton: Room = {
     west: 'glitchStanton',
   },
 
-  items: [
-    'golden_shard',
-    'celestial_rune',
-    'light_fragment',
-    'obelisk_key',
-  ],
+  items: ['golden_shard', 'celestial_rune', 'light_fragment', 'obelisk_key'],
 
   interactables: {
-    'obelisk': {
+    obelisk: {
       description: 'A towering obelisk inscribed with glowing runes.',
       actions: ['examine', 'touch', 'interpret'],
       requires: [],
     },
-    'golden_streets': {
+    golden_streets: {
       description: 'Streets paved with shimmering gold, radiating light.',
       actions: ['examine', 'walk', 'collect'],
       requires: [],
     },
-    'glowing_cottages': {
+    glowing_cottages: {
       description: 'Cottages glowing with a soft, otherworldly light.',
       actions: ['examine', 'enter', 'knock'],
       requires: [],
@@ -84,5 +71,3 @@ export const ascendantStanton: Room = {
 };
 
 export default ascendantStanton;
-
-

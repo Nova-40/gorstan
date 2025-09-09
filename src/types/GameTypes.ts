@@ -37,7 +37,7 @@ export interface Miniquest {
   readonly triggerText?: string;
   readonly hint?: string;
   readonly repeatable?: boolean;
-  readonly timeLimit?: number; 
+  readonly timeLimit?: number;
   readonly difficulty?: 'trivial' | 'easy' | 'medium' | 'hard';
 }
 
@@ -75,7 +75,6 @@ export interface RoomMiniquests {
 
 export type Achievement = string;
 
-
 export interface Puzzle {
   id: string;
   name: string;
@@ -83,14 +82,6 @@ export interface Puzzle {
   difficulty?: 'simple' | 'hard' | 'expert';
   [key: string]: any;
 }
-
-
-
-
-
-
-
-
 
 export interface Player {
   id: string;
@@ -110,7 +101,6 @@ export interface Player {
   playTime?: number;
   lastSave?: string;
 }
-
 
 export interface PlayerState extends Player {
   strength?: number;
@@ -134,7 +124,15 @@ export interface PlayerState extends Player {
 export interface GameMessage {
   id: string;
   text: string;
-  type: 'narrative' | 'action' | 'dialogue' | 'system' | 'error' | 'warning' | 'success' | 'achievement';
+  type:
+    | 'narrative'
+    | 'action'
+    | 'dialogue'
+    | 'system'
+    | 'error'
+    | 'warning'
+    | 'success'
+    | 'achievement';
   timestamp: number;
   speaker?: string;
   metadata?: Record<string, unknown>;
@@ -183,7 +181,10 @@ export type GameAction =
   | { type: 'SET_SCORE'; payload: number }
   | { type: 'UPDATE_SCORE'; payload: number }
   | { type: 'RESET_SCORE' }
-  | { type: 'UPDATE_CODEX_ENTRY'; payload: { itemId: string; entry: any; isFirstDiscovery: boolean } }
+  | {
+      type: 'UPDATE_CODEX_ENTRY';
+      payload: { itemId: string; entry: any; isFirstDiscovery: boolean };
+    }
   | { type: 'UNLOCK_ACHIEVEMENT'; payload: string }
   | { type: 'ADD_ITEM'; payload: string }
   | { type: 'REMOVE_ITEM'; payload: string }
@@ -199,7 +200,16 @@ export type GameAction =
   | { type: 'ADD_NPC_TO_ROOM'; payload: string }
   | { type: 'REMOVE_NPC_FROM_ROOM'; payload: string }
   | { type: 'UPDATE_NPC_RELATIONSHIP'; payload: { npc: string; value: number } }
-  | { type: 'ADD_NPC_CONVERSATION'; payload: { npcId: string; topic: string; playerInput: string; npcResponse: string; mood?: string } }
+  | {
+      type: 'ADD_NPC_CONVERSATION';
+      payload: {
+        npcId: string;
+        topic: string;
+        playerInput: string;
+        npcResponse: string;
+        mood?: string;
+      };
+    }
   | { type: 'UPDATE_NPC_CONVERSATION_HISTORY'; payload: { npcId: string; history: any } }
   | { type: 'ADD_TRAIT'; payload: string }
   | { type: 'REMOVE_TRAIT'; payload: string }
@@ -300,13 +310,14 @@ export interface ValidationResult {
   warnings: string[];
 }
 
-
 // --- Function: isPlayer ---
 export function isPlayer(obj: unknown): obj is Player {
-  if (!obj || typeof obj !== 'object') return false;
-// Variable declaration
+  if (!obj || typeof obj !== 'object') {
+    return false;
+  }
+  // Variable declaration
   const player = obj as Player;
-// JSX return block or main return
+  // JSX return block or main return
   return (
     typeof player.id === 'string' &&
     typeof player.name === 'string' &&
@@ -315,11 +326,12 @@ export function isPlayer(obj: unknown): obj is Player {
   );
 }
 
-
 // --- Function: isGameState ---
 export function isGameState(obj: unknown): obj is GameState {
-  if (!obj || typeof obj !== 'object') return false;
-// JSX return block or main return
+  if (!obj || typeof obj !== 'object') {
+    return false;
+  }
+  // JSX return block or main return
   return (
     isPlayer((obj as any).player) &&
     typeof (obj as any).currentRoomId === 'string' &&
@@ -328,11 +340,12 @@ export function isGameState(obj: unknown): obj is GameState {
   );
 }
 
-
 // --- Function: isGameMessage ---
 export function isGameMessage(obj: unknown): obj is GameMessage {
-  if (!obj || typeof obj !== 'object') return false;
-// JSX return block or main return
+  if (!obj || typeof obj !== 'object') {
+    return false;
+  }
+  // JSX return block or main return
   return (
     typeof (obj as any).id === 'string' &&
     typeof (obj as any).text === 'string' &&
@@ -444,15 +457,13 @@ export interface GameTime {
   timeScale: number;
 }
 
-
-
 export interface GameState {
   stage: string;
   transition?: GameTransition | null;
   player: Player;
   history: GameMessage[];
   currentRoomId: string;
-  
+
   flags: {
     resetButtonPressCount?: number;
     triggerResetEscalation?: boolean;
@@ -466,12 +477,10 @@ export interface GameState {
   roomMap: Record<string, Room>;
 }
 
-
-
 export interface GameFlags {
   resetButtonPressCount?: number;
   triggerResetEscalation?: boolean;
-  
+
   [key: string]: any;
 }
 export interface GameStateWithFlags extends GameState {
@@ -522,4 +531,3 @@ export interface LocalGameState extends GameState {
 // Code Licence MIT
 // Gorstan and characters (c) Geoff Webster 2025
 // Game module.
-

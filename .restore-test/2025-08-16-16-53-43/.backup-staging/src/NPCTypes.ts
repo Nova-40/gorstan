@@ -28,7 +28,6 @@ export type NPCMood =
   | 'sad'
   | 'happy';
 
-
 export interface NPCMemory {
   readonly interactions: number;
   readonly lastInteraction: number;

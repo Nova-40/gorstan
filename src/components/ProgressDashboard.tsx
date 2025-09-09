@@ -26,49 +26,65 @@ interface ProgressDashboardProps {
   onClose?: () => void;
 }
 
-export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ 
-  className = '', 
+export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
+  className = '',
   compact = false,
   isOpen = true,
-  onClose
+  onClose,
 }) => {
   const { state } = useGameState();
-  
+
   // If used as modal and not open, return null
-  if (onClose && !isOpen) return null;
-  
+  if (onClose && !isOpen) {
+    return null;
+  }
+
   // Calculate achievement progress - use existing game state structure
   const unlockedAchievements = (state.player as any).achievements?.length || 0;
   const totalAchievements = achievements.length;
   const achievementProgress = (unlockedAchievements / totalAchievements) * 100;
-  
+
   // Calculate room exploration progress
   const visitedRooms = state.player.visitedRooms?.length || 0;
   const explorationProgress = Math.min((visitedRooms / 20) * 100, 100); // Assume ~20 total rooms
-  
+
   // Calculate level based on score
   const score = state.player.score || 0;
   const level = Math.floor(score / 200) + 1; // Level up every 200 points
   const nextLevelScore = level * 200;
   const currentLevelProgress = ((score % 200) / 200) * 100;
-  
+
   // Calculate miniquest completion - use a reasonable estimation
-  const completedMiniquests = (state.player as any).completedMiniquests?.length || 
-                             Math.floor((state.player.score || 0) / 50); // Estimate based on score
+  const completedMiniquests =
+    (state.player as any).completedMiniquests?.length || Math.floor((state.player.score || 0) / 50); // Estimate based on score
   const miniquestProgress = Math.min((completedMiniquests / 15) * 100, 100); // Estimate 15 total miniquests visible
-  
+
   // Determine player rank based on score
   const getRank = (score: number): { name: string; color: string; icon: React.ReactNode } => {
-    if (score >= 2000) return { name: 'Legendary', color: 'text-purple-400', icon: <Star className="w-4 h-4" /> };
-    if (score >= 1500) return { name: 'Master', color: 'text-orange-400', icon: <Award className="w-4 h-4" /> };
-    if (score >= 1000) return { name: 'Expert', color: 'text-yellow-400', icon: <Trophy className="w-4 h-4" /> };
-    if (score >= 600) return { name: 'Adept', color: 'text-green-400', icon: <Target className="w-4 h-4" /> };
-    if (score >= 300) return { name: 'Apprentice', color: 'text-blue-400', icon: <TrendingUp className="w-4 h-4" /> };
+    if (score >= 2000) {
+      return { name: 'Legendary', color: 'text-purple-400', icon: <Star className="w-4 h-4" /> };
+    }
+    if (score >= 1500) {
+      return { name: 'Master', color: 'text-orange-400', icon: <Award className="w-4 h-4" /> };
+    }
+    if (score >= 1000) {
+      return { name: 'Expert', color: 'text-yellow-400', icon: <Trophy className="w-4 h-4" /> };
+    }
+    if (score >= 600) {
+      return { name: 'Adept', color: 'text-green-400', icon: <Target className="w-4 h-4" /> };
+    }
+    if (score >= 300) {
+      return {
+        name: 'Apprentice',
+        color: 'text-blue-400',
+        icon: <TrendingUp className="w-4 h-4" />,
+      };
+    }
     return { name: 'Novice', color: 'text-gray-400', icon: <Map className="w-4 h-4" /> };
   };
-  
+
   const rank = getRank(score);
-  
+
   if (compact) {
     return (
       <div className={`bg-gray-900 border border-gray-700 rounded-lg p-3 ${className}`}>
@@ -80,11 +96,13 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
           </div>
           <span className="text-sm text-gray-300">{score} pts</span>
         </div>
-        
+
         <div className="grid grid-cols-2 gap-2 text-xs">
           <div>
             <div className="text-gray-400">Achievements</div>
-            <div className="text-green-400">{unlockedAchievements}/{totalAchievements}</div>
+            <div className="text-green-400">
+              {unlockedAchievements}/{totalAchievements}
+            </div>
           </div>
           <div>
             <div className="text-gray-400">Rooms</div>
@@ -113,7 +131,7 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
               ×
             </button>
           </div>
-          
+
           {/* Content */}
           <div className="flex-1 overflow-y-auto p-4">
             <ProgressDashboard compact={false} />
@@ -122,7 +140,7 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
       </div>
     );
   }
-  
+
   return (
     <div className={`bg-gray-900 border border-gray-700 rounded-lg p-4 ${className}`}>
       <div className="flex items-center justify-between mb-4">
@@ -135,37 +153,41 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
           <div className="text-sm text-gray-400">{rank.name}</div>
         </div>
       </div>
-      
+
       {/* Level Progress Bar */}
       <div className="mb-4">
         <div className="flex justify-between text-sm mb-1">
           <span className="text-gray-300">Level Progress</span>
-          <span className="text-gray-400">{score} / {nextLevelScore} pts</span>
+          <span className="text-gray-400">
+            {score} / {nextLevelScore} pts
+          </span>
         </div>
         <div className="w-full bg-gray-800 rounded-full h-2">
-          <div 
+          <div
             className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
             style={{ width: `${currentLevelProgress}%` }}
           />
         </div>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Achievements */}
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <Trophy className="w-4 h-4 text-yellow-500" />
             <span className="text-sm font-medium text-gray-300">Achievements</span>
-            <span className="text-xs text-gray-500">{unlockedAchievements}/{totalAchievements}</span>
+            <span className="text-xs text-gray-500">
+              {unlockedAchievements}/{totalAchievements}
+            </span>
           </div>
           <div className="w-full bg-gray-800 rounded-full h-2">
-            <div 
+            <div
               className="bg-gradient-to-r from-yellow-500 to-orange-500 h-2 rounded-full transition-all duration-500"
               style={{ width: `${achievementProgress}%` }}
             />
           </div>
         </div>
-        
+
         {/* Exploration */}
         <div className="space-y-2">
           <div className="flex items-center gap-2">
@@ -174,13 +196,13 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
             <span className="text-xs text-gray-500">{visitedRooms} rooms</span>
           </div>
           <div className="w-full bg-gray-800 rounded-full h-2">
-            <div 
+            <div
               className="bg-gradient-to-r from-blue-500 to-cyan-500 h-2 rounded-full transition-all duration-500"
               style={{ width: `${explorationProgress}%` }}
             />
           </div>
         </div>
-        
+
         {/* Miniquests */}
         <div className="space-y-2">
           <div className="flex items-center gap-2">
@@ -189,13 +211,13 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
             <span className="text-xs text-gray-500">{completedMiniquests} completed</span>
           </div>
           <div className="w-full bg-gray-800 rounded-full h-2">
-            <div 
+            <div
               className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full transition-all duration-500"
               style={{ width: `${miniquestProgress}%` }}
             />
           </div>
         </div>
-        
+
         {/* Current Score */}
         <div className="space-y-2">
           <div className="flex items-center gap-2">
@@ -208,9 +230,7 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
               {rank.name}
             </div>
             {score > 0 && (
-              <div className="text-xs text-gray-400">
-                +{Math.floor(score / 10)} sessions
-              </div>
+              <div className="text-xs text-gray-400">+{Math.floor(score / 10)} sessions</div>
             )}
           </div>
         </div>

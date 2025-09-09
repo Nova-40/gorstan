@@ -3,13 +3,13 @@
  * Provides accessible modal dialogs with focus trapping and keyboard navigation
  */
 
-import { 
-  forwardRef, 
-  useEffect, 
-  useRef, 
-  type HTMLAttributes, 
+import {
+  forwardRef,
+  useEffect,
+  useRef,
+  type HTMLAttributes,
   type ReactNode,
-  type KeyboardEvent
+  type KeyboardEvent,
 } from 'react';
 import { cn } from '../../utils/cn';
 
@@ -46,14 +46,16 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
       children,
       ...props
     },
-    forwardedRef
+    forwardedRef,
   ) => {
     const modalRef = useRef<HTMLDivElement>(null);
     const previousActiveElement = useRef<Element | null>(null);
 
     // Focus trap implementation
     useEffect(() => {
-      if (!isOpen) return;
+      if (!isOpen) {
+        return;
+      }
 
       // Store the currently focused element
       previousActiveElement.current = document.activeElement;
@@ -66,10 +68,12 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
 
       // Setup focus trap
       const handleFocusTrap = (e: KeyboardEvent) => {
-        if (!modal) return;
+        if (!modal) {
+          return;
+        }
 
         const focusableElements = modal.querySelectorAll(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
         );
         const firstElement = focusableElements[0] as HTMLElement;
         const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
@@ -101,7 +105,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
 
       return () => {
         document.removeEventListener('keydown', handleKeyDown as any);
-        
+
         // Restore focus to previously active element
         if (previousActiveElement.current instanceof HTMLElement) {
           previousActiveElement.current.focus();
@@ -109,7 +113,9 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
       };
     }, [isOpen, onClose, closeOnEscape]);
 
-    if (!isOpen) return null;
+    if (!isOpen) {
+      return null;
+    }
 
     const handleOverlayClick = (e: React.MouseEvent) => {
       if (closeOnOverlayClick && e.target === e.currentTarget) {
@@ -129,12 +135,9 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
           onClick={handleOverlayClick}
           aria-hidden="true"
         />
-        
+
         {/* Modal */}
-        <div
-          className="fixed inset-0 z-modal overflow-y-auto"
-          style={{ zIndex: 1050 }}
-        >
+        <div className="fixed inset-0 z-modal overflow-y-auto" style={{ zIndex: 1050 }}>
           <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
             <div
               ref={forwardedRef || modalRef}
@@ -142,7 +145,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
                 'relative transform overflow-hidden rounded-lg bg-gray-800 text-left shadow-xl transition-all',
                 'w-full',
                 modalSizes[size],
-                className
+                className,
               )}
               role="dialog"
               aria-modal="true"
@@ -155,34 +158,26 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
               {(title || description) && (
                 <div className="px-6 py-4 border-b border-neutral-200">
                   {title && (
-                    <h3 
-                      id="modal-title" 
-                      className="text-lg font-semibold text-neutral-900"
-                    >
+                    <h3 id="modal-title" className="text-lg font-semibold text-neutral-900">
                       {title}
                     </h3>
                   )}
                   {description && (
-                    <p 
-                      id="modal-description" 
-                      className="mt-1 text-sm text-neutral-600"
-                    >
+                    <p id="modal-description" className="mt-1 text-sm text-neutral-600">
                       {description}
                     </p>
                   )}
                 </div>
               )}
-              
+
               {/* Content */}
-              <div className="px-6 py-4">
-                {children}
-              </div>
+              <div className="px-6 py-4">{children}</div>
             </div>
           </div>
         </div>
       </div>
     );
-  }
+  },
 );
 
 Modal.displayName = 'Modal';

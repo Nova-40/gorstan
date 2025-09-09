@@ -19,9 +19,9 @@
 // High-level functions for scripted NPC dialogue
 // Gorstan Game Beta 2
 
-import { sendNPCMessage, canStartConversation, recordConversationStart } from "./conversationBus";
-import { NPC_IDS } from "./registry";
-import { LocalGameState } from "../state/gameState";
+import { sendNPCMessage, canStartConversation, recordConversationStart } from './conversationBus';
+import { NPC_IDS } from './registry';
+import { LocalGameState } from '../state/gameState';
 
 export interface ConversationContext {
   state: LocalGameState;
@@ -38,17 +38,17 @@ export function aylaSayTo(npcId: string, text: string, ctx: Ctx): void {
   }
 
   sendNPCMessage(
-    { kind: "NPC", id: NPC_IDS.AYLA }, 
-    { kind: "NPC", id: npcId }, 
-    text, 
-    ctx.state, 
-    ctx.dispatch, 
-    ctx.roomId, 
+    { kind: 'NPC', id: NPC_IDS.AYLA },
+    { kind: 'NPC', id: npcId },
+    text,
+    ctx.state,
+    ctx.dispatch,
+    ctx.roomId,
     {
       topic: guessTopic(text),
       visibleToPlayer: true,
-      priority: "normal"
-    }
+      priority: 'normal',
+    },
   );
 
   recordConversationStart(NPC_IDS.AYLA, npcId, ctx.roomId, ctx.state);
@@ -61,16 +61,16 @@ export function morthosToAl(text: string, ctx: Ctx): void {
   }
 
   sendNPCMessage(
-    { kind: "NPC", id: NPC_IDS.MORTHOS }, 
-    { kind: "NPC", id: NPC_IDS.AL }, 
-    text, 
-    ctx.state, 
-    ctx.dispatch, 
-    ctx.roomId, 
+    { kind: 'NPC', id: NPC_IDS.MORTHOS },
+    { kind: 'NPC', id: NPC_IDS.AL },
+    text,
+    ctx.state,
+    ctx.dispatch,
+    ctx.roomId,
     {
       topic: guessTopic(text),
-      visibleToPlayer: true
-    }
+      visibleToPlayer: true,
+    },
   );
 
   recordConversationStart(NPC_IDS.MORTHOS, NPC_IDS.AL, ctx.roomId, ctx.state);
@@ -83,16 +83,16 @@ export function alToMorthos(text: string, ctx: Ctx): void {
   }
 
   sendNPCMessage(
-    { kind: "NPC", id: NPC_IDS.AL }, 
-    { kind: "NPC", id: NPC_IDS.MORTHOS }, 
-    text, 
-    ctx.state, 
-    ctx.dispatch, 
-    ctx.roomId, 
+    { kind: 'NPC', id: NPC_IDS.AL },
+    { kind: 'NPC', id: NPC_IDS.MORTHOS },
+    text,
+    ctx.state,
+    ctx.dispatch,
+    ctx.roomId,
     {
       topic: guessTopic(text),
-      visibleToPlayer: true
-    }
+      visibleToPlayer: true,
+    },
   );
 
   recordConversationStart(NPC_IDS.AL, NPC_IDS.MORTHOS, ctx.roomId, ctx.state);
@@ -101,89 +101,113 @@ export function alToMorthos(text: string, ctx: Ctx): void {
 // Al to Ayla conversation
 export function alToAyla(text: string, ctx: Ctx): void {
   sendNPCMessage(
-    { kind: "NPC", id: NPC_IDS.AL }, 
-    { kind: "NPC", id: NPC_IDS.AYLA }, 
-    text, 
-    ctx.state, 
-    ctx.dispatch, 
-    ctx.roomId, 
+    { kind: 'NPC', id: NPC_IDS.AL },
+    { kind: 'NPC', id: NPC_IDS.AYLA },
+    text,
+    ctx.state,
+    ctx.dispatch,
+    ctx.roomId,
     {
       topic: guessTopic(text),
-      visibleToPlayer: true
-    }
+      visibleToPlayer: true,
+    },
   );
 }
 
-// Morthos to Ayla conversation  
+// Morthos to Ayla conversation
 export function morthosToAyla(text: string, ctx: Ctx): void {
   sendNPCMessage(
-    { kind: "NPC", id: NPC_IDS.MORTHOS }, 
-    { kind: "NPC", id: NPC_IDS.AYLA }, 
-    text, 
-    ctx.state, 
-    ctx.dispatch, 
-    ctx.roomId, 
+    { kind: 'NPC', id: NPC_IDS.MORTHOS },
+    { kind: 'NPC', id: NPC_IDS.AYLA },
+    text,
+    ctx.state,
+    ctx.dispatch,
+    ctx.roomId,
     {
       topic: guessTopic(text),
-      visibleToPlayer: true
-    }
+      visibleToPlayer: true,
+    },
   );
 }
 
 // Generic NPC-to-NPC function
 export function npcSayTo(fromNpcId: string, toNpcId: string, text: string, ctx: Ctx): void {
   sendNPCMessage(
-    { kind: "NPC", id: fromNpcId }, 
-    { kind: "NPC", id: toNpcId }, 
-    text, 
-    ctx.state, 
-    ctx.dispatch, 
-    ctx.roomId, 
+    { kind: 'NPC', id: fromNpcId },
+    { kind: 'NPC', id: toNpcId },
+    text,
+    ctx.state,
+    ctx.dispatch,
+    ctx.roomId,
     {
       topic: guessTopic(text),
-      visibleToPlayer: true
-    }
+      visibleToPlayer: true,
+    },
   );
 }
 
 // Hidden conversation (not visible to player) - for coordination
-export function hiddenNPCExchange(fromNpcId: string, toNpcId: string, text: string, ctx: Ctx): void {
+export function hiddenNPCExchange(
+  fromNpcId: string,
+  toNpcId: string,
+  text: string,
+  ctx: Ctx,
+): void {
   sendNPCMessage(
-    { kind: "NPC", id: fromNpcId }, 
-    { kind: "NPC", id: toNpcId }, 
-    text, 
-    ctx.state, 
-    ctx.dispatch, 
-    ctx.roomId, 
+    { kind: 'NPC', id: fromNpcId },
+    { kind: 'NPC', id: toNpcId },
+    text,
+    ctx.state,
+    ctx.dispatch,
+    ctx.roomId,
     {
       topic: guessTopic(text),
       visibleToPlayer: false,
-      priority: "low"
-    }
+      priority: 'low',
+    },
   );
 }
 
 // Guess conversation topic from text content
-function guessTopic(text: string): "hint" | "lore" | "banter" | "quest" {
+function guessTopic(text: string): 'hint' | 'lore' | 'banter' | 'quest' {
   const s = text.toLowerCase();
-  
+
   // Hint keywords
-  if (s.includes("control nexus") || s.includes("where") || s.includes("pattern") || s.includes("sequence") || s.includes("suggest") || s.includes("hint")) {
-    return "hint";
+  if (
+    s.includes('control nexus') ||
+    s.includes('where') ||
+    s.includes('pattern') ||
+    s.includes('sequence') ||
+    s.includes('suggest') ||
+    s.includes('hint')
+  ) {
+    return 'hint';
   }
-  
+
   // Lore keywords
-  if (s.includes("why") || s.includes("history") || s.includes("remember") || s.includes("originally") || s.includes("before")) {
-    return "lore";
+  if (
+    s.includes('why') ||
+    s.includes('history') ||
+    s.includes('remember') ||
+    s.includes('originally') ||
+    s.includes('before')
+  ) {
+    return 'lore';
   }
-  
+
   // Quest keywords
-  if (s.includes("mission") || s.includes("task") || s.includes("objective") || s.includes("progress") || s.includes("complete")) {
-    return "quest";
+  if (
+    s.includes('mission') ||
+    s.includes('task') ||
+    s.includes('objective') ||
+    s.includes('progress') ||
+    s.includes('complete')
+  ) {
+    return 'quest';
   }
-  
+
   // Default to banter
-  return "banter";
+  return 'banter';
 }
 
 // Convenience functions for common scenarios
@@ -191,17 +215,17 @@ export const NPCTalk = {
   // Ayla guiding other NPCs
   aylaToMorthos: (text: string, ctx: Ctx) => aylaSayTo(NPC_IDS.MORTHOS, text, ctx),
   aylaToAl: (text: string, ctx: Ctx) => aylaSayTo(NPC_IDS.AL, text, ctx),
-  
+
   // Engineer banter
   morthosAndAl: {
     morthosStarts: (text: string, ctx: Ctx) => morthosToAl(text, ctx),
-    alStarts: (text: string, ctx: Ctx) => alToMorthos(text, ctx)
+    alStarts: (text: string, ctx: Ctx) => alToMorthos(text, ctx),
   },
-  
+
   // Hidden coordination
-  hiddenHint: (fromNpc: string, toNpc: string, hint: string, ctx: Ctx) => 
+  hiddenHint: (fromNpc: string, toNpc: string, hint: string, ctx: Ctx) =>
     hiddenNPCExchange(fromNpc, toNpc, hint, ctx),
-    
+
   // Generic
-  any: (from: string, to: string, text: string, ctx: Ctx) => npcSayTo(from, to, text, ctx)
+  any: (from: string, to: string, text: string, ctx: Ctx) => npcSayTo(from, to, text, ctx),
 };

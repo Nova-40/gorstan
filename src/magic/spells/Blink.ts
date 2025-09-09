@@ -17,18 +17,18 @@ export const Blink: Spell = {
   cooldownMs: 8000,
   cast: {
     windupMs: 400,
-    recoveryMs: 200
+    recoveryMs: 200,
   },
   requiresTarget: false,
   description: 'Instantly teleport a short distance and gain brief invulnerability.',
-  
+
   execute: (caster: Actor) => {
     // Grant brief invulnerability frames
     statusSystem.applyStatus(caster, () => StatusEffects.iframes(500));
 
     // In a full implementation, this would actually move the character
     // For now, just provide the mechanical benefit
-    
+
     // Update position if tracking it
     if (caster.position) {
       // Simulate short-range movement
@@ -38,5 +38,5 @@ export const Blink: Spell = {
 
     // Play sound effect
     combatAudio.spellCast('blink');
-  }
+  },
 };

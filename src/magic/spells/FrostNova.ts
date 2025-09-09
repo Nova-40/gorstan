@@ -18,11 +18,11 @@ export const FrostNova: Spell = {
   cooldownMs: 4000,
   cast: {
     windupMs: 1200,
-    recoveryMs: 600
+    recoveryMs: 600,
   },
   requiresTarget: false,
   description: 'Erupts frost in an area, dealing damage and applying chill stacks.',
-  
+
   execute: (caster: Actor, target?: Actor) => {
     // In a full implementation, this would hit all enemies in range
     // For now, hit the primary target if provided, or all nearby enemies
@@ -31,7 +31,7 @@ export const FrostNova: Spell = {
     for (const currentTarget of targets) {
       // Create frost damage packet
       const damage = DamageUtils.frost(BALANCE.baseDamage.FrostNova, caster.id);
-      
+
       // Apply caster's power scaling
       damage.base *= caster.stats.power;
 
@@ -47,5 +47,5 @@ export const FrostNova: Spell = {
 
     // Play sound effect
     combatAudio.spellCast('frostNova');
-  }
+  },
 };

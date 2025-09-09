@@ -19,14 +19,6 @@
 
 import { Room } from '../types/Room';
 
-
-
-
-
-
-
-
-
 export const glitchStanton: Room = {
   image: 'stantonZone_glitchStanton.png',
   description: [
@@ -55,25 +47,20 @@ export const glitchStanton: Room = {
     west: 'ascendantStanton',
   },
 
-  items: [
-    'glitch_fragment',
-    'portal_shard',
-    'unstable_rune',
-    'dimensional_anchor',
-  ],
+  items: ['glitch_fragment', 'portal_shard', 'unstable_rune', 'dimensional_anchor'],
 
   interactables: {
-    'portal': {
+    portal: {
       description: 'A shimmering portal crackling with unstable energy.',
       actions: ['examine', 'enter', 'stabilize'],
       requires: [],
     },
-    'glitching_streets': {
+    glitching_streets: {
       description: 'Streets flickering and shifting between cobblestone paths and voids.',
       actions: ['examine', 'walk', 'repair'],
       requires: [],
     },
-    'unstable_cottages': {
+    unstable_cottages: {
       description: 'Cottages appearing and disappearing, their forms distorted.',
       actions: ['examine', 'enter', 'stabilize'],
       requires: [],
@@ -84,5 +71,3 @@ export const glitchStanton: Room = {
 };
 
 export default glitchStanton;
-
-

@@ -14,14 +14,13 @@
   Full licence terms: see EULA.md in the project root.
 */
 
-
 // VictoryHandler.ts - Handles game victory conditions
 
 export function triggerVictoryCheck(): void {
   try {
     checkVictoryConditions();
   } catch (err) {
-    console.warn("[VictoryHandler] Failed to evaluate:", err);
+    console.warn('[VictoryHandler] Failed to evaluate:', err);
   }
 }
 import { FlagMap } from '../state/flagRegistry';
@@ -44,7 +43,7 @@ export function checkVictoryConditions(): void {
 
   // Example condition: sided with Morthos and used the extrapolator
   if (sidedWith === 'morthos' && localStorage.getItem(FlagMap.story.extrapolatorUsed)) {
-    triggerVictory('Morthos\' Vision', 'You aided Morthos in rewriting the laws of space.');
+    triggerVictory("Morthos' Vision", 'You aided Morthos in rewriting the laws of space.');
   }
 }
 
@@ -72,7 +71,7 @@ function triggerVictory(title: string, message: string): void {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 9999
+    zIndex: 9999,
   });
   document.body.appendChild(overlay);
 

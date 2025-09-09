@@ -27,7 +27,7 @@ import {
   RoomZoneMapping,
   ZoneTransitionRule,
   NPCZonePreference,
-  ZoneSetupConfig
+  ZoneSetupConfig,
 } from '../zoneAwareness';
 
 describe('ZoneAwarenessProvider', () => {
@@ -45,7 +45,7 @@ describe('ZoneAwarenessProvider', () => {
   describe('Basic Operations', () => {
     test('should initialize correctly', () => {
       expect(() => provider.initialize()).not.toThrow();
-      
+
       // Multiple initializations should be safe
       expect(() => provider.initialize()).not.toThrow();
     });
@@ -62,8 +62,8 @@ describe('ZoneAwarenessProvider', () => {
           temperature: 'temperate',
           terrain: 'wilderness',
           danger: 'moderate',
-          accessibility: 'public'
-        }
+          accessibility: 'public',
+        },
       };
 
       provider.registerZone(zone);
@@ -75,7 +75,7 @@ describe('ZoneAwarenessProvider', () => {
       const mapping: RoomZoneMapping = {
         roomId: 'room1',
         zoneId: 'zone1',
-        isZoneBoundary: false
+        isZoneBoundary: false,
       };
 
       provider.mapRoomToZone(mapping);
@@ -101,8 +101,8 @@ describe('ZoneAwarenessProvider', () => {
           temperature: 'temperate',
           terrain: 'wilderness',
           danger: 'safe',
-          accessibility: 'public'
-        }
+          accessibility: 'public',
+        },
       };
 
       const dungeonZone: ZoneInfo = {
@@ -116,16 +116,26 @@ describe('ZoneAwarenessProvider', () => {
           temperature: 'cold',
           terrain: 'underground',
           danger: 'dangerous',
-          accessibility: 'restricted'
-        }
+          accessibility: 'restricted',
+        },
       };
 
       provider.registerZone(forestZone);
       provider.registerZone(dungeonZone);
 
       provider.mapRoomToZone({ roomId: 'forest1', zoneId: 'forest', isZoneBoundary: false });
-      provider.mapRoomToZone({ roomId: 'forest2', zoneId: 'forest', isZoneBoundary: true, connectedZones: ['dungeon'] });
-      provider.mapRoomToZone({ roomId: 'dungeon1', zoneId: 'dungeon', isZoneBoundary: true, connectedZones: ['forest'] });
+      provider.mapRoomToZone({
+        roomId: 'forest2',
+        zoneId: 'forest',
+        isZoneBoundary: true,
+        connectedZones: ['dungeon'],
+      });
+      provider.mapRoomToZone({
+        roomId: 'dungeon1',
+        zoneId: 'dungeon',
+        isZoneBoundary: true,
+        connectedZones: ['forest'],
+      });
     });
 
     test('should check NPC type restrictions', () => {
@@ -169,7 +179,7 @@ describe('ZoneAwarenessProvider', () => {
         difficulty: 1,
         allowedNPCTypes: ['wanderer', 'guard', 'merchant'],
         restrictedNPCTypes: [],
-        environmentalFactors: { accessibility: 'public' }
+        environmentalFactors: { accessibility: 'public' },
       });
 
       provider.registerZone({
@@ -179,11 +189,21 @@ describe('ZoneAwarenessProvider', () => {
         difficulty: 5,
         allowedNPCTypes: ['guard', 'noble'],
         restrictedNPCTypes: ['wanderer'],
-        environmentalFactors: { accessibility: 'restricted' }
+        environmentalFactors: { accessibility: 'restricted' },
       });
 
-      provider.mapRoomToZone({ roomId: 'town1', zoneId: 'town', isZoneBoundary: true, connectedZones: ['castle'] });
-      provider.mapRoomToZone({ roomId: 'castle1', zoneId: 'castle', isZoneBoundary: true, connectedZones: ['town'] });
+      provider.mapRoomToZone({
+        roomId: 'town1',
+        zoneId: 'town',
+        isZoneBoundary: true,
+        connectedZones: ['castle'],
+      });
+      provider.mapRoomToZone({
+        roomId: 'castle1',
+        zoneId: 'castle',
+        isZoneBoundary: true,
+        connectedZones: ['town'],
+      });
 
       const transitionRule: ZoneTransitionRule = {
         fromZone: 'town',
@@ -191,8 +211,8 @@ describe('ZoneAwarenessProvider', () => {
         allowedNPCTypes: ['guard'],
         transitionType: 'guarded',
         requirements: {
-          minimumLevel: 3
-        }
+          minimumLevel: 3,
+        },
       };
 
       provider.addTransitionRule(transitionRule);
@@ -226,7 +246,7 @@ describe('ZoneAwarenessProvider', () => {
         difficulty: 1,
         allowedNPCTypes: ['wanderer'],
         restrictedNPCTypes: [],
-        environmentalFactors: {}
+        environmentalFactors: {},
       });
 
       provider.registerZone({
@@ -236,7 +256,7 @@ describe('ZoneAwarenessProvider', () => {
         difficulty: 9,
         allowedNPCTypes: ['wanderer'],
         restrictedNPCTypes: [],
-        environmentalFactors: {}
+        environmentalFactors: {},
       });
 
       provider.mapRoomToZone({ roomId: 'home1', zoneId: 'home', isZoneBoundary: false });
@@ -250,7 +270,7 @@ describe('ZoneAwarenessProvider', () => {
         avoidedZones: [],
         cannotEnterZones: ['danger'],
         homeZone: 'home',
-        roamingBehavior: 'stay-home'
+        roamingBehavior: 'stay-home',
       };
 
       provider.setNPCZonePreference(preference);
@@ -266,7 +286,7 @@ describe('ZoneAwarenessProvider', () => {
     test('should provide preferred rooms for NPCs', () => {
       const availableRooms = ['home1', 'home2', 'danger1'];
       const preferredRooms = provider.getPreferredRoomsForNPC('cautious-npc', availableRooms);
-      
+
       expect(preferredRooms).toContain('home1');
       expect(preferredRooms).toContain('home2');
       expect(preferredRooms).not.toContain('danger1'); // Should be excluded due to cannot enter
@@ -275,23 +295,23 @@ describe('ZoneAwarenessProvider', () => {
     test('should handle NPCs without preferences', () => {
       const availableRooms = ['home1', 'danger1'];
       const preferredRooms = provider.getPreferredRoomsForNPC('unknown-npc', availableRooms);
-      
+
       expect(preferredRooms).toEqual(availableRooms); // Should return all rooms unchanged
     });
   });
 
   describe('Zone Connectivity', () => {
     beforeEach(() => {
-      provider.mapRoomToZone({ 
-        roomId: 'hub1', 
-        zoneId: 'hub', 
-        isZoneBoundary: true, 
-        connectedZones: ['north', 'south', 'east'] 
+      provider.mapRoomToZone({
+        roomId: 'hub1',
+        zoneId: 'hub',
+        isZoneBoundary: true,
+        connectedZones: ['north', 'south', 'east'],
       });
-      provider.mapRoomToZone({ 
-        roomId: 'hub2', 
-        zoneId: 'hub', 
-        isZoneBoundary: false 
+      provider.mapRoomToZone({
+        roomId: 'hub2',
+        zoneId: 'hub',
+        isZoneBoundary: false,
       });
     });
 
@@ -312,7 +332,7 @@ describe('ZoneAwarenessProvider', () => {
   describe('Configuration Options', () => {
     test('should respect disabled zone restrictions', () => {
       const disabledProvider = new ZoneAwarenessProvider({
-        enableZoneRestrictions: false
+        enableZoneRestrictions: false,
       });
 
       // Should allow movement even without zone setup
@@ -322,7 +342,7 @@ describe('ZoneAwarenessProvider', () => {
 
     test('should respect disabled cross-zone movement', () => {
       const restrictedProvider = new ZoneAwarenessProvider({
-        allowCrossZoneMovement: false
+        allowCrossZoneMovement: false,
       });
 
       restrictedProvider.mapRoomToZone({ roomId: 'room1', zoneId: 'zone1', isZoneBoundary: false });
@@ -335,7 +355,7 @@ describe('ZoneAwarenessProvider', () => {
 
     test('should respect disabled biome affinity', () => {
       const noAffinityProvider = new ZoneAwarenessProvider({
-        enableBiomeAffinity: false
+        enableBiomeAffinity: false,
       });
 
       noAffinityProvider.setNPCZonePreference({
@@ -345,12 +365,12 @@ describe('ZoneAwarenessProvider', () => {
         avoidedZones: [],
         cannotEnterZones: [],
         homeZone: 'home',
-        roamingBehavior: 'explore-preferred'
+        roamingBehavior: 'explore-preferred',
       });
 
       const availableRooms = ['room1', 'room2'];
       const preferredRooms = noAffinityProvider.getPreferredRoomsForNPC('npc1', availableRooms);
-      
+
       expect(preferredRooms).toEqual(availableRooms); // Should ignore preferences
     });
   });
@@ -364,7 +384,7 @@ describe('ZoneAwarenessProvider', () => {
         difficulty: 1,
         allowedNPCTypes: [],
         restrictedNPCTypes: [],
-        environmentalFactors: {}
+        environmentalFactors: {},
       });
 
       provider.registerZone({
@@ -374,7 +394,7 @@ describe('ZoneAwarenessProvider', () => {
         difficulty: 2,
         allowedNPCTypes: [],
         restrictedNPCTypes: [],
-        environmentalFactors: {}
+        environmentalFactors: {},
       });
 
       provider.registerZone({
@@ -384,7 +404,7 @@ describe('ZoneAwarenessProvider', () => {
         difficulty: 5,
         allowedNPCTypes: [],
         restrictedNPCTypes: [],
-        environmentalFactors: {}
+        environmentalFactors: {},
       });
 
       provider.mapRoomToZone({ roomId: 'room1', zoneId: 'forest1', isZoneBoundary: true });
@@ -408,7 +428,7 @@ describe('ZoneAwarenessProvider', () => {
         difficulty: 1,
         allowedNPCTypes: [],
         restrictedNPCTypes: [],
-        environmentalFactors: {}
+        environmentalFactors: {},
       });
 
       provider.mapRoomToZone({ roomId: 'room1', zoneId: 'test', isZoneBoundary: false });
@@ -427,7 +447,7 @@ describe('ZoneAwarenessProvider', () => {
     test('should provide singleton instance', () => {
       const provider1 = getZoneAwarenessProvider();
       const provider2 = getZoneAwarenessProvider();
-      
+
       expect(provider1).toBe(provider2);
     });
 
@@ -440,7 +460,7 @@ describe('ZoneAwarenessProvider', () => {
         difficulty: 1,
         allowedNPCTypes: [],
         restrictedNPCTypes: [],
-        environmentalFactors: {}
+        environmentalFactors: {},
       });
 
       resetZoneAwarenessProvider();
@@ -462,7 +482,7 @@ describe('ZoneAwarenessProvider', () => {
             difficulty: 1,
             allowedNPCTypes: ['wanderer', 'merchant'],
             restrictedNPCTypes: [],
-            environmentalFactors: { accessibility: 'public' }
+            environmentalFactors: { accessibility: 'public' },
           },
           {
             zoneId: 'wilderness',
@@ -471,21 +491,21 @@ describe('ZoneAwarenessProvider', () => {
             difficulty: 3,
             allowedNPCTypes: ['wanderer', 'seeker'],
             restrictedNPCTypes: ['merchant'],
-            environmentalFactors: { danger: 'moderate' }
-          }
+            environmentalFactors: { danger: 'moderate' },
+          },
         ],
         roomMappings: [
           { roomId: 'town1', zoneId: 'town', isZoneBoundary: false },
           { roomId: 'town2', zoneId: 'town', isZoneBoundary: true, connectedZones: ['wilderness'] },
-          { roomId: 'wild1', zoneId: 'wilderness', isZoneBoundary: true, connectedZones: ['town'] }
+          { roomId: 'wild1', zoneId: 'wilderness', isZoneBoundary: true, connectedZones: ['town'] },
         ],
         transitionRules: [
           {
             fromZone: 'town',
             toZone: 'wilderness',
             allowedNPCTypes: ['wanderer', 'seeker'],
-            transitionType: 'open'
-          }
+            transitionType: 'open',
+          },
         ],
         npcPreferences: [
           {
@@ -495,13 +515,13 @@ describe('ZoneAwarenessProvider', () => {
             avoidedZones: ['wilderness'],
             cannotEnterZones: [],
             homeZone: 'town',
-            roamingBehavior: 'stay-home'
-          }
+            roamingBehavior: 'stay-home',
+          },
         ],
         config: {
           enableZoneRestrictions: true,
-          enableBiomeAffinity: true
-        }
+          enableBiomeAffinity: true,
+        },
       };
 
       setupZoneAwareness(setupConfig);
@@ -515,8 +535,18 @@ describe('ZoneAwarenessProvider', () => {
 
     test('should shutdown zone system', () => {
       setupZoneAwareness({
-        zones: [{ zoneId: 'test', zoneName: 'Test', biome: 'test', difficulty: 1, allowedNPCTypes: [], restrictedNPCTypes: [], environmentalFactors: {} }],
-        roomMappings: [{ roomId: 'room1', zoneId: 'test', isZoneBoundary: false }]
+        zones: [
+          {
+            zoneId: 'test',
+            zoneName: 'Test',
+            biome: 'test',
+            difficulty: 1,
+            allowedNPCTypes: [],
+            restrictedNPCTypes: [],
+            environmentalFactors: {},
+          },
+        ],
+        roomMappings: [{ roomId: 'room1', zoneId: 'test', isZoneBoundary: false }],
       });
 
       let provider = getZoneAwarenessProvider();

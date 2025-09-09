@@ -41,11 +41,8 @@ export function getNPCResponseWithState(npc: NPC, input: string, state: any): st
 // Gorstan and characters (c) Geoff Webster 2025
 // Handles NPC logic, memory, or rendering.
 
-
 import type { NPC } from '../types/NPCTypes';
 import { wanderers } from './wanderers';
-
-
 
 export const npcRegistry: Map<string, NPC> = new Map();
 
@@ -56,17 +53,12 @@ for (const npc of wanderers) {
   }
 }
 
-
-
-
-
 // --- Enhanced: NPC Interaction, Memory, Mood, Trust, Goals, Schedule ---
 export interface NPCInteractionRecord {
   timestamp: number;
   topic: string;
   context: any;
 }
-
 
 export interface NPCMemoryState {
   interactions: NPCInteractionRecord[];
@@ -77,8 +69,6 @@ export interface NPCMemoryState {
   goal?: string; // e.g. 'find_player', 'patrol_zone', 'avoid_glitchrealm'
   schedule?: Array<{ time: string; room: string }>;
 }
-
-
 
 const npcMemoryStore: Map<string, NPCMemoryState> = new Map();
 // --- Enhanced: Add memory event to NPC ---
@@ -102,7 +92,10 @@ export function setNPCGoal(npcId: string, goal: string): void {
   initNPC(npcId);
   npcMemoryStore.get(npcId)!.goal = goal;
 }
-export function setNPCSchedule(npcId: string, schedule: Array<{ time: string; room: string }>): void {
+export function setNPCSchedule(
+  npcId: string,
+  schedule: Array<{ time: string; room: string }>,
+): void {
   initNPC(npcId);
   npcMemoryStore.get(npcId)!.schedule = schedule;
 }
@@ -119,7 +112,8 @@ export function getNextRoomForGoal(npcId: string, state: any): string | null {
   // Example: patrol_zone (cycle through schedule)
   if (memory.goal === 'patrol_zone' && memory.schedule && memory.schedule.length > 0) {
     const now = new Date();
-    const hhmm = now.getHours().toString().padStart(2, '0') + now.getMinutes().toString().padStart(2, '0');
+    const hhmm =
+      now.getHours().toString().padStart(2, '0') + now.getMinutes().toString().padStart(2, '0');
     // Find next scheduled room
     for (const entry of memory.schedule) {
       if (entry.time >= hhmm) return entry.room;
@@ -167,8 +161,6 @@ export function getNPCtoNPCReactions(roomNPCs: string[], _state: any): string[] 
   return reactions;
 }
 
-
-
 // --- Function: initNPC ---
 export function initNPC(npcId: string): void {
   if (!npcMemoryStore.has(npcId)) {
@@ -176,55 +168,43 @@ export function initNPC(npcId: string): void {
   }
 }
 
-
-
 // --- Function: recordInteraction ---
 export function recordInteraction(npcId: string, topic: string, context: any): void {
   initNPC(npcId);
-// Variable declaration
+  // Variable declaration
   const memory = npcMemoryStore.get(npcId)!;
   memory.interactions.push({
     timestamp: Date.now(),
     topic,
-    context
+    context,
   });
 }
-
-
 
 // --- Function: getNPCState ---
 export function getNPCState(npcId: string): NPCMemoryState | null {
   return npcMemoryStore.get(npcId) || null;
 }
 
-
-
 // --- Function: updateNPCState ---
 export function updateNPCState(npcId: string, updates: Record<string, any>): void {
   initNPC(npcId);
-// Variable declaration
+  // Variable declaration
   const memory = npcMemoryStore.get(npcId)!;
   Object.assign(memory.state, updates);
 }
 
-
-
 // --- Function: getLastInteraction ---
 export function getLastInteraction(npcId: string): NPCInteractionRecord | null {
-// Variable declaration
+  // Variable declaration
   const memory = npcMemoryStore.get(npcId);
   if (!memory || memory.interactions.length === 0) return null;
   return memory.interactions[memory.interactions.length - 1];
 }
 
-
-
 // --- Function: clearNPCMemory ---
 export function clearNPCMemory(npcId: string): void {
   npcMemoryStore.delete(npcId);
 }
-
-
 
 // --- Function: exportAllMemory ---
 export function exportAllMemory(): Record<string, NPCMemoryState> {
@@ -235,8 +215,6 @@ export function exportAllMemory(): Record<string, NPCMemoryState> {
   return result;
 }
 
-
-
 // --- Function: importAllMemory ---
 export function importAllMemory(data: Record<string, NPCMemoryState>): void {
   npcMemoryStore.clear();
@@ -244,8 +222,6 @@ export function importAllMemory(data: Record<string, NPCMemoryState>): void {
     npcMemoryStore.set(npcId, state);
   }
 }
-
-
 
 for (const npc of npcRegistry.values()) {
   if (!npc.memory) {
@@ -255,13 +231,13 @@ for (const npc of npcRegistry.values()) {
       playerActions: [],
       relationship: 0,
       knownFacts: [],
-      emotion: "neutral"
+      emotion: 'neutral',
     };
   }
   if (!npc.memory.emotion) {
     npc.memory = {
       ...npc.memory,
-      emotion: "neutral"
+      emotion: 'neutral',
     };
   }
 }

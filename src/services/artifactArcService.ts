@@ -12,7 +12,7 @@ import {
   type ArtifactArchive,
   type ArtifactArcEvent,
   type ArtifactArcConfig,
-  type ArtifactEvolution
+  type ArtifactEvolution,
 } from '../types/artifactArc';
 import { type QuantumProgression } from '../types/quantumMagic';
 import {
@@ -20,7 +20,7 @@ import {
   DISCOVERY_NARRATIVES,
   ARTIFACT_VISIONS,
   ARTIFACT_EVOLUTIONS,
-  DEFAULT_ARTIFACT_ARC_CONFIG
+  DEFAULT_ARTIFACT_ARC_CONFIG,
 } from '../data/artifactArc';
 
 class ArtifactArcService {
@@ -47,12 +47,14 @@ class ArtifactArcService {
       evolutionHistory: [],
       synthesisAttempts: [],
       personalNotes: {},
-      researchProgress: {}
+      researchProgress: {},
     };
   }
 
   private startBackgroundProcesses(): void {
-    if (!this.config.enabled) return;
+    if (!this.config.enabled) {
+      return;
+    }
 
     // Vision trigger timer
     this.visionTimer = window.setInterval(() => {
@@ -73,14 +75,15 @@ class ArtifactArcService {
       circumstance: 'exploration' | 'combat' | 'puzzle' | 'social' | 'meditation' | 'accident';
       playerActions: string[];
       environmentalFactors: string[];
-    }
+    },
   ): DiscoveryNarrative | null {
     const narratives = DISCOVERY_NARRATIVES[artifactId] || [];
-    
+
     // Find matching narrative or create a generic one
-    let selectedNarrative = narratives.find(narrative => 
-      narrative.circumstance === discoveryContext.circumstance &&
-      (!narrative.routeId || narrative.routeId === discoveryContext.routeId)
+    let selectedNarrative = narratives.find(
+      (narrative) =>
+        narrative.circumstance === discoveryContext.circumstance &&
+        (!narrative.routeId || narrative.routeId === discoveryContext.routeId),
     );
 
     if (!selectedNarrative && narratives.length > 0) {
@@ -89,10 +92,10 @@ class ArtifactArcService {
 
     if (selectedNarrative) {
       this.archive.discoveredNarratives.set(selectedNarrative.id, selectedNarrative);
-      
+
       // Create initial bond
       this.createArtifactBond(artifactId);
-      
+
       // Unlock initial lore
       this.checkLoreUnlocks(artifactId);
 
@@ -101,8 +104,8 @@ class ArtifactArcService {
         artifactId,
         timestamp: Date.now(),
         details: {
-          loreEntryId: 'discovery_narrative'
-        }
+          loreEntryId: 'discovery_narrative',
+        },
       });
 
       return selectedNarrative;
@@ -124,14 +127,14 @@ class ArtifactArcService {
         visions: 0,
         combatUses: 0,
         explorationTime: 0,
-        emergencyActivations: 0
+        emergencyActivations: 0,
       },
       personality: {
         communicative: Math.random() * 30 + 10, // 10-40 base
-        protective: Math.random() * 40 + 20,    // 20-60 base
-        autonomous: Math.random() * 20 + 5,     // 5-25 base
-        mysterious: Math.random() * 60 + 20     // 20-80 base
-      }
+        protective: Math.random() * 40 + 20, // 20-60 base
+        autonomous: Math.random() * 20 + 5, // 5-25 base
+        mysterious: Math.random() * 60 + 20, // 20-80 base
+      },
     };
 
     this.archive.artifactBonds.set(artifactId, bond);
@@ -143,7 +146,9 @@ class ArtifactArcService {
     const unlockedLore: string[] = [];
 
     for (const loreEntry of artifactLore) {
-      if (this.archive.unlockedLore.has(loreEntry.id)) continue;
+      if (this.archive.unlockedLore.has(loreEntry.id)) {
+        continue;
+      }
 
       if (this.meetsUnlockConditions(loreEntry, artifactId, quantumProgression)) {
         this.archive.unlockedLore.set(loreEntry.id, loreEntry);
@@ -154,8 +159,8 @@ class ArtifactArcService {
           artifactId,
           timestamp: Date.now(),
           details: {
-            loreEntryId: loreEntry.id
-          }
+            loreEntryId: loreEntry.id,
+          },
         });
       }
     }
@@ -166,7 +171,7 @@ class ArtifactArcService {
   private meetsUnlockConditions(
     loreEntry: ArtifactLoreEntry,
     artifactId: string,
-    quantumProgression?: QuantumProgression
+    quantumProgression?: QuantumProgression,
   ): boolean {
     const conditions = loreEntry.unlockConditions;
     const bond = this.archive.artifactBonds.get(artifactId);
@@ -178,19 +183,21 @@ class ArtifactArcService {
     }
 
     // Check experience threshold
-    if (conditions.experienceThreshold && 
-        (!quantumProgression || quantumProgression.totalExperience < conditions.experienceThreshold)) {
+    if (
+      conditions.experienceThreshold &&
+      (!quantumProgression || quantumProgression.totalExperience < conditions.experienceThreshold)
+    ) {
       return false;
     }
 
     // Check route completions
     if (conditions.routeCompletions && quantumProgression) {
-      const totalCompletions = 
+      const totalCompletions =
         quantumProgression.routeCompletions.demo +
         quantumProgression.routeCompletions.short10.length +
         quantumProgression.routeCompletions.short30.length +
         quantumProgression.routeCompletions.full;
-      
+
       if (totalCompletions < conditions.routeCompletions) {
         return false;
       }
@@ -198,10 +205,12 @@ class ArtifactArcService {
 
     // Check other artifacts
     if (conditions.otherArtifacts && quantumProgression) {
-      const hasRequired = conditions.otherArtifacts.every(requiredId =>
-        quantumProgression.artifacts.has(requiredId)
+      const hasRequired = conditions.otherArtifacts.every((requiredId) =>
+        quantumProgression.artifacts.has(requiredId),
       );
-      if (!hasRequired) return false;
+      if (!hasRequired) {
+        return false;
+      }
     }
 
     // Check time with artifact
@@ -227,7 +236,7 @@ class ArtifactArcService {
   private checkVisionTriggers(): void {
     for (const [artifactId, bond] of this.archive.artifactBonds) {
       const visions = ARTIFACT_VISIONS[artifactId] || [];
-      
+
       for (const vision of visions) {
         if (this.shouldTriggerVision(vision, artifactId, bond)) {
           this.triggerVision(vision);
@@ -237,18 +246,26 @@ class ArtifactArcService {
     }
   }
 
-  private shouldTriggerVision(vision: ArtifactVision, _artifactId: string, bond: ArtifactBond): boolean {
+  private shouldTriggerVision(
+    vision: ArtifactVision,
+    _artifactId: string,
+    bond: ArtifactBond,
+  ): boolean {
     // Check if vision already experienced recently
-    const recentVisions = this.archive.experiencedVisions.filter(v => 
-      v.id === vision.id && Date.now() - (v.metadata?.timestamp || 0) < 86400000 // 24 hours
+    const recentVisions = this.archive.experiencedVisions.filter(
+      (v) => v.id === vision.id && Date.now() - (v.metadata?.timestamp || 0) < 86400000, // 24 hours
     );
-    if (recentVisions.length > 0) return false;
+    if (recentVisions.length > 0) {
+      return false;
+    }
 
     // Check trigger conditions
     const conditions = vision.triggerConditions;
-    
+
     // Random chance based on configuration
-    if (Math.random() > this.config.visionFrequency) return false;
+    if (Math.random() > this.config.visionFrequency) {
+      return false;
+    }
 
     // Check quantum resonance (approximated by bond level)
     if (conditions.quantumResonance && bond.bondLevel < conditions.quantumResonance) {
@@ -257,10 +274,12 @@ class ArtifactArcService {
 
     // Check other artifacts present (simplified)
     if (conditions.otherArtifactsPresent) {
-      const hasOthers = conditions.otherArtifactsPresent.every(otherId =>
-        this.archive.artifactBonds.has(otherId)
+      const hasOthers = conditions.otherArtifactsPresent.every((otherId) =>
+        this.archive.artifactBonds.has(otherId),
       );
-      if (!hasOthers) return false;
+      if (!hasOthers) {
+        return false;
+      }
     }
 
     // Check time of day (simplified - based on current hour)
@@ -270,9 +289,11 @@ class ArtifactArcService {
         dawn: hour >= 5 && hour < 8,
         day: hour >= 8 && hour < 18,
         dusk: hour >= 18 && hour < 21,
-        night: hour >= 21 || hour < 5
+        night: hour >= 21 || hour < 5,
       };
-      if (!timeMatches[conditions.timeOfDay]) return false;
+      if (!timeMatches[conditions.timeOfDay]) {
+        return false;
+      }
     }
 
     return true;
@@ -284,8 +305,8 @@ class ArtifactArcService {
       ...vision,
       metadata: {
         ...vision.metadata,
-        timestamp: Date.now()
-      }
+        timestamp: Date.now(),
+      },
     };
     this.archive.experiencedVisions.push(experiencedVision);
 
@@ -302,8 +323,8 @@ class ArtifactArcService {
         for (const loreId of vision.aftermath.unlockedLore) {
           const loreEntry = Object.values(ARTIFACT_LORE)
             .flat()
-            .find(entry => entry.id === loreId);
-          
+            .find((entry) => entry.id === loreId);
+
           if (loreEntry) {
             this.archive.unlockedLore.set(loreId, loreEntry);
           }
@@ -316,8 +337,8 @@ class ArtifactArcService {
       artifactId: vision.artifactId,
       timestamp: Date.now(),
       details: {
-        visionId: vision.id
-      }
+        visionId: vision.id,
+      },
     });
   }
 
@@ -325,12 +346,12 @@ class ArtifactArcService {
   private updateBonds(): void {
     for (const [artifactId, bond] of this.archive.artifactBonds) {
       const timeSinceLastInteraction = Date.now() - bond.lastInteraction;
-      
+
       // Slow bond decay if unused for too long (over 24 hours)
       if (timeSinceLastInteraction > 86400000) {
         bond.bondLevel = Math.max(0, bond.bondLevel - 0.1);
       }
-      
+
       // Update bond type based on level
       if (bond.bondLevel >= 80) {
         bond.bondType = 'transcendence';
@@ -348,16 +369,18 @@ class ArtifactArcService {
   }
 
   public strengthenBond(
-    artifactId: string, 
+    artifactId: string,
     experienceType: 'discovery' | 'vision' | 'combat' | 'exploration' | 'emergency',
-    amount: number = 1
+    amount: number = 1,
   ): void {
     const bond = this.archive.artifactBonds.get(artifactId);
-    if (!bond) return;
+    if (!bond) {
+      return;
+    }
 
-    bond.bondLevel = Math.min(100, bond.bondLevel + (amount * this.config.bondingSpeed));
+    bond.bondLevel = Math.min(100, bond.bondLevel + amount * this.config.bondingSpeed);
     bond.lastInteraction = Date.now();
-    
+
     // Update specific experience
     switch (experienceType) {
       case 'discovery':
@@ -387,28 +410,31 @@ class ArtifactArcService {
       artifactId,
       timestamp: Date.now(),
       details: {
-        bondIncrease: amount
-      }
+        bondIncrease: amount,
+      },
     });
   }
 
-  private checkCommunicationTrigger(
-    artifactId: string, 
-    bond: ArtifactBond, 
-    trigger: string
-  ): void {
-    if (!this.config.personalityDevelopment) return;
-    if (!bond.personality) return;
+  private checkCommunicationTrigger(artifactId: string, bond: ArtifactBond, trigger: string): void {
+    if (!this.config.personalityDevelopment) {
+      return;
+    }
+    if (!bond.personality) {
+      return;
+    }
 
-    const communicationChance = (bond.personality.communicative / 100) * this.config.communicationChance;
-    
+    const communicationChance =
+      (bond.personality.communicative / 100) * this.config.communicationChance;
+
     if (Math.random() < communicationChance) {
       this.generateCommunication(artifactId, bond, trigger);
     }
   }
 
   private generateCommunication(artifactId: string, bond: ArtifactBond, trigger: string): void {
-    if (!bond.personality) return;
+    if (!bond.personality) {
+      return;
+    }
 
     // Choose communication type based on bond level and personality
     let selectedType: ArtifactCommunication['communicationType'];
@@ -421,7 +447,7 @@ class ArtifactArcService {
     }
 
     const messages = this.generateMessage(artifactId, bond, trigger, selectedType);
-    
+
     const communication: ArtifactCommunication = {
       id: `comm_${artifactId}_${Date.now()}`,
       artifactId,
@@ -431,8 +457,8 @@ class ArtifactArcService {
       context: {
         trigger: trigger as any,
         playerState: 'curious', // Simplified
-        situation: `Using ${artifactId} for ${trigger}`
-      }
+        situation: `Using ${artifactId} for ${trigger}`,
+      },
     };
 
     this.archive.communications.push(communication);
@@ -442,42 +468,62 @@ class ArtifactArcService {
       artifactId,
       timestamp: Date.now(),
       details: {
-        communicationId: communication.id
-      }
+        communicationId: communication.id,
+      },
     });
   }
 
   private generateMessage(
-    artifactId: string, 
-    bond: ArtifactBond, 
-    trigger: string, 
-    type: ArtifactCommunication['communicationType']
+    artifactId: string,
+    bond: ArtifactBond,
+    trigger: string,
+    type: ArtifactCommunication['communicationType'],
   ): string {
     const personality = bond.personality!;
 
     // Artifact-specific message templates
     const messageTemplates: Record<string, Record<string, string[]>> = {
       void_fragment: {
-        whisper: ['...silence speaks...', '...between thoughts...', '...the pause that contains all...'],
-        feeling: ['A sense of peaceful emptiness', 'Clarity through stillness', 'The comfort of the void'],
-        direct: ['Focus on the silence between sounds', 'Find strength in emptiness', 'The void holds infinite potential']
+        whisper: [
+          '...silence speaks...',
+          '...between thoughts...',
+          '...the pause that contains all...',
+        ],
+        feeling: [
+          'A sense of peaceful emptiness',
+          'Clarity through stillness',
+          'The comfort of the void',
+        ],
+        direct: [
+          'Focus on the silence between sounds',
+          'Find strength in emptiness',
+          'The void holds infinite potential',
+        ],
       },
       flux_crystal: {
         whisper: ['...change flows...', '...adapt and grow...', '...transformation awaits...'],
         feeling: ['Energy of constant change', 'The rhythm of transformation', 'Flow like water'],
-        direct: ['Embrace the change coming', 'Adaptation is strength', 'Let yourself transform']
+        direct: ['Embrace the change coming', 'Adaptation is strength', 'Let yourself transform'],
       },
       quantum_core: {
         whisper: ['...all is one...', '...connection eternal...', '...unity in diversity...'],
-        feeling: ['Deep connection to everything', 'Universal love and understanding', 'Oneness with existence'],
-        direct: ['You are part of the infinite', 'All consciousness is connected', 'Love is the fundamental force']
-      }
+        feeling: [
+          'Deep connection to everything',
+          'Universal love and understanding',
+          'Oneness with existence',
+        ],
+        direct: [
+          'You are part of the infinite',
+          'All consciousness is connected',
+          'Love is the fundamental force',
+        ],
+      },
     };
 
     const artifactMessages = messageTemplates[artifactId] || {
       whisper: ['...presence...', '...awareness...', '...guidance...'],
       feeling: ['Mysterious energy', 'Ancient wisdom', 'Protective presence'],
-      direct: ['I am here', 'We journey together', 'Trust the process']
+      direct: ['I am here', 'We journey together', 'Trust the process'],
     };
 
     const messages = artifactMessages[type] || artifactMessages.feeling;
@@ -495,10 +541,14 @@ class ArtifactArcService {
 
   // Evolution System
   private checkEvolutionReadiness(artifactId: string, bond: ArtifactBond): void {
-    if (!this.config.evolutionEnabled) return;
+    if (!this.config.evolutionEnabled) {
+      return;
+    }
 
-    const evolution = ARTIFACT_EVOLUTIONS.find(evo => evo.artifactId === artifactId);
-    if (!evolution) return;
+    const evolution = ARTIFACT_EVOLUTIONS.find((evo) => evo.artifactId === artifactId);
+    if (!evolution) {
+      return;
+    }
 
     const requirements = evolution.requirements;
     let isReady = true;
@@ -527,8 +577,8 @@ class ArtifactArcService {
       artifactId,
       timestamp: Date.now(),
       details: {
-        evolutionStage: 'initiated'
-      }
+        evolutionStage: 'initiated',
+      },
     });
   }
 
@@ -538,7 +588,7 @@ class ArtifactArcService {
     _entryType: 'discovery' | 'vision' | 'communication' | 'evolution' | 'synthesis' | 'research',
     title: string,
     content: string,
-    _mood: 'excited' | 'curious' | 'concerned' | 'awed' | 'confused' | 'determined' = 'curious'
+    _mood: 'excited' | 'curious' | 'concerned' | 'awed' | 'confused' | 'determined' = 'curious',
   ): void {
     if (!this.archive.personalNotes[artifactId]) {
       this.archive.personalNotes[artifactId] = [];
@@ -551,9 +601,7 @@ class ArtifactArcService {
   // Public API Methods
   public getUnlockedLore(artifactId?: string): ArtifactLoreEntry[] {
     const allLore = Array.from(this.archive.unlockedLore.values());
-    return artifactId 
-      ? allLore.filter(lore => lore.artifactId === artifactId)
-      : allLore;
+    return artifactId ? allLore.filter((lore) => lore.artifactId === artifactId) : allLore;
   }
 
   public getArtifactBond(artifactId: string): ArtifactBond | null {
@@ -568,7 +616,7 @@ class ArtifactArcService {
 
   public getCommunications(artifactId?: string): ArtifactCommunication[] {
     return artifactId
-      ? this.archive.communications.filter(comm => comm.artifactId === artifactId)
+      ? this.archive.communications.filter((comm) => comm.artifactId === artifactId)
       : this.archive.communications;
   }
 
@@ -588,7 +636,7 @@ class ArtifactArcService {
   }
 
   private emitEvent(event: ArtifactArcEvent): void {
-    this.eventListeners.forEach(listener => listener(event));
+    this.eventListeners.forEach((listener) => listener(event));
   }
 
   public saveArchive(): string {
@@ -600,14 +648,14 @@ class ArtifactArcService {
       artifactBonds: Array.from(this.archive.artifactBonds.entries()),
       communications: this.archive.communications.slice(-50), // Keep last 50
       personalNotes: this.archive.personalNotes,
-      researchProgress: this.archive.researchProgress
+      researchProgress: this.archive.researchProgress,
     });
   }
 
   public loadArchive(savedData: string): boolean {
     try {
       const data = JSON.parse(savedData);
-      
+
       this.archive.playerId = data.playerId;
       this.archive.unlockedLore = new Map(data.unlockedLore || []);
       this.archive.discoveredNarratives = new Map(data.discoveredNarratives || []);
@@ -616,7 +664,7 @@ class ArtifactArcService {
       this.archive.communications = data.communications || [];
       this.archive.personalNotes = data.personalNotes || {};
       this.archive.researchProgress = data.researchProgress || {};
-      
+
       return true;
     } catch (error) {
       console.error('Failed to load artifact archive:', error);

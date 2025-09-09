@@ -21,15 +21,6 @@ import React, { useEffect, useState } from 'react';
 
 import { motion, AnimatePresence } from 'framer-motion';
 
-
-
-
-
-
-
-
-
-
 interface SipTransitionProps {
   onComplete: () => void;
 }
@@ -37,20 +28,20 @@ interface SipTransitionProps {
 const SipTransition: React.FC<SipTransitionProps> = ({ onComplete }) => {
   const [phase, setPhase] = useState<'sipping' | 'warmth' | 'ripple' | 'dissolve'>('sipping');
 
-// React effect hook
+  // React effect hook
   useEffect(() => {
-// Variable declaration
+    // Variable declaration
     const timers = [
       setTimeout(() => setPhase('warmth'), 600),
       setTimeout(() => setPhase('ripple'), 1400),
       setTimeout(() => setPhase('dissolve'), 2200),
       setTimeout(() => onComplete(), 3200),
     ];
-// JSX return block or main return
+    // JSX return block or main return
     return () => timers.forEach(clearTimeout);
   }, [onComplete]);
 
-// JSX return block or main return
+  // JSX return block or main return
   return (
     <AnimatePresence>
       <motion.div
@@ -105,7 +96,8 @@ const SipTransition: React.FC<SipTransitionProps> = ({ onComplete }) => {
             }}
             transition={{ duration: 0.8 }}
             style={{
-              background: 'radial-gradient(circle, #ffcc80 0%, #ff8a65 20%, #d2691e 40%, transparent 70%)',
+              background:
+                'radial-gradient(circle, #ffcc80 0%, #ff8a65 20%, #d2691e 40%, transparent 70%)',
               transformOrigin: 'center 60%',
             }}
           />
@@ -154,7 +146,8 @@ const SipTransition: React.FC<SipTransitionProps> = ({ onComplete }) => {
             animate={{ opacity: [0, 1, 0] }}
             transition={{ duration: 1 }}
             style={{
-              background: 'linear-gradient(45deg, transparent 0%, #ffcc80 25%, #ff8a65 50%, #d2691e 75%, transparent 100%)',
+              background:
+                'linear-gradient(45deg, transparent 0%, #ffcc80 25%, #ff8a65 50%, #d2691e 75%, transparent 100%)',
               backgroundSize: '100px 100px',
               animation: 'dissolve 1s ease-in-out',
             }}

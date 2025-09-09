@@ -17,20 +17,20 @@
 // src/npc/__tests__/wanderActivation.test.ts
 // Unit tests for wandering activation controller
 
-import { 
-  WanderActivationController, 
-  GameStateSnapshot, 
+import {
+  WanderActivationController,
+  GameStateSnapshot,
   WanderActivationConfig,
   setGamePhase,
   setCutsceneState,
   setOverlayState,
   setPollyTakeoverState,
-  initializeWanderActivation
+  initializeWanderActivation,
 } from '../wanderActivation';
 
 describe('WanderActivationController', () => {
   let controller: WanderActivationController;
-  
+
   const baseGameState: GameStateSnapshot = {
     currentPhase: 'exploration',
     currentRoom: 'test-room',
@@ -39,7 +39,7 @@ describe('WanderActivationController', () => {
     hasReducedMotionPreference: false,
     isPollyTakeoverActive: false,
     isResetInProgress: false,
-    gameFlags: {}
+    gameFlags: {},
   };
 
   beforeEach(() => {
@@ -53,10 +53,10 @@ describe('WanderActivationController', () => {
   describe('Basic Activation Logic', () => {
     test('should activate wandering during exploration phase', () => {
       controller.updateGameState(baseGameState);
-      
+
       // Force immediate evaluation
       controller.forceEvaluate();
-      
+
       const status = controller.getActivationStatus();
       expect(status.isActive).toBe(true);
       expect(status.currentPhase).toBe('exploration');
@@ -66,12 +66,12 @@ describe('WanderActivationController', () => {
     test('should deactivate wandering during intro phase', () => {
       const introState: GameStateSnapshot = {
         ...baseGameState,
-        currentPhase: 'intro'
+        currentPhase: 'intro',
       };
-      
+
       controller.updateGameState(introState);
       controller.forceEvaluate();
-      
+
       const status = controller.getActivationStatus();
       expect(status.isActive).toBe(false);
       expect(status.reason).toBe('phase-intro');
@@ -80,12 +80,12 @@ describe('WanderActivationController', () => {
     test('should deactivate wandering during cutscenes', () => {
       const cutsceneState: GameStateSnapshot = {
         ...baseGameState,
-        isPlayerInCutscene: true
+        isPlayerInCutscene: true,
       };
-      
+
       controller.updateGameState(cutsceneState);
       controller.forceEvaluate();
-      
+
       const status = controller.getActivationStatus();
       expect(status.isActive).toBe(false);
       expect(status.reason).toBe('cutscene');
@@ -94,12 +94,12 @@ describe('WanderActivationController', () => {
     test('should deactivate wandering when system overlay is active', () => {
       const overlayState: GameStateSnapshot = {
         ...baseGameState,
-        isSystemOverlayActive: true
+        isSystemOverlayActive: true,
       };
-      
+
       controller.updateGameState(overlayState);
       controller.forceEvaluate();
-      
+
       const status = controller.getActivationStatus();
       expect(status.isActive).toBe(false);
       expect(status.reason).toBe('overlay');
@@ -108,12 +108,12 @@ describe('WanderActivationController', () => {
     test('should deactivate wandering during PollyTakeover', () => {
       const pollyState: GameStateSnapshot = {
         ...baseGameState,
-        isPollyTakeoverActive: true
+        isPollyTakeoverActive: true,
       };
-      
+
       controller.updateGameState(pollyState);
       controller.forceEvaluate();
-      
+
       const status = controller.getActivationStatus();
       expect(status.isActive).toBe(false);
       expect(status.reason).toBe('polly-takeover');
@@ -122,12 +122,12 @@ describe('WanderActivationController', () => {
     test('should deactivate wandering during reset', () => {
       const resetState: GameStateSnapshot = {
         ...baseGameState,
-        isResetInProgress: true
+        isResetInProgress: true,
       };
-      
+
       controller.updateGameState(resetState);
       controller.forceEvaluate();
-      
+
       const status = controller.getActivationStatus();
       expect(status.isActive).toBe(false);
       expect(status.reason).toBe('reset');
@@ -138,12 +138,12 @@ describe('WanderActivationController', () => {
     test('should respect reduced motion preference', () => {
       const reducedMotionState: GameStateSnapshot = {
         ...baseGameState,
-        hasReducedMotionPreference: true
+        hasReducedMotionPreference: true,
       };
-      
+
       controller.updateGameState(reducedMotionState);
       controller.forceEvaluate();
-      
+
       const status = controller.getActivationStatus();
       expect(status.isActive).toBe(false);
       expect(status.reason).toBe('reduced-motion');
@@ -151,22 +151,22 @@ describe('WanderActivationController', () => {
 
     test('should allow disabling reduced motion respect', () => {
       const config: Partial<WanderActivationConfig> = {
-        respectReducedMotion: false
+        respectReducedMotion: false,
       };
-      
+
       const controllerNoMotion = new WanderActivationController(config);
-      
+
       const reducedMotionState: GameStateSnapshot = {
         ...baseGameState,
-        hasReducedMotionPreference: true
+        hasReducedMotionPreference: true,
       };
-      
+
       controllerNoMotion.updateGameState(reducedMotionState);
       controllerNoMotion.forceEvaluate();
-      
+
       const status = controllerNoMotion.getActivationStatus();
       expect(status.isActive).toBe(true);
-      
+
       controllerNoMotion.destroy();
     });
   });
@@ -175,12 +175,12 @@ describe('WanderActivationController', () => {
     test('should disable wandering in configured disabled rooms', () => {
       const disabledRoomState: GameStateSnapshot = {
         ...baseGameState,
-        currentRoom: 'final-cutscene' // This is in default disabled rooms
+        currentRoom: 'final-cutscene', // This is in default disabled rooms
       };
-      
+
       controller.updateGameState(disabledRoomState);
       controller.forceEvaluate();
-      
+
       const status = controller.getActivationStatus();
       expect(status.isActive).toBe(false);
       expect(status.reason).toBe('disabled-room-final-cutscene');
@@ -189,12 +189,12 @@ describe('WanderActivationController', () => {
     test('should allow wandering in non-disabled rooms', () => {
       const enabledRoomState: GameStateSnapshot = {
         ...baseGameState,
-        currentRoom: 'normal-room'
+        currentRoom: 'normal-room',
       };
-      
+
       controller.updateGameState(enabledRoomState);
       controller.forceEvaluate();
-      
+
       const status = controller.getActivationStatus();
       expect(status.isActive).toBe(true);
     });
@@ -204,12 +204,12 @@ describe('WanderActivationController', () => {
     test('should disable wandering when wandering-disabled flag is set', () => {
       const flagDisabledState: GameStateSnapshot = {
         ...baseGameState,
-        gameFlags: { 'wandering-disabled': true }
+        gameFlags: { 'wandering-disabled': true },
       };
-      
+
       controller.updateGameState(flagDisabledState);
       controller.forceEvaluate();
-      
+
       const status = controller.getActivationStatus();
       expect(status.isActive).toBe(false);
       expect(status.reason).toBe('flag-disabled');
@@ -218,12 +218,12 @@ describe('WanderActivationController', () => {
     test('should disable wandering during final sequence', () => {
       const finalSequenceState: GameStateSnapshot = {
         ...baseGameState,
-        gameFlags: { 'final-sequence-active': true }
+        gameFlags: { 'final-sequence-active': true },
       };
-      
+
       controller.updateGameState(finalSequenceState);
       controller.forceEvaluate();
-      
+
       const status = controller.getActivationStatus();
       expect(status.isActive).toBe(false);
       expect(status.reason).toBe('final-sequence');
@@ -235,20 +235,20 @@ describe('WanderActivationController', () => {
       // Start with intro phase (normally disabled)
       const introState: GameStateSnapshot = {
         ...baseGameState,
-        currentPhase: 'intro'
+        currentPhase: 'intro',
       };
-      
+
       controller.updateGameState(introState);
       controller.forceEvaluate();
-      
+
       // Should be disabled
       expect(controller.getActivationStatus().isActive).toBe(false);
-      
+
       // Update config to allow intro phase
       controller.updateConfig({
-        activePhases: ['exploration', 'intro']
+        activePhases: ['exploration', 'intro'],
       });
-      
+
       // Should now be enabled
       expect(controller.getActivationStatus().isActive).toBe(true);
     });
@@ -257,20 +257,20 @@ describe('WanderActivationController', () => {
       // Start in a room that's disabled by default
       const disabledRoomState: GameStateSnapshot = {
         ...baseGameState,
-        currentRoom: 'final-cutscene'
+        currentRoom: 'final-cutscene',
       };
-      
+
       controller.updateGameState(disabledRoomState);
       controller.forceEvaluate();
-      
+
       // Should be disabled
       expect(controller.getActivationStatus().isActive).toBe(false);
-      
+
       // Update config to remove room from disabled list
       controller.updateConfig({
-        disabledRooms: []
+        disabledRooms: [],
       });
-      
+
       // Should now be enabled
       expect(controller.getActivationStatus().isActive).toBe(true);
     });
@@ -279,34 +279,34 @@ describe('WanderActivationController', () => {
   describe('Utility Functions', () => {
     test('should support quick phase setting', () => {
       initializeWanderActivation(baseGameState);
-      
+
       setGamePhase('cutscene');
-      
+
       // Note: These are integration-style tests with the global controller
       // In a real test, we'd need to access the global controller's state
     });
 
     test('should support quick cutscene state setting', () => {
       initializeWanderActivation(baseGameState);
-      
+
       setCutsceneState(true);
-      
+
       // Integration test with global controller
     });
 
     test('should support quick overlay state setting', () => {
       initializeWanderActivation(baseGameState);
-      
+
       setOverlayState(true);
-      
+
       // Integration test with global controller
     });
 
     test('should support quick polly takeover state setting', () => {
       initializeWanderActivation(baseGameState);
-      
+
       setPollyTakeoverState(true);
-      
+
       // Integration test with global controller
     });
   });

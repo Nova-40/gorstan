@@ -20,25 +20,17 @@
 import { FlagMap } from '../state/flagRegistry';
 
 import { useFlags } from './useFlags';
-
-
-
-
-
-
-
-
-
+import React from 'react';
 
 export const useWendellLogic = (
   state: any,
   dispatch: React.Dispatch<any>,
   room: any,
-  loadModule: (path: string) => Promise<any>
+  loadModule: (path: string) => Promise<any>,
 ) => {
   const { hasFlag, clearFlag } = useFlags();
 
-// Variable declaration
+  // Variable declaration
   const handleWendell = () => {
     if (hasFlag(FlagMap.npc.pendingWendellCommand)) {
       loadModule('../engine/mrWendellController').then(({ handleWendellInteraction }) => {
@@ -48,7 +40,7 @@ export const useWendellLogic = (
     }
   };
 
-// Variable declaration
+  // Variable declaration
   const spawnWendellIfFlagged = () => {
     if (hasFlag(FlagMap.npc.forceWendellSpawn) && room) {
       loadModule('../engine/mrWendellController').then((module) => {
@@ -59,7 +51,7 @@ export const useWendellLogic = (
     }
   };
 
-// Variable declaration
+  // Variable declaration
   const checkWendellStatus = () => {
     if (hasFlag(FlagMap.npc.checkWendellStatus)) {
       loadModule('../engine/mrWendellController').then(({ isWendellActive, getWendellRoom }) => {
@@ -74,6 +66,6 @@ export const useWendellLogic = (
   return {
     handleWendell,
     spawnWendellIfFlagged,
-    checkWendellStatus
+    checkWendellStatus,
   };
 };

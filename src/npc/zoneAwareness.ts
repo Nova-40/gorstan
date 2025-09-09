@@ -88,7 +88,7 @@ export class ZoneAwarenessProvider {
       enableDifficultyScaling: false,
       respectZoneBoundaries: true,
       allowCrossZoneMovement: true,
-      ...config
+      ...config,
     };
     console.log('[ZoneAwareness] Initialized zone awareness provider');
   }
@@ -145,7 +145,12 @@ export class ZoneAwarenessProvider {
   /**
    * Check if an NPC can move to a specific room
    */
-  canNPCMoveToRoom(npcId: string, npcType: string, fromRoom: string, toRoom: string): {
+  canNPCMoveToRoom(
+    npcId: string,
+    npcType: string,
+    fromRoom: string,
+    toRoom: string,
+  ): {
     allowed: boolean;
     reason?: string;
     alternative?: string[];
@@ -168,10 +173,10 @@ export class ZoneAwarenessProvider {
 
     // Cross-zone movement
     if (!this.config.allowCrossZoneMovement) {
-      return { 
-        allowed: false, 
+      return {
+        allowed: false,
         reason: 'Cross-zone movement disabled',
-        alternative: this.findAlternativeRoomsInZone(fromZone, toRoom)
+        alternative: this.findAlternativeRoomsInZone(fromZone, toRoom),
       };
     }
 
@@ -198,7 +203,9 @@ export class ZoneAwarenessProvider {
    */
   isNPCTypeAllowedInZone(npcType: string, zoneId: string): boolean {
     const zone = this.zones.get(zoneId);
-    if (!zone) return true;
+    if (!zone) {
+      return true;
+    }
 
     // Check explicit restrictions first
     if (zone.restrictedNPCTypes.includes(npcType)) {
@@ -256,7 +263,7 @@ export class ZoneAwarenessProvider {
     // Find all rooms in this zone that are zone boundaries
     for (const [roomId, mapping] of this.roomZoneMappings.entries()) {
       if (mapping.zoneId === zoneId && mapping.isZoneBoundary && mapping.connectedZones) {
-        mapping.connectedZones.forEach(zone => connectedZones.add(zone));
+        mapping.connectedZones.forEach((zone) => connectedZones.add(zone));
       }
     }
 
@@ -274,16 +281,19 @@ export class ZoneAwarenessProvider {
     npcPreferences: number;
     zonesByBiome: Record<string, number>;
   } {
-    const boundaryRooms = Array.from(this.roomZoneMappings.values())
-      .filter(mapping => mapping.isZoneBoundary).length;
+    const boundaryRooms = Array.from(this.roomZoneMappings.values()).filter(
+      (mapping) => mapping.isZoneBoundary,
+    ).length;
 
     const zonesByBiome: Record<string, number> = {};
     for (const zone of this.zones.values()) {
       zonesByBiome[zone.biome] = (zonesByBiome[zone.biome] || 0) + 1;
     }
 
-    const totalTransitionRules = Array.from(this.transitionRules.values())
-      .reduce((sum, rules) => sum + rules.length, 0);
+    const totalTransitionRules = Array.from(this.transitionRules.values()).reduce(
+      (sum, rules) => sum + rules.length,
+      0,
+    );
 
     return {
       totalZones: this.zones.size,
@@ -291,7 +301,7 @@ export class ZoneAwarenessProvider {
       boundaryRooms,
       transitionRules: totalTransitionRules,
       npcPreferences: this.npcPreferences.size,
-      zonesByBiome
+      zonesByBiome,
     };
   }
 
@@ -310,11 +320,11 @@ export class ZoneAwarenessProvider {
   // Private helper methods
 
   private checkIntraZoneMovement(
-    npcId: string, 
-    npcType: string, 
-    fromRoom: string, 
-    toRoom: string, 
-    zoneId: string
+    npcId: string,
+    npcType: string,
+    fromRoom: string,
+    toRoom: string,
+    zoneId: string,
   ): { allowed: boolean; reason?: string; alternative?: string[] } {
     const zone = this.zones.get(zoneId);
     if (!zone) {
@@ -323,20 +333,20 @@ export class ZoneAwarenessProvider {
 
     // Check if NPC type is allowed in this zone
     if (!this.isNPCTypeAllowedInZone(npcType, zoneId)) {
-      return { 
-        allowed: false, 
+      return {
+        allowed: false,
         reason: `NPC type ${npcType} not allowed in zone ${zone.zoneName}`,
-        alternative: this.findAlternativeZones(npcType, zoneId)
+        alternative: this.findAlternativeZones(npcType, zoneId),
       };
     }
 
     // Check NPC preferences
     const preferences = this.npcPreferences.get(npcId);
     if (preferences && preferences.cannotEnterZones.includes(zoneId)) {
-      return { 
-        allowed: false, 
+      return {
+        allowed: false,
         reason: `NPC ${npcId} cannot enter zone ${zone.zoneName}`,
-        alternative: this.findPreferredRoomsNearby(npcId, fromRoom)
+        alternative: this.findPreferredRoomsNearby(npcId, fromRoom),
       };
     }
 
@@ -344,43 +354,43 @@ export class ZoneAwarenessProvider {
   }
 
   private checkCrossZoneMovement(
-    npcId: string, 
-    npcType: string, 
-    fromRoom: string, 
-    toRoom: string, 
-    fromZone: string, 
-    toZone: string
+    npcId: string,
+    npcType: string,
+    fromRoom: string,
+    toRoom: string,
+    fromZone: string,
+    toZone: string,
   ): { allowed: boolean; reason?: string; alternative?: string[] } {
     // Check if transition rule exists
     const rules = this.transitionRules.get(fromZone) || [];
-    const applicableRule = rules.find(rule => 
-      rule.toZone === toZone && rule.allowedNPCTypes.includes(npcType)
+    const applicableRule = rules.find(
+      (rule) => rule.toZone === toZone && rule.allowedNPCTypes.includes(npcType),
     );
 
     if (rules.length > 0 && !applicableRule) {
-      return { 
-        allowed: false, 
+      return {
+        allowed: false,
         reason: `No transition rule allows ${npcType} from ${fromZone} to ${toZone}`,
-        alternative: this.findAlternativeRoomsInZone(fromZone, toRoom)
+        alternative: this.findAlternativeRoomsInZone(fromZone, toRoom),
       };
     }
 
     // Check destination zone restrictions
     if (!this.isNPCTypeAllowedInZone(npcType, toZone)) {
-      return { 
-        allowed: false, 
+      return {
+        allowed: false,
         reason: `NPC type ${npcType} not allowed in destination zone`,
-        alternative: this.findAlternativeZones(npcType, toZone)
+        alternative: this.findAlternativeZones(npcType, toZone),
       };
     }
 
     // Check NPC preferences for destination zone
     const preferences = this.npcPreferences.get(npcId);
     if (preferences && preferences.cannotEnterZones.includes(toZone)) {
-      return { 
-        allowed: false, 
+      return {
+        allowed: false,
         reason: `NPC ${npcId} cannot enter destination zone`,
-        alternative: this.findPreferredRoomsNearby(npcId, fromRoom)
+        alternative: this.findPreferredRoomsNearby(npcId, fromRoom),
       };
     }
 
@@ -409,13 +419,17 @@ export class ZoneAwarenessProvider {
 
   private findPreferredRoomsNearby(npcId: string, fromRoom: string): string[] {
     const preferences = this.npcPreferences.get(npcId);
-    if (!preferences) return [];
+    if (!preferences) {
+      return [];
+    }
 
     const nearbyRooms: string[] = [];
     for (const [roomId, mapping] of this.roomZoneMappings.entries()) {
-      if (roomId !== fromRoom && 
-          preferences.preferredZones.includes(mapping.zoneId) &&
-          !preferences.cannotEnterZones.includes(mapping.zoneId)) {
+      if (
+        roomId !== fromRoom &&
+        preferences.preferredZones.includes(mapping.zoneId) &&
+        !preferences.cannotEnterZones.includes(mapping.zoneId)
+      ) {
         nearbyRooms.push(roomId);
       }
     }
@@ -426,7 +440,9 @@ export class ZoneAwarenessProvider {
 // Global instance management
 let globalZoneAwareness: ZoneAwarenessProvider | null = null;
 
-export function getZoneAwarenessProvider(config?: Partial<ZoneAwarenessConfig>): ZoneAwarenessProvider {
+export function getZoneAwarenessProvider(
+  config?: Partial<ZoneAwarenessConfig>,
+): ZoneAwarenessProvider {
   if (!globalZoneAwareness) {
     globalZoneAwareness = new ZoneAwarenessProvider(config);
   }
@@ -448,26 +464,28 @@ export interface ZoneSetupConfig {
 
 export function setupZoneAwareness(setupConfig: ZoneSetupConfig): void {
   const provider = getZoneAwarenessProvider(setupConfig.config);
-  
+
   provider.initialize();
 
   // Register zones
-  setupConfig.zones.forEach(zone => provider.registerZone(zone));
+  setupConfig.zones.forEach((zone) => provider.registerZone(zone));
 
   // Map rooms to zones
-  setupConfig.roomMappings.forEach(mapping => provider.mapRoomToZone(mapping));
+  setupConfig.roomMappings.forEach((mapping) => provider.mapRoomToZone(mapping));
 
   // Add transition rules
   if (setupConfig.transitionRules) {
-    setupConfig.transitionRules.forEach(rule => provider.addTransitionRule(rule));
+    setupConfig.transitionRules.forEach((rule) => provider.addTransitionRule(rule));
   }
 
   // Set NPC preferences
   if (setupConfig.npcPreferences) {
-    setupConfig.npcPreferences.forEach(pref => provider.setNPCZonePreference(pref));
+    setupConfig.npcPreferences.forEach((pref) => provider.setNPCZonePreference(pref));
   }
 
-  console.log(`[ZoneAwareness] Set up zone awareness with ${setupConfig.zones.length} zones and ${setupConfig.roomMappings.length} room mappings`);
+  console.log(
+    `[ZoneAwareness] Set up zone awareness with ${setupConfig.zones.length} zones and ${setupConfig.roomMappings.length} room mappings`,
+  );
 }
 
 export function shutdownZoneAwareness(): void {

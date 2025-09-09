@@ -11,7 +11,7 @@ import React from 'react';
  */
 export const useStableCallback = <T extends (...args: any[]) => any>(
   callback: T,
-  deps: React.DependencyList
+  deps: React.DependencyList,
 ): T => {
   return React.useCallback(callback, deps);
 };
@@ -19,10 +19,7 @@ export const useStableCallback = <T extends (...args: any[]) => any>(
 /**
  * Memoizes expensive computations
  */
-export const useStableMemo = <T>(
-  factory: () => T,
-  deps: React.DependencyList
-): T => {
+export const useStableMemo = <T>(factory: () => T, deps: React.DependencyList): T => {
   return React.useMemo(factory, deps);
 };
 
@@ -31,7 +28,7 @@ export const useStableMemo = <T>(
  */
 export const useStableProps = <T extends Record<string, any>>(
   props: T,
-  deps: React.DependencyList
+  deps: React.DependencyList,
 ): T => {
   return React.useMemo(() => props, deps);
 };
@@ -41,7 +38,7 @@ export const useStableProps = <T extends Record<string, any>>(
  */
 export const withMemo = <P extends object>(
   Component: React.ComponentType<P>,
-  propsAreEqual?: (prevProps: P, nextProps: P) => boolean
+  propsAreEqual?: (prevProps: P, nextProps: P) => boolean,
 ) => {
   return React.memo(Component, propsAreEqual);
 };
@@ -51,7 +48,7 @@ export const withMemo = <P extends object>(
  */
 export const useStableObject = <T extends Record<string, any>>(
   obj: T,
-  deps: React.DependencyList
+  deps: React.DependencyList,
 ): T => {
   return React.useMemo(() => obj, deps);
 };
@@ -81,10 +78,10 @@ export const useDebouncedValue = <T>(value: T, delay: number): T => {
 export const useThrottledCallback = <T extends (...args: unknown[]) => unknown>(
   callback: T,
   delay: number,
-  deps: React.DependencyList
+  deps: React.DependencyList,
 ): T => {
   const lastCall = React.useRef<number>(0);
-  
+
   return React.useCallback(
     ((...args: Parameters<T>) => {
       const now = Date.now();
@@ -93,6 +90,6 @@ export const useThrottledCallback = <T extends (...args: unknown[]) => unknown>(
         return callback(...args);
       }
     }) as T,
-    [callback, delay, ...deps]
+    [callback, delay, ...deps],
   );
 };

@@ -41,7 +41,7 @@ export function appendToNPCConsole(npcName: string, message: string): void {
   if (globalDispatch) {
     globalDispatch({
       type: 'ADD_CONSOLE_LINE',
-      payload: `${npcName}: ${message}`
+      payload: `${npcName}: ${message}`,
     });
   } else {
     console.warn('NPC Console dispatch not available:', npcName, message);

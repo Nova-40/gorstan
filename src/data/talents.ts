@@ -29,7 +29,7 @@ export interface Talent {
 /** Talent tree configuration */
 export const TALENT_TREE: Record<string, Talent> = {
   // Combat talents
-  'combat_basics': {
+  combat_basics: {
     id: 'combat_basics',
     name: 'Combat Training',
     description: 'Basic combat proficiency. +10% damage, +5 stamina.',
@@ -37,30 +37,30 @@ export const TALENT_TREE: Record<string, Talent> = {
     cost: 1,
     statBonuses: {
       power: 0.1,
-      stamina: 5
-    }
+      stamina: 5,
+    },
   },
 
-  'parry_mastery': {
+  parry_mastery: {
     id: 'parry_mastery',
     name: 'Parry Mastery',
     description: 'Extended parry window and reduced stamina cost.',
     prerequisites: ['combat_basics'],
     cost: 2,
-    effects: ['extended_parry', 'efficient_parry']
+    effects: ['extended_parry', 'efficient_parry'],
   },
 
-  'riposte_expert': {
+  riposte_expert: {
     id: 'riposte_expert',
     name: 'Riposte Expert',
     description: 'Riposte attacks deal +50% damage and have extended window.',
     prerequisites: ['parry_mastery'],
     cost: 3,
-    effects: ['enhanced_riposte']
+    effects: ['enhanced_riposte'],
   },
 
   // Magic talents
-  'arcane_initiate': {
+  arcane_initiate: {
     id: 'arcane_initiate',
     name: 'Arcane Initiate',
     description: 'Basic magical training. +20 focus, +10% spell damage.',
@@ -68,73 +68,73 @@ export const TALENT_TREE: Record<string, Talent> = {
     cost: 1,
     statBonuses: {
       focus: 20,
-      power: 0.1
-    }
+      power: 0.1,
+    },
   },
 
-  'elemental_affinity': {
+  elemental_affinity: {
     id: 'elemental_affinity',
     name: 'Elemental Affinity',
     description: 'Reduced focus costs and improved elemental effects.',
     prerequisites: ['arcane_initiate'],
     cost: 2,
-    effects: ['efficient_casting', 'enhanced_elements']
+    effects: ['efficient_casting', 'enhanced_elements'],
   },
 
-  'chain_lightning_unlock': {
+  chain_lightning_unlock: {
     id: 'chain_lightning_unlock',
     name: 'Chain Lightning',
     description: 'Unlock the devastating Chain Lightning spell.',
     prerequisites: ['elemental_affinity'],
     cost: 3,
-    spellUnlocks: ['ChainLightning']
+    spellUnlocks: ['ChainLightning'],
   },
 
-  'blink_unlock': {
+  blink_unlock: {
     id: 'blink_unlock',
     name: 'Spatial Magic',
     description: 'Unlock Blink teleportation spell.',
     prerequisites: ['arcane_initiate'],
     cost: 2,
-    spellUnlocks: ['Blink']
+    spellUnlocks: ['Blink'],
   },
 
-  'ward_unlock': {
+  ward_unlock: {
     id: 'ward_unlock',
     name: 'Protective Magic',
     description: 'Unlock Ward defensive spell.',
     prerequisites: ['arcane_initiate'],
     cost: 2,
-    spellUnlocks: ['Ward']
+    spellUnlocks: ['Ward'],
   },
 
-  'time_dilation_unlock': {
+  time_dilation_unlock: {
     id: 'time_dilation_unlock',
     name: 'Temporal Magic',
     description: 'Unlock Time Dilation spell for slow-motion effects.',
     prerequisites: ['elemental_affinity'],
     cost: 4,
-    spellUnlocks: ['TimeDilation']
+    spellUnlocks: ['TimeDilation'],
   },
 
   // Hybrid talents
-  'battle_mage': {
+  battle_mage: {
     id: 'battle_mage',
     name: 'Battle Mage',
     description: 'Melee attacks restore focus. Spells reduce in-combat stamina costs.',
     prerequisites: ['combat_basics', 'arcane_initiate'],
     cost: 3,
-    effects: ['melee_focus_restore', 'combat_casting']
+    effects: ['melee_focus_restore', 'combat_casting'],
   },
 
-  'elemental_weapon': {
+  elemental_weapon: {
     id: 'elemental_weapon',
     name: 'Elemental Weapon',
     description: 'Weapon attacks apply elemental effects based on last spell cast.',
     prerequisites: ['battle_mage'],
     cost: 4,
-    effects: ['weapon_enchant']
-  }
+    effects: ['weapon_enchant'],
+  },
 };
 
 /** Character progression state */
@@ -152,9 +152,7 @@ export interface ProgressionState {
 }
 
 /** Experience thresholds for level progression */
-export const EXP_THRESHOLDS = [
-  0, 100, 250, 450, 700, 1000, 1350, 1750, 2200, 2700, 3250
-];
+export const EXP_THRESHOLDS = [0, 100, 250, 450, 700, 1000, 1350, 1750, 2200, 2700, 3250];
 
 /** Calculate current level from experience */
 export function getLevel(experience: number): number {
@@ -172,23 +170,28 @@ export function getTalentPoints(level: number): number {
 }
 
 /** Check if talent can be unlocked */
-export function canUnlockTalent(
-  talentId: string,
-  progression: ProgressionState
-): boolean {
+export function canUnlockTalent(talentId: string, progression: ProgressionState): boolean {
   const talent = TALENT_TREE[talentId];
-  if (!talent) return false;
-  
+  if (!talent) {
+    return false;
+  }
+
   // Already unlocked
-  if (progression.unlockedTalents.has(talentId)) return false;
-  
+  if (progression.unlockedTalents.has(talentId)) {
+    return false;
+  }
+
   // Not enough talent points
-  if (progression.talentPoints < talent.cost) return false;
-  
+  if (progression.talentPoints < talent.cost) {
+    return false;
+  }
+
   // Prerequisites not met
   for (const prereq of talent.prerequisites) {
-    if (!progression.unlockedTalents.has(prereq)) return false;
+    if (!progression.unlockedTalents.has(prereq)) {
+      return false;
+    }
   }
-  
+
   return true;
 }

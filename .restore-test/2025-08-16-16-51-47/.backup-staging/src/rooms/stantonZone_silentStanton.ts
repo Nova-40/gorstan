@@ -19,14 +19,6 @@
 
 import { Room } from '../types/Room';
 
-
-
-
-
-
-
-
-
 export const silentStanton: Room = {
   image: 'stantonZone_silentStanton.png',
   description: [
@@ -55,25 +47,20 @@ export const silentStanton: Room = {
     west: 'ascendantStanton',
   },
 
-  items: [
-    'mist_shard',
-    'bell_fragment',
-    'cobblestone_piece',
-    'ancient_scroll',
-  ],
+  items: ['mist_shard', 'bell_fragment', 'cobblestone_piece', 'ancient_scroll'],
 
   interactables: {
-    'bell_tower': {
+    bell_tower: {
       description: 'A solitary bell tower barely visible through the fog.',
       actions: ['examine', 'ring', 'climb'],
       requires: [],
     },
-    'mist': {
+    mist: {
       description: 'A thick mist that hangs in the air, obscuring vision and muffling sound.',
       actions: ['examine', 'walk', 'collect'],
       requires: [],
     },
-    'dark_cottages': {
+    dark_cottages: {
       description: 'Darkened cottages with empty windows, adding to the eerie silence.',
       actions: ['examine', 'enter', 'knock'],
       requires: [],
@@ -84,5 +71,3 @@ export const silentStanton: Room = {
 };
 
 export default silentStanton;
-
-

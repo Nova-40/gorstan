@@ -17,17 +17,7 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Renders room descriptions and image logic.
 
-import { NPC } from '../types/NPCTypes';
-
 import { Room } from '../types/Room';
-
-
-
-
-
-
-
-
 
 const glitchinguniverse: Room = {
   id: 'glitchinguniverse',
@@ -57,37 +47,33 @@ const glitchinguniverse: Room = {
     east: 'issuesdetected',
     west: 'failure',
     // Hidden exit - only accessible via special interaction
-    secret: 'ravenchamber'
+    secret: 'ravenchamber',
   },
 
-  items: [
-    'fragmented_memory',
-    'glitch_crystal',
-    'unstable_code_shard',
-    'echo_of_home',
-  ],
+  items: ['fragmented_memory', 'glitch_crystal', 'unstable_code_shard', 'echo_of_home'],
 
   interactables: {
-    'vortex': {
-      description: 'A swirling vortex of corrupted data and broken reality. It pulses with dangerous energy, but might be a way out.',
+    vortex: {
+      description:
+        'A swirling vortex of corrupted data and broken reality. It pulses with dangerous energy, but might be a way out.',
       actions: ['examine', 'approach', 'enter', 'throw_item'],
       requires: [],
     },
-    'glitch_field': {
-      description: 'A shimmering patch of air where reality seems especially thin. Objects and sounds distort unpredictably here.',
+    glitch_field: {
+      description:
+        'A shimmering patch of air where reality seems especially thin. Objects and sounds distort unpredictably here.',
       actions: ['examine', 'touch', 'analyze'],
       requires: [],
     },
-    'echoes': {
-      description: 'Flickering images of people and places from other realities. They seem almost real, but vanish if you get too close.',
+    echoes: {
+      description:
+        'Flickering images of people and places from other realities. They seem almost real, but vanish if you get too close.',
       actions: ['observe', 'listen', 'interact'],
       requires: [],
     },
   },
 
-  npcs: [
-    
-  ],
+  npcs: [],
 
   events: {
     onEnter: ['triggerGlitchEffects', 'showCoreWarning'],
@@ -120,12 +106,7 @@ const glitchinguniverse: Room = {
     lighting: 'erratic_strobing',
     temperature: 'fluctuating',
     airQuality: 'charged_with_static',
-    soundscape: [
-      'digital_static',
-      'fragmented_voices',
-      'glitch_pulses',
-      'echoing_alarms',
-    ],
+    soundscape: ['digital_static', 'fragmented_voices', 'glitch_pulses', 'echoing_alarms'],
     hazards: ['reality_instability', 'memory_loss', 'code_corruption'],
   },
 
@@ -154,7 +135,8 @@ const glitchinguniverse: Room = {
 
   secrets: {
     hidden_exit: {
-      description: 'A hidden, stable exit that only appears if you resist the echoes and analyze the glitch field.',
+      description:
+        'A hidden, stable exit that only appears if you resist the echoes and analyze the glitch field.',
       requirements: ['analyze glitch_field', 'resist echoes'],
       rewards: ['safe_exit', 'bonus_lore'],
     },
@@ -166,12 +148,12 @@ const glitchinguniverse: Room = {
   },
 
   customActions: {
-    'stabilize_reality': {
+    stabilize_reality: {
       description: 'Attempt to stabilize a small area of the glitching universe.',
       requirements: ['glitch_crystal', 'unstable_code_shard'],
       effects: ['temporary_safety', 'reduce_hazards'],
     },
-    'merge_echoes': {
+    merge_echoes: {
       description: 'Try to merge two echoes to reveal a hidden truth.',
       requirements: ['observe echoes', 'interact echoes'],
       effects: ['reveal_hidden_memory', 'risk_backlash'],
@@ -180,31 +162,35 @@ const glitchinguniverse: Room = {
 
   // Special access to R.A.V.E.N. Chamber
   customCommands: {
-    'declassify': {
+    declassify: {
       description: 'Attempt to access classified systems',
       handler: (gameState: any) => {
         return {
-          messages: [{
-            id: `declassify-access-${Date.now()}`,
-            text: '🔓 A hidden passage shimmers into existence. You sense classified data beyond...',
-            type: 'system',
-            timestamp: Date.now()
-          }],
-          updates: { 
-            flags: { ravenChamberAccessible: true } 
-          }
+          messages: [
+            {
+              id: `declassify-access-${Date.now()}`,
+              text: '🔓 A hidden passage shimmers into existence. You sense classified data beyond...',
+              type: 'system',
+              timestamp: Date.now(),
+            },
+          ],
+          updates: {
+            flags: { ravenChamberAccessible: true },
+          },
         };
-      }
+      },
     },
     'walk backwards': {
       description: 'Walk backwards into a glitch wall',
       handler: (gameState: any) => {
-        const messages = [{
-          id: `walk-backwards-${Date.now()}`,
-          text: '🌀 You step backwards into what appears to be solid static. The world distorts around you...',
-          type: 'narrative',
-          timestamp: Date.now()
-        }];
+        const messages = [
+          {
+            id: `walk-backwards-${Date.now()}`,
+            text: '🌀 You step backwards into what appears to be solid static. The world distorts around you...',
+            type: 'narrative',
+            timestamp: Date.now(),
+          },
+        ];
 
         // 50% chance of accessing the chamber
         if (Math.random() > 0.5) {
@@ -212,125 +198,133 @@ const glitchinguniverse: Room = {
             id: `secret-passage-${Date.now()}`,
             text: '🚪 The static parts like a curtain, revealing a narrow passage to a hidden chamber.',
             type: 'system',
-            timestamp: Date.now()
+            timestamp: Date.now(),
           });
           return {
             messages,
-            updates: { 
+            updates: {
               currentRoomId: 'ravenchamber',
-              flags: { foundSecretPassage: true }
-            }
+              flags: { foundSecretPassage: true },
+            },
           };
         } else {
           messages.push({
             id: `glitch-bounce-${Date.now()}`,
             text: '⚡ The glitch wall repels you with a shower of sparks. Try again?',
             type: 'error',
-            timestamp: Date.now()
+            timestamp: Date.now(),
           });
           return { messages };
         }
-      }
+      },
     },
     'interact glitch wall': {
       description: 'Interact with the glitching walls',
       handler: (gameState: any) => {
         const interactionCount = (gameState.flags?.glitchWallInteractions || 0) + 1;
-        
+
         if (interactionCount >= 3) {
           return {
-            messages: [{
-              id: `wall-access-${Date.now()}`,
-              text: '🔥 The wall flickers and reveals a passage! You see a chamber beyond filled with ancient consoles.',
-              type: 'system',
-              timestamp: Date.now()
-            }],
-            updates: { 
+            messages: [
+              {
+                id: `wall-access-${Date.now()}`,
+                text: '🔥 The wall flickers and reveals a passage! You see a chamber beyond filled with ancient consoles.',
+                type: 'system',
+                timestamp: Date.now(),
+              },
+            ],
+            updates: {
               currentRoomId: 'ravenchamber',
-              flags: { 
+              flags: {
                 glitchWallInteractions: 0,
-                persistentGlitchAccess: true 
-              }
-            }
+                persistentGlitchAccess: true,
+              },
+            },
           };
         } else {
           return {
-            messages: [{
-              id: `wall-interaction-${Date.now()}`,
-              text: `📡 The wall flickers briefly... (${interactionCount}/3 interactions)`,
-              type: 'system',
-              timestamp: Date.now()
-            }],
-            updates: { 
-              flags: { glitchWallInteractions: interactionCount }
-            }
+            messages: [
+              {
+                id: `wall-interaction-${Date.now()}`,
+                text: `📡 The wall flickers briefly... (${interactionCount}/3 interactions)`,
+                type: 'system',
+                timestamp: Date.now(),
+              },
+            ],
+            updates: {
+              flags: { glitchWallInteractions: interactionCount },
+            },
           };
         }
-      }
+      },
     },
     'seek classified data': {
       description: 'Search for hidden classified information',
       handler: (gameState: any) => {
         return {
-          messages: [{
-            id: `secret-access-${Date.now()}`,
-            text: '🔍 You sense a hidden pathway opening in the digital static...',
-            type: 'system',
-            timestamp: Date.now()
-          }],
-          updates: { 
+          messages: [
+            {
+              id: `secret-access-${Date.now()}`,
+              text: '🔍 You sense a hidden pathway opening in the digital static...',
+              type: 'system',
+              timestamp: Date.now(),
+            },
+          ],
+          updates: {
             flags: { secretPathRevealed: true },
-            rooms: { 
+            rooms: {
               current: 'glitchZone_ravenchamber',
-              previous: 'glitchZone_glitchinguniverse'
-            }
-          }
+              previous: 'glitchZone_glitchinguniverse',
+            },
+          },
         };
-      }
+      },
     },
     'follow data trail': {
       description: 'Follow traces of classified data',
       handler: (gameState: any) => {
         return {
-          messages: [{
-            id: `data-trail-${Date.now()}`,
-            text: '📡 Data fragments lead you through a concealed passage...',
-            type: 'system',
-            timestamp: Date.now()
-          }],
-          updates: { 
+          messages: [
+            {
+              id: `data-trail-${Date.now()}`,
+              text: '📡 Data fragments lead you through a concealed passage...',
+              type: 'system',
+              timestamp: Date.now(),
+            },
+          ],
+          updates: {
             flags: { secretPathRevealed: true },
-            rooms: { 
+            rooms: {
               current: 'glitchZone_ravenchamber',
-              previous: 'glitchZone_glitchinguniverse'
-            }
-          }
+              previous: 'glitchZone_glitchinguniverse',
+            },
+          },
         };
-      }
+      },
     },
     'access restricted archives': {
       description: 'Attempt to access restricted system archives',
       handler: (gameState: any) => {
         return {
-          messages: [{
-            id: `archive-access-${Date.now()}`,
-            text: '🔐 Security protocols lead to an encrypted chamber...',
-            type: 'system',
-            timestamp: Date.now()
-          }],
-          updates: { 
+          messages: [
+            {
+              id: `archive-access-${Date.now()}`,
+              text: '🔐 Security protocols lead to an encrypted chamber...',
+              type: 'system',
+              timestamp: Date.now(),
+            },
+          ],
+          updates: {
             flags: { secretPathRevealed: true },
-            rooms: { 
+            rooms: {
               current: 'glitchZone_ravenchamber',
-              previous: 'glitchZone_glitchinguniverse'
-            }
-          }
+              previous: 'glitchZone_glitchinguniverse',
+            },
+          },
         };
-      }
-    }
-  }
+      },
+    },
+  },
 };
 
 export default glitchinguniverse;
-
-

@@ -17,7 +17,7 @@ const ArtifactLoreViewer: React.FC<ArtifactLoreViewerProps> = ({
   loreEntry,
   onClose,
   onUnlockReward,
-  className = ''
+  className = '',
 }) => {
   const [isReading, setIsReading] = useState(false);
   const [readingProgress, setReadingProgress] = useState(0);
@@ -27,10 +27,10 @@ const ArtifactLoreViewer: React.FC<ArtifactLoreViewerProps> = ({
     if (isReading) {
       const words = loreEntry.content.split(' ').length;
       const readingTime = Math.max(10000, words * 200); // Minimum 10 seconds, ~200ms per word
-      
+
       const progressInterval = setInterval(() => {
-        setReadingProgress(prev => {
-          const next = prev + (100 / (readingTime / 100));
+        setReadingProgress((prev) => {
+          const next = prev + 100 / (readingTime / 100);
           if (next >= 100) {
             clearInterval(progressInterval);
             setTimeout(() => {
@@ -73,24 +73,37 @@ const ArtifactLoreViewer: React.FC<ArtifactLoreViewerProps> = ({
 
   const getArcIcon = () => {
     switch (loreEntry.arc) {
-      case 'origin': return '🌟';
-      case 'discovery': return '🔍';
-      case 'mastery': return '⚡';
-      case 'awakening': return '👁️';
-      case 'evolution': return '🦋';
-      case 'legacy': return '📜';
-      case 'synthesis': return '🔮';
-      default: return '📖';
+      case 'origin':
+        return '🌟';
+      case 'discovery':
+        return '🔍';
+      case 'mastery':
+        return '⚡';
+      case 'awakening':
+        return '👁️';
+      case 'evolution':
+        return '🦋';
+      case 'legacy':
+        return '📜';
+      case 'synthesis':
+        return '🔮';
+      default:
+        return '📖';
     }
   };
 
   const getSignificanceColor = () => {
     switch (loreEntry.metadata.significance) {
-      case 'critical': return 'text-red-400';
-      case 'high': return 'text-orange-400';
-      case 'medium': return 'text-yellow-400';
-      case 'low': return 'text-green-400';
-      default: return 'text-gray-400';
+      case 'critical':
+        return 'text-red-400';
+      case 'high':
+        return 'text-orange-400';
+      case 'medium':
+        return 'text-yellow-400';
+      case 'low':
+        return 'text-green-400';
+      default:
+        return 'text-gray-400';
     }
   };
 
@@ -103,8 +116,12 @@ const ArtifactLoreViewer: React.FC<ArtifactLoreViewerProps> = ({
   };
 
   return (
-    <div className={`fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 ${className}`}>
-      <div className={`max-w-4xl max-h-[90vh] overflow-hidden rounded-lg border-2 ${getStyleClasses()}`}>
+    <div
+      className={`fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 ${className}`}
+    >
+      <div
+        className={`max-w-4xl max-h-[90vh] overflow-hidden rounded-lg border-2 ${getStyleClasses()}`}
+      >
         {/* Header */}
         <div className="p-6 border-b border-opacity-50">
           <div className="flex items-center justify-between mb-4">
@@ -112,25 +129,20 @@ const ArtifactLoreViewer: React.FC<ArtifactLoreViewerProps> = ({
               <span className="text-2xl">{getArcIcon()}</span>
               <h2 className="text-2xl font-bold">{loreEntry.title}</h2>
             </div>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-white transition-colors"
-            >
+            <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
               ✕
             </button>
           </div>
-          
+
           <div className="flex items-center space-x-6 text-sm opacity-75">
             <div>
-              <span className="capitalize">{loreEntry.arc}</span> • 
+              <span className="capitalize">{loreEntry.arc}</span> •
               <span className="capitalize ml-1">{loreEntry.style}</span>
             </div>
             <div className={`font-medium ${getSignificanceColor()}`}>
               {loreEntry.metadata.significance.toUpperCase()}
             </div>
-            {loreEntry.metadata.author && (
-              <div>by {loreEntry.metadata.author}</div>
-            )}
+            {loreEntry.metadata.author && <div>by {loreEntry.metadata.author}</div>}
           </div>
         </div>
 
@@ -156,7 +168,7 @@ const ArtifactLoreViewer: React.FC<ArtifactLoreViewerProps> = ({
                   <span>{Math.round(readingProgress)}%</span>
                 </div>
                 <div className="w-full bg-gray-700 rounded-full h-2">
-                  <div 
+                  <div
                     className="bg-blue-500 h-2 rounded-full transition-all duration-100"
                     style={{ width: `${readingProgress}%` }}
                   />
@@ -187,7 +199,8 @@ const ArtifactLoreViewer: React.FC<ArtifactLoreViewerProps> = ({
               )}
               {loreEntry.metadata.discoveryMethod && (
                 <div>
-                  <span className="font-medium">Discovery Method:</span> {loreEntry.metadata.discoveryMethod}
+                  <span className="font-medium">Discovery Method:</span>{' '}
+                  {loreEntry.metadata.discoveryMethod}
                 </div>
               )}
             </div>

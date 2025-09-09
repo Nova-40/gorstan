@@ -18,19 +18,24 @@
 // Control Room encounter orchestrator using alliance memory
 // Step 6: Control Room Encounter Orchestrator
 
-import { getAllianceMemory, AllianceRelationship, RecalledMemory, MemoryTrigger } from './allianceMemory';
+import {
+  getAllianceMemory,
+  AllianceRelationship,
+  RecalledMemory,
+  MemoryTrigger,
+} from './allianceMemory';
 import { getGameState } from '../state/gameState';
 
 /**
  * Types of Control Room encounters that can occur
  */
-export type EncounterType = 
-  | 'first-meeting'     // First time both NPCs meet in control room
-  | 'reunion'           // Meeting again after previous alliance
-  | 'confrontation'     // Meeting after betrayal or conflict
-  | 'reconciliation'    // Attempting to make amends
-  | 'mutual-recognition'// Both remember past cooperation
-  | 'wary-alliance'     // Cautious cooperation despite past issues
+export type EncounterType =
+  | 'first-meeting' // First time both NPCs meet in control room
+  | 'reunion' // Meeting again after previous alliance
+  | 'confrontation' // Meeting after betrayal or conflict
+  | 'reconciliation' // Attempting to make amends
+  | 'mutual-recognition' // Both remember past cooperation
+  | 'wary-alliance' // Cautious cooperation despite past issues
   | 'trusted-partnership'; // Strong alliance based on history
 
 /**
@@ -62,7 +67,13 @@ export interface ControlRoomEncounter {
  * Possible outcomes from an encounter
  */
 export interface EncounterOutcome {
-  type: 'alliance-formed' | 'alliance-broken' | 'trust-increased' | 'trust-decreased' | 'new-memory' | 'flag-set';
+  type:
+    | 'alliance-formed'
+    | 'alliance-broken'
+    | 'trust-increased'
+    | 'trust-decreased'
+    | 'new-memory'
+    | 'flag-set';
   description: string;
   gameStateChanges?: Record<string, any>;
   memoryToRecord?: {
@@ -94,7 +105,7 @@ export interface ControlRoomConfig {
   memoryRecallThreshold: number;
   maxDialogueLines: number;
   enableEmergentBehavior: boolean; // Allow NPCs to create new dynamics
-  respectPlayerPresence: boolean;  // Change behavior when player is watching
+  respectPlayerPresence: boolean; // Change behavior when player is watching
 }
 
 // Default configuration
@@ -102,7 +113,7 @@ const DEFAULT_CONTROL_ROOM_CONFIG: ControlRoomConfig = {
   memoryRecallThreshold: 0.4,
   maxDialogueLines: 8,
   enableEmergentBehavior: true,
-  respectPlayerPresence: true
+  respectPlayerPresence: true,
 };
 
 /**
@@ -111,7 +122,7 @@ const DEFAULT_CONTROL_ROOM_CONFIG: ControlRoomConfig = {
 export class ControlRoomEncounterOrchestrator {
   private config: ControlRoomConfig;
   private encounterHistory: ControlRoomEncounter[] = [];
-  
+
   constructor(config?: Partial<ControlRoomConfig>) {
     this.config = { ...DEFAULT_CONTROL_ROOM_CONFIG, ...config };
   }
@@ -121,24 +132,26 @@ export class ControlRoomEncounterOrchestrator {
    */
   generateEncounter(context: ControlRoomContext): ControlRoomEncounter | null {
     const allianceMemory = getAllianceMemory();
-    
+
     // Get relationship between Morthos and Al
     const relationship = allianceMemory.getRelationship('morthos', 'al');
-    
+
     // Recall relevant memories for this context
     const memories = this.recallRelevantMemories(context);
-    
+
     // Determine encounter type based on relationship and memories
     const encounterType = this.determineEncounterType(relationship, memories, context);
-    
+
     // Generate the encounter
     const encounter = this.createEncounter(encounterType, relationship, memories, context);
-    
+
     if (encounter) {
       this.encounterHistory.push(encounter);
-      console.log(`[ControlRoom] Generated ${encounterType} encounter with ${encounter.dialogue.length} dialogue lines`);
+      console.log(
+        `[ControlRoom] Generated ${encounterType} encounter with ${encounter.dialogue.length} dialogue lines`,
+      );
     }
-    
+
     return encounter;
   }
 
@@ -147,12 +160,12 @@ export class ControlRoomEncounterOrchestrator {
    */
   private recallRelevantMemories(context: ControlRoomContext): RecalledMemory[] {
     const allianceMemory = getAllianceMemory();
-    
+
     const triggers: MemoryTrigger[] = [
       { condition: 'location', value: 'control-room', threshold: 0.5 },
       { condition: 'location', value: 'control-nexus', threshold: 0.4 },
       { condition: 'keyword', value: 'terminal', threshold: 0.3 },
-      { condition: 'keyword', value: 'data', threshold: 0.3 }
+      { condition: 'keyword', value: 'data', threshold: 0.3 },
     ];
 
     // Add player action triggers if player is present
@@ -163,27 +176,36 @@ export class ControlRoomEncounterOrchestrator {
     }
 
     // Get memories for Morthos
-    const morthosMemories = allianceMemory.recallMemories('morthos', {
-      location: 'control-room',
-      gamePhase: context.gamePhase,
-      playerActions: context.playerActions
-    }, triggers);
+    const morthosMemories = allianceMemory.recallMemories(
+      'morthos',
+      {
+        location: 'control-room',
+        gamePhase: context.gamePhase,
+        playerActions: context.playerActions,
+      },
+      triggers,
+    );
 
-    // Get memories for Al  
-    const alMemories = allianceMemory.recallMemories('al', {
-      location: 'control-room',
-      gamePhase: context.gamePhase,
-      playerActions: context.playerActions
-    }, triggers);
+    // Get memories for Al
+    const alMemories = allianceMemory.recallMemories(
+      'al',
+      {
+        location: 'control-room',
+        gamePhase: context.gamePhase,
+        playerActions: context.playerActions,
+      },
+      triggers,
+    );
 
     // Combine and deduplicate
     const allMemories = [...morthosMemories, ...alMemories];
-    const uniqueMemories = allMemories.filter((memory, index, self) => 
-      index === self.findIndex(m => m.sourceEvent.id === memory.sourceEvent.id)
+    const uniqueMemories = allMemories.filter(
+      (memory, index, self) =>
+        index === self.findIndex((m) => m.sourceEvent.id === memory.sourceEvent.id),
     );
 
-    return uniqueMemories.filter(memory => 
-      memory.relevanceScore >= this.config.memoryRecallThreshold
+    return uniqueMemories.filter(
+      (memory) => memory.relevanceScore >= this.config.memoryRecallThreshold,
     );
   }
 
@@ -193,7 +215,7 @@ export class ControlRoomEncounterOrchestrator {
   private determineEncounterType(
     relationship: AllianceRelationship | null,
     memories: RecalledMemory[],
-    _context: ControlRoomContext
+    _context: ControlRoomContext,
   ): EncounterType {
     // No previous relationship
     if (!relationship) {
@@ -203,43 +225,43 @@ export class ControlRoomEncounterOrchestrator {
     // Check trust level and recent interactions
     const trustLevel = relationship.overallTrustLevel;
     const recentInteraction = relationship.recentInteractionType;
-    
+
     // High trust relationships
     if (trustLevel > 0.7) {
       return 'trusted-partnership';
     }
-    
+
     // Moderate trust with positive trajectory
     if (trustLevel > 0.3 && relationship.relationshipTrajectory === 'improving') {
       return 'mutual-recognition';
     }
-    
+
     // Recent betrayal or conflict
     if (recentInteraction === 'betrayal' || recentInteraction === 'conflict') {
       // Check if there have been attempts at reconciliation
-      const hasReconciliation = memories.some(m => m.sourceEvent.type === 'reconciliation');
+      const hasReconciliation = memories.some((m) => m.sourceEvent.type === 'reconciliation');
       if (hasReconciliation) {
         return 'wary-alliance';
       } else {
         return 'confrontation';
       }
     }
-    
+
     // Declining relationship but not hostile
     if (trustLevel < 0 && trustLevel > -0.5) {
       return 'wary-alliance';
     }
-    
+
     // Very low trust
     if (trustLevel <= -0.5) {
       return 'confrontation';
     }
-    
+
     // Moderate positive relationship - reunion
     if (trustLevel > 0 && memories.length > 0) {
       return 'reunion';
     }
-    
+
     // Default to first meeting if no clear pattern
     return 'first-meeting';
   }
@@ -251,10 +273,10 @@ export class ControlRoomEncounterOrchestrator {
     type: EncounterType,
     relationship: AllianceRelationship | null,
     memories: RecalledMemory[],
-    context: ControlRoomContext
+    context: ControlRoomContext,
   ): ControlRoomEncounter {
     const encounterId = this.generateEncounterId();
-    
+
     const encounter: ControlRoomEncounter = {
       id: encounterId,
       type,
@@ -263,7 +285,7 @@ export class ControlRoomEncounterOrchestrator {
       participantRelationship: relationship,
       dialogue: [],
       outcomes: [],
-      trustImpact: 0
+      trustImpact: 0,
     };
 
     // Generate dialogue based on encounter type
@@ -300,31 +322,34 @@ export class ControlRoomEncounterOrchestrator {
   /**
    * Generate dialogue for first meeting
    */
-  private generateFirstMeetingDialogue(encounter: ControlRoomEncounter, context: ControlRoomContext): void {
+  private generateFirstMeetingDialogue(
+    encounter: ControlRoomEncounter,
+    context: ControlRoomContext,
+  ): void {
     encounter.dialogue = [
       {
         speaker: 'morthos',
         text: "Al? I didn't expect to find you here in the Control Room.",
-        emotionalTone: 'neutral'
+        emotionalTone: 'neutral',
       },
       {
         speaker: 'al',
-        text: "Morthos. I could say the same. The terminal access logs show unusual activity.",
-        emotionalTone: 'neutral'
-      }
+        text: 'Morthos. I could say the same. The terminal access logs show unusual activity.',
+        emotionalTone: 'neutral',
+      },
     ];
 
     if (context.playerPresent) {
       encounter.dialogue.push({
         speaker: 'morthos',
         text: "With our friend here, perhaps we can uncover what's been happening.",
-        emotionalTone: 'positive'
+        emotionalTone: 'positive',
       });
     } else {
       encounter.dialogue.push({
         speaker: 'al',
-        text: "We should be careful. Someone has been accessing restricted data.",
-        emotionalTone: 'neutral'
+        text: 'We should be careful. Someone has been accessing restricted data.',
+        emotionalTone: 'neutral',
       });
     }
 
@@ -334,21 +359,25 @@ export class ControlRoomEncounterOrchestrator {
   /**
    * Generate dialogue for reunion based on positive memories
    */
-  private generateReunionDialogue(encounter: ControlRoomEncounter, memories: RecalledMemory[], _context: ControlRoomContext): void {
+  private generateReunionDialogue(
+    encounter: ControlRoomEncounter,
+    memories: RecalledMemory[],
+    _context: ControlRoomContext,
+  ): void {
     const mostRelevantMemory = memories[0];
-    
+
     encounter.dialogue = [
       {
         speaker: 'al',
         text: `Morthos! It's good to see you again.`,
-        emotionalTone: 'positive'
+        emotionalTone: 'positive',
       },
       {
         speaker: 'morthos',
         text: `Likewise, Al. I've been thinking about our last collaboration.`,
         emotionalTone: 'positive',
-        references: mostRelevantMemory?.sourceEvent.id
-      }
+        references: mostRelevantMemory?.sourceEvent.id,
+      },
     ];
 
     if (mostRelevantMemory) {
@@ -358,8 +387,8 @@ export class ControlRoomEncounterOrchestrator {
 
     encounter.dialogue.push({
       speaker: 'al',
-      text: "Perhaps we can work together again here in the Control Room.",
-      emotionalTone: 'positive'
+      text: 'Perhaps we can work together again here in the Control Room.',
+      emotionalTone: 'positive',
     });
 
     encounter.trustImpact = 0.2;
@@ -368,20 +397,24 @@ export class ControlRoomEncounterOrchestrator {
   /**
    * Generate dialogue for confrontation based on negative memories
    */
-  private generateConfrontationDialogue(encounter: ControlRoomEncounter, memories: RecalledMemory[], context: ControlRoomContext): void {
-    const betrayalMemory = memories.find(m => m.sourceEvent.type === 'betrayal');
-    
+  private generateConfrontationDialogue(
+    encounter: ControlRoomEncounter,
+    memories: RecalledMemory[],
+    context: ControlRoomContext,
+  ): void {
+    const betrayalMemory = memories.find((m) => m.sourceEvent.type === 'betrayal');
+
     encounter.dialogue = [
       {
         speaker: 'morthos',
         text: "Al. I wasn't sure I'd see you again after what happened.",
-        emotionalTone: 'negative'
+        emotionalTone: 'negative',
       },
       {
         speaker: 'al',
-        text: "Morthos. I suppose we need to address the past before we can move forward.",
-        emotionalTone: 'mixed'
-      }
+        text: 'Morthos. I suppose we need to address the past before we can move forward.',
+        emotionalTone: 'mixed',
+      },
     ];
 
     if (betrayalMemory) {
@@ -389,21 +422,21 @@ export class ControlRoomEncounterOrchestrator {
         speaker: 'morthos',
         text: `I haven't forgotten what happened in ${betrayalMemory.sourceEvent.context.location}.`,
         emotionalTone: 'negative',
-        references: betrayalMemory.sourceEvent.id
+        references: betrayalMemory.sourceEvent.id,
       });
-      
+
       encounter.dialogue.push({
         speaker: 'al',
         text: "I had my reasons. But perhaps this isn't the time or place.",
-        emotionalTone: 'mixed'
+        emotionalTone: 'mixed',
       });
     }
 
     if (context.playerPresent) {
       encounter.dialogue.push({
         speaker: 'system',
-        text: "The tension in the room is palpable. Both NPCs seem wary of each other.",
-        emotionalTone: 'neutral'
+        text: 'The tension in the room is palpable. Both NPCs seem wary of each other.',
+        emotionalTone: 'neutral',
       });
     }
 
@@ -413,22 +446,26 @@ export class ControlRoomEncounterOrchestrator {
   /**
    * Generate dialogue for trusted partnership
    */
-  private generateTrustedPartnershipDialogue(encounter: ControlRoomEncounter, memories: RecalledMemory[], context: ControlRoomContext): void {
+  private generateTrustedPartnershipDialogue(
+    encounter: ControlRoomEncounter,
+    memories: RecalledMemory[],
+    context: ControlRoomContext,
+  ): void {
     encounter.dialogue = [
       {
         speaker: 'al',
-        text: "Morthos, my friend. Ready to tackle another challenge together?",
-        emotionalTone: 'positive'
+        text: 'Morthos, my friend. Ready to tackle another challenge together?',
+        emotionalTone: 'positive',
       },
       {
         speaker: 'morthos',
-        text: "Always, Al. Your technical expertise and my... unique perspective make a formidable team.",
-        emotionalTone: 'positive'
-      }
+        text: 'Always, Al. Your technical expertise and my... unique perspective make a formidable team.',
+        emotionalTone: 'positive',
+      },
     ];
 
-    const cooperationMemories = memories.filter(m => 
-      ['cooperation', 'mutual-support', 'rescue'].includes(m.sourceEvent.type)
+    const cooperationMemories = memories.filter((m) =>
+      ['cooperation', 'mutual-support', 'rescue'].includes(m.sourceEvent.type),
     );
 
     if (cooperationMemories.length > 0) {
@@ -436,15 +473,15 @@ export class ControlRoomEncounterOrchestrator {
         speaker: 'al',
         text: "We've overcome so much together. I trust your judgment completely.",
         emotionalTone: 'positive',
-        references: cooperationMemories[0].sourceEvent.id
+        references: cooperationMemories[0].sourceEvent.id,
       });
     }
 
     if (context.roomState.terminalActive) {
       encounter.dialogue.push({
         speaker: 'morthos',
-        text: "The terminal is active. Shall we see what secrets it holds?",
-        emotionalTone: 'positive'
+        text: 'The terminal is active. Shall we see what secrets it holds?',
+        emotionalTone: 'positive',
       });
     }
 
@@ -454,36 +491,40 @@ export class ControlRoomEncounterOrchestrator {
   /**
    * Generate dialogue for mutual recognition
    */
-  private generateMutualRecognitionDialogue(encounter: ControlRoomEncounter, memories: RecalledMemory[], _context: ControlRoomContext): void {
+  private generateMutualRecognitionDialogue(
+    encounter: ControlRoomEncounter,
+    memories: RecalledMemory[],
+    _context: ControlRoomContext,
+  ): void {
     encounter.dialogue = [
       {
         speaker: 'morthos',
         text: "Al, it's been a while. I remember our work together fondly.",
-        emotionalTone: 'positive'
+        emotionalTone: 'positive',
       },
       {
         speaker: 'al',
-        text: "As do I, Morthos. You proved to be a reliable ally.",
-        emotionalTone: 'positive'
-      }
+        text: 'As do I, Morthos. You proved to be a reliable ally.',
+        emotionalTone: 'positive',
+      },
     ];
 
     // Reference specific positive memories
-    const positiveMemories = memories.filter(m => m.emotionalImpact === 'positive');
+    const positiveMemories = memories.filter((m) => m.emotionalImpact === 'positive');
     if (positiveMemories.length > 0) {
       const memory = positiveMemories[0];
       encounter.dialogue.push({
         speaker: 'al',
         text: `I particularly remember ${memory.sourceEvent.description.toLowerCase()}.`,
         emotionalTone: 'positive',
-        references: memory.sourceEvent.id
+        references: memory.sourceEvent.id,
       });
     }
 
     encounter.dialogue.push({
       speaker: 'morthos',
-      text: "Perhaps we can build on that foundation here.",
-      emotionalTone: 'positive'
+      text: 'Perhaps we can build on that foundation here.',
+      emotionalTone: 'positive',
     });
 
     encounter.trustImpact = 0.25;
@@ -492,22 +533,26 @@ export class ControlRoomEncounterOrchestrator {
   /**
    * Generate dialogue for wary alliance
    */
-  private generateWaryAllianceDialogue(encounter: ControlRoomEncounter, memories: RecalledMemory[], context: ControlRoomContext): void {
+  private generateWaryAllianceDialogue(
+    encounter: ControlRoomEncounter,
+    memories: RecalledMemory[],
+    context: ControlRoomContext,
+  ): void {
     encounter.dialogue = [
       {
         speaker: 'al',
-        text: "Morthos. I suppose circumstances bring us together again.",
-        emotionalTone: 'neutral'
+        text: 'Morthos. I suppose circumstances bring us together again.',
+        emotionalTone: 'neutral',
       },
       {
         speaker: 'morthos',
-        text: "Indeed. Our past has been... complicated.",
-        emotionalTone: 'mixed'
-      }
+        text: 'Indeed. Our past has been... complicated.',
+        emotionalTone: 'mixed',
+      },
     ];
 
-    const conflictMemory = memories.find(m => 
-      ['betrayal', 'conflict'].includes(m.sourceEvent.type)
+    const conflictMemory = memories.find((m) =>
+      ['betrayal', 'conflict'].includes(m.sourceEvent.type),
     );
 
     if (conflictMemory) {
@@ -515,21 +560,21 @@ export class ControlRoomEncounterOrchestrator {
         speaker: 'al',
         text: "I know we've had our differences, but perhaps we can set them aside for now.",
         emotionalTone: 'mixed',
-        references: conflictMemory.sourceEvent.id
+        references: conflictMemory.sourceEvent.id,
       });
     }
 
     encounter.dialogue.push({
       speaker: 'morthos',
-      text: "A temporary truce, then. For mutual benefit.",
-      emotionalTone: 'neutral'
+      text: 'A temporary truce, then. For mutual benefit.',
+      emotionalTone: 'neutral',
     });
 
     if (context.playerPresent) {
       encounter.dialogue.push({
         speaker: 'al',
-        text: "With a witness present, I suppose we should maintain civility.",
-        emotionalTone: 'neutral'
+        text: 'With a witness present, I suppose we should maintain civility.',
+        emotionalTone: 'neutral',
       });
     }
 
@@ -539,28 +584,32 @@ export class ControlRoomEncounterOrchestrator {
   /**
    * Generate reconciliation dialogue
    */
-  private generateReconciliationDialogue(encounter: ControlRoomEncounter, _memories: RecalledMemory[], _context: ControlRoomContext): void {
+  private generateReconciliationDialogue(
+    encounter: ControlRoomEncounter,
+    _memories: RecalledMemory[],
+    _context: ControlRoomContext,
+  ): void {
     encounter.dialogue = [
       {
         speaker: 'morthos',
         text: "Al, I've been thinking about our past conflicts.",
-        emotionalTone: 'mixed'
+        emotionalTone: 'mixed',
       },
       {
         speaker: 'al',
         text: "As have I, Morthos. Perhaps it's time we addressed them directly.",
-        emotionalTone: 'mixed'
+        emotionalTone: 'mixed',
       },
       {
         speaker: 'morthos',
-        text: "I may have been too quick to judge. Your actions, while unexpected, had merit.",
-        emotionalTone: 'positive'
+        text: 'I may have been too quick to judge. Your actions, while unexpected, had merit.',
+        emotionalTone: 'positive',
       },
       {
         speaker: 'al',
-        text: "And I could have been more transparent about my intentions. Shall we try again?",
-        emotionalTone: 'positive'
-      }
+        text: 'And I could have been more transparent about my intentions. Shall we try again?',
+        emotionalTone: 'positive',
+      },
     ];
 
     encounter.trustImpact = 0.4; // Reconciliation has high impact
@@ -571,42 +620,45 @@ export class ControlRoomEncounterOrchestrator {
    */
   private generateMemoryBasedDialogue(memory: RecalledMemory): DialogueOption[] {
     const dialogue: DialogueOption[] = [];
-    
+
     if (memory.suggestedDialogue && memory.suggestedDialogue.length > 0) {
       dialogue.push({
         speaker: 'morthos',
         text: memory.suggestedDialogue[0],
         emotionalTone: memory.emotionalImpact,
-        references: memory.sourceEvent.id
+        references: memory.sourceEvent.id,
       });
-      
+
       if (memory.suggestedDialogue.length > 1) {
         dialogue.push({
           speaker: 'al',
           text: memory.suggestedDialogue[1],
           emotionalTone: memory.emotionalImpact,
-          references: memory.sourceEvent.id
+          references: memory.sourceEvent.id,
         });
       }
     }
-    
+
     return dialogue;
   }
 
   /**
    * Generate outcomes based on the encounter
    */
-  private generateEncounterOutcomes(encounter: ControlRoomEncounter, _context: ControlRoomContext): void {
+  private generateEncounterOutcomes(
+    encounter: ControlRoomEncounter,
+    _context: ControlRoomContext,
+  ): void {
     // Trust impact outcome
     if (encounter.trustImpact > 0) {
       encounter.outcomes.push({
         type: 'trust-increased',
-        description: `Trust between Morthos and Al increased by ${encounter.trustImpact.toFixed(2)}`
+        description: `Trust between Morthos and Al increased by ${encounter.trustImpact.toFixed(2)}`,
       });
     } else if (encounter.trustImpact < 0) {
       encounter.outcomes.push({
         type: 'trust-decreased',
-        description: `Trust between Morthos and Al decreased by ${Math.abs(encounter.trustImpact).toFixed(2)}`
+        description: `Trust between Morthos and Al decreased by ${Math.abs(encounter.trustImpact).toFixed(2)}`,
       });
     }
 
@@ -617,8 +669,8 @@ export class ControlRoomEncounterOrchestrator {
       memoryToRecord: {
         type: 'shared-secret',
         intensity: Math.min(0.8, 0.5 + Math.abs(encounter.trustImpact)),
-        description: `Morthos and Al had a ${encounter.type.replace('-', ' ')} in the Control Room`
-      }
+        description: `Morthos and Al had a ${encounter.type.replace('-', ' ')} in the Control Room`,
+      },
     });
 
     // Type-specific outcomes
@@ -627,21 +679,21 @@ export class ControlRoomEncounterOrchestrator {
         encounter.outcomes.push({
           type: 'alliance-formed',
           description: 'Strong alliance confirmed between Morthos and Al',
-          gameStateChanges: { 'morthos-al-alliance': 'strong' }
+          gameStateChanges: { 'morthos-al-alliance': 'strong' },
         });
         break;
       case 'confrontation':
         encounter.outcomes.push({
           type: 'flag-set',
           description: 'Tension flag set between Morthos and Al',
-          gameStateChanges: { 'morthos-al-tension': true }
+          gameStateChanges: { 'morthos-al-tension': true },
         });
         break;
       case 'reconciliation':
         encounter.outcomes.push({
           type: 'alliance-formed',
           description: 'Reconciliation achieved between Morthos and Al',
-          gameStateChanges: { 'morthos-al-reconciled': true }
+          gameStateChanges: { 'morthos-al-reconciled': true },
         });
         break;
     }
@@ -652,7 +704,7 @@ export class ControlRoomEncounterOrchestrator {
    */
   applyEncounterOutcomes(encounter: ControlRoomEncounter): void {
     const allianceMemory = getAllianceMemory();
-    
+
     for (const outcome of encounter.outcomes) {
       switch (outcome.type) {
         case 'new-memory':
@@ -665,10 +717,10 @@ export class ControlRoomEncounterOrchestrator {
                 location: 'control-room',
                 gamePhase: 'exploration',
                 otherNPCsPresent: [],
-                playerActions: []
+                playerActions: [],
               },
               outcome.memoryToRecord.intensity,
-              outcome.memoryToRecord.description
+              outcome.memoryToRecord.description,
             );
           }
           break;
@@ -688,7 +740,7 @@ export class ControlRoomEncounterOrchestrator {
           }
           break;
       }
-      
+
       console.log(`[ControlRoom] Applied outcome: ${outcome.description}`);
     }
   }
@@ -698,11 +750,11 @@ export class ControlRoomEncounterOrchestrator {
    */
   private getTriggerConditions(context: ControlRoomContext): string[] {
     const conditions = ['both-npcs-in-control-room'];
-    
+
     if (context.playerPresent) conditions.push('player-present');
     if (context.roomState.terminalActive) conditions.push('terminal-active');
     if (context.roomState.securityLevel === 'high') conditions.push('high-security');
-    
+
     return conditions;
   }
 
@@ -735,7 +787,9 @@ let globalOrchestrator: ControlRoomEncounterOrchestrator | null = null;
 /**
  * Get the global Control Room encounter orchestrator
  */
-export function getControlRoomOrchestrator(config?: Partial<ControlRoomConfig>): ControlRoomEncounterOrchestrator {
+export function getControlRoomOrchestrator(
+  config?: Partial<ControlRoomConfig>,
+): ControlRoomEncounterOrchestrator {
   if (!globalOrchestrator) {
     globalOrchestrator = new ControlRoomEncounterOrchestrator(config);
   }
@@ -745,13 +799,15 @@ export function getControlRoomOrchestrator(config?: Partial<ControlRoomConfig>):
 /**
  * Quick function to trigger an encounter when both NPCs are present
  */
-export function triggerControlRoomEncounter(context: ControlRoomContext): ControlRoomEncounter | null {
+export function triggerControlRoomEncounter(
+  context: ControlRoomContext,
+): ControlRoomEncounter | null {
   const orchestrator = getControlRoomOrchestrator();
   const encounter = orchestrator.generateEncounter(context);
-  
+
   if (encounter) {
     orchestrator.applyEncounterOutcomes(encounter);
   }
-  
+
   return encounter;
 }

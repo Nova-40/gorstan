@@ -57,17 +57,17 @@ export class MushroomField {
 
   async run(): Promise<void> {
     console.log('[MushroomField] Starting mushroom field phase');
-    
+
     return new Promise((resolve) => {
       this.displayPhaseIntro();
       this.running = true;
-      
+
       // Main game loop
       const gameLoop = setInterval(() => {
         this.updateCreaturePacks();
         this.simulatePlayerMovement();
         this.checkMushroomTriggers();
-        
+
         // Check if player reached stream
         if (this.isNearStream()) {
           clearInterval(gameLoop);
@@ -94,24 +94,24 @@ export class MushroomField {
 
   private initializeMushrooms(): void {
     const mushroomCount = 50; // Increased from 30 to make navigation harder
-    
+
     // Create denser mushroom placement with fewer safe paths
     for (let i = 0; i < mushroomCount; i++) {
       let x, y;
       let attempts = 0;
-      
+
       do {
         x = 4 + Math.random() * (this.fieldWidth - 8);
         y = 2 + Math.random() * (this.fieldHeight - 4);
         attempts++;
       } while (attempts < 10 && this.isTooCloseToSafeZone(x, y));
-      
+
       this.mushrooms.push({
         id: i,
         x: x,
         y: y,
         triggered: false,
-        packSpawned: false
+        packSpawned: false,
       });
     }
   }
@@ -121,10 +121,10 @@ export class MushroomField {
     const safeZones = [
       { x: this.playerPos.x, y: this.playerPos.y, radius: 3 }, // Starting area
       { x: this.streamPos.x, y: this.streamPos.y, radius: 4 }, // Stream area
-      ...this.restRocks.map(rock => ({ x: rock.x, y: rock.y, radius: 2.5 })) // Around rocks
+      ...this.restRocks.map((rock) => ({ x: rock.x, y: rock.y, radius: 2.5 })), // Around rocks
     ];
-    
-    return safeZones.some(zone => {
+
+    return safeZones.some((zone) => {
       const distance = Math.sqrt(Math.pow(x - zone.x, 2) + Math.pow(y - zone.y, 2));
       return distance < zone.radius;
     });
@@ -133,9 +133,9 @@ export class MushroomField {
   private initializeRestRocks(): void {
     // Three strategically placed safety rocks - positioned to create challenging but possible routes
     this.restRocks = [
-      { id: 0, x: 10, y: 6, occupied: false, cooldownUntil: 0 },   // Early safety point
+      { id: 0, x: 10, y: 6, occupied: false, cooldownUntil: 0 }, // Early safety point
       { id: 1, x: 22, y: 18, occupied: false, cooldownUntil: 0 }, // Mid-field challenge
-      { id: 2, x: 32, y: 8, occupied: false, cooldownUntil: 0 }   // Near stream approach
+      { id: 2, x: 32, y: 8, occupied: false, cooldownUntil: 0 }, // Near stream approach
     ];
   }
 
@@ -154,25 +154,26 @@ export class MushroomField {
   }
 
   private checkMushroomTriggers(): void {
-    this.mushrooms.forEach(mushroom => {
-      if (mushroom.triggered || mushroom.packSpawned) return;
-      
+    this.mushrooms.forEach((mushroom) => {
+      if (mushroom.triggered || mushroom.packSpawned) {
+        return;
+      }
+
       const distance = Math.sqrt(
-        Math.pow(mushroom.x - this.playerPos.x, 2) + 
-        Math.pow(mushroom.y - this.playerPos.y, 2)
+        Math.pow(mushroom.x - this.playerPos.x, 2) + Math.pow(mushroom.y - this.playerPos.y, 2),
       );
-      
+
       // More sensitive trigger distance - harder to avoid
-      if (distance < 2.0) { // Increased from 1.5
+      if (distance < 2.0) {
+        // Increased from 1.5
         this.triggerMushroom(mushroom);
-        
+
         // Chain reaction chance - nearby mushrooms may also trigger!
         if (Math.random() < 0.3) {
-          this.mushrooms.forEach(nearbyShroom => {
+          this.mushrooms.forEach((nearbyShroom) => {
             if (nearbyShroom.id !== mushroom.id && !nearbyShroom.triggered) {
               const nearbyDistance = Math.sqrt(
-                Math.pow(nearbyShroom.x - mushroom.x, 2) + 
-                Math.pow(nearbyShroom.y - mushroom.y, 2)
+                Math.pow(nearbyShroom.x - mushroom.x, 2) + Math.pow(nearbyShroom.y - mushroom.y, 2),
               );
               if (nearbyDistance < 3) {
                 console.log(`[MushroomField] 💥 Chain reaction! Nearby mushroom erupts!`);
@@ -188,34 +189,36 @@ export class MushroomField {
   private triggerMushroom(mushroom: Mushroom): void {
     mushroom.triggered = true;
     mushroom.packSpawned = true;
-    
+
     console.log(`[MushroomField] You step on a spongy mushroom... *CRACK*`);
     console.log(`[MushroomField] 🍄 SPORES BURST IN ALL DIRECTIONS! 🍄`);
     console.log(`[MushroomField] ⚠️  A WAVE OF RAVENOUS CREATURES EMERGES! ⚠️`);
-    
+
     // Spawn a WAVE of creatures - much more threatening
     const pack: CreaturePack = {
       id: this.nextPackId++,
       creatures: this.spawnCreatureWave(mushroom.x, mushroom.y),
       originMushroomId: mushroom.id,
       active: true,
-      sleeping: false
+      sleeping: false,
     };
-    
+
     this.creaturePacks.push(pack);
-    
-    console.log(`[MushroomField] 🦂 ${pack.creatures.length} six-legged monsters surge toward you!`);
+
+    console.log(
+      `[MushroomField] 🦂 ${pack.creatures.length} six-legged monsters surge toward you!`,
+    );
     console.log(`[MushroomField] 🏃 GET TO A SAFETY ROCK QUICKLY!`);
   }
 
   private spawnCreatureWave(originX: number, originY: number): Creature[] {
     const creatures: Creature[] = [];
     const count = 6 + Math.floor(Math.random() * 6); // 6-11 creatures per wave!
-    
+
     for (let i = 0; i < count; i++) {
       const angle = (Math.PI * 2 * i) / count + Math.random() * 0.3;
       const distance = 2 + Math.random() * 4;
-      
+
       creatures.push({
         id: i,
         x: originX + Math.cos(angle) * distance,
@@ -223,20 +226,22 @@ export class MushroomField {
         vx: 0,
         vy: 0,
         health: 1,
-        aggressive: true
+        aggressive: true,
       });
     }
-    
+
     return creatures;
   }
 
   private updateCreaturePacks(): void {
-    this.creaturePacks.forEach(pack => {
-      if (!pack.active) return;
-      
+    this.creaturePacks.forEach((pack) => {
+      if (!pack.active) {
+        return;
+      }
+
       // Check if pack should sleep due to rest rock proximity
       const nearRestRock = this.isPackNearRestRock(pack);
-      
+
       if (nearRestRock && !pack.sleeping) {
         this.startPackSleep(pack);
       } else if (pack.sleeping) {
@@ -244,26 +249,27 @@ export class MushroomField {
       } else {
         this.updateActivePack(pack);
       }
-      
+
       // Check for pack vs pack combat
       this.checkPackCombat(pack);
     });
-    
+
     // Clean up dead packs
-    this.creaturePacks = this.creaturePacks.filter(pack => 
-      pack.active && pack.creatures.length > 0
+    this.creaturePacks = this.creaturePacks.filter(
+      (pack) => pack.active && pack.creatures.length > 0,
     );
   }
 
   private isPackNearRestRock(pack: CreaturePack): boolean {
-    return this.restRocks.some(rock => {
+    return this.restRocks.some((rock) => {
       const currentTime = Date.now();
-      if (currentTime < rock.cooldownUntil) return false;
-      
-      return pack.creatures.some(creature => {
+      if (currentTime < rock.cooldownUntil) {
+        return false;
+      }
+
+      return pack.creatures.some((creature) => {
         const distance = Math.sqrt(
-          Math.pow(creature.x - rock.x, 2) + 
-          Math.pow(creature.y - rock.y, 2)
+          Math.pow(creature.x - rock.x, 2) + Math.pow(creature.y - rock.y, 2),
         );
         return distance < 4; // Rest rock influence radius
       });
@@ -275,17 +281,16 @@ export class MushroomField {
     pack.sleepStartTime = Date.now();
     console.log(`[MushroomField] 🛡️  The creatures recoil from the safety rock's power!`);
     console.log(`[MushroomField] 😴 They grow drowsy and begin to slumber...`);
-    
+
     // Set cooldown on the rock they're near
-    this.restRocks.forEach(rock => {
-      const nearRock = pack.creatures.some(creature => {
+    this.restRocks.forEach((rock) => {
+      const nearRock = pack.creatures.some((creature) => {
         const distance = Math.sqrt(
-          Math.pow(creature.x - rock.x, 2) + 
-          Math.pow(creature.y - rock.y, 2)
+          Math.pow(creature.x - rock.x, 2) + Math.pow(creature.y - rock.y, 2),
         );
         return distance < 4;
       });
-      
+
       if (nearRock) {
         rock.cooldownUntil = Date.now() + 25000; // Reduced cooldown for more mobility
       }
@@ -293,11 +298,14 @@ export class MushroomField {
   }
 
   private updateSleepingPack(pack: CreaturePack): void {
-    if (!pack.sleepStartTime) return;
-    
+    if (!pack.sleepStartTime) {
+      return;
+    }
+
     const sleepDuration = Date.now() - pack.sleepStartTime;
-    
-    if (sleepDuration > 20000) { // Faster despawn - 20 seconds
+
+    if (sleepDuration > 20000) {
+      // Faster despawn - 20 seconds
       console.log(`[MushroomField] ✨ The creatures dissolve into spores and vanish...`);
       pack.active = false; // Remove the pack
     }
@@ -309,25 +317,26 @@ export class MushroomField {
       const dx = this.playerPos.x - creature.x;
       const dy = this.playerPos.y - creature.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
-      
+
       if (distance > 0) {
         // More aggressive chase mechanics
         const chaseStrength = 0.5; // Increased from 0.3
         const randomness = 0.3; // Reduced randomness for more direct pursuit
-        const flankingOffset = Math.sin(index * Math.PI / 3) * 0.2; // Coordinated flanking
-        
-        creature.vx = (dx / distance) * chaseStrength + (Math.random() - 0.5) * randomness + flankingOffset;
+        const flankingOffset = Math.sin((index * Math.PI) / 3) * 0.2; // Coordinated flanking
+
+        creature.vx =
+          (dx / distance) * chaseStrength + (Math.random() - 0.5) * randomness + flankingOffset;
         creature.vy = (dy / distance) * chaseStrength + (Math.random() - 0.5) * randomness;
-        
+
         creature.x += creature.vx;
         creature.y += creature.vy;
-        
+
         // Keep creatures in bounds
         creature.x = Math.max(1, Math.min(this.fieldWidth - 1, creature.x));
         creature.y = Math.max(1, Math.min(this.fieldHeight - 1, creature.y));
       }
     });
-    
+
     // More dramatic threatening messages
     if (Math.random() < 0.15) {
       const sounds = [
@@ -335,7 +344,7 @@ export class MushroomField {
         '👁️  Glowing eyes converge on your position!',
         '🔥 The creatures surge forward in a coordinated wave!',
         '⚡ Six legs thunder across the mushroom field!',
-        '🎯 The pack is closing in - seek safety NOW!'
+        '🎯 The pack is closing in - seek safety NOW!',
       ];
       console.log(`[MushroomField] ${sounds[Math.floor(Math.random() * sounds.length)]}`);
     }
@@ -343,12 +352,14 @@ export class MushroomField {
 
   private checkPackCombat(pack: CreaturePack): void {
     // Check if this pack encounters another pack
-    this.creaturePacks.forEach(otherPack => {
-      if (otherPack.id === pack.id || !otherPack.active || otherPack.sleeping) return;
-      
+    this.creaturePacks.forEach((otherPack) => {
+      if (otherPack.id === pack.id || !otherPack.active || otherPack.sleeping) {
+        return;
+      }
+
       // Check for proximity between packs
       const packDistance = this.getPackDistance(pack, otherPack);
-      
+
       if (packDistance < 3) {
         this.resolveCombat(pack, otherPack);
       }
@@ -356,91 +367,95 @@ export class MushroomField {
   }
 
   private getPackDistance(pack1: CreaturePack, pack2: CreaturePack): number {
-    if (pack1.creatures.length === 0 || pack2.creatures.length === 0) return Infinity;
-    
+    if (pack1.creatures.length === 0 || pack2.creatures.length === 0) {
+      return Infinity;
+    }
+
     let minDistance = Infinity;
-    
-    pack1.creatures.forEach(c1 => {
-      pack2.creatures.forEach(c2 => {
-        const distance = Math.sqrt(
-          Math.pow(c1.x - c2.x, 2) + Math.pow(c1.y - c2.y, 2)
-        );
+
+    pack1.creatures.forEach((c1) => {
+      pack2.creatures.forEach((c2) => {
+        const distance = Math.sqrt(Math.pow(c1.x - c2.x, 2) + Math.pow(c1.y - c2.y, 2));
         minDistance = Math.min(minDistance, distance);
       });
     });
-    
+
     return minDistance;
   }
 
   private resolveCombat(pack1: CreaturePack, pack2: CreaturePack): void {
     console.log(`[MushroomField] Two packs clash! Fangs and claws flash in fury!`);
-    
+
     // Simple combat resolution - both packs lose creatures
     const casualties1 = Math.floor(pack1.creatures.length * 0.3);
     const casualties2 = Math.floor(pack2.creatures.length * 0.3);
-    
+
     pack1.creatures.splice(0, casualties1);
     pack2.creatures.splice(0, casualties2);
-    
-    if (pack1.creatures.length === 0) pack1.active = false;
-    if (pack2.creatures.length === 0) pack2.active = false;
-    
+
+    if (pack1.creatures.length === 0) {
+      pack1.active = false;
+    }
+    if (pack2.creatures.length === 0) {
+      pack2.active = false;
+    }
+
     console.log(`[MushroomField] The battle ends with mutual losses...`);
   }
 
   private simulatePlayerMovement(): void {
     // Enhanced strategic movement - seek safety when creatures are active
-    const activeCreatures = this.creaturePacks.filter(pack => pack.active && !pack.sleeping);
+    const activeCreatures = this.creaturePacks.filter((pack) => pack.active && !pack.sleeping);
     const isInDanger = activeCreatures.length > 0;
-    
+
     if (Math.random() < 0.6) {
       let targetX = this.streamPos.x;
       let targetY = this.streamPos.y;
-      
+
       // If in danger, prioritize nearest available safety rock
       if (isInDanger) {
-        const availableRocks = this.restRocks.filter(rock => Date.now() >= rock.cooldownUntil);
+        const availableRocks = this.restRocks.filter((rock) => Date.now() >= rock.cooldownUntil);
         if (availableRocks.length > 0) {
           const nearestRock = availableRocks.reduce((closest, rock) => {
             const distanceToRock = Math.sqrt(
-              Math.pow(rock.x - this.playerPos.x, 2) + 
-              Math.pow(rock.y - this.playerPos.y, 2)
+              Math.pow(rock.x - this.playerPos.x, 2) + Math.pow(rock.y - this.playerPos.y, 2),
             );
             const distanceToClosest = Math.sqrt(
-              Math.pow(closest.x - this.playerPos.x, 2) + 
-              Math.pow(closest.y - this.playerPos.y, 2)
+              Math.pow(closest.x - this.playerPos.x, 2) + Math.pow(closest.y - this.playerPos.y, 2),
             );
             return distanceToRock < distanceToClosest ? rock : closest;
           });
-          
+
           targetX = nearestRock.x;
           targetY = nearestRock.y;
         }
       }
-      
+
       const dx = targetX - this.playerPos.x;
       const dy = targetY - this.playerPos.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
-      
+
       if (distance > 1) {
         // Move more carefully or quickly based on danger level
         const stepSize = isInDanger ? 0.8 : 0.4; // Faster when in danger
         this.playerPos.x += (dx / distance) * stepSize;
         this.playerPos.y += (dy / distance) * stepSize;
-        
+
         // Enhanced movement logging
         if (Math.random() < 0.15) {
-          const movements = isInDanger ? [
-            '🏃 Sprinting toward the nearest safety rock!',
-            '💨 Dodging between mushroom patches in panic!',
-            '⚡ Racing to escape the creature wave!',
-            '🎯 Making a desperate dash for safety!'
-          ] : [
-            '🚶 Carefully stepping between mushroom patches...',
-            '👀 Skirting around a cluster of fungi...',
-            '🗺️  Picking your way toward the distant stream...',
-            '🍄 Avoiding the worst of the mushroom growths...'
-          ];
+          const movements = isInDanger
+            ? [
+                '🏃 Sprinting toward the nearest safety rock!',
+                '💨 Dodging between mushroom patches in panic!',
+                '⚡ Racing to escape the creature wave!',
+                '🎯 Making a desperate dash for safety!',
+              ]
+            : [
+                '🚶 Carefully stepping between mushroom patches...',
+                '👀 Skirting around a cluster of fungi...',
+                '🗺️  Picking your way toward the distant stream...',
+                '🍄 Avoiding the worst of the mushroom growths...',
+              ];
           console.log(`[MushroomField] ${movements[Math.floor(Math.random() * movements.length)]}`);
         }
       }
@@ -449,15 +464,15 @@ export class MushroomField {
 
   private isNearStream(): boolean {
     const distance = Math.sqrt(
-      Math.pow(this.streamPos.x - this.playerPos.x, 2) + 
-      Math.pow(this.streamPos.y - this.playerPos.y, 2)
+      Math.pow(this.streamPos.x - this.playerPos.x, 2) +
+        Math.pow(this.streamPos.y - this.playerPos.y, 2),
     );
     return distance < 3;
   }
 
   private despawnAllCreatures(): void {
-    console.log('[MushroomField] 💫 The stream\'s power reaches across the field...');
-    this.creaturePacks.forEach(pack => {
+    console.log("[MushroomField] 💫 The stream's power reaches across the field...");
+    this.creaturePacks.forEach((pack) => {
       pack.active = false;
       pack.creatures = [];
     });
@@ -475,9 +490,7 @@ export class MushroomField {
 
   getAllCreatures(): Creature[] {
     // Flatten all creatures from all active packs for UI rendering
-    return this.creaturePacks
-      .filter(pack => pack.active)
-      .flatMap(pack => pack.creatures);
+    return this.creaturePacks.filter((pack) => pack.active).flatMap((pack) => pack.creatures);
   }
 
   getRestRocks(): RestRock[] {

@@ -36,16 +36,8 @@ import {
   Unlock,
   ChevronDown,
   ChevronUp,
-  Sparkles
+  Sparkles,
 } from 'lucide-react';
-
-
-
-
-
-
-
-
 
 export interface PuzzleData {
   id: string;
@@ -70,7 +62,14 @@ export interface PuzzleData {
 }
 
 export interface PuzzleComponent {
-  type: 'text_input' | 'multiple_choice' | 'sequence_selector' | 'pattern_grid' | 'slider' | 'door_choice' | 'item_combiner';
+  type:
+    | 'text_input'
+    | 'multiple_choice'
+    | 'sequence_selector'
+    | 'pattern_grid'
+    | 'slider'
+    | 'door_choice'
+    | 'item_combiner';
   id: string;
   label?: string;
   options?: string[];
@@ -103,22 +102,21 @@ const PuzzleInterface: React.FC<PuzzleInterfaceProps> = ({
   onSubmit,
   onHint,
   currentAttempt = 0,
-  timeRemaining
+  timeRemaining,
 }) => {
   const [solution, setSolution] = useState<any>({});
-// React state declaration
+  // React state declaration
   const [isSubmitting, setIsSubmitting] = useState(false);
-// React state declaration
+  // React state declaration
   const [showHints, setShowHints] = useState(false);
   const [usedHints, setUsedHints] = useState<number[]>([]);
-// React state declaration
+  // React state declaration
   const [showDetails, setShowDetails] = useState(true);
   const [feedback, setFeedback] = useState<string>('');
-// React state declaration
+  // React state declaration
   const [pulseEffect, setPulseEffect] = useState(false);
 
-  
-// Variable declaration
+  // Variable declaration
   const getDifficultyStyles = (difficulty: string) => {
     switch (difficulty) {
       case 'trivial':
@@ -138,45 +136,49 @@ const PuzzleInterface: React.FC<PuzzleInterfaceProps> = ({
     }
   };
 
-// Variable declaration
+  // Variable declaration
   const difficultyStyles = getDifficultyStyles(puzzle.difficulty);
 
-  
-// Variable declaration
+  // Variable declaration
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'logic': return <Brain className="w-5 h-5" />;
-      case 'pattern': return <Target className="w-5 h-5" />;
-      case 'navigation': return <RotateCw className="w-5 h-5" />;
-      case 'social': return <Eye className="w-5 h-5" />;
-      case 'memory': return <Zap className="w-5 h-5" />;
-      case 'sequence': return <Puzzle className="w-5 h-5" />;
-      case 'mathematical': return <Award className="w-5 h-5" />;
-      default: return <HelpCircle className="w-5 h-5" />;
+      case 'logic':
+        return <Brain className="w-5 h-5" />;
+      case 'pattern':
+        return <Target className="w-5 h-5" />;
+      case 'navigation':
+        return <RotateCw className="w-5 h-5" />;
+      case 'social':
+        return <Eye className="w-5 h-5" />;
+      case 'memory':
+        return <Zap className="w-5 h-5" />;
+      case 'sequence':
+        return <Puzzle className="w-5 h-5" />;
+      case 'mathematical':
+        return <Award className="w-5 h-5" />;
+      default:
+        return <HelpCircle className="w-5 h-5" />;
     }
   };
 
-  
-// Variable declaration
+  // Variable declaration
   const formatTime = (seconds: number) => {
-// Variable declaration
+    // Variable declaration
     const mins = Math.floor(seconds / 60);
-// Variable declaration
+    // Variable declaration
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  
-// Variable declaration
+  // Variable declaration
   const handleComponentChange = (componentId: string, value: any) => {
     setSolution((prev: any) => ({
       ...prev,
-      [componentId]: value
+      [componentId]: value,
     }));
   };
 
-  
-// Variable declaration
+  // Variable declaration
   const handleSubmit = async () => {
     if (isSubmitting) return;
 
@@ -184,12 +186,11 @@ const PuzzleInterface: React.FC<PuzzleInterfaceProps> = ({
     setPulseEffect(true);
 
     try {
-// Variable declaration
+      // Variable declaration
       const result = await onSubmit(solution);
       setFeedback(result.feedback);
 
       if (result.success) {
-        
         setTimeout(() => {
           onClose();
         }, 2000);
@@ -202,29 +203,25 @@ const PuzzleInterface: React.FC<PuzzleInterfaceProps> = ({
     }
   };
 
-  
-// Variable declaration
+  // Variable declaration
   const handleHint = (hintIndex: number) => {
     if (usedHints.includes(hintIndex)) return;
-    setUsedHints(prev => [...prev, hintIndex]);
+    setUsedHints((prev) => [...prev, hintIndex]);
     onHint?.(hintIndex);
   };
 
-  
-// Variable declaration
+  // Variable declaration
   const renderComponent = (component: PuzzleComponent) => {
-// Variable declaration
+    // Variable declaration
     const value = solution[component.id] || '';
 
     switch (component.type) {
       case 'text_input':
-// JSX return block or main return
+        // JSX return block or main return
         return (
           <div key={component.id} className="space-y-2">
             {component.label && (
-              <label className="block text-sm font-medium text-gray-700">
-                {component.label}
-              </label>
+              <label className="block text-sm font-medium text-gray-700">{component.label}</label>
             )}
             <input
               type="text"
@@ -237,13 +234,11 @@ const PuzzleInterface: React.FC<PuzzleInterfaceProps> = ({
         );
 
       case 'multiple_choice':
-// JSX return block or main return
+        // JSX return block or main return
         return (
           <div key={component.id} className="space-y-2">
             {component.label && (
-              <label className="block text-sm font-medium text-gray-700">
-                {component.label}
-              </label>
+              <label className="block text-sm font-medium text-gray-700">{component.label}</label>
             )}
             <div className="space-y-2">
               {component.options?.map((option, index) => (
@@ -264,28 +259,26 @@ const PuzzleInterface: React.FC<PuzzleInterfaceProps> = ({
         );
 
       case 'door_choice':
-// JSX return block or main return
+        // JSX return block or main return
         return (
           <div key={component.id} className="space-y-4">
             {component.label && (
-              <label className="block text-sm font-medium text-gray-700">
-                {component.label}
-              </label>
+              <label className="block text-sm font-medium text-gray-700">{component.label}</label>
             )}
             <div className="grid grid-cols-3 gap-4">
               {component.options?.map((option, index) => {
-// Variable declaration
+                // Variable declaration
                 const isSelected = value === option;
-// Variable declaration
+                // Variable declaration
                 const doorColors = ['red', 'blue', 'green'];
-// Variable declaration
+                // Variable declaration
                 const colorClasses = {
                   red: 'bg-red-500 hover:bg-red-600 border-red-600',
                   blue: 'bg-blue-500 hover:bg-blue-600 border-blue-600',
-                  green: 'bg-green-500 hover:bg-green-600 border-green-600'
+                  green: 'bg-green-500 hover:bg-green-600 border-green-600',
                 };
 
-// JSX return block or main return
+                // JSX return block or main return
                 return (
                   <motion.button
                     key={index}
@@ -294,9 +287,10 @@ const PuzzleInterface: React.FC<PuzzleInterfaceProps> = ({
                     onClick={() => handleComponentChange(component.id, option)}
                     className={`
                       relative p-6 rounded-lg border-2 transition-all duration-200
-                      ${isSelected
-                        ? `${colorClasses[doorColors[index] as keyof typeof colorClasses]} text-white shadow-lg`
-                        : 'bg-gray-100 hover:bg-gray-200 border-gray-300 text-gray-700'
+                      ${
+                        isSelected
+                          ? `${colorClasses[doorColors[index] as keyof typeof colorClasses]} text-white shadow-lg`
+                          : 'bg-gray-100 hover:bg-gray-200 border-gray-300 text-gray-700'
                       }
                     `}
                   >
@@ -321,33 +315,31 @@ const PuzzleInterface: React.FC<PuzzleInterfaceProps> = ({
         );
 
       case 'pattern_grid':
-// Variable declaration
+        // Variable declaration
         const gridSize = component.gridSize || { rows: 3, cols: 3 };
-// Variable declaration
+        // Variable declaration
         const gridValue = value || [];
-// JSX return block or main return
+        // JSX return block or main return
         return (
           <div key={component.id} className="space-y-2">
             {component.label && (
-              <label className="block text-sm font-medium text-gray-700">
-                {component.label}
-              </label>
+              <label className="block text-sm font-medium text-gray-700">{component.label}</label>
             )}
             <div
               className="grid gap-2 w-fit mx-auto p-4 bg-gray-50 rounded-lg"
               style={{ gridTemplateColumns: `repeat(${gridSize.cols}, 1fr)` }}
             >
               {Array.from({ length: gridSize.rows * gridSize.cols }).map((_, index) => {
-// Variable declaration
+                // Variable declaration
                 const isActive = gridValue.includes(index);
-// JSX return block or main return
+                // JSX return block or main return
                 return (
                   <motion.button
                     key={index}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => {
-// Variable declaration
+                      // Variable declaration
                       const newValue = isActive
                         ? gridValue.filter((v: number) => v !== index)
                         : [...gridValue, index];
@@ -355,9 +347,10 @@ const PuzzleInterface: React.FC<PuzzleInterfaceProps> = ({
                     }}
                     className={`
                       w-12 h-12 rounded-lg border-2 transition-all duration-200
-                      ${isActive
-                        ? 'bg-blue-500 border-blue-600 text-white shadow-md'
-                        : 'bg-white border-gray-300 hover:border-gray-400'
+                      ${
+                        isActive
+                          ? 'bg-blue-500 border-blue-600 text-white shadow-md'
+                          : 'bg-white border-gray-300 hover:border-gray-400'
                       }
                     `}
                   >
@@ -376,12 +369,13 @@ const PuzzleInterface: React.FC<PuzzleInterfaceProps> = ({
 
   if (!isOpen) return null;
 
-// Variable declaration
-  const canSubmit = puzzle.components?.every(comp =>
-    !comp.required || solution[comp.id] !== undefined && solution[comp.id] !== ''
-  ) ?? true;
+  // Variable declaration
+  const canSubmit =
+    puzzle.components?.every(
+      (comp) => !comp.required || (solution[comp.id] !== undefined && solution[comp.id] !== ''),
+    ) ?? true;
 
-// JSX return block or main return
+  // JSX return block or main return
   return (
     <AnimatePresence>
       <motion.div
@@ -400,13 +394,17 @@ const PuzzleInterface: React.FC<PuzzleInterfaceProps> = ({
           <div className={`p-6 border-b ${difficultyStyles.bg} ${difficultyStyles.border}`}>
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <div className={`p-3 rounded-lg ${difficultyStyles.bg} border ${difficultyStyles.border}`}>
+                <div
+                  className={`p-3 rounded-lg ${difficultyStyles.bg} border ${difficultyStyles.border}`}
+                >
                   {getTypeIcon(puzzle.type)}
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-gray-800">{puzzle.name}</h2>
                   <div className="flex items-center space-x-3 mt-1">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${difficultyStyles.color} ${difficultyStyles.bg} ${difficultyStyles.border} border`}>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${difficultyStyles.color} ${difficultyStyles.bg} ${difficultyStyles.border} border`}
+                    >
                       {puzzle.difficulty.toUpperCase()}
                     </span>
                     <span className="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200">
@@ -445,7 +443,11 @@ const PuzzleInterface: React.FC<PuzzleInterfaceProps> = ({
                 onClick={() => setShowDetails(!showDetails)}
                 className="flex items-center space-x-2 text-gray-700 hover:text-gray-900 transition-colors mb-3"
               >
-                {showDetails ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                {showDetails ? (
+                  <ChevronUp className="w-5 h-5" />
+                ) : (
+                  <ChevronDown className="w-5 h-5" />
+                )}
                 <span className="font-medium">Puzzle Details</span>
               </button>
 
@@ -478,10 +480,10 @@ const PuzzleInterface: React.FC<PuzzleInterfaceProps> = ({
                     <div>
                       <h5 className="text-sm font-medium text-gray-600 mb-2">Required Items:</h5>
                       <div className="space-y-1">
-                        {puzzle.requiredItems.map(item => {
-// Variable declaration
+                        {puzzle.requiredItems.map((item) => {
+                          // Variable declaration
                           const hasItem = playerInventory.includes(item);
-// JSX return block or main return
+                          // JSX return block or main return
                           return (
                             <div key={item} className="flex items-center space-x-2">
                               {hasItem ? (
@@ -489,7 +491,9 @@ const PuzzleInterface: React.FC<PuzzleInterfaceProps> = ({
                               ) : (
                                 <XCircle className="w-4 h-4 text-red-500" />
                               )}
-                              <span className={`text-sm ${hasItem ? 'text-green-700' : 'text-red-700'}`}>
+                              <span
+                                className={`text-sm ${hasItem ? 'text-green-700' : 'text-red-700'}`}
+                              >
                                 {item}
                               </span>
                             </div>
@@ -503,10 +507,10 @@ const PuzzleInterface: React.FC<PuzzleInterfaceProps> = ({
                     <div>
                       <h5 className="text-sm font-medium text-gray-600 mb-2">Required Traits:</h5>
                       <div className="space-y-1">
-                        {puzzle.requiredTraits.map(trait => {
-// Variable declaration
+                        {puzzle.requiredTraits.map((trait) => {
+                          // Variable declaration
                           const hasTrait = playerTraits.includes(trait);
-// JSX return block or main return
+                          // JSX return block or main return
                           return (
                             <div key={trait} className="flex items-center space-x-2">
                               {hasTrait ? (
@@ -514,7 +518,9 @@ const PuzzleInterface: React.FC<PuzzleInterfaceProps> = ({
                               ) : (
                                 <XCircle className="w-4 h-4 text-red-500" />
                               )}
-                              <span className={`text-sm ${hasTrait ? 'text-green-700' : 'text-red-700'}`}>
+                              <span
+                                className={`text-sm ${hasTrait ? 'text-green-700' : 'text-red-700'}`}
+                              >
                                 {trait}
                               </span>
                             </div>
@@ -531,7 +537,7 @@ const PuzzleInterface: React.FC<PuzzleInterfaceProps> = ({
             {puzzle.components?.length && (
               <div className="p-6 space-y-6">
                 <h4 className="font-medium text-gray-800 mb-4">Solution:</h4>
-                {puzzle.components.map(component => renderComponent(component))}
+                {puzzle.components.map((component) => renderComponent(component))}
               </div>
             )}
 
@@ -542,11 +548,13 @@ const PuzzleInterface: React.FC<PuzzleInterfaceProps> = ({
                 animate={{ opacity: 1, y: 0 }}
                 className="p-6 border-t border-gray-100"
               >
-                <div className={`p-4 rounded-lg border ${
-                  feedback.includes('success') || feedback.includes('correct')
-                    ? 'bg-green-50 border-green-200 text-green-800'
-                    : 'bg-red-50 border-red-200 text-red-800'
-                }`}>
+                <div
+                  className={`p-4 rounded-lg border ${
+                    feedback.includes('success') || feedback.includes('correct')
+                      ? 'bg-green-50 border-green-200 text-green-800'
+                      : 'bg-red-50 border-red-200 text-red-800'
+                  }`}
+                >
                   <p className="font-medium">{feedback}</p>
                 </div>
               </motion.div>
@@ -562,7 +570,9 @@ const PuzzleInterface: React.FC<PuzzleInterfaceProps> = ({
                   className="flex items-center space-x-2 px-4 py-2 text-yellow-600 hover:text-yellow-700 border border-yellow-300 rounded-lg hover:bg-yellow-50 transition-all"
                 >
                   <Lightbulb className="w-4 h-4" />
-                  <span>Hints ({usedHints.length}/{puzzle.hints.length})</span>
+                  <span>
+                    Hints ({usedHints.length}/{puzzle.hints.length})
+                  </span>
                 </button>
               )}
 
@@ -581,9 +591,10 @@ const PuzzleInterface: React.FC<PuzzleInterfaceProps> = ({
                         disabled={usedHints.includes(index)}
                         className={`
                           block w-full text-left p-2 rounded text-sm transition-all
-                          ${usedHints.includes(index)
-                            ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
-                            : 'bg-yellow-50 text-yellow-800 hover:bg-yellow-100 border border-yellow-200'
+                          ${
+                            usedHints.includes(index)
+                              ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
+                              : 'bg-yellow-50 text-yellow-800 hover:bg-yellow-100 border border-yellow-200'
                           }
                         `}
                       >
@@ -609,9 +620,10 @@ const PuzzleInterface: React.FC<PuzzleInterfaceProps> = ({
                 disabled={!canSubmit || isSubmitting}
                 className={`
                   px-8 py-2 rounded-lg font-medium transition-all duration-200 flex items-center space-x-2
-                  ${canSubmit && !isSubmitting
-                    ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  ${
+                    canSubmit && !isSubmitting
+                      ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg'
+                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   }
                   ${pulseEffect ? 'animate-pulse' : ''}
                 `}

@@ -18,7 +18,6 @@
 // Controls full multiverse reset logic
 
 import type { LocalGameState } from '../state/gameState';
-import type { NPC } from '../types/NPCTypes';
 
 export interface PlayerSnapshot {
   inventory?: string[];
@@ -66,9 +65,9 @@ export interface ResetTransaction {
 // Default entry points for different reset types
 const RESET_ENTRY_POINTS = {
   soft: 'controlnexus',
-  hard: 'controlnexus', 
+  hard: 'controlnexus',
   death: 'introreset',
-  new_game_plus: 'controlnexus'
+  new_game_plus: 'controlnexus',
 };
 
 // Default game state template
@@ -82,7 +81,7 @@ const DEFAULT_GAME_STATE: Partial<LocalGameState> = {
   npcsInRoom: [],
   roomVisitCount: {},
   messages: [],
-  inventory: []
+  inventory: [],
 };
 
 // Reset statistics tracking
@@ -90,15 +89,17 @@ const resetStats = {
   totalResets: 0,
   resetsByType: {} as Record<string, number>,
   lastResetTime: 0,
-  resetReasons: [] as string[]
+  resetReasons: [] as string[],
 };
 
 /**
  * Validates that a game state object has required properties
  */
 function validateGameState(state: unknown): state is LocalGameState {
-  if (!state || typeof state !== 'object') return false;
-  
+  if (!state || typeof state !== 'object') {
+    return false;
+  }
+
   try {
     const s = state as LocalGameState;
     return !!(
@@ -124,12 +125,12 @@ function createGameStateHash(state: LocalGameState): string {
       name: state.player.name,
       health: state.player.health,
       score: state.player.score,
-      currentRoom: state.player.currentRoom
+      currentRoom: state.player.currentRoom,
     },
     currentRoomId: state.currentRoomId,
-    flagCount: Object.keys(state.flags).length
+    flagCount: Object.keys(state.flags).length,
   };
-  
+
   return btoa(JSON.stringify(hashData)).slice(0, 16);
 }
 
@@ -147,7 +148,7 @@ export function executeReset(
     customEntryPoint,
     preserveNPCMemory = false,
     preserveCodex = true,
-    reasonCode = 'user_initiated'
+    reasonCode = 'user_initiated',
   } = options;
 
   try {
@@ -158,16 +159,16 @@ export function executeReset(
           id: `backup_${Date.now()}`,
           state: JSON.parse(JSON.stringify(state)),
           reason,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         };
-        
+
         try {
           localStorage.setItem(`gorstan_backup_${backup.id}`, JSON.stringify(backup));
         } catch (error) {
           console.warn('[ResetEngine] Could not create backup:', error);
         }
       }
-      
+
       createBackup(currentState, reasonCode);
     }
 
@@ -189,7 +190,7 @@ export function executeReset(
         playTime: 0,
         lastSave: '',
         level: 1,
-        experience: 0
+        experience: 0,
       },
       roomMap: currentState?.roomMap || {},
       gameTime: {
@@ -198,7 +199,7 @@ export function executeReset(
         minute: 0,
         startTime: Date.now(),
         currentTime: Date.now(),
-        timeScale: 1
+        timeScale: 1,
       },
       settings: currentState?.settings || {
         soundEnabled: true,
@@ -212,7 +213,7 @@ export function executeReset(
         textSpeed: 50,
         fontSize: 'medium',
         theme: 'auto',
-        debugMode: false
+        debugMode: false,
       },
       metadata: {
         resetCount: (currentState?.metadata?.resetCount || 0) + 1,
@@ -220,13 +221,16 @@ export function executeReset(
         lastSaved: null,
         playTime: 0,
         achievements: [],
-        codexEntries: {}
+        codexEntries: {},
       },
-      miniquestState: {}
+      miniquestState: {},
     } as LocalGameState;
 
     // Set entry point
-    const entryPoint = customEntryPoint || RESET_ENTRY_POINTS[resetType as keyof typeof RESET_ENTRY_POINTS] || RESET_ENTRY_POINTS.soft;
+    const entryPoint =
+      customEntryPoint ||
+      RESET_ENTRY_POINTS[resetType as keyof typeof RESET_ENTRY_POINTS] ||
+      RESET_ENTRY_POINTS.soft;
     newState.currentRoomId = entryPoint;
     newState.player.currentRoom = entryPoint;
 
@@ -267,7 +271,7 @@ export function executeReset(
 
       // Preserve specific flags
       if (preserveFlags.length > 0) {
-        preserveFlags.forEach(flagName => {
+        preserveFlags.forEach((flagName) => {
           if (currentState.flags?.[flagName] !== undefined) {
             newState.flags[flagName] = currentState.flags[flagName];
           }
@@ -284,20 +288,19 @@ export function executeReset(
     updateResetStats(resetType, reasonCode);
 
     // Log reset for debugging
-  if (import.meta.env.DEV) {
+    if (import.meta.env.DEV) {
       console.log(`[ResetEngine] Executed ${resetType} reset:`, {
         entryPoint,
         preserveAchievements,
         preserveFlags,
-        reasonCode
+        reasonCode,
       });
     }
 
     return newState;
-
   } catch (error) {
     console.error('[ResetEngine] Error during reset:', error);
-    
+
     // Fallback to minimal safe state
     return {
       ...DEFAULT_GAME_STATE,
@@ -316,7 +319,7 @@ export function executeReset(
         playTime: 0,
         lastSave: '',
         level: 1,
-        experience: 0
+        experience: 0,
       },
       gameTime: {
         day: 1,
@@ -324,7 +327,7 @@ export function executeReset(
         minute: 0,
         startTime: Date.now(),
         currentTime: Date.now(),
-        timeScale: 1
+        timeScale: 1,
       },
       settings: {
         soundEnabled: true,
@@ -338,7 +341,7 @@ export function executeReset(
         textSpeed: 50,
         fontSize: 'medium',
         theme: 'auto',
-        debugMode: false
+        debugMode: false,
       },
       metadata: {
         resetCount: 1,
@@ -346,8 +349,8 @@ export function executeReset(
         lastSaved: null,
         playTime: 0,
         achievements: [],
-        codexEntries: {}
-      }
+        codexEntries: {},
+      },
     } as LocalGameState;
   }
 }
@@ -355,14 +358,11 @@ export function executeReset(
 /**
  * Handles soft reset logic - preserves more player progress
  */
-function handleSoftReset(
-  newState: LocalGameState,
-  currentState?: LocalGameState,
-): void {
+function handleSoftReset(newState: LocalGameState, currentState?: LocalGameState): void {
   if (currentState) {
     // Preserve player name and some basic progress
     newState.player.name = currentState.player.name;
-    
+
     // Preserve some visited rooms (partial memory)
     if (currentState.player.visitedRooms && currentState.player.visitedRooms.length > 0) {
       newState.player.visitedRooms = currentState.player.visitedRooms.slice(0, 3);
@@ -427,7 +427,7 @@ function handleDeathReset(newState: LocalGameState, currentState?: LocalGameStat
 
   if (currentState) {
     // Track death count
-    const deathCount = (currentState.player.flags?.deathCount as number || 0) + 1;
+    const deathCount = ((currentState.player.flags?.deathCount as number) || 0) + 1;
     if (!newState.player.flags) {
       newState.player.flags = {};
     }
@@ -437,7 +437,7 @@ function handleDeathReset(newState: LocalGameState, currentState?: LocalGameStat
 
     // Preserve name and some basic flags
     newState.player.name = currentState.player.name;
-    
+
     // Add death-related narrative flags
     newState.flags.remembersLastDeath = true;
     if (deathCount > 1) {
@@ -446,7 +446,7 @@ function handleDeathReset(newState: LocalGameState, currentState?: LocalGameStat
 
     // Preserve some critical story flags
     const criticalFlags = ['metAyla', 'metMorthos', 'discoveredPortal', 'foundSecretRoom'];
-    criticalFlags.forEach(flag => {
+    criticalFlags.forEach((flag) => {
       if (currentState.flags?.[flag]) {
         newState.flags[flag] = currentState.flags[flag];
       }
@@ -474,17 +474,20 @@ function updateResetStats(resetType: string, reasonCode: string): void {
  */
 export function createCheckpoint(
   gameState: LocalGameState,
-  checkpointName: string = 'auto'
+  checkpointName: string = 'auto',
 ): CheckpointData {
   const checkpoint: CheckpointData = {
     ...JSON.parse(JSON.stringify(gameState)),
     checkpointId: `checkpoint_${Date.now()}`,
     checkpointName,
-    createdAt: Date.now()
+    createdAt: Date.now(),
   };
 
   try {
-    localStorage.setItem(`gorstan_checkpoint_${checkpoint.checkpointId}`, JSON.stringify(checkpoint));
+    localStorage.setItem(
+      `gorstan_checkpoint_${checkpoint.checkpointId}`,
+      JSON.stringify(checkpoint),
+    );
   } catch (error) {
     console.warn('[ResetEngine] Could not save checkpoint:', error);
   }
@@ -507,7 +510,7 @@ export function loadCheckpoint(checkpointId: string): LocalGameState | null {
   } catch (error) {
     console.warn('[ResetEngine] Could not load checkpoint:', error);
   }
-  
+
   return null;
 }
 
@@ -516,7 +519,7 @@ export function loadCheckpoint(checkpointId: string): LocalGameState | null {
  */
 export function getAvailableCheckpoints(): CheckpointData[] {
   const checkpoints: CheckpointData[] = [];
-  
+
   try {
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
@@ -546,10 +549,10 @@ export function getAvailableCheckpoints(): CheckpointData[] {
  */
 export function cleanupOldSaves(maxAge: number = 7 * 24 * 60 * 60 * 1000): void {
   const cutoffTime = Date.now() - maxAge;
-  
+
   try {
     const keysToRemove: string[] = [];
-    
+
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
       if (key?.startsWith('gorstan_checkpoint_') || key?.startsWith('gorstan_backup_')) {
@@ -569,9 +572,9 @@ export function cleanupOldSaves(maxAge: number = 7 * 24 * 60 * 60 * 1000): void 
       }
     }
 
-    keysToRemove.forEach(key => localStorage.removeItem(key));
-    
-  if (import.meta.env.DEV) {
+    keysToRemove.forEach((key) => localStorage.removeItem(key));
+
+    if (import.meta.env.DEV) {
       console.log(`[ResetEngine] Cleaned up ${keysToRemove.length} old saves`);
     }
   } catch (error) {

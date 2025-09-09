@@ -18,13 +18,15 @@ export const ChainLightning: Spell = {
   cooldownMs: 6000,
   cast: {
     windupMs: 1000,
-    recoveryMs: 800
+    recoveryMs: 800,
   },
   requiresTarget: true,
   description: 'Lightning that arcs between enemies, dealing more damage when targets are wet.',
-  
+
   execute: (caster: Actor, target?: Actor) => {
-    if (!target) return;
+    if (!target) {
+      return;
+    }
 
     // Track targets hit to prevent infinite loops
     const hitTargets = new Set<string>();
@@ -36,13 +38,13 @@ export const ChainLightning: Spell = {
 
       // Create shock damage packet
       const damage = DamageUtils.shock(BALANCE.baseDamage.ChainLightning, caster.id);
-      
+
       // Apply caster's power scaling
       damage.base *= caster.stats.power;
 
       // Check if target is wet for bonus damage
       if (statusSystem.hasStatus(currentTarget, 'Wet' as any)) {
-        damage.base *= (1 + BALANCE.status.overloadBonus);
+        damage.base *= 1 + BALANCE.status.overloadBonus;
       }
 
       // Resolve damage
@@ -62,5 +64,5 @@ export const ChainLightning: Spell = {
 
     // Play sound effect
     combatAudio.spellCast('chainLightning');
-  }
+  },
 };

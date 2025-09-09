@@ -20,8 +20,6 @@
 import React from 'react';
 import type { GameAction } from '../types/GameTypes';
 import type { LocalGameState } from '../state/gameState';
-import type { NPC } from '../types/NPCTypes';
-import type { Room } from '../types/Room';
 
 /**
  * Gorstan Dynamic Encounter Engine
@@ -39,7 +37,7 @@ export const NPC_HIERARCHY = {
   POLLY: { power: 80, id: 'polly' },
   WENDELL: { power: 60, id: 'mr_wendell' },
   ALBIE: { power: 70, id: 'albie', role: 'enforcer' },
-  DOMINIC: { power: 30, id: 'dominic_wandering', trait: 'unpredictable' }
+  DOMINIC: { power: 30, id: 'dominic_wandering', trait: 'unpredictable' },
 } as const;
 
 export type EncounterType =
@@ -96,7 +94,10 @@ export class DynamicEncounterEngine {
     if (npcs.includes('ayla')) {
       return 'ayla_control';
     }
-    if (npcs.includes('albie') && npcs.some(npc => ['morthos', 'al_escape_artist', 'polly', 'mr_wendell'].includes(npc))) {
+    if (
+      npcs.includes('albie') &&
+      npcs.some((npc) => ['morthos', 'al_escape_artist', 'polly', 'mr_wendell'].includes(npc))
+    ) {
       return 'intervention';
     }
     if (npcs.includes('polly') && npcs.includes('dominic_wandering')) {
@@ -106,14 +107,14 @@ export class DynamicEncounterEngine {
       return 'tension_building';
     }
     if (npcs.includes('mr_wendell')) {
-      const hasCursedItems = playerInventory.some(item =>
-        ['cursedcoin', 'doomedscroll', 'cursed_artifact'].includes(item.toLowerCase())
+      const hasCursedItems = playerInventory.some((item) =>
+        ['cursedcoin', 'doomedscroll', 'cursed_artifact'].includes(item.toLowerCase()),
       );
       if (hasCursedItems || flags.wasRudeToNPC) {
         return 'threat';
       }
     }
-    const equals = ['morthos', 'al_escape_artist', 'polly'].filter(npc => npcs.includes(npc));
+    const equals = ['morthos', 'al_escape_artist', 'polly'].filter((npc) => npcs.includes(npc));
     if (equals.length >= 2) {
       return 'argument';
     }
@@ -128,12 +129,16 @@ export class DynamicEncounterEngine {
     roomId: string,
     npcs: string[],
     gameState: LocalGameState,
-    dispatch: React.Dispatch<GameAction>
+    dispatch: React.Dispatch<GameAction>,
   ): boolean {
-    if (npcs.length < 2) return false;
+    if (npcs.length < 2) {
+      return false;
+    }
 
     const encounterType = this.determineEncounterType(npcs, gameState);
-    if (!encounterType) return false;
+    if (!encounterType) {
+      return false;
+    }
 
     const encounter = this.buildEncounterConfig(encounterType, npcs, gameState);
     this.executeEncounter(roomId, encounter, gameState, dispatch);
@@ -146,13 +151,13 @@ export class DynamicEncounterEngine {
   private buildEncounterConfig(
     type: EncounterType,
     participants: string[],
-    gameState: LocalGameState
+    gameState: LocalGameState,
   ): EncounterConfig {
     const baseConfig: EncounterConfig = {
       type,
       participants,
       duration: this.getEncounterDuration(type),
-      effects: {}
+      effects: {},
     };
 
     // Apply type-specific effects
@@ -160,45 +165,45 @@ export class DynamicEncounterEngine {
       case 'ayla_control':
         baseConfig.effects = {
           flagChanges: { aylaPresent: true, roomTense: false },
-          narrativeOutcome: 'Ayla\'s presence brings immediate order to the room.'
+          narrativeOutcome: "Ayla's presence brings immediate order to the room.",
         };
         break;
       case 'intervention':
         baseConfig.effects = {
           flagChanges: { albieIntervened: true, conflictResolved: true },
-          narrativeOutcome: 'Albie successfully defuses the situation.'
+          narrativeOutcome: 'Albie successfully defuses the situation.',
         };
         break;
       case 'standoff':
         baseConfig.effects = {
           healthChange: -5,
           flagChanges: { tensionEscalated: true },
-          narrativeOutcome: 'The situation grows increasingly dangerous.'
+          narrativeOutcome: 'The situation grows increasingly dangerous.',
         };
         break;
       case 'threat':
         baseConfig.effects = {
           healthChange: -10,
           flagChanges: { wendellThreatened: true },
-          narrativeOutcome: 'Mr. Wendell\'s menacing presence is unmistakable.'
+          narrativeOutcome: "Mr. Wendell's menacing presence is unmistakable.",
         };
         break;
       case 'argument':
         baseConfig.effects = {
           flagChanges: { argumentWitnessed: true },
-          narrativeOutcome: 'Heated words are exchanged between the NPCs.'
+          narrativeOutcome: 'Heated words are exchanged between the NPCs.',
         };
         break;
       case 'tension_building':
         baseConfig.effects = {
           flagChanges: { roomTense: true },
-          narrativeOutcome: 'The atmosphere in the room grows noticeably tense.'
+          narrativeOutcome: 'The atmosphere in the room grows noticeably tense.',
         };
         break;
       case 'dominance_display':
         baseConfig.effects = {
           flagChanges: { dominanceShown: true },
-          narrativeOutcome: 'Clear hierarchies are established through subtle displays of power.'
+          narrativeOutcome: 'Clear hierarchies are established through subtle displays of power.',
         };
         break;
     }
@@ -213,7 +218,7 @@ export class DynamicEncounterEngine {
     roomId: string,
     encounter: EncounterConfig,
     gameState: LocalGameState,
-    dispatch: React.Dispatch<GameAction>
+    dispatch: React.Dispatch<GameAction>,
   ): void {
     // Record the encounter
     this.recordEncounter(roomId, encounter);
@@ -226,8 +231,8 @@ export class DynamicEncounterEngine {
         id: `encounter-${Date.now()}`,
         text: this.getEncounterOpeningMessage(encounter.type, participantNames),
         type: 'narrative',
-        timestamp: Date.now()
-      }
+        timestamp: Date.now(),
+      },
     });
 
     // Execute encounter sequence
@@ -244,8 +249,8 @@ export class DynamicEncounterEngine {
           id: `encounter-close-${Date.now()}`,
           text: this.getEncounterClosingMessage(encounter.type),
           type: 'narrative',
-          timestamp: Date.now()
-        }
+          timestamp: Date.now(),
+        },
       });
     }, encounter.duration * 1000);
   }
@@ -259,7 +264,7 @@ export class DynamicEncounterEngine {
       type: encounter.type,
       participants: encounter.participants,
       timestamp: Date.now(),
-      outcome: encounter.effects.narrativeOutcome || 'Unknown outcome'
+      outcome: encounter.effects.narrativeOutcome || 'Unknown outcome',
     });
 
     // Maintain history size
@@ -274,22 +279,25 @@ export class DynamicEncounterEngine {
   private executeEncounterSequence(
     encounter: EncounterConfig,
     participants: string[],
-    dispatch: React.Dispatch<GameAction>
+    dispatch: React.Dispatch<GameAction>,
   ): void {
     const sequences = this.getEncounterSequences(encounter.type, participants);
-    
+
     sequences.forEach((message, index) => {
-      setTimeout(() => {
-        dispatch({
-          type: 'RECORD_MESSAGE',
-          payload: {
-            id: `encounter-seq-${Date.now()}-${index}`,
-            text: message,
-            type: 'narrative',
-            timestamp: Date.now()
-          }
-        });
-      }, (index + 1) * 1500);
+      setTimeout(
+        () => {
+          dispatch({
+            type: 'RECORD_MESSAGE',
+            payload: {
+              id: `encounter-seq-${Date.now()}-${index}`,
+              text: message,
+              type: 'narrative',
+              timestamp: Date.now(),
+            },
+          });
+        },
+        (index + 1) * 1500,
+      );
     });
   }
 
@@ -326,50 +334,50 @@ export class DynamicEncounterEngine {
       case 'ayla_control':
         return [
           "→ Ayla doesn't speak. She doesn't need to.",
-          "→ The other NPCs quietly adjust their positions, acknowledging the hierarchy.",
-          "→ Order is restored through sheer presence alone."
+          '→ The other NPCs quietly adjust their positions, acknowledging the hierarchy.',
+          '→ Order is restored through sheer presence alone.',
         ];
       case 'intervention':
         return [
           "→ Albie's calm voice cuts through the tension.",
           "→ 'Everyone needs to take a step back.'",
-          "→ The situation de-escalates as cooler heads prevail."
+          '→ The situation de-escalates as cooler heads prevail.',
         ];
       case 'standoff':
         return [
-          "→ Neither side is willing to back down.",
-          "→ The tension reaches a dangerous peak.",
-          "→ One wrong word could spark something irreversible."
+          '→ Neither side is willing to back down.',
+          '→ The tension reaches a dangerous peak.',
+          '→ One wrong word could spark something irreversible.',
         ];
       case 'threat':
         return [
           "→ Mr. Wendell's voice drops to a whisper.",
           "→ 'Some mistakes cannot be undone.'",
-          "→ The warning hangs heavy in the air."
+          '→ The warning hangs heavy in the air.',
         ];
       case 'argument':
         return [
-          "→ Conflicting viewpoints clash openly.",
-          "→ Old grievances surface as voices rise.",
-          "→ The disagreement reaches its crescendo before slowly subsiding."
+          '→ Conflicting viewpoints clash openly.',
+          '→ Old grievances surface as voices rise.',
+          '→ The disagreement reaches its crescendo before slowly subsiding.',
         ];
       case 'tension_building':
         return [
-          "→ Subtle glances are exchanged between the NPCs.",
-          "→ The atmosphere grows increasingly charged.",
-          "→ Something is building, but what?"
+          '→ Subtle glances are exchanged between the NPCs.',
+          '→ The atmosphere grows increasingly charged.',
+          '→ Something is building, but what?',
         ];
       case 'dominance_display':
         return [
-          "→ Unspoken challenges pass between the NPCs.",
+          '→ Unspoken challenges pass between the NPCs.',
           "→ Each tests the other's resolve through subtle gestures.",
-          "→ The pecking order becomes clear without words."
+          '→ The pecking order becomes clear without words.',
         ];
       default:
         return [
-          "→ The NPCs interact in complex ways.",
-          "→ Relationships and alliances shift subtly.",
-          "→ The social dynamics play out before you."
+          '→ The NPCs interact in complex ways.',
+          '→ Relationships and alliances shift subtly.',
+          '→ The social dynamics play out before you.',
         ];
     }
   }
@@ -381,7 +389,7 @@ export class DynamicEncounterEngine {
     roomId: string,
     encounter: EncounterConfig,
     gameState: LocalGameState,
-    dispatch: React.Dispatch<GameAction>
+    dispatch: React.Dispatch<GameAction>,
   ): void {
     const effects = encounter.effects;
 
@@ -390,7 +398,7 @@ export class DynamicEncounterEngine {
       const newHealth = Math.max(0, (gameState.player.health || 100) + effects.healthChange);
       dispatch({
         type: 'SET_PLAYER_HEALTH',
-        payload: newHealth
+        payload: newHealth,
       });
 
       if (effects.healthChange < 0) {
@@ -400,8 +408,8 @@ export class DynamicEncounterEngine {
             id: `health-change-${Date.now()}`,
             text: `You feel affected by the encounter. Health: ${newHealth}`,
             type: 'system',
-            timestamp: Date.now()
-          }
+            timestamp: Date.now(),
+          },
         });
       }
     }
@@ -411,17 +419,17 @@ export class DynamicEncounterEngine {
       Object.entries(effects.flagChanges).forEach(([flag, value]) => {
         dispatch({
           type: 'SET_FLAG',
-          payload: { flag, value }
+          payload: { flag, value },
         });
       });
     }
 
     // Unlock achievements
     if (effects.unlockAchievements) {
-      effects.unlockAchievements.forEach(achievement => {
+      effects.unlockAchievements.forEach((achievement) => {
         dispatch({
           type: 'UNLOCK_ACHIEVEMENT',
-          payload: achievement
+          payload: achievement,
         });
       });
     }
@@ -441,21 +449,21 @@ export class DynamicEncounterEngine {
   private getEncounterClosingMessage(type: EncounterType): string {
     switch (type) {
       case 'ayla_control':
-        return "The room settles into a more ordered state.";
+        return 'The room settles into a more ordered state.';
       case 'intervention':
         return "Albie's intervention proves effective. The situation is resolved.";
       case 'standoff':
-        return "The standoff ends, but the underlying tensions remain.";
+        return 'The standoff ends, but the underlying tensions remain.';
       case 'threat':
         return "Mr. Wendell's message has been clearly received.";
       case 'argument':
-        return "The argument subsides, but positions have been established.";
+        return 'The argument subsides, but positions have been established.';
       case 'tension_building':
-        return "The tension peaks and then gradually subsides.";
+        return 'The tension peaks and then gradually subsides.';
       case 'dominance_display':
-        return "The power dynamics are now clearly understood by all.";
+        return 'The power dynamics are now clearly understood by all.';
       default:
-        return "The encounter concludes with new understanding among those present.";
+        return 'The encounter concludes with new understanding among those present.';
     }
   }
 
@@ -464,16 +472,16 @@ export class DynamicEncounterEngine {
    */
   private getNPCDisplayNames(npcIds: string[]): string[] {
     const nameMap: Record<string, string> = {
-      'ayla': 'Ayla',
-      'morthos': 'Morthos',
-      'al_escape_artist': 'Al',
-      'polly': 'Polly',
-      'mr_wendell': 'Mr. Wendell',
-      'albie': 'Albie',
-      'dominic_wandering': 'Dominic'
+      ayla: 'Ayla',
+      morthos: 'Morthos',
+      al_escape_artist: 'Al',
+      polly: 'Polly',
+      mr_wendell: 'Mr. Wendell',
+      albie: 'Albie',
+      dominic_wandering: 'Dominic',
     };
 
-    return npcIds.map(id => nameMap[id] || id);
+    return npcIds.map((id) => nameMap[id] || id);
   }
 
   /**
@@ -481,14 +489,22 @@ export class DynamicEncounterEngine {
    */
   private getEncounterDuration(type: EncounterType): number {
     switch (type) {
-      case 'ayla_control': return 8;
-      case 'intervention': return 10;
-      case 'standoff': return 15;
-      case 'threat': return 12;
-      case 'argument': return 18;
-      case 'tension_building': return 6;
-      case 'dominance_display': return 10;
-      default: return 8;
+      case 'ayla_control':
+        return 8;
+      case 'intervention':
+        return 10;
+      case 'standoff':
+        return 15;
+      case 'threat':
+        return 12;
+      case 'argument':
+        return 18;
+      case 'tension_building':
+        return 6;
+      case 'dominance_display':
+        return 10;
+      default:
+        return 8;
     }
   }
 

@@ -2,7 +2,7 @@
  * React hook utilities - extracted common patterns from components
  */
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 
 /**
  * Hook for managing modal/dialog state
@@ -12,7 +12,7 @@ export function useModal(initialOpen = false) {
 
   const open = useCallback(() => setIsOpen(true), []);
   const close = useCallback(() => setIsOpen(false), []);
-  const toggle = useCallback(() => setIsOpen(prev => !prev), []);
+  const toggle = useCallback(() => setIsOpen((prev) => !prev), []);
 
   return {
     isOpen,
@@ -27,32 +27,41 @@ export function useModal(initialOpen = false) {
  */
 export function useFormState<T extends Record<string, any>>(
   initialValues: T,
-  validate?: (values: T) => Record<keyof T, string | null>
+  validate?: (values: T) => Record<keyof T, string | null>,
 ) {
   const [values, setValues] = useState<T>(initialValues);
-  const [errors, setErrors] = useState<Record<keyof T, string | null>>({} as Record<keyof T, string | null>);
-  const [touched, setTouchedState] = useState<Record<keyof T, boolean>>({} as Record<keyof T, boolean>);
+  const [errors, setErrors] = useState<Record<keyof T, string | null>>(
+    {} as Record<keyof T, string | null>,
+  );
+  const [touched, setTouchedState] = useState<Record<keyof T, boolean>>(
+    {} as Record<keyof T, boolean>,
+  );
 
-  const setValue = useCallback(<K extends keyof T>(field: K, value: T[K]) => {
-    setValues(prev => ({ ...prev, [field]: value }));
-    
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: null }));
-    }
-  }, [errors]);
+  const setValue = useCallback(
+    <K extends keyof T>(field: K, value: T[K]) => {
+      setValues((prev) => ({ ...prev, [field]: value }));
+
+      // Clear error when user starts typing
+      if (errors[field]) {
+        setErrors((prev) => ({ ...prev, [field]: null }));
+      }
+    },
+    [errors],
+  );
 
   const setTouched = useCallback(<K extends keyof T>(field: K, isTouched = true) => {
-    setTouchedState(prev => ({ ...prev, [field]: isTouched }));
+    setTouchedState((prev) => ({ ...prev, [field]: isTouched }));
   }, []);
 
   const validateForm = useCallback(() => {
-    if (!validate) return true;
-    
+    if (!validate) {
+      return true;
+    }
+
     const validationErrors = validate(values);
     setErrors(validationErrors);
-    
-    return Object.values(validationErrors).every(error => error === null);
+
+    return Object.values(validationErrors).every((error) => error === null);
   }, [values, validate]);
 
   const reset = useCallback(() => {
@@ -61,12 +70,15 @@ export function useFormState<T extends Record<string, any>>(
     setTouchedState({} as Record<keyof T, boolean>);
   }, [initialValues]);
 
-  const getFieldProps = useCallback(<K extends keyof T>(field: K) => ({
-    value: values[field],
-    onChange: (value: T[K]) => setValue(field, value),
-    onBlur: () => setTouched(field),
-    error: touched[field] ? errors[field] : null,
-  }), [values, errors, touched, setValue, setTouched]);
+  const getFieldProps = useCallback(
+    <K extends keyof T>(field: K) => ({
+      value: values[field],
+      onChange: (value: T[K]) => setValue(field, value),
+      onBlur: () => setTouched(field),
+      error: touched[field] ? errors[field] : null,
+    }),
+    [values, errors, touched, setValue, setTouched],
+  );
 
   return {
     values,
@@ -77,7 +89,7 @@ export function useFormState<T extends Record<string, any>>(
     validateForm,
     reset,
     getFieldProps,
-    isValid: Object.values(errors).every(error => error === null),
+    isValid: Object.values(errors).every((error) => error === null),
     isDirty: JSON.stringify(values) !== JSON.stringify(initialValues),
   };
 }
@@ -87,11 +99,11 @@ export function useFormState<T extends Record<string, any>>(
  */
 export function usePrevious<T>(value: T): T | undefined {
   const ref = useRef<T | undefined>(undefined);
-  
+
   useEffect(() => {
     ref.current = value;
   });
-  
+
   return ref.current;
 }
 
@@ -117,31 +129,31 @@ export function useDebounce<T>(value: T, delay: number): T {
 /**
  * Hook for throttling function calls
  */
-export function useThrottle<T extends (...args: unknown[]) => unknown>(
-  fn: T,
-  delay: number
-): T {
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+export function useThrottle<T extends (...args: unknown[]) => unknown>(fn: T, delay: number): T {
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastCallRef = useRef<number>(0);
 
-  return useCallback((...args: Parameters<T>) => {
-    const now = Date.now();
-    const timeSinceLastCall = now - lastCallRef.current;
+  return useCallback(
+    (...args: Parameters<T>) => {
+      const now = Date.now();
+      const timeSinceLastCall = now - lastCallRef.current;
 
-    if (timeSinceLastCall >= delay) {
-      lastCallRef.current = now;
-      return fn(...args);
-    } else {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
+      if (timeSinceLastCall >= delay) {
+        lastCallRef.current = now;
+        return fn(...args);
+      } else {
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+
+        timeoutRef.current = setTimeout(() => {
+          lastCallRef.current = Date.now();
+          fn(...args);
+        }, delay - timeSinceLastCall);
       }
-      
-      timeoutRef.current = setTimeout(() => {
-        lastCallRef.current = Date.now();
-        fn(...args);
-      }, delay - timeSinceLastCall);
-    }
-  }, [fn, delay]) as T;
+    },
+    [fn, delay],
+  ) as T;
 }
 
 /**
@@ -149,7 +161,7 @@ export function useThrottle<T extends (...args: unknown[]) => unknown>(
  */
 export function useLocalStorage<T>(
   key: string,
-  initialValue: T
+  initialValue: T,
 ): [T, (value: T | ((prev: T) => T)) => void, () => void] {
   const [storedValue, setStoredValue] = useState<T>(() => {
     try {
@@ -161,15 +173,18 @@ export function useLocalStorage<T>(
     }
   });
 
-  const setValue = useCallback((value: T | ((prev: T) => T)) => {
-    try {
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
-      setStoredValue(valueToStore);
-      window.localStorage.setItem(key, JSON.stringify(valueToStore));
-    } catch (error) {
-      console.warn(`Error setting localStorage key "${key}":`, error);
-    }
-  }, [key, storedValue]);
+  const setValue = useCallback(
+    (value: T | ((prev: T) => T)) => {
+      try {
+        const valueToStore = value instanceof Function ? value(storedValue) : value;
+        setStoredValue(valueToStore);
+        window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      } catch (error) {
+        console.warn(`Error setting localStorage key "${key}":`, error);
+      }
+    },
+    [key, storedValue],
+  );
 
   const removeValue = useCallback(() => {
     try {
@@ -188,7 +203,7 @@ export function useLocalStorage<T>(
  */
 export function useSessionStorage<T>(
   key: string,
-  initialValue: T
+  initialValue: T,
 ): [T, (value: T | ((prev: T) => T)) => void, () => void] {
   const [storedValue, setStoredValue] = useState<T>(() => {
     try {
@@ -200,15 +215,18 @@ export function useSessionStorage<T>(
     }
   });
 
-  const setValue = useCallback((value: T | ((prev: T) => T)) => {
-    try {
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
-      setStoredValue(valueToStore);
-      window.sessionStorage.setItem(key, JSON.stringify(valueToStore));
-    } catch (error) {
-      console.warn(`Error setting sessionStorage key "${key}":`, error);
-    }
-  }, [key, storedValue]);
+  const setValue = useCallback(
+    (value: T | ((prev: T) => T)) => {
+      try {
+        const valueToStore = value instanceof Function ? value(storedValue) : value;
+        setStoredValue(valueToStore);
+        window.sessionStorage.setItem(key, JSON.stringify(valueToStore));
+      } catch (error) {
+        console.warn(`Error setting sessionStorage key "${key}":`, error);
+      }
+    },
+    [key, storedValue],
+  );
 
   const removeValue = useCallback(() => {
     try {
@@ -236,7 +254,7 @@ export function useInterval(callback: () => void, delay: number | null) {
     function tick() {
       savedCallback.current?.();
     }
-    
+
     if (delay !== null) {
       const id = setInterval(tick, delay);
       return () => clearInterval(id);
@@ -267,17 +285,19 @@ export function useTimeout(callback: () => void, delay: number | null) {
  */
 export function useIntersectionObserver(
   ref: React.RefObject<Element>,
-  options: IntersectionObserverInit = {}
+  options: IntersectionObserverInit = {},
 ): boolean {
   const [isIntersecting, setIsIntersecting] = useState(false);
 
   useEffect(() => {
     const element = ref.current;
-    if (!element) return;
+    if (!element) {
+      return;
+    }
 
     const observer = new IntersectionObserver(
       ([entry]) => setIsIntersecting(entry.isIntersecting),
-      options
+      options,
     );
 
     observer.observe(element);
@@ -326,7 +346,7 @@ export function useMediaQuery(query: string): boolean {
 
   useEffect(() => {
     const mediaQuery = window.matchMedia(query);
-    
+
     function updateMatches() {
       setMatches(mediaQuery.matches);
     }
@@ -347,18 +367,22 @@ export function useFocusTrap(isActive: boolean) {
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    if (!isActive || !ref.current) return;
+    if (!isActive || !ref.current) {
+      return;
+    }
 
     const element = ref.current;
     const focusableElements = element.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
     );
-    
+
     const firstElement = focusableElements[0] as HTMLElement;
     const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
 
     function handleTabKey(e: KeyboardEvent) {
-      if (e.key !== 'Tab') return;
+      if (e.key !== 'Tab') {
+        return;
+      }
 
       if (e.shiftKey) {
         if (document.activeElement === firstElement) {
@@ -389,7 +413,7 @@ export function useFocusTrap(isActive: boolean) {
  */
 export function useOptimisticUpdate<T>(
   currentValue: T,
-  updateFn: (optimisticValue: T) => Promise<T>
+  updateFn: (optimisticValue: T) => Promise<T>,
 ) {
   const [optimisticValue, setOptimisticValue] = useState(currentValue);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -399,20 +423,23 @@ export function useOptimisticUpdate<T>(
     setOptimisticValue(currentValue);
   }, [currentValue]);
 
-  const update = useCallback(async (newValue: T) => {
-    setIsUpdating(true);
-    setError(null);
-    setOptimisticValue(newValue);
+  const update = useCallback(
+    async (newValue: T) => {
+      setIsUpdating(true);
+      setError(null);
+      setOptimisticValue(newValue);
 
-    try {
-      await updateFn(newValue);
-    } catch (err) {
-      setOptimisticValue(currentValue);
-      setError(err instanceof Error ? err.message : 'Update failed');
-    } finally {
-      setIsUpdating(false);
-    }
-  }, [currentValue, updateFn]);
+      try {
+        await updateFn(newValue);
+      } catch (err) {
+        setOptimisticValue(currentValue);
+        setError(err instanceof Error ? err.message : 'Update failed');
+      } finally {
+        setIsUpdating(false);
+      }
+    },
+    [currentValue, updateFn],
+  );
 
   return {
     value: optimisticValue,

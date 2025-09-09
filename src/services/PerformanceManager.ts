@@ -40,7 +40,11 @@
   Central coordination of performance optimization features
 */
 
-import DeviceProfiler, { type DeviceCapabilities, type PerformanceSettings, type PerformanceMetrics } from './DeviceProfiler';
+import DeviceProfiler, {
+  type DeviceCapabilities,
+  type PerformanceSettings,
+  type PerformanceMetrics,
+} from './DeviceProfiler';
 
 export interface OptimizationProfile {
   name: string;
@@ -92,13 +96,13 @@ export class PerformanceManager {
         resourcePoolSize: 100,
         imageCompression: 'none',
         prefetchEnabled: true,
-        bandwidthLimit: 0
+        bandwidthLimit: 0,
       },
       deviceTargets: {
         minPerformanceTier: 'high',
         platforms: ['desktop'],
-        memoryRange: [8, 64]
-      }
+        memoryRange: [8, 64],
+      },
     },
     {
       name: 'Balanced',
@@ -120,13 +124,13 @@ export class PerformanceManager {
         resourcePoolSize: 50,
         imageCompression: 'light',
         prefetchEnabled: true,
-        bandwidthLimit: 0
+        bandwidthLimit: 0,
       },
       deviceTargets: {
         minPerformanceTier: 'medium',
         platforms: ['desktop', 'tablet'],
-        memoryRange: [4, 16]
-      }
+        memoryRange: [4, 16],
+      },
     },
     {
       name: 'Battery Saver',
@@ -148,13 +152,13 @@ export class PerformanceManager {
         resourcePoolSize: 25,
         imageCompression: 'medium',
         prefetchEnabled: false,
-        bandwidthLimit: 5
+        bandwidthLimit: 5,
       },
       deviceTargets: {
         minPerformanceTier: 'low',
         platforms: ['mobile', 'tablet'],
-        memoryRange: [1, 8]
-      }
+        memoryRange: [1, 8],
+      },
     },
     {
       name: 'Ultra Low-End',
@@ -176,14 +180,14 @@ export class PerformanceManager {
         resourcePoolSize: 10,
         imageCompression: 'heavy',
         prefetchEnabled: false,
-        bandwidthLimit: 2
+        bandwidthLimit: 2,
       },
       deviceTargets: {
         minPerformanceTier: 'low',
         platforms: ['mobile'],
-        memoryRange: [1, 4]
-      }
-    }
+        memoryRange: [1, 4],
+      },
+    },
   ];
 
   private constructor() {
@@ -207,22 +211,21 @@ export class PerformanceManager {
     try {
       // Detect device capabilities
       const capabilities = await this.deviceProfiler.detectCapabilities();
-      
+
       // Auto-select optimal profile
       const optimalProfile = this.selectOptimalProfile(capabilities);
       this.currentSettings = { ...optimalProfile.settings };
-      
+
       console.log(`[PerformanceManager] Selected profile: ${optimalProfile.name}`);
       console.log('[PerformanceManager] Settings:', this.currentSettings);
-      
+
       // Start monitoring
       this.startMonitoring();
-      
+
       // Notify of settings
       if (this.onSettingsChange) {
         this.onSettingsChange(this.currentSettings);
       }
-      
     } catch (error) {
       console.error('[PerformanceManager] Initialization failed:', error);
       // Fall back to safe defaults
@@ -235,41 +238,56 @@ export class PerformanceManager {
    */
   private selectOptimalProfile(capabilities: DeviceCapabilities): OptimizationProfile {
     // Sort profiles by how well they match the device
-    const scoredProfiles = this.optimizationProfiles.map(profile => {
+    const scoredProfiles = this.optimizationProfiles.map((profile) => {
       let score = 0;
-      
+
       // Performance tier match
       const tierScore = {
-        'low': capabilities.performanceTier === 'low' ? 3 : capabilities.performanceTier === 'medium' ? 1 : 0,
-        'medium': capabilities.performanceTier === 'medium' ? 3 : capabilities.performanceTier === 'high' ? 2 : 1,
-        'high': capabilities.performanceTier === 'high' ? 3 : capabilities.performanceTier === 'medium' ? 1 : 0
+        low:
+          capabilities.performanceTier === 'low'
+            ? 3
+            : capabilities.performanceTier === 'medium'
+              ? 1
+              : 0,
+        medium:
+          capabilities.performanceTier === 'medium'
+            ? 3
+            : capabilities.performanceTier === 'high'
+              ? 2
+              : 1,
+        high:
+          capabilities.performanceTier === 'high'
+            ? 3
+            : capabilities.performanceTier === 'medium'
+              ? 1
+              : 0,
       };
       score += tierScore[profile.deviceTargets.minPerformanceTier];
-      
+
       // Platform match
       if (profile.deviceTargets.platforms.includes(capabilities.platform)) {
         score += 2;
       }
-      
+
       // Memory range match
       const [minMem, maxMem] = profile.deviceTargets.memoryRange;
       if (capabilities.memoryGB >= minMem && capabilities.memoryGB <= maxMem) {
         score += 2;
       }
-      
+
       // Battery optimization bonus for mobile
       if (capabilities.batteryOptimized && profile.name.includes('Battery')) {
         score += 2;
       }
-      
+
       // Network speed consideration
       if (capabilities.networkSpeed === 'slow' && profile.settings.prefetchEnabled === false) {
         score += 1;
       }
-      
+
       return { profile, score };
     });
-    
+
     // Return the highest scoring profile
     scoredProfiles.sort((a, b) => b.score - a.score);
     return scoredProfiles[0].profile;
@@ -279,16 +297,18 @@ export class PerformanceManager {
    * Start performance monitoring
    */
   startMonitoring(): void {
-    if (this.isMonitoring) return;
-    
+    if (this.isMonitoring) {
+      return;
+    }
+
     this.isMonitoring = true;
     console.log('[PerformanceManager] Starting performance monitoring...');
-    
+
     // Monitor every 5 seconds
     this.monitoringInterval = window.setInterval(() => {
       this.collectPerformanceMetrics();
     }, 5000);
-    
+
     // Initial metrics collection
     this.collectPerformanceMetrics();
   }
@@ -297,15 +317,17 @@ export class PerformanceManager {
    * Stop performance monitoring
    */
   stopMonitoring(): void {
-    if (!this.isMonitoring) return;
-    
+    if (!this.isMonitoring) {
+      return;
+    }
+
     this.isMonitoring = false;
-    
+
     if (this.monitoringInterval) {
       clearInterval(this.monitoringInterval);
       this.monitoringInterval = null;
     }
-    
+
     console.log('[PerformanceManager] Stopped performance monitoring');
   }
 
@@ -320,25 +342,24 @@ export class PerformanceManager {
         loadTime: performance.now(),
         renderTime: this.measureRenderTime(),
         networkLatency: 0, // Will be updated by network requests
-        
+
         frameDrops: 0, // Calculated from FPS history
         memoryLeaks: 0, // Detected from memory growth
         slowOperations: 0, // Tracked by operation timing
-        
+
         interactionDelay: this.measureInteractionDelay(),
         scrollSmoothness: 1.0, // Measured during scroll events
-        responsiveness: this.calculateResponsiveness()
+        responsiveness: this.calculateResponsiveness(),
       };
-      
+
       // Record metrics
       this.deviceProfiler.recordMetrics(metrics);
-      
+
       // Check for performance issues
       this.checkPerformanceThresholds(metrics);
-      
+
       // Auto-adjust settings if needed
       this.autoAdjustSettings(metrics);
-      
     } catch (error) {
       console.warn('[PerformanceManager] Failed to collect metrics:', error);
     }
@@ -387,20 +408,26 @@ export class PerformanceManager {
    */
   private calculateResponsiveness(): number {
     const analysis = this.deviceProfiler.getPerformanceAnalysis();
-    
+
     // Simple responsiveness calculation based on FPS and memory
     let score = 1.0;
-    
-    if (analysis.averageFPS < 30) score -= 0.3;
-    else if (analysis.averageFPS < 45) score -= 0.1;
-    
+
+    if (analysis.averageFPS < 30) {
+      score -= 0.3;
+    } else if (analysis.averageFPS < 45) {
+      score -= 0.1;
+    }
+
     if (analysis.averageMemory > this.currentSettings.memoryTargetMB) {
       score -= 0.2;
     }
-    
-    if (analysis.trend === 'degrading') score -= 0.2;
-    else if (analysis.trend === 'improving') score += 0.1;
-    
+
+    if (analysis.trend === 'degrading') {
+      score -= 0.2;
+    } else if (analysis.trend === 'improving') {
+      score += 0.1;
+    }
+
     return Math.max(0, Math.min(1, score));
   }
 
@@ -409,7 +436,7 @@ export class PerformanceManager {
    */
   private checkPerformanceThresholds(metrics: PerformanceMetrics): void {
     const alerts: PerformanceAlert[] = [];
-    
+
     // FPS alerts
     if (metrics.fps < 20) {
       alerts.push({
@@ -419,61 +446,53 @@ export class PerformanceManager {
         suggestions: [
           'Reduce animation quality',
           'Disable particle effects',
-          'Lower texture quality'
+          'Lower texture quality',
         ],
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
     } else if (metrics.fps < 30) {
       alerts.push({
         type: 'fps',
         severity: 'warning',
         message: 'Low frame rate detected',
-        suggestions: [
-          'Consider reducing graphics quality',
-          'Close other browser tabs'
-        ],
-        timestamp: Date.now()
+        suggestions: ['Consider reducing graphics quality', 'Close other browser tabs'],
+        timestamp: Date.now(),
       });
     }
-    
+
     // Memory alerts
     if (metrics.memoryUsageMB > this.currentSettings.memoryTargetMB * 1.5) {
       alerts.push({
         type: 'memory',
         severity: 'critical',
         message: 'High memory usage detected',
-        suggestions: [
-          'Reduce cache size',
-          'Clear unused assets',
-          'Force garbage collection'
-        ],
-        timestamp: Date.now()
+        suggestions: ['Reduce cache size', 'Clear unused assets', 'Force garbage collection'],
+        timestamp: Date.now(),
       });
     } else if (metrics.memoryUsageMB > this.currentSettings.memoryTargetMB * 1.2) {
       alerts.push({
         type: 'memory',
         severity: 'warning',
         message: 'Memory usage above target',
-        suggestions: [
-          'Monitor memory usage',
-          'Reduce preloading'
-        ],
-        timestamp: Date.now()
+        suggestions: ['Monitor memory usage', 'Reduce preloading'],
+        timestamp: Date.now(),
       });
     }
-    
+
     // Add new alerts
     this.alerts.push(...alerts);
-    
+
     // Keep only recent alerts (last 50)
     if (this.alerts.length > 50) {
       this.alerts = this.alerts.slice(-50);
     }
-    
+
     // Log critical alerts
-    alerts.filter(a => a.severity === 'critical').forEach(alert => {
-      console.warn(`[PerformanceManager] ${alert.type.toUpperCase()}: ${alert.message}`);
-    });
+    alerts
+      .filter((a) => a.severity === 'critical')
+      .forEach((alert) => {
+        console.warn(`[PerformanceManager] ${alert.type.toUpperCase()}: ${alert.message}`);
+      });
   }
 
   /**
@@ -482,7 +501,7 @@ export class PerformanceManager {
   private autoAdjustSettings(metrics: PerformanceMetrics): void {
     const analysis = this.deviceProfiler.getPerformanceAnalysis();
     let settingsChanged = false;
-    
+
     // Auto-reduce quality if FPS is consistently low
     if (analysis.averageFPS < 25 && analysis.trend === 'degrading') {
       if (this.currentSettings.animationQuality === 'high') {
@@ -492,28 +511,38 @@ export class PerformanceManager {
         this.currentSettings.animationQuality = 'low';
         settingsChanged = true;
       }
-      
+
       if (this.currentSettings.particleEffects) {
         this.currentSettings.particleEffects = false;
         settingsChanged = true;
       }
     }
-    
+
     // Auto-reduce memory usage if exceeding targets
     if (metrics.memoryUsageMB > this.currentSettings.memoryTargetMB * 1.3) {
       if (this.currentSettings.maxCachedAssets > 20) {
-        this.currentSettings.maxCachedAssets = Math.max(20, this.currentSettings.maxCachedAssets - 10);
+        this.currentSettings.maxCachedAssets = Math.max(
+          20,
+          this.currentSettings.maxCachedAssets - 10,
+        );
         settingsChanged = true;
       }
-      
+
       if (this.currentSettings.preloadDistance > 0) {
-        this.currentSettings.preloadDistance = Math.max(0, this.currentSettings.preloadDistance - 1);
+        this.currentSettings.preloadDistance = Math.max(
+          0,
+          this.currentSettings.preloadDistance - 1,
+        );
         settingsChanged = true;
       }
     }
-    
+
     // Auto-improve quality if performance is consistently good
-    if (analysis.averageFPS > 55 && analysis.trend === 'improving' && metrics.memoryUsageMB < this.currentSettings.memoryTargetMB * 0.7) {
+    if (
+      analysis.averageFPS > 55 &&
+      analysis.trend === 'improving' &&
+      metrics.memoryUsageMB < this.currentSettings.memoryTargetMB * 0.7
+    ) {
       if (this.currentSettings.animationQuality === 'low') {
         this.currentSettings.animationQuality = 'medium';
         settingsChanged = true;
@@ -522,7 +551,7 @@ export class PerformanceManager {
         settingsChanged = true;
       }
     }
-    
+
     // Notify of setting changes
     if (settingsChanged && this.onSettingsChange) {
       console.log('[PerformanceManager] Auto-adjusted settings based on performance');
@@ -535,7 +564,7 @@ export class PerformanceManager {
    */
   setSettings(settings: Partial<PerformanceSettings>): void {
     this.currentSettings = { ...this.currentSettings, ...settings };
-    
+
     if (this.onSettingsChange) {
       this.onSettingsChange(this.currentSettings);
     }
@@ -559,18 +588,18 @@ export class PerformanceManager {
    * Apply a specific optimization profile
    */
   applyProfile(profileName: string): boolean {
-    const profile = this.optimizationProfiles.find(p => p.name === profileName);
+    const profile = this.optimizationProfiles.find((p) => p.name === profileName);
     if (!profile) {
       console.warn(`[PerformanceManager] Profile not found: ${profileName}`);
       return false;
     }
-    
+
     this.currentSettings = { ...profile.settings };
-    
+
     if (this.onSettingsChange) {
       this.onSettingsChange(this.currentSettings);
     }
-    
+
     console.log(`[PerformanceManager] Applied profile: ${profileName}`);
     return true;
   }
@@ -612,19 +641,21 @@ export class PerformanceManager {
   } {
     const capabilities = this.deviceProfiler.getCapabilities();
     const analysis = this.deviceProfiler.getPerformanceAnalysis();
-    
+
     // Find active profile name
-    const activeProfile = this.optimizationProfiles.find(p => 
-      JSON.stringify(p.settings) === JSON.stringify(this.currentSettings)
-    )?.name || 'Custom';
-    
+    const activeProfile =
+      this.optimizationProfiles.find(
+        (p) => JSON.stringify(p.settings) === JSON.stringify(this.currentSettings),
+      )?.name || 'Custom';
+
     // Determine overall status
-    const alertCount = this.alerts.filter(a => a.severity === 'warning' || a.severity === 'critical').length;
-    const criticalCount = this.alerts.filter(a => a.severity === 'critical').length;
-    const status: 'good' | 'warning' | 'poor' = 
-      criticalCount > 0 ? 'poor' : 
-      alertCount > 0 ? 'warning' : 'good';
-    
+    const alertCount = this.alerts.filter(
+      (a) => a.severity === 'warning' || a.severity === 'critical',
+    ).length;
+    const criticalCount = this.alerts.filter((a) => a.severity === 'critical').length;
+    const status: 'good' | 'warning' | 'poor' =
+      criticalCount > 0 ? 'poor' : alertCount > 0 ? 'warning' : 'good';
+
     return {
       status,
       currentFPS: analysis.averageFPS,
@@ -634,7 +665,7 @@ export class PerformanceManager {
       renderTime: analysis.averageMemory > 0 ? 1000 / Math.max(analysis.averageFPS, 1) : 16.67,
       performanceTier: capabilities?.performanceTier || 'unknown',
       activeProfile,
-      alertCount
+      alertCount,
     };
   }
 

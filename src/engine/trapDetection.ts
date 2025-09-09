@@ -33,11 +33,7 @@ export interface TrapDetectionResult {
 /**
  * Check for traps when entering a room and provide appropriate warnings
  */
-export function detectTrapsOnEntry(
-  room: Room,
-  gameState: LocalGameState
-): TrapDetectionResult {
-  
+export function detectTrapsOnEntry(room: Room, gameState: LocalGameState): TrapDetectionResult {
   // Check for procedural traps first
   const proceduralTrap = checkForTrap(room.id);
   if (proceduralTrap) {
@@ -46,9 +42,14 @@ export function detectTrapsOnEntry(
       detected: true,
       warning: trap.description || 'Unknown trap detected',
       detectionMethod: 'basic_sense',
-      severity: trap.severity === 'lethal' ? 'extreme' :
-                trap.severity === 'severe' ? 'high' :
-                trap.severity === 'light' ? 'low' : 'medium'
+      severity:
+        trap.severity === 'lethal'
+          ? 'extreme'
+          : trap.severity === 'severe'
+            ? 'high'
+            : trap.severity === 'light'
+              ? 'low'
+              : 'medium',
     };
   }
 
@@ -56,11 +57,13 @@ export function detectTrapsOnEntry(
   if (room.traps && room.traps.length > 0) {
     const playerTraits = gameState.player.traits || [];
     const playerItems = gameState.player.inventory || [];
-    
+
     for (const trap of room.traps) {
       // Skip already triggered traps
-      if (trap.triggered) continue;
-      
+      if (trap.triggered) {
+        continue;
+      }
+
       // Check if trap can be detected
       const detection = checkTrapDetection(trap, playerTraits, playerItems);
       if (detection.detected) {
@@ -75,7 +78,7 @@ export function detectTrapsOnEntry(
       detected: true,
       warning: '⚠️ You sense something dangerous lurking in this area...',
       detectionMethod: 'instinct',
-      severity: 'medium'
+      severity: 'medium',
     };
   }
 
@@ -88,9 +91,8 @@ export function detectTrapsOnEntry(
 function checkTrapDetection(
   trap: any,
   playerTraits: string[],
-  playerItems: string[]
+  playerItems: string[],
 ): TrapDetectionResult {
-  
   // Non-hidden traps are always detectable
   if (!trap.hidden) {
     return {
@@ -98,7 +100,7 @@ function checkTrapDetection(
       warning: `⚠️ You notice a ${trap.severity || 'dangerous'} trap: ${trap.description || 'Something dangerous blocks your path.'}`,
       canDisarm: trap.disarmable !== false,
       detectionMethod: 'visual',
-      severity: getSeverityLevel(trap.severity)
+      severity: getSeverityLevel(trap.severity),
     };
   }
 
@@ -146,7 +148,7 @@ function checkTrapDetection(
       warning: generateDetectionWarning(trap, detectionMethod),
       canDisarm: trap.disarmable !== false,
       detectionMethod,
-      severity: getSeverityLevel(trap.severity)
+      severity: getSeverityLevel(trap.severity),
     };
   }
 
@@ -158,29 +160,29 @@ function checkTrapDetection(
  */
 function generateDetectionWarning(trap: any, method: string): string {
   const severity = trap.severity || 'minor';
-  
+
   switch (method) {
     case 'expertise':
       return `🎯 Your expertise reveals a well-hidden ${severity} trap. ${trap.description || 'Dangerous mechanism detected.'}`;
-    
+
     case 'perception':
       return `👁️ Your keen senses detect something amiss - a ${severity} trap lies ahead. ${trap.description || 'Proceed with caution.'}`;
-    
+
     case 'caution':
       return `🤔 Your cautious nature makes you suspicious. You spot signs of a ${severity} trap.`;
-    
+
     case 'technology':
       return `📱 Your detector beeps urgently - ${severity} trap detected! ${trap.description || 'Mechanism identified.'}`;
-    
+
     case 'tools':
       return `🔧 Your thieves' tools help you identify trap mechanisms - ${severity} danger ahead.`;
-    
+
     case 'investigation':
       return `🔍 Careful examination reveals telltale signs of a ${severity} trap.`;
-    
+
     case 'visual':
       return `⚠️ You clearly see a ${severity} trap: ${trap.description || 'Dangerous obstacle ahead.'}`;
-    
+
     default:
       return `⚠️ Something feels wrong here... you sense a ${severity} trap nearby.`;
   }
@@ -209,29 +211,28 @@ function getSeverityLevel(trapSeverity: string): 'low' | 'medium' | 'high' | 'ex
 /**
  * Allow players to actively search for traps
  */
-export function searchForTraps(
-  room: Room,
-  gameState: LocalGameState
-): TrapDetectionResult {
-  
+export function searchForTraps(room: Room, gameState: LocalGameState): TrapDetectionResult {
   // Searching gives better detection chances
   const playerTraits = gameState.player.traits || [];
   const playerItems = gameState.player.inventory || [];
-  
+
   // Check room traps with enhanced detection
   if (room.traps && room.traps.length > 0) {
     for (const trap of room.traps) {
-      if (trap.triggered) continue;
-      
+      if (trap.triggered) {
+        continue;
+      }
+
       // Enhanced detection for active searching
       const detection = checkTrapDetection(trap, playerTraits, playerItems);
-      if (detection.detected || Math.random() < 0.4) { // 40% base chance when searching
+      if (detection.detected || Math.random() < 0.4) {
+        // 40% base chance when searching
         return {
           detected: true,
           warning: `🔍 **Searching carefully...** You discover a ${trap.severity || 'dangerous'} trap! ${trap.description || 'Hidden mechanism found.'}`,
           canDisarm: trap.disarmable !== false,
           detectionMethod: 'active_search',
-          severity: getSeverityLevel(trap.severity)
+          severity: getSeverityLevel(trap.severity),
         };
       }
     }
@@ -241,15 +242,16 @@ export function searchForTraps(
   if (isRoomTrapped(room.id) || getTrapByRoom(room.id)) {
     return {
       detected: true,
-      warning: '🔍 **Searching carefully...** Your investigation reveals hidden dangers in this area.',
+      warning:
+        '🔍 **Searching carefully...** Your investigation reveals hidden dangers in this area.',
       detectionMethod: 'active_search',
-      severity: 'medium'
+      severity: 'medium',
     };
   }
 
   return {
     detected: false,
-    warning: '🔍 **Searching carefully...** You find no traps in this area. It appears safe.'
+    warning: '🔍 **Searching carefully...** You find no traps in this area. It appears safe.',
   };
 }
 
@@ -259,9 +261,8 @@ export function searchForTraps(
 export function canPlayerDisarmTrap(
   trap: any,
   playerTraits: string[],
-  playerItems: string[]
+  playerItems: string[],
 ): { canDisarm: boolean; method?: string; chance?: number } {
-  
   if (trap.disarmable === false) {
     return { canDisarm: false };
   }
@@ -296,6 +297,6 @@ export function canPlayerDisarmTrap(
   return {
     canDisarm: true,
     method,
-    chance: Math.min(disarmChance, 0.95) // Cap at 95%
+    chance: Math.min(disarmChance, 0.95), // Cap at 95%
   };
 }

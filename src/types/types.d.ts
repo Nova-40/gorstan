@@ -17,11 +17,9 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Game module.
 
-import { Direction, Room, RoomCollection } from '../types/RoomTypes';
 
-import { NPC, NPCMood, NPCMemory } from '../types/NPCTypes';
+import { NPC, NPCMood } from '../types/NPCTypes';
 
-import { Trap, Puzzle, Miniquest, Achievement, ScoreData } from '../types/GameTypes';
 
 
 
@@ -375,11 +373,9 @@ export type RequiredFields<T, K extends keyof T> = T & Required<Pick<T, K>>;
 // Gorstan and characters (c) Geoff Webster 2025
 // Game module.
 
-import { Direction, Room, RoomCollection } from '../types/RoomTypes';
 
-import { NPC, NPCMood, NPCMemory } from '../types/NPCTypes';
+import { NPC, NPCMood } from '../types/NPCTypes';
 
-import { Trap, Puzzle, Miniquest, Achievement, ScoreData } from '../types/GameTypes';
 
 
 

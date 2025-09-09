@@ -26,7 +26,7 @@ export function playSound(filename: string): void {
   try {
     const audio = new Audio(`/audio/${filename}.mp3`);
     audio.volume = 0.5;
-    audio.play().catch(err => {
+    audio.play().catch((err) => {
       console.warn(`Sound ${filename} could not be played:`, err);
     });
   } catch (error) {
@@ -41,7 +41,7 @@ export function playClickSound(): void {
   try {
     const audio = new Audio('/audio/click.wav');
     audio.volume = 0.5;
-    audio.play().catch(err => {
+    audio.play().catch((err) => {
       console.warn('Click sound blocked:', err);
     });
   } catch (error) {
@@ -57,7 +57,7 @@ export function playAmbientAudio(enabled: boolean = true): void {
     ambientAudio = new Audio('/audio/ambient.mp3');
     ambientAudio.loop = true;
   }
-  
+
   if (enabled && ambientAudio) {
     ambientAudio.volume = 0.3;
     ambientAudio.play().catch((err: any) => {
@@ -89,7 +89,9 @@ export function stopAmbientAudio(): void {
  * Play zone-specific audio
  */
 export function playZoneAudio(src: string): void {
-  if (!src) return;
+  if (!src) {
+    return;
+  }
   try {
     const audio = new Audio(src);
     audio.volume = 0.5;
@@ -125,5 +127,5 @@ export default {
   stopAmbientAudio,
   playZoneAudio,
   setAudioVolume,
-  isAudioSupported
+  isAudioSupported,
 };

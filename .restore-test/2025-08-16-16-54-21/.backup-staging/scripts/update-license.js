@@ -1,5 +1,3 @@
-
-
 import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
@@ -29,20 +27,20 @@ const newLicenseHeader = `/*
 function updateFile(filePath) {
   try {
     let content = fs.readFileSync(filePath, 'utf8');
-    
+
     // Skip already updated files
     if (content.includes('Copyright © 2025 Geoff Webster. All Rights Reserved.')) {
       console.log(`Skipping ${filePath} - already updated`);
       return;
     }
-    
+
     // Pattern to match various MIT license headers
     const patterns = [
       /\/\/ [^\n]*\n\/\/ [^\n]*\n\/\/ Code Licence MIT[^\n]*\n/,
       /\/\/ Code Licence MIT[^\n]*\n/,
-      /\/\*[^*]*\*\/\s*/,  // Remove existing block comments at start
+      /\/\*[^*]*\*\/\s*/, // Remove existing block comments at start
     ];
-    
+
     let updated = false;
     for (const pattern of patterns) {
       if (pattern.test(content)) {
@@ -51,13 +49,12 @@ function updateFile(filePath) {
         break;
       }
     }
-    
+
     // Add new license header at the top
     content = newLicenseHeader + content;
-    
+
     fs.writeFileSync(filePath, content, 'utf8');
     console.log(`Updated ${filePath}`);
-    
   } catch (error) {
     console.error(`Error updating ${filePath}:`, error.message);
   }
@@ -65,14 +62,14 @@ function updateFile(filePath) {
 
 function findTypescriptFiles(dir) {
   const files = [];
-  
+
   function traverse(currentPath) {
     const items = fs.readdirSync(currentPath);
-    
+
     for (const item of items) {
       const itemPath = path.join(currentPath, item);
       const stat = fs.statSync(itemPath);
-      
+
       if (stat.isDirectory() && !item.startsWith('.') && item !== 'node_modules') {
         traverse(itemPath);
       } else if (stat.isFile() && /\.(ts|tsx|js|jsx)$/.test(item)) {
@@ -80,7 +77,7 @@ function findTypescriptFiles(dir) {
       }
     }
   }
-  
+
   traverse(dir);
   return files;
 }

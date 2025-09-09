@@ -6,11 +6,15 @@
 let primed = false;
 
 export function ensureAudioPrimed(): void {
-  if (primed) return;
-  
+  if (primed) {
+    return;
+  }
+
   const AudioContextClass = (window as any).AudioContext || (window as any).webkitAudioContext;
-  if (!AudioContextClass) return;
-  
+  if (!AudioContextClass) {
+    return;
+  }
+
   try {
     const ctx = (window as any).__gorstanAC || new AudioContextClass();
     if (ctx.state === 'suspended') {

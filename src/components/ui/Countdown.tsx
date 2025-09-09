@@ -40,24 +40,26 @@ export function Countdown({
   }, [totalSeconds]);
 
   useEffect(() => {
-    if (isPaused || remainingSeconds <= 0) return;
+    if (isPaused || remainingSeconds <= 0) {
+      return;
+    }
 
     const interval = setInterval(() => {
       setRemainingSeconds((prev) => {
         const newValue = Math.max(0, prev - 1);
-        
+
         // Trigger callbacks
         onTick?.(newValue);
-        
+
         if (newValue <= warningThreshold && !hasWarned) {
           setHasWarned(true);
           onWarning?.(newValue);
         }
-        
+
         if (newValue === 0) {
           onComplete?.();
         }
-        
+
         return newValue;
       });
     }, 1000);
@@ -88,8 +90,12 @@ export function Countdown({
 
   const getAriaLabel = () => {
     const timeString = formatTime(remainingSeconds);
-    const state = remainingSeconds <= criticalThreshold ? 'critical' : 
-                  remainingSeconds <= warningThreshold ? 'warning' : 'normal';
+    const state =
+      remainingSeconds <= criticalThreshold
+        ? 'critical'
+        : remainingSeconds <= warningThreshold
+          ? 'warning'
+          : 'normal';
     return `Time remaining: ${timeString}. Status: ${state}`;
   };
 
@@ -119,9 +125,11 @@ export function Countdown({
             strokeWidth="8"
             fill="none"
             className={cn(
-              remainingSeconds <= criticalThreshold ? 'text-danger-500' :
-              remainingSeconds <= warningThreshold ? 'text-warning-500' :
-              'text-primary-500'
+              remainingSeconds <= criticalThreshold
+                ? 'text-danger-500'
+                : remainingSeconds <= warningThreshold
+                  ? 'text-warning-500'
+                  : 'text-primary-500',
             )}
             strokeDasharray={circumference}
             strokeDashoffset={circumference - (progress / 100) * circumference}
@@ -131,15 +139,17 @@ export function Countdown({
             }}
           />
         </svg>
-        
+
         {/* Time display */}
         <div className="absolute inset-0 flex items-center justify-center">
           <span
             className={cn(
               'text-sm font-bold text-center',
-              remainingSeconds <= criticalThreshold ? 'text-danger-600' :
-              remainingSeconds <= warningThreshold ? 'text-warning-600' :
-              'text-neutral-700'
+              remainingSeconds <= criticalThreshold
+                ? 'text-danger-600'
+                : remainingSeconds <= warningThreshold
+                  ? 'text-warning-600'
+                  : 'text-neutral-700',
             )}
             aria-label={getAriaLabel()}
             role="timer"
@@ -158,19 +168,14 @@ export function Countdown({
         'inline-flex items-center px-3 py-2 rounded-md border text-sm font-mono',
         getStateStyles(),
         isPaused && 'opacity-60',
-        className
+        className,
       )}
       role="timer"
       aria-label={getAriaLabel()}
       aria-live="polite"
     >
       {isPaused && (
-        <svg
-          className="w-4 h-4 mr-2"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-          aria-hidden="true"
-        >
+        <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
           <path
             fillRule="evenodd"
             d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z"
@@ -178,11 +183,9 @@ export function Countdown({
           />
         </svg>
       )}
-      
-      <span className="tabular-nums">
-        {formatTime(remainingSeconds)}
-      </span>
-      
+
+      <span className="tabular-nums">{formatTime(remainingSeconds)}</span>
+
       {remainingSeconds <= criticalThreshold && (
         <span className="ml-2 animate-pulse" aria-hidden="true">
           ⚠️

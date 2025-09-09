@@ -68,7 +68,11 @@ export interface NPCMemory {
 /**
  * Convert Player type to PlayerState for NPC systems
  */
-export function playerToPlayerState(player: Player, location: string, flags: Record<string, any>): PlayerState {
+export function playerToPlayerState(
+  player: Player,
+  location: string,
+  flags: Record<string, any>,
+): PlayerState {
   return {
     name: player.name,
     location,
@@ -77,6 +81,6 @@ export function playerToPlayerState(player: Player, location: string, flags: Rec
     relationships: player.npcRelationships || {},
     flags,
     health: player.health,
-    score: player.score || 0
+    score: player.score || 0,
   };
 }

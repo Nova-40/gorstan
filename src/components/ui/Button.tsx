@@ -19,12 +19,14 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const buttonVariants = {
   primary: 'bg-primary-500 hover:bg-primary-600 focus:ring-primary-500 text-white shadow-md',
-  secondary: 'bg-neutral-100 hover:bg-neutral-200 focus:ring-neutral-500 text-neutral-900 shadow-sm',
+  secondary:
+    'bg-neutral-100 hover:bg-neutral-200 focus:ring-neutral-500 text-neutral-900 shadow-sm',
   danger: 'bg-danger-500 hover:bg-danger-600 focus:ring-danger-500 text-white shadow-md',
   success: 'bg-success-500 hover:bg-success-600 focus:ring-success-500 text-white shadow-md',
   warning: 'bg-warning-500 hover:bg-warning-600 focus:ring-warning-500 text-white shadow-md',
   ghost: 'hover:bg-neutral-100 focus:ring-neutral-500 text-neutral-700',
-  outline: 'border-2 border-primary-500 hover:bg-primary-50 focus:ring-primary-500 text-primary-700',
+  outline:
+    'border-2 border-primary-500 hover:bg-primary-50 focus:ring-primary-500 text-primary-700',
 };
 
 const buttonSizes = {
@@ -49,7 +51,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       children,
       ...props
     },
-    ref
+    ref,
   ) => {
     const isDisabled = disabled || loading;
 
@@ -62,20 +64,20 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           'inline-flex items-center justify-center rounded-lg font-medium transition-all duration-150 ease-out',
           'focus:outline-none focus:ring-2 focus:ring-offset-2',
           'disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none',
-          
+
           // Variant styles
           buttonVariants[variant],
-          
+
           // Size styles
           buttonSizes[size],
-          
+
           // Width
           fullWidth && 'w-full',
-          
+
           // Loading state
           loading && 'cursor-wait',
-          
-          className
+
+          className,
         )}
         aria-disabled={isDisabled}
         {...props}
@@ -103,17 +105,15 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             ></path>
           </svg>
         )}
-        
+
         {!loading && leftIcon && (
           <span className="mr-2" aria-hidden="true">
             {leftIcon}
           </span>
         )}
-        
-        <span>
-          {loading ? loadingText : children}
-        </span>
-        
+
+        <span>{loading ? loadingText : children}</span>
+
         {!loading && rightIcon && (
           <span className="ml-2" aria-hidden="true">
             {rightIcon}
@@ -121,7 +121,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         )}
       </button>
     );
-  }
+  },
 );
 
 Button.displayName = 'Button';

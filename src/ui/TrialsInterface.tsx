@@ -76,7 +76,7 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
   onPause,
   onResume,
   onQuit,
-  isPaused
+  isPaused,
 }) => {
   const [showHints, setShowHints] = useState(false);
   const [selectedTile, setSelectedTile] = useState<Position | null>(null);
@@ -88,9 +88,11 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
   // Keyboard controls
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      if (isPaused) return;
-      
-      switch(e.key.toLowerCase()) {
+      if (isPaused) {
+        return;
+      }
+
+      switch (e.key.toLowerCase()) {
         case 'w':
         case 'arrowup':
           onPlayerMove('north');
@@ -141,20 +143,36 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
     const tileSize = 24;
     const viewportWidth = 800;
     const viewportHeight = 600;
-    
+
     setCameraOffset({
-      x: Math.max(0, Math.min(gameState.playerPos.x * tileSize - viewportWidth / 2, 40 * tileSize - viewportWidth)),
-      y: Math.max(0, Math.min(gameState.playerPos.y * tileSize - viewportHeight / 2, 25 * tileSize - viewportHeight))
+      x: Math.max(
+        0,
+        Math.min(
+          gameState.playerPos.x * tileSize - viewportWidth / 2,
+          40 * tileSize - viewportWidth,
+        ),
+      ),
+      y: Math.max(
+        0,
+        Math.min(
+          gameState.playerPos.y * tileSize - viewportHeight / 2,
+          25 * tileSize - viewportHeight,
+        ),
+      ),
     });
   }, [gameState.playerPos]);
 
   // Render game field
   const renderGameField = useCallback(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) {
+      return;
+    }
 
     const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) {
+      return;
+    }
 
     const tileSize = 24;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -176,35 +194,35 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
     }
 
     // Render mushrooms with enhanced visual threat indicators
-    gameState.mushrooms.forEach(mushroom => {
+    gameState.mushrooms.forEach((mushroom) => {
       const x = mushroom.x * tileSize - cameraOffset.x;
       const y = mushroom.y * tileSize - cameraOffset.y;
-      
+
       if (x >= -tileSize && x <= canvas.width && y >= -tileSize && y <= canvas.height) {
         // Enhanced mushroom base with danger indication
-        ctx.fillStyle = mushroom.triggered ? '#4A4A4A' : (mushroom.glowing ? '#FF4444' : '#8B4513');
+        ctx.fillStyle = mushroom.triggered ? '#4A4A4A' : mushroom.glowing ? '#FF4444' : '#8B4513';
         ctx.beginPath();
-        ctx.arc(x + tileSize/2, y + tileSize/2, mushroom.triggered ? 6 : 10, 0, Math.PI * 2);
+        ctx.arc(x + tileSize / 2, y + tileSize / 2, mushroom.triggered ? 6 : 10, 0, Math.PI * 2);
         ctx.fill();
-        
+
         // Enhanced mushroom cap with danger colors
-        ctx.fillStyle = mushroom.triggered ? '#654321' : (mushroom.glowing ? '#FF6B6B' : '#CD853F');
+        ctx.fillStyle = mushroom.triggered ? '#654321' : mushroom.glowing ? '#FF6B6B' : '#CD853F';
         ctx.beginPath();
-        ctx.arc(x + tileSize/2, y + tileSize/2 - 4, mushroom.triggered ? 4 : 8, 0, Math.PI);
+        ctx.arc(x + tileSize / 2, y + tileSize / 2 - 4, mushroom.triggered ? 4 : 8, 0, Math.PI);
         ctx.fill();
-        
+
         // Add danger spores effect for untriggered mushrooms
         if (!mushroom.triggered) {
           ctx.fillStyle = 'rgba(255, 100, 100, 0.3)';
           ctx.beginPath();
-          ctx.arc(x + tileSize/2, y + tileSize/2, 15, 0, Math.PI * 2);
+          ctx.arc(x + tileSize / 2, y + tileSize / 2, 15, 0, Math.PI * 2);
           ctx.fill();
-          
+
           // Pulsing danger aura
           const pulseEffect = Math.sin(Date.now() * 0.005) * 0.2 + 0.8;
           ctx.fillStyle = `rgba(255, 50, 50, ${pulseEffect * 0.2})`;
           ctx.beginPath();
-          ctx.arc(x + tileSize/2, y + tileSize/2, 20, 0, Math.PI * 2);
+          ctx.arc(x + tileSize / 2, y + tileSize / 2, 20, 0, Math.PI * 2);
           ctx.fill();
         }
       }
@@ -217,21 +235,23 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
       const phaseOffset = index * 0.3;
       const bobAmount = Math.sin(animationTime * 0.5 + phaseOffset) * 2; // 2 pixel max movement
       const sideMovement = Math.cos(animationTime * 0.3 + phaseOffset) * 1; // 1 pixel side movement
-      
+
       const x = rock.x * tileSize - cameraOffset.x + sideMovement;
       const y = rock.y * tileSize - cameraOffset.y + bobAmount;
-      
+
       if (x >= -tileSize && x <= canvas.width && y >= -tileSize && y <= canvas.height) {
         ctx.fillStyle = rock.available ? '#87CEEB' : '#696969';
-        if (rock.occupied) ctx.fillStyle = '#4169E1';
-        
+        if (rock.occupied) {
+          ctx.fillStyle = '#4169E1';
+        }
+
         // Add slight size variation for breathing effect
         const breathingEffect = Math.sin(animationTime * 0.8 + phaseOffset) * 0.5;
         const rockSize = tileSize - 4 + breathingEffect;
         const offsetAdjust = (tileSize - 4 - rockSize) / 2;
-        
+
         ctx.fillRect(x + 2 + offsetAdjust, y + 2 + offsetAdjust, rockSize, rockSize);
-        
+
         // Cooldown indicator
         if (rock.cooldownRemaining > 0) {
           ctx.fillStyle = '#FF4500';
@@ -244,31 +264,31 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
     gameState.creatures.forEach((creature, index) => {
       const x = creature.x * tileSize - cameraOffset.x;
       const y = creature.y * tileSize - cameraOffset.y;
-      
+
       if (x >= -tileSize && x <= canvas.width && y >= -tileSize && y <= canvas.height) {
         // Aggressive aura around creature
         const auraIntensity = Math.sin(Date.now() * 0.01 + index) * 0.3 + 0.7;
         ctx.fillStyle = `rgba(220, 20, 60, ${auraIntensity * 0.3})`;
         ctx.beginPath();
-        ctx.arc(x + tileSize/2, y + tileSize/2, 18, 0, Math.PI * 2);
+        ctx.arc(x + tileSize / 2, y + tileSize / 2, 18, 0, Math.PI * 2);
         ctx.fill();
-        
+
         // Enhanced body with threat coloring
         ctx.fillStyle = creature.aggressive ? '#DC143C' : '#8B0000';
         ctx.fillRect(x + 4, y + 8, 16, 8);
-        
+
         // Glowing eyes for more menacing appearance
         ctx.fillStyle = '#FF4500';
         ctx.beginPath();
         ctx.arc(x + 8, y + 6, 2, 0, Math.PI * 2);
         ctx.arc(x + 16, y + 6, 2, 0, Math.PI * 2);
         ctx.fill();
-        
+
         // Six legs (3 on each side) with more dynamic appearance
         ctx.strokeStyle = creature.aggressive ? '#8B0000' : '#654321';
         ctx.lineWidth = 3;
         const legAnimation = Math.sin(Date.now() * 0.02 + index) * 2;
-        
+
         for (let i = 0; i < 3; i++) {
           const legX = x + 6 + i * 4;
           // Left legs with movement
@@ -282,7 +302,7 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
           ctx.lineTo(legX + 3 - legAnimation, y + 22);
           ctx.stroke();
         }
-        
+
         // Enhanced health bar with danger coloring
         ctx.fillStyle = '#8B0000';
         ctx.fillRect(x, y - 6, tileSize, 3);
@@ -294,15 +314,15 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
     // Render player
     const playerX = gameState.playerPos.x * tileSize - cameraOffset.x;
     const playerY = gameState.playerPos.y * tileSize - cameraOffset.y;
-    
+
     ctx.fillStyle = '#4169E1';
     ctx.beginPath();
-    ctx.arc(playerX + tileSize/2, playerY + tileSize/2, 10, 0, Math.PI * 2);
+    ctx.arc(playerX + tileSize / 2, playerY + tileSize / 2, 10, 0, Math.PI * 2);
     ctx.fill();
-    
+
     // Player direction indicator
     ctx.fillStyle = '#FFD700';
-    ctx.fillRect(playerX + tileSize/2 - 2, playerY + 2, 4, 6);
+    ctx.fillRect(playerX + tileSize / 2 - 2, playerY + 2, 4, 6);
 
     // Selected tile highlight
     if (selectedTile) {
@@ -320,9 +340,9 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
       renderGameField();
       animationFrameRef.current = requestAnimationFrame(animate);
     };
-    
+
     animate();
-    
+
     return () => {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
@@ -332,12 +352,14 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
 
   const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) {
+      return;
+    }
 
     const rect = canvas.getBoundingClientRect();
     const x = Math.floor((e.clientX - rect.left + cameraOffset.x) / 24);
     const y = Math.floor((e.clientY - rect.top + cameraOffset.y) / 24);
-    
+
     setSelectedTile({ x, y });
   };
 
@@ -348,13 +370,10 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
         <div className="phase-info">
           <h2 className="phase-title">{gameState.phaseName}</h2>
           <div className="phase-progress">
-            <div 
-              className="progress-bar" 
-              style={{ width: `${gameState.phaseProgress}%` }}
-            />
+            <div className="progress-bar" style={{ width: `${gameState.phaseProgress}%` }} />
           </div>
         </div>
-        
+
         <div className="game-stats">
           <div className="stat">
             <span className="stat-label">Time Remaining:</span>
@@ -370,7 +389,9 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
           <button onClick={isPaused ? onResume : onPause} className="control-btn">
             {isPaused ? '▶️' : '⏸️'}
           </button>
-          <button onClick={onQuit} className="control-btn">❌</button>
+          <button onClick={onQuit} className="control-btn">
+            ❌
+          </button>
         </div>
       </div>
 
@@ -384,16 +405,20 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
             onClick={handleCanvasClick}
             className="game-canvas"
           />
-          
+
           {isPaused && (
             <div className="pause-overlay">
               <div className="pause-menu">
                 <h3>Game Paused</h3>
-                <button onClick={onResume} className="menu-btn">Resume</button>
+                <button onClick={onResume} className="menu-btn">
+                  Resume
+                </button>
                 <button onClick={() => setShowHints(!showHints)} className="menu-btn">
                   {showHints ? 'Hide' : 'Show'} Hints
                 </button>
-                <button onClick={onQuit} className="menu-btn">Quit to Menu</button>
+                <button onClick={onQuit} className="menu-btn">
+                  Quit to Menu
+                </button>
               </div>
             </div>
           )}
@@ -407,30 +432,30 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
               <div className="status-bar">
                 <label>Health</label>
                 <div className="bar">
-                  <div 
-                    className="bar-fill health" 
+                  <div
+                    className="bar-fill health"
                     style={{ width: `${gameState.playerHealth}%` }}
                   />
                 </div>
                 <span>{gameState.playerHealth}%</span>
               </div>
-              
+
               <div className="status-bar">
                 <label>Energy</label>
                 <div className="bar">
-                  <div 
-                    className="bar-fill energy" 
+                  <div
+                    className="bar-fill energy"
                     style={{ width: `${gameState.playerEnergy}%` }}
                   />
                 </div>
                 <span>{gameState.playerEnergy}%</span>
               </div>
-              
+
               <div className="status-bar">
                 <label>Stamina</label>
                 <div className="bar">
-                  <div 
-                    className="bar-fill stamina" 
+                  <div
+                    className="bar-fill stamina"
                     style={{ width: `${gameState.playerStamina}%` }}
                   />
                 </div>
@@ -449,36 +474,27 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
           <div className="actions-panel">
             <h3>Actions</h3>
             <div className="action-buttons">
-              <button 
-                onClick={() => onPlayerAction('rest')} 
+              <button
+                onClick={() => onPlayerAction('rest')}
                 className="action-btn"
                 disabled={gameState.playerEnergy > 80}
               >
                 Rest (Space)
               </button>
-              <button 
-                onClick={() => onPlayerAction('trigger-mushroom')} 
-                className="action-btn"
-              >
+              <button onClick={() => onPlayerAction('trigger-mushroom')} className="action-btn">
                 Trigger (E)
               </button>
-              <button 
-                onClick={() => onPlayerAction('hide')} 
-                className="action-btn"
-              >
+              <button onClick={() => onPlayerAction('hide')} className="action-btn">
                 Hide (H)
               </button>
-              <button 
-                onClick={() => onPlayerAction('sprint')} 
+              <button
+                onClick={() => onPlayerAction('sprint')}
                 className="action-btn"
                 disabled={gameState.playerStamina < 20}
               >
                 Sprint (Shift)
               </button>
-              <button 
-                onClick={() => onPlayerAction('examine')} 
-                className="action-btn"
-              >
+              <button onClick={() => onPlayerAction('examine')} className="action-btn">
                 Examine (X)
               </button>
             </div>
@@ -489,30 +505,30 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
             <div className="minimap-panel">
               <h3>Mini Map</h3>
               <div className="minimap">
-                <div 
-                  className="minimap-player" 
-                  style={{ 
+                <div
+                  className="minimap-player"
+                  style={{
                     left: `${(gameState.playerPos.x / 40) * 100}%`,
-                    top: `${(gameState.playerPos.y / 25) * 100}%`
+                    top: `${(gameState.playerPos.y / 25) * 100}%`,
                   }}
                 />
-                {gameState.creatures.map(creature => (
+                {gameState.creatures.map((creature) => (
                   <div
                     key={creature.id}
                     className="minimap-creature"
                     style={{
                       left: `${(creature.x / 40) * 100}%`,
-                      top: `${(creature.y / 25) * 100}%`
+                      top: `${(creature.y / 25) * 100}%`,
                     }}
                   />
                 ))}
-                {gameState.restRocks.map(rock => (
+                {gameState.restRocks.map((rock) => (
                   <div
                     key={rock.id}
                     className={`minimap-rock ${rock.available ? 'available' : 'unavailable'}`}
                     style={{
                       left: `${(rock.x / 40) * 100}%`,
-                      top: `${(rock.y / 25) * 100}%`
+                      top: `${(rock.y / 25) * 100}%`,
                     }}
                   />
                 ))}
@@ -558,10 +574,7 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
                 </div>
               ))}
             </div>
-            <button 
-              onClick={() => setShowHints(false)} 
-              className="close-hints"
-            >
+            <button onClick={() => setShowHints(false)} className="close-hints">
               ×
             </button>
           </motion.div>

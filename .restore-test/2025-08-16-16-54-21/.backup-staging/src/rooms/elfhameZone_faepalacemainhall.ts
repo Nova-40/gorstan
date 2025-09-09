@@ -19,14 +19,6 @@
 
 import { Room } from '../types/Room';
 
-
-
-
-
-
-
-
-
 const faepalacemainhall: Room = {
   id: 'faepalacemainhall',
   zone: 'elfhameZone',
@@ -49,7 +41,7 @@ const faepalacemainhall: Room = {
     '>> Floor matrix: RESPONSIVE - Precious stone network active',
     '>> Court sessions: VARIABLE - Fae nobility may materialize',
     '>> WARNING: Show proper respect - Ancient protocols in effect',
-    '>> Musical emanations: CONTINUOUS - Realm\'s heartbeat audible',
+    ">> Musical emanations: CONTINUOUS - Realm's heartbeat audible",
     '>> Exit protocols: FORMAL - Proper farewells required',
   ],
 
@@ -59,31 +51,30 @@ const faepalacemainhall: Room = {
     north: 'faepalacerhianonsroom',
   },
 
-  items: [
-    'crystal_shard',
-    'royal_insignia',
-    'starlight_fragment',
-    'court_scroll',
-  ],
+  items: ['crystal_shard', 'royal_insignia', 'starlight_fragment', 'court_scroll'],
 
   interactables: {
-    'crystal_thrones': {
-      description: 'Twin thrones carved from starlight-infused crystal, radiating authority even when empty.',
+    crystal_thrones: {
+      description:
+        'Twin thrones carved from starlight-infused crystal, radiating authority even when empty.',
       actions: ['examine', 'approach', 'bow', 'sit', 'press'],
       requires: [],
     },
-    'living_columns': {
-      description: 'Columns of living crystal that twist upward, each unique in formation and color.',
+    living_columns: {
+      description:
+        'Columns of living crystal that twist upward, each unique in formation and color.',
       actions: ['examine', 'touch', 'listen'],
       requires: [],
     },
-    'story_floor': {
-      description: 'A floor of inlaid precious stones that tell the story of the Fae realm in light and color.',
+    story_floor: {
+      description:
+        'A floor of inlaid precious stones that tell the story of the Fae realm in light and color.',
       actions: ['examine', 'walk', 'read'],
       requires: [],
     },
-    'dais': {
-      description: 'The raised platform where the Fae thrones sit, emanating power and ancient authority.',
+    dais: {
+      description:
+        'The raised platform where the Fae thrones sit, emanating power and ancient authority.',
       actions: ['examine', 'approach', 'ascend'],
       requires: ['royal_insignia'],
     },
@@ -91,5 +82,3 @@ const faepalacemainhall: Room = {
 };
 
 export default faepalacemainhall;
-
-

@@ -23,20 +23,6 @@ import { GameAction } from '../types/GameTypes';
 
 import { updateScore } from '../state/scoreManager';
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 export interface CodexEntry {
   id: string;
   name: string;
@@ -68,20 +54,14 @@ export type ItemCategory =
   | 'quantum_device'
   | 'temporal_artifact';
 
-
 let globalDispatch: Dispatch<GameAction> | null = null;
 
-
 let codexEntries: Map<string, CodexEntry> = new Map();
-
-
 
 // --- Function: initializeCodexTracker ---
 export function initializeCodexTracker(dispatch: Dispatch<GameAction>): void {
   globalDispatch = dispatch;
 }
-
-
 
 // --- Function: recordItemDiscovery ---
 export function recordItemDiscovery(
@@ -94,24 +74,22 @@ export function recordItemDiscovery(
     loreDescription?: string;
     significance?: CodexEntry['significance'];
     tags?: string[];
-  }
+  },
 ): void {
   if (!itemId || !roomId) return;
 
-// Variable declaration
+  // Variable declaration
   const existingEntry = codexEntries.get(itemId);
-// Variable declaration
+  // Variable declaration
   const isFirstEncounter = !existingEntry;
 
   if (existingEntry) {
-    
     existingEntry.timesFound += 1;
     existingEntry.firstEncounter = false;
   } else {
-    
-// Variable declaration
+    // Variable declaration
     const category = itemData?.category || categorizeItem(itemId);
-// Variable declaration
+    // Variable declaration
     const significance = itemData?.significance || assessSignificance(itemId);
 
     const newEntry: CodexEntry = {
@@ -133,7 +111,6 @@ export function recordItemDiscovery(
     codexEntries.set(itemId, newEntry);
   }
 
-  
   if (globalDispatch) {
     globalDispatch({
       type: 'UPDATE_CODEX_ENTRY',
@@ -141,12 +118,11 @@ export function recordItemDiscovery(
         itemId,
         entry: codexEntries.get(itemId),
         isFirstDiscovery: isFirstEncounter,
-      }
+      },
     });
 
-    
     if (isFirstEncounter) {
-// Variable declaration
+      // Variable declaration
       const entry = codexEntries.get(itemId)!;
       globalDispatch({
         type: 'ADD_MESSAGE',
@@ -155,111 +131,152 @@ export function recordItemDiscovery(
           text: `📖 Codex updated: ${entry.name} (${entry.category})`,
           type: 'achievement',
           timestamp: Date.now(),
-        }
+        },
       });
     }
   }
 }
 
-
-
 // --- Function: categorizeItem ---
 function categorizeItem(itemId: string): ItemCategory {
-// Variable declaration
+  // Variable declaration
   const lowerItem = itemId.toLowerCase();
 
-  
-  if (lowerItem.includes('coffee') || lowerItem.includes('burger') || lowerItem.includes('napkin') || lowerItem.includes('menu')) {
+  if (
+    lowerItem.includes('coffee') ||
+    lowerItem.includes('burger') ||
+    lowerItem.includes('napkin') ||
+    lowerItem.includes('menu')
+  ) {
     return 'food_drink';
   }
 
-  
-  if (lowerItem.includes('fae') || lowerItem.includes('silver') || lowerItem.includes('ancient') ||
-      lowerItem.includes('butterfly') || lowerItem.includes('ivy') || lowerItem.includes('flower')) {
+  if (
+    lowerItem.includes('fae') ||
+    lowerItem.includes('silver') ||
+    lowerItem.includes('ancient') ||
+    lowerItem.includes('butterfly') ||
+    lowerItem.includes('ivy') ||
+    lowerItem.includes('flower')
+  ) {
     return 'fae_artifact';
   }
 
-  
-  if (lowerItem.includes('memory') || lowerItem.includes('photo') || lowerItem.includes('fragmented')) {
+  if (
+    lowerItem.includes('memory') ||
+    lowerItem.includes('photo') ||
+    lowerItem.includes('fragmented')
+  ) {
     return 'memory_fragment';
   }
 
-    
   if (itemId.includes('remote') || itemId.includes('control') || itemId.includes('teleport')) {
     return 'dimensional_tool';
   }
-  if (lowerItem.includes('dimensional') || lowerItem.includes('portal') || lowerItem.includes('reality') ||
-      lowerItem.includes('quantum') || lowerItem.includes('multiverse')) {
+  if (
+    lowerItem.includes('dimensional') ||
+    lowerItem.includes('portal') ||
+    lowerItem.includes('reality') ||
+    lowerItem.includes('quantum') ||
+    lowerItem.includes('multiverse')
+  ) {
     return 'dimensional_tool';
   }
 
-  
-  if (lowerItem.includes('dominic') || lowerItem.includes('goldfish') || lowerItem.includes('fish') ||
-      lowerItem.includes('anchor') || lowerItem.includes('null_pointer')) {
+  if (
+    lowerItem.includes('dominic') ||
+    lowerItem.includes('goldfish') ||
+    lowerItem.includes('fish') ||
+    lowerItem.includes('anchor') ||
+    lowerItem.includes('null_pointer')
+  ) {
     return 'dominic_related';
   }
 
-  
-  if (lowerItem.includes('key') || lowerItem.includes('combination') || lowerItem.includes('badge') ||
-      lowerItem.includes('override')) {
+  if (
+    lowerItem.includes('key') ||
+    lowerItem.includes('combination') ||
+    lowerItem.includes('badge') ||
+    lowerItem.includes('override')
+  ) {
     return 'puzzle_key';
   }
 
-  
-  if (lowerItem.includes('glitch') || lowerItem.includes('code') || lowerItem.includes('unstable') ||
-      lowerItem.includes('corrupt')) {
+  if (
+    lowerItem.includes('glitch') ||
+    lowerItem.includes('code') ||
+    lowerItem.includes('unstable') ||
+    lowerItem.includes('corrupt')
+  ) {
     return 'glitch_relic';
   }
 
-  
-  if (lowerItem.includes('temporal') || lowerItem.includes('time') || lowerItem.includes('chronos')) {
+  if (
+    lowerItem.includes('temporal') ||
+    lowerItem.includes('time') ||
+    lowerItem.includes('chronos')
+  ) {
     return 'temporal_artifact';
   }
 
-  
-  if (lowerItem.includes('scroll') || lowerItem.includes('document') || lowerItem.includes('plans') ||
-      lowerItem.includes('newspaper') || lowerItem.includes('receipt') || lowerItem.includes('card')) {
+  if (
+    lowerItem.includes('scroll') ||
+    lowerItem.includes('document') ||
+    lowerItem.includes('plans') ||
+    lowerItem.includes('newspaper') ||
+    lowerItem.includes('receipt') ||
+    lowerItem.includes('card')
+  ) {
     return 'document';
   }
 
   return 'common_item';
 }
 
-
-
 // --- Function: assessSignificance ---
 function assessSignificance(itemId: string): CodexEntry['significance'] {
-// Variable declaration
+  // Variable declaration
   const lowerItem = itemId.toLowerCase();
 
-  
-  if (lowerItem.includes('reality_anchor') || lowerItem.includes('multiverse') ||
-      lowerItem.includes('architect') || lowerItem.includes('genesis')) {
+  if (
+    lowerItem.includes('reality_anchor') ||
+    lowerItem.includes('multiverse') ||
+    lowerItem.includes('architect') ||
+    lowerItem.includes('genesis')
+  ) {
     return 'legendary';
   }
 
-  
-  if (lowerItem.includes('null_pointer') || lowerItem.includes('unstable') ||
-      lowerItem.includes('forbidden') || lowerItem.includes('cursed')) {
+  if (
+    lowerItem.includes('null_pointer') ||
+    lowerItem.includes('unstable') ||
+    lowerItem.includes('forbidden') ||
+    lowerItem.includes('cursed')
+  ) {
     return 'mysterious';
   }
 
-  
-  if (lowerItem.includes('dimensional') || lowerItem.includes('quantum') ||
-      lowerItem.includes('temporal') || lowerItem.includes('fae_')) {
+  if (
+    lowerItem.includes('dimensional') ||
+    lowerItem.includes('quantum') ||
+    lowerItem.includes('temporal') ||
+    lowerItem.includes('fae_')
+  ) {
     return 'rare';
   }
 
-  
-  if (lowerItem.includes('key') || lowerItem.includes('tool') || lowerItem.includes('device') ||
-      lowerItem.includes('compass') || lowerItem.includes('scanner')) {
+  if (
+    lowerItem.includes('key') ||
+    lowerItem.includes('tool') ||
+    lowerItem.includes('device') ||
+    lowerItem.includes('compass') ||
+    lowerItem.includes('scanner')
+  ) {
     return 'useful';
   }
 
   return 'mundane';
 }
-
-
 
 // --- Function: formatItemName ---
 function formatItemName(itemId: string): string {
@@ -267,39 +284,29 @@ function formatItemName(itemId: string): string {
     .replace(/_/g, ' ')
     .replace(/([a-z])([A-Z])/g, '$1 $2')
     .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 }
-
-
 
 // --- Function: getAllCodexEntries ---
 export function getAllCodexEntries(): CodexEntry[] {
   return Array.from(codexEntries.values());
 }
 
-
-
 // --- Function: getCodexEntry ---
 export function getCodexEntry(itemId: string): CodexEntry | undefined {
   return codexEntries.get(itemId);
 }
 
-
-
 // --- Function: getCodexEntriesByCategory ---
 export function getCodexEntriesByCategory(category: ItemCategory): CodexEntry[] {
-  return Array.from(codexEntries.values()).filter(entry => entry.category === category);
+  return Array.from(codexEntries.values()).filter((entry) => entry.category === category);
 }
-
-
 
 // --- Function: isItemDiscovered ---
 export function isItemDiscovered(itemId: string): boolean {
   return codexEntries.has(itemId);
 }
-
-
 
 // --- Function: getCodexStats ---
 export function getCodexStats(): {
@@ -308,27 +315,31 @@ export function getCodexStats(): {
   significanceCounts: Record<string, number>;
   recentDiscoveries: CodexEntry[];
 } {
-// Variable declaration
+  // Variable declaration
   const entries = Array.from(codexEntries.values());
 
-// Variable declaration
-  const categoryCounts = entries.reduce((acc, entry) => {
-    acc[entry.category] = (acc[entry.category] || 0) + 1;
-    return acc;
-  }, {} as Record<ItemCategory, number>);
+  // Variable declaration
+  const categoryCounts = entries.reduce(
+    (acc, entry) => {
+      acc[entry.category] = (acc[entry.category] || 0) + 1;
+      return acc;
+    },
+    {} as Record<ItemCategory, number>,
+  );
 
-// Variable declaration
-  const significanceCounts = entries.reduce((acc, entry) => {
-// Variable declaration
-    const sig = entry.significance || 'mundane';
-    acc[sig] = (acc[sig] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+  // Variable declaration
+  const significanceCounts = entries.reduce(
+    (acc, entry) => {
+      // Variable declaration
+      const sig = entry.significance || 'mundane';
+      acc[sig] = (acc[sig] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 
-// Variable declaration
-  const recentDiscoveries = entries
-    .sort((a, b) => b.discoveredAt - a.discoveredAt)
-    .slice(0, 5);
+  // Variable declaration
+  const recentDiscoveries = entries.sort((a, b) => b.discoveredAt - a.discoveredAt).slice(0, 5);
 
   return {
     totalEntries: entries.length,
@@ -338,14 +349,12 @@ export function getCodexStats(): {
   };
 }
 
-
-
 // --- Function: updateCodexEntry ---
 export function updateCodexEntry(
   itemId: string,
-  updates: Partial<Omit<CodexEntry, 'id' | 'discoveredAt' | 'firstEncounter'>>
+  updates: Partial<Omit<CodexEntry, 'id' | 'discoveredAt' | 'firstEncounter'>>,
 ): void {
-// Variable declaration
+  // Variable declaration
   const entry = codexEntries.get(itemId);
   if (!entry) return;
 
@@ -358,16 +367,14 @@ export function updateCodexEntry(
         itemId,
         entry,
         isFirstDiscovery: false,
-      }
+      },
     });
   }
 }
 
-
-
 // --- Function: linkItemToQuest ---
 export function linkItemToQuest(itemId: string, questId: string): void {
-// Variable declaration
+  // Variable declaration
   const entry = codexEntries.get(itemId);
   if (!entry) return;
 
@@ -376,11 +383,9 @@ export function linkItemToQuest(itemId: string, questId: string): void {
   }
 }
 
-
-
 // --- Function: linkItemToNPC ---
 export function linkItemToNPC(itemId: string, npcId: string): void {
-// Variable declaration
+  // Variable declaration
   const entry = codexEntries.get(itemId);
   if (!entry) return;
 
@@ -389,8 +394,6 @@ export function linkItemToNPC(itemId: string, npcId: string): void {
   }
 }
 
-
-
 // --- Function: displayCodex ---
 export function displayCodex(filter?: { category?: ItemCategory; significance?: string }): void {
   if (!globalDispatch) return;
@@ -398,17 +401,16 @@ export function displayCodex(filter?: { category?: ItemCategory; significance?: 
   let entries = Array.from(codexEntries.values());
 
   if (filter?.category) {
-    entries = entries.filter(entry => entry.category === filter.category);
+    entries = entries.filter((entry) => entry.category === filter.category);
   }
 
   if (filter?.significance) {
-    entries = entries.filter(entry => entry.significance === filter.significance);
+    entries = entries.filter((entry) => entry.significance === filter.significance);
   }
 
-// Variable declaration
+  // Variable declaration
   const stats = getCodexStats();
 
-  
   globalDispatch({
     type: 'ADD_MESSAGE',
     payload: {
@@ -416,18 +418,19 @@ export function displayCodex(filter?: { category?: ItemCategory; significance?: 
       text: `📖 Item Codex (${entries.length}/${stats.totalEntries} entries)`,
       type: 'system',
       timestamp: Date.now(),
-    }
+    },
   });
 
-  
-// Variable declaration
-  const byCategory = entries.reduce((acc, entry) => {
-    if (!acc[entry.category]) acc[entry.category] = [];
-    acc[entry.category].push(entry);
-    return acc;
-  }, {} as Record<ItemCategory, CodexEntry[]>);
+  // Variable declaration
+  const byCategory = entries.reduce(
+    (acc, entry) => {
+      if (!acc[entry.category]) acc[entry.category] = [];
+      acc[entry.category].push(entry);
+      return acc;
+    },
+    {} as Record<ItemCategory, CodexEntry[]>,
+  );
 
-  
   Object.entries(byCategory).forEach(([category, categoryEntries]) => {
     globalDispatch!({
       type: 'ADD_MESSAGE',
@@ -436,13 +439,13 @@ export function displayCodex(filter?: { category?: ItemCategory; significance?: 
         text: `\n--- ${category.replace(/_/g, ' ').toUpperCase()} ---`,
         type: 'system',
         timestamp: Date.now(),
-      }
+      },
     });
 
-    categoryEntries.forEach(entry => {
-// Variable declaration
+    categoryEntries.forEach((entry) => {
+      // Variable declaration
       const significance = entry.significance === 'mundane' ? '' : ` (${entry.significance})`;
-// Variable declaration
+      // Variable declaration
       const timesSeen = entry.timesFound > 1 ? ` [x${entry.timesFound}]` : '';
 
       globalDispatch!({
@@ -452,7 +455,7 @@ export function displayCodex(filter?: { category?: ItemCategory; significance?: 
           text: `• ${entry.name}${significance}${timesSeen}`,
           type: 'info',
           timestamp: Date.now(),
-        }
+        },
       });
 
       if (entry.loreDescription) {
@@ -463,22 +466,19 @@ export function displayCodex(filter?: { category?: ItemCategory; significance?: 
             text: `  "${entry.loreDescription}"`,
             type: 'narrative',
             timestamp: Date.now(),
-          }
+          },
         });
       }
     });
   });
 }
 
-
-
-
 // --- Function: recordMiniquestCompletion ---
 export function recordMiniquestCompletion(
   questId: string,
   questTitle: string,
   roomId: string,
-  points: number = 25 
+  points: number = 25,
 ): void {
   const entry: CodexEntry = {
     id: `miniquest_${questId}`,
@@ -491,7 +491,7 @@ export function recordMiniquestCompletion(
     timesFound: 1,
     discoveredIn: roomId,
     discoveredAt: Date.now(),
-    tags: ['miniquest', 'completed', roomId]
+    tags: ['miniquest', 'completed', roomId],
   };
   codexEntries.set(`miniquest_${questId}`, entry);
   updateScore(points);

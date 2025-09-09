@@ -28,11 +28,11 @@ export function formatISODate(d: Date): string {
   return `${y}-${m}-${day}`;
 }
 
-export type Span = { 
+export type Span = {
   id: string;
-  start: string; 
-  end: string; 
-  label?: string; 
+  start: string;
+  end: string;
+  label?: string;
 };
 
 export function span(d: Date, days = 1): Span {
@@ -63,7 +63,7 @@ export function multiDaySpan(d: Date, days: number, label?: string): Span {
  * Convert date to London timezone
  */
 export function toLondonDate(d: Date): Date {
-  const utc = new Date(d.getTime() + (d.getTimezoneOffset() * 60000));
+  const utc = new Date(d.getTime() + d.getTimezoneOffset() * 60000);
   const londonOffset = -0; // London is UTC+0 in winter, +1 in summer - simplified to UTC for calculations
-  return new Date(utc.getTime() + (londonOffset * 3600000));
+  return new Date(utc.getTime() + londonOffset * 3600000);
 }

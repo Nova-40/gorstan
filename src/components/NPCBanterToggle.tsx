@@ -31,7 +31,7 @@ const NPCBanterToggle: React.FC = () => {
     const newState = !overhearEnabled;
     dispatch({
       type: 'SET_OVERHEAR',
-      payload: newState
+      payload: newState,
     });
   };
 
@@ -42,9 +42,10 @@ const NPCBanterToggle: React.FC = () => {
       onMouseLeave={() => setHovered(false)}
       className={`
         px-3 py-2 rounded-lg border transition-all duration-200
-        ${overhearEnabled 
-          ? 'bg-blue-600 border-blue-500 text-white' 
-          : 'bg-gray-600 border-gray-500 text-gray-300'
+        ${
+          overhearEnabled
+            ? 'bg-blue-600 border-blue-500 text-white'
+            : 'bg-gray-600 border-gray-500 text-gray-300'
         }
         ${hovered ? 'shadow-lg transform scale-105' : ''}
         hover:border-opacity-80
@@ -52,9 +53,7 @@ const NPCBanterToggle: React.FC = () => {
       title={overhearEnabled ? 'Hide NPC conversations' : 'Show NPC conversations'}
     >
       {overhearEnabled ? '💬' : '🤐'}
-      <span className="ml-2 text-sm">
-        {overhearEnabled ? 'NPC Chatter On' : 'NPC Chatter Off'}
-      </span>
+      <span className="ml-2 text-sm">{overhearEnabled ? 'NPC Chatter On' : 'NPC Chatter Off'}</span>
     </button>
   );
 };

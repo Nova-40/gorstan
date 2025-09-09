@@ -47,7 +47,7 @@ export function setFlag(key: string, value: boolean): void {
 export function clearAllFlags(): void {
   try {
     const keys = Object.keys(localStorage);
-    keys.forEach(key => {
+    keys.forEach((key) => {
       if (key.startsWith('gorstan.seasonal.')) {
         localStorage.removeItem(key);
       }
@@ -64,7 +64,7 @@ export function getAllFlags(): Record<string, boolean> {
   try {
     const flags: Record<string, boolean> = {};
     const keys = Object.keys(localStorage);
-    keys.forEach(key => {
+    keys.forEach((key) => {
       if (key.startsWith('gorstan.seasonal.')) {
         const flagKey = key.replace('gorstan.seasonal.', '');
         flags[flagKey] = localStorage.getItem(key) === 'true';

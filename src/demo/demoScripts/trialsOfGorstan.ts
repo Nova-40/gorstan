@@ -11,7 +11,7 @@ import { clearDemo } from '../demoRouter';
 
 export async function startTrialsOfGorstan(): Promise<void> {
   console.log('[TrialsOfGorstan] Beginning the Trials of Gorstan demo...');
-  
+
   try {
     // Create a container for the Trials game
     const gameContainer = document.createElement('div');
@@ -23,43 +23,42 @@ export async function startTrialsOfGorstan(): Promise<void> {
     gameContainer.style.height = '100vh';
     gameContainer.style.zIndex = '10000';
     gameContainer.style.background = '#000';
-    
+
     document.body.appendChild(gameContainer);
-    
+
     // Create React root and render the game
     const root = createRoot(gameContainer);
-    
+
     const handleComplete = () => {
       console.log('[TrialsOfGorstan] Demo completed successfully');
-      
+
       // Clean up and return to Choose Your Adventure
       root.unmount();
       document.body.removeChild(gameContainer);
       clearDemo();
-      
+
       // In a real implementation, this would navigate back to CYA screen
       console.log('[TrialsOfGorstan] Returning to Choose Your Adventure...');
     };
-    
+
     const handleQuit = () => {
       console.log('[TrialsOfGorstan] Player quit the demo');
-      
+
       // Clean up and return to Choose Your Adventure
       root.unmount();
       document.body.removeChild(gameContainer);
       clearDemo();
-      
+
       console.log('[TrialsOfGorstan] Returning to Choose Your Adventure...');
     };
-    
+
     root.render(
       React.createElement(TrialsGame, {
         onComplete: handleComplete,
         onQuit: handleQuit,
-        autoStart: true
-      })
+        autoStart: true,
+      }),
     );
-    
   } catch (error) {
     console.error('[TrialsOfGorstan] Demo failed:', error);
     clearDemo();

@@ -6,7 +6,10 @@
 import React, { useState } from 'react';
 import { MagicSystem, Spell } from '../engine/MagicSystem';
 
-const MagicModal: React.FC<{ magicSystem: MagicSystem; onClose: () => void }> = ({ magicSystem, onClose }) => {
+const MagicModal: React.FC<{ magicSystem: MagicSystem; onClose: () => void }> = ({
+  magicSystem,
+  onClose,
+}) => {
   const [selectedSpell, setSelectedSpell] = useState<Spell | null>(null);
   const [message, setMessage] = useState('');
 
@@ -22,7 +25,7 @@ const MagicModal: React.FC<{ magicSystem: MagicSystem; onClose: () => void }> = 
       <h2>Magic System</h2>
       <p>Mana: {magicSystem.getMana()}</p>
       <ul>
-        {magicSystem.getSpells().map(spell => (
+        {magicSystem.getSpells().map((spell) => (
           <li key={spell.id} onClick={() => setSelectedSpell(spell)}>
             {spell.name} - {spell.manaCost} Mana
           </li>

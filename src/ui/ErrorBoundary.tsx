@@ -27,7 +27,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   override componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     const errorDetails = errorInfo.componentStack || 'Unknown component stack';
-    
+
     this.setState({
       errorInfo: errorDetails,
     });
@@ -48,7 +48,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   private handleBugReport = () => {
     const { error, errorInfo } = this.state;
-    
+
     // Prepare bug report data
     const bugReportData = {
       error: error?.message || 'Unknown error',
@@ -57,9 +57,9 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       url: window.location.href,
       userAgent: navigator.userAgent,
       timestamp: new Date().toISOString(),
-      gameVersion: process.env.REACT_APP_VERSION || 'unknown'
+      gameVersion: process.env.REACT_APP_VERSION || 'unknown',
     };
-    
+
     // Create GitHub issue URL with prefilled data
     const issueTitle = encodeURIComponent(`[Bug Report] ${error?.message || 'Render Error'}`);
     const issueBody = encodeURIComponent(`## Error Details
@@ -96,9 +96,9 @@ ${bugReportData.userAgent}
 ## Additional Context
 
 `);
-    
+
     const githubUrl = `https://github.com/Nova-40/gorstan-game/issues/new?title=${issueTitle}&body=${issueBody}&labels=bug,error-boundary`;
-    
+
     window.open(githubUrl, '_blank');
   };
 
@@ -116,7 +116,7 @@ ${bugReportData.userAgent}
             <div className="text-red-500 mr-3">⚠️</div>
             <h2 className="text-lg font-semibold text-red-800">Something went wrong</h2>
           </div>
-          
+
           <div className="text-red-700 mb-4">
             {this.state.error?.message || 'An unexpected error occurred'}
           </div>

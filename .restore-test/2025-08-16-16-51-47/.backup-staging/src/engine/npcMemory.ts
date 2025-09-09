@@ -19,9 +19,6 @@ export type PlayerState = any;
 // Gorstan and characters (c) Geoff Webster 2025
 // Handles NPC logic, memory, or rendering.
 
-
-
-
 export interface NPCMemory {
   topic: string;
   time: number;
@@ -46,20 +43,12 @@ export interface NPCState {
   queryCount: number;
   trustLevel: number;
   lastInteraction?: number;
-  relationship:
-    | 'stranger'
-    | 'acquaintance'
-    | 'friend'
-    | 'ally'
-    | 'enemy'
-    | 'trusted'
-    | 'despised';
+  relationship: 'stranger' | 'acquaintance' | 'friend' | 'ally' | 'enemy' | 'trusted' | 'despised';
   personalityTraits: string[];
   preferences?: Record<string, number>;
   memoryCapacity?: number;
   initialized?: boolean;
 }
-
 
 export interface InteractionContext {
   currentRoomId?: string;
@@ -75,7 +64,6 @@ export interface InteractionContext {
   severity?: 'minor' | 'normal' | 'major';
 }
 
-
 export interface MemoryQueryOptions {
   limit?: number;
   since?: number;
@@ -83,7 +71,6 @@ export interface MemoryQueryOptions {
   sortBy?: 'time' | 'importance' | 'relevance';
   includeContext?: boolean;
 }
-
 
 export interface NPCMemoryStats {
   totalMemories: number;
@@ -93,7 +80,6 @@ export interface NPCMemoryStats {
   averageImportance: number;
   memoryTrends: Record<string, number>;
 }
-
 
 const npcStates: Record<string, NPCState> = {
   ayla: {
@@ -125,10 +111,6 @@ const npcStates: Record<string, NPCState> = {
   },
 };
 
-
-
-
-
 // --- Function: getAllTraits ---
 export function getAllTraits(): string[] {
   return Object.values(npcStates)
@@ -136,17 +118,15 @@ export function getAllTraits(): string[] {
     .filter((trait, i, arr) => arr.indexOf(trait) === i);
 }
 
-
-
-
 // --- Function: getAchievements ---
 export function getAchievements(): string[] {
   // Aggregate all contextTags from all NPC memories
-  const allTags: string[] = Object.values(npcStates)
-    .flatMap(npc => npc.memory.flatMap(mem => mem.contextTags || []));
+  const allTags: string[] = Object.values(npcStates).flatMap((npc) =>
+    npc.memory.flatMap((mem) => mem.contextTags || []),
+  );
   return Array.from(new Set(allTags))
-    .filter(tag => tag.startsWith('achievement:'))
-    .map(tag => tag.replace('achievement:', ''));
+    .filter((tag) => tag.startsWith('achievement:'))
+    .map((tag) => tag.replace('achievement:', ''));
 }
 
 export default npcStates;

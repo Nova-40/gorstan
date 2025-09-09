@@ -14,8 +14,8 @@
   Full licence terms: see EULA.md in the project root.
 */
 
-import BaseDialog from "./a11y/BaseDialog";
-import { usePrefersReducedMotion } from "./hooks/usePrefersReducedMotion";
+import BaseDialog from './a11y/BaseDialog';
+import { usePrefersReducedMotion } from './hooks/usePrefersReducedMotion';
 
 type Props = { onClose: () => void };
 
@@ -31,26 +31,27 @@ export default function May13Overlay({ onClose }: Props) {
             aria-hidden
             className="absolute left-1/2 top-6 h-24 w-24 -translate-x-1/2 rounded-full"
             style={{
-              background: "radial-gradient(circle at 60% 40%, #ffd1dc, #f08080 70%, #b24b4b)",
-              boxShadow: "0 8px 24px rgba(240,128,128,0.35)",
-              animation: reduce ? undefined : "floaty 3.2s ease-in-out infinite"
+              background: 'radial-gradient(circle at 60% 40%, #ffd1dc, #f08080 70%, #b24b4b)',
+              boxShadow: '0 8px 24px rgba(240,128,128,0.35)',
+              animation: reduce ? undefined : 'floaty 3.2s ease-in-out infinite',
             }}
           />
           <div
             aria-hidden
             className="absolute left-[52%] top-28 h-10 w-[1px] bg-white/70"
-            style={{ transform: "translateX(-50%)" }}
+            style={{ transform: 'translateX(-50%)' }}
           />
           {/* Party hat */}
           <div
             aria-hidden
             className="absolute left-1/2 top-0 -translate-x-1/2"
             style={{
-              width: 0, height: 0,
-              borderLeft: "12px solid transparent",
-              borderRight: "12px solid transparent",
-              borderBottom: "20px solid #ffd84d",
-              filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.3))"
+              width: 0,
+              height: 0,
+              borderLeft: '12px solid transparent',
+              borderRight: '12px solid transparent',
+              borderBottom: '20px solid #ffd84d',
+              filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
             }}
           />
         </div>

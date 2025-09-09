@@ -17,16 +17,7 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Renders room descriptions and image logic.
 
-
 import { Room } from '../types/Room';
-
-
-
-
-
-
-
-
 
 const aevirawarehouse: Room = {
   id: 'aevirawarehouse',
@@ -34,8 +25,8 @@ const aevirawarehouse: Room = {
   title: 'Aevira Warehouse',
   description: [
     'You stand before an imposing industrial warehouse in a less-traveled part of Manhattan. The building\'s exterior gives nothing away - gray concrete walls, minimal windows, and a single reinforced door marked only with the number "47".',
-    'Through the reinforced glass windows, you can glimpse sophisticated equipment inside - high-end printers, laminating machines, and computers that clearly aren\'t being used for legitimate business purposes. This is clearly a sophisticated forgery operation.',
-    'A burly security guard named Albie sits behind a desk just inside the entrance, his watchful eyes tracking every movement on the street. He looks like the kind of person who doesn\'t ask questions but demands the right answers.',
+    "Through the reinforced glass windows, you can glimpse sophisticated equipment inside - high-end printers, laminating machines, and computers that clearly aren't being used for legitimate business purposes. This is clearly a sophisticated forgery operation.",
+    "A burly security guard named Albie sits behind a desk just inside the entrance, his watchful eyes tracking every movement on the street. He looks like the kind of person who doesn't ask questions but demands the right answers.",
     'The air around the building hums with the quiet efficiency of illegal enterprise - a place where any government document or credit card from anywhere in the world can be expertly crafted for the right price and proper authorization.',
   ],
   image: 'newyorkZone_aevirawarehouse.png',
@@ -56,55 +47,57 @@ const aevirawarehouse: Room = {
 
   exits: {
     west: 'centralpark',
-    
   },
 
-  items: [
-    
-  ],
+  items: [],
 
   interactables: {
-    'security_guard_albie': {
-      description: 'A professional security guard who takes his job seriously. Albie looks like he\'s seen everything and trusts nothing without proper verification.',
+    security_guard_albie: {
+      description:
+        "A professional security guard who takes his job seriously. Albie looks like he's seen everything and trusts nothing without proper verification.",
       actions: ['talk', 'show_credentials', 'request_entry'],
       requires: [],
     },
-    'reinforced_door': {
-      description: 'A heavy steel door with multiple locks and a small reinforced window. It\'s clearly designed to keep unauthorized people out.',
+    reinforced_door: {
+      description:
+        "A heavy steel door with multiple locks and a small reinforced window. It's clearly designed to keep unauthorized people out.",
       actions: ['examine', 'try_to_open', 'knock'],
       requires: [],
     },
-    'warehouse_windows': {
-      description: 'Reinforced glass windows that offer limited glimpses of the sophisticated forgery equipment inside.',
+    warehouse_windows: {
+      description:
+        'Reinforced glass windows that offer limited glimpses of the sophisticated forgery equipment inside.',
       actions: ['examine', 'peer_through', 'observe_equipment'],
       requires: [],
     },
-    'forgery_equipment': {
-      description: 'Visible through the windows: state-of-the-art printers, laminators, computers, and specialized tools for document creation.',
+    forgery_equipment: {
+      description:
+        'Visible through the windows: state-of-the-art printers, laminators, computers, and specialized tools for document creation.',
       actions: ['observe', 'assess_capabilities', 'recognize_equipment'],
       requires: [],
     },
-    
-    'briefcase_puzzle': {
-      description: 'A sophisticated briefcase with an intricate locking mechanism. Inside, you can see the outline of something valuable.',
+
+    briefcase_puzzle: {
+      description:
+        'A sophisticated briefcase with an intricate locking mechanism. Inside, you can see the outline of something valuable.',
       actions: ['examine', 'attempt_combination', 'solve_puzzle', 'open'],
       requires: ['warehouse_access_granted'],
     },
-    'document_printers': {
-      description: 'Professional-grade equipment capable of producing any government document with perfect authenticity.',
+    document_printers: {
+      description:
+        'Professional-grade equipment capable of producing any government document with perfect authenticity.',
       actions: ['examine', 'operate', 'test_capabilities'],
       requires: ['warehouse_access_granted'],
     },
-    'laminating_station': {
-      description: 'High-end laminating equipment for creating authentic-looking ID cards and official documents.',
+    laminating_station: {
+      description:
+        'High-end laminating equipment for creating authentic-looking ID cards and official documents.',
       actions: ['examine', 'use', 'test_quality'],
       requires: ['warehouse_access_granted'],
     },
   },
 
-  npcs: [
-    
-  ],
+  npcs: [],
 
   events: {
     onEnter: ['checkAuthorization', 'activateAlbieSecurity'],
@@ -145,7 +138,7 @@ const aevirawarehouse: Room = {
       'equipment_humming_inside',
       'security_radio_chatter',
       'urban_ambient_noise',
-      'warehouse_ventilation'
+      'warehouse_ventilation',
     ],
     hazards: ['security_expulsion_risk', 'unauthorized_access_consequences'],
   },
@@ -194,17 +187,17 @@ const aevirawarehouse: Room = {
   },
 
   customActions: {
-    'show_chef_authorization': {
+    show_chef_authorization: {
       description: 'Present proof that the chef has cleared you for warehouse access',
       requirements: ['chef_clearance_received', 'burger_joint_visited'],
       effects: ['gain_warehouse_access', 'activate_albie_cooperation', 'unlock_interior'],
     },
-    'solve_briefcase_puzzle': {
+    solve_briefcase_puzzle: {
       description: 'Work through the complex locking mechanism to open the briefcase',
       requirements: ['warehouse_access_granted', 'examine briefcase_puzzle'],
       effects: ['obtain_medallion', 'unlock_manhattan_hub_access', 'complete_warehouse_objective'],
     },
-    'attempt_unauthorized_entry': {
+    attempt_unauthorized_entry: {
       description: 'Try to enter without proper clearance',
       requirements: [],
       effects: ['trigger_albie_expulsion', 'return_to_central_park', 'receive_warning'],
@@ -213,5 +206,3 @@ const aevirawarehouse: Room = {
 };
 
 export default aevirawarehouse;
-
-

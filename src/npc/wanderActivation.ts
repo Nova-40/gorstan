@@ -23,15 +23,15 @@ import { getWanderScheduler } from './wanderScheduler';
 /**
  * Game phases that affect wandering activation
  */
-export type GamePhase = 
-  | 'preload'        // Before game starts
-  | 'intro'          // Intro sequences, tutorial
-  | 'exploration'    // Normal gameplay
-  | 'cutscene'       // Story cutscenes
+export type GamePhase =
+  | 'preload' // Before game starts
+  | 'intro' // Intro sequences, tutorial
+  | 'exploration' // Normal gameplay
+  | 'cutscene' // Story cutscenes
   | 'polly-takeover' // PollyTakeover death sequence
-  | 'reset'          // Game reset in progress
-  | 'final'          // Final sequences/ending
-  | 'overlay';       // System overlays (pause, settings, etc.)
+  | 'reset' // Game reset in progress
+  | 'final' // Final sequences/ending
+  | 'overlay'; // System overlays (pause, settings, etc.)
 
 /**
  * Configuration for wandering activation
@@ -39,13 +39,13 @@ export type GamePhase =
 export interface WanderActivationConfig {
   // Game phases where wandering should be active
   activePhases: GamePhase[];
-  
+
   // Specific rooms where wandering should be disabled
   disabledRooms: string[];
-  
+
   // Delay after phase change before activating wandering (ms)
   activationDelayMs: number;
-  
+
   // Whether to respect reduced motion preferences
   respectReducedMotion: boolean;
 }
@@ -67,14 +67,9 @@ export interface GameStateSnapshot {
 // Default activation configuration
 const DEFAULT_ACTIVATION_CONFIG: WanderActivationConfig = {
   activePhases: ['exploration'], // Only active during normal gameplay
-  disabledRooms: [
-    'final-cutscene',
-    'polly-death-room',
-    'intro-tutorial',
-    'reset-sequence'
-  ],
+  disabledRooms: ['final-cutscene', 'polly-death-room', 'intro-tutorial', 'reset-sequence'],
   activationDelayMs: 500, // Half second delay after phase changes
-  respectReducedMotion: true
+  respectReducedMotion: true,
 };
 
 /**
@@ -83,7 +78,7 @@ const DEFAULT_ACTIVATION_CONFIG: WanderActivationConfig = {
 export class WanderActivationController {
   private config: WanderActivationConfig;
   private currentGameState: GameStateSnapshot | null = null;
-  private activationTimer: NodeJS.Timeout | null = null;
+  private activationTimer: ReturnType<typeof setTimeout> | null = null;
   private isWanderingActive = false;
 
   constructor(config?: Partial<WanderActivationConfig>) {
@@ -98,7 +93,8 @@ export class WanderActivationController {
     this.currentGameState = gameState;
 
     // Check if this is a significant state change
-    const significantChange = !previousState || 
+    const significantChange =
+      !previousState ||
       previousState.currentPhase !== gameState.currentPhase ||
       previousState.isPlayerInCutscene !== gameState.isPlayerInCutscene ||
       previousState.isSystemOverlayActive !== gameState.isSystemOverlayActive ||
@@ -134,10 +130,10 @@ export class WanderActivationController {
     }
 
     const shouldBeActive = this.shouldWanderingBeActive(this.currentGameState);
-    
+
     if (shouldBeActive !== this.isWanderingActive) {
       this.isWanderingActive = shouldBeActive;
-      
+
       if (shouldBeActive) {
         this.activateWandering();
       } else {
@@ -199,12 +195,12 @@ export class WanderActivationController {
    */
   private activateWandering(): void {
     console.log('[WanderActivation] Activating wandering');
-    
+
     const scheduler = getWanderScheduler();
-    
+
     // Resume any global pauses that we may have applied
     scheduler.resume({ global: true, reason: 'activation-controller' });
-    
+
     // Start the scheduler if it's not running
     if (!scheduler.getStats().isRunning) {
       scheduler.start();
@@ -217,11 +213,11 @@ export class WanderActivationController {
   private deactivateWandering(): void {
     const state = this.currentGameState;
     const reason = state ? this.getDeactivationReason(state) : 'unknown';
-    
+
     console.log(`[WanderActivation] Deactivating wandering: ${reason}`);
-    
+
     const scheduler = getWanderScheduler();
-    
+
     // Pause wandering globally
     scheduler.pause({ global: true, reason: 'activation-controller' });
   }
@@ -230,15 +226,33 @@ export class WanderActivationController {
    * Get human-readable reason for deactivation
    */
   private getDeactivationReason(state: GameStateSnapshot): string {
-    if (state.hasReducedMotionPreference) return 'reduced-motion';
-    if (!this.config.activePhases.includes(state.currentPhase)) return `phase-${state.currentPhase}`;
-    if (state.isPlayerInCutscene) return 'cutscene';
-    if (state.isSystemOverlayActive) return 'overlay';
-    if (state.isPollyTakeoverActive) return 'polly-takeover';
-    if (state.isResetInProgress) return 'reset';
-    if (this.config.disabledRooms.includes(state.currentRoom)) return `disabled-room-${state.currentRoom}`;
-    if (state.gameFlags['wandering-disabled']) return 'flag-disabled';
-    if (state.gameFlags['final-sequence-active']) return 'final-sequence';
+    if (state.hasReducedMotionPreference) {
+      return 'reduced-motion';
+    }
+    if (!this.config.activePhases.includes(state.currentPhase)) {
+      return `phase-${state.currentPhase}`;
+    }
+    if (state.isPlayerInCutscene) {
+      return 'cutscene';
+    }
+    if (state.isSystemOverlayActive) {
+      return 'overlay';
+    }
+    if (state.isPollyTakeoverActive) {
+      return 'polly-takeover';
+    }
+    if (state.isResetInProgress) {
+      return 'reset';
+    }
+    if (this.config.disabledRooms.includes(state.currentRoom)) {
+      return `disabled-room-${state.currentRoom}`;
+    }
+    if (state.gameFlags['wandering-disabled']) {
+      return 'flag-disabled';
+    }
+    if (state.gameFlags['final-sequence-active']) {
+      return 'final-sequence';
+    }
     return 'unknown';
   }
 
@@ -265,7 +279,11 @@ export class WanderActivationController {
     return {
       isActive: this.isWanderingActive,
       currentPhase: state?.currentPhase || null,
-      reason: state ? (this.isWanderingActive ? 'active' : this.getDeactivationReason(state)) : 'no-state'
+      reason: state
+        ? this.isWanderingActive
+          ? 'active'
+          : this.getDeactivationReason(state)
+        : 'no-state',
     };
   }
 
@@ -295,7 +313,9 @@ let globalActivationController: WanderActivationController | null = null;
 /**
  * Get the global activation controller
  */
-export function getWanderActivationController(config?: Partial<WanderActivationConfig>): WanderActivationController {
+export function getWanderActivationController(
+  config?: Partial<WanderActivationConfig>,
+): WanderActivationController {
   if (!globalActivationController) {
     globalActivationController = new WanderActivationController(config);
   }
@@ -309,11 +329,11 @@ export function getWanderActivationController(config?: Partial<WanderActivationC
 export function setGamePhase(phase: GamePhase): void {
   const controller = getWanderActivationController();
   const currentState = controller['currentGameState'];
-  
+
   if (currentState) {
     controller.updateGameState({
       ...currentState,
-      currentPhase: phase
+      currentPhase: phase,
     });
   }
 }
@@ -321,11 +341,11 @@ export function setGamePhase(phase: GamePhase): void {
 export function setCutsceneState(isInCutscene: boolean): void {
   const controller = getWanderActivationController();
   const currentState = controller['currentGameState'];
-  
+
   if (currentState) {
     controller.updateGameState({
       ...currentState,
-      isPlayerInCutscene: isInCutscene
+      isPlayerInCutscene: isInCutscene,
     });
   }
 }
@@ -333,11 +353,11 @@ export function setCutsceneState(isInCutscene: boolean): void {
 export function setOverlayState(isOverlayActive: boolean): void {
   const controller = getWanderActivationController();
   const currentState = controller['currentGameState'];
-  
+
   if (currentState) {
     controller.updateGameState({
       ...currentState,
-      isSystemOverlayActive: isOverlayActive
+      isSystemOverlayActive: isOverlayActive,
     });
   }
 }
@@ -345,11 +365,11 @@ export function setOverlayState(isOverlayActive: boolean): void {
 export function setPollyTakeoverState(isActive: boolean): void {
   const controller = getWanderActivationController();
   const currentState = controller['currentGameState'];
-  
+
   if (currentState) {
     controller.updateGameState({
       ...currentState,
-      isPollyTakeoverActive: isActive
+      isPollyTakeoverActive: isActive,
     });
   }
 }
@@ -360,6 +380,6 @@ export function setPollyTakeoverState(isActive: boolean): void {
 export function initializeWanderActivation(initialState: GameStateSnapshot): void {
   const controller = getWanderActivationController();
   controller.updateGameState(initialState);
-  
+
   console.log('[WanderActivation] Initialized with state:', initialState);
 }

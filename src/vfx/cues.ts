@@ -36,12 +36,12 @@ export const COMBAT_CUES = {
     respectPRM: true,
     motionVariant: {
       animation: 'sparkle-burst 0.8s ease-out',
-      transform: 'scale(1.2)'
+      transform: 'scale(1.2)',
     },
     staticVariant: {
       emphasis: '✧ PERFECT PARRY! ✧',
-      color: 'gold'
-    }
+      color: 'gold',
+    },
   }),
 
   parryFail: (): VisualCue => ({
@@ -50,12 +50,12 @@ export const COMBAT_CUES = {
     className: 'combat-cue parry-fail',
     respectPRM: true,
     motionVariant: {
-      animation: 'shake 0.3s ease-out'
+      animation: 'shake 0.3s ease-out',
     },
     staticVariant: {
       emphasis: '⚠ PARRY FAILED ⚠',
-      color: 'red'
-    }
+      color: 'red',
+    },
   }),
 
   // Dodge feedback
@@ -66,12 +66,12 @@ export const COMBAT_CUES = {
     respectPRM: true,
     motionVariant: {
       animation: 'fade-slide 1.0s ease-out',
-      transform: 'translateX(20px)'
+      transform: 'translateX(20px)',
     },
     staticVariant: {
       emphasis: '⟪ SLIPSTREAM ⟫ RIPOSTE READY!',
-      color: 'cyan'
-    }
+      color: 'cyan',
+    },
   }),
 
   // Elemental effects
@@ -81,12 +81,12 @@ export const COMBAT_CUES = {
     className: 'combat-cue status-burn',
     respectPRM: true,
     motionVariant: {
-      animation: 'flicker 0.5s ease-in-out'
+      animation: 'flicker 0.5s ease-in-out',
     },
     staticVariant: {
       emphasis: '🔥 BURNING 🔥',
-      color: 'orange'
-    }
+      color: 'orange',
+    },
   }),
 
   freeze: (): VisualCue => ({
@@ -95,12 +95,12 @@ export const COMBAT_CUES = {
     className: 'combat-cue status-freeze',
     respectPRM: true,
     motionVariant: {
-      animation: 'freeze-pulse 0.8s ease-out'
+      animation: 'freeze-pulse 0.8s ease-out',
     },
     staticVariant: {
       emphasis: '❄️ FROZEN SOLID ❄️',
-      color: 'lightblue'
-    }
+      color: 'lightblue',
+    },
   }),
 
   shock: (): VisualCue => ({
@@ -109,12 +109,12 @@ export const COMBAT_CUES = {
     className: 'combat-cue status-shock',
     respectPRM: true,
     motionVariant: {
-      animation: 'electric-jitter 0.6s ease-out'
+      animation: 'electric-jitter 0.6s ease-out',
     },
     staticVariant: {
       emphasis: '⚡ SHOCKED ⚡',
-      color: 'yellow'
-    }
+      color: 'yellow',
+    },
   }),
 
   overload: (): VisualCue => ({
@@ -124,12 +124,12 @@ export const COMBAT_CUES = {
     respectPRM: true,
     motionVariant: {
       animation: 'overload-burst 1.0s ease-out',
-      transform: 'scale(1.5)'
+      transform: 'scale(1.5)',
     },
     staticVariant: {
       emphasis: '⚡ OVERLOAD! ⚡',
-      color: 'yellow'
-    }
+      color: 'yellow',
+    },
   }),
 
   shatter: (): VisualCue => ({
@@ -138,12 +138,12 @@ export const COMBAT_CUES = {
     className: 'combat-cue elemental-shatter',
     respectPRM: true,
     motionVariant: {
-      animation: 'shatter-fragments 0.8s ease-out'
+      animation: 'shatter-fragments 0.8s ease-out',
     },
     staticVariant: {
       emphasis: '💎 SHATTER! 💎',
-      color: 'lightblue'
-    }
+      color: 'lightblue',
+    },
   }),
 
   // Damage feedback
@@ -154,12 +154,12 @@ export const COMBAT_CUES = {
     respectPRM: true,
     motionVariant: {
       animation: 'crit-explosion 1.0s ease-out',
-      transform: 'scale(1.3)'
+      transform: 'scale(1.3)',
     },
     staticVariant: {
       emphasis: '💥 CRITICAL HIT! 💥',
-      color: 'red'
-    }
+      color: 'red',
+    },
   }),
 
   // Spell casting
@@ -169,12 +169,12 @@ export const COMBAT_CUES = {
     className: 'combat-cue spell-cast',
     respectPRM: true,
     motionVariant: {
-      animation: 'spell-shimmer 0.8s ease-out'
+      animation: 'spell-shimmer 0.8s ease-out',
     },
     staticVariant: {
       emphasis: `✨ ${spellName.toUpperCase()} ✨`,
-      color: 'purple'
-    }
+      color: 'purple',
+    },
   }),
 
   // Combat state
@@ -184,12 +184,12 @@ export const COMBAT_CUES = {
     className: 'combat-cue staggered',
     respectPRM: true,
     motionVariant: {
-      animation: 'stagger-wobble 1.5s ease-out'
+      animation: 'stagger-wobble 1.5s ease-out',
     },
     staticVariant: {
       emphasis: '😵 STAGGERED 😵',
-      color: 'gray'
-    }
+      color: 'gray',
+    },
   }),
 
   riposteReady: (): VisualCue => ({
@@ -198,26 +198,23 @@ export const COMBAT_CUES = {
     className: 'combat-cue riposte-ready',
     respectPRM: true,
     motionVariant: {
-      animation: 'pulse-glow 1.0s ease-in-out'
+      animation: 'pulse-glow 1.0s ease-in-out',
     },
     staticVariant: {
       emphasis: '⚔️ RIPOSTE WINDOW! ⚔️',
-      color: 'gold'
-    }
-  })
+      color: 'gold',
+    },
+  }),
 };
 
 /** Display a combat cue with PRM consideration */
-export function showCombatCue(
-  cueGenerator: () => VisualCue,
-  container?: HTMLElement
-): void {
+export function showCombatCue(cueGenerator: () => VisualCue, container?: HTMLElement): void {
   const cue = cueGenerator();
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  
+
   const cueElement = document.createElement('div');
   cueElement.className = cue.className;
-  
+
   if (prefersReducedMotion && cue.respectPRM && cue.staticVariant) {
     // Use static variant
     cueElement.textContent = cue.staticVariant.emphasis;
@@ -234,7 +231,7 @@ export function showCombatCue(
       }
     }
   }
-  
+
   // Position and style
   cueElement.style.position = 'fixed';
   cueElement.style.top = '20%';
@@ -244,10 +241,10 @@ export function showCombatCue(
   cueElement.style.fontSize = '1.5rem';
   cueElement.style.fontFamily = 'monospace';
   cueElement.style.pointerEvents = 'none';
-  
+
   const targetContainer = container || document.body;
   targetContainer.appendChild(cueElement);
-  
+
   // Remove after duration
   setTimeout(() => {
     if (cueElement.parentNode) {
@@ -257,14 +254,17 @@ export function showCombatCue(
 }
 
 /** Console text formatting for combat feedback */
-export function formatCombatText(message: string, type: 'success' | 'warning' | 'error' | 'info' = 'info'): string {
+export function formatCombatText(
+  message: string,
+  type: 'success' | 'warning' | 'error' | 'info' = 'info',
+): string {
   const timestamp = new Date().toLocaleTimeString();
   const prefix = {
     success: '✓',
     warning: '⚠',
     error: '✗',
-    info: '→'
+    info: '→',
   }[type];
-  
+
   return `[${timestamp}] ${prefix} ${message}`;
 }

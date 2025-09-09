@@ -19,7 +19,6 @@
 
 import { Room } from '../types/Room';
 
-
 const elfhame: Room = {
   id: 'elfhame',
   zone: 'elfhameZone',
@@ -53,28 +52,29 @@ const elfhame: Room = {
     west: 'faelake',
   },
 
-  Roomitem: [
-    'whisper_stone',
-  ],
+  Roomitem: ['whisper_stone'],
 
   interactables: {
-    'starlight_paths': {
-      description: 'Paths of pure starlight that wind between the ancient trees, leading to distant wonders.',
+    starlight_paths: {
+      description:
+        'Paths of pure starlight that wind between the ancient trees, leading to distant wonders.',
       actions: ['examine', 'follow', 'touch'],
       requires: [],
     },
-    'luminescent_moss': {
+    luminescent_moss: {
       description: 'Soft, glowing moss that carpets the ground and responds to your presence.',
       actions: ['examine', 'touch', 'gather'],
       requires: [],
     },
-    'whispering_trees': {
-      description: 'Ancient trees whose silver bark gleams with otherworldly light, and whose branches whisper secrets.',
+    whispering_trees: {
+      description:
+        'Ancient trees whose silver bark gleams with otherworldly light, and whose branches whisper secrets.',
       actions: ['examine', 'listen', 'touch'],
       requires: [],
     },
-    'palace_spires': {
-      description: 'Distant crystalline spires of the Fae Palace, visible through the eternal twilight.',
+    palace_spires: {
+      description:
+        'Distant crystalline spires of the Fae Palace, visible through the eternal twilight.',
       actions: ['examine', 'observe'],
       requires: [],
     },
@@ -82,5 +82,3 @@ const elfhame: Room = {
 };
 
 export default elfhame;
-
-

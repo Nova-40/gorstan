@@ -15,12 +15,11 @@
 */
 
 // src/components/WelcomeScreen.tsx
-import React, { useEffect, useRef } from "react";
-import { getVersionString } from "../config/version";
-import RadialCountdown from "../ui/RadialCountdown";
-import { attachWelcomeIdleAutostart, detachWelcomeIdleAutostart } from "../engine/idleAutostart";
-import { startDemo } from "../demo/demoRouter";
-import "../ui/theme.css";
+import React, { useEffect, useRef } from 'react';
+import { getVersionString } from '../config/version';
+import RadialCountdown from '../ui/RadialCountdown';
+import { attachWelcomeIdleAutostart, detachWelcomeIdleAutostart } from '../engine/idleAutostart';
+import '../ui/theme.css';
 
 interface WelcomeScreenProps {
   onBegin: () => void;
@@ -39,15 +38,15 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
       const { total, remaining } = event.detail;
       const timeRemainingSeconds = remaining / 1000;
       setIdleTimeRemaining(timeRemainingSeconds);
-      
+
       // Show countdown when we have less than total time and more than 0
       setShowIdleCountdown(remaining < total && remaining > 0);
     };
 
     const handleDemoStart = () => {
-      console.log("[WelcomeScreen] Demo starting - hiding countdown");
+      console.log('[WelcomeScreen] Demo starting - hiding countdown');
       setShowIdleCountdown(false);
-      
+
       // Trigger the demo UI if we have a handler
       if (onStartDemo) {
         onStartDemo();
@@ -74,21 +73,20 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
   }, []);
 
   return (
-    <div ref={containerRef} className="relative flex flex-col items-center justify-center min-h-[80vh] w-full max-w-4xl mx-auto px-4 border bg-gradient-to-b from-slate-900 to-black text-green-400 border-2 border-green-500 p-6 m-4 rounded-xl">
-      
+    <div
+      ref={containerRef}
+      className="relative flex flex-col items-center justify-center min-h-[80vh] w-full max-w-4xl mx-auto px-4 border bg-gradient-to-b from-slate-900 to-black text-green-400 border-2 border-green-500 p-6 m-4 rounded-xl"
+    >
       {/* Idle Countdown in top-right corner */}
       {showIdleCountdown && (
         <div className="absolute top-4 right-4 z-10">
-          <RadialCountdown
-            totalMs={150000}
-            className="radial-countdown-container"
-          />
+          <RadialCountdown totalMs={150000} className="radial-countdown-container" />
         </div>
       )}
 
       <h1 className="text-4xl md:text-6xl font-bold mb-4 text-center flex items-center justify-center gap-4">
         <img
-          src={"/images/gorstanicon.png"}
+          src={'/images/gorstanicon.png'}
           alt="The Odd Rabbit"
           className="w-[72px] h-[72px] rounded-full shadow-md"
         />
@@ -96,7 +94,8 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
         <span className="text-lg text-yellow-400 ml-2">(Beta 2)</span>
       </h1>
       <p className="text-md md:text-lg text-center max-w-2xl mb-6">
-        A multiverse simulation of coffee, consequence, and quantum possibility. Tread carefully. The rabbit is watching.
+        A multiverse simulation of coffee, consequence, and quantum possibility. Tread carefully.
+        The rabbit is watching.
       </p>
 
       <div className="flex flex-col items-center">
@@ -145,7 +144,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
             >
               Load Saved Game
             </button>
-            
+
             {onStartDemo && (
               <button
                 onClick={onStartDemo}
@@ -159,12 +158,12 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
           <div></div>
         </div>
       </div>
-      
+
       {/* Build version - visible for deployment verification */}
       <div className="absolute bottom-2 right-2 text-green-300 text-xs opacity-60 select-none font-mono">
         {getVersionString()}
       </div>
-      
+
       {/* Backup version indicator - always visible */}
       <div className="absolute bottom-2 left-2 text-green-400 text-xs opacity-40 select-none">
         Gorstan Live

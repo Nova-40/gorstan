@@ -17,14 +17,14 @@ export function isDemoEnvironment(): boolean {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.has('demo') || urlParams.get('demo') === 'true';
   }
-  
+
   return process.env.DEMO === 'true' || process.env.NODE_ENV === 'demo';
 }
 
 // Initialize demo system with dispatch
 export function initializeDemo(dispatch: Dispatch<GameAction>): void {
   setDemoDispatch(dispatch);
-  
+
   // Auto-start demo if in demo environment
   if (isDemoEnvironment()) {
     console.log('[DemoGate] Demo environment detected, starting demo...');
@@ -37,20 +37,20 @@ export function initializeDemo(dispatch: Dispatch<GameAction>): void {
 // Console command handler
 export function handleDemoCommand(command: string): boolean {
   const trimmed = command.trim().toLowerCase();
-  
+
   if (trimmed === 'demo') {
     console.log('[DemoGate] Starting demo via console command');
     startDemo();
     return true;
   }
-  
+
   if (trimmed === 'quit demo' || trimmed === 'stop demo') {
     console.log('[DemoGate] Stopping demo via console command');
     const { stopDemo } = require('./demoController');
     stopDemo();
     return true;
   }
-  
+
   return false;
 }
 

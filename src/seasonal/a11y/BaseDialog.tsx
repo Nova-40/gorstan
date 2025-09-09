@@ -14,7 +14,7 @@
   Full licence terms: see EULA.md in the project root.
 */
 
-import React, { useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useRef, useCallback } from 'react';
 
 type BaseDialogProps = {
   title: string;
@@ -27,41 +27,50 @@ export default function BaseDialog({ title, children, onClose, labelledById }: B
   const backdropRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
-  const headingId = labelledById ?? "dialog-title-" + Math.random().toString(36).slice(2);
+  const headingId = labelledById ?? 'dialog-title-' + Math.random().toString(36).slice(2);
 
   // Focus management (trap + restore)
   useEffect(() => {
     previouslyFocused.current = document.activeElement as HTMLElement | null;
     panelRef.current?.focus();
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
+      if (e.key === 'Escape') {
         e.stopPropagation();
         onClose();
-      } else if (e.key === "Tab") {
+      } else if (e.key === 'Tab') {
         // basic focus trap
         const focusables = panelRef.current?.querySelectorAll<HTMLElement>(
-          'a[href],button,textarea,input,select,[tabindex]:not([tabindex="-1"])'
+          'a[href],button,textarea,input,select,[tabindex]:not([tabindex="-1"])',
         );
-        if (!focusables || focusables.length === 0) return;
+        if (!focusables || focusables.length === 0) {
+          return;
+        }
         const first = focusables[0];
         const last = focusables[focusables.length - 1];
         if (e.shiftKey && document.activeElement === first) {
-          e.preventDefault(); last.focus();
+          e.preventDefault();
+          last.focus();
         } else if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault(); first.focus();
+          e.preventDefault();
+          first.focus();
         }
       }
     };
-    document.addEventListener("keydown", onKeyDown, true);
+    document.addEventListener('keydown', onKeyDown, true);
     return () => {
-      document.removeEventListener("keydown", onKeyDown, true);
+      document.removeEventListener('keydown', onKeyDown, true);
       previouslyFocused.current?.focus?.();
     };
   }, [onClose]);
 
-  const onBackdropClick = useCallback((e: React.MouseEvent) => {
-    if (e.target === backdropRef.current) onClose();
-  }, [onClose]);
+  const onBackdropClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (e.target === backdropRef.current) {
+        onClose();
+      }
+    },
+    [onClose],
+  );
 
   return (
     <div
@@ -77,10 +86,12 @@ export default function BaseDialog({ title, children, onClose, labelledById }: B
         aria-labelledby={headingId}
         tabIndex={-1}
         className="w-full max-w-lg rounded-2xl bg-[#0b0f14] text-[#e6f4ff] shadow-2xl outline-none ring-1 ring-white/10"
-        style={{ backdropFilter: "blur(2px)" }}
+        style={{ backdropFilter: 'blur(2px)' }}
       >
         <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
-          <h2 id={headingId} className="text-lg font-semibold">{title}</h2>
+          <h2 id={headingId} className="text-lg font-semibold">
+            {title}
+          </h2>
           <button
             onClick={onClose}
             className="rounded px-2 py-1 text-sm hover:bg-white/10 focus:outline-none focus:ring focus:ring-cyan-400"

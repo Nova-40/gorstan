@@ -19,14 +19,6 @@
 
 import { Room } from '../types/Room';
 
-
-
-
-
-
-
-
-
 const cafeoffice: Room = {
   id: 'cafeoffice',
   zone: 'londonZone',
@@ -54,7 +46,7 @@ const cafeoffice: Room = {
   ],
 
   exits: {
-    south: 'cafe',  
+    south: 'cafe',
   },
 
   items: [
@@ -68,39 +60,45 @@ const cafeoffice: Room = {
   ],
 
   interactables: {
-    'desk': {
-      description: 'A well-used wooden desk covered with the daily operations of running a small business. Papers are neatly organized despite the apparent clutter.',
+    desk: {
+      description:
+        'A well-used wooden desk covered with the daily operations of running a small business. Papers are neatly organized despite the apparent clutter.',
       actions: ['examine', 'search', 'open_drawers'],
       requires: [],
     },
-    'computer': {
-      description: 'An older desktop computer running point-of-sale software. The screen shows today\'s sales figures and inventory levels.',
+    computer: {
+      description:
+        "An older desktop computer running point-of-sale software. The screen shows today's sales figures and inventory levels.",
       actions: ['examine', 'use', 'access_files'],
       requires: ['staff_key_ring'],
     },
-    'filing_cabinets': {
-      description: 'Standard office filing cabinets containing years of business records, tax documents, and operational files.',
+    filing_cabinets: {
+      description:
+        'Standard office filing cabinets containing years of business records, tax documents, and operational files.',
       actions: ['examine', 'search', 'open_drawers'],
       requires: [],
     },
-    'small_safe': {
-      description: 'A compact office safe built into the wall behind a motivational poster. It looks like it contains the day\'s cash deposits.',
+    small_safe: {
+      description:
+        "A compact office safe built into the wall behind a motivational poster. It looks like it contains the day's cash deposits.",
       actions: ['examine', 'open', 'attempt_combination'],
       requires: ['safe_combination'],
     },
-    'bulletin_board': {
-      description: 'A cork board covered with staff schedules, health department certificates, and local business cards.',
+    bulletin_board: {
+      description:
+        'A cork board covered with staff schedules, health department certificates, and local business cards.',
       actions: ['examine', 'read', 'search'],
       requires: [],
     },
-    'supply_shelves': {
-      description: 'Metal shelving units holding extra cafe supplies - coffee cups, napkins, cleaning supplies, and various inventory.',
+    supply_shelves: {
+      description:
+        'Metal shelving units holding extra cafe supplies - coffee cups, napkins, cleaning supplies, and various inventory.',
       actions: ['examine', 'search', 'move_items'],
       requires: [],
     },
   },
 
-  npcs: [], 
+  npcs: [],
 
   events: {
     onEnter: ['checkAuthorization', 'activateSecurityCamera'],
@@ -135,7 +133,12 @@ const cafeoffice: Room = {
     lighting: 'fluorescent_office_lighting',
     temperature: 'warm_from_cafe_proximity',
     airQuality: 'coffee_scented_with_paper_dust',
-    soundscape: ['computer_humming', 'distant_cafe_sounds', 'paper_rustling', 'fluorescent_buzzing'],
+    soundscape: [
+      'computer_humming',
+      'distant_cafe_sounds',
+      'paper_rustling',
+      'fluorescent_buzzing',
+    ],
     hazards: [],
   },
 
@@ -183,17 +186,17 @@ const cafeoffice: Room = {
   },
 
   customActions: {
-    'gather_documents': {
+    gather_documents: {
       description: 'Collect all the important business documents from various locations',
       requirements: ['search desk', 'access filing_cabinets', 'open safe'],
       effects: ['obtain_complete_business_records', 'unlock_business_knowledge'],
     },
-    'secure_evidence': {
+    secure_evidence: {
       description: 'Carefully document and preserve important findings',
       requirements: ['important_documents', 'business_records'],
       effects: ['create_evidence_package', 'protect_sensitive_information'],
     },
-    'backup_computer_data': {
+    backup_computer_data: {
       description: 'Create copies of important digital information',
       requirements: ['computer_accessed', 'staff_key_ring'],
       effects: ['obtain_digital_backup', 'preserve_electronic_records'],
@@ -202,5 +205,3 @@ const cafeoffice: Room = {
 };
 
 export default cafeoffice;
-
-

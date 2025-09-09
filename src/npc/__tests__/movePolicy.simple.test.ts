@@ -26,14 +26,14 @@ describe('MovePolicy - Core Functionality', () => {
     allowedAdjacency: ['room2', 'room3'],
     avoidRooms: [],
     preferRooms: [],
-    playerRoomId: 'playerRoom'
+    playerRoomId: 'playerRoom',
   };
 
   test('should make valid adjacent moves', () => {
     const policy: MovePolicyConfig = {
       mode: 'random-adjacent',
       respectCapacity: false,
-      allowTeleportFallback: false
+      allowTeleportFallback: false,
     };
 
     const decision = decideMove(basicContext, policy);
@@ -47,13 +47,13 @@ describe('MovePolicy - Core Functionality', () => {
   test('should respect avoid rooms', () => {
     const context: NPCMoveContext = {
       ...basicContext,
-      avoidRooms: ['room2']
+      avoidRooms: ['room2'],
     };
 
     const policy: MovePolicyConfig = {
       mode: 'random-adjacent',
       respectCapacity: false,
-      allowTeleportFallback: false
+      allowTeleportFallback: false,
     };
 
     const decision = decideMove(context, policy);
@@ -65,13 +65,13 @@ describe('MovePolicy - Core Functionality', () => {
   test('should prefer preferred rooms', () => {
     const context: NPCMoveContext = {
       ...basicContext,
-      preferRooms: ['room3']
+      preferRooms: ['room3'],
     };
 
     const policy: MovePolicyConfig = {
       mode: 'random-adjacent',
       respectCapacity: false,
-      allowTeleportFallback: false
+      allowTeleportFallback: false,
     };
 
     const decision = decideMove(context, policy);
@@ -84,13 +84,13 @@ describe('MovePolicy - Core Functionality', () => {
     const context: NPCMoveContext = {
       ...basicContext,
       allowedAdjacency: [],
-      avoidRooms: ['room2', 'room3']
+      avoidRooms: ['room2', 'room3'],
     };
 
     const policy: MovePolicyConfig = {
       mode: 'random-adjacent',
       respectCapacity: false,
-      allowTeleportFallback: false
+      allowTeleportFallback: false,
     };
 
     const decision = decideMove(context, policy);
@@ -104,14 +104,14 @@ describe('MovePolicy - Core Functionality', () => {
     const context: NPCMoveContext = {
       ...basicContext,
       currentRoom: 'patrol1',
-      allowedAdjacency: ['patrol2', 'patrol3', 'other']
+      allowedAdjacency: ['patrol2', 'patrol3', 'other'],
     };
 
     const policy: MovePolicyConfig = {
       mode: 'patrol',
       patrolRoute: ['patrol1', 'patrol2', 'patrol3'],
       respectCapacity: false,
-      allowTeleportFallback: false
+      allowTeleportFallback: false,
     };
 
     const decision = decideMove(context, policy);

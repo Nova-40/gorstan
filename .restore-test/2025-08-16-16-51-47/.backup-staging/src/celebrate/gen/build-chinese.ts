@@ -25,7 +25,7 @@ import { Span, daySpan, multiDaySpan } from './util';
  */
 export function lunarNewYear(years: number[]): Span[] {
   const spans: Span[] = [];
-  
+
   // Known dates for Chinese New Year (typically Jan/Feb)
   const knownDates: Record<number, string> = {
     2025: '2025-01-29', // Year of the Snake
@@ -53,16 +53,16 @@ export function lunarNewYear(years: number[]): Span[] {
     2047: '2047-01-26', // Year of the Rabbit
     2048: '2048-02-14', // Year of the Dragon
     2049: '2049-02-02', // Year of the Snake
-    2050: '2050-01-23'  // Year of the Horse
+    2050: '2050-01-23', // Year of the Horse
   };
-  
+
   for (const year of years) {
     if (knownDates[year]) {
       const date = new Date(knownDates[year]);
       spans.push(multiDaySpan(date, 3, `Lunar New Year ${year}`));
     }
   }
-  
+
   return spans;
 }
 
@@ -72,7 +72,7 @@ export function lunarNewYear(years: number[]): Span[] {
  */
 export function midAutumn(years: number[]): Span[] {
   const spans: Span[] = [];
-  
+
   // Known dates for Mid-Autumn Festival (typically September/October)
   const knownDates: Record<number, string> = {
     2025: '2025-10-06',
@@ -100,20 +100,20 @@ export function midAutumn(years: number[]): Span[] {
     2047: '2047-10-03',
     2048: '2048-09-22',
     2049: '2049-10-11',
-    2050: '2050-09-30'
+    2050: '2050-09-30',
   };
-  
+
   for (const year of years) {
     if (knownDates[year]) {
       const date = new Date(knownDates[year]);
       spans.push(daySpan(date, `Mid-Autumn Festival ${year}`));
     }
   }
-  
+
   return spans;
 }
 
 export const buildChinese = {
   lunarNewYear,
-  midAutumn
+  midAutumn,
 };

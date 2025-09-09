@@ -21,15 +21,6 @@ import React, { useEffect, useState } from 'react';
 
 import { motion, AnimatePresence } from 'framer-motion';
 
-
-
-
-
-
-
-
-
-
 interface JumpTransitionProps {
   onComplete: () => void;
 }
@@ -42,16 +33,16 @@ const JumpTransition: React.FC<JumpTransitionProps> = ({ onComplete }) => {
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setPrefersReducedMotion(mediaQuery.matches);
-    
+
     const handler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
     mediaQuery.addEventListener('change', handler);
     return () => mediaQuery.removeEventListener('change', handler);
   }, []);
 
-// React effect hook
+  // React effect hook
   useEffect(() => {
     console.log('[JumpTransition] Starting animation, prefersReducedMotion:', prefersReducedMotion);
-    
+
     if (prefersReducedMotion) {
       // Skip animation phases for reduced motion
       const timer = setTimeout(() => {
@@ -60,8 +51,8 @@ const JumpTransition: React.FC<JumpTransitionProps> = ({ onComplete }) => {
       }, 500);
       return () => clearTimeout(timer);
     }
-    
-// Variable declaration
+
+    // Variable declaration
     const timers = [
       setTimeout(() => {
         console.log('[JumpTransition] Phase: kaleidoscope');
@@ -80,11 +71,11 @@ const JumpTransition: React.FC<JumpTransitionProps> = ({ onComplete }) => {
         onComplete();
       }, 3500),
     ];
-// JSX return block or main return
+    // JSX return block or main return
     return () => timers.forEach(clearTimeout);
   }, [onComplete, prefersReducedMotion]);
 
-// JSX return block or main return
+  // JSX return block or main return
   return (
     <AnimatePresence>
       <motion.div
@@ -135,7 +126,8 @@ const JumpTransition: React.FC<JumpTransitionProps> = ({ onComplete }) => {
               style={{
                 background: `conic-gradient(from 45deg,
                   #ff9a00, #c77dff, #7209b7, #560bad, #480ca8, #3f37c9, #ff9a00)`,
-                clipPath: 'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)',
+                clipPath:
+                  'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)',
                 transformOrigin: 'center',
                 opacity: 0.8,
               }}
@@ -178,7 +170,8 @@ const JumpTransition: React.FC<JumpTransitionProps> = ({ onComplete }) => {
                     width: '400px',
                     height: '400px',
                     borderRadius: '50%',
-                    background: 'radial-gradient(circle, transparent 30%, #ffffff22 35%, transparent 40%, #00f5ff44 45%, transparent 50%)',
+                    background:
+                      'radial-gradient(circle, transparent 30%, #ffffff22 35%, transparent 40%, #00f5ff44 45%, transparent 50%)',
                     border: '3px solid #00f5ff',
                     boxShadow: '0 0 100px #00f5ff, inset 0 0 50px #ff006e',
                   }}
@@ -263,8 +256,8 @@ const JumpTransition: React.FC<JumpTransitionProps> = ({ onComplete }) => {
                   scale: 0,
                 }}
                 animate={{
-                  x: `${50 + (Math.cos((i * 30) * Math.PI / 180) * 45)}%`,
-                  y: `${50 + (Math.sin((i * 30) * Math.PI / 180) * 45)}%`,
+                  x: `${50 + Math.cos((i * 30 * Math.PI) / 180) * 45}%`,
+                  y: `${50 + Math.sin((i * 30 * Math.PI) / 180) * 45}%`,
                   scale: [0, 1, 0],
                 }}
                 transition={{

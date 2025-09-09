@@ -27,7 +27,7 @@ export class MagicSystem {
   }
 
   castSpell(spellId: string, target: any): number {
-    const spell = this.spells.find(s => s.id === spellId);
+    const spell = this.spells.find((s) => s.id === spellId);
     if (!spell) {
       console.error('Spell not found');
       return 0;

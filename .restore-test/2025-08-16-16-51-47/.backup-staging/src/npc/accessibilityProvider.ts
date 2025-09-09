@@ -27,22 +27,22 @@ export interface AccessibilitySettings {
   reduceMotion: boolean;
   highContrast: boolean;
   largeText: boolean;
-  
+
   // Audio accessibility
   soundEnabled: boolean;
   soundVolume: number; // 0-1
   spatialAudio: boolean;
-  
+
   // Cognitive accessibility
   simplifiedInterface: boolean;
   extendedTimeouts: boolean;
   confirmationPrompts: boolean;
-  
+
   // Motor accessibility
   pauseOnFocus: boolean;
   slowMovement: boolean;
   clickToMove: boolean;
-  
+
   // Screen reader support
   screenReaderEnabled: boolean;
   verboseDescriptions: boolean;
@@ -117,17 +117,17 @@ class ScreenReaderAnnouncer {
 
   private async processQueue(): Promise<void> {
     if (this.isProcessing || this.announceQueue.length === 0) return;
-    
+
     this.isProcessing = true;
-    
+
     while (this.announceQueue.length > 0) {
       const announcement = this.announceQueue.shift()!;
       await this.speakAnnouncement(announcement);
-      
+
       // Wait between announcements to avoid overwhelming
       await this.delay(500);
     }
-    
+
     this.isProcessing = false;
   }
 
@@ -137,18 +137,18 @@ class ScreenReaderAnnouncer {
 
     // Clear previous content
     region.textContent = '';
-    
+
     // Wait a frame to ensure clearing is processed
     await this.delay(50);
-    
+
     // Set new content
     region.textContent = announcement.screenReaderText;
-    
+
     console.log(`[ScreenReader] Announced: ${announcement.screenReaderText}`);
   }
 
   private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   clear(): void {
@@ -177,23 +177,23 @@ class MotionReducer {
     if (typeof document === 'undefined') return;
 
     const root = document.documentElement;
-    
+
     if (enabled) {
       // Reduce or disable animations
       root.style.setProperty('--animation-duration-scale', '0.1');
       root.style.setProperty('--transition-duration-scale', '0.1');
-      
+
       // Add reduced motion class for CSS targeting
       document.body.classList.add('reduced-motion');
-      
+
       console.log('[MotionReducer] Reduced motion enabled');
     } else {
       // Restore normal animations
       root.style.removeProperty('--animation-duration-scale');
       root.style.removeProperty('--transition-duration-scale');
-      
+
       document.body.classList.remove('reduced-motion');
-      
+
       console.log('[MotionReducer] Normal motion restored');
     }
   }
@@ -213,11 +213,13 @@ class TimeoutExtender {
     const extension = additionalMs || this.defaultExtensionMs;
     const currentExtension = this.extensions.get(timeoutId) || 0;
     const newExtension = currentExtension + extension;
-    
+
     this.extensions.set(timeoutId, newExtension);
-    
-    console.log(`[TimeoutExtender] Extended timeout ${timeoutId} by ${extension}ms (total: ${newExtension}ms)`);
-    
+
+    console.log(
+      `[TimeoutExtender] Extended timeout ${timeoutId} by ${extension}ms (total: ${newExtension}ms)`,
+    );
+
     return newExtension;
   }
 
@@ -245,14 +247,14 @@ class FocusManager {
     if (typeof document === 'undefined') return;
 
     const interactiveElements = document.querySelectorAll(
-      'button, input, select, textarea, a[href], [tabindex]:not([tabindex="-1"])'
+      'button, input, select, textarea, a[href], [tabindex]:not([tabindex="-1"])',
     );
 
-    interactiveElements.forEach(element => {
+    interactiveElements.forEach((element) => {
       // Store original tabindex
       const currentTabIndex = element.getAttribute('tabindex');
       this.originalTabIndices.set(element, currentTabIndex || '');
-      
+
       // Disable tab navigation
       element.setAttribute('tabindex', '-1');
       element.classList.add('accessibility-paused');
@@ -281,7 +283,7 @@ class FocusManager {
     if (typeof document === 'undefined') return;
 
     const focusableElements = container.querySelectorAll(
-      'button, input, select, textarea, a[href], [tabindex]:not([tabindex="-1"])'
+      'button, input, select, textarea, a[href], [tabindex]:not([tabindex="-1"])',
     );
 
     if (focusableElements.length === 0) return;
@@ -317,9 +319,9 @@ class FocusManager {
 
   cleanup(): void {
     // Remove all event listeners
-    this.eventRemovals.forEach(cleanup => cleanup());
+    this.eventRemovals.forEach((cleanup) => cleanup());
     this.eventRemovals = [];
-    
+
     // Clear other data
     this.pausedElements.clear();
     this.originalTabIndices.clear();
@@ -354,7 +356,7 @@ export class NPCAccessibilityProvider {
       screenReaderEnabled: false,
       verboseDescriptions: false,
       liveRegionUpdates: true,
-      ...settings
+      ...settings,
     };
 
     this.metrics = {
@@ -362,7 +364,7 @@ export class NPCAccessibilityProvider {
       averageAnnouncementLength: 0,
       screenReaderInteractions: 0,
       pauseEvents: 0,
-      timeoutExtensions: 0
+      timeoutExtensions: 0,
     };
 
     this.screenReader = new ScreenReaderAnnouncer();
@@ -380,7 +382,7 @@ export class NPCAccessibilityProvider {
 
     this.isEnabled = true;
     this.applySettings();
-    
+
     console.log('[AccessibilityProvider] Accessibility features enabled');
   }
 
@@ -391,7 +393,7 @@ export class NPCAccessibilityProvider {
     this.screenReader.clear();
     this.motionReducer.applyReducedMotion(false);
     this.focusManager.resumeInteractiveElements();
-    
+
     console.log('[AccessibilityProvider] Accessibility features disabled');
   }
 
@@ -410,7 +412,7 @@ export class NPCAccessibilityProvider {
 
   private applySettings(): void {
     this.motionReducer.applyReducedMotion(this.settings.reduceMotion);
-    
+
     if (typeof document !== 'undefined') {
       document.body.classList.toggle('high-contrast', this.settings.highContrast);
       document.body.classList.toggle('large-text', this.settings.largeText);
@@ -444,7 +446,7 @@ export class NPCAccessibilityProvider {
     npcName: string,
     fromRoom: string,
     toRoom: string,
-    movementType: 'arrival' | 'departure' | 'transit'
+    movementType: 'arrival' | 'departure' | 'transit',
   ): void {
     if (!this.isEnabled || !this.settings.liveRegionUpdates) return;
 
@@ -456,21 +458,24 @@ export class NPCAccessibilityProvider {
       movementType,
       priority: this.determineAnnouncementPriority(npcId, movementType),
       description: this.createMovementDescription(npcName, fromRoom, toRoom, movementType),
-      screenReaderText: this.createScreenReaderText(npcName, fromRoom, toRoom, movementType)
+      screenReaderText: this.createScreenReaderText(npcName, fromRoom, toRoom, movementType),
     };
 
     this.screenReader.announce(announcement);
     this.updateAnnouncementMetrics(announcement);
   }
 
-  private determineAnnouncementPriority(npcId: string, movementType: string): 'low' | 'medium' | 'high' {
+  private determineAnnouncementPriority(
+    npcId: string,
+    movementType: string,
+  ): 'low' | 'medium' | 'high' {
     // Important NPCs get higher priority
     const importantNPCs = ['morthos', 'al_escape_artist', 'polly'];
     if (importantNPCs.includes(npcId)) return 'high';
-    
+
     // Arrivals are more important than departures
     if (movementType === 'arrival') return 'medium';
-    
+
     return 'low';
   }
 
@@ -478,7 +483,7 @@ export class NPCAccessibilityProvider {
     npcName: string,
     fromRoom: string,
     toRoom: string,
-    movementType: string
+    movementType: string,
   ): string {
     switch (movementType) {
       case 'arrival':
@@ -496,7 +501,7 @@ export class NPCAccessibilityProvider {
     npcName: string,
     fromRoom: string,
     toRoom: string,
-    movementType: string
+    movementType: string,
   ): string {
     if (!this.settings.verboseDescriptions) {
       return this.createMovementDescription(npcName, fromRoom, toRoom, movementType);
@@ -516,10 +521,10 @@ export class NPCAccessibilityProvider {
 
   private updateAnnouncementMetrics(announcement: NPCMovementAnnouncement): void {
     this.metrics.announcementCount++;
-    
+
     const length = announcement.screenReaderText.length;
-    this.metrics.averageAnnouncementLength = 
-      (this.metrics.averageAnnouncementLength * (this.metrics.announcementCount - 1) + length) / 
+    this.metrics.averageAnnouncementLength =
+      (this.metrics.averageAnnouncementLength * (this.metrics.announcementCount - 1) + length) /
       this.metrics.announcementCount;
   }
 
@@ -530,7 +535,7 @@ export class NPCAccessibilityProvider {
 
     this.focusManager.pauseInteractiveElements();
     this.metrics.pauseEvents++;
-    
+
     console.log('[AccessibilityProvider] Paused on focus');
   }
 
@@ -546,7 +551,7 @@ export class NPCAccessibilityProvider {
 
     const extension = this.timeoutExtender.extendTimeout(timeoutId, additionalMs);
     this.metrics.timeoutExtensions++;
-    
+
     return extension;
   }
 
@@ -556,15 +561,15 @@ export class NPCAccessibilityProvider {
     if (!this.isEnabled) return 1.0;
 
     let multiplier = 1.0;
-    
+
     if (this.settings.slowMovement) {
       multiplier *= 0.5; // 50% slower
     }
-    
+
     if (this.settings.reduceMotion) {
       multiplier *= 0.3; // Much slower for reduced motion
     }
-    
+
     return multiplier;
   }
 
@@ -574,7 +579,7 @@ export class NPCAccessibilityProvider {
     if (!this.settings.soundEnabled) return;
 
     const effectiveVolume = (volume || 1.0) * this.settings.soundVolume;
-    
+
     // This would integrate with your audio system
     console.log(`[AccessibilityProvider] Playing ${soundType} sound at volume ${effectiveVolume}`);
   }
@@ -591,7 +596,7 @@ export class NPCAccessibilityProvider {
       averageAnnouncementLength: 0,
       screenReaderInteractions: 0,
       pauseEvents: 0,
-      timeoutExtensions: 0
+      timeoutExtensions: 0,
     };
   }
 
@@ -622,14 +627,14 @@ export class NPCAccessibilityProvider {
 
   getAccessibilityStatus(): string {
     const activeFeatures = [];
-    
+
     if (this.settings.reduceMotion) activeFeatures.push('Reduced Motion');
     if (this.settings.highContrast) activeFeatures.push('High Contrast');
     if (this.settings.screenReaderEnabled) activeFeatures.push('Screen Reader');
     if (this.settings.extendedTimeouts) activeFeatures.push('Extended Timeouts');
     if (this.settings.pauseOnFocus) activeFeatures.push('Pause on Focus');
-    
-    return activeFeatures.length > 0 
+
+    return activeFeatures.length > 0
       ? `Accessibility enabled: ${activeFeatures.join(', ')}`
       : 'Standard accessibility';
   }

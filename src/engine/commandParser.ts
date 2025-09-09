@@ -17,14 +17,9 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Parses and processes player commands.
 
-import { NPC } from '../types/NPCTypes';
 import { Room } from '../types/Room';
 import { TerminalMessage } from '../components/TerminalConsole';
-import { MiniquestEngine } from './miniquestInitializer';
-import { applyScoreForEvent, getScoreBasedMessage, getDominicScoreComment } from '../state/scoreEffects';
-import { unlockAchievement, listAchievements } from '../logic/achievementEngine';
-import { recordItemDiscovery, displayCodex } from '../logic/codexTracker';
-import { isLibrarianActive } from './librarianController';
+
 import { handleCrossingInteraction, resetCrossingState } from './crossingController';
 import { searchForTraps, canPlayerDisarmTrap } from './trapDetection';
 import { LocalGameState } from '../state/gameState';
@@ -74,7 +69,7 @@ const aliases: Record<string, string> = {
   detect: 'search',
   find: 'search',
   'look for': 'search',
-  'check for': 'search'
+  'check for': 'search',
 };
 
 /**
@@ -87,8 +82,8 @@ export function processCommand({
 }: CommandParserParams): CommandResult {
   // Validate input parameter
   if (!input || typeof input !== 'string') {
-    return { 
-      messages: [{ text: 'Invalid command input.', type: 'error' }] 
+    return {
+      messages: [{ text: 'Invalid command input.', type: 'error' }],
     };
   }
 
@@ -144,30 +139,30 @@ export function processCommand({
             }
           },
           roomId: gameState.currentRoomId,
-          npcsInRoom: gameState.npcsInRoom
+          npcsInRoom: gameState.npcsInRoom,
         };
-        
+
         const wasProcessed = GroupChatManager.processAllianceChoice(input, context);
         if (wasProcessed) {
-          return { 
+          return {
             messages: [{ text: `You consider your alliance carefully...`, type: 'lore' }],
-            updates 
+            updates,
           };
         }
       }
-      
-      return { 
-        messages: [{ text: "You can choose an ally when the opportunity arises.", type: 'info' }] 
+
+      return {
+        messages: [{ text: 'You can choose an ally when the opportunity arises.', type: 'info' }],
       };
     }
 
-    case 'cost': 
+    case 'cost':
     case 'price': {
       // Handle asking about Morthos's cost
       if (gameState.flags?.alliancePitchStarted && !gameState.flags?.allianceChosen) {
-        const hasAl = gameState.npcsInRoom.some(npc => npc.id === 'al');
-        const hasMorthos = gameState.npcsInRoom.some(npc => npc.id === 'morthos');
-        
+        const hasAl = gameState.npcsInRoom.some((npc) => npc.id === 'al');
+        const hasMorthos = gameState.npcsInRoom.some((npc) => npc.id === 'morthos');
+
         if (hasAl && hasMorthos) {
           const { GroupChatManager } = require('../npc/groupChatLogic');
           const context = {
@@ -178,19 +173,21 @@ export function processCommand({
               }
             },
             roomId: gameState.currentRoomId,
-            npcsInRoom: gameState.npcsInRoom
+            npcsInRoom: gameState.npcsInRoom,
           };
-          
+
           GroupChatManager.handleMorthosCostInquiry(context);
-          return { 
-            messages: [{ text: "You press Morthos about the cost of his alliance...", type: 'lore' }],
-            updates 
+          return {
+            messages: [
+              { text: 'You press Morthos about the cost of his alliance...', type: 'lore' },
+            ],
+            updates,
           };
         }
       }
-      
-      return { 
-        messages: [{ text: "You're not sure what you're asking about the cost of.", type: 'info' }] 
+
+      return {
+        messages: [{ text: "You're not sure what you're asking about the cost of.", type: 'info' }],
       };
     }
 
@@ -201,7 +198,7 @@ export function processCommand({
 
       messages.push(
         { text: `--- ${currentRoom.title} ---`, type: 'lore' },
-        ...descriptionLines.map((line) => ({ text: line, type: 'lore' as const }))
+        ...descriptionLines.map((line) => ({ text: line, type: 'lore' as const })),
       );
 
       if (currentRoom.items && currentRoom.items.length > 0) {
@@ -264,7 +261,7 @@ export function processCommand({
         { text: 'look - Examine your surroundings', type: 'system' },
         { text: 'get [item] - Take an item', type: 'system' },
         { text: 'use [item] - Use an item from inventory', type: 'system' },
-        { text: 'inventory - Check what you\'re carrying', type: 'system' },
+        { text: "inventory - Check what you're carrying", type: 'system' },
         { text: 'help - Show this help message', type: 'system' },
       ];
 
@@ -274,15 +271,15 @@ export function processCommand({
     case 'speak': {
       if (!noun) {
         if (gameState.npcsInRoom && gameState.npcsInRoom.length > 0) {
-          const npcNames = gameState.npcsInRoom.map((npc: any) => 
-            typeof npc === 'string' ? npc : npc.name
-          ).join(', ');
-          return { 
+          const npcNames = gameState.npcsInRoom
+            .map((npc: any) => (typeof npc === 'string' ? npc : npc.name))
+            .join(', ');
+          return {
             messages: [
               { text: 'Who do you want to talk to?', type: 'info' },
               { text: `Available: ${npcNames}`, type: 'info' },
-              { text: 'Use: talk [name] or click on them directly', type: 'info' }
-            ] 
+              { text: 'Use: talk [name] or click on them directly', type: 'info' },
+            ],
           };
         } else {
           return { messages: [{ text: 'There is no one here to talk to.', type: 'error' }] };
@@ -296,20 +293,25 @@ export function processCommand({
       });
 
       if (!targetNPC) {
-        return { 
-          messages: [{ text: `You don't see anyone named "${noun}" here.`, type: 'error' }] 
+        return {
+          messages: [{ text: `You don't see anyone named "${noun}" here.`, type: 'error' }],
         };
       }
 
       // Return a special message that AppCore can intercept to open the NPC console
       return {
-        messages: [{ text: `Opening conversation with ${typeof targetNPC === 'string' ? targetNPC : targetNPC.name}...`, type: 'info' }],
+        messages: [
+          {
+            text: `Opening conversation with ${typeof targetNPC === 'string' ? targetNPC : targetNPC.name}...`,
+            type: 'info',
+          },
+        ],
         updates: {
           flags: {
             ...gameState.flags,
-            openNPCConsole: typeof targetNPC === 'string' ? targetNPC : targetNPC.id
-          }
-        }
+            openNPCConsole: typeof targetNPC === 'string' ? targetNPC : targetNPC.id,
+          },
+        },
       };
     }
 
@@ -321,9 +323,9 @@ export function processCommand({
           updates: {
             flags: {
               ...gameState.flags,
-              triggerTeleport: 'fractal'
-            }
-          }
+              triggerTeleport: 'fractal',
+            },
+          },
         };
       }
       if (noun === 'trek' && gameState.settings?.debugMode) {
@@ -332,9 +334,9 @@ export function processCommand({
           updates: {
             flags: {
               ...gameState.flags,
-              triggerTeleport: 'trek'
-            }
-          }
+              triggerTeleport: 'trek',
+            },
+          },
         };
       }
       return { messages: [{ text: 'test fractal | test trek (debug mode only)', type: 'system' }] };
@@ -346,8 +348,14 @@ export function processCommand({
         { text: `Current Stage: ${gameState.stage}`, type: 'system' },
         { text: `Current Room: ${gameState.currentRoomId}`, type: 'system' },
         { text: `Player Name: ${gameState.player?.name || 'Not set'}`, type: 'system' },
-        { text: `Room Map Loaded: ${Object.keys(gameState.roomMap || {}).length} rooms`, type: 'system' },
-        { text: `Available Exits: ${Object.keys(currentRoom.exits || {}).join(', ') || 'None'}`, type: 'system' }
+        {
+          text: `Room Map Loaded: ${Object.keys(gameState.roomMap || {}).length} rooms`,
+          type: 'system',
+        },
+        {
+          text: `Available Exits: ${Object.keys(currentRoom.exits || {}).join(', ') || 'None'}`,
+          type: 'system',
+        },
       ];
       return { messages: statusMessages };
     }
@@ -355,101 +363,135 @@ export function processCommand({
     case 'search': {
       if (noun.includes('trap') || noun === '' || noun.includes('danger')) {
         const searchResult = searchForTraps(currentRoom, gameState);
-        
-        const messages: TerminalMessage[] = [{
-          text: searchResult.warning || 'You search the area carefully.',
-          type: searchResult.detected ? 'info' : 'system'
-        }];
+
+        const messages: TerminalMessage[] = [
+          {
+            text: searchResult.warning || 'You search the area carefully.',
+            type: searchResult.detected ? 'info' : 'system',
+          },
+        ];
 
         if (searchResult.detected && searchResult.canDisarm) {
           messages.push({
             text: '💡 This trap might be disarmable. Try "disarm trap" if you have the right tools.',
-            type: 'system'
+            type: 'system',
           });
         }
 
         return { messages };
       }
 
-      return { messages: [{ text: 'What do you want to search for? Try "search for traps".', type: 'system' }] };
+      return {
+        messages: [
+          { text: 'What do you want to search for? Try "search for traps".', type: 'system' },
+        ],
+      };
     }
 
     case 'disarm': {
       if (noun.includes('trap') || noun === 'trap') {
         // Find traps in the current room
         const roomTraps = currentRoom.traps?.filter((trap: any) => !trap.triggered) || [];
-        
+
         if (roomTraps.length === 0) {
-          return { messages: [{ text: 'There are no active traps here to disarm.', type: 'system' }] };
+          return {
+            messages: [{ text: 'There are no active traps here to disarm.', type: 'system' }],
+          };
         }
 
         const trap = roomTraps[0]; // Disarm the first active trap
         const playerTraits = gameState.player.traits || [];
         const playerItems = gameState.player.inventory || [];
-        
+
         const disarmResult = canPlayerDisarmTrap(trap, playerTraits, playerItems);
-        
+
         if (!disarmResult.canDisarm) {
-          return { messages: [{ text: 'This trap cannot be disarmed, or you lack the necessary skills/tools.', type: 'error' }] };
+          return {
+            messages: [
+              {
+                text: 'This trap cannot be disarmed, or you lack the necessary skills/tools.',
+                type: 'error',
+              },
+            ],
+          };
         }
 
         // Attempt disarmament
         const success = Math.random() < (disarmResult.chance || 0.3);
-        
+
         if (success) {
           // Mark trap as triggered/disarmed
-          const updatedTraps = currentRoom.traps?.map((t: any) => 
-            t.id === trap.id ? { ...t, triggered: true } : t
-          ) || [];
+          const updatedTraps =
+            currentRoom.traps?.map((t: any) =>
+              t.id === trap.id ? { ...t, triggered: true } : t,
+            ) || [];
 
           const messages: TerminalMessage[] = [
-            { text: `🔧 Success! You carefully disarm the ${trap.severity || 'dangerous'} trap using ${disarmResult.method}.`, type: 'lore' },
-            { text: '✅ The area is now safe to proceed.', type: 'system' }
+            {
+              text: `🔧 Success! You carefully disarm the ${trap.severity || 'dangerous'} trap using ${disarmResult.method}.`,
+              type: 'lore',
+            },
+            { text: '✅ The area is now safe to proceed.', type: 'system' },
           ];
 
           // Update room state
           const updatedRoom = { ...currentRoom, traps: updatedTraps };
-          
-          return { 
-            messages, 
-            updates: { 
-              roomMap: { 
-                ...gameState.roomMap, 
-                [currentRoom.id]: updatedRoom 
-              } 
-            } 
+
+          return {
+            messages,
+            updates: {
+              roomMap: {
+                ...gameState.roomMap,
+                [currentRoom.id]: updatedRoom,
+              },
+            },
           };
         } else {
-          return { messages: [
-            { text: `💥 Your disarmament attempt fails! The trap activates!`, type: 'error' },
-            { text: `${trap.description || 'The trap springs, causing harm!'}`, type: 'error' },
-            { text: `💔 You take ${Math.min(trap.damage || 10, 15)} damage. Be more careful next time.`, type: 'error' }
-          ]};
+          return {
+            messages: [
+              { text: `💥 Your disarmament attempt fails! The trap activates!`, type: 'error' },
+              { text: `${trap.description || 'The trap springs, causing harm!'}`, type: 'error' },
+              {
+                text: `💔 You take ${Math.min(trap.damage || 10, 15)} damage. Be more careful next time.`,
+                type: 'error',
+              },
+            ],
+          };
         }
       }
 
-      return { messages: [{ text: 'What do you want to disarm? Try "disarm trap".', type: 'system' }] };
+      return {
+        messages: [{ text: 'What do you want to disarm? Try "disarm trap".', type: 'system' }],
+      };
     }
 
     default: {
       // Try crossing interaction handler first
       const crossingResult = handleCrossingInteraction(input, gameState);
       if (crossingResult.handled) {
-        const messages: TerminalMessage[] = crossingResult.messages?.map(msg => ({
-          text: msg.text,
-          type: msg.type === 'description' ? 'lore' :
-                msg.type === 'narrative' ? 'lore' :
-                msg.type === 'hint' ? 'info' :
-                msg.type === 'success' ? 'lore' :
-                msg.type === 'error' ? 'error' : 'system'
-        })) || [];
-        
-        return { 
-          messages, 
-          updates: crossingResult.updates 
+        const messages: TerminalMessage[] =
+          crossingResult.messages?.map((msg) => ({
+            text: msg.text,
+            type:
+              msg.type === 'description'
+                ? 'lore'
+                : msg.type === 'narrative'
+                  ? 'lore'
+                  : msg.type === 'hint'
+                    ? 'info'
+                    : msg.type === 'success'
+                      ? 'lore'
+                      : msg.type === 'error'
+                        ? 'error'
+                        : 'system',
+          })) || [];
+
+        return {
+          messages,
+          updates: crossingResult.updates,
         };
       }
-      
+
       return { messages: [{ text: "I don't understand that command.", type: 'error' }] };
     }
   }
@@ -460,7 +502,7 @@ export function processCommand({
  */
 function processRoomEntry(room: Room, gameState: LocalGameState): CommandResult {
   const messages: TerminalMessage[] = [];
-  let updates: Partial<LocalGameState> = {};
+  const updates: Partial<LocalGameState> = {};
 
   // Reset crossing state when entering crossing room
   if (room.id === 'crossing') {

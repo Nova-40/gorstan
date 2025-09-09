@@ -9,7 +9,7 @@ import { useGameState } from '../state/gameState';
 function DemoHud({ tip, progress }: { tip?: string; progress?: number }) {
   return (
     <AnimatePresence>
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 20 }}
@@ -22,7 +22,7 @@ function DemoHud({ tip, progress }: { tip?: string; progress?: number }) {
           </div>
           {progress !== undefined && (
             <div className="mt-2 w-full bg-gray-700 rounded-full h-1">
-              <motion.div 
+              <motion.div
                 className="bg-cyan-400 h-1 rounded-full"
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
@@ -61,7 +61,7 @@ export default function DemoDirector() {
   const [demoStep, setDemoStep] = useState(0);
   const [showMicroTutorial, setShowMicroTutorial] = useState<string | null>(null);
   const [tutorialPosition, setTutorialPosition] = useState({ x: 0, y: 0 });
-  
+
   const demoSteps = [
     'Starting your guided tour...',
     'Exploring the control nexus...',
@@ -69,7 +69,7 @@ export default function DemoDirector() {
     'Examining important objects...',
     'Returning to base...',
     'Using the chair portal...',
-    'Demo complete!'
+    'Demo complete!',
   ];
 
   useEffect(() => {
@@ -79,78 +79,88 @@ export default function DemoDirector() {
     sh.attach({ state, dispatch });
 
     let cancelled = false;
-    let stepIndex = 0;
+    const stepIndex = 0;
 
     async function runEnhancedDemo() {
       // Enhanced demo sequence with progressive disclosure
       const commands = [
         { cmd: 'look', tip: 'Observing your surroundings is key to survival' },
         { cmd: 'go west', tip: 'Movement commands work in all cardinal directions' },
-        { cmd: 'look', tip: 'Each room tells part of Gorstan\'s story' },
+        { cmd: 'look', tip: "Each room tells part of Gorstan's story" },
         { cmd: 'examine tactical_display', tip: 'Examine objects to uncover secrets' },
         { cmd: 'go east', tip: 'You can always backtrack to previous rooms' },
         { cmd: 'sit', tip: 'Some furniture has hidden purposes...' },
-        { cmd: 'look', tip: 'Welcome to the hidden laboratory!' }
+        { cmd: 'look', tip: 'Welcome to the hidden laboratory!' },
       ];
 
       // Show initial HUD
       setDemoStep(0);
 
       for (let i = 0; i < commands.length; i++) {
-        if (cancelled) break;
-        
+        if (cancelled) {
+          break;
+        }
+
         const command = commands[i];
-        if (!command) continue;
-        
+        if (!command) {
+          continue;
+        }
+
         const { cmd } = command;
         setDemoStep(i + 1);
-        
+
         // Add demo command to message log with enhanced styling
-        dispatch({ 
-          type: 'ADD_MESSAGE', 
-          payload: { 
-            id: `demo-cmd-${Date.now()}`, 
+        dispatch({
+          type: 'ADD_MESSAGE',
+          payload: {
+            id: `demo-cmd-${Date.now()}`,
             text: `🎮 Demo: ${cmd}`,
             type: 'input',
-            timestamp: Date.now()
-          }
+            timestamp: Date.now(),
+          },
         });
 
         // Show micro-tutorial if first time using a mechanic
-        if (i === 0) showMicroTutorialAt('This is how you interact with Gorstan', { x: 300, y: 100 });
-        if (i === 1) showMicroTutorialAt('Room navigation opens up the multiverse', { x: 300, y: 100 });
-        if (i === 3) showMicroTutorialAt('Detailed examination reveals hidden lore', { x: 300, y: 100 });
+        if (i === 0) {
+          showMicroTutorialAt('This is how you interact with Gorstan', { x: 300, y: 100 });
+        }
+        if (i === 1) {
+          showMicroTutorialAt('Room navigation opens up the multiverse', { x: 300, y: 100 });
+        }
+        if (i === 3) {
+          showMicroTutorialAt('Detailed examination reveals hidden lore', { x: 300, y: 100 });
+        }
 
         // Execute command through existing system
         dispatch({ type: 'COMMAND_INPUT', payload: cmd });
-        
-        await new Promise(res => setTimeout(res, 2200));
+
+        await new Promise((res) => setTimeout(res, 2200));
       }
 
       // Show combat/magic snippet
       setDemoStep(commands.length + 1);
-      dispatch({ 
-        type: 'ADD_MESSAGE', 
-        payload: { 
-          id: `demo-combat-${Date.now()}`, 
+      dispatch({
+        type: 'ADD_MESSAGE',
+        payload: {
+          id: `demo-combat-${Date.now()}`,
           text: '⚔️ *A brief combat demonstration plays out - spells crackle through the air*',
           type: 'system',
-          timestamp: Date.now()
-        }
+          timestamp: Date.now(),
+        },
       });
 
-      await new Promise(res => setTimeout(res, 1500));
+      await new Promise((res) => setTimeout(res, 1500));
 
       // Complete demo
       setDemoStep(commands.length + 2);
-      dispatch({ 
-        type: 'ADD_MESSAGE', 
-        payload: { 
-          id: `demo-complete-${Date.now()}`, 
+      dispatch({
+        type: 'ADD_MESSAGE',
+        payload: {
+          id: `demo-complete-${Date.now()}`,
           text: '🎭 Ayla: "You\'ve experienced the core of Gorstan. The full journey awaits..."',
           type: 'system',
-          timestamp: Date.now()
-        }
+          timestamp: Date.now(),
+        },
       });
     }
 
@@ -210,26 +220,21 @@ export default function DemoDirector() {
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0 }} 
-        animate={{ opacity: 1 }} 
-        exit={{ opacity: 0 }} 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
         transition={{ duration: 0.3 }}
         className="demo-overlay fixed inset-0 pointer-events-none z-40"
         aria-hidden="true"
       >
-        <DemoHud 
-          tip={demoSteps[demoStep] || 'Demo running...'}
-          progress={progress}
-        />
+        <DemoHud tip={demoSteps[demoStep] || 'Demo running...'} progress={progress} />
       </motion.div>
 
       {/* Micro-tutorial tooltip */}
-      {showMicroTutorial && (
-        <MicroTutorial text={showMicroTutorial} position={tutorialPosition} />
-      )}
+      {showMicroTutorial && <MicroTutorial text={showMicroTutorial} position={tutorialPosition} />}
 
       {/* Start prompt dialog */}
-      <StartPromptDialog 
+      <StartPromptDialog
         isOpen={showStartPrompt}
         onConfirm={handleStartGame}
         onCancel={handleContinueDemo}

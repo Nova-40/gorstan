@@ -159,17 +159,6 @@ import villagegreen from './stantonZone_villagegreen';
 
 import windingpath from './mazeZone_windingpath';
 
-
-
-
-
-
-
-
-
-
-
-
 // Variable declaration
 const roomRegistry = {
   elfhame,
@@ -237,7 +226,6 @@ const roomRegistry = {
   arbitercore,
   echochamber,
 
-
   shatteredrealm,
   ascendantStanton,
   glitchStanton,
@@ -248,5 +236,3 @@ const roomRegistry = {
 };
 
 export default roomRegistry;
-
-

@@ -14,7 +14,6 @@
   Full licence terms: see EULA.md in the project root.
 */
 
-
 // GameOverHandler.ts - Handles death events and lives system
 
 import { resetGameState } from '../state/gameState';
@@ -25,12 +24,12 @@ const MAX_LIVES = 9;
 
 export function handlePollyKill(): void {
   freezeInput();
-  showGameOverOverlay("Polly's Revenge", "You killed Dominic. Polly ended you.");
+  showGameOverOverlay("Polly's Revenge", 'You killed Dominic. Polly ended you.');
 
   decrementLives();
 
   if (getLives() <= 0) {
-    consoleWrite("⚰️ You have no lives left. Restarting from the beginning...");
+    consoleWrite('⚰️ You have no lives left. Restarting from the beginning...');
     fullGameReset();
   } else {
     respawnToCrossing();
@@ -39,12 +38,15 @@ export function handlePollyKill(): void {
 
 export function handleWendellKill(): void {
   freezeInput();
-  showGameOverOverlay("Judged by Wendell", "You betrayed the moral code. Mr. Wendell has no mercy.");
+  showGameOverOverlay(
+    'Judged by Wendell',
+    'You betrayed the moral code. Mr. Wendell has no mercy.',
+  );
 
   decrementLives();
 
   if (getLives() <= 0) {
-    consoleWrite("⚰️ You have no lives left. Restarting from the beginning...");
+    consoleWrite('⚰️ You have no lives left. Restarting from the beginning...');
     fullGameReset();
   } else {
     respawnToCrossing();
@@ -107,7 +109,7 @@ function showGameOverOverlay(title: string, message: string): void {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 9999
+    zIndex: 9999,
   });
   document.body.appendChild(overlay);
 }

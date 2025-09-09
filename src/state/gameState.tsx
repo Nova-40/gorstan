@@ -30,8 +30,14 @@ import type { ConversationThread } from '../types/dialogue';
 import { conversationsReducer } from '../reducers/conversations';
 
 // --- Util: Add Room Description To History ---
-function addRoomDescriptionToHistory(history: GameMessage[], room: Room | null, roomId: string): GameMessage[] {
-  if (!room || !room.description) return history;
+function addRoomDescriptionToHistory(
+  history: GameMessage[],
+  room: Room | null,
+  roomId: string,
+): GameMessage[] {
+  if (!room || !room.description) {
+    return history;
+  }
   const newHistory = [...history];
 
   if (room.title && room.title !== roomId) {
@@ -88,7 +94,7 @@ export const initialGameState: LocalGameState = {
   currentRoomId: 'controlnexus',
   previousRoomId: undefined,
   roomMap: {},
-  miniquestState: {}, 
+  miniquestState: {},
   flags: {},
   npcsInRoom: [],
   roomVisitCount: {},
@@ -131,7 +137,8 @@ export const initialGameState: LocalGameState = {
 
 // --- Helper: Blue Button Press ---
 export const handleBlueButtonPress = (state: LocalGameState): LocalGameState => {
-  const currentCount = typeof state.player.flags?.bluePressCount === 'number' ? state.player.flags.bluePressCount : 0;
+  const currentCount =
+    typeof state.player.flags?.bluePressCount === 'number' ? state.player.flags.bluePressCount : 0;
   const nextCount = currentCount + 1;
 
   if (nextCount === 1) {
@@ -150,7 +157,7 @@ export const handleBlueButtonPress = (state: LocalGameState): LocalGameState => 
           ...state.player.flags,
           bluePressCount: nextCount,
           showBlueButtonWarning: true,
-        }
+        },
       },
       history: [...state.history, warningMessage],
     };
@@ -170,13 +177,13 @@ export const handleBlueButtonPress = (state: LocalGameState): LocalGameState => 
           ...state.player.flags,
           bluePressCount: 0,
           showBlueButtonWarning: false,
-        }
+        },
       },
       flags: {
         ...state.flags,
         multiverse_reboot_pending: true,
       },
-      history: [...state.history, finalWarningMessage], 
+      history: [...state.history, finalWarningMessage],
     };
   }
 };
@@ -196,20 +203,30 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
           },
           messages: [
             ...state.messages,
-            { id: `msg-${Date.now()}`, text: 'You drink the coffee. It’s still warm — and you feel slightly more alert.', type: 'system', timestamp: Date.now() }
+            {
+              id: `msg-${Date.now()}`,
+              text: 'You drink the coffee. It’s still warm — and you feel slightly more alert.',
+              type: 'system',
+              timestamp: Date.now(),
+            },
           ],
           flags: {
             ...state.flags,
-            coffeeConsumed: true
-          }
+            coffeeConsumed: true,
+          },
         };
       } else {
         return {
           ...state,
           messages: [
             ...state.messages,
-            { id: `msg-${Date.now()}`, text: 'You don’t have any coffee.', type: 'system', timestamp: Date.now() }
-          ]
+            {
+              id: `msg-${Date.now()}`,
+              text: 'You don’t have any coffee.',
+              type: 'system',
+              timestamp: Date.now(),
+            },
+          ],
         };
       }
     }
@@ -217,19 +234,21 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
     // --- Inventory ---
     case 'ADD_TO_INVENTORY': {
       const item = action.payload as string;
-      if (state.player.inventory.includes(item)) return state;
-      
+      if (state.player.inventory.includes(item)) {
+        return state;
+      }
+
       // Trigger item collection notification
       const event = new CustomEvent('gorstan-notification', {
         detail: {
           type: 'item_collected',
           title: 'Item Collected!',
           description: `Added ${item} to your inventory`,
-          duration: 3000
-        }
+          duration: 3000,
+        },
       });
       window.dispatchEvent(event);
-      
+
       return {
         ...state,
         player: {
@@ -241,19 +260,28 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
 
     // --- Use Items ---
     case 'USE_ITEM': {
-      if (typeof action.payload === 'object' && action.payload !== null && 'item' in action.payload) {
+      if (
+        typeof action.payload === 'object' &&
+        action.payload !== null &&
+        'item' in action.payload
+      ) {
         const { item } = action.payload as { item: string };
         if (item === 'batteries') {
           return {
             ...state,
             flags: {
               ...state.flags,
-              batteriesInserted: true
+              batteriesInserted: true,
             },
             messages: [
               ...state.messages,
-              { id: `msg-${Date.now()}`, text: 'You insert the batteries.', type: 'system', timestamp: Date.now() }
-            ]
+              {
+                id: `msg-${Date.now()}`,
+                text: 'You insert the batteries.',
+                type: 'system',
+                timestamp: Date.now(),
+              },
+            ],
           };
         }
       }
@@ -267,27 +295,40 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
         'target' in action.payload
       ) {
         const { item, target } = action.payload as { item: string; target: string };
-        if ((item === 'batteries' && target === 'torch') || (item === 'torch' && target === 'batteries')) {
+        if (
+          (item === 'batteries' && target === 'torch') ||
+          (item === 'torch' && target === 'batteries')
+        ) {
           const hasBatteries = state.flags?.batteriesInserted;
           if (hasBatteries) {
             return {
               ...state,
               flags: {
                 ...state.flags,
-                torchReady: true
+                torchReady: true,
               },
               messages: [
                 ...state.messages,
-                { id: `msg-${Date.now()}`, text: 'You insert the batteries into the torch. It flickers to life.', type: 'system', timestamp: Date.now() }
-              ]
+                {
+                  id: `msg-${Date.now()}`,
+                  text: 'You insert the batteries into the torch. It flickers to life.',
+                  type: 'system',
+                  timestamp: Date.now(),
+                },
+              ],
             };
           } else {
             return {
               ...state,
               messages: [
                 ...state.messages,
-                { id: `msg-${Date.now()}`, text: 'You need to insert the batteries first.', type: 'system', timestamp: Date.now() }
-              ]
+                {
+                  id: `msg-${Date.now()}`,
+                  text: 'You need to insert the batteries first.',
+                  type: 'system',
+                  timestamp: Date.now(),
+                },
+              ],
             };
           }
         }
@@ -313,7 +354,7 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
         ...state,
         player: {
           ...state.player,
-          score: (state.player.score || 0) + (action.payload as number)
+          score: (state.player.score || 0) + (action.payload as number),
         },
       };
 
@@ -370,9 +411,9 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
 
       return {
         ...state,
-        previousRoomId: state.currentRoomId,  
+        previousRoomId: state.currentRoomId,
         currentRoomId: roomId,
-        history: updatedHistory,  
+        history: updatedHistory,
         player: {
           ...state.player,
           currentRoom: roomId,
@@ -386,31 +427,32 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
         flags: {
           ...state.flags,
           evaluateWanderingNPCs: true,
-          triggerMorthosAlEncounter: encounterFlag
+          triggerMorthosAlEncounter: encounterFlag,
         },
       };
     }
 
     case 'SET_NPCS_IN_ROOM': {
       let npcs = action.payload as NPC[];
-      
+
       // Check if player has an alliance and should have their ally appear
       const playerAlliance = state.flags?.playerAlliance;
       const allianceChosen = state.flags?.allianceChosen;
-      
+
       if (allianceChosen && playerAlliance && Math.random() < 0.7) {
         // 70% chance for ally to appear
-        const allyAlreadyPresent = npcs.some(npc => npc.id === playerAlliance);
-        
+        const allyAlreadyPresent = npcs.some((npc) => npc.id === playerAlliance);
+
         if (!allyAlreadyPresent) {
           // Create the ally NPC and add to room
           const allyNpc: NPC = {
             id: playerAlliance,
             name: playerAlliance === 'al' ? 'Al' : 'Morthos',
             location: state.currentRoomId,
-            description: playerAlliance === 'al' 
-              ? 'Your multiversal guardian ally, ensuring order is maintained.'
-              : 'Your demonic engineer ally, using his power to assist you.',
+            description:
+              playerAlliance === 'al'
+                ? 'Your multiversal guardian ally, ensuring order is maintained.'
+                : 'Your demonic engineer ally, using his power to assist you.',
             mood: 'friendly',
             health: 100,
             maxHealth: 100,
@@ -419,17 +461,17 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
               lastInteraction: Date.now(),
               playerActions: [],
               relationship: 100, // Maximum because they're allied
-              knownFacts: []
+              knownFacts: [],
             },
             conversation: [],
             inventory: [],
-            flags: ['ally', 'helpful']
+            flags: ['ally', 'helpful'],
           };
-          
+
           npcs = [...npcs, allyNpc];
         }
       }
-      
+
       return {
         ...state,
         npcsInRoom: npcs,
@@ -468,9 +510,14 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
       const responseMessages: GameMessage[] = result.messages.map((msg: any, index: number) => ({
         id: `${Date.now()}-${index}`,
         text: msg.text,
-        type: msg.type === 'lore' ? 'narrative' :
-              msg.type === 'info' ? 'action' :
-              msg.type === 'error' ? 'error' : 'system',
+        type:
+          msg.type === 'lore'
+            ? 'narrative'
+            : msg.type === 'info'
+              ? 'action'
+              : msg.type === 'error'
+                ? 'error'
+                : 'system',
         timestamp: Date.now(),
       }));
 
@@ -485,8 +532,8 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
         if (result.updates.currentRoomId && result.updates.currentRoomId !== state.currentRoomId) {
           const visitedRooms = newState.player.visitedRooms || [];
           const isFirstVisit = !visitedRooms.includes(result.updates.currentRoomId);
-          
-          newState.previousRoomId = state.currentRoomId;  
+
+          newState.previousRoomId = state.currentRoomId;
           newState.player = {
             ...newState.player,
             visitedRooms: visitedRooms.includes(result.updates.currentRoomId)
@@ -494,7 +541,11 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
               : [...visitedRooms, result.updates.currentRoomId],
           };
           const newRoom = newState.roomMap[result.updates.currentRoomId];
-          newState.history = addRoomDescriptionToHistory(newState.history, newRoom, result.updates.currentRoomId);
+          newState.history = addRoomDescriptionToHistory(
+            newState.history,
+            newRoom,
+            result.updates.currentRoomId,
+          );
 
           // Trigger room discovery notification for first visits
           if (isFirstVisit && newRoom) {
@@ -503,8 +554,8 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
                 type: 'room_discovery',
                 title: 'New Location Discovered!',
                 description: newRoom.title || result.updates.currentRoomId,
-                duration: 4000
-              }
+                duration: 4000,
+              },
             });
             window.dispatchEvent(event);
           }
@@ -553,7 +604,9 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
     case 'UNLOCK_ACHIEVEMENT': {
       const id = action.payload as string;
       const current = state.metadata.achievements || [];
-      if (current.includes(id)) return state;
+      if (current.includes(id)) {
+        return state;
+      }
       return {
         ...state,
         metadata: {
@@ -586,31 +639,31 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
         (action.payload as any).flag !== undefined
       ) {
         const { flag, value } = action.payload as { flag: string; value: any };
-        
+
         // Score events based on flag changes
         const scoreEvents: Record<string, { positive?: string; negative?: string }> = {
-          'dominicIsDead': { negative: 'npc.dominic.dead' },
-          'dominic_dead': { negative: 'npc.dominic.dead' },
-          'dominicSpared': { positive: 'dominic.spared' },
-          'puzzle_maze_lattice_solved': { positive: 'puzzle.solved' },
-          'puzzle_glitch_echo_resolved': { positive: 'puzzle.solved' },
-          'pollyTakeoverStopped': { positive: 'polly.takeover.prevented' },
-          'pollyTakeoverInProgress': { negative: 'polly.takeover.failed.to.stop' },
-          'playerIsRedacted': { negative: 'raven.flagged.redacted' },
-          'realityStabilized': { positive: 'reality.stabilized' },
-          'realityBroken': { negative: 'reality.broken.unstabilized' },
-          'secretRoomDiscovered': { positive: 'secret.room.discovered' },
-          'hiddenContentUnlocked': { positive: 'hidden.content.unlocked' },
-          'wendellPolite': { positive: 'diplomacy.used' },
-          'wendellRude': { negative: 'npc.wendell.rude' },
-          'librarianHelpful': { positive: 'npc.librarian.helpful' },
-          'resetCompletedCorrectly': { positive: 'reset.completed.correctly' },
-          'multiverseRebootSuccessful': { positive: 'multiverse.reboot.successful' },
+          dominicIsDead: { negative: 'npc.dominic.dead' },
+          dominic_dead: { negative: 'npc.dominic.dead' },
+          dominicSpared: { positive: 'dominic.spared' },
+          puzzle_maze_lattice_solved: { positive: 'puzzle.solved' },
+          puzzle_glitch_echo_resolved: { positive: 'puzzle.solved' },
+          pollyTakeoverStopped: { positive: 'polly.takeover.prevented' },
+          pollyTakeoverInProgress: { negative: 'polly.takeover.failed.to.stop' },
+          playerIsRedacted: { negative: 'raven.flagged.redacted' },
+          realityStabilized: { positive: 'reality.stabilized' },
+          realityBroken: { negative: 'reality.broken.unstabilized' },
+          secretRoomDiscovered: { positive: 'secret.room.discovered' },
+          hiddenContentUnlocked: { positive: 'hidden.content.unlocked' },
+          wendellPolite: { positive: 'diplomacy.used' },
+          wendellRude: { negative: 'npc.wendell.rude' },
+          librarianHelpful: { positive: 'npc.librarian.helpful' },
+          resetCompletedCorrectly: { positive: 'reset.completed.correctly' },
+          multiverseRebootSuccessful: { positive: 'multiverse.reboot.successful' },
         };
 
         const scoreEvent = scoreEvents[flag];
-        let scoreUpdates: GameMessage[] = [];
-        
+        const scoreUpdates: GameMessage[] = [];
+
         if (scoreEvent) {
           const eventKey = value ? scoreEvent.positive : scoreEvent.negative;
           if (eventKey) {
@@ -628,12 +681,12 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
           ...state,
           flags: {
             ...state.flags,
-            [flag]: value
-          }
+            [flag]: value,
+          },
         };
       } else if ('payload' in action) {
         const flag = action.payload as string | { key: string; value: boolean };
-        let newFlags = { ...state.flags };
+        const newFlags = { ...state.flags };
         if (typeof flag === 'string') {
           newFlags[flag] = true;
         } else if (typeof flag === 'object' && flag && (flag as any).key) {
@@ -776,7 +829,7 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
           flags: {
             ...state.player.flags,
             showBlueButtonWarning: false,
-          }
+          },
         },
       };
 
@@ -784,7 +837,7 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
     case 'START_MULTIVERSE_REBOOT': {
       const completionMessage: GameMessage = {
         id: `multiverse-reset-${Date.now()}`,
-        text: "You awaken with a faint sense of déjà vu. Everything feels familiar yet different...",
+        text: 'You awaken with a faint sense of déjà vu. Everything feels familiar yet different...',
         type: 'narrative',
         timestamp: Date.now(),
       };
@@ -795,8 +848,8 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
           ...state.player,
           flags: {
             ...state.player.flags,
-            bluePressCount: 0, 
-          }
+            bluePressCount: 0,
+          },
         },
         flags: {
           ...state.flags,
@@ -814,41 +867,46 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
         flags: {
           ...state.flags,
           show_reset_sequence: true,
-        }
+        },
       };
 
     // --- Press Action (generic) ---
     case 'PRESS_ACTION':
       return {
         ...state,
-        history: [...state.history, {
-          id: `press-action-${Date.now()}`,
-          text: "You press something, but nothing happens.",
-          type: 'system',
-          timestamp: Date.now(),
-        }],
+        history: [
+          ...state.history,
+          {
+            id: `press-action-${Date.now()}`,
+            text: 'You press something, but nothing happens.',
+            type: 'system',
+            timestamp: Date.now(),
+          },
+        ],
       };
 
     // --- Remove Item from Room ---
     case 'REMOVE_ITEM_FROM_ROOM': {
       const { roomId, item } = action.payload as { roomId: string; item: string };
       const room = state.roomMap?.[roomId];
-      if (!room || !room.items) return state;
-      
+      if (!room || !room.items) {
+        return state;
+      }
+
       // Ensure we maintain the original items type structure
       const originalItems = room.items;
       let filteredItems: typeof originalItems;
-      
+
       if (originalItems.length > 0 && typeof originalItems[0] === 'string') {
         // Handle string[] type
-        filteredItems = (originalItems as string[]).filter(roomItem => roomItem !== item);
+        filteredItems = (originalItems as string[]).filter((roomItem) => roomItem !== item);
       } else {
         // Handle RoomItem[] type
-        filteredItems = (originalItems as any[]).filter(roomItem => 
-          typeof roomItem === 'object' ? roomItem.name !== item : roomItem !== item
+        filteredItems = (originalItems as any[]).filter((roomItem) =>
+          typeof roomItem === 'object' ? roomItem.name !== item : roomItem !== item,
         );
       }
-      
+
       return {
         ...state,
         roomMap: {
@@ -872,44 +930,44 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
           id: `encounter-start-${Date.now()}`,
           text: '🌫️ The shadows in the control room suddenly deepen, and the air grows thick with tension...',
           type: 'narrative',
-          timestamp: Date.now()
+          timestamp: Date.now(),
         },
         {
           id: `morthos-appear-${Date.now()}`,
           text: '🌑 From the darkest corner of the room, a figure emerges. Morthos steps forward, shadows writhing around his form like living things.',
           type: 'narrative',
-          timestamp: Date.now() + 1000
+          timestamp: Date.now() + 1000,
         },
         {
           id: `morthos-speak-${Date.now()}`,
           text: 'MORTHOS: "So... another operator discovers our little sanctuary. How deliciously... inevitable."',
           type: 'system',
-          timestamp: Date.now() + 2000
+          timestamp: Date.now() + 2000,
         },
         {
           id: `al-appear-${Date.now()}`,
           text: '📋 A bureaucratic figure in a slightly rumpled suit materializes near the monitoring stations, adjusting his glasses with practiced efficiency.',
           type: 'narrative',
-          timestamp: Date.now() + 3000
+          timestamp: Date.now() + 3000,
         },
         {
           id: `al-speak-${Date.now()}`,
           text: 'AL: "Ah, excellent timing. We have protocols to discuss, forms to file, and reality to stabilize. In that order."',
           type: 'system',
-          timestamp: Date.now() + 4000
+          timestamp: Date.now() + 4000,
         },
         {
           id: `tension-build-${Date.now()}`,
           text: '⚡ The room crackles with dimensional energy as these two powerful entities regard each other—and you—with interest.',
           type: 'narrative',
-          timestamp: Date.now() + 5000
+          timestamp: Date.now() + 5000,
         },
         {
           id: `encounter-complete-${Date.now()}`,
           text: '✨ You sense this encounter will shape your journey through the multiverse...',
           type: 'system',
-          timestamp: Date.now() + 6000
-        }
+          timestamp: Date.now() + 6000,
+        },
       ];
 
       return {
@@ -920,8 +978,8 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
           hasMetMorthosAl: true,
           metMorthos: true,
           metAl: true,
-          firstEncounterComplete: true
-        }
+          firstEncounterComplete: true,
+        },
       };
     }
 
@@ -941,7 +999,7 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
         entries: [],
         relationship: 0,
         knownTopics: [],
-        unresolved: []
+        unresolved: [],
       };
 
       const newEntry = {
@@ -949,7 +1007,7 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
         playerInput,
         npcResponse,
         timestamp: Date.now(),
-        mood
+        mood,
       };
 
       const updatedHistory = {
@@ -960,16 +1018,16 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
           totalInteractions: npcHistory.totalInteractions + 1,
           entries: [...npcHistory.entries.slice(-9), newEntry], // Keep last 10 entries
           knownTopics: [...new Set([...npcHistory.knownTopics, topic])],
-          currentTopic: topic
-        }
+          currentTopic: topic,
+        },
       };
 
       return {
         ...state,
         flags: {
           ...state.flags,
-          npcConversations: updatedHistory
-        }
+          npcConversations: updatedHistory,
+        },
       };
     }
 
@@ -979,16 +1037,16 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
         history: any;
       };
       const currentHistory = (state.flags?.npcConversations as any) || {};
-      
+
       return {
         ...state,
         flags: {
           ...state.flags,
           npcConversations: {
             ...currentHistory,
-            [npcId]: history
-          }
-        }
+            [npcId]: history,
+          },
+        },
       };
     }
 
@@ -1006,22 +1064,22 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
         ...state,
         settings: {
           ...state.settings,
-          ...payload
-        }
+          ...payload,
+        },
       };
     }
 
     // Alliance system
     case 'SET_ALLIANCE': {
       const { ally, points } = action.payload as { ally: string; points: number };
-      
+
       // Award points
       const currentScore = state.player.score || 0;
       const newScore = currentScore + points;
-      
+
       // Set alliance flag and update relationships
       const newNpcRelationships = { ...state.player.npcRelationships };
-      
+
       if (ally === 'morthos') {
         newNpcRelationships['morthos'] = 100; // Full alliance
         newNpcRelationships['al'] = -50; // Al becomes hostile
@@ -1036,11 +1094,12 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
 
       const allianceMessage: GameMessage = {
         id: `alliance-${Date.now()}`,
-        text: ally === 'both' 
-          ? '⚠️ Both Al and Morthos look displeased. "Choose one, not both," they say in unison.'
-          : ally === 'morthos'
-          ? `🔥 You choose Morthos as your ally! (+${points} points) Al looks disappointed but respects your choice.`
-          : `⚖️ You choose Al as your ally! (+${points} points) Morthos nods grimly but accepts your decision.`,
+        text:
+          ally === 'both'
+            ? '⚠️ Both Al and Morthos look displeased. "Choose one, not both," they say in unison.'
+            : ally === 'morthos'
+              ? `🔥 You choose Morthos as your ally! (+${points} points) Al looks disappointed but respects your choice.`
+              : `⚖️ You choose Al as your ally! (+${points} points) Morthos nods grimly but accepts your decision.`,
         type: ally === 'both' ? 'error' : 'system',
         timestamp: Date.now(),
       };
@@ -1050,14 +1109,14 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
         player: {
           ...state.player,
           score: newScore,
-          npcRelationships: newNpcRelationships
+          npcRelationships: newNpcRelationships,
         },
         flags: {
           ...state.flags,
           playerAlliance: ally === 'both' ? null : ally,
-          allianceChosen: true
+          allianceChosen: true,
         },
-        history: [...state.history, allianceMessage]
+        history: [...state.history, allianceMessage],
       };
     }
 
@@ -1067,17 +1126,18 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
 };
 
 // --- Context, Provider, and Hooks ---
-export const GameStateContext = createContext<{
-  state: LocalGameState;
-  dispatch: Dispatch<GameAction>;
-} | undefined>(undefined);
+export const GameStateContext = createContext<
+  | {
+      state: LocalGameState;
+      dispatch: Dispatch<GameAction>;
+    }
+  | undefined
+>(undefined);
 
 export const GameStateProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = useReducer(gameStateReducer, initialGameState);
   return (
-    <GameStateContext.Provider value={{ state, dispatch }}>
-      {children}
-    </GameStateContext.Provider>
+    <GameStateContext.Provider value={{ state, dispatch }}>{children}</GameStateContext.Provider>
   );
 };
 
@@ -1104,10 +1164,10 @@ export interface LocalGameState {
   player: Player;
   history: GameMessage[];
   currentRoomId: string;
-  previousRoomId?: string;  
+  previousRoomId?: string;
   roomMap: Record<string, Room>;
   selectedRoute?: string; // Add route selection support
-  miniquestState?: MiniquestState; 
+  miniquestState?: MiniquestState;
   flags: {
     resetButtonPressCount?: number;
     triggerResetEscalation?: boolean;
@@ -1193,7 +1253,7 @@ export function clearInventory(state: LocalGameState): LocalGameState {
     ...state,
     player: {
       ...state.player,
-      inventory: []
-    }
+      inventory: [],
+    },
   };
 }

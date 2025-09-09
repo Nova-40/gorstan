@@ -29,7 +29,7 @@ export {
   clearDismissedCelebrations,
   getCelebrationPreferences,
   saveCelebrationPreferences,
-  CELEBRATION_STORAGE_KEYS
+  CELEBRATION_STORAGE_KEYS,
 } from './celebrateGate';
 
 // React components

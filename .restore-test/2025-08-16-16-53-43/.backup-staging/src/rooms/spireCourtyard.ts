@@ -8,7 +8,8 @@ import { Room } from '../types/Room';
 const spireCourtyard: Room = {
   id: 'spireCourtyard',
   title: 'Spire Courtyard',
-  description: 'A vast open courtyard at the base of the Spire, surrounded by ancient ruins. The air is thick with tension, as if the world itself is holding its breath.',
+  description:
+    'A vast open courtyard at the base of the Spire, surrounded by ancient ruins. The air is thick with tension, as if the world itself is holding its breath.',
   image: 'spireCourtyard.png',
   zone: 'finalZone',
   flags: {},

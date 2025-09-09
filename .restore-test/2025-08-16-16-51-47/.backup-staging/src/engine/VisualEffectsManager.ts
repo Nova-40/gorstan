@@ -151,14 +151,14 @@ export class VisualEffectsManager {
       duration: config.duration || this.getDefaultDuration(effectName),
       intensity: config.intensity || 1,
       persistent: config.persistent || false,
-      ...config
+      ...config,
     };
 
     const effectState: EffectState = {
       config: effectConfig,
       startTime: Date.now(),
       duration: effectConfig.duration || 0,
-      persistent: effectConfig.persistent || false
+      persistent: effectConfig.persistent || false,
     };
 
     // Apply the effect to the DOM
@@ -175,7 +175,7 @@ export class VisualEffectsManager {
 
     this.activeEffects.set(effectName, effectState);
 
-  if (import.meta.env.DEV) {
+    if (import.meta.env.DEV) {
       console.log(`[VisualEffectsManager] Applied effect: ${effectName}`, effectConfig);
     }
 
@@ -226,7 +226,7 @@ export class VisualEffectsManager {
     // Remove from active effects
     this.activeEffects.delete(effectName);
 
-  if (import.meta.env.DEV) {
+    if (import.meta.env.DEV) {
       console.log(`[VisualEffectsManager] Removed effect: ${effectName}`);
     }
 
@@ -259,11 +259,11 @@ export class VisualEffectsManager {
       }
     });
 
-    effectsToRemove.forEach(effectName => {
+    effectsToRemove.forEach((effectName) => {
       this.removeEffect(effectName);
     });
 
-  if (import.meta.env.DEV) {
+    if (import.meta.env.DEV) {
       console.log(`[VisualEffectsManager] Cleared ${effectsToRemove.length} effects`);
     }
   }
@@ -292,14 +292,16 @@ export class VisualEffectsManager {
   /**
    * Applies a sequence of effects with delays.
    */
-  public applyEffectSequence(effects: Array<{ name: VisualEffectType; delay: number; config?: Partial<EffectConfig> }>): void {
+  public applyEffectSequence(
+    effects: Array<{ name: VisualEffectType; delay: number; config?: Partial<EffectConfig> }>,
+  ): void {
     effects.forEach(({ name, delay, config }) => {
       setTimeout(() => {
         this.applyEffect(name, config);
       }, delay);
     });
 
-  if (import.meta.env.DEV) {
+    if (import.meta.env.DEV) {
       console.log(`[VisualEffectsManager] Applied effect sequence:`, effects);
     }
   }
@@ -307,7 +309,11 @@ export class VisualEffectsManager {
   /**
    * Applies effects based on room data.
    */
-  public applyRoomEffects(roomData: { moodTag?: string; special?: Record<string, unknown>; anomalies?: unknown[] }): void {
+  public applyRoomEffects(roomData: {
+    moodTag?: string;
+    special?: Record<string, unknown>;
+    anomalies?: unknown[];
+  }): void {
     // Clear existing room-based effects
     this.clearAllEffects(true);
 
@@ -332,23 +338,23 @@ export class VisualEffectsManager {
    */
   private getDefaultDuration(effectName: VisualEffectType): number {
     const durations: Record<VisualEffectType, number> = {
-      'fadein': 1000,
-      'fadeout': 1000,
-      'glitch': 2000,
-      'scanlines': 0,
-      'vhs': 0,
-      'static': 3000,
-      'fog': 0,
-      'rain': 0,
-      'snow': 0,
-      'lightning': 500,
-      'shake': 500,
-      'flash': 300,
-      'pulse': 0,
-      'blur': 0,
-      'sepia': 0,
-      'invert': 0,
-      'grayscale': 0
+      fadein: 1000,
+      fadeout: 1000,
+      glitch: 2000,
+      scanlines: 0,
+      vhs: 0,
+      static: 3000,
+      fog: 0,
+      rain: 0,
+      snow: 0,
+      lightning: 500,
+      shake: 500,
+      flash: 300,
+      pulse: 0,
+      blur: 0,
+      sepia: 0,
+      invert: 0,
+      grayscale: 0,
     };
 
     return durations[effectName] || 1000;
@@ -359,9 +365,23 @@ export class VisualEffectsManager {
    */
   private isValidEffect(effectName: VisualEffectType): boolean {
     const validEffects: VisualEffectType[] = [
-      'fadein', 'fadeout', 'glitch', 'scanlines', 'vhs', 'static', 'fog',
-      'rain', 'snow', 'lightning', 'shake', 'flash', 'pulse', 'blur',
-      'sepia', 'invert', 'grayscale'
+      'fadein',
+      'fadeout',
+      'glitch',
+      'scanlines',
+      'vhs',
+      'static',
+      'fog',
+      'rain',
+      'snow',
+      'lightning',
+      'shake',
+      'flash',
+      'pulse',
+      'blur',
+      'sepia',
+      'invert',
+      'grayscale',
     ];
     return validEffects.includes(effectName);
   }
@@ -371,15 +391,15 @@ export class VisualEffectsManager {
    */
   private applyMoodEffect(moodTag: string): void {
     const moodEffectMap: Record<string, VisualEffectType> = {
-      'mysterious': 'fog',
-      'corrupt': 'glitch',
-      'peaceful': 'fadein',
-      'retro': 'vhs',
-      'stormy': 'rain',
-      'cold': 'snow',
-      'electric': 'lightning',
-      'digital': 'static',
-      'vintage': 'scanlines'
+      mysterious: 'fog',
+      corrupt: 'glitch',
+      peaceful: 'fadein',
+      retro: 'vhs',
+      stormy: 'rain',
+      cold: 'snow',
+      electric: 'lightning',
+      digital: 'static',
+      vintage: 'scanlines',
     };
 
     const effect = moodEffectMap[moodTag];
@@ -397,7 +417,7 @@ export class VisualEffectsManager {
       this.applyEffectSequence([
         { name: 'glitch', delay: 0, config: { duration: 1000 } },
         { name: 'static', delay: 1000, config: { duration: 2000 } },
-        { name: 'fadein', delay: 3000 }
+        { name: 'fadein', delay: 3000 },
       ]);
     }
 

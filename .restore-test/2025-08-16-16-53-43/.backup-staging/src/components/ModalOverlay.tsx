@@ -28,9 +28,9 @@ interface ModalOverlayProps {
 }
 
 const ModalOverlay: React.FC<ModalOverlayProps> = ({ isOpen, onClose, children }) => {
-// React effect hook
+  // React effect hook
   useEffect(() => {
-// Variable declaration
+    // Variable declaration
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         onClose();
@@ -43,7 +43,7 @@ const ModalOverlay: React.FC<ModalOverlayProps> = ({ isOpen, onClose, children }
       document.removeEventListener('keydown', handleKeyDown);
     }
 
-// JSX return block or main return
+    // JSX return block or main return
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
@@ -51,7 +51,7 @@ const ModalOverlay: React.FC<ModalOverlayProps> = ({ isOpen, onClose, children }
 
   if (!isOpen) return null;
 
-// JSX return block or main return
+  // JSX return block or main return
   return (
     <div className="modal-overlay">
       <div className="modal-content">

@@ -33,7 +33,7 @@ export function ObjectiveList({
   className,
   onObjectiveClick,
 }: ObjectiveListProps) {
-  const completedCount = objectives.filter(obj => obj.completed).length;
+  const completedCount = objectives.filter((obj) => obj.completed).length;
   const totalCount = objectives.length;
 
   return (
@@ -41,14 +41,12 @@ export function ObjectiveList({
       {/* Header */}
       <div className="p-4 border-b border-neutral-200">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-neutral-900">
-            {title}
-          </h3>
+          <h3 className="text-lg font-semibold text-neutral-900">{title}</h3>
           <Badge variant="secondary" size="sm">
             {completedCount}/{totalCount}
           </Badge>
         </div>
-        
+
         {/* Progress bar */}
         {totalCount > 0 && (
           <div className="mt-2">
@@ -64,7 +62,7 @@ export function ObjectiveList({
       </div>
 
       {/* Objectives list */}
-      <div 
+      <div
         className={cn('divide-y divide-neutral-100', compact ? 'p-2' : 'p-4')}
         role="list"
         aria-live="polite"
@@ -115,8 +113,9 @@ function ObjectiveItem({ objective, compact, onClick }: ObjectiveItemProps) {
       className={cn(
         'flex items-start gap-3 py-3',
         isInteractive && 'cursor-pointer hover:bg-neutral-50 rounded-md px-2 -mx-2',
-        isInteractive && 'focus:outline-none focus:bg-neutral-50 focus:ring-2 focus:ring-primary-500',
-        compact && 'py-2'
+        isInteractive &&
+          'focus:outline-none focus:bg-neutral-50 focus:ring-2 focus:ring-primary-500',
+        compact && 'py-2',
       )}
       role={isInteractive ? 'button' : 'listitem'}
       tabIndex={isInteractive ? 0 : undefined}
@@ -153,19 +152,19 @@ function ObjectiveItem({ objective, compact, onClick }: ObjectiveItemProps) {
             className={cn(
               'text-sm font-medium',
               objective.completed ? 'text-neutral-500 line-through' : 'text-neutral-900',
-              compact && 'text-xs'
+              compact && 'text-xs',
             )}
           >
             {objective.title}
           </h4>
-          
+
           <div className="flex items-center gap-1">
             {!objective.required && (
               <Badge variant="secondary" size="sm">
                 Optional
               </Badge>
             )}
-            
+
             {objective.progress && (
               <Badge variant="outline" size="sm">
                 {objective.progress.current}/{objective.progress.total}
@@ -179,7 +178,7 @@ function ObjectiveItem({ objective, compact, onClick }: ObjectiveItemProps) {
             id={`${objective.id}-description`}
             className={cn(
               'mt-1 text-sm',
-              objective.completed ? 'text-neutral-400' : 'text-neutral-600'
+              objective.completed ? 'text-neutral-400' : 'text-neutral-600',
             )}
           >
             {objective.description}

@@ -19,17 +19,6 @@
 
 // The Trap type is defined at the end of this file
 
-
-
-
-
-
-
-
-
-
-
-
 export interface PlayerState {
   traits?: string[];
   items?: string[];
@@ -65,7 +54,6 @@ export interface TrapDefinition {
   cooldown?: number;
 }
 
-
 export interface TrapSeedingConfig {
   count: number;
   probability: number;
@@ -76,7 +64,6 @@ export interface TrapSeedingConfig {
   typeDistribution: Record<string, number>;
 }
 
-
 export interface TrapEngineStats {
   totalSeeded: number;
   totalTriggered: number;
@@ -86,12 +73,9 @@ export interface TrapEngineStats {
   lastSeedTime: number;
 }
 
-
 let seededTraps: Record<string, TrapDefinition> = {};
 
-
 let debugMode: boolean = false;
-
 
 const trapStats: TrapEngineStats = {
   totalSeeded: 0,
@@ -99,14 +83,12 @@ const trapStats: TrapEngineStats = {
   totalDisarmed: 0,
   damageDealt: 0,
   debugModeUsage: 0,
-  lastSeedTime: 0
+  lastSeedTime: 0,
 };
-
 
 const trapCache: Map<string, { result: boolean; timestamp: number }> = new Map();
 // Variable declaration
-const CACHE_DURATION = 30000; 
-
+const CACHE_DURATION = 30000;
 
 const DEFAULT_SEED_CONFIG: TrapSeedingConfig = {
   count: 5,
@@ -115,7 +97,7 @@ const DEFAULT_SEED_CONFIG: TrapSeedingConfig = {
   excludeRooms: ['intro', 'safe_zone', 'shop', 'inn'],
   preferredRooms: [],
   severityDistribution: { light: 0.5, moderate: 0.3, severe: 0.15, lethal: 0.05 },
-  typeDistribution: { generic: 0.6, magical: 0.2, mechanical: 0.15, environmental: 0.05 }
+  typeDistribution: { generic: 0.6, magical: 0.2, mechanical: 0.15, environmental: 0.05 },
 };
 
 // Helper function to shuffle array
@@ -132,33 +114,36 @@ function shuffleArray<T>(array: T[]): T[] {
 function generateTrapDescription(severity: string, type: string): string {
   const descriptions = {
     generic: {
-      light: "A loose floorboard creaks ominously.",
-      moderate: "Sharp spikes jut from the walls.",
-      severe: "A deadly pit trap lies hidden here.",
-      lethal: "Ancient death magic permeates this space."
+      light: 'A loose floorboard creaks ominously.',
+      moderate: 'Sharp spikes jut from the walls.',
+      severe: 'A deadly pit trap lies hidden here.',
+      lethal: 'Ancient death magic permeates this space.',
     },
     magical: {
-      light: "Faint magical energy tingles in the air.",
-      moderate: "Arcane symbols glow with dangerous power.",
-      severe: "A powerful curse guards this area.",
-      lethal: "Reality itself seems unstable here."
+      light: 'Faint magical energy tingles in the air.',
+      moderate: 'Arcane symbols glow with dangerous power.',
+      severe: 'A powerful curse guards this area.',
+      lethal: 'Reality itself seems unstable here.',
     },
     mechanical: {
-      light: "You hear the faint click of a mechanism.",
-      moderate: "Gears whir threateningly in the walls.",
-      severe: "Complex machinery hums with deadly intent.",
-      lethal: "An intricate doomsday device awaits."
+      light: 'You hear the faint click of a mechanism.',
+      moderate: 'Gears whir threateningly in the walls.',
+      severe: 'Complex machinery hums with deadly intent.',
+      lethal: 'An intricate doomsday device awaits.',
     },
     environmental: {
-      light: "The ground feels unstable beneath your feet.",
-      moderate: "Toxic vapors seep from the walls.",
-      severe: "The very air seems hostile to life.",
-      lethal: "This place defies the laws of nature."
-    }
+      light: 'The ground feels unstable beneath your feet.',
+      moderate: 'Toxic vapors seep from the walls.',
+      severe: 'The very air seems hostile to life.',
+      lethal: 'This place defies the laws of nature.',
+    },
   };
-  
-  return descriptions[type as keyof typeof descriptions]?.[severity as keyof typeof descriptions.generic] 
-    || "A mysterious trap lurks here.";
+
+  return (
+    descriptions[type as keyof typeof descriptions]?.[
+      severity as keyof typeof descriptions.generic
+    ] || 'A mysterious trap lurks here.'
+  );
 }
 
 // Helper function to get damage based on severity
@@ -167,7 +152,7 @@ function getSeverityDamage(severity: string): number {
     light: 1,
     moderate: 3,
     severe: 5,
-    lethal: 10
+    lethal: 10,
   };
   return damageMap[severity] || 1;
 }
@@ -178,21 +163,16 @@ function getSeverityCooldown(severity: string): number {
     light: 5000,
     moderate: 10000,
     severe: 15000,
-    lethal: 30000
+    lethal: 30000,
   };
   return cooldownMap[severity] || 5000;
 }
 
-
-
 // --- Function: seedTraps ---
-export function seedTraps(
-  roomIds: string[] = [],
-  config?: Partial<TrapSeedingConfig>
-): void {
+export function seedTraps(roomIds: string[] = [], config?: Partial<TrapSeedingConfig>): void {
   try {
     if (!Array.isArray(roomIds) || roomIds.length === 0) {
-      console.warn("[TrapEngine] Warning: No valid room IDs provided for seeding traps.");
+      console.warn('[TrapEngine] Warning: No valid room IDs provided for seeding traps.');
       return;
     }
 
@@ -202,25 +182,25 @@ export function seedTraps(
 
     // Merge config with defaults
     const seedConfig = { ...DEFAULT_SEED_CONFIG, ...config };
-    
+
     // Filter valid rooms
-    const validRooms = roomIds.filter(id => 
-      !seedConfig.excludeRooms.includes(id) && typeof id === 'string' && id.length > 0
+    const validRooms = roomIds.filter(
+      (id) => !seedConfig.excludeRooms.includes(id) && typeof id === 'string' && id.length > 0,
     );
 
     if (validRooms.length === 0) {
-      console.warn("[TrapEngine] No valid rooms available for trap seeding after exclusions.");
+      console.warn('[TrapEngine] No valid rooms available for trap seeding after exclusions.');
       return;
     }
 
     // Separate preferred and other rooms
-    const preferredRooms = validRooms.filter(id => seedConfig.preferredRooms.includes(id));
-    const otherRooms = validRooms.filter(id => !seedConfig.preferredRooms.includes(id));
-    
+    const preferredRooms = validRooms.filter((id) => seedConfig.preferredRooms.includes(id));
+    const otherRooms = validRooms.filter((id) => !seedConfig.preferredRooms.includes(id));
+
     // Shuffle arrays for randomness
     const shuffledPreferred = shuffleArray([...preferredRooms]);
     const shuffledOther = shuffleArray([...otherRooms]);
-    
+
     // Calculate number of traps to place
     const maxTraps = Math.floor(validRooms.length * seedConfig.density);
     const preferredTraps = Math.min(Math.floor(maxTraps * 0.4), shuffledPreferred.length);
@@ -248,7 +228,6 @@ export function seedTraps(
       }
     }
 
-    
     trapStats.totalSeeded += trapsSeeded;
     trapStats.lastSeedTime = Date.now();
 
@@ -256,11 +235,9 @@ export function seedTraps(
       console.info(`🧨 Traps seeded: ${trapsSeeded} in rooms:`, Object.keys(seededTraps));
     }
   } catch (error) {
-    console.error("[TrapEngine] Error during trap seeding:", error);
+    console.error('[TrapEngine] Error during trap seeding:', error);
   }
 }
-
-
 
 // --- Function: generateTrapDefinition ---
 function generateTrapDefinition(roomId: string, config: TrapSeedingConfig): TrapDefinition {
@@ -297,24 +274,22 @@ function generateTrapDefinition(roomId: string, config: TrapSeedingConfig): Trap
       damage: getSeverityDamage(severity),
       type,
       severity: severity as 'light' | 'moderate' | 'severe' | 'lethal',
-      autoDisarm: severity === 'light' && Math.random() < 0.3, 
-      cooldown: getSeverityCooldown(severity)
+      autoDisarm: severity === 'light' && Math.random() < 0.3,
+      cooldown: getSeverityCooldown(severity),
     };
   } catch (error) {
-    console.error("[TrapEngine] Error generating trap definition:", error);
+    console.error('[TrapEngine] Error generating trap definition:', error);
     return {
       id: `trap_${roomId}_fallback`,
       roomId,
       triggered: false,
-      description: "A mysterious trap lurks here.",
+      description: 'A mysterious trap lurks here.',
       damage: 1,
       type: 'generic',
-      severity: 'light'
+      severity: 'light',
     };
   }
 }
-
-
 
 // --- Function: isRoomTrapped ---
 export function isRoomTrapped(roomId: string): boolean {
@@ -331,31 +306,26 @@ export function isRoomTrapped(roomId: string): boolean {
 
     // Check if room has an active trap
     const isTrapped = seededTraps[roomId] && !seededTraps[roomId].triggered;
-    
+
     trapCache.set(roomId, {
       result: isTrapped,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     return isTrapped;
   } catch (error) {
-    console.error("[TrapEngine] Error checking if room is trapped:", error);
+    console.error('[TrapEngine] Error checking if room is trapped:', error);
     return false;
   }
 }
 
-
-
 // --- Function: handleRoomTrap ---
-export function handleRoomTrap(
-  roomId: string,
-  playerState: PlayerState
-): TrapResult | null {
+export function handleRoomTrap(roomId: string, playerState: PlayerState): TrapResult | null {
   try {
     // Get the trap for this room
     const trap = seededTraps[roomId];
     if (!trap || trap.triggered) {
-      return null; 
+      return null;
     }
 
     if (debugMode) {
@@ -365,13 +335,12 @@ export function handleRoomTrap(
         disarmed: true,
         trapType: trap.type,
         severity: trap.severity,
-        success: true
+        success: true,
       };
     }
 
-    
     if (!playerState || typeof playerState !== 'object') {
-      console.warn("[TrapEngine] Invalid player state provided");
+      console.warn('[TrapEngine] Invalid player state provided');
       return null;
     }
 
@@ -383,11 +352,9 @@ export function handleRoomTrap(
     const disarmResult = checkDisarmAbility(trap, playerState, playerItems, playerTraits);
 
     if (disarmResult.canDisarm) {
-      
       trap.triggered = true;
       trapStats.totalDisarmed++;
 
-      
       trapCache.delete(roomId);
 
       return {
@@ -395,25 +362,21 @@ export function handleRoomTrap(
         disarmed: true,
         trapType: trap.type,
         severity: trap.severity,
-        success: true
+        success: true,
       };
     }
 
-    
     trap.triggered = true;
     trapStats.totalTriggered++;
 
-    
     let damage = trap.damage || 0;
 
-    
     if (playerState.difficulty === 'easy') {
       damage = Math.ceil(damage * 0.5);
     } else if (playerState.difficulty === 'hard') {
       damage = Math.ceil(damage * 1.5);
     }
 
-    
     if (playerTraits.includes('resistant') || playerTraits.includes('trap_resistant')) {
       damage = Math.ceil(damage * 0.7);
     }
@@ -422,14 +385,12 @@ export function handleRoomTrap(
       damage = Math.ceil(damage * 1.3);
     }
 
-    
     if (typeof playerState.level === 'number' && playerState.level > 1) {
       damage = Math.max(1, damage - Math.floor(playerState.level / 3));
     }
 
     trapStats.damageDealt += damage;
 
-    
     trapCache.delete(roomId);
 
     return {
@@ -437,44 +398,40 @@ export function handleRoomTrap(
       message: `💥 ${trap.description}`,
       trapType: trap.type,
       severity: trap.severity,
-      success: false
+      success: false,
     };
   } catch (error) {
-    console.error("[TrapEngine] Error handling room trap:", error);
+    console.error('[TrapEngine] Error handling room trap:', error);
     return {
       damage: 0,
-      message: "⚠️ Something went wrong with the trap mechanism.",
+      message: '⚠️ Something went wrong with the trap mechanism.',
       trapType: 'generic',
-      success: false
+      success: false,
     };
   }
 }
-
-
 
 // --- Function: checkDisarmAbility ---
 function checkDisarmAbility(
   trap: TrapDefinition,
   playerState: PlayerState,
   playerItems: string[],
-  playerTraits: string[]
+  playerTraits: string[],
 ): { canDisarm: boolean; message: string; method: string } {
   try {
-    
     if (trap.autoDisarm) {
       return {
         canDisarm: true,
         message: `🔧 The ${trap.severity} trap harmlessly disarms itself after triggering.`,
-        method: 'auto'
+        method: 'auto',
       };
     }
 
-    
     if (playerTraits.includes('trap_expert') || playerTraits.includes('master_thief')) {
       return {
         canDisarm: true,
         message: `🎯 Your expertise allows you to expertly disarm the ${trap.severity} trap before it can harm you.`,
-        method: 'expertise'
+        method: 'expertise',
       };
     }
 
@@ -482,7 +439,7 @@ function checkDisarmAbility(
       return {
         canDisarm: true,
         message: `🛡️ Your natural resistance protects you from the ${trap.type} trap's effects.`,
-        method: 'resistance'
+        method: 'resistance',
       };
     }
 
@@ -490,16 +447,15 @@ function checkDisarmAbility(
       return {
         canDisarm: true,
         message: `🍀 Your luck helps you narrowly avoid the trap at the last second!`,
-        method: 'luck'
+        method: 'luck',
       };
     }
 
-    
     if (playerItems.includes('trapkit') || playerItems.includes('trap kit')) {
       return {
         canDisarm: true,
         message: `🔧 You quickly deploy your trap kit to neutralize the ${trap.type} trap.`,
-        method: 'trapkit'
+        method: 'trapkit',
       };
     }
 
@@ -507,27 +463,28 @@ function checkDisarmAbility(
       return {
         canDisarm: true,
         message: `🔓 Your thieves' tools allow you to carefully disarm the mechanism.`,
-        method: 'tools'
+        method: 'tools',
       };
     }
 
-    
-    if (trap.type === 'magical' && (playerTraits.includes('mage') || playerTraits.includes('wizard'))) {
+    if (
+      trap.type === 'magical' &&
+      (playerTraits.includes('mage') || playerTraits.includes('wizard'))
+    ) {
       return {
         canDisarm: true,
         message: `✨ Your magical knowledge allows you to dispel the trap's enchantment.`,
-        method: 'magic'
+        method: 'magic',
       };
     }
 
-    
     if (typeof playerState.level === 'number' && playerState.level >= 5) {
       const disarmChance = Math.min(0.7, playerState.level * 0.1); // Max 70% chance, scales with level
       if (Math.random() < disarmChance) {
         return {
           canDisarm: true,
           message: `🎓 Your experience helps you recognize and avoid the trap's trigger.`,
-          method: 'experience'
+          method: 'experience',
         };
       }
     }
@@ -535,15 +492,13 @@ function checkDisarmAbility(
     return {
       canDisarm: false,
       message: '',
-      method: 'none'
+      method: 'none',
     };
   } catch (error) {
-    console.error("[TrapEngine] Error checking disarm ability:", error);
+    console.error('[TrapEngine] Error checking disarm ability:', error);
     return { canDisarm: false, message: '', method: 'error' };
   }
 }
-
-
 
 // --- Function: handleTrapEscape ---
 export function handleTrapEscape(roomId: string, playerState?: PlayerState): boolean {
@@ -554,8 +509,7 @@ export function handleTrapEscape(roomId: string, playerState?: PlayerState): boo
       return false;
     }
 
-    
-    let escapeChance = 0.6; 
+    let escapeChance = 0.6;
 
     if (playerState) {
       // Extract player traits
@@ -569,7 +523,6 @@ export function handleTrapEscape(roomId: string, playerState?: PlayerState): boo
         escapeChance -= 0.2;
       }
 
-      
       if (typeof playerState.level === 'number') {
         escapeChance += playerState.level * 0.02;
       }
@@ -578,7 +531,7 @@ export function handleTrapEscape(roomId: string, playerState?: PlayerState): boo
     escapeChance = Math.max(0.1, Math.min(0.9, escapeChance));
 
     if (Math.random() < escapeChance) {
-      delete seededTraps[roomId]; 
+      delete seededTraps[roomId];
       trapCache.delete(roomId);
 
       if (debugMode) {
@@ -588,19 +541,16 @@ export function handleTrapEscape(roomId: string, playerState?: PlayerState): boo
       return true;
     }
 
-    
     if (debugMode) {
       console.info(`❌ Failed to escape trap in ${roomId}.`);
     }
 
     return false;
   } catch (error) {
-    console.error("[TrapEngine] Error handling trap escape:", error);
+    console.error('[TrapEngine] Error handling trap escape:', error);
     return false;
   }
 }
-
-
 
 // --- Function: listActiveTraps ---
 export function listActiveTraps(includeTriggered: boolean = false): Array<{
@@ -612,12 +562,10 @@ export function listActiveTraps(includeTriggered: boolean = false): Array<{
       .filter(([_, trap]) => includeTriggered || !trap.triggered)
       .map(([roomId, trap]) => ({ roomId, trap }));
   } catch (error) {
-    console.error("[TrapEngine] Error listing active traps:", error);
+    console.error('[TrapEngine] Error listing active traps:', error);
     return [];
   }
 }
-
-
 
 // --- Function: enableDebugMode ---
 export function enableDebugMode(): void {
@@ -625,19 +573,16 @@ export function enableDebugMode(): void {
   console.info('🔧 Trap debug mode enabled - traps will not cause damage');
 }
 
-
 // --- Function: disableDebugMode ---
 export function disableDebugMode(): void {
   debugMode = false;
   console.info('⚔️ Trap debug mode disabled - traps will cause damage');
 }
 
-
 // --- Function: getDebugMode ---
 export function getDebugMode(): boolean {
   return debugMode;
 }
-
 
 // --- Function: toggleDebugMode ---
 export function toggleDebugMode(): boolean {
@@ -646,34 +591,32 @@ export function toggleDebugMode(): boolean {
   return debugMode;
 }
 
-
-
 // --- Function: maybeTriggerInquisitionTrap ---
 export function maybeTriggerInquisitionTrap(
   _roomId: string,
   playerState: PlayerState,
-  appendMessage: (msg: string) => void
+  appendMessage: (msg: string) => void,
 ): void {
   try {
     if (!appendMessage || typeof appendMessage !== 'function') {
-      console.warn("[TrapEngine] Invalid appendMessage function provided");
+      console.warn('[TrapEngine] Invalid appendMessage function provided');
       return;
     }
 
-    if (Math.random() < 0.05) { // Increased from 0.01 to 0.05 (5% chance) 
+    if (Math.random() < 0.05) {
+      // Increased from 0.01 to 0.05 (5% chance)
       appendMessage(`⚠️ The air thickens. Robed figures burst in!`);
       appendMessage(`🟥 "NO ONE EXPECTS THE SPANISH INQUISITION!"`);
       appendMessage(`They interrogate you about improper codex dusting.`);
 
       // Check if player's last command mentioned expecting or inquisition
       const commandText = playerState.command || '';
-      if (commandText.includes("expect") || commandText.includes("inquisition")) {
+      if (commandText.includes('expect') || commandText.includes('inquisition')) {
         appendMessage(`😲 They're baffled by your cleverness and award you a certificate.`);
         if (typeof playerState.score === 'number') {
           playerState.score += 5;
         }
 
-        
         if (!playerState.traits) {
           playerState.traits = [];
         }
@@ -688,46 +631,46 @@ export function maybeTriggerInquisitionTrap(
       }
     }
   } catch (error) {
-    console.error("[TrapEngine] Error in Inquisition trap:", error);
+    console.error('[TrapEngine] Error in Inquisition trap:', error);
   }
 }
-
 
 // --- Function: maybeTriggerBugblatterTrap ---
 export function maybeTriggerBugblatterTrap(
   _roomId: string,
   playerState: PlayerState,
-  appendMessage: (msg: string) => void
+  appendMessage: (msg: string) => void,
 ): void {
   try {
     if (!appendMessage || typeof appendMessage !== 'function') {
-      console.warn("[TrapEngine] Invalid appendMessage function provided");
+      console.warn('[TrapEngine] Invalid appendMessage function provided');
       return;
     }
 
-    if (Math.random() < 0.0142) { 
+    if (Math.random() < 0.0142) {
       appendMessage(`🌌 You feel a strange presence. Something *very stupid* is watching you.`);
       appendMessage(`💥 A voice booms: "Beware the Ravenous Bugblatter Beast of Traal!"`);
 
       // Check if player has a towel in inventory
       const playerInventory = playerState.inventory || playerState.items || [];
-      const hasTowel = playerInventory.some(item => 
-        item && typeof item === 'string' && item.toLowerCase().includes('towel')
+      const hasTowel = playerInventory.some(
+        (item) => item && typeof item === 'string' && item.toLowerCase().includes('towel'),
       );
 
       if (hasTowel) {
-        appendMessage(`🧼 You wrap your towel around your head. The beast assumes you can't see it... and wanders off confused.`);
+        appendMessage(
+          `🧼 You wrap your towel around your head. The beast assumes you can't see it... and wanders off confused.`,
+        );
         appendMessage(`🧠 As Douglas Adams rightly pointed out, towels are invaluable for travel.`);
 
-        
         if (!playerState.traits) {
           playerState.traits = [];
         }
-        if (!playerState.traits.includes("wise")) {
-          playerState.traits.push("wise");
+        if (!playerState.traits.includes('wise')) {
+          playerState.traits.push('wise');
         }
-        if (!playerState.traits.includes("hoopy_frood")) {
-          playerState.traits.push("hoopy_frood");
+        if (!playerState.traits.includes('hoopy_frood')) {
+          playerState.traits.push('hoopy_frood');
         }
 
         if (typeof playerState.score === 'number') {
@@ -741,25 +684,23 @@ export function maybeTriggerBugblatterTrap(
       }
     }
   } catch (error) {
-    console.error("[TrapEngine] Error in Bugblatter trap:", error);
+    console.error('[TrapEngine] Error in Bugblatter trap:', error);
   }
 }
-
-
 
 // --- Function: handleTrapResult ---
 export function handleTrapResult(
   trap: TrapDefinition,
-  dispatchMessage: (msg: string, type: string) => void
+  dispatchMessage: (msg: string, type: string) => void,
 ): void {
   try {
     if (!dispatchMessage || typeof dispatchMessage !== 'function') {
-      console.warn("[TrapEngine] Invalid dispatchMessage function provided");
+      console.warn('[TrapEngine] Invalid dispatchMessage function provided');
       return;
     }
 
     if (!trap) {
-      console.warn("[TrapEngine] No trap definition provided");
+      console.warn('[TrapEngine] No trap definition provided');
       return;
     }
 
@@ -767,20 +708,18 @@ export function handleTrapResult(
       const severityIcon = getSeverityIcon(trap.severity);
       dispatchMessage(
         `${severityIcon} You spring a ${trap.severity || 'unknown'} trap! ${trap.description}`,
-        'error'
+        'error',
       );
     } else {
       dispatchMessage(`✅ You deftly avoid a trap.`, 'success');
     }
   } catch (error) {
-    console.error("[TrapEngine] Error handling trap result:", error);
+    console.error('[TrapEngine] Error handling trap result:', error);
     if (dispatchMessage) {
-      dispatchMessage("⚠️ Error processing trap result.", 'error');
+      dispatchMessage('⚠️ Error processing trap result.', 'error');
     }
   }
 }
-
-
 
 // --- Function: clearAllTraps ---
 export function clearAllTraps(): void {
@@ -793,11 +732,9 @@ export function clearAllTraps(): void {
       console.info(`🧹 All ${trapCount} traps cleared`);
     }
   } catch (error) {
-    console.error("[TrapEngine] Error clearing all traps:", error);
+    console.error('[TrapEngine] Error clearing all traps:', error);
   }
 }
-
-
 
 // --- Function: getTrapCount ---
 export function getTrapCount(filter?: {
@@ -810,7 +747,7 @@ export function getTrapCount(filter?: {
       return Object.keys(seededTraps).length;
     }
 
-    return Object.values(seededTraps).filter(trap => {
+    return Object.values(seededTraps).filter((trap) => {
       if (filter.triggered !== undefined && trap.triggered !== filter.triggered) {
         return false;
       }
@@ -823,12 +760,10 @@ export function getTrapCount(filter?: {
       return true;
     }).length;
   } catch (error) {
-    console.error("[TrapEngine] Error getting trap count:", error);
+    console.error('[TrapEngine] Error getting trap count:', error);
     return 0;
   }
 }
-
-
 
 // --- Function: getTrapStatistics ---
 export function getTrapStatistics(): TrapEngineStats & {
@@ -836,36 +771,40 @@ export function getTrapStatistics(): TrapEngineStats & {
   activeTrapsBySeverity: Record<string, number>;
 } {
   try {
-    const activeTraps = Object.values(seededTraps).filter(trap => !trap.triggered);
-    
-    const activeTrapsByType = activeTraps.reduce((acc, trap) => {
-      const type = trap.type || 'unknown';
-      acc[type] = (acc[type] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const activeTraps = Object.values(seededTraps).filter((trap) => !trap.triggered);
 
-    const activeTrapsBySeverity = activeTraps.reduce((acc, trap) => {
-      const severity = trap.severity || 'low';
-      acc[severity] = (acc[severity] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const activeTrapsByType = activeTraps.reduce(
+      (acc, trap) => {
+        const type = trap.type || 'unknown';
+        acc[type] = (acc[type] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+
+    const activeTrapsBySeverity = activeTraps.reduce(
+      (acc, trap) => {
+        const severity = trap.severity || 'low';
+        acc[severity] = (acc[severity] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
 
     return {
       ...trapStats,
       activeTrapsByType,
-      activeTrapsBySeverity
+      activeTrapsBySeverity,
     };
   } catch (error) {
-    console.error("[TrapEngine] Error getting trap statistics:", error);
+    console.error('[TrapEngine] Error getting trap statistics:', error);
     return {
       ...trapStats,
       activeTrapsByType: {},
-      activeTrapsBySeverity: {}
+      activeTrapsBySeverity: {},
     };
   }
 }
-
-
 
 // --- Function: resetTrapStatistics ---
 export function resetTrapStatistics(): void {
@@ -877,63 +816,56 @@ export function resetTrapStatistics(): void {
     trapStats.debugModeUsage = 0;
     trapStats.lastSeedTime = 0;
 
-    console.info("[TrapEngine] Trap statistics reset");
+    console.info('[TrapEngine] Trap statistics reset');
   } catch (error) {
-    console.error("[TrapEngine] Error resetting trap statistics:", error);
+    console.error('[TrapEngine] Error resetting trap statistics:', error);
   }
 }
-
-
 
 // --- Function: getTrapInfo ---
 export function getTrapInfo(roomId: string): TrapDefinition | null {
   try {
     return seededTraps[roomId] || null;
   } catch (error) {
-    console.error("[TrapEngine] Error getting trap info:", error);
+    console.error('[TrapEngine] Error getting trap info:', error);
     return null;
   }
 }
 
-
-
-
-
-
 // --- Function: getSeverityIcon ---
 function getSeverityIcon(severity?: string): string {
   switch (severity) {
-    case 'light': return '⚠️';
-    case 'moderate': return '⚡';
-    case 'severe': return '💥';
-    case 'lethal': return '☠️';
-    default: return '⚠️';
+    case 'light':
+      return '⚠️';
+    case 'moderate':
+      return '⚡';
+    case 'severe':
+      return '💥';
+    case 'lethal':
+      return '☠️';
+    default:
+      return '⚠️';
   }
 }
-
-
 
 // --- Function: getSeededTraps ---
 export function getSeededTraps(): Record<string, TrapDefinition> {
   try {
     return { ...seededTraps };
   } catch (error) {
-    console.error("[TrapEngine] Error getting seeded traps:", error);
+    console.error('[TrapEngine] Error getting seeded traps:', error);
     return {};
   }
 }
-
-
 
 // --- Function: clearTrapCache ---
 export function clearTrapCache(): void {
   try {
     trapCache.clear();
-    console.info("[TrapEngine] Trap cache cleared");
+    console.info('[TrapEngine] Trap cache cleared');
   } catch (error) {
-    console.error("[TrapEngine] Error clearing trap cache:", error);
+    console.error('[TrapEngine] Error clearing trap cache:', error);
   }
 }
-
 
 export type Trap = TrapDefinition;

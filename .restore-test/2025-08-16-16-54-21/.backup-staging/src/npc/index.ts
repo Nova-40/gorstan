@@ -19,11 +19,21 @@
 
 // Import functions for internal use
 import { getPersona } from './personas';
-import { getNPCMemory, addConversationTurn, addEpisodicMemory, updatePlayerPreference, getMemorySummary } from './memory';
+import {
+  getNPCMemory,
+  addConversationTurn,
+  addEpisodicMemory,
+  updatePlayerPreference,
+  getMemorySummary,
+} from './memory';
 import { getContextSnapshot, analyzePlayerBehavior } from './context';
 import { classifyIntent } from './intent';
 import { generateNPCReply } from './respond';
-import { handleNPCConversation, getConversationStats, initializeConversationSystem } from './conversation';
+import {
+  handleNPCConversation,
+  getConversationStats,
+  initializeConversationSystem,
+} from './conversation';
 import {
   checkProactivePrompts,
   activatePrompt,
@@ -34,45 +44,32 @@ import {
   clearAllPrompts,
   updatePromptPriorities,
   initializeProactiveSystem,
-  getActivePrompts
+  getActivePrompts,
 } from './proactive';
 import type { ProactivePrompt } from './proactive';
 
 // Export types
 export type { NPCPersona } from './personas.js';
-export type { 
-  NPCMemoryState, 
-  ConversationTurn, 
-  EpisodicMemory 
-} from './memory.js';
+export type { NPCMemoryState, ConversationTurn, EpisodicMemory } from './memory.js';
 export type { ContextSnapshot } from './context.js';
 export type { IntentResult } from './intent.js';
 export type { ResponseTemplate } from './respond.js';
-export type { 
-  ProactivePrompt,
-  ProactiveState 
-} from './proactive';
-export type { 
-  ConversationFeatures,
-  ConversationResponse 
-} from './conversation';
+export type { ProactivePrompt, ProactiveState } from './proactive';
+export type { ConversationFeatures, ConversationResponse } from './conversation';
 
 // Re-export functions
 export { getPersona };
-export { 
+export {
   getNPCMemory,
   addConversationTurn,
   addEpisodicMemory,
   updatePlayerPreference,
-  getMemorySummary 
+  getMemorySummary,
 };
-export { 
-  getContextSnapshot,
-  analyzePlayerBehavior 
-};
+export { getContextSnapshot, analyzePlayerBehavior };
 export { classifyIntent };
 export { generateNPCReply };
-export { 
+export {
   checkProactivePrompts,
   activatePrompt,
   clearPrompt,
@@ -80,24 +77,21 @@ export {
   hasActivePrompt,
   getPromptForNPC,
   clearAllPrompts,
-  updatePromptPriorities 
+  updatePromptPriorities,
 };
-export { 
-  handleNPCConversation,
-  getConversationStats 
-};
+export { handleNPCConversation, getConversationStats };
 
 /**
  * Initialize the complete NPC dialogue engine v2
  */
 export function initializeNPCDialogueEngine(): void {
   console.log('[NPC Engine] Initializing Gorstan NPC Dialogue Engine v2...');
-  
+
   try {
     // Initialize subsystems that have initialization functions
     initializeProactiveSystem();
     initializeConversationSystem();
-    
+
     console.log('[NPC Engine] ✅ NPC dialogue systems initialized successfully');
     console.log('[NPC Engine] Features enabled:');
     console.log('[NPC Engine] - ✅ AI-like personality system');
@@ -108,7 +102,6 @@ export function initializeNPCDialogueEngine(): void {
     console.log('[NPC Engine] - ✅ "Ask twice" rule for sensitive info');
     console.log('[NPC Engine] - ✅ Micro-hedges and self-correction');
     console.log('[NPC Engine] - ✅ Accessibility support');
-    
   } catch (error) {
     console.error('[NPC Engine] ❌ Failed to initialize NPC dialogue engine:', error);
     throw error;
@@ -127,7 +120,7 @@ export function getNPCEngineStatus(): {
 } {
   try {
     const activePrompts = getActivePrompts();
-    
+
     return {
       initialized: true,
       activeNPCs: ['ayla', 'polly', 'dominic', 'wendell', 'chef'],
@@ -139,8 +132,8 @@ export function getNPCEngineStatus(): {
         'context-awareness',
         'proactive-prompting',
         'natural-dialogue',
-        'accessibility-support'
-      ]
+        'accessibility-support',
+      ],
     };
   } catch (error) {
     return {
@@ -148,7 +141,7 @@ export function getNPCEngineStatus(): {
       activeNPCs: [],
       totalConversations: 0,
       activePrompts: 0,
-      features: []
+      features: [],
     };
   }
 }
@@ -159,14 +152,14 @@ export function getNPCEngineStatus(): {
 export async function talkToNPC(
   npcId: string,
   playerMessage: string,
-  gameState: any
+  gameState: any,
 ): Promise<string> {
   try {
     const response = await handleNPCConversation(npcId, playerMessage, gameState);
     return response.message;
   } catch (error) {
     console.error(`[NPC Engine] Error in conversation with ${npcId}:`, error);
-    
+
     // Fallback to simple response
     const persona = getPersona(npcId);
     return persona.catchphrases[0] || "I'm not sure how to respond to that.";
@@ -180,12 +173,12 @@ export function checkForNPCPrompts(gameState: any): ProactivePrompt[] {
   try {
     const context = getContextSnapshot(gameState);
     const npcMemories: Record<string, any> = {};
-    
+
     // Get memory for all nearby NPCs
     for (const npcId of context.nearbyNPCs) {
       npcMemories[npcId] = getNPCMemory(npcId);
     }
-    
+
     return checkProactivePrompts(context, npcMemories);
   } catch (error) {
     console.error('[NPC Engine] Error checking proactive prompts:', error);
@@ -199,7 +192,7 @@ export function checkForNPCPrompts(gameState: any): ProactivePrompt[] {
 export async function handleNPCInteraction(
   npcId: string,
   gameState: any,
-  playerInput?: string
+  playerInput?: string,
 ): Promise<{
   response: string;
   prompts: string[];
@@ -208,25 +201,25 @@ export async function handleNPCInteraction(
   try {
     // Clear any active prompts for this NPC
     clearPrompt(npcId);
-    
+
     // Use default greeting if no input provided
-    const message = playerInput || "Hello";
-    
+    const message = playerInput || 'Hello';
+
     const conversationResult = await handleNPCConversation(npcId, message, gameState);
-    
+
     return {
       response: conversationResult.message,
       prompts: conversationResult.followUpPrompts || [],
-      mood: conversationResult.features.emotionalTone
+      mood: conversationResult.features.emotionalTone,
     };
   } catch (error) {
     console.error(`[NPC Engine] Error in NPC interaction with ${npcId}:`, error);
-    
+
     // Fallback response
     return {
-      response: "Hello there!",
+      response: 'Hello there!',
       prompts: [],
-      mood: 'neutral'
+      mood: 'neutral',
     };
   }
 }
@@ -240,24 +233,24 @@ export function debugNPCState(npcId: string): any {
     const memory = getNPCMemory(npcId);
     const stats = getConversationStats(npcId);
     const hasPrompt = hasActivePrompt(npcId);
-    
+
     return {
       npcId,
       persona: {
         id: persona.id,
         role: persona.role,
         tone: persona.tone,
-        speaking_style: persona.speaking_style
+        speaking_style: persona.speaking_style,
       },
       memory: {
         conversationBuffer: memory.conversationBuffer.length,
         episodicMemories: memory.episodicMemories.length,
         relationshipLevel: memory.relationshipLevel,
-        totalInteractions: memory.totalInteractions
+        totalInteractions: memory.totalInteractions,
       },
       stats,
       hasActivePrompt: hasPrompt,
-      activePrompt: hasPrompt ? getPromptForNPC(npcId) : null
+      activePrompt: hasPrompt ? getPromptForNPC(npcId) : null,
     };
   } catch (error) {
     console.error(`[NPC Engine] Error getting debug state for ${npcId}:`, error);
@@ -270,9 +263,9 @@ export function debugNPCState(npcId: string): any {
  */
 export function resetNPCSystem(): void {
   console.log('[NPC Engine] Resetting NPC dialogue system...');
-  
+
   clearAllPrompts();
-  
+
   // Note: Memory clearing would need to be implemented in memory.ts
   console.log('[NPC Engine] ✅ NPC system reset complete');
 }
@@ -287,17 +280,17 @@ export const NPC_ENGINE_CONFIG = {
     memory: true,
     proactive: true,
     accessibility: true,
-    natural_dialogue: true
+    natural_dialogue: true,
   },
   limits: {
     conversation_buffer: 12,
     episodic_memory_days: 1,
-    prompt_cooldown_ms: 15000
+    prompt_cooldown_ms: 15000,
   },
   debug: {
     logging: true,
-    detailed_stats: false
-  }
+    detailed_stats: false,
+  },
 } as const;
 
 // Wandering shadows as simple NPCs with increasing strength
@@ -325,5 +318,5 @@ export const wanderingShadows = [
     name: 'Elite Shadow',
     strength: 8,
     description: 'An elite shadow, almost tangible. A true test of skill.',
-  }
+  },
 ];

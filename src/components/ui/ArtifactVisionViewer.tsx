@@ -17,9 +17,11 @@ const ArtifactVisionViewer: React.FC<ArtifactVisionViewerProps> = ({
   vision,
   onClose,
   onComplete,
-  className = ''
+  className = '',
 }) => {
-  const [currentView, setCurrentView] = useState<'narrative' | 'imagery' | 'emotions' | 'symbols'>('narrative');
+  const [currentView, setCurrentView] = useState<'narrative' | 'imagery' | 'emotions' | 'symbols'>(
+    'narrative',
+  );
 
   const getVisionTypeStyle = (type: string) => {
     switch (type) {
@@ -27,49 +29,55 @@ const ArtifactVisionViewer: React.FC<ArtifactVisionViewerProps> = ({
         return {
           background: 'linear-gradient(135deg, rgba(139, 69, 19, 0.3), rgba(160, 82, 45, 0.1))',
           border: 'border-amber-600',
-          glow: 'shadow-amber-500/30'
+          glow: 'shadow-amber-500/30',
         };
       case 'prophecy':
         return {
           background: 'linear-gradient(135deg, rgba(75, 0, 130, 0.3), rgba(138, 43, 226, 0.1))',
           border: 'border-purple-600',
-          glow: 'shadow-purple-500/30'
+          glow: 'shadow-purple-500/30',
         };
       case 'echo':
         return {
           background: 'linear-gradient(135deg, rgba(0, 100, 0, 0.3), rgba(34, 139, 34, 0.1))',
           border: 'border-green-600',
-          glow: 'shadow-green-500/30'
+          glow: 'shadow-green-500/30',
         };
       case 'warning':
         return {
           background: 'linear-gradient(135deg, rgba(139, 0, 0, 0.3), rgba(220, 20, 60, 0.1))',
           border: 'border-red-600',
-          glow: 'shadow-red-500/30'
+          glow: 'shadow-red-500/30',
         };
       case 'guidance':
         return {
           background: 'linear-gradient(135deg, rgba(0, 191, 255, 0.3), rgba(30, 144, 255, 0.1))',
           border: 'border-blue-600',
-          glow: 'shadow-blue-500/30'
+          glow: 'shadow-blue-500/30',
         };
       default:
         return {
           background: 'linear-gradient(135deg, rgba(105, 105, 105, 0.3), rgba(169, 169, 169, 0.1))',
           border: 'border-gray-600',
-          glow: 'shadow-gray-500/30'
+          glow: 'shadow-gray-500/30',
         };
     }
   };
 
   const getVisionIcon = (type: string) => {
     switch (type) {
-      case 'memory': return '🔮';
-      case 'prophecy': return '🌟';
-      case 'echo': return '🌊';
-      case 'warning': return '⚠️';
-      case 'guidance': return '🧭';
-      default: return '👁️';
+      case 'memory':
+        return '🔮';
+      case 'prophecy':
+        return '🌟';
+      case 'echo':
+        return '🌊';
+      case 'warning':
+        return '⚠️';
+      case 'guidance':
+        return '🧭';
+      default:
+        return '👁️';
     }
   };
 
@@ -84,8 +92,10 @@ const ArtifactVisionViewer: React.FC<ArtifactVisionViewerProps> = ({
   const style = getVisionTypeStyle(vision.visionType);
 
   return (
-    <div className={`fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center p-4 z-50 ${className}`}>
-      <div 
+    <div
+      className={`fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center p-4 z-50 ${className}`}
+    >
+      <div
         className={`max-w-4xl w-full max-h-[90vh] overflow-hidden rounded-lg border-2 ${style.border} ${style.glow} shadow-2xl`}
         style={{ background: style.background }}
       >
@@ -132,16 +142,17 @@ const ArtifactVisionViewer: React.FC<ArtifactVisionViewerProps> = ({
         {/* Vision Content Display */}
         <div className="p-6 overflow-y-auto max-h-[60vh]">
           {currentView === 'narrative' && (
-            <div className="text-lg leading-relaxed text-white">
-              {vision.content.narrative}
-            </div>
+            <div className="text-lg leading-relaxed text-white">{vision.content.narrative}</div>
           )}
 
           {currentView === 'imagery' && (
             <div className="space-y-4">
               {vision.content.imagery && vision.content.imagery.length > 0 ? (
                 vision.content.imagery.map((image, index) => (
-                  <div key={index} className="p-4 bg-black bg-opacity-30 rounded border border-gray-600">
+                  <div
+                    key={index}
+                    className="p-4 bg-black bg-opacity-30 rounded border border-gray-600"
+                  >
                     <div className="text-gray-200 italic">{image}</div>
                   </div>
                 ))
@@ -199,21 +210,28 @@ const ArtifactVisionViewer: React.FC<ArtifactVisionViewerProps> = ({
               {vision.aftermath.stressChange && (
                 <div>
                   <span className="text-gray-400">Stress Change:</span>
-                  <span className={`ml-2 ${vision.aftermath.stressChange > 0 ? 'text-red-400' : 'text-green-400'}`}>
-                    {vision.aftermath.stressChange > 0 ? '+' : ''}{vision.aftermath.stressChange}
+                  <span
+                    className={`ml-2 ${vision.aftermath.stressChange > 0 ? 'text-red-400' : 'text-green-400'}`}
+                  >
+                    {vision.aftermath.stressChange > 0 ? '+' : ''}
+                    {vision.aftermath.stressChange}
                   </span>
                 </div>
               )}
               {vision.aftermath.artifactBondIncrease && (
                 <div>
                   <span className="text-gray-400">Bond Increase:</span>
-                  <span className="ml-2 text-blue-400">+{vision.aftermath.artifactBondIncrease}</span>
+                  <span className="ml-2 text-blue-400">
+                    +{vision.aftermath.artifactBondIncrease}
+                  </span>
                 </div>
               )}
               {vision.aftermath.unlockedLore && vision.aftermath.unlockedLore.length > 0 && (
                 <div>
                   <span className="text-gray-400">Unlocked Lore:</span>
-                  <span className="ml-2 text-purple-400">{vision.aftermath.unlockedLore.length} entries</span>
+                  <span className="ml-2 text-purple-400">
+                    {vision.aftermath.unlockedLore.length} entries
+                  </span>
                 </div>
               )}
             </div>
@@ -224,10 +242,11 @@ const ArtifactVisionViewer: React.FC<ArtifactVisionViewerProps> = ({
         <div className="p-4 border-t border-gray-600 text-xs text-gray-400">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <span className="font-semibold">Artifact:</span> {vision.artifactId.replace(/_/g, ' ')}
+              <span className="font-semibold">Artifact:</span>{' '}
+              {vision.artifactId.replace(/_/g, ' ')}
             </div>
             <div>
-              <span className="font-semibold">Type:</span> 
+              <span className="font-semibold">Type:</span>
               <span className="capitalize ml-1">{vision.visionType}</span>
             </div>
           </div>

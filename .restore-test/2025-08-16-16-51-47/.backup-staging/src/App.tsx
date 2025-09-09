@@ -24,10 +24,10 @@ import { lazyFeature, LazyWrapper, LazyErrorBoundary } from './utils/lazyLoading
 
 import React, { useState } from 'react';
 
-import { GameStateProvider } from './state/gameState'; 
+import { GameStateProvider } from './state/gameState';
 
 // Lazy load the MagicModal since it's only shown conditionally
-const MagicModal = lazyFeature(() => import('./ui/MagicModal.js')); 
+const MagicModal = lazyFeature(() => import('./ui/MagicModal.js'));
 
 const App: React.FC = () => {
   const [isMagicModalOpen, setMagicModalOpen] = useState(false);
@@ -66,7 +66,7 @@ const App: React.FC = () => {
   // Example: Add the unlockMagicQuest to the game state or quest system
   console.log('Quest Loaded:', unlockMagicQuest);
 
-// JSX return block or main return
+  // JSX return block or main return
   return (
     <GameStateProvider>
       <AppCore />

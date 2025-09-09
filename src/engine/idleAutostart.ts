@@ -12,29 +12,36 @@ let countdownTimer: number | null = null;
 let onWelcome = false;
 
 const activityEvents = [
-  "mousemove", "mousedown", "keydown", "touchstart", "wheel", 
-  "pointerdown", "gamepadconnected", "focus", "click"
+  'mousemove',
+  'mousedown',
+  'keydown',
+  'touchstart',
+  'wheel',
+  'pointerdown',
+  'gamepadconnected',
+  'focus',
+  'click',
 ];
 
 function startCountdown() {
   const startTime = Date.now();
-  
+
   // Clear any existing countdown
   if (countdownTimer) {
     clearInterval(countdownTimer);
   }
-  
+
   // Update countdown every 100ms
   countdownTimer = window.setInterval(() => {
     const elapsed = Date.now() - startTime;
     const remaining = Math.max(0, IDLE_MS - elapsed);
-    
+
     // Dispatch countdown update event
-    const ev = new CustomEvent("idle-countdown-reset", { 
-      detail: { total: IDLE_MS, remaining } 
+    const ev = new CustomEvent('idle-countdown-reset', {
+      detail: { total: IDLE_MS, remaining },
     });
     window.dispatchEvent(ev);
-    
+
     if (remaining <= 0) {
       clearInterval(countdownTimer!);
       countdownTimer = null;
@@ -43,27 +50,29 @@ function startCountdown() {
 }
 
 function resetTimer() {
-  if (!onWelcome) return;
-  
+  if (!onWelcome) {
+    return;
+  }
+
   if (idleTimer) {
     window.clearTimeout(idleTimer);
   }
-  
+
   if (countdownTimer) {
     clearInterval(countdownTimer);
     countdownTimer = null;
   }
-  
+
   idleTimer = window.setTimeout(() => {
     console.log('[IdleAutostart] Starting unattended demo after 150s idle');
-    
+
     // Dispatch demo start event
-    const demoEvent = new CustomEvent("demo-start");
+    const demoEvent = new CustomEvent('demo-start');
     window.dispatchEvent(demoEvent);
-    
-    startDemo("trials-of-gorstan", true);
+
+    startDemo('trials-of-gorstan', true);
   }, IDLE_MS);
-  
+
   // Start the visual countdown
   startCountdown();
 }
@@ -71,29 +80,29 @@ function resetTimer() {
 export function attachWelcomeIdleAutostart() {
   console.log('[IdleAutostart] Attaching idle watcher for Welcome screen');
   onWelcome = true;
-  
-  activityEvents.forEach(eventType => {
+
+  activityEvents.forEach((eventType) => {
     window.addEventListener(eventType, resetTimer, { passive: true });
   });
-  
+
   resetTimer(); // Start initial timer
 }
 
 export function detachWelcomeIdleAutostart() {
   console.log('[IdleAutostart] Detaching idle watcher');
   onWelcome = false;
-  
+
   if (idleTimer) {
     window.clearTimeout(idleTimer);
     idleTimer = null;
   }
-  
+
   if (countdownTimer) {
     clearInterval(countdownTimer);
     countdownTimer = null;
   }
-  
-  activityEvents.forEach(eventType => {
+
+  activityEvents.forEach((eventType) => {
     window.removeEventListener(eventType, resetTimer);
   });
 }
@@ -103,5 +112,5 @@ export function triggerUnattendedDemo() {
   if (idleTimer) {
     window.clearTimeout(idleTimer);
   }
-  startDemo("trials-of-gorstan", true);
+  startDemo('trials-of-gorstan', true);
 }

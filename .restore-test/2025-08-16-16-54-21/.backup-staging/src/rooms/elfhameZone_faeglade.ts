@@ -19,9 +19,7 @@
 
 import { Room } from '../types/Room';
 
-
 const faeglade: Room = {
-
   id: 'faeglade',
   zone: 'elfhameZone',
   title: 'The Faerie Glade',
@@ -55,24 +53,40 @@ const faeglade: Room = {
   },
 
   items: [
-    { id: 'moonlight_orb', name: 'Moonlight Orb', description: 'A glowing orb that radiates soft moonlight.' },
-    { id: 'fae_flower', name: 'Fae Flower', description: 'A flower of impossible colors with a magical aura.' },
-    { id: 'ancient_scroll', name: 'Ancient Scroll', description: 'A scroll containing ancient Fae knowledge.' },
-    { id: 'silver_branch', name: 'Silver Branch', description: 'A branch that shimmers with silver light.' },
+    {
+      id: 'moonlight_orb',
+      name: 'Moonlight Orb',
+      description: 'A glowing orb that radiates soft moonlight.',
+    },
+    {
+      id: 'fae_flower',
+      name: 'Fae Flower',
+      description: 'A flower of impossible colors with a magical aura.',
+    },
+    {
+      id: 'ancient_scroll',
+      name: 'Ancient Scroll',
+      description: 'A scroll containing ancient Fae knowledge.',
+    },
+    {
+      id: 'silver_branch',
+      name: 'Silver Branch',
+      description: 'A branch that shimmers with silver light.',
+    },
   ],
 
   interactables: {
-    'standing_stones': {
+    standing_stones: {
       description: 'A ring of ancient stones carved with shifting Fae script.',
       actions: ['examine', 'touch', 'read'],
       requires: [],
     },
-    'fae_flowers': {
+    fae_flowers: {
       description: 'Flowers of impossible colors that bloom with inner light.',
       actions: ['examine', 'gather', 'smell'],
       requires: [],
     },
-    'ancient_oaks': {
+    ancient_oaks: {
       description: 'Towering oaks whose branches form a natural cathedral.',
       actions: ['examine', 'climb', 'listen'],
       requires: [],
@@ -81,5 +95,3 @@ const faeglade: Room = {
 };
 
 export default faeglade;
-
-

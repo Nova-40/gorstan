@@ -11,7 +11,7 @@ export enum Element {
   Shock = 'Shock',
   Poison = 'Poison',
   Light = 'Light',
-  Void = 'Void'
+  Void = 'Void',
 }
 
 export enum ActionType {
@@ -21,7 +21,7 @@ export enum ActionType {
   Parry = 'Parry',
   Cast = 'Cast',
   Blink = 'Blink',
-  Riposte = 'Riposte'
+  Riposte = 'Riposte',
 }
 
 export enum StatusType {
@@ -36,7 +36,7 @@ export enum StatusType {
   Ward = 'Ward',
   IFrames = 'IFrames',
   ParryWindow = 'ParryWindow',
-  Overdrive = 'Overdrive'
+  Overdrive = 'Overdrive',
 }
 
 export enum CombatState {
@@ -45,17 +45,17 @@ export enum CombatState {
   Active = 'Active',
   Recovery = 'Recovery',
   Staggered = 'Staggered',
-  Channeling = 'Channeling'
+  Channeling = 'Channeling',
 }
 
 export enum AIArchetype {
   Brute = 'Brute',
   Skirmisher = 'Skirmisher',
-  Caster = 'Caster'
+  Caster = 'Caster',
 }
 
 export enum Faction {
   Player = 'player',
   Enemy = 'enemy',
-  Neutral = 'neutral'
+  Neutral = 'neutral',
 }

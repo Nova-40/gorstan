@@ -26,34 +26,32 @@ import { RoomGraphValidator } from '../utils/roomGraphValidator';
  */
 async function runValidation() {
   console.log('🔍 Starting room graph validation...\n');
-  
+
   try {
     // Load room registry
     const roomMap = roomRegistry;
     console.log(`📊 Loaded ${Object.keys(roomMap).length} rooms\n`);
-    
+
     // Run validation
     const validator = new RoomGraphValidator(roomMap);
     const stats = validator.validateGraph();
-    
+
     // Generate and display report
     const report = validator.generateReport(stats);
     console.log(report);
-    
+
     // Summary
-    const issues = stats.invalidExits.length + 
-                  stats.orphanRooms.length + 
-                  stats.unreachableRooms.length;
-    
+    const issues =
+      stats.invalidExits.length + stats.orphanRooms.length + stats.unreachableRooms.length;
+
     if (issues === 0) {
       console.log('✅ Room graph validation passed! No critical issues found.');
     } else {
       console.log(`❌ Room graph validation found ${issues} issues that need attention.`);
     }
-    
+
     // Return stats for potential programmatic use
     return stats;
-    
   } catch (error) {
     console.error('❌ Validation failed:', error);
     throw error;

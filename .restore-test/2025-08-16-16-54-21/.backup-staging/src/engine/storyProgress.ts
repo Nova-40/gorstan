@@ -53,14 +53,19 @@ export interface ProgressStatistics {
 }
 
 export type EventCallback = (flagName: string, context?: any) => void;
-export type FlagCategory = 'quest' | 'story_event' | 'chapter_progress' | 'general' | 'achievement' | 'relationship' | 'exploration';
-
+export type FlagCategory =
+  | 'quest'
+  | 'story_event'
+  | 'chapter_progress'
+  | 'general'
+  | 'achievement'
+  | 'relationship'
+  | 'exploration';
 
 const flags: Set<string> = new Set();
 const flagTimestamps: Map<string, number> = new Map();
 const flagDependencies: Map<string, string[]> = new Map();
 const flagMetadata: Map<string, FlagMetadata> = new Map();
-
 
 const categorizedFlags: Record<string, Set<string>> = {
   quest: new Set(),
@@ -72,23 +77,17 @@ const categorizedFlags: Record<string, Set<string>> = {
   exploration: new Set(),
 };
 
-
 const eventTriggers: Map<string, EventCallback[]> = new Map();
 
 const flagCache: Map<string, { valid: boolean; timestamp: number }> = new Map();
 // Variable declaration
-const CACHE_TTL = 30000; 
+const CACHE_TTL = 30000;
 const MAX_EVENT_TRIGGERS = 10;
 const MAX_CACHE_SIZE = 1000;
-const MODULE_VERSION = '1.0.0'; 
-
+const MODULE_VERSION = '1.0.0';
 
 // Variable declaration
-const CLEANUP_INTERVAL = 60000; 
-
-
-
-
+const CLEANUP_INTERVAL = 60000;
 
 // --- Function: setFlag ---
 export function setFlag(
@@ -96,7 +95,7 @@ export function setFlag(
   expiry: number | null = null,
   category: string = 'general',
   description?: string,
-  priority: number = 0
+  priority: number = 0,
 ): boolean {
   try {
     if (!validateFlagName(flag)) {
@@ -107,16 +106,18 @@ export function setFlag(
     // Check dependencies
     if (flagDependencies.has(flag)) {
       const dependencies = flagDependencies.get(flag) || [];
-      const unmetDependencies = dependencies.filter(dep => !hasFlag(dep));
+      const unmetDependencies = dependencies.filter((dep) => !hasFlag(dep));
       if (unmetDependencies.length > 0) {
-        console.warn(`[StoryProgress] Cannot set flag ${flag}, missing dependencies:`, unmetDependencies);
+        console.warn(
+          `[StoryProgress] Cannot set flag ${flag}, missing dependencies:`,
+          unmetDependencies,
+        );
         return false;
       }
     }
 
     flags.add(flag);
 
-    
     if (expiry && expiry > 0) {
       flagTimestamps.set(flag, Date.now() + expiry);
     }
@@ -129,19 +130,16 @@ export function setFlag(
       categorizedFlags[normalizedCategory] = new Set([flag]);
     }
 
-    
     flagMetadata.set(flag, {
       setTime: Date.now(),
       category: normalizedCategory,
       description,
       priority,
-      triggeredEvents: []
+      triggeredEvents: [],
     });
 
-    
     flagCache.delete(flag);
 
-    
     triggerEvent(flag);
 
     console.log(`[StoryProgress] Flag set: ${flag} (category: ${normalizedCategory})`);
@@ -151,8 +149,6 @@ export function setFlag(
     return false;
   }
 }
-
-
 
 // --- Function: hasFlag ---
 export function hasFlag(flag: string): boolean {
@@ -172,7 +168,6 @@ export function hasFlag(flag: string): boolean {
       return false;
     }
 
-    
     if (isFlagExpired(flag)) {
       removeFlag(flag);
       updateCache(flag, false);
@@ -187,8 +182,6 @@ export function hasFlag(flag: string): boolean {
   }
 }
 
-
-
 // --- Function: isFlagExpired ---
 export function isFlagExpired(flag: string): boolean {
   try {
@@ -199,8 +192,6 @@ export function isFlagExpired(flag: string): boolean {
     return false;
   }
 }
-
-
 
 // --- Function: removeFlag ---
 export function removeFlag(flag: string): boolean {
@@ -214,23 +205,20 @@ export function removeFlag(flag: string): boolean {
       return false;
     }
 
-    
     flagTimestamps.delete(flag);
     flagDependencies.delete(flag);
     flagMetadata.delete(flag);
     flagCache.delete(flag);
 
-    
-    Object.values(categorizedFlags).forEach(categorySet => {
+    Object.values(categorizedFlags).forEach((categorySet) => {
       categorySet.delete(flag);
     });
 
-    
     eventTriggers.delete(flag);
 
     // Remove dependencies on this flag
     flagDependencies.forEach((deps, depFlag) => {
-      const updatedDeps = deps.filter(dep => dep !== flag);
+      const updatedDeps = deps.filter((dep) => dep !== flag);
       if (updatedDeps.length !== deps.length) {
         flagDependencies.set(depFlag, updatedDeps);
       }
@@ -244,8 +232,6 @@ export function removeFlag(flag: string): boolean {
   }
 }
 
-
-
 // --- Function: getAllFlags ---
 export function getAllFlags(): string[] {
   try {
@@ -257,8 +243,6 @@ export function getAllFlags(): string[] {
   }
 }
 
-
-
 // --- Function: getFlagsByCategory ---
 export function getFlagsByCategory(category: string): string[] {
   try {
@@ -269,14 +253,14 @@ export function getFlagsByCategory(category: string): string[] {
 
     // Get flags for the category and sort by priority
     const categoryFlags = Array.from(categorizedFlags[normalizedCategory])
-      .map(flagName => {
+      .map((flagName) => {
         const meta = flagMetadata.get(flagName);
         return { flagName, meta };
       })
       .sort((a, b) => {
         return (b.meta?.priority || 0) - (a.meta?.priority || 0);
       })
-      .map(item => item.flagName);
+      .map((item) => item.flagName);
 
     return categoryFlags;
   } catch (error) {
@@ -284,8 +268,6 @@ export function getFlagsByCategory(category: string): string[] {
     return [];
   }
 }
-
-
 
 // --- Function: canActivateFlag ---
 export function canActivateFlag(flag: string): boolean {
@@ -295,14 +277,12 @@ export function canActivateFlag(flag: string): boolean {
     }
 
     const requiredFlags = flagDependencies.get(flag) || [];
-    return requiredFlags.every(dep => hasFlag(dep));
+    return requiredFlags.every((dep) => hasFlag(dep));
   } catch (error) {
     console.error('[StoryProgress] Error checking flag activation:', error);
     return false;
   }
 }
-
-
 
 // --- Function: setFlagDependencies ---
 export function setFlagDependencies(flag: string, dependencies: string[]): boolean {
@@ -313,12 +293,11 @@ export function setFlagDependencies(flag: string, dependencies: string[]): boole
     }
 
     // Validate dependencies
-    const validDependencies = dependencies.filter(dep => validateFlagName(dep));
+    const validDependencies = dependencies.filter((dep) => validateFlagName(dep));
     if (validDependencies.length !== dependencies.length) {
       console.warn('[StoryProgress] Some dependencies are invalid for flag:', flag);
     }
 
-    
     if (hasCircularDependency(flag, validDependencies)) {
       console.warn('[StoryProgress] Circular dependency detected for flag:', flag);
       return false;
@@ -332,8 +311,6 @@ export function setFlagDependencies(flag: string, dependencies: string[]): boole
     return false;
   }
 }
-
-
 
 // --- Function: registerEventTrigger ---
 export function registerEventTrigger(flag: string, eventCallback: EventCallback): boolean {
@@ -362,8 +339,6 @@ export function registerEventTrigger(flag: string, eventCallback: EventCallback)
   }
 }
 
-
-
 // --- Function: triggerEvent ---
 export function triggerEvent(flag: string, context?: any): void {
   try {
@@ -389,8 +364,6 @@ export function triggerEvent(flag: string, context?: any): void {
   }
 }
 
-
-
 // --- Function: cleanupExpiredFlags ---
 export function cleanupExpiredFlags(): number {
   try {
@@ -403,9 +376,8 @@ export function cleanupExpiredFlags(): number {
       }
     }
 
-    expiredFlags.forEach(flag => removeFlag(flag));
+    expiredFlags.forEach((flag) => removeFlag(flag));
 
-    
     cleanupCache();
 
     if (expiredFlags.length > 0) {
@@ -419,8 +391,6 @@ export function cleanupExpiredFlags(): number {
   }
 }
 
-
-
 // --- Function: loadFlags ---
 export function loadFlags(): boolean {
   try {
@@ -432,22 +402,19 @@ export function loadFlags(): boolean {
 
     const state: StoryProgressState = JSON.parse(savedData);
 
-    
     if (state.version !== MODULE_VERSION) {
       console.log(`[StoryProgress] Migrating from version ${state.version} to ${MODULE_VERSION}`);
       migrateState(state);
     }
 
-    
     if (state.flags && Array.isArray(state.flags)) {
-      state.flags.forEach(flag => {
+      state.flags.forEach((flag) => {
         if (validateFlagName(flag)) {
           flags.add(flag);
         }
       });
     }
 
-    
     if (state.timestamps) {
       Object.entries(state.timestamps).forEach(([flag, timestamp]) => {
         if (validateFlagName(flag) && typeof timestamp === 'number') {
@@ -456,28 +423,28 @@ export function loadFlags(): boolean {
       });
     }
 
-    
     if (state.dependencies) {
       Object.entries(state.dependencies).forEach(([flag, deps]) => {
         if (validateFlagName(flag) && Array.isArray(deps)) {
-          flagDependencies.set(flag, deps.filter(dep => validateFlagName(dep)));
-        }
-      });
-    }
-
-    
-    if (state.categories) {
-      Object.entries(state.categories).forEach(([category, flagList]) => {
-        if (Array.isArray(flagList)) {
-          const normalizedCategory = category.toLowerCase();
-          categorizedFlags[normalizedCategory] = new Set(
-            flagList.filter(flag => validateFlagName(flag))
+          flagDependencies.set(
+            flag,
+            deps.filter((dep) => validateFlagName(dep)),
           );
         }
       });
     }
 
-    
+    if (state.categories) {
+      Object.entries(state.categories).forEach(([category, flagList]) => {
+        if (Array.isArray(flagList)) {
+          const normalizedCategory = category.toLowerCase();
+          categorizedFlags[normalizedCategory] = new Set(
+            flagList.filter((flag) => validateFlagName(flag)),
+          );
+        }
+      });
+    }
+
     if (state.metadata) {
       Object.entries(state.metadata).forEach(([flag, meta]) => {
         if (validateFlagName(flag) && validateMetadata(meta)) {
@@ -489,7 +456,9 @@ export function loadFlags(): boolean {
     // Cleanup and finalize
     const cleanedCount = cleanupExpiredFlags();
 
-    console.log(`[StoryProgress] Loaded ${flags.size} flags from localStorage (cleaned ${cleanedCount} expired)`);
+    console.log(
+      `[StoryProgress] Loaded ${flags.size} flags from localStorage (cleaned ${cleanedCount} expired)`,
+    );
     return true;
   } catch (error) {
     console.error('[StoryProgress] Error loading flags:', error);
@@ -497,12 +466,9 @@ export function loadFlags(): boolean {
   }
 }
 
-
-
 // --- Function: saveFlags ---
 export function saveFlags(): boolean {
   try {
-    
     cleanupExpiredFlags();
 
     const state: StoryProgressState = {
@@ -510,10 +476,10 @@ export function saveFlags(): boolean {
       timestamps: Object.fromEntries(flagTimestamps),
       dependencies: Object.fromEntries(flagDependencies),
       categories: Object.fromEntries(
-        Object.entries(categorizedFlags).map(([key, set]) => [key, Array.from(set)])
+        Object.entries(categorizedFlags).map(([key, set]) => [key, Array.from(set)]),
       ),
       metadata: Object.fromEntries(flagMetadata),
-      version: MODULE_VERSION
+      version: MODULE_VERSION,
     };
 
     // Serialize and save
@@ -534,22 +500,60 @@ export function saveFlags(): boolean {
   }
 }
 
-
-
 // --- Function: initialiseStoryProgress ---
 export function initialiseStoryProgress(): void {
   try {
     const initialFlags: FlagData[] = [
-      { name: 'game_started', category: 'general', priority: 10, description: 'Game has been started' },
-      { name: 'first_visit', category: 'story_event', priority: 9, description: 'First visit to the game world' },
-      { name: 'tutorial_complete', category: 'chapter_progress', priority: 8, description: 'Tutorial has been completed' },
+      {
+        name: 'game_started',
+        category: 'general',
+        priority: 10,
+        description: 'Game has been started',
+      },
+      {
+        name: 'first_visit',
+        category: 'story_event',
+        priority: 9,
+        description: 'First visit to the game world',
+      },
+      {
+        name: 'tutorial_complete',
+        category: 'chapter_progress',
+        priority: 8,
+        description: 'Tutorial has been completed',
+      },
       { name: 'has_map', category: 'quest', priority: 5, description: 'Player has obtained a map' },
-      
-      { name: 'met_dominic', category: 'relationship', priority: 7, description: 'Player has met Dominic' },
-      { name: 'killed_dominic', category: 'story_event', priority: 9, description: 'Player killed Dominic' },
-      { name: 'constitution_scroll_read', category: 'achievement', priority: 8, description: 'Read the constitution scroll' },
-      { name: 'lattice_connected', category: 'story_event', priority: 9, description: 'Connected to the lattice' },
-      { name: 'endgame_triggered', category: 'chapter_progress', priority: 10, description: 'Endgame sequence has begun' }
+
+      {
+        name: 'met_dominic',
+        category: 'relationship',
+        priority: 7,
+        description: 'Player has met Dominic',
+      },
+      {
+        name: 'killed_dominic',
+        category: 'story_event',
+        priority: 9,
+        description: 'Player killed Dominic',
+      },
+      {
+        name: 'constitution_scroll_read',
+        category: 'achievement',
+        priority: 8,
+        description: 'Read the constitution scroll',
+      },
+      {
+        name: 'lattice_connected',
+        category: 'story_event',
+        priority: 9,
+        description: 'Connected to the lattice',
+      },
+      {
+        name: 'endgame_triggered',
+        category: 'chapter_progress',
+        priority: 10,
+        description: 'Endgame sequence has begun',
+      },
     ];
 
     initialFlags.forEach(({ name, category, priority, description }) => {
@@ -564,8 +568,6 @@ export function initialiseStoryProgress(): void {
   }
 }
 
-
-
 // --- Function: getProgressStatistics ---
 export function getProgressStatistics(): ProgressStatistics {
   try {
@@ -576,22 +578,21 @@ export function getProgressStatistics(): ProgressStatistics {
       flagsByCategory[category] = flagSet.size;
     });
 
-    const recentlySet = Array.from(flags)
-      .filter(flag => {
-        const timestamp = flagTimestamps.get(flag);
-        return timestamp && Date.now() - timestamp < 300000; // Last 5 minutes
-      });
+    const recentlySet = Array.from(flags).filter((flag) => {
+      const timestamp = flagTimestamps.get(flag);
+      return timestamp && Date.now() - timestamp < 300000; // Last 5 minutes
+    });
 
     const highPriorityFlags = Array.from(flags)
-      .map(flag => {
+      .map((flag) => {
         const meta = flagMetadata.get(flag);
         return { flag, meta };
       })
-      .filter(item => item.meta && item.meta.priority && item.meta.priority > 5)
+      .filter((item) => item.meta && item.meta.priority && item.meta.priority > 5)
       .sort((a, b) => {
         return (b.meta?.priority || 0) - (a.meta?.priority || 0);
       })
-      .map(item => item.flag);
+      .map((item) => item.flag);
 
     return {
       totalFlags: flags.size,
@@ -599,7 +600,7 @@ export function getProgressStatistics(): ProgressStatistics {
       expiredFlags: flagTimestamps.size,
       dependentFlags: flagDependencies.size,
       recentlySet,
-      highPriorityFlags
+      highPriorityFlags,
     };
   } catch (error) {
     console.error('[StoryProgress] Error getting statistics:', error);
@@ -609,12 +610,10 @@ export function getProgressStatistics(): ProgressStatistics {
       expiredFlags: 0,
       dependentFlags: 0,
       recentlySet: [],
-      highPriorityFlags: []
+      highPriorityFlags: [],
     };
   }
 }
-
-
 
 // --- Function: clearAllProgress ---
 export function clearAllProgress(confirm: boolean = false): boolean {
@@ -629,10 +628,9 @@ export function clearAllProgress(confirm: boolean = false): boolean {
     flagDependencies.clear();
     flagMetadata.clear();
     flagCache.clear();
-    Object.values(categorizedFlags).forEach(set => set.clear());
+    Object.values(categorizedFlags).forEach((set) => set.clear());
     eventTriggers.clear();
 
-    
     localStorage.removeItem('storyProgressState');
 
     console.log('[StoryProgress] All progress cleared');
@@ -643,35 +641,34 @@ export function clearAllProgress(confirm: boolean = false): boolean {
   }
 }
 
-
-
-
 // --- Function: validateFlagName ---
 function validateFlagName(flag: string): boolean {
-  return typeof flag === 'string' &&
-         flag.length > 0 &&
-         flag.length <= 100 &&
-         /^[a-zA-Z0-9_-]+$/.test(flag);
+  return (
+    typeof flag === 'string' &&
+    flag.length > 0 &&
+    flag.length <= 100 &&
+    /^[a-zA-Z0-9_-]+$/.test(flag)
+  );
 }
-
 
 // --- Function: validateMetadata ---
 function validateMetadata(meta: any): meta is FlagMetadata {
-  return typeof meta === 'object' &&
-         meta !== null &&
-         typeof meta.setTime === 'number' &&
-         typeof meta.category === 'string' &&
-         typeof meta.priority === 'number' &&
-         Array.isArray(meta.triggeredEvents);
+  return (
+    typeof meta === 'object' &&
+    meta !== null &&
+    typeof meta.setTime === 'number' &&
+    typeof meta.category === 'string' &&
+    typeof meta.priority === 'number' &&
+    Array.isArray(meta.triggeredEvents)
+  );
 }
-
 
 // --- Function: hasCircularDependency ---
 function hasCircularDependency(flag: string, _dependencies: string[]): boolean {
   const visited = new Set<string>();
   const stack = new Set<string>();
 
-// --- Function: dfs ---
+  // --- Function: dfs ---
   function dfs(current: string): boolean {
     if (stack.has(current)) return true;
     if (visited.has(current)) return false;
@@ -691,7 +688,6 @@ function hasCircularDependency(flag: string, _dependencies: string[]): boolean {
   return dfs(flag);
 }
 
-
 // --- Function: updateCache ---
 function updateCache(flag: string, valid: boolean): void {
   if (flagCache.size >= MAX_CACHE_SIZE) {
@@ -702,7 +698,6 @@ function updateCache(flag: string, valid: boolean): void {
   }
   flagCache.set(flag, { valid, timestamp: Date.now() });
 }
-
 
 // --- Function: cleanupCache ---
 function cleanupCache(): void {
@@ -715,16 +710,13 @@ function cleanupCache(): void {
     }
   }
 
-  keysToDelete.forEach(key => flagCache.delete(key));
+  keysToDelete.forEach((key) => flagCache.delete(key));
 }
-
 
 // --- Function: migrateState ---
 function migrateState(state: StoryProgressState): void {
-  
   state.version = MODULE_VERSION;
 }
-
 
 // --- Function: cleanupOldData ---
 function cleanupOldData(): void {
@@ -735,17 +727,13 @@ function cleanupOldData(): void {
       keysToRemove.push(key);
     }
   }
-  keysToRemove.forEach(key => localStorage.removeItem(key));
+  keysToRemove.forEach((key) => localStorage.removeItem(key));
 }
-
-
 
 // --- Function: getStoryFlags ---
 export function getStoryFlags(): string[] {
   return getAllFlags();
 }
-
-
 
 // --- Function: hasStoryFlag ---
 export function hasStoryFlag(flag: string): boolean {
@@ -760,7 +748,7 @@ export function getStatistics(): ProgressStatistics {
     expiredFlags: 0,
     dependentFlags: flagDependencies.size,
     recentlySet: [],
-    highPriorityFlags: []
+    highPriorityFlags: [],
   };
 
   // Calculate categories
@@ -778,7 +766,8 @@ export function getStatistics(): ProgressStatistics {
 
   // Get recent and high priority flags
   for (const [flag, metadata] of flagMetadata.entries()) {
-    if (metadata.setTime > now - 300000) { // Last 5 minutes
+    if (metadata.setTime > now - 300000) {
+      // Last 5 minutes
       stats.recentlySet.push(flag);
     }
     if (metadata.priority > 5) {
@@ -798,8 +787,8 @@ export function clearAllFlags(): boolean {
     flagMetadata.clear();
     flagCache.clear();
     eventTriggers.clear();
-    
-    Object.keys(categorizedFlags).forEach(key => {
+
+    Object.keys(categorizedFlags).forEach((key) => {
       categorizedFlags[key].clear();
     });
 
@@ -812,24 +801,20 @@ export function clearAllFlags(): boolean {
   }
 }
 
-
-
 // --- Function: setStoryFlag ---
 export function setStoryFlag(flag: string, category?: string): boolean {
   return setFlag(flag, null, category || 'general');
 }
-
-
 
 // --- Function: getFlagMetadata ---
 export function getFlagMetadata(flag: string): FlagMetadata | null {
   return flagMetadata.get(flag) || null;
 }
 
-
-
 // --- Function: setMultipleFlags ---
-export function setMultipleFlags(flagsToSet: Array<{ name: string; category?: string; description?: string }>): number {
+export function setMultipleFlags(
+  flagsToSet: Array<{ name: string; category?: string; description?: string }>,
+): number {
   let successCount = 0;
   flagsToSet.forEach(({ name, category, description }) => {
     if (setFlag(name, null, category, description)) {
@@ -838,7 +823,6 @@ export function setMultipleFlags(flagsToSet: Array<{ name: string; category?: st
   });
   return successCount;
 }
-
 
 if (typeof window !== 'undefined') {
   setInterval(() => {
@@ -863,7 +847,7 @@ const StoryProgressUtils = {
   saveFlags,
   getAllFlags,
   getStatistics,
-  clearAllFlags
+  clearAllFlags,
 };
 
 export default StoryProgressUtils;

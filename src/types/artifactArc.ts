@@ -7,23 +7,23 @@ import { type QuantumElement } from './quantumMagic';
 import { type RouteId } from './routes';
 
 // Story Arc Types
-export type ArtifactStoryArc = 
-  | 'origin'        // How the artifact came to exist
-  | 'discovery'     // First discovery and initial use
-  | 'mastery'       // Learning to use the artifact effectively
-  | 'awakening'     // Artifact develops consciousness/sentience
-  | 'evolution'     // Artifact transforms or upgrades
-  | 'legacy'        // Long-term impact and consequences
-  | 'synthesis';    // Combining with other artifacts
+export type ArtifactStoryArc =
+  | 'origin' // How the artifact came to exist
+  | 'discovery' // First discovery and initial use
+  | 'mastery' // Learning to use the artifact effectively
+  | 'awakening' // Artifact develops consciousness/sentience
+  | 'evolution' // Artifact transforms or upgrades
+  | 'legacy' // Long-term impact and consequences
+  | 'synthesis'; // Combining with other artifacts
 
-export type NarrativeStyle = 
-  | 'historical'    // Past events, lore-heavy
-  | 'personal'      // First-person experiences
-  | 'mysterious'    // Cryptic, puzzle-like
-  | 'scientific'    // Technical explanations
-  | 'mystical'      // Spiritual/magical descriptions
-  | 'cautionary'    // Warnings and consequences
-  | 'prophetic';    // Future visions and possibilities
+export type NarrativeStyle =
+  | 'historical' // Past events, lore-heavy
+  | 'personal' // First-person experiences
+  | 'mysterious' // Cryptic, puzzle-like
+  | 'scientific' // Technical explanations
+  | 'mystical' // Spiritual/magical descriptions
+  | 'cautionary' // Warnings and consequences
+  | 'prophetic'; // Future visions and possibilities
 
 export interface ArtifactLoreEntry {
   id: string;
@@ -97,9 +97,9 @@ export interface ArtifactBond {
   };
   personality?: {
     communicative: number; // How much the artifact "talks"
-    protective: number;    // How much it protects the player
-    autonomous: number;    // How much it acts independently
-    mysterious: number;    // How cryptic its communications are
+    protective: number; // How much it protects the player
+    autonomous: number; // How much it acts independently
+    mysterious: number; // How cryptic its communications are
   };
 }
 
@@ -286,7 +286,13 @@ export interface ArtifactArcConfig {
 
 // Event Types
 export interface ArtifactArcEvent {
-  type: 'lore_unlocked' | 'vision_triggered' | 'bond_strengthened' | 'communication' | 'evolution_began' | 'synthesis_completed';
+  type:
+    | 'lore_unlocked'
+    | 'vision_triggered'
+    | 'bond_strengthened'
+    | 'communication'
+    | 'evolution_began'
+    | 'synthesis_completed';
   artifactId: string;
   timestamp: number;
   details: {

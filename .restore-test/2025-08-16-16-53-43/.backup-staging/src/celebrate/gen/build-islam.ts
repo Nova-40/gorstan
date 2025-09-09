@@ -25,7 +25,7 @@ import { Span, multiDaySpan } from './util';
  */
 export async function eidAlFitr(years: number[]): Promise<Span[]> {
   const spans: Span[] = [];
-  
+
   // Known/calculated dates for Eid al-Fitr (1 Shawwal)
   const knownDates: Record<number, string> = {
     2025: '2025-03-30',
@@ -53,16 +53,16 @@ export async function eidAlFitr(years: number[]): Promise<Span[]> {
     2047: '2047-07-31',
     2048: '2048-07-20',
     2049: '2049-07-09',
-    2050: '2050-06-28'
+    2050: '2050-06-28',
   };
-  
+
   for (const year of years) {
     if (knownDates[year]) {
       const date = new Date(knownDates[year]);
       spans.push(multiDaySpan(date, 3, `Eid al-Fitr ${year}`));
     }
   }
-  
+
   return spans;
 }
 
@@ -72,7 +72,7 @@ export async function eidAlFitr(years: number[]): Promise<Span[]> {
  */
 export async function eidAlAdha(years: number[]): Promise<Span[]> {
   const spans: Span[] = [];
-  
+
   // Known/calculated dates for Eid al-Adha (10 Dhu al-Hijjah)
   const knownDates: Record<number, string> = {
     2025: '2025-06-06',
@@ -100,20 +100,20 @@ export async function eidAlAdha(years: number[]): Promise<Span[]> {
     2047: '2047-10-07',
     2048: '2048-09-26',
     2049: '2049-09-15',
-    2050: '2050-09-04'
+    2050: '2050-09-04',
   };
-  
+
   for (const year of years) {
     if (knownDates[year]) {
       const date = new Date(knownDates[year]);
       spans.push(multiDaySpan(date, 4, `Eid al-Adha ${year}`));
     }
   }
-  
+
   return spans;
 }
 
 export const buildIslam = {
   eidAlFitr,
-  eidAlAdha
+  eidAlAdha,
 };

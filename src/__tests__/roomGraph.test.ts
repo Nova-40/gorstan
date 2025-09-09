@@ -8,18 +8,22 @@ describe('Room Graph Validation', () => {
       expect(room.id).toBe(roomId);
       expect(room.title || room.name).toBeTruthy();
       expect(room.description).toBeTruthy();
-      
+
       // Description can be string or array
       if (Array.isArray(room.description)) {
         expect(room.description.length).toBeGreaterThan(0);
-        room.description.forEach(desc => expect(typeof desc).toBe('string'));
+        room.description.forEach((desc) => expect(typeof desc).toBe('string'));
       } else {
         expect(typeof room.description).toBe('string');
       }
-      
+
       // Optional fields should have correct types if present
-      if (room.zone) expect(typeof room.zone).toBe('string');
-      if (room.exits) expect(typeof room.exits).toBe('object');
+      if (room.zone) {
+        expect(typeof room.zone).toBe('string');
+      }
+      if (room.exits) {
+        expect(typeof room.exits).toBe('object');
+      }
     });
   });
 
@@ -40,12 +44,14 @@ describe('Room Graph Validation', () => {
 
     if (invalidExits.length > 0) {
       // Log for debugging but don't fail - some may be intentional for gameplay
-      console.warn(`Found ${invalidExits.length} potentially invalid exits (some may be intentional):`);
+      console.warn(
+        `Found ${invalidExits.length} potentially invalid exits (some may be intentional):`,
+      );
       if (invalidExits.length <= 20) {
         console.warn(invalidExits.join('\n'));
       }
-      
-      // Only fail if there are way too many invalid exits 
+
+      // Only fail if there are way too many invalid exits
       expect(invalidExits.length).toBeLessThan(Object.keys(rooms).length);
     }
   });
@@ -60,10 +66,10 @@ describe('Room Graph Validation', () => {
     while (queue.length > 0) {
       const currentRoom = queue.shift()!;
       const room = rooms[currentRoom];
-      
+
       if (room.exits) {
         // exits is Record<string, string>, not an array
-        Object.values(room.exits).forEach(targetRoom => {
+        Object.values(room.exits).forEach((targetRoom) => {
           if (targetRoom && roomIds.has(targetRoom) && !reachableRooms.has(targetRoom)) {
             reachableRooms.add(targetRoom);
             queue.push(targetRoom);
@@ -72,8 +78,8 @@ describe('Room Graph Validation', () => {
       }
     }
 
-    const unreachableRooms = [...roomIds].filter(id => !reachableRooms.has(id));
-    
+    const unreachableRooms = [...roomIds].filter((id) => !reachableRooms.has(id));
+
     if (unreachableRooms.length > 0) {
       console.warn('Unreachable rooms (may be intentional):', unreachableRooms);
     }
@@ -85,8 +91,10 @@ describe('Room Graph Validation', () => {
   test('No circular references in immediate exits', () => {
     Object.entries(rooms).forEach(([roomId, room]) => {
       if (room.exits) {
-        const selfReferencingExits = Object.entries(room.exits).filter(([_, targetRoom]) => targetRoom === roomId);
-        
+        const selfReferencingExits = Object.entries(room.exits).filter(
+          ([_, targetRoom]) => targetRoom === roomId,
+        );
+
         // Self-references should be intentional (like loops/mazes)
         if (selfReferencingExits.length > 0) {
           console.info(`Room ${roomId} has self-referencing exits (may be intentional)`);
@@ -97,7 +105,7 @@ describe('Room Graph Validation', () => {
 
   test('Zone consistency', () => {
     const zoneRooms = new Map<string, string[]>();
-    
+
     Object.entries(rooms).forEach(([roomId, room]) => {
       const zone = room.zone;
       if (zone) {
@@ -114,8 +122,9 @@ describe('Room Graph Validation', () => {
     });
 
     // Log zone distribution
-    console.info('Zone distribution:', 
-      Object.fromEntries([...zoneRooms.entries()].map(([zone, rooms]) => [zone, rooms.length]))
+    console.info(
+      'Zone distribution:',
+      Object.fromEntries([...zoneRooms.entries()].map(([zone, rooms]) => [zone, rooms.length])),
     );
   });
 });

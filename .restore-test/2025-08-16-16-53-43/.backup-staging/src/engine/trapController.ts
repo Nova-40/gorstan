@@ -29,7 +29,7 @@ const initializeTraps = () => {
       triggered: false,
       disarmable: true,
       type: 'mechanical',
-      severity: 'severe'
+      severity: 'severe',
     },
     {
       id: 'pressure_plate_dungeon',
@@ -39,7 +39,7 @@ const initializeTraps = () => {
       triggered: false,
       disarmable: true,
       type: 'magical',
-      severity: 'light'
+      severity: 'light',
     },
     {
       id: 'unstable_floor_void',
@@ -49,11 +49,11 @@ const initializeTraps = () => {
       triggered: false,
       disarmable: false,
       type: 'environmental',
-      severity: 'lethal'
-    }
+      severity: 'lethal',
+    },
   ];
 
-  commonTraps.forEach(trap => {
+  commonTraps.forEach((trap) => {
     trapRegistry.set(trap.roomId, trap);
   });
 };
@@ -79,7 +79,7 @@ export function checkForTrap(roomId: string): Trap | null {
  * Get all active (non-triggered) traps
  */
 export function getActiveTraps(): Trap[] {
-  return Array.from(trapRegistry.values()).filter(trap => !trap.triggered);
+  return Array.from(trapRegistry.values()).filter((trap) => !trap.triggered);
 }
 
 /**
@@ -90,15 +90,19 @@ export function disarmTrap(roomId: string, method?: string): boolean {
   if (trap && trap.disarmable && !trap.triggered) {
     trap.triggered = true;
     const usedMethod = method || 'careful manipulation';
-    console.log(`[Trap Controller] ✅ Disarmed trap in ${roomId} using ${usedMethod}: ${trap.description}`);
+    console.log(
+      `[Trap Controller] ✅ Disarmed trap in ${roomId} using ${usedMethod}: ${trap.description}`,
+    );
     return true;
   }
-  
+
   if (trap && !trap.disarmable) {
-    console.log(`[Trap Controller] ❌ Cannot disarm trap in ${roomId}: ${trap.description} (not disarmable)`);
+    console.log(
+      `[Trap Controller] ❌ Cannot disarm trap in ${roomId}: ${trap.description} (not disarmable)`,
+    );
     return false;
   }
-  
+
   console.log(`[Trap Controller] ⚠️ No active trap found in ${roomId}`);
   return false;
 }
@@ -113,7 +117,7 @@ export function triggerTrap(roomId: string): Trap | null {
     console.log(`[Trap Controller] 💥 Triggered trap in ${roomId}: ${trap.description}`);
     return trap;
   }
-  
+
   return null;
 }
 
@@ -127,7 +131,7 @@ export function resetTrap(roomId: string): boolean {
     console.log(`[Trap Controller] 🔄 Reset trap in ${roomId}: ${trap.description}`);
     return true;
   }
-  
+
   return false;
 }
 

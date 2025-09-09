@@ -19,28 +19,17 @@
 
 import { FlagMap } from '../state/flagRegistry';
 
-
-
 import { useFlags } from './useFlags';
-
-
-
-
-
-
-
-
-
 
 export const useLibrarianLogic = (
   state: any,
   dispatch: React.Dispatch<any>,
   room: any,
-  loadModule: (path: string) => Promise<any>
+  loadModule: (path: string) => Promise<any>,
 ) => {
   const { hasFlag, clearFlag } = useFlags();
 
-// Variable declaration
+  // Variable declaration
   const handleLibrarian = () => {
     if (hasFlag(FlagMap.npc.pendingLibrarianCommand)) {
       loadModule('../engine/librarianController').then(({ handleLibrarianInteraction }) => {
@@ -50,7 +39,7 @@ export const useLibrarianLogic = (
     }
   };
 
-// Variable declaration
+  // Variable declaration
   const spawnLibrarianIfFlagged = () => {
     if (hasFlag(FlagMap.npc.forceLibrarianSpawn) && room) {
       loadModule('../engine/librarianController').then(({ spawnLibrarian }) => {
@@ -61,10 +50,8 @@ export const useLibrarianLogic = (
     }
   };
 
-  
-
   return {
     handleLibrarian,
-    spawnLibrarianIfFlagged
+    spawnLibrarianIfFlagged,
   };
 };

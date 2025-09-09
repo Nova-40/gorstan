@@ -19,53 +19,33 @@
 
 import React, { useEffect, useRef } from 'react';
 
-import { FlagMap } from '../state/flagRegistry';
-
 import { GameMessage } from '../types/GameTypes';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 export interface TerminalMessage {
   text: string;
   type: 'info' | 'error' | 'system' | 'lore';
 }
 
-
 interface TerminalConsoleProps {
   messages?: GameMessage[];
   clear?: boolean;
 }
 
-
 const TerminalConsole: React.FC<TerminalConsoleProps> = ({ messages = [], clear = false }) => {
-// Variable declaration
+  // Variable declaration
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  
-// React effect hook
+  // React effect hook
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
 
-  
-// Variable declaration
+  // Variable declaration
   const filteredMessages = clear ? [] : messages.filter((msg) => msg.type === 'narrative');
 
-// JSX return block or main return
+  // JSX return block or main return
   return (
     <div
       ref={scrollRef}

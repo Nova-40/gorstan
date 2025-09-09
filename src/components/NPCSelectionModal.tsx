@@ -36,30 +36,34 @@ const NPCSelectionModal: React.FC<NPCSelectionModalProps> = ({
   onSelectNPC,
   onClose,
   onTalkToAll,
-  onTalkToAyla
+  onTalkToAyla,
 }) => {
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
 
   // NPC image mapping
   const npcImages: Record<string, string> = {
-    'dominic': '/images/Dominic.png',
-    'chef': '/images/Chef.png',
-    'albie': '/images/Albie.png',
-    'polly': '/images/Polly.png',
+    dominic: '/images/Dominic.png',
+    chef: '/images/Chef.png',
+    albie: '/images/Albie.png',
+    polly: '/images/Polly.png',
     'mr wendell': '/images/MrWendell.png',
-    'wendell': '/images/MrWendell.png',
-    'ayla': '/images/Ayla.png',
-    'al': '/images/Al.png',
-    'al_escape_artist': '/images/Al.png', // Al's escape artist persona
-    'librarian': '/images/Librarian.png',
-    'morthos': '/images/Morthos.png'
+    wendell: '/images/MrWendell.png',
+    ayla: '/images/Ayla.png',
+    al: '/images/Al.png',
+    al_escape_artist: '/images/Al.png', // Al's escape artist persona
+    librarian: '/images/Librarian.png',
+    morthos: '/images/Morthos.png',
   };
 
   const getImagePath = (npc: NPC): string => {
-    if (npc.portrait) return npc.portrait;
-    return npcImages[npc.id.toLowerCase()] || 
-           npcImages[npc.name.toLowerCase()] || 
-           '/images/fallback.png';
+    if (npc.portrait) {
+      return npc.portrait;
+    }
+    return (
+      npcImages[npc.id.toLowerCase()] || npcImages[npc.name.toLowerCase()] || '/images/fallback.png'
+    );
   };
 
   return (
@@ -74,16 +78,12 @@ const NPCSelectionModal: React.FC<NPCSelectionModalProps> = ({
             ×
           </button>
         </div>
-        
+
         <div className="npc-selection-grid">
           {npcs.map((npc) => (
-            <div 
-              key={npc.id}
-              className="npc-selection-card"
-              onClick={() => onSelectNPC(npc)}
-            >
+            <div key={npc.id} className="npc-selection-card" onClick={() => onSelectNPC(npc)}>
               <div className="npc-image-container">
-                <img 
+                <img
                   src={getImagePath(npc)}
                   alt={npc.name}
                   className="npc-selection-image"
@@ -96,12 +96,10 @@ const NPCSelectionModal: React.FC<NPCSelectionModalProps> = ({
                   <MessageCircle size={16} />
                 </div>
               </div>
-              
+
               <div className="npc-selection-info">
                 <h3 className="npc-name">{npc.name}</h3>
-                {npc.description && (
-                  <p className="npc-description">{npc.description}</p>
-                )}
+                {npc.description && <p className="npc-description">{npc.description}</p>}
                 <div className="npc-status">
                   <span className="mood-badge" data-mood={npc.mood}>
                     {npc.mood}
@@ -115,7 +113,7 @@ const NPCSelectionModal: React.FC<NPCSelectionModalProps> = ({
         {/* Group conversation feature */}
         {onTalkToAll && npcs.length > 1 && (
           <div className="group-conversation-section">
-            <button 
+            <button
               className="group-talk-button"
               onClick={onTalkToAll}
               title="Start a group conversation"
@@ -129,7 +127,7 @@ const NPCSelectionModal: React.FC<NPCSelectionModalProps> = ({
         {/* Ayla Helper Option */}
         {onTalkToAyla && (
           <div className="ayla-helper-section">
-            <button 
+            <button
               className="ayla-talk-button"
               onClick={onTalkToAyla}
               title="Switch to Ayla for help and guidance"

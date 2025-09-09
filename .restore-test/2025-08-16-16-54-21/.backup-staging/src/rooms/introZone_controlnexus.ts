@@ -17,7 +17,6 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Renders room descriptions and image logic.
 
-
 import type { Room } from '../types/Room';
 
 const controlnexus: Room = {
@@ -25,9 +24,9 @@ const controlnexus: Room = {
   zone: 'introZone',
   title: 'The Control Nexus',
   description: [
-    "You stand in a circular chamber that pulses with dormant energy. The curved walls are lined with darkened screens, their surfaces occasionally flickering with cryptic data streams and static bursts.",
-    "Thick cables snake across the polished floor like technological vines, converging at a central console. A single command chair faces this nexus of control, its ergonomic form suggesting long periods of monitoring.",
-    "The air carries a faint ozone scent, and you can hear the subtle hum of sleeping systems waiting to be awakened. This place feels like the nerve center of something vast and important.",
+    'You stand in a circular chamber that pulses with dormant energy. The curved walls are lined with darkened screens, their surfaces occasionally flickering with cryptic data streams and static bursts.',
+    'Thick cables snake across the polished floor like technological vines, converging at a central console. A single command chair faces this nexus of control, its ergonomic form suggesting long periods of monitoring.',
+    'The air carries a faint ozone scent, and you can hear the subtle hum of sleeping systems waiting to be awakened. This place feels like the nerve center of something vast and important.',
   ],
   image: 'introZone_controlnexus.gif',
   ambientAudio: 'lowhum.mp3',
@@ -54,22 +53,26 @@ const controlnexus: Room = {
 
   interactables: {
     console: {
-      description: 'The main control console glows with a soft blue light, its interface displaying streams of dimensional data.',
+      description:
+        'The main control console glows with a soft blue light, its interface displaying streams of dimensional data.',
       actions: ['activate', 'examine', 'use'],
       requires: [],
     },
     chair: {
-      description: 'A sophisticated command chair with neural interface ports and biometric sensors.',
+      description:
+        'A sophisticated command chair with neural interface ports and biometric sensors.',
       actions: ['sit', 'examine'],
       requires: [],
     },
     screens: {
-      description: 'Wall-mounted displays showing various dimensional readings and system diagnostics.',
+      description:
+        'Wall-mounted displays showing various dimensional readings and system diagnostics.',
       actions: ['examine', 'activate'],
       requires: ['strangekey'],
     },
     cables: {
-      description: 'Thick fiber-optic cables pulse with faint light, carrying vast amounts of data.',
+      description:
+        'Thick fiber-optic cables pulse with faint light, carrying vast amounts of data.',
       actions: ['examine', 'trace'],
       requires: [],
     },
@@ -164,5 +167,3 @@ const controlnexus: Room = {
 };
 
 export default controlnexus;
-
-

@@ -6,7 +6,9 @@ interface DemoRibbonProps {
 }
 
 export default function DemoRibbon({ className = '' }: DemoRibbonProps) {
-  if (!IS_DEMO) return null;
+  if (!IS_DEMO) {
+    return null;
+  }
 
   const ribbonStyle: React.CSSProperties = {
     position: 'fixed',
@@ -21,7 +23,7 @@ export default function DemoRibbon({ className = '' }: DemoRibbonProps) {
     fontSize: '14px',
     textAlign: 'center',
     boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-    borderBottom: '1px solid #f0a500'
+    borderBottom: '1px solid #f0a500',
   };
 
   return (

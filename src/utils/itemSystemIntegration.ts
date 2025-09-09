@@ -21,27 +21,12 @@ import type { LocalGameState } from '../state/gameState';
 
 import { getItemById } from '../engine/items';
 
-import { Room } from '../types/Room';
-
 import { validateGlobalItemManagement } from './globalItemValidator';
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // --- Function: validateItemSystemIntegration ---
 export function validateItemSystemIntegration(
   roomMap: Record<string, any>,
-  gameState?: LocalGameState
+  gameState?: LocalGameState,
 ): {
   isValid: boolean;
   systems: {
@@ -52,7 +37,7 @@ export function validateItemSystemIntegration(
   };
   recommendations: string[];
 } {
-// Variable declaration
+  // Variable declaration
   const result = {
     isValid: true,
     systems: {
@@ -64,10 +49,7 @@ export function validateItemSystemIntegration(
     recommendations: [] as string[],
   };
 
-  
   try {
-    
-    
     result.systems.commandParser.details.push('✅ Duplicate pickup prevention active');
     result.systems.commandParser.details.push('✅ Cross-room dropping supported');
     result.systems.commandParser.details.push('✅ Item validation on pickup');
@@ -77,9 +59,7 @@ export function validateItemSystemIntegration(
     result.isValid = false;
   }
 
-  
   try {
-    
     result.systems.inventoryEngine.details.push('✅ Non-stackable duplicate prevention');
     result.systems.inventoryEngine.details.push('✅ Stackable item handling');
     result.systems.inventoryEngine.details.push('✅ Item validation on add');
@@ -89,30 +69,34 @@ export function validateItemSystemIntegration(
     result.isValid = false;
   }
 
-  
-// Variable declaration
+  // Variable declaration
   const roomValidation = validateGlobalItemManagement(roomMap, gameState);
   if (roomValidation.isValid && roomValidation.errors.length === 0) {
     result.systems.roomManagement.details.push('✅ All rooms have valid item configurations');
-    result.systems.roomManagement.details.push(`✅ ${roomValidation.summary.totalRoomsChecked} rooms validated`);
-    result.systems.roomManagement.details.push(`✅ ${roomValidation.summary.totalItemsValidated} items checked`);
+    result.systems.roomManagement.details.push(
+      `✅ ${roomValidation.summary.totalRoomsChecked} rooms validated`,
+    );
+    result.systems.roomManagement.details.push(
+      `✅ ${roomValidation.summary.totalItemsValidated} items checked`,
+    );
   } else {
     result.systems.roomManagement.status = roomValidation.errors.length > 0 ? 'ERROR' : 'WARNING';
     result.systems.roomManagement.details.push(`❌ ${roomValidation.errors.length} errors found`);
-    result.systems.roomManagement.details.push(`⚠️ ${roomValidation.warnings.length} warnings found`);
+    result.systems.roomManagement.details.push(
+      `⚠️ ${roomValidation.warnings.length} warnings found`,
+    );
     if (roomValidation.errors.length > 0) {
       result.isValid = false;
     }
   }
 
-  
   try {
-// Variable declaration
+    // Variable declaration
     const specialItems = ['dominic', 'runbag', 'goldfish_food', 'remote_control'];
     let registryValid = true;
 
-    specialItems.forEach(itemId => {
-// Variable declaration
+    specialItems.forEach((itemId) => {
+      // Variable declaration
       const item = getItemById(itemId);
       if (!item) {
         result.systems.itemRegistry.details.push(`❌ Missing special item: ${itemId}`);
@@ -122,29 +106,29 @@ export function validateItemSystemIntegration(
       }
     });
 
-    
-// Variable declaration
+    // Variable declaration
     const dominic = getItemById('dominic');
     if (dominic) {
       if (dominic.category === 'pet') {
         result.systems.itemRegistry.details.push('✅ Dominic has correct category (pet)');
       } else {
-        result.systems.itemRegistry.details.push(`⚠️ Dominic category: ${dominic.category} (expected: pet)`);
+        result.systems.itemRegistry.details.push(
+          `⚠️ Dominic category: ${dominic.category} (expected: pet)`,
+        );
       }
 
       if (dominic.spawnRooms?.includes('dalesapartment')) {
-        result.systems.itemRegistry.details.push('✅ Dominic spawns in Dale\'s apartment');
+        result.systems.itemRegistry.details.push("✅ Dominic spawns in Dale's apartment");
       } else {
         result.systems.itemRegistry.details.push('⚠️ Dominic spawn rooms may need adjustment');
       }
     }
 
-    
-// Variable declaration
+    // Variable declaration
     const runbag = getItemById('runbag');
     if (runbag) {
       if (runbag.spawnRooms?.includes('dalesapartment')) {
-        result.systems.itemRegistry.details.push('✅ Runbag can spawn in Dale\'s apartment');
+        result.systems.itemRegistry.details.push("✅ Runbag can spawn in Dale's apartment");
       } else {
         result.systems.itemRegistry.details.push('⚠️ Runbag spawn rooms may need adjustment');
       }
@@ -160,7 +144,6 @@ export function validateItemSystemIntegration(
     result.isValid = false;
   }
 
-  
   result.recommendations = [
     'Regularly validate item placement across all rooms',
     'Test pickup/drop functionality in different rooms',
@@ -176,24 +159,22 @@ export function validateItemSystemIntegration(
   return result;
 }
 
-
-
 // --- Function: quickItemSystemStatus ---
 export function quickItemSystemStatus(): {
   status: 'HEALTHY' | 'WARNING' | 'ERROR';
   message: string;
   checks: Array<{ name: string; passed: boolean; details?: string }>;
 } {
-// Variable declaration
+  // Variable declaration
   const checks = [
     {
       name: 'Duplicate Prevention',
-      passed: true, 
+      passed: true,
       details: 'Active in commandParser.ts and inventory.ts',
     },
     {
       name: 'Cross-Room Dropping',
-      passed: true, 
+      passed: true,
       details: 'Items can be dropped in any room',
     },
     {
@@ -203,15 +184,15 @@ export function quickItemSystemStatus(): {
     },
     {
       name: 'Item Registry Integrity',
-      passed: true, 
+      passed: true,
       details: 'All items have valid definitions',
     },
   ];
 
-// Variable declaration
-  const allPassed = checks.every(check => check.passed);
-// Variable declaration
-  const criticalFailures = checks.filter(check => !check.passed);
+  // Variable declaration
+  const allPassed = checks.every((check) => check.passed);
+  // Variable declaration
+  const criticalFailures = checks.filter((check) => !check.passed);
 
   let status: 'HEALTHY' | 'WARNING' | 'ERROR' = 'HEALTHY';
   let message = 'All item management systems operational';

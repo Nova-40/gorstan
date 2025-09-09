@@ -19,15 +19,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import {
-  Target,
-  CheckCircle,
-  X,
-  Search,
-  RotateCcw,
-  Zap,
-  Gift
-} from 'lucide-react';
+import { Target, CheckCircle, X, Search, RotateCcw, Zap, Gift } from 'lucide-react';
 
 export interface MiniquestData {
   id: string;
@@ -77,24 +69,22 @@ const MiniquestInterface: React.FC<MiniquestInterfaceProps> = ({
   playerInventory,
   totalScore = 0,
   completedCount = 0,
-  availableCount = 0
+  availableCount = 0,
 }) => {
   const [selectedQuest, setSelectedQuest] = useState<MiniquestData | null>(null);
   const [filter, setFilter] = useState<'all' | 'available' | 'completed' | 'locked'>('all');
 
-  
-// React effect hook
+  // React effect hook
   useEffect(() => {
     if (!isOpen) {
       setSelectedQuest(null);
     }
   }, [isOpen]);
 
-  
-// Variable declaration
+  // Variable declaration
   const filteredQuests = useMemo(() => {
-    return miniquests.filter(quest => {
-// Variable declaration
+    return miniquests.filter((quest) => {
+      // Variable declaration
       const questProgress = progress[quest.id];
       switch (filter) {
         case 'available':
@@ -109,29 +99,31 @@ const MiniquestInterface: React.FC<MiniquestInterfaceProps> = ({
     });
   }, [miniquests, progress, filter]);
 
-  
-// Variable declaration
+  // Variable declaration
   const hasRequiredItems = useCallback(
     (quest: MiniquestData) => {
       if (!quest.requiredItems) return true;
-      return quest.requiredItems.every(item => playerInventory.includes(item));
+      return quest.requiredItems.every((item) => playerInventory.includes(item));
     },
-    [playerInventory]
+    [playerInventory],
   );
 
-  
-// Variable declaration
+  // Variable declaration
   const getQuestStatusInfo = useCallback(
     (quest: MiniquestData) => {
-// Variable declaration
+      // Variable declaration
       const questProgress = progress[quest.id];
 
       if (questProgress?.completed) {
         return {
           status: quest.repeatable ? 'repeatable' : 'completed',
           color: quest.repeatable ? 'text-cyan-400' : 'text-green-400',
-          icon: quest.repeatable ? <RotateCcw className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />,
-          label: quest.repeatable ? 'REPEATABLE' : 'COMPLETED'
+          icon: quest.repeatable ? (
+            <RotateCcw className="w-4 h-4" />
+          ) : (
+            <CheckCircle className="w-4 h-4" />
+          ),
+          label: quest.repeatable ? 'REPEATABLE' : 'COMPLETED',
         };
       }
 
@@ -140,7 +132,7 @@ const MiniquestInterface: React.FC<MiniquestInterfaceProps> = ({
           status: 'available',
           color: 'text-blue-400',
           icon: <Target className="w-4 h-4" />,
-          label: 'AVAILABLE'
+          label: 'AVAILABLE',
         };
       }
 
@@ -149,7 +141,7 @@ const MiniquestInterface: React.FC<MiniquestInterfaceProps> = ({
           status: 'needs_items',
           color: 'text-orange-400',
           icon: <Gift className="w-4 h-4" />,
-          label: 'NEEDS ITEMS'
+          label: 'NEEDS ITEMS',
         };
       }
 
@@ -157,15 +149,15 @@ const MiniquestInterface: React.FC<MiniquestInterfaceProps> = ({
         status: 'locked',
         color: 'text-gray-400',
         icon: <X className="w-4 h-4" />,
-        label: 'LOCKED'
+        label: 'LOCKED',
       };
     },
-    [progress, hasRequiredItems]
+    [progress, hasRequiredItems],
   );
 
   if (!isOpen) return null;
 
-// JSX return block or main return
+  // JSX return block or main return
   return (
     <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <motion.div
@@ -218,8 +210,8 @@ const MiniquestInterface: React.FC<MiniquestInterfaceProps> = ({
               { key: 'all', label: 'All', icon: <Target className="w-4 h-4" /> },
               { key: 'available', label: 'Available', icon: <Zap className="w-4 h-4" /> },
               { key: 'completed', label: 'Completed', icon: <CheckCircle className="w-4 h-4" /> },
-              { key: 'locked', label: 'Locked', icon: <X className="w-4 h-4" /> }
-            ].map(tab => (
+              { key: 'locked', label: 'Locked', icon: <X className="w-4 h-4" /> },
+            ].map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => setFilter(tab.key as any)}
@@ -248,13 +240,13 @@ const MiniquestInterface: React.FC<MiniquestInterfaceProps> = ({
               </div>
             ) : (
               <div className="space-y-4">
-                {filteredQuests.map(quest => {
-// Variable declaration
+                {filteredQuests.map((quest) => {
+                  // Variable declaration
                   const statusInfo = getQuestStatusInfo(quest);
-// Variable declaration
+                  // Variable declaration
                   const isSelected = selectedQuest?.id === quest.id;
 
-// JSX return block or main return
+                  // JSX return block or main return
                   return (
                     <motion.div
                       key={quest.id}
@@ -271,7 +263,9 @@ const MiniquestInterface: React.FC<MiniquestInterfaceProps> = ({
                         {}
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex items-start space-x-3">
-                            <div className={`p-2 rounded-lg bg-gradient-to-r ${statusInfo.color}`}>{statusInfo.icon}</div>
+                            <div className={`p-2 rounded-lg bg-gradient-to-r ${statusInfo.color}`}>
+                              {statusInfo.icon}
+                            </div>
                             <div className="flex-1">
                               <h3 className="text-lg font-semibold text-white">{quest.title}</h3>
                               <p className="text-gray-300 text-sm mb-3">{quest.description}</p>

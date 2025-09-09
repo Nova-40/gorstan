@@ -18,7 +18,12 @@ export class SaveManager {
    * @returns True if valid, false otherwise.
    */
   static validate(saveFile: SaveFile): boolean {
-    if (!saveFile || typeof saveFile.version !== 'number' || !saveFile.playerName || !saveFile.timestamp) {
+    if (
+      !saveFile ||
+      typeof saveFile.version !== 'number' ||
+      !saveFile.playerName ||
+      !saveFile.timestamp
+    ) {
       return false;
     }
     return true;

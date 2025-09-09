@@ -6,7 +6,9 @@
 /**
  * Type-safe Object.entries wrapper that preserves key types
  */
-export function typedEntries<T extends Record<string, unknown>>(obj: T): Array<[keyof T, T[keyof T]]> {
+export function typedEntries<T extends Record<string, unknown>>(
+  obj: T,
+): Array<[keyof T, T[keyof T]]> {
   return Object.entries(obj) as Array<[keyof T, T[keyof T]]>;
 }
 
@@ -31,11 +33,11 @@ export function typedValues<T extends Record<string, unknown>>(obj: T): Array<T[
 export function safeObjectIteration<T extends Record<string, unknown>, R>(
   obj: T,
   callback: (key: keyof T, value: T[keyof T], index: number) => R,
-  errorHandler?: (error: Error, key: keyof T) => void
+  errorHandler?: (error: Error, key: keyof T) => void,
 ): R[] {
   const results: R[] = [];
   const entries = typedEntries(obj);
-  
+
   for (let i = 0; i < entries.length; i++) {
     const [key, value] = entries[i];
     try {
@@ -49,7 +51,7 @@ export function safeObjectIteration<T extends Record<string, unknown>, R>(
       }
     }
   }
-  
+
   return results;
 }
 
@@ -58,16 +60,16 @@ export function safeObjectIteration<T extends Record<string, unknown>, R>(
  */
 export function filterObject<T extends Record<string, unknown>>(
   obj: T,
-  predicate: (key: keyof T, value: T[keyof T]) => boolean
+  predicate: (key: keyof T, value: T[keyof T]) => boolean,
 ): Partial<T> {
   const filtered: Partial<T> = {};
-  
+
   for (const [key, value] of typedEntries(obj)) {
     if (predicate(key, value)) {
       filtered[key] = value;
     }
   }
-  
+
   return filtered;
 }
 
@@ -76,14 +78,14 @@ export function filterObject<T extends Record<string, unknown>>(
  */
 export function mapObjectValues<T extends Record<string, unknown>, U>(
   obj: T,
-  mapper: (value: T[keyof T], key: keyof T) => U
+  mapper: (value: T[keyof T], key: keyof T) => U,
 ): Record<keyof T, U> {
   const mapped = {} as Record<keyof T, U>;
-  
+
   for (const [key, value] of typedEntries(obj)) {
     mapped[key] = mapper(value, key);
   }
-  
+
   return mapped;
 }
 
@@ -92,10 +94,10 @@ export function mapObjectValues<T extends Record<string, unknown>, U>(
  */
 export function groupBy<T, K extends string | number | symbol>(
   items: T[],
-  keyFn: (item: T) => K
+  keyFn: (item: T) => K,
 ): Record<K, T[]> {
   const groups = {} as Record<K, T[]>;
-  
+
   for (const item of items) {
     const key = keyFn(item);
     if (!groups[key]) {
@@ -103,7 +105,7 @@ export function groupBy<T, K extends string | number | symbol>(
     }
     groups[key].push(item);
   }
-  
+
   return groups;
 }
 
@@ -114,15 +116,15 @@ export function deepClone<T>(obj: T): T {
   if (obj === null || typeof obj !== 'object') {
     return obj;
   }
-  
+
   if (obj instanceof Date) {
     return new Date(obj.getTime()) as unknown as T;
   }
-  
+
   if (obj instanceof Array) {
-    return obj.map(item => deepClone(item)) as unknown as T;
+    return obj.map((item) => deepClone(item)) as unknown as T;
   }
-  
+
   if (typeof obj === 'object') {
     const cloned = {} as T;
     for (const key in obj) {
@@ -132,7 +134,7 @@ export function deepClone<T>(obj: T): T {
     }
     return cloned;
   }
-  
+
   return obj;
 }
 
@@ -142,18 +144,18 @@ export function deepClone<T>(obj: T): T {
 export function safeGet<T>(
   obj: Record<string, unknown> | null | undefined,
   path: string,
-  defaultValue?: T
+  defaultValue?: T,
 ): T | undefined {
   const keys = path.split('.');
   let current: unknown = obj;
-  
+
   for (const key of keys) {
     if (current === null || current === undefined || typeof current !== 'object') {
       return defaultValue;
     }
     current = (current as Record<string, unknown>)[key];
   }
-  
+
   return current !== undefined ? (current as T) : defaultValue;
 }
 
@@ -162,7 +164,7 @@ export function safeGet<T>(
  */
 export function countMatching<T extends Record<string, unknown>>(
   obj: T,
-  predicate: (key: keyof T, value: T[keyof T]) => boolean
+  predicate: (key: keyof T, value: T[keyof T]) => boolean,
 ): number {
   let count = 0;
   for (const [key, value] of typedEntries(obj)) {
@@ -177,30 +179,43 @@ export function countMatching<T extends Record<string, unknown>>(
  * Check if object is empty
  */
 export function isEmpty(obj: unknown): boolean {
-  if (obj === null || obj === undefined) return true;
-  if (Array.isArray(obj)) return obj.length === 0;
-  if (typeof obj === 'object') return Object.keys(obj).length === 0;
+  if (obj === null || obj === undefined) {
+    return true;
+  }
+  if (Array.isArray(obj)) {
+    return obj.length === 0;
+  }
+  if (typeof obj === 'object') {
+    return Object.keys(obj).length === 0;
+  }
   return false;
 }
 
 /**
  * Merge objects deeply (for configuration merging)
  */
-export function deepMerge<T extends Record<string, unknown>>(target: T, ...sources: Partial<T>[]): T {
-  if (!sources.length) return target;
+export function deepMerge<T extends Record<string, unknown>>(
+  target: T,
+  ...sources: Partial<T>[]
+): T {
+  if (!sources.length) {
+    return target;
+  }
   const source = sources.shift();
-  
+
   if (isObject(target) && isObject(source)) {
     for (const key in source) {
       if (isObject(source[key])) {
-        if (!target[key]) Object.assign(target, { [key]: {} });
+        if (!target[key]) {
+          Object.assign(target, { [key]: {} });
+        }
         deepMerge(target[key] as Record<string, unknown>, source[key] as Record<string, unknown>);
       } else {
         Object.assign(target, { [key]: source[key] });
       }
     }
   }
-  
+
   return deepMerge(target, ...sources);
 }
 

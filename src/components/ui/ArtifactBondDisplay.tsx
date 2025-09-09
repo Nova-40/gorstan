@@ -17,27 +17,40 @@ const ArtifactBondDisplay: React.FC<ArtifactBondDisplayProps> = ({
   bond,
   recentCommunications,
   onAddNote,
-  className = ''
+  className = '',
 }) => {
   const [showDetails, setShowDetails] = useState(false);
   const [newNote, setNewNote] = useState('');
   const [showNoteInput, setShowNoteInput] = useState(false);
 
   const getBondLevelColor = (level: number) => {
-    if (level >= 80) return 'text-purple-400 bg-purple-900';
-    if (level >= 60) return 'text-blue-400 bg-blue-900';
-    if (level >= 40) return 'text-green-400 bg-green-900';
-    if (level >= 20) return 'text-yellow-400 bg-yellow-900';
+    if (level >= 80) {
+      return 'text-purple-400 bg-purple-900';
+    }
+    if (level >= 60) {
+      return 'text-blue-400 bg-blue-900';
+    }
+    if (level >= 40) {
+      return 'text-green-400 bg-green-900';
+    }
+    if (level >= 20) {
+      return 'text-yellow-400 bg-yellow-900';
+    }
     return 'text-gray-400 bg-gray-900';
   };
 
   const getBondTypeDescription = (type: string) => {
     switch (type) {
-      case 'resonance': return 'Initial connection and harmony';
-      case 'mastery': return 'Skilled partnership and understanding';
-      case 'symbiosis': return 'Deep mutual dependence and growth';
-      case 'transcendence': return 'Unified consciousness and purpose';
-      default: return 'Unknown bond type';
+      case 'resonance':
+        return 'Initial connection and harmony';
+      case 'mastery':
+        return 'Skilled partnership and understanding';
+      case 'symbiosis':
+        return 'Deep mutual dependence and growth';
+      case 'transcendence':
+        return 'Unified consciousness and purpose';
+      default:
+        return 'Unknown bond type';
     }
   };
 
@@ -48,12 +61,15 @@ const ArtifactBondDisplay: React.FC<ArtifactBondDisplayProps> = ({
         <span>{value.toFixed(0)}%</span>
       </div>
       <div className="w-full bg-gray-700 rounded-full h-2">
-        <div 
+        <div
           className={`h-2 rounded-full transition-all duration-300 ${
-            trait === 'communicative' ? 'bg-blue-500' :
-            trait === 'protective' ? 'bg-green-500' :
-            trait === 'autonomous' ? 'bg-purple-500' :
-            'bg-orange-500'
+            trait === 'communicative'
+              ? 'bg-blue-500'
+              : trait === 'protective'
+                ? 'bg-green-500'
+                : trait === 'autonomous'
+                  ? 'bg-purple-500'
+                  : 'bg-orange-500'
           }`}
           style={{ width: `${value}%` }}
         />
@@ -66,9 +82,13 @@ const ArtifactBondDisplay: React.FC<ArtifactBondDisplayProps> = ({
     const diff = now - timestamp;
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    
-    if (days > 0) return `${days}d ${hours}h ago`;
-    if (hours > 0) return `${hours}h ago`;
+
+    if (days > 0) {
+      return `${days}d ${hours}h ago`;
+    }
+    if (hours > 0) {
+      return `${hours}h ago`;
+    }
     return 'Recently';
   };
 
@@ -86,12 +106,18 @@ const ArtifactBondDisplay: React.FC<ArtifactBondDisplayProps> = ({
 
   const getCommunicationIcon = (type: string) => {
     switch (type) {
-      case 'whisper': return '🌙';
-      case 'feeling': return '💫';
-      case 'vision': return '👁️';
-      case 'symbol': return '✨';
-      case 'direct': return '💬';
-      default: return '❓';
+      case 'whisper':
+        return '🌙';
+      case 'feeling':
+        return '💫';
+      case 'vision':
+        return '👁️';
+      case 'symbol':
+        return '✨';
+      case 'direct':
+        return '💬';
+      default:
+        return '❓';
     }
   };
 
@@ -119,14 +145,12 @@ const ArtifactBondDisplay: React.FC<ArtifactBondDisplayProps> = ({
           </span>
         </div>
         <div className="w-full bg-gray-700 rounded-full h-3">
-          <div 
+          <div
             className={`h-3 rounded-full transition-all duration-500 ${getBondLevelColor(bond.bondLevel).split(' ')[1]}`}
             style={{ width: `${bond.bondLevel}%` }}
           />
         </div>
-        <div className="text-xs text-gray-400 mt-1">
-          {getBondTypeDescription(bond.bondType)}
-        </div>
+        <div className="text-xs text-gray-400 mt-1">{getBondTypeDescription(bond.bondType)}</div>
       </div>
 
       {/* Quick Stats */}
@@ -174,7 +198,7 @@ const ArtifactBondDisplay: React.FC<ArtifactBondDisplayProps> = ({
               <h4 className="text-sm font-bold text-gray-300 mb-3">Artifact Personality</h4>
               <div className="space-y-2">
                 {Object.entries(bond.personality).map(([trait, value]) =>
-                  getPersonalityBar(trait, value)
+                  getPersonalityBar(trait, value),
                 )}
               </div>
             </div>
@@ -198,7 +222,9 @@ const ArtifactBondDisplay: React.FC<ArtifactBondDisplayProps> = ({
               </div>
               <div>
                 <span className="text-gray-400">Emergency:</span>
-                <span className="ml-2 text-orange-400">{bond.experiences.emergencyActivations}</span>
+                <span className="ml-2 text-orange-400">
+                  {bond.experiences.emergencyActivations}
+                </span>
               </div>
             </div>
           </div>
@@ -209,7 +235,9 @@ const ArtifactBondDisplay: React.FC<ArtifactBondDisplayProps> = ({
             <div className="text-xs text-gray-400 space-y-1">
               <div>Formed: {formatTimeAgo(bond.formationTime)}</div>
               <div>Last Interaction: {formatTimeAgo(bond.lastInteraction)}</div>
-              <div>Bond Type: <span className="capitalize text-gray-300">{bond.bondType}</span></div>
+              <div>
+                Bond Type: <span className="capitalize text-gray-300">{bond.bondType}</span>
+              </div>
             </div>
           </div>
 
@@ -226,7 +254,7 @@ const ArtifactBondDisplay: React.FC<ArtifactBondDisplayProps> = ({
                 </button>
               )}
             </div>
-            
+
             {showNoteInput && (
               <div className="mb-3">
                 <div className="flex space-x-2">

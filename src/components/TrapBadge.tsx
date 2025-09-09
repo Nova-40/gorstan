@@ -6,7 +6,9 @@ type TrapBadgeProps = {
 };
 
 const TrapBadge: React.FC<TrapBadgeProps> = ({ traps }) => {
-  if (traps.length === 0) return null;
+  if (traps.length === 0) {
+    return null;
+  }
 
   return (
     <div className="p-2 bg-red-500 text-white rounded-md">

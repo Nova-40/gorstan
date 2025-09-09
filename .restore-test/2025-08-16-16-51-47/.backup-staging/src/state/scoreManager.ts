@@ -19,38 +19,18 @@
 
 import { GameAction } from '../types/GameTypes';
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 let globalDispatch: React.Dispatch<GameAction> | null = null;
-
-
 
 // --- Function: initializeScoreManager ---
 export function initializeScoreManager(dispatch: React.Dispatch<GameAction>): void {
   globalDispatch = dispatch;
 }
 
-
-
 // --- Function: updateScore ---
 export function updateScore(delta: number): void {
   if (globalDispatch) {
     globalDispatch({ type: 'UPDATE_SCORE', payload: delta });
 
-    
     if (delta > 0) {
       globalDispatch({
         type: 'ADD_MESSAGE',
@@ -59,7 +39,7 @@ export function updateScore(delta: number): void {
           text: `+${delta} points`,
           type: 'system',
           timestamp: Date.now(),
-        }
+        },
       });
     } else if (delta < 0) {
       globalDispatch({
@@ -69,13 +49,11 @@ export function updateScore(delta: number): void {
           text: `${delta} points`,
           type: 'error',
           timestamp: Date.now(),
-        }
+        },
       });
     }
   }
 }
-
-
 
 // --- Function: setScore ---
 export function setScore(value: number): void {
@@ -83,8 +61,6 @@ export function setScore(value: number): void {
     globalDispatch({ type: 'SET_SCORE', payload: value });
   }
 }
-
-
 
 // --- Function: resetScore ---
 export function resetScore(): void {
@@ -97,21 +73,15 @@ export function resetScore(): void {
         text: 'Score reset to 0',
         type: 'system',
         timestamp: Date.now(),
-      }
+      },
     });
   }
 }
 
-
-
 // --- Function: getCurrentScore ---
 export function getCurrentScore(): number {
-  
-  
   return 0;
 }
-
-
 
 // --- Function: applyScoreBonus ---
 export function applyScoreBonus(reason: string, amount: number): void {
@@ -124,17 +94,15 @@ export function applyScoreBonus(reason: string, amount: number): void {
         text: `Bonus: ${reason} (+${amount} points)`,
         type: 'achievement',
         timestamp: Date.now(),
-      }
+      },
     });
   }
 }
 
-
-
 // --- Function: applyScorePenalty ---
 export function applyScorePenalty(reason: string, amount: number): void {
   if (globalDispatch) {
-    updateScore(-Math.abs(amount)); 
+    updateScore(-Math.abs(amount));
     globalDispatch({
       type: 'ADD_MESSAGE',
       payload: {
@@ -142,7 +110,7 @@ export function applyScorePenalty(reason: string, amount: number): void {
         text: `Penalty: ${reason} (-${Math.abs(amount)} points)`,
         type: 'error',
         timestamp: Date.now(),
-      }
+      },
     });
   }
 }

@@ -21,7 +21,6 @@ import roomRegistry from '../rooms/roomRegistry';
 
 import type { Room } from '../types/Room';
 
-
 type RoomId = string;
 
 interface RoomDefinition {
@@ -34,23 +33,17 @@ interface RoomDefinition {
   npcs?: string[];
 }
 
-
-
-
 // Variable declaration
 const roomMap = new Map<RoomId, RoomDefinition>();
-
-
 
 // --- Function: isValidRoomId ---
 function isValidRoomId(id: string): boolean {
   return typeof id === 'string' && id.length > 0 && /^[a-z0-9_-]+$/i.test(id);
 }
 
-
 // --- Function: validateRoomSchema ---
 function validateRoomSchema(room: any): room is RoomDefinition {
-// JSX return block or main return
+  // JSX return block or main return
   return (
     room &&
     typeof room === 'object' &&
@@ -61,27 +54,23 @@ function validateRoomSchema(room: any): room is RoomDefinition {
   );
 }
 
-
 // --- Function: isNonEmptyString ---
 function isNonEmptyString(value: any): value is string {
   return typeof value === 'string' && value.trim().length > 0;
 }
 
-
-
 // --- Function: initializeRooms ---
 function initializeRooms(): void {
   console.log('[roomLoader] Initializing rooms...');
   console.log('[roomLoader] roomRegistry keys:', Object.keys(roomRegistry));
-  
+
   for (const [, room] of Object.entries(roomRegistry)) {
-    
     if (!room || typeof room.id !== 'string') {
       console.warn('[roomLoader] Skipping invalid room entry in registry:', room);
       continue;
     }
 
-// Variable declaration
+    // Variable declaration
     const roomId = room.id;
 
     if (!isValidRoomId(roomId)) {
@@ -94,34 +83,32 @@ function initializeRooms(): void {
       continue;
     }
 
-    
     if (roomMap.has(roomId)) {
       console.warn(`[roomLoader] Duplicate room ID detected: ${roomId}. Overwriting.`);
     }
 
     roomMap.set(roomId, room);
   }
-  
+
   console.log(`[roomLoader] Initialized ${roomMap.size} rooms`);
   if (roomMap.size === 0) {
     console.error('[roomLoader] No rooms were loaded! This is a critical error.');
   }
 }
 
-
 initializeRooms();
-
 
 // --- Function: loadRoomById ---
 export function loadRoomById(id: string): RoomDefinition | null {
-// Variable declaration
+  // Variable declaration
   const room = roomMap.get(id as RoomId) || null;
   if (!room) {
-    console.warn(`[roomLoader] Room transition failed: Room '${id}' does not exist. Falling back to 'controlnexus'.`);
+    console.warn(
+      `[roomLoader] Room transition failed: Room '${id}' does not exist. Falling back to 'controlnexus'.`,
+    );
   }
   return room;
 }
-
 
 // --- Function: validateRooms ---
 export function validateRooms(): string[] {
@@ -145,12 +132,12 @@ export function validateRooms(): string[] {
 // --- Function: getAllRoomsAsObject ---
 export function getAllRoomsAsObject(): Record<string, Room> {
   console.log('[roomLoader] getAllRoomsAsObject called, roomMap size:', roomMap.size);
-  
+
   if (roomMap.size === 0) {
     console.error('[roomLoader] roomMap is empty! Attempting to reinitialize...');
     initializeRooms();
   }
-  
+
   const obj: Record<string, Room> = {};
   for (const [id, room] of roomMap.entries()) {
     obj[id] = {
@@ -162,11 +149,15 @@ export function getAllRoomsAsObject(): Record<string, Room> {
       items: Array.isArray(room.items)
         ? (room.items as unknown as import('../types/Room.js').RoomItem[])
         : [],
-      npcs: Array.isArray(room.npcs) ? room.npcs.map(npc => typeof npc === 'string' ? { id: npc } as import('../types/Room.js').RoomNPC : npc) : [],
+      npcs: Array.isArray(room.npcs)
+        ? room.npcs.map((npc) =>
+            typeof npc === 'string' ? ({ id: npc } as import('../types/Room.js').RoomNPC) : npc,
+          )
+        : [],
       rooms: (room as any).rooms ?? [],
     };
   }
-  
+
   console.log('[roomLoader] Returning', Object.keys(obj).length, 'rooms');
   return obj;
 }

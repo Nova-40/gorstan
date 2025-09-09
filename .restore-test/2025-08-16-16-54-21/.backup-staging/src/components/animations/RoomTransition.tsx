@@ -21,14 +21,6 @@ import React, { useState, useEffect } from 'react';
 
 import { motion, AnimatePresence } from 'framer-motion';
 
-
-
-
-
-
-
-
-
 interface RoomTransitionProps {
   isActive: boolean;
   transitionType: 'zone_change' | 'portal' | 'normal' | 'chair_portal';
@@ -42,32 +34,28 @@ const RoomTransition: React.FC<RoomTransitionProps> = ({
   transitionType,
   fromZone,
   toZone,
-  onComplete
+  onComplete,
 }) => {
   const [phase, setPhase] = useState<'start' | 'transition' | 'arrival' | 'complete'>('start');
 
-// React effect hook
+  // React effect hook
   useEffect(() => {
     if (!isActive) {
       setPhase('complete');
       return;
     }
 
-// Variable declaration
+    // Variable declaration
     const timeline = async () => {
-      
       setPhase('start');
-      await new Promise(resolve => setTimeout(resolve, 200));
+      await new Promise((resolve) => setTimeout(resolve, 200));
 
-      
       setPhase('transition');
-      await new Promise(resolve => setTimeout(resolve, getTransitionDuration()));
+      await new Promise((resolve) => setTimeout(resolve, getTransitionDuration()));
 
-      
       setPhase('arrival');
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await new Promise((resolve) => setTimeout(resolve, 300));
 
-      
       setPhase('complete');
       onComplete();
     };
@@ -75,18 +63,23 @@ const RoomTransition: React.FC<RoomTransitionProps> = ({
     timeline();
   }, [isActive, onComplete]);
 
-// Variable declaration
+  // Variable declaration
   const getTransitionDuration = () => {
     switch (transitionType) {
-      case 'zone_change': return 3000; // Increased from 2000ms
-      case 'portal': return 2500; // Increased from 1800ms
-      case 'chair_portal': return 3200; // Increased from 2200ms
-      case 'normal': return 1000; // Increased from 600ms
-      default: return 1200; // Increased from 800ms
+      case 'zone_change':
+        return 3000; // Increased from 2000ms
+      case 'portal':
+        return 2500; // Increased from 1800ms
+      case 'chair_portal':
+        return 3200; // Increased from 2200ms
+      case 'normal':
+        return 1000; // Increased from 600ms
+      default:
+        return 1200; // Increased from 800ms
     }
   };
 
-// Variable declaration
+  // Variable declaration
   const getAnimationVariants = () => {
     switch (transitionType) {
       case 'zone_change':
@@ -96,9 +89,9 @@ const RoomTransition: React.FC<RoomTransitionProps> = ({
             opacity: 0.3,
             scale: 1.1,
             rotateY: 180,
-            background: 'linear-gradient(45deg, #1a1a2e, #16213e, #0f3460)'
+            background: 'linear-gradient(45deg, #1a1a2e, #16213e, #0f3460)',
           },
-          arrival: { opacity: 1, scale: 1, rotateY: 0 }
+          arrival: { opacity: 1, scale: 1, rotateY: 0 },
         };
 
       case 'portal':
@@ -108,9 +101,9 @@ const RoomTransition: React.FC<RoomTransitionProps> = ({
             opacity: 0.2,
             scale: 0.8,
             rotate: 360,
-            background: 'radial-gradient(circle, #4a00e0, #8e2de2, #da00ff)'
+            background: 'radial-gradient(circle, #4a00e0, #8e2de2, #da00ff)',
           },
-          arrival: { opacity: 1, scale: 1, rotate: 0 }
+          arrival: { opacity: 1, scale: 1, rotate: 0 },
         };
 
       case 'chair_portal':
@@ -120,39 +113,43 @@ const RoomTransition: React.FC<RoomTransitionProps> = ({
             opacity: 0.1,
             scale: 1.2,
             y: -20,
-            background: 'conic-gradient(from 0deg, #00d4aa, #00a0b0, #005f73, #001219, #00d4aa)'
+            background: 'conic-gradient(from 0deg, #00d4aa, #00a0b0, #005f73, #001219, #00d4aa)',
           },
-          arrival: { opacity: 1, scale: 1, y: 0 }
+          arrival: { opacity: 1, scale: 1, y: 0 },
         };
 
       default:
         return {
           start: { opacity: 1 },
           transition: { opacity: 0.3, scale: 1.02 },
-          arrival: { opacity: 1, scale: 1 }
+          arrival: { opacity: 1, scale: 1 },
         };
     }
   };
 
-// Variable declaration
+  // Variable declaration
   const getTransitionText = () => {
     if (transitionType === 'zone_change' && fromZone && toZone) {
       return `Transitioning from ${fromZone} to ${toZone}...`;
     }
 
     switch (transitionType) {
-      case 'portal': return 'Stepping through the portal...';
-      case 'chair_portal': return 'Reality shifts around you...';
-      case 'zone_change': return 'Crossing dimensional boundaries...';
-      default: return 'Moving...';
+      case 'portal':
+        return 'Stepping through the portal...';
+      case 'chair_portal':
+        return 'Reality shifts around you...';
+      case 'zone_change':
+        return 'Crossing dimensional boundaries...';
+      default:
+        return 'Moving...';
     }
   };
 
-// Variable declaration
+  // Variable declaration
   const getBackgroundEffect = () => {
     switch (transitionType) {
       case 'zone_change':
-// JSX return block or main return
+        // JSX return block or main return
         return (
           <motion.div
             className="absolute inset-0 bg-gradient-to-r from-purple-900 via-blue-900 to-indigo-900"
@@ -163,41 +160,43 @@ const RoomTransition: React.FC<RoomTransitionProps> = ({
         );
 
       case 'portal':
-// JSX return block or main return
+        // JSX return block or main return
         return (
           <motion.div
             className="absolute inset-0"
             style={{
-              background: 'radial-gradient(circle at center, rgba(74,0,224,0.8), rgba(142,45,226,0.6), rgba(218,0,255,0.4))'
+              background:
+                'radial-gradient(circle at center, rgba(74,0,224,0.8), rgba(142,45,226,0.6), rgba(218,0,255,0.4))',
             }}
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{
               opacity: phase === 'transition' ? 1 : 0,
-              scale: phase === 'transition' ? 1.5 : 0.5
+              scale: phase === 'transition' ? 1.5 : 0.5,
             }}
             transition={{ duration: 0.8 }}
           />
         );
 
       case 'chair_portal':
-// JSX return block or main return
+        // JSX return block or main return
         return (
           <motion.div
             className="absolute inset-0"
             style={{
-              background: 'conic-gradient(from 0deg, rgba(0,212,170,0.8), rgba(0,160,176,0.6), rgba(0,95,115,0.4), rgba(0,18,25,0.6))'
+              background:
+                'conic-gradient(from 0deg, rgba(0,212,170,0.8), rgba(0,160,176,0.6), rgba(0,95,115,0.4), rgba(0,18,25,0.6))',
             }}
             initial={{ opacity: 0, rotate: 0 }}
             animate={{
               opacity: phase === 'transition' ? 0.9 : 0,
-              rotate: phase === 'transition' ? 360 : 0
+              rotate: phase === 'transition' ? 360 : 0,
             }}
             transition={{ duration: 1.5 }}
           />
         );
 
       default:
-// JSX return block or main return
+        // JSX return block or main return
         return (
           <motion.div
             className="absolute inset-0 bg-black"
@@ -209,10 +208,10 @@ const RoomTransition: React.FC<RoomTransitionProps> = ({
     }
   };
 
-// Variable declaration
+  // Variable declaration
   const getParticleEffect = () => {
     if (transitionType === 'portal' || transitionType === 'chair_portal') {
-// JSX return block or main return
+      // JSX return block or main return
       return (
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           {Array.from({ length: 12 }).map((_, i) => (
@@ -222,18 +221,22 @@ const RoomTransition: React.FC<RoomTransitionProps> = ({
               initial={{
                 x: Math.random() * window.innerWidth,
                 y: Math.random() * window.innerHeight,
-                opacity: 0
+                opacity: 0,
               }}
-              animate={phase === 'transition' ? {
-                x: window.innerWidth / 2,
-                y: window.innerHeight / 2,
-                opacity: [0, 1, 0],
-                scale: [0.5, 1.5, 0]
-              } : {}}
+              animate={
+                phase === 'transition'
+                  ? {
+                      x: window.innerWidth / 2,
+                      y: window.innerHeight / 2,
+                      opacity: [0, 1, 0],
+                      scale: [0.5, 1.5, 0],
+                    }
+                  : {}
+              }
               transition={{
                 duration: 1.5,
                 delay: i * 0.1,
-                ease: "easeInOut"
+                ease: 'easeInOut',
               }}
             />
           ))}
@@ -247,10 +250,10 @@ const RoomTransition: React.FC<RoomTransitionProps> = ({
     return null;
   }
 
-// Variable declaration
+  // Variable declaration
   const variants = getAnimationVariants();
 
-// JSX return block or main return
+  // JSX return block or main return
   return (
     <AnimatePresence>
       <motion.div
@@ -270,7 +273,7 @@ const RoomTransition: React.FC<RoomTransitionProps> = ({
           animate={phase}
           transition={{
             duration: phase === 'transition' ? getTransitionDuration() / 1000 : 0.3,
-            ease: "easeInOut"
+            ease: 'easeInOut',
           }}
         >
           <motion.h2
@@ -282,7 +285,9 @@ const RoomTransition: React.FC<RoomTransitionProps> = ({
             {getTransitionText()}
           </motion.h2>
 
-          {(transitionType === 'zone_change' || transitionType === 'portal' || transitionType === 'chair_portal') && (
+          {(transitionType === 'zone_change' ||
+            transitionType === 'portal' ||
+            transitionType === 'chair_portal') && (
             <motion.div
               className="w-16 h-1 bg-white mx-auto rounded-full overflow-hidden"
               initial={{ width: 0 }}

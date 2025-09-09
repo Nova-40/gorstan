@@ -57,7 +57,7 @@ const dataMap: Record<string, CelebrationData> = {
   buddhist: buddhistData,
   sikh: sikhData,
   shinto: shintoData,
-  seasonal: seasonalData
+  seasonal: seasonalData,
 };
 
 /**
@@ -67,7 +67,7 @@ export async function loadCelebrationData(tradition: string): Promise<Celebratio
   if (celebrationCache.has(tradition)) {
     return celebrationCache.get(tradition)!;
   }
-  
+
   try {
     const data = dataMap[tradition] || {};
     celebrationCache.set(tradition, data);
@@ -85,7 +85,7 @@ export async function loadCelebrationIndex(): Promise<CelebrationIndex | null> {
   if (indexCache) {
     return indexCache;
   }
-  
+
   try {
     indexCache = indexData as CelebrationIndex;
     return indexCache;
@@ -109,23 +109,23 @@ export function isDateInSpan(date: Date, span: Span): boolean {
 export async function getActiveCelebrations(date: Date = new Date()): Promise<Span[]> {
   const index = await loadCelebrationIndex();
   if (!index) return [];
-  
+
   const activeCelebrations: Span[] = [];
-  
+
   // Check all traditions
   for (const [traditionName, holidays] of Object.entries(index.traditions)) {
     const traditionData = await loadCelebrationData(traditionName);
-    
+
     // Check each holiday type in the tradition
     for (const holidayType of holidays) {
       const spans = traditionData[holidayType] || [];
-      
+
       // Find active spans for this date
-      const activeSpans = spans.filter(span => isDateInSpan(date, span));
+      const activeSpans = spans.filter((span) => isDateInSpan(date, span));
       activeCelebrations.push(...activeSpans);
     }
   }
-  
+
   return activeCelebrations;
 }
 
@@ -143,18 +143,18 @@ export async function hasCelebrations(date: Date = new Date()): Promise<boolean>
 export async function getCelebrationById(id: string): Promise<Span | null> {
   const index = await loadCelebrationIndex();
   if (!index) return null;
-  
+
   // Search through all traditions for the ID
   for (const [traditionName, holidays] of Object.entries(index.traditions)) {
     const traditionData = await loadCelebrationData(traditionName);
-    
+
     for (const holidayType of holidays) {
       const spans = traditionData[holidayType] || [];
-      const found = spans.find(span => span.id === id);
+      const found = spans.find((span) => span.id === id);
       if (found) return found;
     }
   }
-  
+
   return null;
 }
 
@@ -163,7 +163,7 @@ export async function getCelebrationById(id: string): Promise<Span | null> {
  */
 export const CELEBRATION_STORAGE_KEYS = {
   DISMISSED_CELEBRATIONS: 'gorstan_dismissed_celebrations',
-  CELEBRATION_PREFERENCES: 'gorstan_celebration_preferences'
+  CELEBRATION_PREFERENCES: 'gorstan_celebration_preferences',
 } as const;
 
 /**
@@ -186,12 +186,12 @@ export function dismissCelebration(celebrationId: string): void {
   try {
     const dismissed = localStorage.getItem(CELEBRATION_STORAGE_KEYS.DISMISSED_CELEBRATIONS);
     const dismissedList = dismissed ? JSON.parse(dismissed) : [];
-    
+
     if (!dismissedList.includes(celebrationId)) {
       dismissedList.push(celebrationId);
       localStorage.setItem(
         CELEBRATION_STORAGE_KEYS.DISMISSED_CELEBRATIONS,
-        JSON.stringify(dismissedList)
+        JSON.stringify(dismissedList),
       );
     }
   } catch (error) {
@@ -216,18 +216,20 @@ export function clearDismissedCelebrations(): void {
 export function getCelebrationPreferences(): Record<string, boolean> {
   try {
     const prefs = localStorage.getItem(CELEBRATION_STORAGE_KEYS.CELEBRATION_PREFERENCES);
-    return prefs ? JSON.parse(prefs) : {
-      // Default to showing all traditions
-      christian: true,
-      islamic: true,
-      jewish: true,
-      chinese: true,
-      hindu: true,
-      buddhist: true,
-      sikh: true,
-      shinto: true,
-      seasonal: true
-    };
+    return prefs
+      ? JSON.parse(prefs)
+      : {
+          // Default to showing all traditions
+          christian: true,
+          islamic: true,
+          jewish: true,
+          chinese: true,
+          hindu: true,
+          buddhist: true,
+          sikh: true,
+          shinto: true,
+          seasonal: true,
+        };
   } catch {
     return {};
   }
@@ -240,7 +242,7 @@ export function saveCelebrationPreferences(preferences: Record<string, boolean>)
   try {
     localStorage.setItem(
       CELEBRATION_STORAGE_KEYS.CELEBRATION_PREFERENCES,
-      JSON.stringify(preferences)
+      JSON.stringify(preferences),
     );
   } catch (error) {
     console.warn('Could not save celebration preferences:', error);

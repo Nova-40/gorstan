@@ -28,13 +28,16 @@ const CommandInput: React.FC<CommandInputProps> = ({ onCommand, playerName }) =>
   const [input, setInput] = useState('');
 
   // Optimized submit handler with useCallback
-  const handleSubmit = useCallback((e: React.FormEvent) => {
-    e.preventDefault();
-    if (input.trim()) {
-      onCommand(input.trim());
-      setInput('');
-    }
-  }, [input, onCommand]);
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      if (input.trim()) {
+        onCommand(input.trim());
+        setInput('');
+      }
+    },
+    [input, onCommand],
+  );
 
   // Optimized input change handler
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,10 +45,7 @@ const CommandInput: React.FC<CommandInputProps> = ({ onCommand, playerName }) =>
   }, []);
 
   // Memoized placeholder text
-  const placeholderText = useMemo(() => 
-    `Enter command, ${playerName}`, 
-    [playerName]
-  );
+  const placeholderText = useMemo(() => `Enter command, ${playerName}`, [playerName]);
 
   return (
     <form onSubmit={handleSubmit} className="w-full">

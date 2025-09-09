@@ -39,12 +39,10 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
   const { state: timeboxState, pause: pauseTimer } = useTimebox(
     {
       targetMinutes: route.targetMinutes,
-      warningThresholds: route.targetMinutes === 10 ? [5, 2, 1] : 
-                         route.targetMinutes === 30 ? [10, 5, 2] : 
-                         [3, 1],
+      warningThresholds:
+        route.targetMinutes === 10 ? [5, 2, 1] : route.targetMinutes === 30 ? [10, 5, 2] : [3, 1],
       allowOvertime: true,
-      overtimeGracePeriod: route.targetMinutes === 10 ? 2 : 
-                           route.targetMinutes === 30 ? 5 : 3,
+      overtimeGracePeriod: route.targetMinutes === 10 ? 2 : route.targetMinutes === 30 ? 5 : 3,
     },
     {
       onWarning: (state) => {
@@ -57,7 +55,7 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
       onExpired: () => {
         console.log('Time expired - adventure ending');
       },
-    }
+    },
   );
 
   const { progress: objectivesProgress } = useObjectives(route, {
@@ -88,22 +86,32 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
   };
 
   const getRouteType = (routeId: string): 'demo' | 'short10' | 'short30' | 'full' => {
-    if (routeId === 'demo') return 'demo';
-    if (routeId === 'full') return 'full';
-    if (routeId.startsWith('short10')) return 'short10';
-    if (routeId.startsWith('short30')) return 'short30';
+    if (routeId === 'demo') {
+      return 'demo';
+    }
+    if (routeId === 'full') {
+      return 'full';
+    }
+    if (routeId.startsWith('short10')) {
+      return 'short10';
+    }
+    if (routeId.startsWith('short30')) {
+      return 'short30';
+    }
     return 'demo';
   };
 
   // Collapsed view for minimal distraction
   if (isCollapsed) {
     return (
-      <div className={cn(
-        'in-game-hud-collapsed',
-        'fixed top-space-4 right-space-4 z-50',
-        'flex items-center gap-space-3',
-        className
-      )}>
+      <div
+        className={cn(
+          'in-game-hud-collapsed',
+          'fixed top-space-4 right-space-4 z-50',
+          'flex items-center gap-space-3',
+          className,
+        )}
+      >
         <Card variant="elevated" className="px-space-3 py-space-2">
           <div className="flex items-center gap-space-2 text-body-sm">
             {timeboxState && route.targetMinutes < 999 && (
@@ -121,7 +129,7 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
             </span>
           </div>
         </Card>
-        
+
         <Button
           variant="ghost"
           size="sm"
@@ -137,18 +145,20 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
   // Full HUD view
   return (
     <>
-      <div className={cn(
-        'in-game-hud',
-        'fixed top-0 left-0 right-0 z-40',
-        'bg-color-surface border-b border-color-border',
-        'shadow-elevation-md',
-        className
-      )}>
+      <div
+        className={cn(
+          'in-game-hud',
+          'fixed top-0 left-0 right-0 z-40',
+          'bg-color-surface border-b border-color-border',
+          'shadow-elevation-md',
+          className,
+        )}
+      >
         <div className="container mx-auto px-space-4 py-space-3">
           <div className="flex items-center justify-between">
             {/* Route Info */}
             <div className="flex items-center gap-space-4">
-              <RouteBadge 
+              <RouteBadge
                 routeType={getRouteType(route.id)}
                 difficulty={route.difficulty}
                 duration={route.targetMinutes}
@@ -158,7 +168,9 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
                   {route.label}
                 </h2>
                 <div className="flex items-center gap-space-2 text-body-xs text-color-text-secondary">
-                  <span>Progress: {objectivesProgress?.completedRequired}/{objectivesProgress?.required}</span>
+                  <span>
+                    Progress: {objectivesProgress?.completedRequired}/{objectivesProgress?.required}
+                  </span>
                   {route.hintPolicy !== 'off' && (
                     <>
                       <span>•</span>
@@ -173,11 +185,15 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
             <div className="flex items-center gap-space-3">
               {timeboxState && route.targetMinutes < 999 && (
                 <div className="flex items-center gap-space-2">
-                  <Badge variant={
-                    timeboxState.isOvertime ? 'danger' :
-                    timeboxState.warningLevel === 'critical' ? 'warning' :
-                    'info'
-                  }>
+                  <Badge
+                    variant={
+                      timeboxState.isOvertime
+                        ? 'danger'
+                        : timeboxState.warningLevel === 'critical'
+                          ? 'warning'
+                          : 'info'
+                    }
+                  >
                     {timeboxState.remainingMinutes}m left
                   </Badge>
                   <Countdown
@@ -189,7 +205,7 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
                   />
                 </div>
               )}
-              
+
               <div className="flex gap-space-2">
                 <Button variant="outline" size="sm" onClick={handlePause}>
                   Pause
@@ -204,17 +220,21 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
           {/* Objectives Bar */}
           <div className="mt-space-3 border-t border-color-border pt-space-3">
             <ObjectiveList
-              objectives={objectivesProgress?.objectives.slice(0, 3).map(obj => ({
-                id: obj.id,
-                title: obj.label,
-                description: obj.description,
-                completed: obj.completed,
-                required: obj.required,
-                progress: obj.progress ? {
-                  current: obj.progress,
-                  total: 100
-                } : undefined
-              })) || []}
+              objectives={
+                objectivesProgress?.objectives.slice(0, 3).map((obj) => ({
+                  id: obj.id,
+                  title: obj.label,
+                  description: obj.description,
+                  completed: obj.completed,
+                  required: obj.required,
+                  progress: obj.progress
+                    ? {
+                        current: obj.progress,
+                        total: 100,
+                      }
+                    : undefined,
+                })) || []
+              }
               compact={true}
               className="text-body-sm"
             />
@@ -236,20 +256,15 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
       >
         <div className="space-y-space-4">
           <p className="text-body-md text-color-text-secondary">
-            Are you sure you want to exit? Your progress will be saved, but you'll need to restart the adventure.
+            Are you sure you want to exit? Your progress will be saved, but you'll need to restart
+            the adventure.
           </p>
-          
+
           <div className="flex gap-space-3 justify-end">
-            <Button
-              variant="outline"
-              onClick={() => setShowExitModal(false)}
-            >
+            <Button variant="outline" onClick={() => setShowExitModal(false)}>
               Cancel
             </Button>
-            <Button
-              variant="danger"
-              onClick={confirmExit}
-            >
+            <Button variant="danger" onClick={confirmExit}>
               Exit Adventure
             </Button>
           </div>
@@ -271,23 +286,25 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
             <Badge variant="secondary">
               {objectivesProgress?.completed}/{objectivesProgress?.total} Total
             </Badge>
-            <Badge variant="success">
-              {objectivesProgress?.completionRate}% Complete
-            </Badge>
+            <Badge variant="success">{objectivesProgress?.completionRate}% Complete</Badge>
           </div>
 
           <ObjectiveList
-            objectives={objectivesProgress?.objectives.map(obj => ({
-              id: obj.id,
-              title: obj.label,
-              description: obj.description,
-              completed: obj.completed,
-              required: obj.required,
-              progress: obj.progress ? {
-                current: obj.progress,
-                total: 100
-              } : undefined
-            })) || []}
+            objectives={
+              objectivesProgress?.objectives.map((obj) => ({
+                id: obj.id,
+                title: obj.label,
+                description: obj.description,
+                completed: obj.completed,
+                required: obj.required,
+                progress: obj.progress
+                  ? {
+                      current: obj.progress,
+                      total: 100,
+                    }
+                  : undefined,
+              })) || []
+            }
             onObjectiveClick={(objective) => {
               if (!objective.completed && !objective.required) {
                 handleSkip(objective.id);
@@ -295,18 +312,16 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
             }}
             className="max-h-96 overflow-y-auto"
           />
-          
+
           {route.allowedSkips && route.allowedSkips > 0 && (
             <div className="mt-space-3 text-body-sm text-color-text-secondary">
-              <strong>Skip Options:</strong> Click on optional objectives to skip them.
-              Skips remaining: {route.allowedSkips}
+              <strong>Skip Options:</strong> Click on optional objectives to skip them. Skips
+              remaining: {route.allowedSkips}
             </div>
           )}
 
           <div className="flex justify-end">
-            <Button onClick={() => setShowObjectivesModal(false)}>
-              Close
-            </Button>
+            <Button onClick={() => setShowObjectivesModal(false)}>Close</Button>
           </div>
         </div>
       </Modal>

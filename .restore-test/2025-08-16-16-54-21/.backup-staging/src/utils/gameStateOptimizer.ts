@@ -46,7 +46,7 @@ class GameStateOptimizer {
       maxMessageLength: 100,
       compressionEnabled: true,
       memoryThreshold: 50, // MB
-      autoCleanupInterval: 5 // minutes
+      autoCleanupInterval: 5, // minutes
     };
 
     this.metrics = {
@@ -55,7 +55,7 @@ class GameStateOptimizer {
       cleanupCount: 0,
       lastOptimization: 0,
       sizeBefore: 0,
-      sizeAfter: 0
+      sizeAfter: 0,
     };
   }
 
@@ -65,9 +65,12 @@ class GameStateOptimizer {
   public startAutoOptimization(): void {
     if (this.cleanupTimer) return;
 
-    this.cleanupTimer = setInterval(() => {
-      this.performAutomaticCleanup();
-    }, this.settings.autoCleanupInterval * 60 * 1000);
+    this.cleanupTimer = setInterval(
+      () => {
+        this.performAutomaticCleanup();
+      },
+      this.settings.autoCleanupInterval * 60 * 1000,
+    );
 
     console.log('[GameStateOptimizer] Auto-optimization started');
   }
@@ -88,7 +91,7 @@ class GameStateOptimizer {
    */
   public optimizeState(state: LocalGameState): LocalGameState {
     console.log('[GameStateOptimizer] Starting state optimization...');
-    
+
     const startTime = performance.now();
     this.metrics.sizeBefore = this.calculateStateSize(state);
 
@@ -115,9 +118,11 @@ class GameStateOptimizer {
     this.metrics.cleanupCount++;
 
     const optimizationTime = performance.now() - startTime;
-    
+
     console.log(`[GameStateOptimizer] Optimization complete in ${optimizationTime.toFixed(2)}ms`);
-    console.log(`[GameStateOptimizer] Size reduction: ${this.metrics.sizeBefore} → ${this.metrics.sizeAfter} bytes (${((1 - this.metrics.sizeAfter / this.metrics.sizeBefore) * 100).toFixed(1)}% reduction)`);
+    console.log(
+      `[GameStateOptimizer] Size reduction: ${this.metrics.sizeBefore} → ${this.metrics.sizeAfter} bytes (${((1 - this.metrics.sizeAfter / this.metrics.sizeBefore) * 100).toFixed(1)}% reduction)`,
+    );
 
     return optimizedState;
   }
@@ -131,26 +136,25 @@ class GameStateOptimizer {
     }
 
     // Keep recent messages and important system messages
-    const importantMessages = state.history.filter(msg => 
-      msg.type === 'system' || 
-      msg.type === 'error' || 
-      msg.text.includes('achievement') ||
-      msg.text.includes('save')
+    const importantMessages = state.history.filter(
+      (msg) =>
+        msg.type === 'system' ||
+        msg.type === 'error' ||
+        msg.text.includes('achievement') ||
+        msg.text.includes('save'),
     );
 
     const recentMessages = state.history.slice(-this.settings.maxHistoryLength);
-    
+
     // Merge and deduplicate
     const optimizedHistory = [
       ...importantMessages.slice(0, 20), // Keep up to 20 important messages
-      ...recentMessages.slice(-this.settings.maxHistoryLength + 20)
-    ].filter((msg, index, arr) => 
-      arr.findIndex(m => m.id === msg.id) === index
-    );
+      ...recentMessages.slice(-this.settings.maxHistoryLength + 20),
+    ].filter((msg, index, arr) => arr.findIndex((m) => m.id === msg.id) === index);
 
     return {
       ...state,
-      history: optimizedHistory
+      history: optimizedHistory,
     };
   }
 
@@ -169,8 +173,13 @@ class GameStateOptimizer {
         // Skip false boolean flags to save space
         return;
       }
-      
-      if (value === 0 && typeof value === 'number' && !key.includes('Count') && !key.includes('Score')) {
+
+      if (
+        value === 0 &&
+        typeof value === 'number' &&
+        !key.includes('Count') &&
+        !key.includes('Score')
+      ) {
         // Skip zero numeric flags that aren't counters or scores
         return;
       }
@@ -185,7 +194,7 @@ class GameStateOptimizer {
 
     return {
       ...state,
-      flags: optimizedFlags
+      flags: optimizedFlags,
     };
   }
 
@@ -197,7 +206,7 @@ class GameStateOptimizer {
 
     // Remove rooms with zero visits
     const optimizedVisitCounts: Record<string, number> = {};
-    
+
     Object.entries(state.roomVisitCount).forEach(([roomId, count]) => {
       if (count > 0) {
         optimizedVisitCounts[roomId] = count;
@@ -206,7 +215,7 @@ class GameStateOptimizer {
 
     return {
       ...state,
-      roomVisitCount: optimizedVisitCounts
+      roomVisitCount: optimizedVisitCounts,
     };
   }
 
@@ -252,7 +261,7 @@ class GameStateOptimizer {
 
     return {
       ...state,
-      player: optimizedPlayer
+      player: optimizedPlayer,
     };
   }
 
@@ -263,8 +272,11 @@ class GameStateOptimizer {
     const cleaned = { ...state };
 
     // Remove undefined/null values from top level
-    Object.keys(cleaned).forEach(key => {
-      if (cleaned[key as keyof LocalGameState] === undefined || cleaned[key as keyof LocalGameState] === null) {
+    Object.keys(cleaned).forEach((key) => {
+      if (
+        cleaned[key as keyof LocalGameState] === undefined ||
+        cleaned[key as keyof LocalGameState] === null
+      ) {
         delete cleaned[key as keyof LocalGameState];
       }
     });
@@ -298,8 +310,10 @@ class GameStateOptimizer {
       const memoryUsageMB = memory.usedJSHeapSize / 1024 / 1024;
 
       if (memoryUsageMB > this.settings.memoryThreshold) {
-        console.log(`[GameStateOptimizer] Memory usage high (${memoryUsageMB.toFixed(1)}MB), triggering cleanup`);
-        
+        console.log(
+          `[GameStateOptimizer] Memory usage high (${memoryUsageMB.toFixed(1)}MB), triggering cleanup`,
+        );
+
         // Trigger garbage collection if available
         if ('gc' in window && typeof (window as any).gc === 'function') {
           (window as any).gc();
@@ -307,8 +321,10 @@ class GameStateOptimizer {
 
         // Reduce history length temporarily
         this.settings.maxHistoryLength = Math.max(50, this.settings.maxHistoryLength * 0.8);
-        
-        console.log(`[GameStateOptimizer] Reduced max history length to ${this.settings.maxHistoryLength}`);
+
+        console.log(
+          `[GameStateOptimizer] Reduced max history length to ${this.settings.maxHistoryLength}`,
+        );
       }
     }
   }
@@ -323,7 +339,7 @@ class GameStateOptimizer {
 
     // Simple compression: remove whitespace and use shorter property names
     const compressed = JSON.stringify(state);
-    
+
     // You could implement LZ-string or similar compression here
     // For now, just return the minified JSON
     return compressed;
@@ -365,7 +381,7 @@ class GameStateOptimizer {
    */
   public generateReport(): string {
     const metrics = this.getMetrics();
-    
+
     return `
 === GAME STATE OPTIMIZATION REPORT ===
 Generated: ${new Date().toLocaleString()}
@@ -395,7 +411,7 @@ export const gameStateOptimizer = new GameStateOptimizer();
 // Auto-start in development
 if (import.meta.env.DEV) {
   gameStateOptimizer.startAutoOptimization();
-  
+
   // Add global commands
   (window as any).gorstan = {
     ...(window as any).gorstan,
@@ -403,8 +419,8 @@ if (import.meta.env.DEV) {
       getMetrics: () => gameStateOptimizer.getMetrics(),
       getReport: () => console.log(gameStateOptimizer.generateReport()),
       getSettings: () => gameStateOptimizer.getSettings(),
-      updateSettings: (settings: any) => gameStateOptimizer.updateSettings(settings)
-    }
+      updateSettings: (settings: any) => gameStateOptimizer.updateSettings(settings),
+    },
   };
 }
 

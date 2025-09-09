@@ -10,8 +10,8 @@ const path = require('path');
 const glob = require('glob');
 
 // Find all test files
-const testFiles = glob.sync('src/**/*.{test,spec}.{ts,tsx}', { 
-  ignore: ['node_modules/**', 'dist/**', 'coverage/**'] 
+const testFiles = glob.sync('src/**/*.{test,spec}.{ts,tsx}', {
+  ignore: ['node_modules/**', 'dist/**', 'coverage/**'],
 });
 
 console.log(`Found ${testFiles.length} test files to convert`);
@@ -19,9 +19,9 @@ console.log(`Found ${testFiles.length} test files to convert`);
 // Conversion patterns
 const conversions = [
   // Import statements
-  [//// <reference types="jest" \/>/g, '/// <reference types="vitest" />'],
+  [/\/\/\/ <reference types=\"jest\" \/>/g, '/// <reference types="vitest" />'],
   [/import.*from ['"]jest['"];?/g, ''],
-  
+
   // Jest API conversions
   [/jest\.fn\(\)/g, 'vi.fn()'],
   [/jest\.spyOn\(/g, 'vi.spyOn('],
@@ -36,23 +36,24 @@ const conversions = [
 ];
 
 // Process each file
-testFiles.forEach(filePath => {
+testFiles.forEach((filePath) => {
   try {
     let content = fs.readFileSync(filePath, 'utf8');
     const originalContent = content;
-    
+
     // Apply all conversions
     conversions.forEach(([pattern, replacement]) => {
       content = content.replace(pattern, replacement);
     });
-    
+
     // Add vitest imports if we made jest-related changes
-    if (content !== originalContent && !content.includes('from \'vitest\'')) {
+    if (content !== originalContent && !content.includes("from 'vitest'")) {
       // Find existing imports and add vitest
       const importMatch = content.match(/import.*from ['"]@testing-library\/react['"];?\n/);
       if (importMatch) {
         const insertPoint = importMatch.index + importMatch[0].length;
-        const vitestImport = 'import { describe, it, expect, vi, beforeEach, afterEach, beforeAll, afterAll } from \'vitest\';\n';
+        const vitestImport =
+          "import { describe, it, expect, vi, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';\n";
         content = content.slice(0, insertPoint) + vitestImport + content.slice(insertPoint);
       } else {
         // Add at the top after existing imports
@@ -67,17 +68,20 @@ testFiles.forEach(filePath => {
             break;
           }
         }
-        lines.splice(insertIndex, 0, 'import { describe, it, expect, vi, beforeEach, afterEach, beforeAll, afterAll } from \'vitest\';');
+        lines.splice(
+          insertIndex,
+          0,
+          "import { describe, it, expect, vi, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';",
+        );
         content = lines.join('\n');
       }
     }
-    
+
     // Write the file back if changed
     if (content !== originalContent) {
       fs.writeFileSync(filePath, content);
       console.log(`✓ Converted ${filePath}`);
     }
-    
   } catch (error) {
     console.error(`✗ Error processing ${filePath}:`, error.message);
   }

@@ -19,16 +19,6 @@
 
 import { Room } from '../types/Room';
 
-
-
-
-
-
-
-
-
-
-
 export const stantonharcourt: Room = {
   image: 'stantonZone_stantonharcourt.png',
   description: [
@@ -56,34 +46,27 @@ export const stantonharcourt: Room = {
     west: 'glitchStanton',
   },
 
-  items: [
-    'ancient_rune',
-    'ivy_branch',
-    'stone_fragment',
-    'dimensional_key',
-  ],
+  items: ['ancient_rune', 'ivy_branch', 'stone_fragment', 'dimensional_key'],
 
   interactables: {
-    'stone_circle': {
+    stone_circle: {
       description: 'An ancient stone circle etched with faintly glowing runes.',
       actions: ['examine', 'touch', 'interpret'],
       requires: [],
     },
-    'cobblestone_streets': {
+    cobblestone_streets: {
       description: 'Winding streets lined with charming cottages and blooming flowers.',
       actions: ['examine', 'walk', 'listen'],
       requires: [],
     },
-    'village_cottages': {
+    village_cottages: {
       description: 'Charming cottages adorned with ivy and vibrant window boxes.',
       actions: ['examine', 'enter', 'knock'],
       requires: [],
     },
   },
 
-id: 'stantonharcourt'
+  id: 'stantonharcourt',
 };
 
 export default stantonharcourt;
-
-

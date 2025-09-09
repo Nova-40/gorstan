@@ -37,8 +37,8 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ items, onClose }
     return () => window.removeEventListener('keydown', handler);
   }, [onClose]);
 
-  const filteredItems = items.filter(item => 
-    item.toLowerCase().includes(searchFilter.toLowerCase())
+  const filteredItems = items.filter((item) =>
+    item.toLowerCase().includes(searchFilter.toLowerCase()),
   );
 
   // JSX return block or main return
@@ -54,7 +54,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ items, onClose }
             <XCircle className="close-icon" />
           </button>
         </div>
-        
+
         {items.length > 0 && (
           <div className="search-container">
             <Search className="search-icon" />
@@ -93,9 +93,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ items, onClose }
         </div>
 
         <div className="modal-footer">
-          <small className="help-text">
-            💡 Use the search box to quickly find items
-          </small>
+          <small className="help-text">💡 Use the search box to quickly find items</small>
         </div>
       </div>
     </div>

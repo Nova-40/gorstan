@@ -22,42 +22,45 @@ import { useGameState } from '../../state/gameState';
 
 // Variable declaration
 const DebugPanel = () => {
-// React state declaration
+  // React state declaration
   const [isOpen, setIsOpen] = useState(false);
   const { dispatch } = useGameState();
 
-// Variable declaration
+  // Variable declaration
   const handleRevealRooms = () => {
     // Reveal all visited rooms - dispatch appropriate action
     dispatch({ type: 'DEBUG_REVEAL_ROOMS' });
   };
 
-// Variable declaration
+  // Variable declaration
   const handleJump = (roomId: string) => {
     dispatch({ type: 'SET_ROOM', payload: { roomId } });
   };
 
-// Variable declaration
+  // Variable declaration
   const handleAddItem = (itemId: string) => {
     dispatch({ type: 'ADD_ITEM', payload: { item: itemId } });
   };
 
-// Variable declaration
+  // Variable declaration
   const handleSummonNPC = (npcId: string) => {
     dispatch({ type: 'SUMMON_NPC', payload: { npcId } });
   };
 
-// Variable declaration
+  // Variable declaration
   const handleKillPlayer = () => {
-    dispatch({ type: 'KILL_PLAYER', payload: { reason: "Debug override: instant death triggered." } });
+    dispatch({
+      type: 'KILL_PLAYER',
+      payload: { reason: 'Debug override: instant death triggered.' },
+    });
   };
 
-// Variable declaration
+  // Variable declaration
   const handleToggleAchievement = (id: string) => {
     dispatch({ type: 'TOGGLE_ACHIEVEMENT', payload: { achievementId: id } });
   };
 
-// JSX return block or main return
+  // JSX return block or main return
   return (
     <div className="debug-panel">
       <button onClick={() => setIsOpen(!isOpen)} className="debug-toggle">
@@ -71,7 +74,9 @@ const DebugPanel = () => {
           <button onClick={() => handleAddItem('coffee')}>Add Coffee</button>
           <button onClick={() => handleSummonNPC('polly')}>Call Polly</button>
           <button onClick={handleKillPlayer}>💀 Kill Player</button>
-          <button onClick={() => handleToggleAchievement('dominicMemory')}>Toggle Dominic Memory Achievement</button>
+          <button onClick={() => handleToggleAchievement('dominicMemory')}>
+            Toggle Dominic Memory Achievement
+          </button>
         </div>
       )}
     </div>

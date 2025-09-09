@@ -19,15 +19,6 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 
-
-
-
-
-
-
-
-
-
 type NPC = {
   id: string;
   name: string;
@@ -94,7 +85,6 @@ interface RoomEditorProps {
   availableFlags?: string[];
 }
 
-
 export default function RoomEditor({
   rooms,
   initialRoomId,
@@ -104,16 +94,15 @@ export default function RoomEditor({
   availableNPCs = [],
   availableFlags = [],
 }: RoomEditorProps): React.JSX.Element {
-// Variable declaration
+  // Variable declaration
   const roomIds = Object.keys(rooms);
-// Variable declaration
+  // Variable declaration
   const initialRoom =
     initialRoomId && rooms[initialRoomId] ? rooms[initialRoomId] : rooms[roomIds[0]];
 
-  
-// React state declaration
+  // React state declaration
   const [index, setIndex] = useState(() =>
-    initialRoomId ? Math.max(0, roomIds.indexOf(initialRoomId)) : 0
+    initialRoomId ? Math.max(0, roomIds.indexOf(initialRoomId)) : 0,
   );
   const [roomData, setRoomData] = useState<RoomData>(() => ({
     ...initialRoom,
@@ -126,16 +115,15 @@ export default function RoomEditor({
     description: Array.isArray(initialRoom.description)
       ? initialRoom.description
       : initialRoom.description
-      ? [initialRoom.description]
-      : [],
+        ? [initialRoom.description]
+        : [],
   }));
-// React state declaration
+  // React state declaration
   const [isDirty, setIsDirty] = useState(false);
-// React state declaration
+  // React state declaration
   const [showTypeScriptOutput, setShowTypeScriptOutput] = useState(false);
 
-  
-// Variable declaration
+  // Variable declaration
   const validateRoom = useCallback(
     (room: RoomData): ValidationResult => {
       const errors: ValidationResult['errors'] = [];
@@ -185,37 +173,34 @@ export default function RoomEditor({
         });
       }
       return {
-        isValid: errors.filter(e => e.severity === 'error').length === 0,
+        isValid: errors.filter((e) => e.severity === 'error').length === 0,
         errors,
       };
     },
-    [roomIds]
+    [roomIds],
   );
 
-// Variable declaration
+  // Variable declaration
   const validation = validateRoom(roomData);
 
-// React effect hook
+  // React effect hook
   useEffect(() => {
     if (onValidationChange) {
       onValidationChange(validation.isValid, validation.errors);
     }
-    
   }, [roomData, validateRoom, onValidationChange]);
 
-  
-// Variable declaration
+  // Variable declaration
   const updateRoomData = useCallback((updates: Partial<RoomData>) => {
-    setRoomData(prev => {
-// Variable declaration
+    setRoomData((prev) => {
+      // Variable declaration
       const next = { ...prev, ...updates };
       setIsDirty(true);
       return next;
     });
   }, []);
 
-  
-// Variable declaration
+  // Variable declaration
   const navigate = (direction: 'prev' | 'next') => {
     let newIndex = index;
     if (direction === 'prev') {
@@ -224,7 +209,7 @@ export default function RoomEditor({
       newIndex = (index + 1) % roomIds.length;
     }
     setIndex(newIndex);
-// Variable declaration
+    // Variable declaration
     const newRoom = rooms[roomIds[newIndex]];
     setRoomData({
       ...newRoom,
@@ -237,14 +222,13 @@ export default function RoomEditor({
       description: Array.isArray(newRoom.description)
         ? newRoom.description
         : newRoom.description
-        ? [newRoom.description]
-        : [],
+          ? [newRoom.description]
+          : [],
     });
     setIsDirty(false);
   };
 
-  
-// Variable declaration
+  // Variable declaration
   const handleSave = () => {
     if (onSave && validation.isValid) {
       onSave(roomData);
@@ -252,10 +236,9 @@ export default function RoomEditor({
     }
   };
 
-  
-// Variable declaration
+  // Variable declaration
   const generateTypeScriptCode = (room: RoomData): string => {
-// Variable declaration
+    // Variable declaration
     const code = `import { Room } from '../types/RoomTypes';
 
 const ${room.id}: Room = ${JSON.stringify(room, null, 2)};
@@ -265,8 +248,7 @@ export default ${room.id};
     return code;
   };
 
-  
-// JSX return block or main return
+  // JSX return block or main return
   return (
     <div className="room-editor">
       <div className="room-editor-container max-w-6xl mx-auto p-4 space-y-6">
@@ -321,9 +303,7 @@ export default ${room.id};
           </div>
         </div>
         {}
-        {validation.errors.length > 0 && (
-          <ValidationSummary validation={validation} />
-        )}
+        {validation.errors.length > 0 && <ValidationSummary validation={validation} />}
         {}
         {showTypeScriptOutput && (
           <TypeScriptOutput room={roomData} generateCode={generateTypeScriptCode} />
@@ -332,22 +312,12 @@ export default ${room.id};
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {}
           <div className="space-y-6">
-            <CoreInfoSection
-              room={roomData}
-              onUpdate={updateRoomData}
-              validation={validation}
-            />
-            <ImagePreviewSection
-              room={roomData}
-              onUpdate={updateRoomData}
-            />
+            <CoreInfoSection room={roomData} onUpdate={updateRoomData} validation={validation} />
+            <ImagePreviewSection room={roomData} onUpdate={updateRoomData} />
           </div>
           {}
           <div className="space-y-6">
-            <NarrativeSection
-              room={roomData}
-              onUpdate={updateRoomData}
-            />
+            <NarrativeSection room={roomData} onUpdate={updateRoomData} />
             <ItemsAndNPCsSection
               room={roomData}
               onUpdate={updateRoomData}
@@ -363,10 +333,7 @@ export default ${room.id};
               availableRooms={roomIds}
               validation={validation}
             />
-            <TrapsAndEventsSection
-              room={roomData}
-              onUpdate={updateRoomData}
-            />
+            <TrapsAndEventsSection room={roomData} onUpdate={updateRoomData} />
           </div>
         </div>
       </div>
@@ -374,15 +341,13 @@ export default ${room.id};
   );
 }
 
-
-
 // --- Function: ValidationSummary ---
 function ValidationSummary({ validation }: { validation: ValidationResult }) {
-// Variable declaration
-  const errors = validation.errors.filter(e => e.severity === 'error');
-// Variable declaration
-  const warnings = validation.errors.filter(e => e.severity === 'warning');
-// JSX return block or main return
+  // Variable declaration
+  const errors = validation.errors.filter((e) => e.severity === 'error');
+  // Variable declaration
+  const warnings = validation.errors.filter((e) => e.severity === 'warning');
+  // JSX return block or main return
   return (
     <div className="validation-summary bg-red-50 border border-red-200 rounded-lg p-4">
       <h3 className="font-semibold text-red-800 mb-2">Validation Issues</h3>
@@ -414,8 +379,6 @@ function ValidationSummary({ validation }: { validation: ValidationResult }) {
   );
 }
 
-
-
 // --- Function: TypeScriptOutput ---
 function TypeScriptOutput({
   room,
@@ -424,12 +387,12 @@ function TypeScriptOutput({
   room: RoomData;
   generateCode: (room: RoomData) => string;
 }) {
-// React state declaration
+  // React state declaration
   const [copied, setCopied] = useState(false);
-// Variable declaration
+  // Variable declaration
   const code = generateCode(room);
 
-// Variable declaration
+  // Variable declaration
   const copyToClipboard = useCallback(() => {
     try {
       navigator.clipboard.writeText(code);
@@ -440,7 +403,7 @@ function TypeScriptOutput({
     }
   }, [code]);
 
-// JSX return block or main return
+  // JSX return block or main return
   return (
     <div className="typescript-output bg-gray-50 border rounded-lg p-4">
       <div className="flex justify-between items-center mb-2">
@@ -448,9 +411,7 @@ function TypeScriptOutput({
         <button
           onClick={copyToClipboard}
           className={`px-3 py-1 rounded text-sm transition-colors ${
-            copied
-              ? 'bg-green-500 text-white'
-              : 'bg-blue-500 hover:bg-blue-600 text-white'
+            copied ? 'bg-green-500 text-white' : 'bg-blue-500 hover:bg-blue-600 text-white'
           }`}
         >
           {copied ? '✓ Copied!' : '📋 Copy'}
@@ -463,8 +424,6 @@ function TypeScriptOutput({
   );
 }
 
-
-
 // --- Function: CoreInfoSection ---
 function CoreInfoSection({
   room,
@@ -475,19 +434,16 @@ function CoreInfoSection({
   onUpdate: (updates: Partial<RoomData>) => void;
   validation: ValidationResult;
 }) {
-// Variable declaration
-  const getFieldError = (field: string) =>
-    validation.errors.find(e => e.field === field);
+  // Variable declaration
+  const getFieldError = (field: string) => validation.errors.find((e) => e.field === field);
 
-// JSX return block or main return
+  // JSX return block or main return
   return (
     <div className="core-info-section bg-gray-800 border rounded-lg p-4">
       <h3 className="font-semibold text-gray-800 mb-4">Core Information</h3>
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Room ID *
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Room ID *</label>
           <input
             type="text"
             value={room.id}
@@ -502,9 +458,7 @@ function CoreInfoSection({
           )}
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Title *
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
           <input
             type="text"
             value={room.title}
@@ -519,9 +473,7 @@ function CoreInfoSection({
           )}
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Zone *
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Zone *</label>
           <input
             type="text"
             value={room.zone}
@@ -540,12 +492,12 @@ function CoreInfoSection({
             Description * (one paragraph per line)
           </label>
           <textarea
-            value={Array.isArray(room.description) ? room.description.join('\n') : room.description || ''}
+            value={
+              Array.isArray(room.description) ? room.description.join('\n') : room.description || ''
+            }
             onChange={(e) =>
               onUpdate({
-                description: e.target.value
-                  .split(/\r?\n/)
-                  .filter(line => line.trim() !== ''),
+                description: e.target.value.split(/\r?\n/).filter((line) => line.trim() !== ''),
               })
             }
             className={`w-full p-2 border rounded-md h-24 ${
@@ -562,8 +514,6 @@ function CoreInfoSection({
   );
 }
 
-
-
 // --- Function: ImagePreviewSection ---
 function ImagePreviewSection({
   room,
@@ -572,18 +522,16 @@ function ImagePreviewSection({
   room: RoomData;
   onUpdate: (updates: Partial<RoomData>) => void;
 }) {
-// React state declaration
+  // React state declaration
   const [imageError, setImageError] = useState(false);
 
-// JSX return block or main return
+  // JSX return block or main return
   return (
     <div className="image-preview-section bg-gray-800 border rounded-lg p-4">
       <h3 className="font-semibold text-gray-800 mb-4">Image Preview</h3>
       <div className="space-y-3">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Image Path
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Image Path</label>
           <input
             type="text"
             value={room.image || ''}
@@ -622,8 +570,6 @@ function ImagePreviewSection({
   );
 }
 
-
-
 // --- Function: NarrativeSection ---
 function NarrativeSection({
   room,
@@ -632,15 +578,13 @@ function NarrativeSection({
   room: RoomData;
   onUpdate: (updates: Partial<RoomData>) => void;
 }) {
-// JSX return block or main return
+  // JSX return block or main return
   return (
     <div className="narrative-section bg-gray-800 border rounded-lg p-4">
       <h3 className="font-semibold text-gray-800 mb-4">Narrative Content</h3>
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Entry Text
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Entry Text</label>
           <textarea
             value={room.entryText || ''}
             onChange={(e) => onUpdate({ entryText: e.target.value })}
@@ -649,9 +593,7 @@ function NarrativeSection({
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Look Description
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Look Description</label>
           <textarea
             value={room.lookDescription || ''}
             onChange={(e) => onUpdate({ lookDescription: e.target.value })}
@@ -663,8 +605,6 @@ function NarrativeSection({
     </div>
   );
 }
-
-
 
 // --- Function: ItemsAndNPCsSection ---
 function ItemsAndNPCsSection({
@@ -678,7 +618,7 @@ function ItemsAndNPCsSection({
   availableItems: string[];
   availableNPCs: string[];
 }) {
-// JSX return block or main return
+  // JSX return block or main return
   return (
     <div className="items-npcs-section bg-gray-800 border rounded-lg p-4">
       <h3 className="font-semibold text-gray-800 mb-4">Content & Characters</h3>
@@ -694,7 +634,7 @@ function ItemsAndNPCsSection({
               onUpdate({
                 items: e.target.value
                   .split(',')
-                  .map(item => item.trim())
+                  .map((item) => item.trim())
                   .filter(Boolean),
               })
             }
@@ -716,14 +656,12 @@ function ItemsAndNPCsSection({
             value={room.npcs && room.npcs.length > 0 ? JSON.stringify(room.npcs, null, 2) : ''}
             onChange={(e) => {
               try {
-// Variable declaration
+                // Variable declaration
                 const npcs = JSON.parse(e.target.value);
                 if (Array.isArray(npcs)) {
                   onUpdate({ npcs });
                 }
-              } catch {
-                
-              }
+              } catch {}
             }}
             className="w-full p-2 border border-gray-300 rounded-md h-24 font-mono"
             placeholder='[{"id":"polly","name":"Polly"}]'
@@ -746,7 +684,7 @@ function ItemsAndNPCsSection({
               onUpdate({
                 flags: e.target.value
                   .split(',')
-                  .map(flag => flag.trim())
+                  .map((flag) => flag.trim())
                   .filter(Boolean),
               })
             }
@@ -758,8 +696,6 @@ function ItemsAndNPCsSection({
     </div>
   );
 }
-
-
 
 // --- Function: ExitsSection ---
 function ExitsSection({
@@ -773,14 +709,14 @@ function ExitsSection({
   availableRooms: string[];
   validation: ValidationResult;
 }) {
-// Variable declaration
+  // Variable declaration
   const directions = ['north', 'south', 'east', 'west', 'up', 'down', 'in', 'out'];
-// Variable declaration
-  const exitErrors = validation.errors.filter(e => e.field === 'exits');
+  // Variable declaration
+  const exitErrors = validation.errors.filter((e) => e.field === 'exits');
 
-// Variable declaration
+  // Variable declaration
   const updateExit = (direction: string, targetRoom: string) => {
-// Variable declaration
+    // Variable declaration
     const newExits = { ...room.exits };
     if (targetRoom.trim()) {
       newExits[direction] = targetRoom;
@@ -790,7 +726,7 @@ function ExitsSection({
     onUpdate({ exits: newExits });
   };
 
-// JSX return block or main return
+  // JSX return block or main return
   return (
     <div className="exits-section bg-gray-800 border rounded-lg p-4">
       <h3 className="font-semibold text-gray-800 mb-4">
@@ -807,7 +743,7 @@ function ExitsSection({
         </div>
       )}
       <div className="space-y-3">
-        {directions.map(direction => (
+        {directions.map((direction) => (
           <div key={direction} className="flex items-center space-x-2">
             <label className="w-20 text-sm font-medium text-gray-700 capitalize">
               {direction}:
@@ -818,7 +754,7 @@ function ExitsSection({
               className="flex-1 p-1 border border-gray-300 rounded text-sm"
             >
               <option value="">-- No exit --</option>
-              {availableRooms.map(roomId => (
+              {availableRooms.map((roomId) => (
                 <option key={roomId} value={roomId}>
                   {roomId}
                 </option>
@@ -831,8 +767,6 @@ function ExitsSection({
   );
 }
 
-
-
 // --- Function: TrapsAndEventsSection ---
 function TrapsAndEventsSection({
   room,
@@ -841,7 +775,7 @@ function TrapsAndEventsSection({
   room: RoomData;
   onUpdate: (updates: Partial<RoomData>) => void;
 }) {
-// Variable declaration
+  // Variable declaration
   const addTrap = () => {
     const newTrap: Trap = {
       id: `trap_${Date.now()}`,
@@ -854,29 +788,27 @@ function TrapsAndEventsSection({
     onUpdate({ traps: [...(room.traps || []), newTrap] });
   };
 
-// Variable declaration
+  // Variable declaration
   const updateTrap = (index: number, updates: Partial<Trap>) => {
-// Variable declaration
+    // Variable declaration
     const newTraps = [...(room.traps || [])];
     newTraps[index] = { ...newTraps[index], ...updates };
     onUpdate({ traps: newTraps });
   };
 
-// Variable declaration
+  // Variable declaration
   const removeTrap = (index: number) => {
-// Variable declaration
+    // Variable declaration
     const newTraps = [...(room.traps || [])];
     newTraps.splice(index, 1);
     onUpdate({ traps: newTraps });
   };
 
-// JSX return block or main return
+  // JSX return block or main return
   return (
     <div className="traps-events-section bg-gray-800 border rounded-lg p-4">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="font-semibold text-gray-800">
-          Traps & Logic ({(room.traps || []).length})
-        </h3>
+        <h3 className="font-semibold text-gray-800">Traps & Logic ({(room.traps || []).length})</h3>
         <button
           onClick={addTrap}
           className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm transition-colors"
@@ -911,7 +843,9 @@ function TrapsAndEventsSection({
                 </select>
                 <select
                   value={trap.severity}
-                  onChange={(e) => updateTrap(index, { severity: e.target.value as Trap['severity'] })}
+                  onChange={(e) =>
+                    updateTrap(index, { severity: e.target.value as Trap['severity'] })
+                  }
                   className="p-1 border border-gray-300 rounded text-sm"
                 >
                   <option value="minor">Minor</option>
@@ -949,9 +883,7 @@ function TrapsAndEventsSection({
           </div>
         ))}
         {(room.traps || []).length === 0 && (
-          <p className="text-gray-500 text-sm text-center py-4">
-            No traps configured
-          </p>
+          <p className="text-gray-500 text-sm text-center py-4">No traps configured</p>
         )}
       </div>
     </div>

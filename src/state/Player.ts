@@ -22,7 +22,9 @@ export class Player {
 
   takeDamage(amount: number): void {
     this.health -= amount;
-    if (this.health < 0) this.health = 0;
+    if (this.health < 0) {
+      this.health = 0;
+    }
   }
 
   useMana(amount: number): boolean {
@@ -39,12 +41,12 @@ export class Player {
   }
 
   removeItem(itemId: string): void {
-    this.inventory = this.inventory.filter(item => item.id !== itemId);
+    this.inventory = this.inventory.filter((item) => item.id !== itemId);
     console.log(`Item with ID ${itemId} removed from inventory.`);
   }
 
   listInventory(): void {
-    console.log('Inventory:', this.inventory.map(item => item.name).join(', '));
+    console.log('Inventory:', this.inventory.map((item) => item.name).join(', '));
   }
 
   gainExperience(amount: number): void {

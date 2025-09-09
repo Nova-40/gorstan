@@ -20,7 +20,6 @@
 import { FlagMap } from '../state/flagRegistry';
 const { debug } = FlagMap;
 
-
 import { useEffect } from 'react';
 
 import { useFlags } from './useFlags';
@@ -29,23 +28,17 @@ import { useModuleLoader } from './useModuleLoader';
 
 import { useTimers } from './useTimers';
 
-export const useOptimizedEffects = (
-  state: any,
-  dispatch: any,
-  _room: any
-) => {
+export const useOptimizedEffects = (state: any, dispatch: any, _room: any) => {
   const { hasFlag, clearFlag } = useFlags();
   const { loadModule } = useModuleLoader();
   const { setTimer } = useTimers();
 
-  
-// React effect hook
+  // React effect hook
   useEffect(() => {
-// Variable declaration
+    // Variable declaration
     const flags = state.flags || {};
     const effectsToRun: Array<() => void> = [];
 
-    
     if (hasFlag(FlagMap.transition.roomMapReady)) {
       effectsToRun.push(() => {
         console.log('[DEBUG] System Status:');
@@ -59,8 +52,8 @@ export const useOptimizedEffects = (
           payload: {
             text: 'System status logged to console.',
             type: 'system',
-            timestamp: Date.now()
-          }
+            timestamp: Date.now(),
+          },
         });
 
         clearFlag(debug.debugSystemStatus);
@@ -68,7 +61,6 @@ export const useOptimizedEffects = (
       });
     }
 
-    
     if (hasFlag(FlagMap.game.resetGameState)) {
       effectsToRun.push(() => {
         console.log('[SYSTEM] Resetting game state...');
@@ -80,35 +72,33 @@ export const useOptimizedEffects = (
           payload: {
             text: 'Game state has been reset.',
             type: 'system',
-            timestamp: Date.now()
-          }
+            timestamp: Date.now(),
+          },
         });
 
         clearFlag(FlagMap.game.resetGameState);
       });
     }
 
-    
     if (hasFlag(debug.debugSystemStatus)) {
       effectsToRun.push(() => {
-// Variable declaration
+        // Variable declaration
         const flagKeys = Object.keys(flags);
         console.log(`[DEBUG] Clearing ${flagKeys.length} flags...`);
 
-        flagKeys.forEach(key => clearFlag(key));
+        flagKeys.forEach((key) => clearFlag(key));
 
         dispatch({
           type: 'ADD_MESSAGE',
           payload: {
             text: `Cleared ${flagKeys.length} flags.`,
             type: 'system',
-            timestamp: Date.now()
-          }
+            timestamp: Date.now(),
+          },
         });
       });
     }
 
-    
     if (hasFlag(debug.debugShowInventory)) {
       effectsToRun.push(() => {
         console.log('[DEBUG] Player Inventory:', state.player?.inventory || []);
@@ -118,8 +108,8 @@ export const useOptimizedEffects = (
           payload: {
             text: `Inventory: ${(state.player?.inventory || []).join(', ') || 'Empty'}`,
             type: 'system',
-            timestamp: Date.now()
-          }
+            timestamp: Date.now(),
+          },
         });
 
         clearFlag(debug.debugShowInventory);
@@ -127,17 +117,22 @@ export const useOptimizedEffects = (
       });
     }
 
-    
     if (hasFlag(debug.debugPerformance)) {
       effectsToRun.push(() => {
-// Variable declaration
+        // Variable declaration
         const performance = window.performance;
-// Variable declaration
+        // Variable declaration
         const memory = (performance as any).memory;
 
         console.log('[DEBUG] Performance Metrics:');
-        console.log('- Memory Used:', memory ? `${(memory.usedJSHeapSize / 1024 / 1024).toFixed(2)} MB` : 'N/A');
-        console.log('- Memory Total:', memory ? `${(memory.totalJSHeapSize / 1024 / 1024).toFixed(2)} MB` : 'N/A');
+        console.log(
+          '- Memory Used:',
+          memory ? `${(memory.usedJSHeapSize / 1024 / 1024).toFixed(2)} MB` : 'N/A',
+        );
+        console.log(
+          '- Memory Total:',
+          memory ? `${(memory.totalJSHeapSize / 1024 / 1024).toFixed(2)} MB` : 'N/A',
+        );
         console.log('- Navigation Timing:', performance.getEntriesByType('navigation'));
 
         clearFlag(debug.debugPerformance);
@@ -145,20 +140,16 @@ export const useOptimizedEffects = (
       });
     }
 
-    
     if (effectsToRun.length > 0) {
-      
       setTimer({
         id: 'batch_effects',
         callback: () => {
-          effectsToRun.forEach(effect => effect());
+          effectsToRun.forEach((effect) => effect());
         },
-        delay: 0 
+        delay: 0,
       });
     }
-
   }, [
-    
     hasFlag(FlagMap.transition.roomMapReady),
     hasFlag(FlagMap.game.resetGameState),
     hasFlag(debug.debugSystemStatus),
@@ -169,11 +160,10 @@ export const useOptimizedEffects = (
     state.player?.inventory,
     dispatch,
     clearFlag,
-    setTimer
+    setTimer,
   ]);
 
-  
-// React effect hook
+  // React effect hook
   useEffect(() => {
     if (hasFlag(FlagMap.audio.playAmbientSound)) {
       loadModule('../engine/audio/audioController').then((module) => {
@@ -182,7 +172,7 @@ export const useOptimizedEffects = (
         }
       });
       clearFlag(FlagMap.audio.playAmbientSound);
-        clearFlag(FlagMap.audio.playAmbientSound);
+      clearFlag(FlagMap.audio.playAmbientSound);
     }
 
     if (hasFlag(FlagMap.audio.stopAllAudio)) {
@@ -207,11 +197,10 @@ export const useOptimizedEffects = (
     hasFlag(FlagMap.audio.stopAllAudio),
     hasFlag(FlagMap.audio.muteAudio),
     loadModule,
-    clearFlag
+    clearFlag,
   ]);
 
-  
-// React effect hook
+  // React effect hook
   useEffect(() => {
     if (hasFlag(FlagMap.game.saveGame)) {
       loadModule('../engine/save/saveController').then((module) => {
@@ -223,8 +212,8 @@ export const useOptimizedEffects = (
             payload: {
               text: 'Game saved successfully.',
               type: 'system',
-              timestamp: Date.now()
-            }
+              timestamp: Date.now(),
+            },
           });
         }
       });
@@ -234,7 +223,7 @@ export const useOptimizedEffects = (
     if (hasFlag(FlagMap.game.loadGame)) {
       loadModule('../engine/save/saveController').then((module) => {
         if (module?.loadGame) {
-// Variable declaration
+          // Variable declaration
           const saveData = module.loadGame();
           if (saveData) {
             dispatch({ type: 'LOAD_GAME', payload: saveData });
@@ -244,8 +233,8 @@ export const useOptimizedEffects = (
               payload: {
                 text: 'Game loaded successfully.',
                 type: 'system',
-                timestamp: Date.now()
-              }
+                timestamp: Date.now(),
+              },
             });
           }
         }
@@ -258,7 +247,6 @@ export const useOptimizedEffects = (
     state,
     dispatch,
     loadModule,
-    clearFlag
+    clearFlag,
   ]);
 };
-

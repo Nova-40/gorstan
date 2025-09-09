@@ -49,7 +49,7 @@ export function getPlayerLocation(): Promise<PlayerLocation> {
 
     // Randomly select a location for narrative purposes
     const randomLocation = mockLocations[Math.floor(Math.random() * mockLocations.length)];
-    
+
     // Simulate async location detection
     setTimeout(() => {
       resolve(randomLocation);

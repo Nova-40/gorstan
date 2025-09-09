@@ -7,30 +7,30 @@ import { type RouteId } from './routes';
 import { type QuantumElement, type QuantumArtifact } from './quantumMagic';
 
 // Shadow Entity Types
-export type ShadowEntityType = 
-  | 'whisper'      // Weak, fleeting shadows
-  | 'wraith'       // Medium-strength, persistent shadows
-  | 'shade'        // Strong, territorial shadows
-  | 'umbral'       // Elite shadows with special abilities
-  | 'void_spawn';  // Legendary shadow entities
+export type ShadowEntityType =
+  | 'whisper' // Weak, fleeting shadows
+  | 'wraith' // Medium-strength, persistent shadows
+  | 'shade' // Strong, territorial shadows
+  | 'umbral' // Elite shadows with special abilities
+  | 'void_spawn'; // Legendary shadow entities
 
-export type ShadowBehavior = 
-  | 'passive'      // Observes but doesn't interact
-  | 'curious'      // Approaches player cautiously
-  | 'territorial'  // Guards specific areas
-  | 'aggressive'   // Actively pursues player
-  | 'mimic'        // Copies player actions/speech
-  | 'phase'        // Appears/disappears unpredictably
-  | 'collective';  // Multiple entities acting as one
+export type ShadowBehavior =
+  | 'passive' // Observes but doesn't interact
+  | 'curious' // Approaches player cautiously
+  | 'territorial' // Guards specific areas
+  | 'aggressive' // Actively pursues player
+  | 'mimic' // Copies player actions/speech
+  | 'phase' // Appears/disappears unpredictably
+  | 'collective'; // Multiple entities acting as one
 
-export type ShadowWeakness = 
-  | 'light'        // Vulnerable to light sources
-  | 'quantum'      // Affected by quantum artifacts
-  | 'sound'        // Disrupted by loud noises
-  | 'movement'     // Weakened when player moves
-  | 'time'         // Fades with time passage
-  | 'artifacts'    // Specific artifact vulnerability
-  | 'resonance';   // Quantum resonance disruption
+export type ShadowWeakness =
+  | 'light' // Vulnerable to light sources
+  | 'quantum' // Affected by quantum artifacts
+  | 'sound' // Disrupted by loud noises
+  | 'movement' // Weakened when player moves
+  | 'time' // Fades with time passage
+  | 'artifacts' // Specific artifact vulnerability
+  | 'resonance'; // Quantum resonance disruption
 
 export interface ShadowEntityStats {
   health: number;
@@ -38,9 +38,9 @@ export interface ShadowEntityStats {
   energy: number;
   maxEnergy: number;
   manifestation: number; // How solid/visible (0-100)
-  aggression: number;    // How hostile (0-100)
-  awareness: number;     // Detection ability (0-100)
-  speed: number;         // Movement/action speed
+  aggression: number; // How hostile (0-100)
+  awareness: number; // Detection ability (0-100)
+  speed: number; // Movement/action speed
 }
 
 export interface ShadowAbility {
@@ -125,15 +125,15 @@ export interface EncounterDifficulty {
 }
 
 // Shadow Interaction Types
-export type ShadowInteractionType = 
-  | 'observe'      // Watch shadow behavior
-  | 'approach'     // Move closer to shadow
-  | 'retreat'      // Move away from shadow
-  | 'activate'     // Use quantum artifact
-  | 'communicate'  // Attempt to interact
-  | 'hide'         // Try to avoid detection
-  | 'banish'       // Use light or artifact to dispel
-  | 'study';       // Learn about shadow behavior
+export type ShadowInteractionType =
+  | 'observe' // Watch shadow behavior
+  | 'approach' // Move closer to shadow
+  | 'retreat' // Move away from shadow
+  | 'activate' // Use quantum artifact
+  | 'communicate' // Attempt to interact
+  | 'hide' // Try to avoid detection
+  | 'banish' // Use light or artifact to dispel
+  | 'study'; // Learn about shadow behavior
 
 export interface ShadowInteraction {
   type: ShadowInteractionType;

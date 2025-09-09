@@ -10,7 +10,8 @@ export const demoRoute: RouteManifest = {
   id: 'demo',
   label: 'Demo Experience',
   targetMinutes: 10,
-  description: 'A guided 5-7 minute slice of Gorstan with strong hints and an artifact teaser. Perfect for newcomers.',
+  description:
+    'A guided 5-7 minute slice of Gorstan with strong hints and an artifact teaser. Perfect for newcomers.',
   hintPolicy: 'guided',
   difficulty: 'story',
   allowedSkips: 3,
@@ -60,7 +61,8 @@ export const short10Routes: RouteManifest[] = [
     id: 'short10_runesprint',
     label: 'Rune Sprint',
     targetMinutes: 10,
-    description: 'Race through ancient rune chambers, solving glyph puzzles and evading shadow guardians.',
+    description:
+      'Race through ancient rune chambers, solving glyph puzzles and evading shadow guardians.',
     hintPolicy: 'timed',
     difficulty: 'normal',
     allowedSkips: 1,
@@ -107,7 +109,8 @@ export const short10Routes: RouteManifest[] = [
     id: 'short10_catacombdash',
     label: 'Catacomb Dash',
     targetMinutes: 10,
-    description: 'Navigate winding catacombs using stealth and wit to avoid ancient traps and guardians.',
+    description:
+      'Navigate winding catacombs using stealth and wit to avoid ancient traps and guardians.',
     hintPolicy: 'timed',
     difficulty: 'normal',
     allowedSkips: 1,
@@ -152,7 +155,8 @@ export const short10Routes: RouteManifest[] = [
     id: 'short10_faegladerelay',
     label: 'Fae Glade Relay',
     targetMinutes: 10,
-    description: 'Complete a series of fae challenges in an enchanted glade, earning magical insights.',
+    description:
+      'Complete a series of fae challenges in an enchanted glade, earning magical insights.',
     hintPolicy: 'timed',
     difficulty: 'normal',
     allowedSkips: 1,
@@ -194,7 +198,8 @@ export const short10Routes: RouteManifest[] = [
     id: 'short10_trialsofgorstan',
     label: 'Trials of Gorstan',
     targetMinutes: 10,
-    description: 'Navigate three perilous zones ending with a mystical cave maze to find the hidden artifact.',
+    description:
+      'Navigate three perilous zones ending with a mystical cave maze to find the hidden artifact.',
     hintPolicy: 'timed',
     difficulty: 'normal',
     allowedSkips: 1,
@@ -233,7 +238,8 @@ export const short30Routes: RouteManifest[] = [
     id: 'short30_trentparkrecon',
     label: 'Trent Park Reconnaissance',
     targetMinutes: 30,
-    description: 'Investigate mysterious happenings in Trent Park, gathering intel and magical artifacts.',
+    description:
+      'Investigate mysterious happenings in Trent Park, gathering intel and magical artifacts.',
     hintPolicy: 'timed',
     difficulty: 'normal',
     allowedSkips: 2,
@@ -302,7 +308,8 @@ export const short30Routes: RouteManifest[] = [
     id: 'short30_controlnexusgauntlet',
     label: 'Control Nexus Gauntlet',
     targetMinutes: 30,
-    description: 'Infiltrate and neutralize a control nexus through stealth, puzzles, and tactical combat.',
+    description:
+      'Infiltrate and neutralize a control nexus through stealth, puzzles, and tactical combat.',
     hintPolicy: 'off',
     difficulty: 'veteran',
     allowedSkips: 1,
@@ -365,7 +372,8 @@ export const short30Routes: RouteManifest[] = [
     id: 'short30_glitchrealmheist',
     label: 'Glitch Realm Heist',
     targetMinutes: 30,
-    description: 'Execute a daring heist in the unstable Glitch Realm, where reality bends and logic breaks.',
+    description:
+      'Execute a daring heist in the unstable Glitch Realm, where reality bends and logic breaks.',
     hintPolicy: 'guided',
     difficulty: 'story',
     allowedSkips: 3,
@@ -434,7 +442,8 @@ export const short30Routes: RouteManifest[] = [
     id: 'short30_faebargain',
     label: 'The Fae Bargain',
     targetMinutes: 30,
-    description: 'Navigate complex negotiations with the fae court, balancing wit, diplomacy, and magical power.',
+    description:
+      'Navigate complex negotiations with the fae court, balancing wit, diplomacy, and magical power.',
     hintPolicy: 'timed',
     difficulty: 'normal',
     allowedSkips: 2,
@@ -496,7 +505,8 @@ export const fullRoute: RouteManifest = {
   id: 'full',
   label: 'Full Game Experience',
   targetMinutes: 999, // No time limit
-  description: 'The complete Gorstan adventure with all original puzzles, quests, and story elements.',
+  description:
+    'The complete Gorstan adventure with all original puzzles, quests, and story elements.',
   hintPolicy: 'timed',
   difficulty: 'normal',
   allowedSkips: 0,
@@ -551,7 +561,7 @@ export const allRoutes: RouteManifest[] = [
 
 // Helper functions
 export function getRouteById(id: string): RouteManifest | undefined {
-  return allRoutes.find(route => route.id === id);
+  return allRoutes.find((route) => route.id === id);
 }
 
 export function getRoutesByCategory() {

@@ -3,8 +3,23 @@
  * Manages artifact discovery, skill progression, and quantum abilities
  */
 
-import { type QuantumProgression, type QuantumArtifact, type QuantumSkill, type QuantumDiscovery, type ExperienceGain, type QuantumGameState, type ArtifactEffect, type SkillEffect, type SkillRequirement } from '../types/quantumMagic';
-import { quantumArtifacts, quantumSkills, experienceValues, calculateQuantumLevel } from '../data/quantumMagic';
+import {
+  type QuantumProgression,
+  type QuantumArtifact,
+  type QuantumSkill,
+  type QuantumDiscovery,
+  type ExperienceGain,
+  type QuantumGameState,
+  type ArtifactEffect,
+  type SkillEffect,
+  type SkillRequirement,
+} from '../types/quantumMagic';
+import {
+  quantumArtifacts,
+  quantumSkills,
+  experienceValues,
+  calculateQuantumLevel,
+} from '../data/quantumMagic';
 
 export interface QuantumMagicCallbacks {
   onArtifactDiscovered?: (artifact: QuantumArtifact, discovery: QuantumDiscovery) => void;
@@ -38,9 +53,15 @@ export class QuantumMagicService {
   }
 
   // Discovery System
-  async discoverArtifact(artifactId: string, routeId: string, nodeId: string): Promise<QuantumDiscovery | null> {
+  async discoverArtifact(
+    artifactId: string,
+    routeId: string,
+    nodeId: string,
+  ): Promise<QuantumDiscovery | null> {
     const artifactData = quantumArtifacts[artifactId];
-    if (!artifactData) return null;
+    if (!artifactData) {
+      return null;
+    }
 
     // Check if already discovered
     if (this.progression.artifacts.has(artifactId)) {
@@ -98,26 +119,30 @@ export class QuantumMagicService {
   }
 
   private shouldAutoActivate(artifact: QuantumArtifact): boolean {
-    if (!this.progression.autoActivateNewArtifacts) return false;
-    
+    if (!this.progression.autoActivateNewArtifacts) {
+      return false;
+    }
+
     // Auto-activate if we have space and it's not already covered
     const activeCount = this.progression.activeArtifacts.length;
-    if (activeCount >= 3) return false;
+    if (activeCount >= 3) {
+      return false;
+    }
 
     // Don't auto-activate if we already have this element active
     const activeElements = this.progression.activeArtifacts
-      .map(id => this.progression.artifacts.get(id)?.element)
+      .map((id) => this.progression.artifacts.get(id)?.element)
       .filter(Boolean);
-    
+
     return !activeElements.includes(artifact.element);
   }
 
   private getTierRarity(tier: string): 'common' | 'uncommon' | 'rare' | 'legendary' {
     const tierMap = {
-      'shard': 'common' as const,
-      'relic': 'uncommon' as const,
-      'nexus': 'rare' as const,
-      'legendary': 'legendary' as const,
+      shard: 'common' as const,
+      relic: 'uncommon' as const,
+      nexus: 'rare' as const,
+      legendary: 'legendary' as const,
     };
     return tierMap[tier as keyof typeof tierMap] || 'common';
   }
@@ -128,7 +153,7 @@ export class QuantumMagicService {
       if (effect.type === 'skill_unlock') {
         const skillId = effect.target;
         const skill = quantumSkills[skillId];
-        
+
         if (skill && !this.progression.skills.has(skillId)) {
           this.unlockSkill(skillId);
         }
@@ -138,7 +163,9 @@ export class QuantumMagicService {
 
   private unlockSkill(skillId: string): void {
     const skillData = quantumSkills[skillId];
-    if (!skillData) return;
+    if (!skillData) {
+      return;
+    }
 
     const skill: QuantumSkill = {
       ...skillData,
@@ -170,10 +197,10 @@ export class QuantumMagicService {
   gainExperience(gain: ExperienceGain): void {
     const previousLevel = this.progression.quantumLevel;
     this.progression.totalExperience += gain.amount;
-    
+
     // Apply multipliers from active artifacts
     const finalAmount = this.applyExperienceMultipliers(gain);
-    
+
     // Distribute to artifact if specified
     if (gain.artifactId) {
       this.gainArtifactExperience(gain.artifactId, finalAmount);
@@ -182,7 +209,7 @@ export class QuantumMagicService {
     // Distribute to skills if specified
     if (gain.skillIds) {
       const skillAmount = Math.floor(finalAmount / gain.skillIds.length);
-      gain.skillIds.forEach(skillId => {
+      gain.skillIds.forEach((skillId) => {
         this.gainSkillExperience(skillId, skillAmount);
       });
     }
@@ -199,7 +226,7 @@ export class QuantumMagicService {
 
   private applyExperienceMultipliers(gain: ExperienceGain): number {
     let multiplier = gain.multiplier || 1.0;
-    
+
     // Apply active artifact bonuses
     for (const artifactId of this.progression.activeArtifacts) {
       const artifact = this.progression.artifacts.get(artifactId);
@@ -217,16 +244,18 @@ export class QuantumMagicService {
 
   private gainArtifactExperience(artifactId: string, amount: number): void {
     const artifact = this.progression.artifacts.get(artifactId);
-    if (!artifact) return;
+    if (!artifact) {
+      return;
+    }
 
     artifact.experience += amount;
-    
+
     // Check for artifact level up
     const experienceNeeded = this.getArtifactExperienceNeeded(artifact.level);
     if (artifact.experience >= experienceNeeded && artifact.level < artifact.maxLevel) {
       artifact.level++;
       artifact.experience -= experienceNeeded;
-      
+
       // Artifact level ups might unlock new effects or enhance existing ones
       this.updateArtifactEffects(artifact);
     }
@@ -234,19 +263,21 @@ export class QuantumMagicService {
 
   private gainSkillExperience(skillId: string, amount: number): void {
     const skill = this.progression.skills.get(skillId);
-    if (!skill) return;
+    if (!skill) {
+      return;
+    }
 
     skill.experience += amount;
-    
+
     // Check for skill level up
     if (skill.experience >= skill.experienceToNext && skill.currentLevel < skill.maxLevel) {
       skill.currentLevel++;
       skill.experience -= skill.experienceToNext;
       skill.experienceToNext = this.getSkillExperienceNeeded(skill.currentLevel + 1);
-      
+
       // Skill level ups enhance effects
       this.updateSkillEffects(skill);
-      
+
       // Check if this unlocks new skills
       this.checkSkillChainUnlocks(skill);
     }
@@ -271,34 +302,38 @@ export class QuantumMagicService {
     }
 
     const artifact = this.progression.artifacts.get(artifactId);
-    if (!artifact) return false;
+    if (!artifact) {
+      return false;
+    }
 
     this.progression.activeArtifacts.push(artifactId);
     artifact.isActive = true;
-    
+
     // Apply artifact effects to game state
     this.updateGameStateFromArtifacts();
-    
+
     // Check for new synergies
     this.checkArtifactSynergies(artifact);
-    
+
     return true;
   }
 
   deactivateArtifact(artifactId: string): boolean {
     const index = this.progression.activeArtifacts.indexOf(artifactId);
-    if (index === -1) return false;
+    if (index === -1) {
+      return false;
+    }
 
     this.progression.activeArtifacts.splice(index, 1);
-    
+
     const artifact = this.progression.artifacts.get(artifactId);
     if (artifact) {
       artifact.isActive = false;
     }
-    
+
     // Update game state
     this.updateGameStateFromArtifacts();
-    
+
     return true;
   }
 
@@ -312,7 +347,9 @@ export class QuantumMagicService {
     // Apply effects from all active artifacts
     for (const artifactId of this.progression.activeArtifacts) {
       const artifact = this.progression.artifacts.get(artifactId);
-      if (!artifact) continue;
+      if (!artifact) {
+        continue;
+      }
 
       for (const effect of artifact.effects) {
         this.applyEffectToGameState(effect, artifact);
@@ -341,7 +378,7 @@ export class QuantumMagicService {
           type: 'detection_range',
           description: effect.description,
           value: effect.value,
-          conditions: []
+          conditions: [],
         });
         break;
       case 'traversal':
@@ -357,7 +394,7 @@ export class QuantumMagicService {
         break;
       case 'puzzle_hint':
         this.gameState.activePuzzleHints.push(
-          `${skill.name}: ${effect.description} (Level ${skill.currentLevel})`
+          `${skill.name}: ${effect.description} (Level ${skill.currentLevel})`,
         );
         break;
       case 'combat_bonus':
@@ -368,10 +405,12 @@ export class QuantumMagicService {
 
   // Synergy System
   private checkArtifactSynergies(artifact: QuantumArtifact): void {
-    if (!artifact.synergies) return;
+    if (!artifact.synergies) {
+      return;
+    }
 
     const activeSynergies: string[] = [];
-    
+
     for (const synergyId of artifact.synergies) {
       if (this.progression.activeArtifacts.includes(synergyId)) {
         activeSynergies.push(synergyId);
@@ -379,7 +418,10 @@ export class QuantumMagicService {
     }
 
     if (activeSynergies.length > 0) {
-      const synergyArtifacts = [artifact, ...activeSynergies.map(id => this.progression.artifacts.get(id)!).filter(Boolean)];
+      const synergyArtifacts = [
+        artifact,
+        ...activeSynergies.map((id) => this.progression.artifacts.get(id)!).filter(Boolean),
+      ];
       this.activateSynergy(synergyArtifacts);
     }
   }
@@ -392,9 +434,9 @@ export class QuantumMagicService {
       routeId: this.gameState.currentRoute || 'unknown',
       nodeId: this.gameState.currentNode || 'unknown',
       timestamp: Date.now(),
-      synergyPartners: artifacts.map(a => a.id),
+      synergyPartners: artifacts.map((a) => a.id),
       title: 'Quantum Synergy Activated!',
-      description: `${artifacts.map(a => a.name).join(' + ')} are resonating together!`,
+      description: `${artifacts.map((a) => a.name).join(' + ')} are resonating together!`,
       rarity: 'rare',
       element: artifacts[0].element,
     };
@@ -434,7 +476,7 @@ export class QuantumMagicService {
       const unlockSkill = quantumSkills[unlockSkillId];
       if (unlockSkill && !this.progression.skills.has(unlockSkillId)) {
         // Check if all requirements are met
-        const canUnlock = unlockSkill.requirements.every(req => this.checkRequirement(req));
+        const canUnlock = unlockSkill.requirements.every((req) => this.checkRequirement(req));
         if (canUnlock) {
           this.unlockSkill(unlockSkillId);
         }
@@ -514,13 +556,21 @@ export class QuantumMagicService {
     }
 
     // Gain completion experience
-    const experienceType = routeId === 'demo' ? 'demo' :
-                          routeId === 'full' ? 'full' :
-                          routeId.startsWith('short10_') ? 'short10' : 'short30';
-    
+    const experienceType =
+      routeId === 'demo'
+        ? 'demo'
+        : routeId === 'full'
+          ? 'full'
+          : routeId.startsWith('short10_')
+            ? 'short10'
+            : 'short30';
+
     this.gainExperience({
       source: 'route_completed',
-      amount: experienceValues.routeCompleted[experienceType as keyof typeof experienceValues.routeCompleted],
+      amount:
+        experienceValues.routeCompleted[
+          experienceType as keyof typeof experienceValues.routeCompleted
+        ],
     });
   }
 
@@ -543,9 +593,14 @@ export class QuantumMagicService {
 // React Hook for using QuantumMagicService
 import { useEffect, useState } from 'react';
 
-export function useQuantumMagic(initialProgression: QuantumProgression, callbacks?: QuantumMagicCallbacks) {
+export function useQuantumMagic(
+  initialProgression: QuantumProgression,
+  callbacks?: QuantumMagicCallbacks,
+) {
   const [service] = useState(() => new QuantumMagicService(initialProgression, callbacks));
-  const [progression, setProgression] = useState<QuantumProgression>(() => service.getProgression());
+  const [progression, setProgression] = useState<QuantumProgression>(() =>
+    service.getProgression(),
+  );
   const [gameState, setGameState] = useState(() => service.getGameState());
 
   useEffect(() => {

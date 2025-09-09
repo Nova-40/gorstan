@@ -62,19 +62,19 @@ class LiveRegionManager {
     this.politeRegion.setAttribute('aria-live', 'polite');
     this.politeRegion.setAttribute('aria-atomic', 'true');
     this.politeRegion.className = 'sr-only';
-    
+
     // Assertive announcements (interrupting)
     this.assertiveRegion = document.createElement('div');
     this.assertiveRegion.setAttribute('aria-live', 'assertive');
     this.assertiveRegion.setAttribute('aria-atomic', 'true');
     this.assertiveRegion.className = 'sr-only';
-    
+
     // Status updates
     this.statusRegion = document.createElement('div');
     this.statusRegion.setAttribute('role', 'status');
     this.statusRegion.setAttribute('aria-atomic', 'true');
     this.statusRegion.className = 'sr-only';
-    
+
     document.body.appendChild(this.politeRegion);
     document.body.appendChild(this.assertiveRegion);
     document.body.appendChild(this.statusRegion);
@@ -136,7 +136,7 @@ export class ScreenReaderSupport {
     const actions = {
       added: 'added to inventory',
       removed: 'removed from inventory',
-      used: 'used'
+      used: 'used',
     };
     const message = `${item} ${actions[action]}`;
     this.liveRegion.announcePolite(message);
@@ -154,8 +154,13 @@ export class ScreenReaderSupport {
   }
 
   // Text-to-speech support
-  speak(text: string, options: { priority?: 'low' | 'normal' | 'high'; rate?: number; pitch?: number } = {}) {
-    if (!this.speechSynthesis) return;
+  speak(
+    text: string,
+    options: { priority?: 'low' | 'normal' | 'high'; rate?: number; pitch?: number } = {},
+  ) {
+    if (!this.speechSynthesis) {
+      return;
+    }
 
     // Cancel current speech if high priority
     if (options.priority === 'high' && this.speechSynthesis.speaking) {
@@ -165,7 +170,7 @@ export class ScreenReaderSupport {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.rate = options.rate || 1;
     utterance.pitch = options.pitch || 1;
-    
+
     this.speechSynthesis.speak(utterance);
   }
 
@@ -178,23 +183,25 @@ export class ScreenReaderSupport {
   // Describe current game state for screen readers
   describeGameState(gameState: any) {
     const elements = [];
-    
+
     if (gameState.currentRoom) {
       elements.push(`Current location: ${gameState.currentRoom.name}`);
     }
-    
+
     if (gameState.player?.health !== undefined) {
       elements.push(`Health: ${gameState.player.health}`);
     }
-    
+
     if (gameState.inventory?.length > 0) {
-      elements.push(`Inventory contains: ${gameState.inventory.map((item: any) => item.name).join(', ')}`);
+      elements.push(
+        `Inventory contains: ${gameState.inventory.map((item: any) => item.name).join(', ')}`,
+      );
     }
-    
+
     if (gameState.availableActions?.length > 0) {
       elements.push(`Available actions: ${gameState.availableActions.join(', ')}`);
     }
-    
+
     const description = elements.join('. ');
     this.liveRegion.announcePolite(description);
     return description;
@@ -217,19 +224,19 @@ export class KeyboardNavigationManager {
       if (e.key === 'Tab') {
         this.handleTabNavigation(e);
       }
-      
+
       // Handle shortcuts
       const shortcutKey = this.getShortcutKey(e);
       if (this.shortcuts.has(shortcutKey)) {
         e.preventDefault();
         this.shortcuts.get(shortcutKey)!();
       }
-      
+
       // Handle arrow key navigation in grid layouts
       if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
         this.handleArrowNavigation(e);
       }
-      
+
       // Handle escape key
       if (e.key === 'Escape') {
         this.handleEscape();
@@ -246,7 +253,7 @@ export class KeyboardNavigationManager {
       <a href="#inventory" class="skip-link">Skip to inventory</a>
       <a href="#actions" class="skip-link">Skip to actions</a>
     `;
-    
+
     // Style skip links
     const style = document.createElement('style');
     style.textContent = `
@@ -285,7 +292,7 @@ export class KeyboardNavigationManager {
 
   registerShortcut(key: string, callback: () => void, description: string) {
     this.shortcuts.set(key, callback);
-    
+
     // Add to help text or shortcuts list
     const shortcutHelp = document.querySelector('#keyboard-shortcuts');
     if (shortcutHelp) {
@@ -297,22 +304,32 @@ export class KeyboardNavigationManager {
 
   private getShortcutKey(e: KeyboardEvent): string {
     const modifiers = [];
-    if (e.ctrlKey) modifiers.push('Ctrl');
-    if (e.altKey) modifiers.push('Alt');
-    if (e.shiftKey) modifiers.push('Shift');
-    if (e.metaKey) modifiers.push('Meta');
-    
+    if (e.ctrlKey) {
+      modifiers.push('Ctrl');
+    }
+    if (e.altKey) {
+      modifiers.push('Alt');
+    }
+    if (e.shiftKey) {
+      modifiers.push('Shift');
+    }
+    if (e.metaKey) {
+      modifiers.push('Meta');
+    }
+
     return [...modifiers, e.key].join('+');
   }
 
   private handleTabNavigation(e: KeyboardEvent) {
     this.updateFocusableElements();
-    
-    if (this.focusableElements.length === 0) return;
-    
+
+    if (this.focusableElements.length === 0) {
+      return;
+    }
+
     const currentFocus = document.activeElement as HTMLElement;
     const currentIndex = this.focusableElements.indexOf(currentFocus);
-    
+
     if (e.shiftKey) {
       // Backward navigation
       const nextIndex = currentIndex <= 0 ? this.focusableElements.length - 1 : currentIndex - 1;
@@ -322,22 +339,26 @@ export class KeyboardNavigationManager {
       const nextIndex = currentIndex >= this.focusableElements.length - 1 ? 0 : currentIndex + 1;
       this.focusableElements[nextIndex]?.focus();
     }
-    
+
     e.preventDefault();
   }
 
   private handleArrowNavigation(e: KeyboardEvent) {
     const gridContainer = (e.target as HTMLElement).closest('[role="grid"], .grid-navigation');
-    if (!gridContainer) return;
-    
+    if (!gridContainer) {
+      return;
+    }
+
     const gridItems = Array.from(gridContainer.querySelectorAll('[tabindex]')) as HTMLElement[];
     const currentIndex = gridItems.indexOf(e.target as HTMLElement);
-    
-    if (currentIndex === -1) return;
-    
+
+    if (currentIndex === -1) {
+      return;
+    }
+
     const columns = parseInt(gridContainer.getAttribute('data-columns') || '1');
     let nextIndex = currentIndex;
-    
+
     switch (e.key) {
       case 'ArrowUp':
         nextIndex = currentIndex - columns;
@@ -352,7 +373,7 @@ export class KeyboardNavigationManager {
         nextIndex = currentIndex + 1;
         break;
     }
-    
+
     if (nextIndex >= 0 && nextIndex < gridItems.length) {
       gridItems[nextIndex].focus();
       e.preventDefault();
@@ -362,7 +383,7 @@ export class KeyboardNavigationManager {
   private handleEscape() {
     // Close modals, menus, etc.
     const modals = document.querySelectorAll('[role="dialog"], .modal, .popup');
-    modals.forEach(modal => {
+    modals.forEach((modal) => {
       const closeButton = modal.querySelector('[data-dismiss], .close, .modal-close');
       if (closeButton) {
         (closeButton as HTMLElement).click();
@@ -381,19 +402,22 @@ export class KeyboardNavigationManager {
       select:not([disabled]),
       [tabindex]:not([tabindex="-1"]):not([disabled])
     `;
-    
-    this.focusableElements = Array.from(document.querySelectorAll(selector))
-      .filter(el => this.isVisible(el)) as HTMLElement[];
+
+    this.focusableElements = Array.from(document.querySelectorAll(selector)).filter((el) =>
+      this.isVisible(el),
+    ) as HTMLElement[];
   }
 
   private isVisible(element: Element): boolean {
     const htmlElement = element as HTMLElement;
     const style = window.getComputedStyle(element);
-    return style.display !== 'none' && 
-           style.visibility !== 'hidden' && 
-           style.opacity !== '0' &&
-           htmlElement.offsetWidth > 0 && 
-           htmlElement.offsetHeight > 0;
+    return (
+      style.display !== 'none' &&
+      style.visibility !== 'hidden' &&
+      style.opacity !== '0' &&
+      htmlElement.offsetWidth > 0 &&
+      htmlElement.offsetHeight > 0
+    );
   }
 
   focusElement(selector: string) {
@@ -414,12 +438,14 @@ export class KeyboardNavigationManager {
       select:not([disabled]),
       [tabindex]:not([tabindex="-1"]):not([disabled])
     `) as NodeListOf<HTMLElement>;
-    
-    if (focusableElements.length === 0) return;
-    
+
+    if (focusableElements.length === 0) {
+      return;
+    }
+
     const firstElement = focusableElements[0];
     const lastElement = focusableElements[focusableElements.length - 1];
-    
+
     const trapFocus = (e: KeyboardEvent) => {
       if (e.key === 'Tab') {
         if (e.shiftKey) {
@@ -435,10 +461,10 @@ export class KeyboardNavigationManager {
         }
       }
     };
-    
+
     container.addEventListener('keydown', trapFocus);
     firstElement.focus();
-    
+
     return () => container.removeEventListener('keydown', trapFocus);
   }
 }
@@ -446,33 +472,33 @@ export class KeyboardNavigationManager {
 // Visual accessibility utilities
 export const setupVisualAccessibility = (config: AccessibilityConfig['visual']) => {
   const root = document.documentElement;
-  
+
   // High contrast mode
   if (config.highContrast) {
     root.classList.add('high-contrast');
   }
-  
+
   // Reduced motion
   if (config.reducedMotion) {
     root.classList.add('reduce-motion');
   }
-  
+
   // Font size
   root.classList.add(`font-size-${config.fontSize}`);
-  
+
   // Color blind support
   if (config.colorBlindSupport !== 'none') {
     root.classList.add(`colorblind-${config.colorBlindSupport}`);
   }
-  
+
   // Focus indicator strength
   root.classList.add(`focus-${config.focusIndicator}`);
-  
+
   // Suppress flashing content
   if (config.flashingSuppression) {
     root.classList.add('suppress-flashing');
   }
-  
+
   // Add comprehensive accessibility CSS
   const style = document.createElement('style');
   style.textContent = `
@@ -574,32 +600,48 @@ export const setupVisualAccessibility = (config: AccessibilityConfig['visual']) 
 export const initializeAccessibility = (config: AccessibilityConfig) => {
   const screenReader = new ScreenReaderSupport();
   const keyboardNav = new KeyboardNavigationManager();
-  
+
   setupVisualAccessibility(config.visual);
-  
+
   // Register common shortcuts
   if (config.keyboard.navigationEnabled) {
-    keyboardNav.registerShortcut('Alt+h', () => {
-      window.location.hash = '#help';
-    }, 'Show help');
-    
-    keyboardNav.registerShortcut('Alt+i', () => {
-      keyboardNav.focusElement('#inventory');
-    }, 'Focus inventory');
-    
-    keyboardNav.registerShortcut('Alt+a', () => {
-      keyboardNav.focusElement('#actions');
-    }, 'Focus actions');
-    
-    keyboardNav.registerShortcut('Alt+m', () => {
-      keyboardNav.focusElement('#main-content');
-    }, 'Focus main content');
+    keyboardNav.registerShortcut(
+      'Alt+h',
+      () => {
+        window.location.hash = '#help';
+      },
+      'Show help',
+    );
+
+    keyboardNav.registerShortcut(
+      'Alt+i',
+      () => {
+        keyboardNav.focusElement('#inventory');
+      },
+      'Focus inventory',
+    );
+
+    keyboardNav.registerShortcut(
+      'Alt+a',
+      () => {
+        keyboardNav.focusElement('#actions');
+      },
+      'Focus actions',
+    );
+
+    keyboardNav.registerShortcut(
+      'Alt+m',
+      () => {
+        keyboardNav.focusElement('#main-content');
+      },
+      'Focus main content',
+    );
   }
-  
+
   return {
     screenReader,
     keyboardNav,
-    config
+    config,
   };
 };
 
@@ -607,5 +649,5 @@ export default {
   ScreenReaderSupport,
   KeyboardNavigationManager,
   setupVisualAccessibility,
-  initializeAccessibility
+  initializeAccessibility,
 };

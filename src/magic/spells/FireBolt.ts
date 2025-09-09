@@ -18,17 +18,19 @@ export const FireBolt: Spell = {
   cooldownMs: 2000,
   cast: {
     windupMs: 800,
-    recoveryMs: 400
+    recoveryMs: 400,
   },
   requiresTarget: true,
   description: 'Launches a bolt of flame that deals fire damage and may inflict burn.',
-  
+
   execute: (caster: Actor, target?: Actor) => {
-    if (!target) return;
+    if (!target) {
+      return;
+    }
 
     // Create fire damage packet
     const damage = DamageUtils.fire(BALANCE.baseDamage.FireBolt, caster.id);
-    
+
     // Apply caster's power scaling
     damage.base *= caster.stats.power;
 
@@ -42,5 +44,5 @@ export const FireBolt: Spell = {
 
     // Play sound effect
     combatAudio.spellCast('fireBolt');
-  }
+  },
 };

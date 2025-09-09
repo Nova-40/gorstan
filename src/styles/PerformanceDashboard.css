@@ -87,7 +87,8 @@
   }
 }
 
-.summary-card, .device-info-card {
+.summary-card,
+.device-info-card {
   background: var(--bg-primary, #2d2d2d);
   border: 1px solid var(--border-color, #e2e8f0);
   border-radius: 0.5rem;
@@ -150,10 +151,18 @@
   gap: 0.25rem;
 }
 
-.text-green-500 { color: #10b981; }
-.text-yellow-500 { color: #f59e0b; }
-.text-red-500 { color: #ef4444; }
-.text-gray-500 { color: #6b7280; }
+.text-green-500 {
+  color: #10b981;
+}
+.text-yellow-500 {
+  color: #f59e0b;
+}
+.text-red-500 {
+  color: #ef4444;
+}
+.text-gray-500 {
+  color: #6b7280;
+}
 
 .loading {
   text-align: center;
@@ -250,12 +259,12 @@
   color: var(--text-primary, #1e293b);
 }
 
-.setting-group input[type="range"] {
+.setting-group input[type='range'] {
   width: 100%;
   margin: 0.5rem 0;
 }
 
-.setting-group input[type="checkbox"] {
+.setting-group input[type='checkbox'] {
   margin-right: 0.5rem;
 }
 
@@ -524,19 +533,19 @@
     width: 95vw;
     height: 90vh;
   }
-  
+
   .performance-content {
     padding: 1rem;
   }
-  
+
   .profiles-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .quick-actions {
     flex-direction: column;
   }
-  
+
   .action-btn {
     justify-content: center;
   }

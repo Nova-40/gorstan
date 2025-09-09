@@ -23,37 +23,40 @@ const emergencyRooms: Record<string, Room> = {
   controlnexus: {
     id: 'controlnexus',
     title: 'Control Nexus',
-    description: 'You are in the central control nexus. This is the heart of the multiverse navigation system. Strange lights pulse from crystalline structures embedded in the walls.',
+    description:
+      'You are in the central control nexus. This is the heart of the multiverse navigation system. Strange lights pulse from crystalline structures embedded in the walls.',
     image: 'introZone_controlnexus.png',
     zone: 'introZone',
     flags: {} as any,
     exits: {
       north: 'controlroom',
       south: 'crossing',
-      east: 'hiddenlab'
+      east: 'hiddenlab',
     },
     items: [],
     npcs: [],
-    rooms: []
+    rooms: [],
   },
   controlroom: {
     id: 'controlroom',
     title: 'Control Room',
-    description: 'A high-tech control room with banks of monitors and control panels. The air hums with electronic activity.',
+    description:
+      'A high-tech control room with banks of monitors and control panels. The air hums with electronic activity.',
     image: 'introZone_controlroom.png',
     zone: 'introZone',
     flags: {} as any,
     exits: {
-      south: 'controlnexus'
+      south: 'controlnexus',
     },
     items: [],
     npcs: [],
-    rooms: []
+    rooms: [],
   },
   crossing: {
     id: 'crossing',
     title: 'The Crossing',
-    description: 'A mystical crossroads where multiple pathways converge. Energy crackles in the air, and you can sense multiple destinations beckoning.',
+    description:
+      'A mystical crossroads where multiple pathways converge. Energy crackles in the air, and you can sense multiple destinations beckoning.',
     image: 'introZone_crossing.png',
     zone: 'introZone',
     flags: {} as any,
@@ -61,16 +64,17 @@ const emergencyRooms: Record<string, Room> = {
       north: 'controlnexus',
       west: 'gorstanhub',
       east: 'londonhub',
-      southeast: 'newyorkhub'
+      southeast: 'newyorkhub',
     },
     items: [],
     npcs: [],
-    rooms: []
+    rooms: [],
   },
   gorstanhub: {
     id: 'gorstanhub',
     title: 'Gorstan Hub',
-    description: 'The central hub of Gorstan, a mystical realm of ancient power. Mist swirls around stone archways leading to various parts of this magical land.',
+    description:
+      'The central hub of Gorstan, a mystical realm of ancient power. Mist swirls around stone archways leading to various parts of this magical land.',
     image: 'gorstanZone_gorstanhub.png',
     zone: 'gorstanZone',
     flags: {} as any,
@@ -78,16 +82,17 @@ const emergencyRooms: Record<string, Room> = {
       east: 'crossing',
       north: 'carronspire',
       south: 'gorstanvillage',
-      west: 'torridon'
+      west: 'torridon',
     },
     items: [],
     npcs: [],
-    rooms: []
+    rooms: [],
   },
   londonhub: {
     id: 'londonhub',
     title: 'London Hub',
-    description: 'A bustling intersection in modern London. The familiar sounds of city life surround you - traffic, conversations, and the distant chime of Big Ben.',
+    description:
+      'A bustling intersection in modern London. The familiar sounds of city life surround you - traffic, conversations, and the distant chime of Big Ben.',
     image: 'londonZone_londonhub.png',
     zone: 'londonZone',
     flags: {} as any,
@@ -95,16 +100,17 @@ const emergencyRooms: Record<string, Room> = {
       west: 'crossing',
       north: 'cafeoffice',
       south: 'stkatherinesdock',
-      east: 'trentpark'
+      east: 'trentpark',
     },
     items: [],
     npcs: [],
-    rooms: []
+    rooms: [],
   },
   newyorkhub: {
     id: 'newyorkhub',
     title: 'New York Hub',
-    description: 'The heart of Manhattan. Skyscrapers tower above you, yellow cabs honk in the distance, and the energy of the city that never sleeps pulses all around.',
+    description:
+      'The heart of Manhattan. Skyscrapers tower above you, yellow cabs honk in the distance, and the energy of the city that never sleeps pulses all around.',
     image: 'newyorkZone_manhattanhub.png',
     zone: 'newyorkZone',
     flags: {} as any,
@@ -112,12 +118,12 @@ const emergencyRooms: Record<string, Room> = {
       northwest: 'crossing',
       north: 'centralpark',
       south: 'aevirawarehouse',
-      east: 'burgerjoint'
+      east: 'burgerjoint',
     },
     items: [],
     npcs: [],
-    rooms: []
-  }
+    rooms: [],
+  },
 };
 
 export function getFallbackRooms(): Record<string, Room> {

@@ -9,10 +9,10 @@
   --idle-blue: #3b82f6;
   --console-text: var(--console-fg, #e5e7eb);
   --idle-track: rgba(255, 255, 255, 0.1);
-  
+
   /* Choose Your Adventure background */
   --pale-gray: #374151;
-  
+
   /* Demo system colors */
   --demo-primary: #6366f1;
   --demo-secondary: #8b5cf6;
@@ -20,7 +20,7 @@
   --demo-success: #10b981;
   --demo-warning: #f59e0b;
   --demo-error: #ef4444;
-  
+
   /* Animation settings */
   --countdown-duration: 0.1s;
   --transition-ease: cubic-bezier(0.4, 0, 0.2, 1);
@@ -31,14 +31,19 @@
   .radial-countdown-circle {
     transition: stroke-dashoffset var(--countdown-duration) var(--transition-ease);
   }
-  
+
   .radial-countdown-container {
     animation: gentle-pulse 4s ease-in-out infinite;
   }
-  
+
   @keyframes gentle-pulse {
-    0%, 100% { opacity: 0.7; }
-    50% { opacity: 0.9; }
+    0%,
+    100% {
+      opacity: 0.7;
+    }
+    50% {
+      opacity: 0.9;
+    }
   }
 }
 
@@ -47,11 +52,11 @@
   .radial-countdown-circle {
     transition: none;
   }
-  
+
   .radial-countdown-container {
     animation: none;
   }
-  
+
   * {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
@@ -170,7 +175,7 @@
 }
 
 .demo-completed::after {
-  content: "✓";
+  content: '✓';
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
@@ -193,12 +198,12 @@
     --console-text: #f3f4f6;
     --idle-track: rgba(0, 0, 0, 0.3);
   }
-  
+
   .adventure-card {
     background: rgba(0, 0, 0, 0.4);
     border-color: rgba(255, 255, 255, 0.1);
   }
-  
+
   .adventure-card:hover {
     background: rgba(0, 0, 0, 0.5);
   }

@@ -43,23 +43,16 @@ export interface FlagOperation {
   amount?: number;
 }
 
-
 export const INVENTORY_CONFIG: InventoryCapacityModifiers = {
   baseCapacity: 5,
-  runbagBonus: 5,      
-  scholarBonus: 2,     
-  godmodeMultiplier: 2 
+  runbagBonus: 5,
+  scholarBonus: 2,
+  godmodeMultiplier: 2,
 };
 
-
-
 // --- Function: getInventoryCapacity ---
-export function getInventoryCapacity(
-  flags: Record<string, unknown>,
-  traits?: string[]
-): number {
+export function getInventoryCapacity(flags: Record<string, unknown>, traits?: string[]): number {
   try {
-    
     if (!validateFlagState(flags)) {
       console.warn('[EngineFlags] Invalid flags object, using base capacity');
       return INVENTORY_CONFIG.baseCapacity;
@@ -67,12 +60,10 @@ export function getInventoryCapacity(
 
     let capacity = INVENTORY_CONFIG.baseCapacity;
 
-    
     if (flags?.hasRunbag) {
       capacity += INVENTORY_CONFIG.runbagBonus;
     }
 
-    
     if (traits?.includes('scholar')) {
       capacity += INVENTORY_CONFIG.scholarBonus;
     }
@@ -81,16 +72,12 @@ export function getInventoryCapacity(
       capacity *= INVENTORY_CONFIG.godmodeMultiplier;
     }
 
-    
     return Math.max(capacity, 1);
-
   } catch (error) {
     console.error('[EngineFlags] Error calculating inventory capacity:', error);
     return INVENTORY_CONFIG.baseCapacity;
   }
 }
-
-
 
 // --- Function: hasFlag ---
 export function hasFlag(flags: FlagState, flagName: string): boolean {
@@ -102,14 +89,8 @@ export function hasFlag(flags: FlagState, flagName: string): boolean {
   }
 }
 
-
-
 // --- Function: setFlag ---
-export function setFlag(
-  flags: FlagState,
-  flagName: string,
-  value: unknown = true
-): FlagState {
+export function setFlag(flags: FlagState, flagName: string, value: unknown = true): FlagState {
   try {
     if (!validateFlagName(flagName)) {
       console.warn(`[EngineFlags] Invalid flag name: '${flagName}'`);
@@ -118,15 +99,13 @@ export function setFlag(
 
     return {
       ...flags,
-      [flagName]: value
+      [flagName]: value,
     };
   } catch (error) {
     console.error(`[EngineFlags] Error setting flag '${flagName}':`, error);
     return flags;
   }
 }
-
-
 
 // --- Function: toggleFlag ---
 export function toggleFlag(flags: FlagState, flagName: string): FlagState {
@@ -139,14 +118,8 @@ export function toggleFlag(flags: FlagState, flagName: string): FlagState {
   }
 }
 
-
-
 // --- Function: incrementFlag ---
-export function incrementFlag(
-  flags: FlagState,
-  flagName: string,
-  amount: number = 1
-): FlagState {
+export function incrementFlag(flags: FlagState, flagName: string, amount: number = 1): FlagState {
   try {
     const currentValue = getFlagValue(flags, flagName, 0);
     return setFlag(flags, flagName, currentValue + amount);
@@ -156,14 +129,12 @@ export function incrementFlag(
   }
 }
 
-
-
 // --- Function: decrementFlag ---
 export function decrementFlag(
   flags: FlagState,
   flagName: string,
   amount: number = 1,
-  allowNegative: boolean = false
+  allowNegative: boolean = false,
 ): FlagState {
   try {
     const currentValue = getFlagValue(flags, flagName, 0) as number;
@@ -176,8 +147,6 @@ export function decrementFlag(
   }
 }
 
-
-
 // --- Function: removeFlag ---
 export function removeFlag(flags: FlagState, flagName: string): FlagState {
   try {
@@ -189,14 +158,8 @@ export function removeFlag(flags: FlagState, flagName: string): FlagState {
   }
 }
 
-
-
 // --- Function: unknown> ---
-export function getFlagValue<T = unknown>(
-  flags: FlagState,
-  flagName: string,
-  defaultValue?: T
-): T {
+export function getFlagValue<T = unknown>(flags: FlagState, flagName: string, defaultValue?: T): T {
   try {
     const value = flags[flagName];
     return value !== undefined ? (value as T) : (defaultValue as T);
@@ -206,18 +169,16 @@ export function getFlagValue<T = unknown>(
   }
 }
 
-
-
 // --- Function: checkMultipleFlags ---
 export function checkMultipleFlags(
   flags: FlagState,
   flagNames: string[],
-  mode: 'and' | 'or' = 'and'
+  mode: 'and' | 'or' = 'and',
 ): boolean {
   try {
     if (flagNames.length === 0) return true;
 
-    const results = flagNames.map(name => getFlagValue(flags, name, false));
+    const results = flagNames.map((name) => getFlagValue(flags, name, false));
     return mode === 'and'
       ? results.every((result: boolean) => result)
       : results.some((result: boolean) => result);
@@ -227,13 +188,8 @@ export function checkMultipleFlags(
   }
 }
 
-
-
 // --- Function: applyFlagOperations ---
-export function applyFlagOperations(
-  flags: FlagState,
-  operations: FlagOperation[]
-): FlagState {
+export function applyFlagOperations(flags: FlagState, operations: FlagOperation[]): FlagState {
   try {
     return operations.reduce((currentFlags, operation) => {
       switch (operation.type) {
@@ -258,23 +214,15 @@ export function applyFlagOperations(
   }
 }
 
-
-
 // --- Function: validateFlagState ---
 export function validateFlagState(flags: unknown): flags is FlagState {
   return typeof flags === 'object' && flags !== null;
 }
 
-
-
 // --- Function: validateFlagName ---
 export function validateFlagName(name: unknown): name is string {
-  return typeof name === 'string' &&
-         name.length > 0 &&
-         /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(name);
+  return typeof name === 'string' && name.length > 0 && /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(name);
 }
-
-
 
 // --- Function: getFlagStatistics ---
 export function getFlagStatistics(flags: FlagState): {
@@ -294,7 +242,7 @@ export function getFlagStatistics(flags: FlagState): {
       numericFlags: entries.filter(([_key, v]: [string, any]) => typeof v === 'number').length,
       stringFlags: entries.filter(([_key, v]: [string, any]) => typeof v === 'string').length,
       objectFlags: entries.filter(([_key, v]: [string, any]) => typeof v === 'object').length,
-      trueBooleanFlags: entries.filter(([_key, v]: [string, any]) => v === true).length
+      trueBooleanFlags: entries.filter(([_key, v]: [string, any]) => v === true).length,
     };
   } catch (error) {
     console.error('[EngineFlags] Error calculating flag statistics:', error);
@@ -304,12 +252,10 @@ export function getFlagStatistics(flags: FlagState): {
       numericFlags: 0,
       stringFlags: 0,
       objectFlags: 0,
-      trueBooleanFlags: 0
+      trueBooleanFlags: 0,
     };
   }
 }
-
-
 
 // --- Function: cloneFlags ---
 export function cloneFlags(flags: FlagState): FlagState {
@@ -321,8 +267,6 @@ export function cloneFlags(flags: FlagState): FlagState {
   }
 }
 
-
-
 // --- Function: mergeFlags ---
 export function mergeFlags(baseFlags: FlagState, newFlags: FlagState): FlagState {
   try {
@@ -333,12 +277,10 @@ export function mergeFlags(baseFlags: FlagState, newFlags: FlagState): FlagState
   }
 }
 
-
-
 // --- Function: filterFlags ---
 export function filterFlags(
   flags: FlagState,
-  predicate: (key: string, value: unknown) => boolean
+  predicate: (key: string, value: unknown) => boolean,
 ): FlagState {
   try {
     const filtered: FlagState = {};
@@ -373,7 +315,7 @@ const EngineFlags = {
   getFlagStatistics,
   cloneFlags,
   mergeFlags,
-  filterFlags
+  filterFlags,
 };
 
 export default EngineFlags;

@@ -31,24 +31,15 @@ import type { Room } from '../types/Room';
 
 import { useGameState } from '../state/gameState';
 
-
-
-
-
-
-
-
 const GameEngine: React.FC = () => {
   const { state, dispatch } = useGameState();
   const { currentRoomId, roomMap, player } = state;
 
-  
   const room: Room | undefined = currentRoomId ? roomMap[currentRoomId] : undefined;
 
   if (!room) {
-    
     console.error(`[GameEngine] No current room found for ID: ${currentRoomId}`);
-// JSX return block or main return
+    // JSX return block or main return
     return (
       <div className="h-full w-full bg-black text-red-400 flex flex-col justify-center items-center p-8">
         <div className="text-lg">Initialising room context...</div>
@@ -59,8 +50,7 @@ const GameEngine: React.FC = () => {
     );
   }
 
-  
-// JSX return block or main return
+  // JSX return block or main return
   return (
     <div className="grid grid-cols-2 grid-rows-2 h-screen w-screen gap-2 p-2 bg-black text-green-400 font-mono">
       {}
@@ -71,18 +61,20 @@ const GameEngine: React.FC = () => {
             src={room.image}
             alt={room.title}
             className="w-full max-h-64 object-contain mb-2 rounded"
-            style={{ background: "#0a0a0a", border: "1px solid #1fa350" }}
+            style={{ background: '#0a0a0a', border: '1px solid #1fa350' }}
           />
         )}
         <pre className="whitespace-pre-wrap text-base">{room.description}</pre>
         {room.items && room.items.length > 0 && (
           <div className="mt-2 text-sm text-green-300">
-          <strong>Items:</strong> {room.items.map((item) => typeof item === 'string' ? item : item.name).join(', ')}
+            <strong>Items:</strong>{' '}
+            {room.items.map((item) => (typeof item === 'string' ? item : item.name)).join(', ')}
           </div>
         )}
         {room.npcs && room.npcs.length > 0 && (
           <div className="mt-1 text-sm text-green-200">
-          <strong>NPCs:</strong> {room.npcs.map((npc) => typeof npc === 'string' ? npc : npc.name).join(', ')}
+            <strong>NPCs:</strong>{' '}
+            {room.npcs.map((npc) => (typeof npc === 'string' ? npc : npc.name)).join(', ')}
           </div>
         )}
       </div>
@@ -94,7 +86,20 @@ const GameEngine: React.FC = () => {
 
       {}
       <div className="p-2">
-        <CommandInput playerName={player.name || 'Player'} onCommand={(cmd) => dispatch({ type: 'RECORD_MESSAGE', payload: { id: Date.now().toString(), text: `> ${cmd}`, type: 'action', timestamp: Date.now() } })} />
+        <CommandInput
+          playerName={player.name || 'Player'}
+          onCommand={(cmd) =>
+            dispatch({
+              type: 'RECORD_MESSAGE',
+              payload: {
+                id: Date.now().toString(),
+                text: `> ${cmd}`,
+                type: 'action',
+                timestamp: Date.now(),
+              },
+            })
+          }
+        />
       </div>
 
       {}

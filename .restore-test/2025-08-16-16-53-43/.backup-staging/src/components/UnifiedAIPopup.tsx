@@ -21,7 +21,7 @@ const UnifiedAIPopup: React.FC<UnifiedAIPopupProps> = ({
   guidance,
   onDismiss,
   onTalkToAyla,
-  onOpenMiniquests
+  onOpenMiniquests,
 }) => {
   const getIcon = () => {
     switch (guidance.type) {
@@ -41,7 +41,7 @@ const UnifiedAIPopup: React.FC<UnifiedAIPopupProps> = ({
   const getHeaderText = () => {
     switch (guidance.type) {
       case 'hint':
-        return guidance.source === 'ayla' ? '💫 Ayla\'s Guidance' : '🧠 AI Hint';
+        return guidance.source === 'ayla' ? "💫 Ayla's Guidance" : '🧠 AI Hint';
       case 'miniquest':
         return '🎯 Quest Opportunity';
       case 'story':
@@ -79,18 +79,18 @@ const UnifiedAIPopup: React.FC<UnifiedAIPopupProps> = ({
         transition={{ duration: 0.3, ease: 'easeOut' }}
         className="fixed top-4 right-4 z-50 max-w-md"
       >
-        <div className={`
+        <div
+          className={`
           relative p-4 rounded-lg border backdrop-blur-sm
           ${getPriorityColor()}
           shadow-lg shadow-black/20
-        `}>
+        `}
+        >
           {/* Header */}
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               {getIcon()}
-              <span className="text-sm font-medium text-gray-200">
-                {getHeaderText()}
-              </span>
+              <span className="text-sm font-medium text-gray-200">{getHeaderText()}</span>
             </div>
             <button
               onClick={onDismiss}
@@ -101,15 +101,11 @@ const UnifiedAIPopup: React.FC<UnifiedAIPopupProps> = ({
           </div>
 
           {/* Main Content */}
-          <div className="text-gray-100 mb-3 leading-relaxed">
-            {guidance.content}
-          </div>
+          <div className="text-gray-100 mb-3 leading-relaxed">{guidance.content}</div>
 
           {/* Follow-up text */}
           {guidance.followUp && (
-            <div className="text-xs text-gray-400 italic mb-3">
-              {guidance.followUp}
-            </div>
+            <div className="text-xs text-gray-400 italic mb-3">{guidance.followUp}</div>
           )}
 
           {/* Action Suggestions */}
@@ -139,7 +135,7 @@ const UnifiedAIPopup: React.FC<UnifiedAIPopupProps> = ({
                 💬 Talk to Ayla
               </button>
             )}
-            
+
             {guidance.type === 'miniquest' && onOpenMiniquests && (
               <button
                 onClick={onOpenMiniquests}

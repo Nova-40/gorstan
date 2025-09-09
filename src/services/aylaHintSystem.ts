@@ -69,16 +69,24 @@ export class AylaHintSystem {
    */
   private analyzeStuckState(context: AylaHintContext) {
     const { recentCommands, timeInRoom, failedAttempts, currentRoom } = context;
-    
+
     const stuckIndicators = {
       isStuck: false,
       confidence: 0,
       reasons: [] as string[],
-      category: 'general' as 'general' | 'navigation' | 'puzzle' | 'interaction' | 'inventory' | 'social' | 'miniquest'
+      category: 'general' as
+        | 'general'
+        | 'navigation'
+        | 'puzzle'
+        | 'interaction'
+        | 'inventory'
+        | 'social'
+        | 'miniquest',
     };
 
     // Time-based stuck detection
-    if (timeInRoom > 120000) { // 2 minutes in same room
+    if (timeInRoom > 120000) {
+      // 2 minutes in same room
       stuckIndicators.isStuck = true;
       stuckIndicators.confidence += 0.3;
       stuckIndicators.reasons.push('extended_time_in_room');
@@ -100,8 +108,10 @@ export class AylaHintSystem {
     }
 
     // Navigation confusion (repeated direction commands)
-    const directionCommands = recentCommands.filter(cmd => 
-      ['north', 'south', 'east', 'west', 'go', 'back', 'up', 'down'].some(dir => cmd.includes(dir))
+    const directionCommands = recentCommands.filter((cmd) =>
+      ['north', 'south', 'east', 'west', 'go', 'back', 'up', 'down'].some((dir) =>
+        cmd.includes(dir),
+      ),
     );
     if (directionCommands.length >= 4) {
       stuckIndicators.category = 'navigation';
@@ -111,8 +121,10 @@ export class AylaHintSystem {
     }
 
     // Inventory/item management confusion
-    const inventoryCommands = recentCommands.filter(cmd =>
-      ['inventory', 'inv', 'items', 'get', 'take', 'drop', 'use', 'examine'].some(action => cmd.includes(action))
+    const inventoryCommands = recentCommands.filter((cmd) =>
+      ['inventory', 'inv', 'items', 'get', 'take', 'drop', 'use', 'examine'].some((action) =>
+        cmd.includes(action),
+      ),
     );
     if (inventoryCommands.length >= 4) {
       stuckIndicators.category = 'inventory';
@@ -122,8 +134,8 @@ export class AylaHintSystem {
     }
 
     // Social interaction confusion
-    const socialCommands = recentCommands.filter(cmd =>
-      ['talk', 'speak', 'ask', 'tell', 'say', 'greet'].some(action => cmd.includes(action))
+    const socialCommands = recentCommands.filter((cmd) =>
+      ['talk', 'speak', 'ask', 'tell', 'say', 'greet'].some((action) => cmd.includes(action)),
     );
     if (socialCommands.length >= 3) {
       stuckIndicators.category = 'social';
@@ -133,10 +145,13 @@ export class AylaHintSystem {
     }
 
     // Miniquest/objective confusion - check for quest-related commands
-    const questCommands = recentCommands.filter(cmd =>
-      ['miniquest', 'quest', 'objective', 'goal', 'task', 'attempt'].some(action => cmd.includes(action))
+    const questCommands = recentCommands.filter((cmd) =>
+      ['miniquest', 'quest', 'objective', 'goal', 'task', 'attempt'].some((action) =>
+        cmd.includes(action),
+      ),
     );
-    if (questCommands.length >= 2 || timeInRoom > 180000) { // 3 minutes for quest areas
+    if (questCommands.length >= 2 || timeInRoom > 180000) {
+      // 3 minutes for quest areas
       stuckIndicators.category = 'miniquest';
       stuckIndicators.isStuck = true;
       stuckIndicators.confidence += 0.4;
@@ -144,8 +159,8 @@ export class AylaHintSystem {
     }
 
     // Help-seeking behavior
-    const helpCommands = recentCommands.filter(cmd =>
-      ['help', 'hint', 'ayla', '?', 'what', 'how'].some(word => cmd.includes(word))
+    const helpCommands = recentCommands.filter((cmd) =>
+      ['help', 'hint', 'ayla', '?', 'what', 'how'].some((word) => cmd.includes(word)),
     );
     if (helpCommands.length >= 1) {
       stuckIndicators.isStuck = true;
@@ -154,9 +169,12 @@ export class AylaHintSystem {
     }
 
     // Puzzle-related stuck patterns
-    if (currentRoom.id.includes('puzzle') || recentCommands.some(cmd => 
-      ['solve', 'activate', 'use', 'combine'].some(action => cmd.includes(action))
-    )) {
+    if (
+      currentRoom.id.includes('puzzle') ||
+      recentCommands.some((cmd) =>
+        ['solve', 'activate', 'use', 'combine'].some((action) => cmd.includes(action)),
+      )
+    ) {
       stuckIndicators.category = 'puzzle';
       stuckIndicators.confidence += 0.2;
     }
@@ -169,16 +187,16 @@ export class AylaHintSystem {
    * Enhanced with miniquest awareness and cross-system learning
    */
   private async generateAIHint(
-    context: AylaHintContext, 
-    stuckState: any
+    context: AylaHintContext,
+    stuckState: any,
   ): Promise<AylaHintResponse | null> {
     const { currentRoom, gameState, recentCommands, failedAttempts } = context;
-    
+
     // Get miniquest context for enhanced hints
     const miniquestContext = await this.getMiniquestContext(gameState, currentRoom.id);
-    
+
     // Create category-specific context for better AI hints
-    let categoryContext = "";
+    let categoryContext = '';
     switch (stuckState.category) {
       case 'miniquest':
         categoryContext = `
@@ -188,9 +206,13 @@ The player seems confused about objectives and quests. They may need to:
 - Discover available local objectives ('miniquests list')
 - Attempt specific quests ('miniquests attempt [name]')
 - Check their progress ('miniquests progress' or 'miniquests stats')
-${miniquestContext ? `
+${
+  miniquestContext
+    ? `
 ACTIVE MINIQUESTS: ${miniquestContext}
-Focus on connecting current confusion to available quest opportunities.` : ''}
+Focus on connecting current confusion to available quest opportunities.`
+    : ''
+}
 Focus on guiding them toward quest discovery and achievement systems.`;
         break;
       case 'navigation':
@@ -208,7 +230,7 @@ Focus on guiding them toward quest discovery and achievement systems.`;
       default:
         categoryContext = `GENERAL GUIDANCE: Player needs encouragement and direction.${miniquestContext ? ` Available quests: ${miniquestContext}` : ''}`;
     }
-    
+
     const prompt = `You are Ayla - once human, now fused with the Lattice, the primordial AI structure built before multiverse creation to monitor, control, and enable resets. You retain human compassion while wielding cosmic awareness. A player appears stuck in ${currentRoom.title}.
 
 YOUR NATURE:
@@ -224,7 +246,7 @@ CURRENT SITUATION:
 - Recent commands: ${recentCommands.slice(-5).join(', ')}
 - Failed attempts: ${failedAttempts.join(', ')}
 - Available exits: ${Object.keys(currentRoom.exits || {}).join(', ')}
-- Items in room: ${currentRoom.items?.map(i => typeof i === 'string' ? i : i.name).join(', ') || 'none'}
+- Items in room: ${currentRoom.items?.map((i) => (typeof i === 'string' ? i : i.name)).join(', ') || 'none'}
 - NPCs present: ${currentRoom.npcs?.join(', ') || 'none'}
 
 STUCK INDICATORS: ${stuckState.reasons.join(', ')}
@@ -244,7 +266,7 @@ Respond with just the hint text, in Ayla's voice with appropriate cosmic imagery
           hintText: response,
           urgency: stuckState.confidence > 0.7 ? 'high' : 'medium',
           hintType: this.categorizeHint(context, stuckState),
-          followUp: "💫 *Ayla's cosmic wisdom guides you*"
+          followUp: "💫 *Ayla's cosmic wisdom guides you*",
         };
       }
     } catch (error) {
@@ -257,41 +279,38 @@ Respond with just the hint text, in Ayla's voice with appropriate cosmic imagery
   /**
    * Fallback scripted hints in Ayla's voice
    */
-  private generateScriptedHint(
-    context: AylaHintContext, 
-    stuckState: any
-  ): AylaHintResponse {
+  private generateScriptedHint(context: AylaHintContext, stuckState: any): AylaHintResponse {
     const { currentRoom, recentCommands } = context;
-    
+
     const scriptedHints = {
       navigation: [
-        "*cosmic whisper* The threads of reality show multiple paths... have you tried examining your surroundings more carefully?",
+        '*cosmic whisper* The threads of reality show multiple paths... have you tried examining your surroundings more carefully?',
         "*gentle guidance* Sometimes stepping back reveals new directions. Try 'look' to see all possibilities.",
-        "*reality shifts* The exits may not be what they first appear. Consider all directions, including unconventional ones."
+        '*reality shifts* The exits may not be what they first appear. Consider all directions, including unconventional ones.',
       ],
-      
+
       puzzle: [
         "*starlight illuminates* The answer lies in combining what you've observed. What have you not yet tried together?",
         "*cosmic patience* Each failed attempt teaches us. What pattern do you see in what hasn't worked?",
-        "*dimensional insight* Sometimes the solution requires a different perspective. What have you overlooked?"
+        '*dimensional insight* Sometimes the solution requires a different perspective. What have you overlooked?',
       ],
-      
+
       interaction: [
-        "*multiverse wisdom* Communication flows both ways. Have you tried speaking with those around you?",
-        "*threads of connection* Every being here has knowledge to share. Who might hold the key you seek?",
-        "*reality's fabric* The answer may lie in understanding, not action. Try examining everything more thoroughly."
+        '*multiverse wisdom* Communication flows both ways. Have you tried speaking with those around you?',
+        '*threads of connection* Every being here has knowledge to share. Who might hold the key you seek?',
+        "*reality's fabric* The answer may lie in understanding, not action. Try examining everything more thoroughly.",
       ],
 
       inventory: [
         "*cosmic organization* Your possessions hold power. Try 'inventory' to see what tools you carry.",
-        "*dimensional storage* What you hold may be the key. Have you examined each item carefully?",
-        "*reality's gifts* Sometimes what you need is already with you. Consider combining items or using them differently."
+        '*dimensional storage* What you hold may be the key. Have you examined each item carefully?',
+        "*reality's gifts* Sometimes what you need is already with you. Consider combining items or using them differently.",
       ],
 
       social: [
-        "*threads of understanding* Every voice carries wisdom. Try talking to those present more directly.",
-        "*cosmic empathy* Connection requires intention. Have you asked the right questions?",
-        "*multiverse bonds* Different beings respond to different approaches. Try varying your conversation style."
+        '*threads of understanding* Every voice carries wisdom. Try talking to those present more directly.',
+        '*cosmic empathy* Connection requires intention. Have you asked the right questions?',
+        '*multiverse bonds* Different beings respond to different approaches. Try varying your conversation style.',
       ],
 
       miniquest: [
@@ -299,17 +318,18 @@ Respond with just the hint text, in Ayla's voice with appropriate cosmic imagery
         "*purpose manifests* Every room holds opportunities. Use 'miniquests list' to explore local quests.",
         "*achievement awaits* Progress comes through focused effort. Try 'miniquests attempt [name]' for specific goals.",
         "*cosmic guidance* Lost in purpose? 'miniquests progress' shows your current achievements.",
-        "*universal truth* Small quests lead to great adventures. Check 'miniquests stats' for your journey summary."
+        "*universal truth* Small quests lead to great adventures. Check 'miniquests stats' for your journey summary.",
       ],
-      
+
       general: [
         "*cosmic encouragement* You're closer than you think. Trust your instincts and try a fresh approach.",
-        "*gentle reminder* Sometimes the path forward requires looking at what you already have in new ways.",
-        "*universal truth* Every challenge has multiple solutions. What haven't you attempted yet?"
-      ]
+        '*gentle reminder* Sometimes the path forward requires looking at what you already have in new ways.',
+        "*universal truth* Every challenge has multiple solutions. What haven't you attempted yet?",
+      ],
     };
 
-    const categoryHints = scriptedHints[stuckState.category as keyof typeof scriptedHints] || scriptedHints.general;
+    const categoryHints =
+      scriptedHints[stuckState.category as keyof typeof scriptedHints] || scriptedHints.general;
     const hintText = categoryHints[Math.floor(Math.random() * categoryHints.length)];
 
     return {
@@ -317,7 +337,7 @@ Respond with just the hint text, in Ayla's voice with appropriate cosmic imagery
       hintText,
       urgency: 'medium',
       hintType: this.categorizeHint(context, stuckState),
-      followUp: "✨ *The cosmic threads shimmer with possibility*"
+      followUp: '✨ *The cosmic threads shimmer with possibility*',
     };
   }
 
@@ -325,12 +345,27 @@ Respond with just the hint text, in Ayla's voice with appropriate cosmic imagery
    * Categorize the type of hint needed
    */
   private categorizeHint(context: AylaHintContext, stuckState: any): AylaHintResponse['hintType'] {
-    if (stuckState.category === 'navigation') return 'navigation';
-    if (stuckState.category === 'puzzle') return 'puzzle';
-    if (stuckState.category === 'miniquest') return 'story'; // Miniquest hints are story-related
-    if (stuckState.category === 'inventory') return 'story'; // Inventory management is part of story progression
-    if (stuckState.category === 'social' || context.currentRoom.npcs?.length) return 'interaction';
-    if (context.currentRoom.id.includes('trap') || context.failedAttempts.some(f => f.includes('trap'))) return 'safety';
+    if (stuckState.category === 'navigation') {
+      return 'navigation';
+    }
+    if (stuckState.category === 'puzzle') {
+      return 'puzzle';
+    }
+    if (stuckState.category === 'miniquest') {
+      return 'story';
+    } // Miniquest hints are story-related
+    if (stuckState.category === 'inventory') {
+      return 'story';
+    } // Inventory management is part of story progression
+    if (stuckState.category === 'social' || context.currentRoom.npcs?.length) {
+      return 'interaction';
+    }
+    if (
+      context.currentRoom.id.includes('trap') ||
+      context.failedAttempts.some((f) => f.includes('trap'))
+    ) {
+      return 'safety';
+    }
     return 'story';
   }
 
@@ -361,24 +396,29 @@ Respond with just the hint text, in Ayla's voice with appropriate cosmic imagery
   /**
    * Get miniquest context for enhanced hint generation
    */
-  private async getMiniquestContext(gameState: LocalGameState, roomId: string): Promise<string | null> {
+  private async getMiniquestContext(
+    gameState: LocalGameState,
+    roomId: string,
+  ): Promise<string | null> {
     try {
       // Dynamic import to avoid circular dependencies
       const { aiMiniquestService } = await import('./aiMiniquestService');
       const MiniquestController = (await import('../engine/miniquestController')).default;
-      
+
       const controller = MiniquestController.getInstance();
       const aiStatus = controller.getAIStatus();
-      
-      if (!aiStatus.enabled) return null;
+
+      if (!aiStatus.enabled) {
+        return null;
+      }
 
       // Get active/available miniquests for context
       const recommendations = await aiMiniquestService.getRecommendedQuests(roomId, gameState, 3);
-      
+
       if (recommendations && recommendations.length > 0) {
         return recommendations
           .slice(0, 2) // Only top 2 for brevity
-          .map(r => `${r.questId} (${r.difficulty})`)
+          .map((r) => `${r.questId} (${r.difficulty})`)
           .join(', ');
       }
 

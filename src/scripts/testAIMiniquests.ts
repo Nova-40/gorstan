@@ -17,27 +17,27 @@ const testGameState: LocalGameState = {
     score: 150,
     inventory: ['map', 'key'],
     flags: {
-      'talked_to_dominic': true,
-      'examined_statue': true,
-      'miniquest_001_completed': true
-    }
+      talked_to_dominic: true,
+      examined_statue: true,
+      miniquest_001_completed: true,
+    },
   },
   history: [],
   roomMap: {},
   flags: {
-    'talked_to_dominic': true,
-    'examined_statue': true,
-    'miniquest_001_completed': true
+    talked_to_dominic: true,
+    examined_statue: true,
+    miniquest_001_completed: true,
   },
   npcsInRoom: [],
-  roomVisitCount: { 'gorstanhub': 5, 'gorstanvillage': 2 },
+  roomVisitCount: { gorstanhub: 5, gorstanvillage: 2 },
   gameTime: {
     day: 1,
     hour: 14,
     minute: 30,
     startTime: Date.now() - 600000,
     currentTime: Date.now(),
-    timeScale: 1
+    timeScale: 1,
   },
   settings: {
     soundEnabled: true,
@@ -51,7 +51,7 @@ const testGameState: LocalGameState = {
     textSpeed: 1,
     fontSize: 'medium',
     theme: 'default',
-    debugMode: false
+    debugMode: false,
   },
   metadata: {
     resetCount: 0,
@@ -59,40 +59,43 @@ const testGameState: LocalGameState = {
     lastSaved: null,
     playTime: 600,
     achievements: [],
-    codexEntries: {}
+    codexEntries: {},
   },
   messages: [],
   inventory: ['map', 'key'],
   conversations: {},
   overhearNPCBanter: false,
-  visitedRooms: ['gorstanhub', 'gorstanvillage']
+  visitedRooms: ['gorstanhub', 'gorstanvillage'],
 };
 
 // Test functions
 export async function testAIMiniquestSystem() {
   console.log('🧪 Testing AI Miniquest System...');
-  
+
   try {
     // Test AI recommendations (will use fallback if AI is disabled/failing)
     console.log('🎯 Testing AI recommendations...');
-    const recommendations = await aiMiniquestService.getRecommendedQuests('gorstanhub', testGameState, 3);
+    const recommendations = await aiMiniquestService.getRecommendedQuests(
+      'gorstanhub',
+      testGameState,
+      3,
+    );
     console.log('AI Recommendations:', recommendations);
-    
+
     // Test player state analysis
     console.log('🔍 Testing player analysis...');
     const analysis = await aiMiniquestService.analyzePlayerState(testGameState);
     console.log('Player Analysis:', analysis);
-    
+
     // Test controller integration
     console.log('🎮 Testing controller integration...');
     const controller = MiniquestController.getInstance();
     controller.setAIEnabled(true);
     const aiStatus = controller.getAIStatus();
     console.log('AI Status:', aiStatus);
-    
+
     console.log('✅ AI Miniquest System test completed successfully!');
     return true;
-    
   } catch (error) {
     console.error('❌ AI Miniquest System test failed:', error);
     return false;
@@ -104,5 +107,5 @@ export async function testAIMiniquestSystem() {
 
 export default {
   testAIMiniquestSystem,
-  testGameState
+  testGameState,
 };

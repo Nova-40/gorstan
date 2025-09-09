@@ -26,7 +26,9 @@ interface BlueButtonWarningModalProps {
 }
 
 const BlueButtonWarningModal: React.FC<BlueButtonWarningModalProps> = ({ isOpen, onClose }) => {
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
 
   return (
     <div className="modal-overlay blue-button-warning">
@@ -53,11 +55,9 @@ const BlueButtonWarningModal: React.FC<BlueButtonWarningModalProps> = ({ isOpen,
                 <div className="warning-line details">
                   All progress will be lost. All timelines will be affected.
                 </div>
-                <div className="warning-line final">
-                  You have been warned.
-                </div>
+                <div className="warning-line final">You have been warned.</div>
               </div>
-              
+
               <div className="warning-effects">
                 <div className="pulse-effect"></div>
                 <div className="scan-line"></div>

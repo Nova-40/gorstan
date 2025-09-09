@@ -40,7 +40,10 @@ const initialState: RouteManagerState = {
 };
 
 // Reducer
-function routeManagerReducer(state: RouteManagerState, action: RouteManagerAction): RouteManagerState {
+function routeManagerReducer(
+  state: RouteManagerState,
+  action: RouteManagerAction,
+): RouteManagerState {
   switch (action.type) {
     case 'START_ROUTE':
       return {
@@ -64,7 +67,7 @@ function routeManagerReducer(state: RouteManagerState, action: RouteManagerActio
           lastSaved: Date.now(),
           objectives: {
             completed: [],
-            total: action.route.nodes.map(node => node.id),
+            total: action.route.nodes.map((node) => node.id),
           },
         },
         isActive: true,
@@ -187,16 +190,19 @@ export const RouteManagerProvider: React.FC<RouteManagerProviderProps> = ({
       dispatch({ type: 'ROUTE_LOADED', route, progress: savedProgress || undefined });
       onRouteStart?.(route);
     } catch (error) {
-      dispatch({ type: 'SET_ERROR', error: error instanceof Error ? error.message : 'Unknown error' });
+      dispatch({
+        type: 'SET_ERROR',
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
     }
   };
 
   const updateProgress = (progress: RouteProgress) => {
     dispatch({ type: 'UPDATE_PROGRESS', progress });
-    
+
     // Auto-save progress
     if (saveProgressToStorage) {
-      saveProgressToStorage(progress).catch(error => {
+      saveProgressToStorage(progress).catch((error) => {
         console.warn('Failed to save progress:', error);
       });
     }
@@ -228,18 +234,20 @@ export const RouteManagerProvider: React.FC<RouteManagerProviderProps> = ({
 
   // Update elapsed time periodically
   useEffect(() => {
-    if (!state.isActive || !state.progress) return;
+    if (!state.isActive || !state.progress) {
+      return;
+    }
 
     const interval = setInterval(() => {
       const now = Date.now();
       const elapsedTimeMs = now - state.progress!.timeStarted;
-      
+
       const updatedProgress: RouteProgress = {
         ...state.progress!,
         elapsedTimeMs,
         lastSaved: now,
       };
-      
+
       updateProgress(updatedProgress);
     }, 10000); // Update every 10 seconds
 
@@ -258,9 +266,7 @@ export const RouteManagerProvider: React.FC<RouteManagerProviderProps> = ({
   };
 
   return (
-    <RouteManagerContext.Provider value={contextValue}>
-      {children}
-    </RouteManagerContext.Provider>
+    <RouteManagerContext.Provider value={contextValue}>{children}</RouteManagerContext.Provider>
   );
 };
 
@@ -291,36 +297,37 @@ export const RouteWrapper: React.FC<RouteWrapperProps> = ({
 
   const handleNodeComplete = (nodeId: string) => {
     onNodeComplete?.(nodeId);
-    
+
     if (state.progress && state.currentRoute) {
       const updatedProgress: RouteProgress = {
         ...state.progress,
         completedNodes: [...state.progress.completedNodes, nodeId],
         lastSaved: Date.now(),
       };
-      
+
       // Update current node to next incomplete required node
-      const nextNode = state.currentRoute.nodes.find(node => 
-        node.required && 
-        !updatedProgress.completedNodes.includes(node.id) &&
-        !updatedProgress.skippedNodes.includes(node.id)
+      const nextNode = state.currentRoute.nodes.find(
+        (node) =>
+          node.required &&
+          !updatedProgress.completedNodes.includes(node.id) &&
+          !updatedProgress.skippedNodes.includes(node.id),
       );
-      
+
       if (nextNode) {
-        const nextNodeIndex = state.currentRoute.nodes.findIndex(node => node.id === nextNode.id);
+        const nextNodeIndex = state.currentRoute.nodes.findIndex((node) => node.id === nextNode.id);
         updatedProgress.currentNodeIndex = nextNodeIndex;
         updatedProgress.currentNodeId = nextNode.id;
       }
-      
+
       updateProgress(updatedProgress);
     }
   };
 
   const handleNodeStart = (nodeId: string) => {
     onNodeStart?.(nodeId);
-    
+
     if (state.progress && state.currentRoute) {
-      const nodeIndex = state.currentRoute.nodes.findIndex(node => node.id === nodeId);
+      const nodeIndex = state.currentRoute.nodes.findIndex((node) => node.id === nodeId);
       if (nodeIndex >= 0) {
         const updatedProgress: RouteProgress = {
           ...state.progress,
@@ -328,7 +335,7 @@ export const RouteWrapper: React.FC<RouteWrapperProps> = ({
           currentNodeId: nodeId,
           lastSaved: Date.now(),
         };
-        
+
         updateProgress(updatedProgress);
       }
     }

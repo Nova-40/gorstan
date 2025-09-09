@@ -22,12 +22,12 @@ export interface QuantumArtifact {
   lore: string;
   discoveryLocation?: string; // Node ID where discovered
   discoveryRoute?: string; // Route ID where first found
-  
+
   // Mechanical effects
   effects: ArtifactEffect[];
   requirements?: SkillRequirement[];
   synergies?: string[]; // Other artifact IDs that enhance this one
-  
+
   // Progression data
   experience: number;
   level: number;
@@ -49,21 +49,21 @@ export interface QuantumSkill {
   category: SkillCategory;
   description: string;
   element: QuantumElement;
-  
+
   // Progression
   currentLevel: number;
   maxLevel: number;
   experience: number;
   experienceToNext: number;
-  
+
   // Requirements and unlocks
   requirements: SkillRequirement[];
   unlockedBy: string[]; // Artifact IDs that can unlock this skill
   unlocks: string[]; // Skill IDs this unlocks
-  
+
   // Effects at current level
   effects: SkillEffect[];
-  
+
   // Route availability
   availableInRoutes: ('demo' | 'short10' | 'short30' | 'full')[];
 }
@@ -86,23 +86,23 @@ export interface QuantumProgression {
   playerId: string;
   totalExperience: number;
   quantumLevel: number; // Overall mastery level
-  
+
   // Collections
   artifacts: Map<string, QuantumArtifact>;
   skills: Map<string, QuantumSkill>;
   discoveries: string[]; // Discovered location/lore IDs
-  
+
   // Route-specific progression
   routeCompletions: {
     demo: number;
     short10: string[]; // Completed route IDs
-    short30: string[]; // Completed route IDs  
+    short30: string[]; // Completed route IDs
     full: number;
   };
-  
+
   // Active loadout for current adventure
   activeArtifacts: string[]; // Max 3 active at once
-  
+
   // Preferences
   preferredElement: QuantumElement;
   autoActivateNewArtifacts: boolean;
@@ -115,13 +115,13 @@ export interface QuantumDiscovery {
   routeId: string;
   nodeId: string;
   timestamp: number;
-  
+
   // What was discovered
   artifactId?: string;
   skillId?: string;
   loreText?: string;
   synergyPartners?: string[]; // Artifact IDs
-  
+
   // Presentation
   title: string;
   description: string;
@@ -143,13 +143,13 @@ export interface QuantumGameState {
   progression: QuantumProgression;
   currentRoute?: string;
   currentNode?: string;
-  
+
   // Active effects affecting gameplay
   activePuzzleHints: string[];
   activeCombatBonuses: SkillEffect[];
   activeDetectionBoosts: SkillEffect[];
   availableSkips: number; // Modified by progression
-  
+
   // Discovery state
   pendingDiscoveries: QuantumDiscovery[];
   discoverySequence: number; // For unique discovery ordering

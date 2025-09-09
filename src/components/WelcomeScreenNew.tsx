@@ -15,8 +15,8 @@
 */
 
 // src/components/WelcomeScreen.tsx
-import React, { useState, useEffect, useCallback } from "react";
-import { getVersionString, getShortVersion } from "../config/version";
+import React, { useState, useEffect, useCallback } from 'react';
+import { getVersionString, getShortVersion } from '../config/version';
 
 interface WelcomeScreenProps {
   onBegin: () => void;
@@ -38,9 +38,9 @@ const AylaGuidanceModal: React.FC<AylaGuidanceProps> = ({ onDismiss, onStartDemo
     <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
       <div className="bg-gradient-to-br from-indigo-900 to-purple-900 border-2 border-cyan-400 rounded-xl p-6 max-w-2xl w-full text-white shadow-2xl">
         <div className="flex items-center gap-4 mb-4">
-          <img 
-            src="/images/Ayla.png" 
-            alt="Ayla" 
+          <img
+            src="/images/Ayla.png"
+            alt="Ayla"
             className="w-16 h-16 rounded-full border-2 border-cyan-400"
           />
           <div>
@@ -48,42 +48,60 @@ const AylaGuidanceModal: React.FC<AylaGuidanceProps> = ({ onDismiss, onStartDemo
             <p className="text-sm text-gray-300">Your Guide Through the Multiverse</p>
           </div>
         </div>
-        
+
         <div className="space-y-4 mb-6">
           <p className="text-cyan-200">
             *A cosmic presence manifests, her voice carrying the weight of infinite realities*
           </p>
-          
+
           <p className="text-white">
-            "Greetings, traveler. I sense you're contemplating your journey through Gorstan. Let me illuminate the paths before you..."
+            "Greetings, traveler. I sense you're contemplating your journey through Gorstan. Let me
+            illuminate the paths before you..."
           </p>
-          
+
           <div className="bg-black bg-opacity-30 rounded-lg p-4 space-y-2">
             <h4 className="text-cyan-300 font-semibold">What You Can Experience:</h4>
             <ul className="text-gray-200 space-y-1">
-              <li>• <strong>Explore</strong> - Navigate a multiverse of interconnected rooms and realities</li>
-              <li>• <strong>Interact</strong> - Converse with AI-powered NPCs who remember your choices</li>
-              <li>• <strong>Solve Puzzles</strong> - Uncover secrets through logic and observation</li>
-              <li>• <strong>Shape Reality</strong> - Your decisions ripple across dimensions</li>
-              <li>• <strong>Discover Lore</strong> - Unravel the mysteries of the Lattice and beyond</li>
+              <li>
+                • <strong>Explore</strong> - Navigate a multiverse of interconnected rooms and
+                realities
+              </li>
+              <li>
+                • <strong>Interact</strong> - Converse with AI-powered NPCs who remember your
+                choices
+              </li>
+              <li>
+                • <strong>Solve Puzzles</strong> - Uncover secrets through logic and observation
+              </li>
+              <li>
+                • <strong>Shape Reality</strong> - Your decisions ripple across dimensions
+              </li>
+              <li>
+                • <strong>Discover Lore</strong> - Unravel the mysteries of the Lattice and beyond
+              </li>
             </ul>
           </div>
-          
+
           <div className="bg-black bg-opacity-30 rounded-lg p-4 space-y-2">
             <h4 className="text-cyan-300 font-semibold">How to Play:</h4>
             <ul className="text-gray-200 space-y-1">
-              <li>• Type commands like <code className="bg-gray-700 px-1 rounded">look</code>, <code className="bg-gray-700 px-1 rounded">north</code>, <code className="bg-gray-700 px-1 rounded">talk to [character]</code></li>
+              <li>
+                • Type commands like <code className="bg-gray-700 px-1 rounded">look</code>,{' '}
+                <code className="bg-gray-700 px-1 rounded">north</code>,{' '}
+                <code className="bg-gray-700 px-1 rounded">talk to [character]</code>
+              </li>
               <li>• Use the Quick Actions panel for common commands</li>
               <li>• Ask me for help anytime - I'm always watching over you</li>
               <li>• Save your progress and return anytime</li>
             </ul>
           </div>
-          
+
           <p className="text-cyan-200 italic">
-            "If you're unsure where to begin, I recommend the demo experience - a guided tour of Gorstan's core mysteries."
+            "If you're unsure where to begin, I recommend the demo experience - a guided tour of
+            Gorstan's core mysteries."
           </p>
         </div>
-        
+
         <div className="flex gap-3 justify-center">
           <button
             onClick={onStartDemo}
@@ -134,7 +152,7 @@ const RadialProgressRing: React.FC<RadialProgressRingProps> = ({ progress }) => 
           strokeDashoffset={strokeDashoffset}
           className="transition-all duration-1000 ease-linear drop-shadow-lg"
           style={{
-            filter: 'drop-shadow(0 0 6px rgba(34, 197, 94, 0.5))'
+            filter: 'drop-shadow(0 0 6px rgba(34, 197, 94, 0.5))',
           }}
         />
       </svg>
@@ -148,9 +166,13 @@ const RadialProgressRing: React.FC<RadialProgressRingProps> = ({ progress }) => 
 
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onStartDemo }) => {
   const [showAylaGuidance, setShowAylaGuidance] = useState(false);
-  const [inactivityTimer, setInactivityTimer] = useState<NodeJS.Timeout | null>(null);
+  const [inactivityTimer, setInactivityTimer] = useState<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
   const [timerProgress, setTimerProgress] = useState(0);
-  const [progressInterval, setProgressInterval] = useState<NodeJS.Timeout | null>(null);
+  const [progressInterval, setProgressInterval] = useState<ReturnType<typeof setInterval> | null>(
+    null,
+  );
 
   // Reset inactivity timer on any interaction
   const resetInactivityTimer = useCallback(() => {
@@ -161,29 +183,29 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
     if (progressInterval) {
       clearInterval(progressInterval);
     }
-    
+
     // Reset progress
     setTimerProgress(0);
-    
+
     // Start main timer (2 minutes)
     const timer = setTimeout(() => {
       setShowAylaGuidance(true);
     }, 120000);
-    
+
     // Start progress ring animation
     const startTime = Date.now();
     const duration = 120000; // 2 minutes
-    
+
     const progressTimer = setInterval(() => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min((elapsed / duration) * 100, 100);
       setTimerProgress(progress);
-      
+
       if (progress >= 100) {
         clearInterval(progressTimer);
       }
     }, 100); // Update every 100ms for smooth animation
-    
+
     setInactivityTimer(timer);
     setProgressInterval(progressTimer);
   }, [inactivityTimer, progressInterval]);
@@ -198,7 +220,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
     };
 
     const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
-    events.forEach(event => {
+    events.forEach((event) => {
       document.addEventListener(event, handleUserActivity, true);
     });
 
@@ -212,7 +234,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
       if (progressInterval) {
         clearInterval(progressInterval);
       }
-      events.forEach(event => {
+      events.forEach((event) => {
         document.removeEventListener(event, handleUserActivity, true);
       });
     };
@@ -235,18 +257,17 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
       <div className="relative flex flex-col items-center justify-center min-h-[80vh] w-full max-w-4xl mx-auto px-4 border bg-gradient-to-b from-slate-900 to-black text-green-400 border-2 border-green-500 p-6 m-4 rounded-xl">
         <h1 className="text-4xl md:text-6xl font-bold mb-4 text-center flex items-center justify-center gap-4">
           <img
-            src={"/images/gorstanicon.png"}
+            src={'/images/gorstanicon.png'}
             alt="The Odd Rabbit"
             className="w-[72px] h-[72px] rounded-full shadow-md"
           />
           Welcome to Gorstan
           <span className="text-lg text-yellow-400 ml-2">({getShortVersion()})</span>
         </h1>
-        <div className="text-sm text-green-300 mb-2 font-mono">
-          {getVersionString()}
-        </div>
+        <div className="text-sm text-green-300 mb-2 font-mono">{getVersionString()}</div>
         <p className="text-md md:text-lg text-center max-w-2xl mb-6">
-          A multiverse simulation of coffee, consequence, and quantum possibility. Tread carefully. The rabbit is watching.
+          A multiverse simulation of coffee, consequence, and quantum possibility. Tread carefully.
+          The rabbit is watching.
         </p>
 
         <div className="flex flex-col items-center">
@@ -299,17 +320,17 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
             <div></div>
           </div>
         </div>
-        
+
         {/* Build version - visible for deployment verification */}
         <div className="absolute bottom-2 right-2 text-green-300 text-xs opacity-60 select-none font-mono">
           {getVersionString()}
         </div>
-        
+
         {/* Backup version indicator - always visible */}
         <div className="absolute bottom-2 left-2 text-green-400 text-xs opacity-40 select-none">
           Gorstan Live
         </div>
-        
+
         {/* Radial progress ring for Ayla timer - more prominent position */}
         <div className="absolute top-6 right-6">
           <RadialProgressRing progress={timerProgress} />
@@ -318,10 +339,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
 
       {/* Ayla Guidance Modal */}
       {showAylaGuidance && (
-        <AylaGuidanceModal 
-          onDismiss={handleAylaDismiss}
-          onStartDemo={handleAylaStartDemo}
-        />
+        <AylaGuidanceModal onDismiss={handleAylaDismiss} onStartDemo={handleAylaStartDemo} />
       )}
     </>
   );

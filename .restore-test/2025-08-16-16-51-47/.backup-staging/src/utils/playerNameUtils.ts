@@ -23,7 +23,7 @@ import type { LocalGameState } from '../state/gameState';
  * Get the player's name from game state, with fallback to "Player"
  */
 export function getPlayerName(state: LocalGameState): string {
-  return state.player?.name || state.playerName || "Player";
+  return state.player?.name || state.playerName || 'Player';
 }
 
 /**
@@ -42,18 +42,18 @@ export function formatDialogue(line: string, state: LocalGameState): string {
  * Format dialogue text with additional context variables
  */
 export function formatDialogueWithContext(
-  line: string, 
-  state: LocalGameState, 
-  context: Record<string, string> = {}
+  line: string,
+  state: LocalGameState,
+  context: Record<string, string> = {},
 ): string {
   let formatted = formatDialogue(line, state);
-  
+
   // Replace additional context variables
   Object.entries(context).forEach(([key, value]) => {
     const pattern = new RegExp(`\\{${key}\\}`, 'g');
     formatted = formatted.replace(pattern, value);
   });
-  
+
   return formatted;
 }
 
@@ -62,7 +62,7 @@ export function formatDialogueWithContext(
  */
 export function hasCustomPlayerName(state: LocalGameState): boolean {
   const name = getPlayerName(state);
-  return name !== "Player" && name.trim().length > 0;
+  return name !== 'Player' && name.trim().length > 0;
 }
 
 /**
@@ -71,10 +71,10 @@ export function hasCustomPlayerName(state: LocalGameState): boolean {
 export function getPersonalizedGreeting(state: LocalGameState, defaultGreeting: string): string {
   const hasCustomName = hasCustomPlayerName(state);
   const playerName = getPlayerName(state);
-  
+
   if (hasCustomName) {
     return `Hello, ${playerName}! ${defaultGreeting}`;
   }
-  
+
   return defaultGreeting;
 }
