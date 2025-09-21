@@ -4,6 +4,7 @@
 
 import type { LocalGameState } from '../state/gameState';
 import type { NPC } from '../types/NPCTypes';
+import { pickRandom } from '../utils/random';
 
 // Core intelligence traits for different NPC archetypes
 const NPC_INTELLIGENCE_PROFILES = {
@@ -327,7 +328,12 @@ class NPCIntelligenceEngine {
     const availableResponses = intentResponses.filter((r) => r !== memory.lastResponse);
     const selectedResponses = availableResponses.length > 0 ? availableResponses : intentResponses;
 
-    return selectedResponses[Math.floor(Math.random() * selectedResponses.length)];
+    // Use safe pickRandom and fall back to first response or empty string
+    try {
+      return pickRandom(selectedResponses);
+    } catch (e) {
+      return selectedResponses[0] ?? '';
+    }
   }
 
   // Apply personality to response

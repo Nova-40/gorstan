@@ -47,7 +47,7 @@ export function span(d: Date, days = 1): Span {
 export function daySpan(d: Date, label?: string): Span {
   const start = formatISODate(d);
   const id = `${start}_${label?.toLowerCase().replace(/\s+/g, '_') || 'day'}`;
-  return { id, start, end: start, label };
+  return { id, start, end: start, ...(label ? { label } : {}) };
 }
 
 export function multiDaySpan(d: Date, days: number, label?: string): Span {
@@ -56,7 +56,7 @@ export function multiDaySpan(d: Date, days: number, label?: string): Span {
   endDate.setDate(endDate.getDate() + (days - 1));
   const end = formatISODate(endDate);
   const id = `${start}_${end}_${label?.toLowerCase().replace(/\s+/g, '_') || 'multiday'}`;
-  return { id, start, end, label };
+  return { id, start, end, ...(label ? { label } : {}) };
 }
 
 /**

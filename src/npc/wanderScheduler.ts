@@ -164,7 +164,7 @@ export class WanderScheduler {
       if (!hasGlobalPause) {
         for (const state of this.npcStates.values()) {
           state.isPaused = false;
-          state.pauseReason = undefined;
+            delete state.pauseReason;
         }
       }
     } else if (scope.npcIds) {
@@ -173,7 +173,7 @@ export class WanderScheduler {
         const state = this.npcStates.get(npcId);
         if (state && !this.isNPCPausedByOtherScopes(npcId)) {
           state.isPaused = false;
-          state.pauseReason = undefined;
+          delete state.pauseReason;
         }
       }
     }

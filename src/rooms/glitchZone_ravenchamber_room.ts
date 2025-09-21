@@ -29,7 +29,7 @@ const ravenChamberRoom: Room = {
     'A synthetic voice—fragmented and uncertain—calls out to you, mistaking you for someone else.',
     'The air feels heavy with the weight of classified information and forgotten secrets.',
   ],
-  image: 'glitchZone_ravenchamber.png',
+  image: 'glitchrealm-zoneravenroom.png',
   ambientAudio: 'glitchZone.mp3',
   exits: {
     back: 'glitchinguniverse',

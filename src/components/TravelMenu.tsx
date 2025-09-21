@@ -21,7 +21,9 @@ import React, { useState, useEffect } from 'react';
 
 import TeleportTransition from './animations/TeleportTransition';
 
-import { Button } from './button';
+// Use the new UI atom to avoid colliding with the legacy button
+import UIButton from './ui/Button';
+import MenuCard from './ui/MenuCard';
 
 import { GameStateContext } from '../state/gameState';
 
@@ -156,10 +158,11 @@ const TravelMenu: React.FC<TravelMenuProps> = ({
     (groups, dest) => {
       // Variable declaration
       const roomInfo = getRoomInfo(dest);
-      if (!groups[roomInfo.zone]) {
-        groups[roomInfo.zone] = [];
+      const zoneKey = roomInfo.zone || 'Unknown';
+      if (!groups[zoneKey]) {
+        groups[zoneKey] = [];
       }
-      groups[roomInfo.zone].push(roomInfo);
+      groups[zoneKey].push(roomInfo);
       return groups;
     },
     {} as Record<string, RoomInfo[]>,
@@ -170,9 +173,8 @@ const TravelMenu: React.FC<TravelMenuProps> = ({
     <>
       <TeleportTransition
         isActive={isAnimating}
-        destinationName={
-          selectedDestinationId ? getRoomInfo(selectedDestinationId).name : undefined
-        }
+        // TeleportTransition expects a string; provide empty string when undefined to satisfy strict types
+        destinationName={selectedDestinationId ? getRoomInfo(selectedDestinationId).name : ''}
         onComplete={onAnimationComplete}
       />
       <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
@@ -182,15 +184,16 @@ const TravelMenu: React.FC<TravelMenuProps> = ({
               <h2 className="text-xl font-bold text-cyan-300">{title}</h2>
               {subtitle && <p className="text-gray-300 text-sm">{subtitle}</p>}
             </div>
-            <Button
+            <UIButton
               onClick={() => {
                 console.log('[TravelMenu] Close button clicked');
                 onClose();
               }}
-              className="text-red-400 hover:text-red-300 bg-red-900 hover:bg-red-800"
+              variant="ghost"
+              className="text-red-400 hover:text-red-300"
             >
-              ✕ Close Menu
-            </Button>
+              ✕ Close
+            </UIButton>
           </div>
 
           {}
@@ -205,44 +208,46 @@ const TravelMenu: React.FC<TravelMenuProps> = ({
           {}
           <div className="space-y-4 max-h-96 overflow-y-auto">
             {Object.entries(groupedDestinations).map(([zone, rooms]) => (
-              <div key={zone} className="border border-gray-700 rounded p-3">
-                <h3 className="text-lg font-semibold text-yellow-300 mb-2">{zone} Zone</h3>
+              <MenuCard key={zone} title={`${zone} Zone`} className="border-gray-700">
                 <div className="grid grid-cols-2 gap-2">
                   {rooms.map((room) => (
-                    <Button
+                    <UIButton
                       key={room.id}
                       onClick={() => handleTeleport(room.id)}
-                      className="text-left p-3 bg-blue-900 hover:bg-blue-800 text-blue-100 hover:text-white transition-all duration-200 rounded"
+                      variant="ghost"
+                      className="text-left p-3 bg-transparent hover:bg-blue-900 text-blue-100 hover:text-white transition-all duration-200 rounded"
                     >
                       <div className="font-medium">{room.name}</div>
                       <div className="text-xs opacity-75">{room.id}</div>
-                    </Button>
+                    </UIButton>
                   ))}
                 </div>
-              </div>
+              </MenuCard>
             ))}
           </div>
 
           {}
           {totalPages > 1 && (
             <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-700">
-              <Button
+              <UIButton
                 onClick={() => setCurrentPage(Math.max(0, currentPage - 1))}
                 disabled={currentPage === 0}
+                variant="secondary"
                 className="text-sm text-gray-300 hover:text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 ← Previous
-              </Button>
+              </UIButton>
 
               <div className="text-sm text-gray-400">{destinations.length} destinations total</div>
 
-              <Button
+              <UIButton
                 onClick={() => setCurrentPage(Math.min(totalPages - 1, currentPage + 1))}
                 disabled={currentPage === totalPages - 1}
+                variant="secondary"
                 className="text-sm text-gray-300 hover:text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Next →
-              </Button>
+              </UIButton>
             </div>
           )}
         </div>

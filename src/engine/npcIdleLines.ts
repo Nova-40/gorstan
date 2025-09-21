@@ -344,14 +344,15 @@ export function getRandomIdleLine(npcName: string): string | null {
       return null;
     }
 
-    const lines = npcIdleConfigs[npcName]?.baseLines || [];
-    if (!lines || lines.length === 0) {
+  const lines = npcIdleConfigs[npcName]?.baseLines || [];
+  if (!lines || lines.length === 0) {
       console.warn(`[NPCIdleLines] No idle lines found for NPC: ${npcName}`);
       return null;
     }
 
-    const randomIndex = Math.floor(Math.random() * lines.length);
-    return lines[randomIndex].text;
+  const randomIndex = Math.floor(Math.random() * lines.length);
+  const selected = lines[randomIndex] || lines[0];
+  return selected ? selected.text : null;
   } catch (error) {
     console.error('[NPCIdleLines] Error getting random idle line:', error);
     return null;
@@ -419,23 +420,28 @@ export async function getContextualIdleLine(context: IdleLineContext): Promise<s
       return null;
     }
 
-    const selectedLine = availableLines[Math.floor(Math.random() * availableLines.length)];
+    const chosenIndex = Math.floor(Math.random() * availableLines.length);
+    const selectedLine = availableLines[chosenIndex] || availableLines[0];
 
-    if (!recentlyUsedLines.has(npcName)) {
-      recentlyUsedLines.set(npcName, new Set());
+    const key = npcName.toLowerCase();
+    if (!recentlyUsedLines.has(key)) {
+      recentlyUsedLines.set(key, new Set());
     }
-    recentlyUsedLines.get(npcName)!.add(selectedLine.text);
+    const recentSet = recentlyUsedLines.get(key)!;
+    if (selectedLine && selectedLine.text) {
+      recentSet.add(selectedLine.text);
+    }
     lastIdleTime.set(npcName, now);
 
-    const recentSet2 = recentlyUsedLines.get(npcName)!;
-    if (recentSet2.size > 5) {
-      const oldestLine = recentSet2.values().next().value;
+    const recentSet2 = recentlyUsedLines.get(key)!;
+    if (recentSet2 && recentSet2.size > 5) {
+      const oldestLine = recentSet2.values().next()?.value;
       if (oldestLine) {
         recentSet2.delete(oldestLine);
       }
     }
 
-    return selectedLine.text;
+    return (selectedLine && selectedLine.text) || (availableLines[0] && availableLines[0].text) || null;
   } catch (error) {
     console.error('[NPCIdleLines] Error getting contextual idle line:', error);
     return getRandomIdleLine(context.npcName);
@@ -446,21 +452,22 @@ async function buildEnhancedContext(context: IdleLineContext): Promise<IdleLineC
   try {
     const npcState = context.npcState || null;
 
+    const normalizedNpcState: any = {};
+    if (npcState) {
+      if (npcState.mood !== undefined) normalizedNpcState.mood = npcState.mood;
+      if (npcState.relationship !== undefined) normalizedNpcState.relationship = npcState.relationship;
+      if (npcState.trustLevel !== undefined) normalizedNpcState.trustLevel = npcState.trustLevel;
+      if (npcState.queryCount !== undefined) normalizedNpcState.queryCount = npcState.queryCount;
+      if (Array.isArray(npcState.memory)) {
+        normalizedNpcState.memory = npcState.memory.map((mem: any) =>
+          typeof mem === 'string' ? mem : mem?.id ?? mem?.toString?.() ?? '',
+        );
+      }
+    }
+
     return {
       ...context,
-      npcState: npcState
-        ? {
-            mood: npcState.mood,
-            relationship: npcState.relationship,
-            trustLevel: npcState.trustLevel,
-            queryCount: npcState.queryCount,
-            memory: Array.isArray(npcState.memory)
-              ? npcState.memory.map((mem: any) =>
-                  typeof mem === 'string' ? mem : (mem?.id ?? mem?.toString?.() ?? ''),
-                )
-              : undefined,
-          }
-        : context.npcState,
+      npcState: Object.keys(normalizedNpcState).length > 0 ? normalizedNpcState : context.npcState,
     };
   } catch (error) {
     console.error('[NPCIdleLines] Error building enhanced context:', error);
@@ -544,10 +551,10 @@ function selectWeightedLine(lines: IdleLine[]): IdleLine {
       }
     }
 
-    return lines[lines.length - 1];
+  return lines[lines.length - 1] || { text: '...', weight: 1 };
   } catch (error) {
     console.error('[NPCIdleLines] Error selecting weighted line:', error);
-    return lines[0] || { text: '...', weight: 1 };
+  return lines[0] || { text: '...', weight: 1 };
   }
 }
 

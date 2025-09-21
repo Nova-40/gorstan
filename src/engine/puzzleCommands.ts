@@ -40,7 +40,7 @@ function createGameMessage(
     text,
     type,
     timestamp: Date.now(),
-    speaker,
+  speaker: speaker ?? '',
   };
 }
 
@@ -53,7 +53,7 @@ export async function processPuzzleCommand(
   // Variable declaration
   const commandWords = command.toLowerCase().trim().split(/\s+/);
   // Variable declaration
-  const verb = commandWords[0];
+  const verb = commandWords[0] ?? '';
   // Variable declaration
   const noun = commandWords.slice(1).join(' ');
 
@@ -196,7 +196,7 @@ export function isPuzzleCommand(command: string): boolean {
   // Variable declaration
   const commandWords = command.toLowerCase().trim().split(/\s+/);
   // Variable declaration
-  const verb = commandWords[0];
+  const verb = commandWords[0] ?? '';
 
   return ['puzzle', 'puzzles', 'solve'].includes(verb);
 }

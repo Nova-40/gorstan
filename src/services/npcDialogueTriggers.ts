@@ -274,7 +274,8 @@ export class NPCDialogueTriggerSystem {
       '*Mr. Wendell laughs, a sound like autumn leaves rustling* "The fish remembers, you know. Through every reset. And now... well, I think I\'ll just mention to Polly what you\'ve done. She has such creative ways of dealing with troublemakers. I do hope she lets me observe."',
     ];
 
-    return reactions[Math.floor(Math.random() * reactions.length)];
+  if (reactions.length === 0) return '';
+  return reactions[Math.floor(Math.random() * reactions.length)] ?? '';
   }
 
   /**
@@ -287,7 +288,8 @@ export class NPCDialogueTriggerSystem {
       "*Polly tilts her head, her smile never wavering but her voice dropping slightly* \"You know, even the demon king gives me a wide berth these days. Isn't that amusing? I think it's because I'm just so dedicated to my work. Some people don't appreciate true... commitment to helping others.\"",
     ];
 
-    return reactions[Math.floor(Math.random() * reactions.length)];
+  if (reactions.length === 0) return '';
+  return reactions[Math.floor(Math.random() * reactions.length)] ?? '';
   }
 
   /**

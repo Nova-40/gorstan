@@ -78,10 +78,10 @@ export class QuantumMagicService {
       isActive: this.shouldAutoActivate(artifactData),
     };
 
-    this.progression.artifacts.set(artifactId, artifact);
+  this.progression.artifacts.set(artifactId, artifact);
 
-    // Create discovery event
-    const discovery: QuantumDiscovery = {
+  // Create discovery event
+  const discovery: QuantumDiscovery = {
       id: `discovery_${Date.now()}_${this.gameState.discoverySequence++}`,
       type: 'artifact',
       routeId,
@@ -427,8 +427,11 @@ export class QuantumMagicService {
   }
 
   private activateSynergy(artifacts: QuantumArtifact[]): void {
-    // Create synergy discovery
-    const discovery: QuantumDiscovery = {
+  // Derive a representative artifact for metadata (guard empty arrays)
+  const firstArtifact = artifacts.length > 0 ? artifacts[0] : null;
+
+  // Create synergy discovery
+  const discovery: QuantumDiscovery = {
       id: `synergy_${Date.now()}_${this.gameState.discoverySequence++}`,
       type: 'synergy',
       routeId: this.gameState.currentRoute || 'unknown',
@@ -438,7 +441,7 @@ export class QuantumMagicService {
       title: 'Quantum Synergy Activated!',
       description: `${artifacts.map((a) => a.name).join(' + ')} are resonating together!`,
       rarity: 'rare',
-      element: artifacts[0].element,
+  element: firstArtifact ? firstArtifact.element : ('neutral' as unknown as any),
     };
 
     this.gameState.pendingDiscoveries.push(discovery);
@@ -447,7 +450,7 @@ export class QuantumMagicService {
     this.gainExperience({
       source: 'synergy_activated',
       amount: experienceValues.discovery.synergy,
-      artifactId: artifacts[0].id,
+      artifactId: firstArtifact ? firstArtifact.id : 'unknown',
     });
 
     this.callbacks.onSynergyActivated?.(artifacts);

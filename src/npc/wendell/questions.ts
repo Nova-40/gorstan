@@ -106,7 +106,12 @@ export function getRandomQuestion(category?: string): ConversationQuestion {
     ? wendellQuestions.filter((q) => q.category === category)
     : wendellQuestions;
 
-  return filtered[Math.floor(Math.random() * filtered.length)];
+  try {
+    const { pickRandom } = require('../../utils/random');
+    return pickRandom(filtered);
+  } catch (e) {
+    return filtered[0]!;
+  }
 }
 
 export default wendellQuestions;

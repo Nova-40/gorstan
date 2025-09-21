@@ -116,13 +116,14 @@ export function addConversationTurn(
 ): void {
   const memory = getNPCMemory(npcId);
 
+  const maybeContext = context;
   const turn: ConversationTurn = {
     id: `${npcId}-${Date.now()}-${Math.random()}`,
     timestamp: Date.now(),
     speaker,
     message,
-    npcId: speaker === 'npc' ? npcId : undefined,
-    context,
+    ...(speaker === 'npc' ? { npcId: npcId } : {}),
+    ...(maybeContext ? { context: maybeContext } : {}),
   };
 
   memory.conversationBuffer.push(turn);

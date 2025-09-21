@@ -104,8 +104,12 @@ const DEFAULT_SEED_CONFIG: TrapSeedingConfig = {
 function shuffleArray<T>(array: T[]): T[] {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  const j = Math.floor(Math.random() * (i + 1));
+  // Use locals to avoid strict generic-indexing issues
+  const a = shuffled[i] as T;
+  const b = shuffled[j] as T;
+  shuffled[i] = b;
+  shuffled[j] = a;
   }
   return shuffled;
 }
@@ -211,6 +215,7 @@ export function seedTraps(roomIds: string[] = [], config?: Partial<TrapSeedingCo
     // Seed preferred rooms first
     for (let i = 0; i < preferredTraps && i < shuffledPreferred.length; i++) {
       const roomId = shuffledPreferred[i];
+      if (!roomId) continue; // defensive: guard against unexpected undefined entries
       const trapDef = generateTrapDefinition(roomId, seedConfig);
       if (Math.random() < seedConfig.probability) {
         seededTraps[roomId] = trapDef;
@@ -221,6 +226,7 @@ export function seedTraps(roomIds: string[] = [], config?: Partial<TrapSeedingCo
     // Seed remaining rooms
     for (let i = 0; i < remainingTraps && i < shuffledOther.length; i++) {
       const roomId = shuffledOther[i];
+      if (!roomId) continue; // defensive
       const trapDef = generateTrapDefinition(roomId, seedConfig);
       if (Math.random() < seedConfig.probability) {
         seededTraps[roomId] = trapDef;
@@ -305,7 +311,7 @@ export function isRoomTrapped(roomId: string): boolean {
     }
 
     // Check if room has an active trap
-    const isTrapped = seededTraps[roomId] && !seededTraps[roomId].triggered;
+    const isTrapped = !!(seededTraps[roomId] && !seededTraps[roomId].triggered);
 
     trapCache.set(roomId, {
       result: isTrapped,
@@ -333,8 +339,8 @@ export function handleRoomTrap(roomId: string, playerState: PlayerState): TrapRe
       return {
         message: `🔧 Trap in ${roomId} triggered but harmless in debug mode.`,
         disarmed: true,
-        trapType: trap.type,
-        severity: trap.severity,
+        trapType: trap.type ?? 'generic',
+        severity: trap.severity ?? 'moderate',
         success: true,
       };
     }
@@ -360,8 +366,8 @@ export function handleRoomTrap(roomId: string, playerState: PlayerState): TrapRe
       return {
         message: disarmResult.message,
         disarmed: true,
-        trapType: trap.type,
-        severity: trap.severity,
+        trapType: trap.type ?? 'generic',
+        severity: trap.severity ?? 'moderate',
         success: true,
       };
     }
@@ -396,8 +402,8 @@ export function handleRoomTrap(roomId: string, playerState: PlayerState): TrapRe
     return {
       damage,
       message: `💥 ${trap.description}`,
-      trapType: trap.type,
-      severity: trap.severity,
+      trapType: trap.type ?? 'generic',
+      severity: trap.severity ?? 'moderate',
       success: false,
     };
   } catch (error) {

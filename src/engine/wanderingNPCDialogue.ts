@@ -22,7 +22,7 @@ import type { LocalGameState } from '../state/gameState';
 
 // Import enhanced NPC intelligence
 import { formatDialogue } from '../utils/playerNameUtils';
-import { getEnhancedNPCResponse } from '../utils/enhancedNPCResponse';
+import { generateNpcReply } from '../utils/aiAdapter';
 
 import { PlayerState, NPCState } from '../types/npcMemory';
 
@@ -510,7 +510,7 @@ export function getWanderingNPCResponse(
   return response.text.replace(/\{playerName\}/g, playerName);
 }
 
-// --- Enhanced Function: getEnhancedNPCResponse for full intelligence ---
+// --- Enhanced Function: getEnhancedWanderingNPCResponse for full intelligence ---
 export async function getEnhancedWanderingNPCResponse(
   npcId: string,
   topic: string,
@@ -522,8 +522,12 @@ export async function getEnhancedWanderingNPCResponse(
   // Use enhanced intelligence system
   if (playerInput) {
     try {
-      const enhancedResponse = await getEnhancedNPCResponse(npcId, playerInput, gameState);
-      return formatDialogue(enhancedResponse.text, gameState);
+      const adapterResp = await generateNpcReply(npcId, playerInput ?? '', gameState);
+      if (adapterResp) return formatDialogue(adapterResp, gameState);
+
+      // Fall back to standard response
+      const standardResponse = getWanderingNPCResponse(npcId, topic, playerState, npcState);
+      return formatDialogue(standardResponse, gameState);
     } catch (error) {
       console.warn('Enhanced wandering NPC response failed, using fallback:', error);
       // Fall back to standard response

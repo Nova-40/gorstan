@@ -155,22 +155,28 @@ class PuzzleController {
     // Variable declaration
     const currentAttempt = puzzleState?.attempts || 0;
 
-    let timeRemaining: number | undefined;
+    let timeRemaining = 0;
     if (puzzle.timeLimit && puzzleState?.timeStarted) {
       // Variable declaration
       const elapsed = (Date.now() - puzzleState.timeStarted) / 1000;
       timeRemaining = Math.max(0, puzzle.timeLimit - elapsed);
     }
 
-    return {
+    const result: PuzzleControllerResult = {
       showPuzzleModal: true,
       puzzle,
       onSubmit: this.createSubmitHandler(puzzle, gameState),
       onClose: this.createCloseHandler(),
       onHint: this.createHintHandler(puzzle),
       currentAttempt,
-      timeRemaining,
     };
+
+    if (timeRemaining !== undefined) {
+      // only include the property when we have a concrete number to satisfy exactOptionalPropertyTypes
+      result.timeRemaining = timeRemaining;
+    }
+
+    return result;
   }
 
   private createSubmitHandler(puzzle: PuzzleData, gameState: LocalGameState) {

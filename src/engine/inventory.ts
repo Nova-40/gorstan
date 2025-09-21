@@ -368,12 +368,21 @@ export function removeItem(item: string, quantity: number = 1): InventoryOperati
     }
 
     const inventoryItem = inventory[itemIndex];
+    if (!inventoryItem) {
+      return {
+        type: 'remove',
+        item,
+        success: false,
+        message: `You don't have ${item}`,
+      };
+    }
+
     if (inventoryItem.stackable && (inventoryItem.quantity || 1) > quantity) {
       // Reduce quantity
       inventoryItem.quantity = (inventoryItem.quantity || 1) - quantity;
       return {
         type: 'remove',
-        item: inventoryItem,
+        item: inventoryItem as InventoryItem,
         quantity,
         success: true,
         message: `Removed ${quantity}x ${inventoryItem.name} (${inventoryItem.quantity} remaining)`,
@@ -383,7 +392,7 @@ export function removeItem(item: string, quantity: number = 1): InventoryOperati
       inventory.splice(itemIndex, 1);
       return {
         type: 'remove',
-        item: inventoryItem,
+        item: inventoryItem as InventoryItem,
         quantity: inventoryItem.quantity || 1,
         success: true,
         message: `Removed ${inventoryItem.name} from inventory`,

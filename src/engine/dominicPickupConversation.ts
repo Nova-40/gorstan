@@ -225,5 +225,6 @@ export const dominicConversationResponses = {
 // Context-aware response selection
 export function getDominicResponse(context: 'philosophical' | 'warning' | 'wise' | 'sad'): string {
   const responses = dominicConversationResponses[context];
-  return responses[Math.floor(Math.random() * responses.length)];
+  const idx = Math.floor(Math.random() * Math.max(1, responses.length));
+  return responses[idx] ?? responses[0] ?? '';
 }

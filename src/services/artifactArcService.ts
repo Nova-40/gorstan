@@ -526,8 +526,11 @@ class ArtifactArcService {
       direct: ['I am here', 'We journey together', 'Trust the process'],
     };
 
-    const messages = artifactMessages[type] || artifactMessages.feeling;
-    let selectedMessage = messages[Math.floor(Math.random() * messages.length)];
+    const messages = artifactMessages[type] || artifactMessages.feeling || [];
+    let selectedMessage: string = '';
+    if (messages.length > 0) {
+      selectedMessage = messages[Math.floor(Math.random() * messages.length)] || '';
+    }
 
     // Modify message based on personality
     if (personality.protective > 70 && trigger === 'emergency') {

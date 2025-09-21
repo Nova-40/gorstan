@@ -11,7 +11,11 @@ describe('App', () => {
     // Try to find a start button or similar interaction
     const startButtons = screen.queryAllByRole('button', { name: /start/i });
     if (startButtons.length > 0) {
-      await userEvent.click(startButtons[0]);
+      const startButton = startButtons[0];
+      if (!startButton) {
+        throw new Error('Start button not found in test');
+      }
+      await userEvent.click(startButton);
       expect(screen.getByText(/console/i)).toBeInTheDocument();
     }
   });

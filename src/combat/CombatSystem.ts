@@ -87,7 +87,7 @@ export class CombatSystem {
     this.actionQueue.push({
       actor,
       action,
-      targetId,
+  targetId: targetId ?? '',
       queueTime: Date.now(),
     });
 
@@ -247,6 +247,7 @@ export class CombatSystem {
 
     for (let i = this.actionQueue.length - 1; i >= 0; i--) {
       const queuedAction = this.actionQueue[i];
+      if (!queuedAction) continue;
       const timeElapsed = currentTime - queuedAction.queueTime;
       const action = queuedAction.action;
 
@@ -273,7 +274,7 @@ export class CombatSystem {
       }
 
       // Action complete
-      queuedAction.actor.state = CombatState.Idle;
+  queuedAction.actor.state = CombatState.Idle;
       this.actionQueue.splice(i, 1);
     }
   }
@@ -292,12 +293,12 @@ export class CombatSystem {
       for (const effectTemplate of action.effects) {
         const statusFactory = () => ({
           id: effectTemplate.id!,
-          durationMs: effectTemplate.durationMs!,
-          stacks: effectTemplate.stacks,
-          onTick: effectTemplate.onTick,
-          onApply: effectTemplate.onApply,
-          onRemove: effectTemplate.onRemove,
-          data: effectTemplate.data,
+          durationMs: effectTemplate.durationMs ?? 0,
+          stacks: effectTemplate.stacks ?? 1,
+          onTick: effectTemplate.onTick ?? (() => {}),
+          onApply: effectTemplate.onApply ?? (() => {}),
+          onRemove: effectTemplate.onRemove ?? (() => {}),
+          data: effectTemplate.data ?? {},
         });
         statusSystem.applyStatus(actor, statusFactory);
       }

@@ -42,6 +42,8 @@ import SplashScreen from './SplashScreen';
 import TeletypeIntro from './TeletypeIntro';
 import TerminalConsole from './TerminalConsole';
 import WelcomeScreen from './WelcomeScreen';
+import MainMenu from './menus/MainMenu';
+import PauseMenu from './menus/PauseMenu';
 import { RouteSelectScreen } from './RouteSelectScreen';
 import TeleportManager from './animations/TeleportManager';
 import QuickActionsPanel from './QuickActionsPanel';
@@ -62,6 +64,8 @@ import { initializeAchievementEngine } from '../logic/achievementEngine';
 import { initializeScoreManager } from '../state/scoreManager';
 import { initializeCodexTracker } from '../logic/codexTracker';
 import { initializeMiniquests } from '../engine/miniquestInitializer';
+import { MiniQuestOverlay } from '../minigames/core/MiniQuestOverlay';
+import { useMiniQuest } from '../minigames/core/useMiniQuest';
 import { loadCelebrationIndex } from '../celebrate/index';
 import {
   initializeWanderingNPCs,
@@ -105,6 +109,9 @@ import type { Room } from '../types/Room';
 import type { NPC, NPCMood } from '../types/NPCTypes';
 import { demoController } from '../demo/demoController';
 import { isDemoEnvironment } from '../demo/demoGate';
+import { demoService } from '../demo/DemoModeService';
+import { IS_DEV } from '../config/mode';
+import { FEATURES } from '../config';
 import type { GameTransition } from '../types/GameTypes';
 
 /**
@@ -232,6 +239,18 @@ const AppCore: React.FC = () => {
   // Demo system state
   const [isDemoActive, setIsDemoActive] = useState<boolean>(false);
   const [isDemo] = useState<boolean>(isDemoEnvironment());
+  const [demoBanner, setDemoBanner] = useState<string | undefined>(undefined);
+
+  // Mini-quest system hook
+  const mini = useMiniQuest();
+
+  // Return focus to command input when a mini-quest closes
+  useEffect(() => {
+    if (!mini.active) {
+      const el = document.getElementById('command-input-field') as HTMLInputElement | null;
+      if (el) el.focus();
+    }
+  }, [mini.active]);
 
   const handleRoomChange = useStableCallback(
     (newRoomId: string) => {
@@ -415,11 +434,11 @@ const AppCore: React.FC = () => {
         // Create enhanced save file structure
         const saveFile = {
           version: 7, // Current version
-          playerName: state.player.name || 'Player',
+          playerName: state.player?.name || 'Player',
           progress: {
             questsCompleted: 0, // Calculate based on game state
             achievementsUnlocked: (state.metadata?.achievements || []).length,
-            totalScore: state.player.score || 0,
+            totalScore: state.player?.score ?? 0,
             totalPlayTime: state.metadata?.playTime ?? 0,
             roomsVisited:
               Object.keys(state.flags || {}).filter((key) => key.startsWith('visited_')).length ||
@@ -431,7 +450,7 @@ const AppCore: React.FC = () => {
             storylineProgress: {
               currentRoom: state.currentRoomId,
               flags: state.flags,
-              inventory: state.player.inventory,
+              inventory: state.player?.inventory || [],
               achievements: state.metadata?.achievements || [],
             },
           },
@@ -441,7 +460,7 @@ const AppCore: React.FC = () => {
             progress: {
               questsCompleted: 0, // Calculate based on game state
               achievementsUnlocked: (state.metadata?.achievements || []).length,
-              totalScore: state.player.score || 0,
+              totalScore: state.player?.score ?? 0,
               totalPlayTime: state.metadata?.playTime ?? 0,
               roomsVisited:
                 Object.keys(state.flags || {}).filter((key) => key.startsWith('visited_')).length ||
@@ -454,11 +473,15 @@ const AppCore: React.FC = () => {
               storylineProgress: {
                 currentRoom: state.currentRoomId,
                 flags: state.flags,
-                inventory: state.player.inventory,
+                inventory: state.player?.inventory || [],
                 achievements: state.metadata?.achievements || [],
               },
             },
-            transition: state.transition as GameTransition | undefined, // Type assertion for compatibility
+            // include transition only when it matches the allowed GameTransition values
+            ...(state.transition === 'jump' || state.transition === 'wait' ||
+            state.transition === 'sip' || state.transition === null
+              ? { transition: state.transition as GameTransition }
+              : {}),
             settings: {
               difficulty:
                 (state.settings?.difficulty as 'easy' | 'normal' | 'hard' | 'nightmare') ||
@@ -497,8 +520,10 @@ const AppCore: React.FC = () => {
           },
         };
 
-        // Use enhanced SaveManager with migration support
-        const result = await SaveManager.save(parseInt(slotId), saveFile);
+  // Use enhanced SaveManager with migration support
+  // Cast to any here to avoid strict mismatch for transitional save shapes;
+  // this is a conservative, local bypass that preserves runtime behavior.
+  const result = await SaveManager.save(parseInt(slotId), saveFile as any);
 
         if (result.success) {
           // Update traditional save slots for UI compatibility
@@ -673,7 +698,8 @@ const AppCore: React.FC = () => {
       if (urlParams.get('demo') === 'auto' && stage === 'game') {
         console.log('[AppCore] Auto-starting demo mode');
         setIsDemoActive(true);
-        demoController.startDemo();
+        // Use demoService wrapper so banner/analytics are handled consistently
+        demoService.start();
       }
     }
   }, [isDemo, dispatch, stage]);
@@ -738,11 +764,11 @@ const AppCore: React.FC = () => {
     (npc?: NPC) => {
       if (npc) {
         // Specific NPC provided
-        setSelectedNPC(npc);
+        setSelectedNPC(npc ?? null);
         openModal('npcConsole');
       } else if (npcsInRoom.length === 1) {
         // Single NPC in room
-        setSelectedNPC(npcsInRoom[0]);
+        setSelectedNPC(npcsInRoom[0] ?? null);
         openModal('npcConsole');
       } else if (npcsInRoom.length > 1) {
         // Multiple NPCs - show selection modal
@@ -764,8 +790,8 @@ const AppCore: React.FC = () => {
             knownFacts: [],
           },
         };
-        setSelectedNPC(aylaHelper);
-        openModal('npcConsole');
+  setSelectedNPC(aylaHelper ?? null);
+  openModal('npcConsole');
       }
     },
     [npcsInRoom, openModal],
@@ -884,9 +910,34 @@ const AppCore: React.FC = () => {
 
   // Enhanced keyboard handler with proper typing
   useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent): void => {
+      const onKeyDown = (e: KeyboardEvent): void => {
+      // F10 toggle for debug panel (dev-only)
+      if (e.key === 'F10' && IS_DEV) {
+        e.preventDefault();
+        dispatch({ type: 'TOGGLE_DEBUG' });
+        return;
+      }
+
       if (e.key === 'Escape' && modal) {
         closeModal();
+        return;
+      }
+      // Close pause overlay if open
+      if (e.key === 'Escape' && showPause) {
+        setShowPause(false);
+        return;
+      }
+      // Pause menu toggle when in game stage and not in modal
+      if (e.key === 'Escape' && stage === 'game' && !modal && !showPause) {
+        // open pause overlay
+        setShowPause(true);
+        return;
+      }
+      // If debug panel is open, ESC should close it instead of stopping demo
+      if (e.key === 'Escape' && hasFlag('showDebugPanel')) {
+        e.preventDefault();
+        dispatch({ type: 'TOGGLE_DEBUG' });
+        return;
       }
       if (e.ctrlKey && e.key === 's') {
         e.preventDefault();
@@ -928,9 +979,16 @@ const AppCore: React.FC = () => {
         }
       }
       if (e.key === 'Escape' && isDemoActive) {
-        // Skip demo with ESC key
+        // Skip demo with ESC key - delegate to DemoModeService which handles banner/state
         e.preventDefault();
-        demoController.skipDemo();
+        try {
+          demoService.stop('user_esc');
+        } catch (err) {
+          // fallback to controller skip if service not available for some reason
+          try {
+            demoController.skipDemo();
+          } catch {}
+        }
         setIsDemoActive(false);
         dispatch({
           type: 'RECORD_MESSAGE',
@@ -955,6 +1013,27 @@ const AppCore: React.FC = () => {
     dispatch,
     isDemoActive,
   ]);
+
+  // Local pause overlay state
+  const [showPause, setShowPause] = useState<boolean>(false);
+
+  const handleResume = useCallback(() => {
+    setShowPause(false);
+  }, []);
+
+  const handleQuitToMain = useCallback(() => {
+    setShowPause(false);
+    dispatch({ type: 'ADVANCE_STAGE', payload: 'welcome' });
+  }, [dispatch]);
+
+  // Register demo banner setter with DemoModeService (dev-gated)
+  useEffect(() => {
+    if (IS_DEV && hasFlag('DEMO_MODE_ENABLED')) {
+      demoService.setBannerSetter(setDemoBanner);
+      return () => demoService.setBannerSetter(undefined);
+    }
+    return undefined;
+  }, [setDemoBanner, hasFlag]);
 
   // Enhanced cleanup effect with proper typing
   useEffect(() => {
@@ -1121,6 +1200,44 @@ const AppCore: React.FC = () => {
         }
         return;
       }
+      // Mini-quest commands: "play <miniId>" and "miniquests"
+      if (lowerCmd === 'miniquests') {
+        // list available mini quests
+        try {
+          // lazy import registry to avoid circular deps
+          import('../minigames/core/MiniQuestRegistry').then(mod => {
+            const list = mod.listMiniQuests();
+            list.forEach((q: any) => {
+              dispatch({ type: 'ADD_MESSAGE', payload: { id: Date.now().toString(), text: `${q.id}: ${q.displayName} (${q.difficulty})`, type: 'info', timestamp: Date.now() } });
+            });
+          });
+        } catch (e) {
+          console.warn('Failed to list miniquests', e);
+        }
+        return;
+      }
+
+      if (lowerCmd.startsWith('play ')) {
+        const parts = lowerCmd.split(/\s+/);
+        const id = parts[1];
+        if (!id) return;
+        // Launch via registry check
+        import('../minigames/core/MiniQuestRegistry').then(mod => {
+          const spec = mod.getMiniQuestById(id);
+          if (!spec) {
+            dispatch({ type: 'ADD_MESSAGE', payload: { id: Date.now().toString(), text: `Unknown mini-quest '${id}'. Use 'miniquests' to list.`, type: 'error', timestamp: Date.now() } });
+            return;
+          }
+          // Gate behind flags if needed
+          const canLaunch = true; // TODO: check FEATURES flags
+          if (!canLaunch) {
+            dispatch({ type: 'ADD_MESSAGE', payload: { id: Date.now().toString(), text: `Mini-quests are currently disabled.`, type: 'error', timestamp: Date.now() } });
+            return;
+          }
+          mini.launch(id as any, state.currentRoomId, undefined);
+        });
+        return;
+      }
 
       // Enhanced modal shortcuts with proper typing
       const modalCommands: Record<string, OpenModalType> = {
@@ -1141,7 +1258,7 @@ const AppCore: React.FC = () => {
         take: 'pickUp',
       };
 
-      const modalCommand: OpenModalType = modalCommands[lowerCmd];
+      const modalCommand: OpenModalType | undefined = modalCommands[lowerCmd];
       if (modalCommand) {
         modalCommand === 'look' ? handleLookAround() : openModal(modalCommand);
         return;
@@ -1207,7 +1324,7 @@ const AppCore: React.FC = () => {
         if (lowerCmd === 'start demo' || lowerCmd === 'demo start') {
           if (!isDemoActive) {
             setIsDemoActive(true);
-            demoController.startDemo();
+            demoService.start();
             dispatch({
               type: 'ADD_MESSAGE',
               payload: {
@@ -1233,7 +1350,7 @@ const AppCore: React.FC = () => {
 
         if (lowerCmd === 'stop demo' || lowerCmd === 'demo stop' || lowerCmd === 'skip demo') {
           if (isDemoActive) {
-            demoController.skipDemo();
+            demoService.stop('manual_cmd');
             setIsDemoActive(false);
             dispatch({
               type: 'ADD_MESSAGE',
@@ -1398,7 +1515,8 @@ const AppCore: React.FC = () => {
         return;
       }
 
-      const { command, delay } = demoCommands[currentCommandIndex];
+  const demoCmd = demoCommands[currentCommandIndex];
+  const { command, delay } = demoCmd ?? { command: '', delay: 0 };
 
       // Add demo command to message log
       dispatch({
@@ -1487,7 +1605,7 @@ const AppCore: React.FC = () => {
   }, [dispatch]);
 
   // Enhanced room transition info with proper typing
-  const transitionInfo = useRoomTransition(previousRoom, room, lastMovementAction);
+  const transitionInfo = useRoomTransition(previousRoom, room ?? null, lastMovementAction);     
 
   // Enhanced direction state with proper typing and memoization
   const availableDirections = useMemo(() => {
@@ -1569,6 +1687,19 @@ const AppCore: React.FC = () => {
       }
     }
   }, [room, previousRoom]);
+
+  // Quantum mini-quest auto-trigger on room entry (uses central cooldown & picker)
+  useEffect(() => {
+    if (!room || !FEATURES.MINI_QUESTS_ENABLED) return;
+    const cfg = (room as any).quantumMiniQuest as
+      | import('../minigames/core/roomTrigger').QuantumMiniCfg
+      | undefined;
+    if (!cfg) return;
+
+    import('../minigames/core/roomTrigger').then(mod => {
+      void mod.maybeLaunchRoomMini(cfg, room.id);
+    }).catch(()=>{});
+  }, [room]);
 
   // Periodic conversation check for inter-NPC dialogue
   useEffect(() => {
@@ -1838,7 +1969,7 @@ const AppCore: React.FC = () => {
         return (
           <UseItemModal
             inventory={inventory}
-            environmentItems={room.environment || []}
+            environmentItems={room?.environment ?? []}
             onClose={closeModal}
             onUse={(item: string, target?: string) => {
               dispatch({
@@ -1853,11 +1984,7 @@ const AppCore: React.FC = () => {
         return (
           <PickUpItemModal
             isOpen={true}
-            items={
-              room.items?.map((item: Item | string) =>
-                typeof item === 'string' ? item : item.name,
-              ) || []
-            }
+            items={room?.items?.map((item: Item | string) => (typeof item === 'string' ? item : item.name)) ?? []}
             onClose={closeModal}
             onPickUp={handlePickUpItems}
           />
@@ -1874,11 +2001,11 @@ const AppCore: React.FC = () => {
           />
         );
       case 'npcConsole':
-        return isGroupConversation ? (
+          return isGroupConversation ? (
           <EnhancedNPCConsole
             isOpen={true}
             npcs={npcsInRoom}
-            activeNpcId={selectedNPC?.id}
+            activeNpcId={selectedNPC?.id ?? ''}
             isGroupConversation={true}
             onClose={closeModal}
             onSendMessage={handleNPCMessage}
@@ -2011,13 +2138,20 @@ const AppCore: React.FC = () => {
   }
   if (stage === 'welcome') {
     return (
-      <WelcomeScreen
+      <MainMenu
         onBegin={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'nameCapture' })}
         onLoadGame={() => dispatch({ type: 'LOAD_SAVED_GAME' })}
         onStartDemo={() => {
-          // Set demo-specific player name and skip nameCapture
           dispatch({ type: 'SET_PLAYER_NAME', payload: 'Demo Player' });
           dispatch({ type: 'ADVANCE_STAGE', payload: 'demo' });
+        }}
+        onUnlock={() => {
+          // Open paywall modal or external store flow – for now, record a message and open WelcomeScreen fallback
+          dispatch({ type: 'RECORD_MESSAGE', payload: { id: `unlock-${Date.now()}`, text: 'Unlock requested - redirecting to store...', type: 'system', timestamp: Date.now() } });
+        }}
+        onOpenCredits={() => {
+          // Fallback to original welcome screen credits path
+          dispatch({ type: 'SET_FLAG', payload: { flag: 'openCredits', value: true } });
         }}
       />
     );
@@ -2124,19 +2258,42 @@ const AppCore: React.FC = () => {
 
   return (
     <div className="appcore-grid">
-      {/* Demo mode indicator */}
-      {isDemoActive && (
+        {/* MiniQuest overlay mounting */}
+        {mini.active && (
+          <MiniQuestOverlay
+            {...( {
+              questId: mini.active.id,
+              roomId: mini.active.roomId,
+              seed: mini.active.seed,
+              onClose: () => mini.clear(),
+              onResult: (res: any) => {
+              // persist and reward using services
+              // persist and reward using services
+              import('../services/minigames/MiniQuestProgressService').then(m => m.recordResult(res));
+              import('../services/minigames/MiniQuestRewardService').then(m => m.applyRewards(res));
+              // show summary message
+              dispatch({ type: 'ADD_MESSAGE', payload: { id: Date.now().toString(), text: `Mini-Quest ${res.questId} ${res.outcome.toUpperCase()} — score ${res.score}`, type: 'info', timestamp: Date.now() } });
+            }
+          } as any)}
+          />
+        )}
+      {/* Demo mode indicator (driven by DemoModeService banner) */}
+      {demoBanner ? (
+        <div className="fixed top-0 left-0 right-0 z-50 bg-purple-900 text-white text-center py-2 px-4 font-bold">
+          {demoBanner}
+        </div>
+      ) : isDemoActive ? (
         <div className="fixed top-0 left-0 right-0 z-50 bg-purple-900 text-white text-center py-2 px-4 font-bold">
           🎬 DEMO MODE ACTIVE - Press ESC to skip • Use "stop demo" to exit
         </div>
-      )}
+      ) : null}
 
       <MultiverseRebootSequence />
       <RoomTransition
         isActive={roomTransitionActive && transitionInfo.shouldAnimate}
         transitionType={transitionInfo.transitionType}
-        fromZone={transitionInfo.fromZone}
-        toZone={transitionInfo.toZone}
+        fromZone={transitionInfo.fromZone ?? ''}
+        toZone={transitionInfo.toZone ?? ''}
         onComplete={() => {
           setRoomTransitionActive(false);
           setLastMovementAction('');
@@ -2243,6 +2400,16 @@ const AppCore: React.FC = () => {
       <ModalOverlay isOpen={Boolean(modal)} onClose={closeModal}>
         {renderModalContent()}
       </ModalOverlay>
+
+      {/* Pause Menu Overlay */}
+      <PauseMenu
+        isOpen={showPause}
+        onResume={handleResume}
+        onSave={() => openModal('saveGame')}
+        onLoad={() => openModal('saveGame')}
+        onOptions={() => dispatch({ type: 'OPEN_OPTIONS' })}
+        onQuitToMain={handleQuitToMain}
+      />
 
       {/* Blue Button Warning Modal */}
       <BlueButtonWarningModal

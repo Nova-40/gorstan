@@ -59,6 +59,7 @@ export async function startConsolidatedShowcase(): Promise<void> {
 
     for (let i = 0; i < showcaseSegments.length; i++) {
       const segment = showcaseSegments[i];
+      if (!segment) continue;
       await runShowcaseSegment(segment, i + 1);
     }
 
@@ -160,6 +161,11 @@ async function runExplorationTour(): Promise<void> {
       }
 
       const zone = zones[zoneIndex];
+      if (!zone) {
+        zoneIndex++;
+        setTimeout(exploreNextZone, 1500);
+        return;
+      }
       console.log(`🌟 Entering ${zone.name}...`);
       console.log(`   Theme: ${zone.theme}`);
       console.log(`   Highlight: ${zone.highlight}`);
@@ -228,15 +234,19 @@ async function runPuzzleShowcase(): Promise<void> {
       }
 
       const puzzle = puzzles[puzzleIndex];
-      console.log(`🔍 Puzzle: ${puzzle.name}`);
-      console.log(`   Type: ${puzzle.type}`);
-      console.log(`   Challenge: ${puzzle.description}`);
+      if (puzzle) {
+        console.log(`🔍 Puzzle: ${puzzle.name}`);
+        console.log(`   Type: ${puzzle.type}`);
+        console.log(`   Challenge: ${puzzle.description}`);
+      }
       console.log('');
 
       setTimeout(() => {
         console.log('💡 Analyzing clues...');
         setTimeout(() => {
-          console.log(`✅ Solution found! ${puzzle.solution}`);
+          if (puzzle) {
+            console.log(`✅ Solution found! ${puzzle.solution}`);
+          }
           console.log('🌟 Hidden secrets revealed!');
           console.log('');
 
@@ -287,16 +297,20 @@ async function runSocialDrama(): Promise<void> {
       }
 
       const scenario = scenarios[scenarioIndex];
-      console.log(`🎭 Scenario: ${scenario.title}`);
-      console.log(`   Context: ${scenario.context}`);
-      console.log(`   Decision: ${scenario.choice}`);
+      if (scenario) {
+        console.log(`🎭 Scenario: ${scenario.title}`);
+        console.log(`   Context: ${scenario.context}`);
+        console.log(`   Decision: ${scenario.choice}`);
+      }
       console.log('');
 
       setTimeout(() => {
         console.log('🤔 Considering your options...');
         setTimeout(() => {
           console.log('⚖️  You make a choice that reflects your values...');
-          console.log(`📖 Consequence: ${scenario.outcome}`);
+          if (scenario) {
+            console.log(`📖 Consequence: ${scenario.outcome}`);
+          }
           console.log('🌱 Character growth achieved!');
           console.log('');
 

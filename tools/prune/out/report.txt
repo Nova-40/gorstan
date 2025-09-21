@@ -1,0 +1,12 @@
+=== PRUNE ANALYSIS REPORT ===
+Entries:
+
+Used .ts/.tsx files: 0
+Unused .ts/.tsx files: 0
+
+Keep-always matched: 0
+Keep-runtime matched: 0
+
+Output:
+  used:   C:\Users\geoff\Development\gorstan\tools\prune\out\used.json
+  unused: C:\Users\geoff\Development\gorstan\tools\prune\out\unused.json

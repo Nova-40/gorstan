@@ -90,7 +90,9 @@ export function normalizeWhitespace(str: string): string {
 /**
  * Escape HTML entities
  */
-export function escapeHtml(str: string): string {
+export function escapeHtml(str: string | undefined): string {
+  if (str == null) return '';
+
   const escapeMap: Record<string, string> = {
     '&': '&amp;',
     '<': '&lt;',
@@ -99,13 +101,15 @@ export function escapeHtml(str: string): string {
     "'": '&#39;',
   };
 
-  return str.replace(/[&<>"']/g, (char) => escapeMap[char]);
+  return str.replace(/[&<>\"']/g, (char) => escapeMap[char] ?? char);
 }
 
 /**
  * Unescape HTML entities
  */
-export function unescapeHtml(str: string): string {
+export function unescapeHtml(str: string | undefined): string {
+  if (str == null) return '';
+
   const unescapeMap: Record<string, string> = {
     '&amp;': '&',
     '&lt;': '<',
@@ -114,7 +118,7 @@ export function unescapeHtml(str: string): string {
     '&#39;': "'",
   };
 
-  return str.replace(/&(amp|lt|gt|quot|#39);/g, (entity) => unescapeMap[entity]);
+  return str.replace(/&(amp|lt|gt|quot|#39);/g, (entity) => unescapeMap[entity] ?? entity);
 }
 
 /**
@@ -270,31 +274,37 @@ export function similarity(str1: string, str2: string): number {
 }
 
 function levenshteinDistance(str1: string, str2: string): number {
-  const matrix: number[][] = [];
+  const rows = str2.length + 1;
+  const cols = str1.length + 1;
 
-  for (let i = 0; i <= str2.length; i++) {
-    matrix[i] = [i];
+  // Initialize a fully populated matrix to avoid undefined indexing
+  const matrix: number[][] = Array.from({ length: rows }, (_, i) => Array(cols).fill(0));
+
+  for (let i = 0; i < rows; i++) {
+    matrix[i]![0] = i;
   }
 
-  for (let j = 0; j <= str1.length; j++) {
-    matrix[0][j] = j;
+  for (let j = 0; j < cols; j++) {
+    matrix[0]![j] = j;
   }
 
-  for (let i = 1; i <= str2.length; i++) {
-    for (let j = 1; j <= str1.length; j++) {
+  for (let i = 1; i < rows; i++) {
+    for (let j = 1; j < cols; j++) {
+      const curr = matrix[i]!;
+      const prev = matrix[i - 1]!;
       if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
-        matrix[i][j] = matrix[i - 1][j - 1];
+        curr[j] = prev[j - 1]!;
       } else {
-        matrix[i][j] = Math.min(
-          matrix[i - 1][j - 1] + 1,
-          matrix[i][j - 1] + 1,
-          matrix[i - 1][j] + 1,
+        curr[j] = Math.min(
+          prev[j - 1]! + 1,
+          curr[j - 1]! + 1,
+          prev[j]! + 1,
         );
       }
     }
   }
 
-  return matrix[str2.length][str1.length];
+  return matrix[rows - 1]![cols - 1]!;
 }
 
 /**
@@ -308,14 +318,17 @@ export function findBestMatch(
     return null;
   }
 
-  let bestMatch = candidates[0];
-  let bestScore = similarity(target.toLowerCase(), candidates[0].toLowerCase());
+  // First candidate is guaranteed to exist because we checked length > 0
+  const first = candidates[0]!;
+  let bestMatch = first;
+  let bestScore = similarity(target.toLowerCase(), first.toLowerCase());
 
   for (let i = 1; i < candidates.length; i++) {
-    const score = similarity(target.toLowerCase(), candidates[i].toLowerCase());
+    const candidate = candidates[i]!;
+    const score = similarity(target.toLowerCase(), candidate.toLowerCase());
     if (score > bestScore) {
       bestScore = score;
-      bestMatch = candidates[i];
+      bestMatch = candidate;
     }
   }
 

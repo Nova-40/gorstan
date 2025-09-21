@@ -18,6 +18,7 @@
 // Core game engine module.
 
 import { getItemById, getAllItems } from './items';
+import { pickRandom } from '../utils/random';
 
 export interface RoomData {
   id: string;
@@ -155,15 +156,15 @@ function seedRoomItems(room: RoomData, context?: SeedingContext): SeedingResult 
     for (const rule of roomRules) {
       const item = getItemById(rule.itemId);
       if (item && Math.random() < rule.chance) {
-        candidateItems.push({
+          candidateItems.push({
           id: item.id,
           name: item.name,
           description: item.description,
           category: (item.category as ItemCategory) || 'misc',
           rarity: (item.rarity as ItemRarity) || 'common',
           spawnChance: rule.chance,
-          spawnRooms: item.spawnRooms,
-          excludeRooms: item.excludeRooms,
+          spawnRooms: item.spawnRooms || [],
+          excludeRooms: item.excludeRooms || [],
           requiredFlags:
             (item.requirements?.map((r) => r.target).filter(Boolean) as string[]) || [],
           conflictItems: item.conflictItems || [],
@@ -233,8 +234,8 @@ function generateRoomItems(roomId: string, context?: SeedingContext): ItemData[]
             category: (item.category as ItemCategory) || 'misc',
             rarity: (item.rarity as ItemRarity) || 'common',
             spawnChance: rule.chance,
-            spawnRooms: item.spawnRooms,
-            excludeRooms: item.excludeRooms,
+            spawnRooms: item.spawnRooms || [],
+            excludeRooms: item.excludeRooms || [],
             requiredFlags:
               (item.requirements?.map((r) => r.target).filter(Boolean) as string[]) || [],
             conflictItems: item.conflictItems || [],
@@ -251,7 +252,7 @@ function generateRoomItems(roomId: string, context?: SeedingContext): ItemData[]
       attemptCount++;
 
       // Get a random item from the registry
-      const randomItem = allItems[Math.floor(Math.random() * allItems.length)];
+  const randomItem = pickRandom(allItems);
       const itemData: ItemData = {
         id: randomItem.id,
         name: randomItem.name,
@@ -259,8 +260,8 @@ function generateRoomItems(roomId: string, context?: SeedingContext): ItemData[]
         category: (randomItem.category as ItemCategory) || 'misc',
         rarity: (randomItem.rarity as ItemRarity) || 'common',
         spawnChance: randomItem.spawnChance || SPAWN_CONFIG.baseSpawnChance,
-        spawnRooms: randomItem.spawnRooms,
-        excludeRooms: randomItem.excludeRooms,
+        spawnRooms: randomItem.spawnRooms || [],
+        excludeRooms: randomItem.excludeRooms || [],
         requiredFlags:
           (randomItem.requirements?.map((r) => r.target).filter(Boolean) as string[]) || [],
         conflictItems: randomItem.conflictItems || [],
@@ -285,7 +286,7 @@ function generateRoomItems(roomId: string, context?: SeedingContext): ItemData[]
 // --- Function: shouldSpawnItem ---
 function shouldSpawnItem(rule: ItemSpawnRule, context?: SeedingContext): boolean {
   try {
-    if (Math.random() > rule.chance) {
+  if (Math.random() > rule.chance) {
       return false;
     }
 

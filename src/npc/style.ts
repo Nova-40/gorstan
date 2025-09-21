@@ -20,6 +20,7 @@
 // Gorstan Game Beta 1
 
 import { Voice } from '../types/dialogue';
+import { pickRandom } from '../utils/random';
 
 export function stylize(text: string, voice: Voice): string {
   let styled = text;
@@ -51,15 +52,15 @@ export function stylize(text: string, voice: Voice): string {
   } else if (voice.terseness === 0) {
     // Verbose - add elaboration markers
     if (!styled.includes('you see') && !styled.includes('actually')) {
-      const elaborators = ['you see', 'actually', 'as it happens', 'indeed'];
-      const elaborator = elaborators[Math.floor(Math.random() * elaborators.length)];
+  const elaborators = ['you see', 'actually', 'as it happens', 'indeed'];
+  const elaborator = pickRandom(elaborators);
       styled = styled.replace(/\. /, `, ${elaborator}. `);
     }
   }
 
   // Add characteristic tics occasionally (20% chance)
   if (voice.tics && Math.random() < 0.2) {
-    const tic = voice.tics[Math.floor(Math.random() * voice.tics.length)];
+  const tic = pickRandom(voice.tics);
     // Add tic at end if it's an action, at beginning if it's a word
     if (tic.startsWith('*')) {
       styled += ` ${tic}`;
@@ -85,7 +86,7 @@ export function generateNPCResponse(
     return getGenericResponse(toNpcId, topic);
   }
 
-  return responses[Math.floor(Math.random() * responses.length)];
+  return pickRandom(responses);
 }
 
 function getNPCPairResponses(from: string, to: string, topic?: string): string[] {
@@ -176,5 +177,5 @@ function getGenericResponse(npcId: string, topic?: string): string {
   };
 
   const responses = genericsByNPC[npcId]?.[topic || 'banter'] || ['...'];
-  return responses[Math.floor(Math.random() * responses.length)];
+  return pickRandom(responses);
 }

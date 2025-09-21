@@ -261,7 +261,8 @@ function getWendellStalkerMessage(intensity: number): string {
   }
 
   const categoryMessages = messages[category];
-  return categoryMessages[Math.floor(Math.random() * categoryMessages.length)];
+  const picked = categoryMessages[Math.floor(Math.random() * categoryMessages.length)];
+  return picked ?? categoryMessages[0] ?? '';
 }
 
 // Get escalating Polly stalker messages
@@ -294,7 +295,8 @@ function getPollyStalkerMessage(intensity: number): string {
   }
 
   const categoryMessages = messages[category];
-  return categoryMessages[Math.floor(Math.random() * categoryMessages.length)];
+  const picked = categoryMessages[Math.floor(Math.random() * categoryMessages.length)];
+  return picked ?? categoryMessages[0] ?? '';
 }
 
 // Handle Polly's escalating behavior

@@ -32,7 +32,7 @@ export function pickRandom<T>(arr: T[]): T {
   if (!arr.length) {
     throw new Error('Cannot pick random element from empty array');
   }
-  return arr[randomInt(0, arr.length)];
+  return arr[randomInt(0, arr.length)]!;
 }
 
 // --- Function: chance ---
@@ -45,7 +45,7 @@ export function shuffle<T>(arr: T[]): T[] {
   for (let i = arr.length - 1; i > 0; i--) {
     // Variable declaration
     const j = randomInt(0, i + 1);
-    [arr[i], arr[j]] = [arr[j], arr[i]];
+  [arr[i], arr[j]] = [arr[j]!, arr[i]!];
   }
   return arr;
 }

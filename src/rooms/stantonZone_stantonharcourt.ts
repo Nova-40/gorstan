@@ -20,7 +20,7 @@
 import { Room } from '../types/Room';
 
 export const stantonharcourt: Room = {
-  image: 'stantonZone_stantonharcourt.png',
+  image: 'stantonharcourtZone_stantonharcourt.png',
   description: [
     'You find yourself in the heart of Stanton Harcourt, a village steeped in history and mystery. The air is thick with the scent of blooming flowers and the faint aroma of ancient stone.',
     'The cobblestone streets wind through charming cottages, each one adorned with ivy and vibrant window boxes. Yet, there is an unsettling stillness here, as if the village itself is holding its breath.',

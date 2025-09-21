@@ -375,8 +375,11 @@ export class KeyboardNavigationManager {
     }
 
     if (nextIndex >= 0 && nextIndex < gridItems.length) {
-      gridItems[nextIndex].focus();
-      e.preventDefault();
+      const target = gridItems[nextIndex];
+      if (target) {
+        target.focus();
+        e.preventDefault();
+      }
     }
   }
 
@@ -449,12 +452,12 @@ export class KeyboardNavigationManager {
     const trapFocus = (e: KeyboardEvent) => {
       if (e.key === 'Tab') {
         if (e.shiftKey) {
-          if (document.activeElement === firstElement) {
+          if (document.activeElement === firstElement && lastElement) {
             lastElement.focus();
             e.preventDefault();
           }
         } else {
-          if (document.activeElement === lastElement) {
+          if (document.activeElement === lastElement && firstElement) {
             firstElement.focus();
             e.preventDefault();
           }
@@ -463,7 +466,9 @@ export class KeyboardNavigationManager {
     };
 
     container.addEventListener('keydown', trapFocus);
-    firstElement.focus();
+    if (firstElement) {
+      firstElement.focus();
+    }
 
     return () => container.removeEventListener('keydown', trapFocus);
   }

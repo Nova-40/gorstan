@@ -4,6 +4,8 @@
   Hidden artifact system for cave maze completion
 */
 
+import { pickRandom } from '../../utils/random';
+
 export class Artifact {
   private location: { x: number; y: number };
   private discovered: boolean = false;
@@ -69,7 +71,7 @@ export class Artifact {
       },
     ];
 
-    const chosen = artifacts[Math.floor(Math.random() * artifacts.length)];
+  const chosen = pickRandom(artifacts);
 
     console.log(`✨ ${chosen.name} ✨`);
     console.log('');
@@ -95,7 +97,7 @@ export class Artifact {
         'One trial ends, countless mysteries remain.',
       ];
 
-      const quip = quips[Math.floor(Math.random() * quips.length)];
+  const quip = pickRandom(quips);
       console.log(`[System] ${quip}`);
       console.log('');
       console.log('[Demo Complete - Returning to Choose Your Adventure]');

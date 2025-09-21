@@ -1,3 +1,39 @@
+import React from 'react';
+
+export interface UIButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
+}
+
+export const UIButton: React.FC<UIButtonProps> = ({ variant = 'primary', className = '', children, ...props }) => {
+  const base = 'inline-flex items-center justify-center rounded-md font-semibold transition-all';
+  const variants: Record<string, string> = {
+    primary: 'bg-green-600 hover:bg-green-700 text-white px-4 py-2',
+    secondary: 'bg-gray-700 hover:bg-gray-600 text-white px-3 py-1',
+    ghost: 'bg-transparent text-cyan-400 hover:underline px-2 py-1',
+    danger: 'bg-red-600 hover:bg-red-700 text-white px-3 py-1',
+  };
+
+  return (
+    <button className={`${base} ${variants[variant] || variants.primary} ${className}`} {...props}>
+      {children}
+    </button>
+  );
+};
+
+export default UIButton;
+
+// Primary/Secondary convenience wrappers
+export const PrimaryButton: React.FC<UIButtonProps> = ({ children, className, ...props }) => (
+  <UIButton variant="primary" className={`px-4 py-2 ${className || ''}`} {...props}>
+    {children}
+  </UIButton>
+);
+
+export const SecondaryButton: React.FC<UIButtonProps> = ({ children, className, ...props }) => (
+  <UIButton variant="secondary" className={`px-3 py-1 ${className || ''}`} {...props}>
+    {children}
+  </UIButton>
+);
 /**
  * Enhanced Button Component
  * Provides consistent button styling across the application with full accessibility support

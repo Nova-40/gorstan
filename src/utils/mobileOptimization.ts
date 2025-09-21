@@ -274,9 +274,11 @@ export const setupGestureHandling = (element: HTMLElement, handlers: GestureHand
   element.addEventListener(
     'touchstart',
     (e) => {
-      const touch = e.touches[0];
-      startX = touch.clientX;
-      startY = touch.clientY;
+      const touch = e.touches && e.touches[0];
+      if (touch) {
+        startX = touch.clientX;
+        startY = touch.clientY;
+      }
       startTime = Date.now();
       isLongPress = false;
 
@@ -307,7 +309,10 @@ export const setupGestureHandling = (element: HTMLElement, handlers: GestureHand
         return;
       } // Don't process swipe if long press occurred
 
-      const touch = e.changedTouches[0];
+      const touch = e.changedTouches && e.changedTouches[0];
+      if (!touch) {
+        return;
+      }
       const endX = touch.clientX;
       const endY = touch.clientY;
       const endTime = Date.now();

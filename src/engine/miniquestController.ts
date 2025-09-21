@@ -162,7 +162,7 @@ class MiniquestController {
         attempts: questProgress?.attempts || 0,
         available: isAvailable || isCompleted,
         locked: !isAvailable && !isCompleted,
-        lockReason: this.getLockReason(quest, gameState),
+        lockReason: this.getLockReason(quest, gameState) ?? '',
       };
     });
 
@@ -178,7 +178,7 @@ class MiniquestController {
     // Variable declaration
     const roomName = this.getRoomDisplayName(roomId, gameState);
 
-    return {
+    const result: MiniquestControllerResult = {
       showMiniquestModal: true,
       miniquests,
       progress,
@@ -186,9 +186,18 @@ class MiniquestController {
       totalScore,
       completedCount,
       availableCount,
-      aiRecommendations,
-      aiAnalysis,
     };
+
+    if (aiRecommendations && aiRecommendations.length > 0) {
+      // Only include property when we have concrete recommendations
+      (result as any).aiRecommendations = aiRecommendations;
+    }
+
+    if (aiAnalysis) {
+      (result as any).aiAnalysis = aiAnalysis;
+    }
+
+    return result;
   }
 
   public async attemptQuest(
@@ -268,12 +277,20 @@ class MiniquestController {
         }
       }
 
-      return {
+      const out: { success: boolean; message: string; scoreAwarded?: number; aiGuidance?: string } = {
         success: result.success,
         message: result.message,
-        scoreAwarded: result.scoreAwarded,
-        aiGuidance,
       };
+
+      if (result.scoreAwarded !== undefined) {
+        out.scoreAwarded = result.scoreAwarded;
+      }
+
+      if (aiGuidance) {
+        out.aiGuidance = aiGuidance;
+      }
+
+      return out;
     } catch (error) {
       console.error('Error attempting quest:', error);
       return {

@@ -268,7 +268,13 @@ export function removeWendellFromRoom(dispatch: React.Dispatch<GameAction>): voi
     });
 
     wendellState.isCurrentlyActive = false;
-    wendellState.currentRoomId = undefined;
+    // Do not assign undefined to exact-optional property; delete the field instead
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+      delete (wendellState as any).currentRoomId;
+    } catch (e) {
+      wendellState.currentRoomId = undefined as any;
+    }
   }
 }
 

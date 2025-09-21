@@ -74,11 +74,11 @@ export function ObjectiveList({
         ) : (
           objectives.map((objective) => (
             <ObjectiveItem
-              key={objective.id}
-              objective={objective}
-              compact={compact}
-              onClick={onObjectiveClick}
-            />
+                key={objective.id}
+                objective={objective}
+                compact={compact}
+                {...(onObjectiveClick ? { onClick: onObjectiveClick } : {})}
+              />
           ))
         )}
       </div>

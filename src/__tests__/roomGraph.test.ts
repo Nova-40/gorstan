@@ -4,6 +4,7 @@ import { roomRegistry as rooms } from '../roomRegistry';
 describe('Room Graph Validation', () => {
   test('All rooms have valid structure', () => {
     Object.entries(rooms).forEach(([roomId, room]) => {
+      if (!room) return;
       // Basic required fields for game functionality
       expect(room.id).toBe(roomId);
       expect(room.title || room.name).toBeTruthy();
@@ -21,7 +22,7 @@ describe('Room Graph Validation', () => {
       if (room.zone) {
         expect(typeof room.zone).toBe('string');
       }
-      if (room.exits) {
+      if (room && room.exits) {
         expect(typeof room.exits).toBe('object');
       }
     });
@@ -32,6 +33,7 @@ describe('Room Graph Validation', () => {
     const invalidExits: string[] = [];
 
     Object.entries(rooms).forEach(([roomId, room]) => {
+      if (!room) return;
       if (room.exits) {
         // exits is Record<string, string> in actual implementation
         Object.entries(room.exits).forEach(([direction, targetRoom]) => {
@@ -65,9 +67,10 @@ describe('Room Graph Validation', () => {
 
     while (queue.length > 0) {
       const currentRoom = queue.shift()!;
-      const room = rooms[currentRoom];
+  const room = rooms[currentRoom];
+  if (!room) continue;
 
-      if (room.exits) {
+  if (room.exits) {
         // exits is Record<string, string>, not an array
         Object.values(room.exits).forEach((targetRoom) => {
           if (targetRoom && roomIds.has(targetRoom) && !reachableRooms.has(targetRoom)) {
@@ -90,6 +93,7 @@ describe('Room Graph Validation', () => {
 
   test('No circular references in immediate exits', () => {
     Object.entries(rooms).forEach(([roomId, room]) => {
+      if (!room) return;
       if (room.exits) {
         const selfReferencingExits = Object.entries(room.exits).filter(
           ([_, targetRoom]) => targetRoom === roomId,

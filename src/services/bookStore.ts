@@ -287,7 +287,7 @@ class BookStoreService {
     const snoozed = Date.now() < this.state.userSnoozeUntil;
     return {
       snoozed,
-      until: snoozed ? new Date(this.state.userSnoozeUntil) : undefined,
+      ...(snoozed ? { until: new Date(this.state.userSnoozeUntil) } : {}),
     };
   }
 

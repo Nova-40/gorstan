@@ -29,7 +29,7 @@ const datavoid: Room = {
     'Occasionally, you catch glimpses of familiar objects or faces, distorted and fragmented as if pulled from the depths of a failing hard drive.',
     'This place feels unstable, as if it could collapse into nothingness at any moment, taking you with it.',
   ],
-  image: 'glitchZone_datavoid.png',
+  image: 'glitchrealm_datavoid.png',
   ambientAudio: 'data_void_hum.mp3',
 
   consoleIntro: [

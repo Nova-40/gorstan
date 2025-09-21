@@ -360,19 +360,19 @@ function generateDeathMessages(
 
   // Primary death message
   const deathMessages = DEATH_MESSAGES[cause] || DEATH_MESSAGES.unknown;
-  const messageIndex = Math.floor(Math.random() * deathMessages.length);
-  messages.push(deathMessages[messageIndex]);
+  const messageIndex = Math.floor(Math.random() * Math.max(1, deathMessages.length));
+  messages.push(deathMessages[messageIndex] ?? 'You have died.');
 
   // Add context if this isn't their first death of this type
-  if (deathStats.deathsByCause[cause] > 1) {
-    const contextMessages = DEATH_CONTEXT_MESSAGES.sameCause;
-    const contextIndex = Math.floor(Math.random() * contextMessages.length);
-    messages.push(contextMessages[contextIndex]);
+  if ((deathStats.deathsByCause[cause] || 0) > 1) {
+    const contextMessages = DEATH_CONTEXT_MESSAGES.sameCause || [];
+    const contextIndex = Math.floor(Math.random() * Math.max(1, contextMessages.length));
+    messages.push(contextMessages[contextIndex] ?? 'This happened before...');
   }
 
   // Add awakening message
-  const awakeningIndex = Math.floor(Math.random() * AWAKENING_MESSAGES.length);
-  messages.push(AWAKENING_MESSAGES[awakeningIndex]);
+  const awakeningIndex = Math.floor(Math.random() * Math.max(1, AWAKENING_MESSAGES.length));
+  messages.push(AWAKENING_MESSAGES[awakeningIndex] ?? 'You awaken somewhere strange.');
 
   // Add death count message
   messages.push(`This is your ${getOrdinalNumber(deathStats.totalDeaths)} death.`);
@@ -386,7 +386,7 @@ function generateDeathMessages(
   });
 
   // Warn about repeated deaths from same cause
-  if (deathStats.deathsByCause[cause] >= 3) {
+  if ((deathStats.deathsByCause[cause] || 0) >= 3) {
     messages.push(
       `You seem particularly susceptible to ${cause}. Perhaps try a different approach?`,
     );
@@ -436,7 +436,7 @@ function calculateDeathEffects(
       break;
 
     case 'trap':
-      if (deathStats.deathsByCause.trap >= 3) {
+      if ((deathStats.deathsByCause.trap || 0) >= 3) {
         effects.push({
           type: 'trait_gained',
           description: 'Multiple trap deaths have made you more cautious.',
@@ -649,7 +649,9 @@ function getFailsafeDeathResult(playerState: PlayerState, cause: DeathCause): De
 function getOrdinalNumber(num: number): string {
   const suffix = ['th', 'st', 'nd', 'rd'];
   const value = num % 100;
-  return num + (suffix[(value - 20) % 10] || suffix[value] || suffix[0]);
+  const idx = (value - 20) % 10;
+  const s = suffix[idx >= 0 ? idx : 0] ?? suffix[value] ?? suffix[0];
+  return `${num}${s}`;
 }
 
 // --- Legacy Support Functions ---

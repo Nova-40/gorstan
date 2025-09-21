@@ -192,6 +192,9 @@ export class DynamicContentGenerator {
     // Sort by priority and select the best rule
     const selectedRule = applicableRules.sort((a, b) => b.priority - a.priority)[0];
 
+    // Defensive: ensure selectedRule exists
+    if (!selectedRule) return null;
+
     // Check cooldown and usage limits
     if (!this.canUseRule(selectedRule)) {
       return null;
@@ -334,7 +337,7 @@ export class DynamicContentGenerator {
       seasonal_content: `Generate atmospheric content that subtly reflects the grand multiverse scale and ancient histories:`,
     };
 
-    const basePrompt = contextPrompts[rule.type] || 'Generate contextual content:';
+  const basePrompt = contextPrompts[(rule.type as DynamicContentRule['type']) || 'room_enhancement'] || 'Generate contextual content:';
 
     const prompt = `${basePrompt}
 

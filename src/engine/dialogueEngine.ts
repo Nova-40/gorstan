@@ -361,7 +361,7 @@ export function getDialogue(npc: string, state: DialogueState): string {
           markDialogueAsUsed(npc, dialogue.id, state);
         }
 
-        if (dialogue.responses && dialogue.responses.length === 1) {
+        if (dialogue.responses && dialogue.responses.length === 1 && dialogue.responses[0]) {
           applyDialogueEffects(dialogue.responses[0].effects || [], state);
         }
 
@@ -404,7 +404,7 @@ function findMatchingDialogue(
 
   // Sort by priority (highest first)
   validDialogues.sort((a: DialogueNode, b: DialogueNode) => (b.priority || 0) - (a.priority || 0));
-  return validDialogues[0];
+  return validDialogues[0] || null;
 }
 
 // --- Function: checkDialogueConditions ---
@@ -534,8 +534,8 @@ function handleUnknownNPC(npc: string, state: DialogueState): string {
     `${npc} gives you a brief nod but says nothing.`,
   ];
 
-  const responseIndex = Math.floor(Math.random() * unknownResponses.length);
-  return unknownResponses[responseIndex];
+  const responseIndex = Math.floor(Math.random() * Math.max(1, unknownResponses.length));
+  return unknownResponses[responseIndex] ?? `${npc} is quiet.`;
 }
 
 // --- Function: getFallbackDialogue ---
@@ -564,8 +564,8 @@ function getFallbackDialogue(npc: string, state: DialogueState): string {
     `${npc} doesn't have much to say right now.`,
   ];
 
-  const responseIndex = Math.floor(Math.random() * responses.length);
-  return responses[responseIndex];
+  const responseIndex = Math.floor(Math.random() * Math.max(1, responses.length));
+  return responses[responseIndex] ?? `${npc} is quiet.`;
 }
 
 // --- Function: getDialogueOptions ---

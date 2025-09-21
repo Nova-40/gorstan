@@ -62,6 +62,14 @@ const labyrinthbend: Room = {
   events: {
     onEnter: ['showLabyrinthBendIntro', 'spawnWhispererIfNeeded'],
     onExit: ['recordLabyrinthBendExit'],
+
+    quantumMiniQuest: {
+      mode: 'random',
+      ids: ['atomWeaver'],
+      seedHint: 'labyrinthbend',
+      cooldownSec: 120,
+      reusable: true,
+    },
     onInteract: {
       shifting_wall: ['markWall', 'observeShift'],
       echo_corner: ['listenToWhispers', 'searchCorner'],

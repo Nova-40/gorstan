@@ -1029,7 +1029,8 @@ export function runScene(
       messagesAdded,
       actionsExecuted,
       choicesAvailable,
-      nextScenes: nextScenes.length > 0 ? nextScenes : undefined,
+  // ensure readonly string[] (default to empty array) to avoid including undefined in the result
+  nextScenes: nextScenes.length > 0 ? (nextScenes as readonly string[]) : ([] as readonly string[]),
       stateChanges,
       executionTime,
     };
@@ -1376,9 +1377,11 @@ function executeSceneActions(
 
           case 'teleport':
             if (action.target) {
+              // action.target is checked; coerce to string to satisfy exactOptionalPropertyTypes
+              const targetRoom = action.target as string;
               context.setGameState((prev) => ({
                 ...prev,
-                currentRoom: action.target,
+                currentRoom: targetRoom,
                 flags: { ...prev.flags, teleported: true },
               }));
               result.stateChanges[`teleport`] = action.target;
@@ -1618,11 +1621,12 @@ function applySceneEffects(
     }
 
     if (effects.mood) {
-      context.setGameState((prev) => ({
-        ...prev,
-        currentMood: effects.mood,
-      }));
-      stateChanges.mood = effects.mood;
+        const mood = effects.mood ?? '';
+        context.setGameState((prev) => ({
+          ...prev,
+          currentMood: mood,
+        }));
+        stateChanges.mood = mood;
     }
 
     if (effects.atmosphere) {
@@ -1969,14 +1973,21 @@ export function getSceneInfo(sceneId: string):
       return null;
     }
 
-    return {
+    const info: any = {
       id: scene.id,
-      title: scene.title,
-      category: scene.category,
-      tags: scene.tags,
-      executionCount: executionData?.count,
-      lastExecuted: executionData?.lastExecuted,
+      title: scene.title ?? '',
+      category: scene.category ?? 'exploration',
+      tags: scene.tags ?? [],
     };
+
+    if (executionData && typeof executionData.count === 'number') {
+      info.executionCount = executionData.count;
+    }
+    if (executionData && typeof executionData.lastExecuted === 'number') {
+      info.lastExecuted = executionData.lastExecuted;
+    }
+
+    return info;
   } catch (error) {
     console.error('[SceneEngine] Error getting scene info:', error);
     return null;

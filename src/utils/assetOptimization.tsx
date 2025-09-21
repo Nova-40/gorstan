@@ -23,7 +23,28 @@ export const preloadImage = (src: string): Promise<HTMLImageElement> => {
       imageCache.set(src, img);
       resolve(img);
     };
-    img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
+    img.onerror = () => {
+      // If the failed src is a room image, attempt to load the placeholder room image
+      try {
+        const base = (src || '').toString();
+        if (base.includes('/images/rooms/') && !base.endsWith('placeholder-room.png')) {
+          const placeholder = base.replace(/[^/]+$/, 'placeholder-room.png');
+          // Try to load placeholder and resolve to it if successful
+          const pimg = new Image();
+          pimg.onload = () => {
+            imageCache.set(placeholder, pimg);
+            resolve(pimg);
+          };
+          pimg.onerror = () => reject(new Error(`Failed to load image and fallback: ${src}`));
+          pimg.src = placeholder;
+          return;
+        }
+      } catch (e) {
+        // ignore and fall through to generic reject
+      }
+
+      reject(new Error(`Failed to load image: ${src}`));
+    };
     img.src = src;
   });
 };
@@ -120,7 +141,12 @@ export const LazyImage: React.FC<LazyImageProps> = ({
   }, [isLoading, error, onLoad, onError]);
 
   if (error) {
-    return <img src={fallback} alt={alt} className={className} width={width} height={height} />;
+    // If the failed src was a room image but the fallback is not the placeholder, prefer the room placeholder
+    try {
+      const srcStr = (error || '').toString();
+    } catch (e) {}
+    const effectiveFallback = fallback || '/images/fallback.png';
+    return <img src={effectiveFallback} alt={alt} className={className} width={width} height={height} />;
   }
 
   if (isLoading) {
@@ -159,14 +185,28 @@ export const useIntersectionObserver = (
       return;
     }
 
-    const observer = new IntersectionObserver(([entry]) => callback(entry.isIntersecting), {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry) return;
+      callback(entry.isIntersecting);
+    }, {
       threshold: 0.1,
       rootMargin: '50px',
       ...options,
     });
 
     observer.observe(target);
-    return () => observer.unobserve(target);
+    return () => {
+      try {
+        observer.unobserve(target);
+      } catch (e) {
+        // ignore cleanup errors
+      }
+      try {
+        observer.disconnect();
+      } catch (e) {
+        // ignore
+      }
+    };
   }, [callback, options]);
 
   return targetRef;
@@ -182,14 +222,17 @@ export const preloadCriticalAssets = async (roomId: string, npcs: string[] = [])
   if (roomId) {
     // Derive zone and room image patterns from roomId
     const roomImagePatterns = [
-      `/images/${roomId}.png`,
-      `/images/${roomId}.gif`,
-      // Zone-based patterns commonly used in the app
-      `/images/introZone_${roomId}.png`,
-      `/images/gorstanZone_${roomId}.png`,
-      `/images/londonZone_${roomId}.png`,
-      `/images/latticeZone_${roomId}.png`,
-      `/images/mazeZone_${roomId}.png`,
+  // Prefer the central rooms folder (png then gif) and fallback to legacy paths
+  `/images/rooms/${roomId}.png`,
+  `/images/rooms/${roomId}.gif`,
+  `/images/${roomId}.png`,
+  `/images/${roomId}.gif`,
+  // Zone-based patterns commonly used in the app (legacy)
+  `/images/introZone_${roomId}.png`,
+  `/images/gorstanZone_${roomId}.png`,
+  `/images/londonZone_${roomId}.png`,
+  `/images/latticeZone_${roomId}.png`,
+  `/images/mazeZone_${roomId}.png`,
     ];
 
     criticalImages.push(...roomImagePatterns);

@@ -192,7 +192,15 @@ export class PerformanceManager {
 
   private constructor() {
     this.deviceProfiler = DeviceProfiler.getInstance();
-    this.currentSettings = this.optimizationProfiles[1].settings; // Default to balanced
+    // Default to the 'Balanced' profile when available, otherwise fall back to the first profile
+    if (this.optimizationProfiles.length > 1 && this.optimizationProfiles[1]?.settings) {
+      this.currentSettings = this.optimizationProfiles[1].settings;
+    } else if (this.optimizationProfiles.length > 0 && this.optimizationProfiles[0]?.settings) {
+      this.currentSettings = this.optimizationProfiles[0].settings;
+    } else {
+      // Fallback safe default
+      this.currentSettings = { autoAdjust: false } as any;
+    }
   }
 
   static getInstance(): PerformanceManager {
@@ -229,7 +237,16 @@ export class PerformanceManager {
     } catch (error) {
       console.error('[PerformanceManager] Initialization failed:', error);
       // Fall back to safe defaults
-      this.currentSettings = this.optimizationProfiles[2].settings; // Battery saver
+      // Prefer Battery Saver if present, otherwise fall back to Balanced or the first profile
+      if (this.optimizationProfiles[2]?.settings) {
+        this.currentSettings = this.optimizationProfiles[2].settings;
+      } else if (this.optimizationProfiles[1]?.settings) {
+        this.currentSettings = this.optimizationProfiles[1].settings;
+      } else if (this.optimizationProfiles[0]?.settings) {
+        this.currentSettings = this.optimizationProfiles[0].settings;
+      } else {
+        this.currentSettings = { autoAdjust: false } as any;
+      }
     }
   }
 
@@ -288,9 +305,23 @@ export class PerformanceManager {
       return { profile, score };
     });
 
-    // Return the highest scoring profile
+    // Return the highest scoring profile, or fall back to the first predefined profile
     scoredProfiles.sort((a, b) => b.score - a.score);
-    return scoredProfiles[0].profile;
+    const top = scoredProfiles[0];
+    if (!top) {
+      if (this.optimizationProfiles.length > 0) {
+        return this.optimizationProfiles[0] as OptimizationProfile;
+      }
+      // Construct a minimal default profile
+      return {
+        name: 'Default',
+        description: 'Default fallback profile',
+        settings: { autoAdjust: false } as any,
+        deviceTargets: { minPerformanceTier: 'low', platforms: ['desktop'], memoryRange: [0, 1024] },
+      } as any;
+    }
+
+    return top.profile;
   }
 
   /**
