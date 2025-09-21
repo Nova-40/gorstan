@@ -47,7 +47,7 @@ const CreditsScreen: React.FC<CreditsScreenProps> = ({ onRestart }) => {
     let index = 0;
     const interval = setInterval(() => {
       if (index < lines.length) {
-        setVisibleLines((prev) => [...prev, lines[index]]);
+  setVisibleLines((prev) => [...prev, lines[index] ?? '']);
         index++;
       } else {
         clearInterval(interval);

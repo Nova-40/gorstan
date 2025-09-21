@@ -345,7 +345,7 @@ export class NPCErrorHandler {
       message,
       context,
       timestamp: Date.now(),
-      stackTrace: new Error().stack,
+  stackTrace: new Error().stack || '',
       npcId: context.npcId,
       roomId: context.roomId,
       attemptCount: context.attemptCount || 0,
@@ -466,19 +466,21 @@ export class NPCErrorHandler {
 
     const degradation = DEGRADATION_LEVELS[level];
 
-    console.warn(
-      `[NPCErrorHandler] Degradation level changed: ${oldLevel} -> ${level} (${degradation.name})`,
-    );
-    console.warn(`[NPCErrorHandler] ${degradation.description}`);
-
-    if (degradation.disabledFeatures.length > 0) {
+  if (degradation) {
       console.warn(
-        `[NPCErrorHandler] Disabled features: ${degradation.disabledFeatures.join(', ')}`,
+        `[NPCErrorHandler] Degradation level changed: ${oldLevel} -> ${level} (${degradation.name})`,
       );
-    }
+      console.warn(`[NPCErrorHandler] ${degradation.description}`);
 
-    // Apply degradation settings
-    this.broadcastDegradationChange(degradation);
+      if (degradation.disabledFeatures && degradation.disabledFeatures.length > 0) {
+        console.warn(
+          `[NPCErrorHandler] Disabled features: ${degradation.disabledFeatures.join(', ')}`,
+        );
+      }
+
+      // Apply degradation settings
+      this.broadcastDegradationChange(degradation);
+    }
   }
 
   private broadcastDegradationChange(degradation: DegradationLevel): void {
@@ -551,16 +553,22 @@ export class NPCErrorHandler {
     return this.currentDegradationLevel;
   }
 
+  getDegradationMultiplier(): number {
+    const degradation = DEGRADATION_LEVELS[this.currentDegradationLevel];
+    return degradation ? degradation.performanceMultiplier : 1.0;
+  }
+
   isFeatureEnabled(feature: string): boolean {
     const degradation = DEGRADATION_LEVELS[this.currentDegradationLevel];
+    if (!degradation) return true;
     return (
-      !degradation.disabledFeatures.includes(feature) &&
-      !degradation.disabledFeatures.includes('all')
+      !(degradation.disabledFeatures || []).includes(feature) &&
+      !(degradation.disabledFeatures || []).includes('all')
     );
   }
 
   getPerformanceMultiplier(): number {
-    return DEGRADATION_LEVELS[this.currentDegradationLevel].performanceMultiplier;
+  return this.getDegradationMultiplier();
   }
 
   // ===== CONFIGURATION =====

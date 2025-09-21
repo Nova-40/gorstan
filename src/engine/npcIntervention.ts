@@ -751,7 +751,7 @@ function executeIntervention(
       interventionNPC: rule.interventionNPC,
       suppressedNPCs,
       messages,
-      effectDuration: rule.cooldown,
+      effectDuration: rule.cooldown ?? 0,
       ruleId: rule.id,
       timestamp: now,
     };
@@ -1016,7 +1016,7 @@ export function getPotentialInterventions(context: InterventionContext): Array<{
           rule,
           canTrigger: isNPCPresent && suppressedNPCs.length > 0 && canTrigger && conditionsMet,
           suppressedCount: suppressedNPCs.length,
-          reason,
+          reason: reason ?? '',
           priority: rule.priority,
         };
       })
@@ -1071,7 +1071,11 @@ export function getInterventionStats(): {
     const intervals: number[] = [];
     if (recentInterventions.length > 1) {
       for (let i = 1; i < recentInterventions.length; i++) {
-        intervals.push(recentInterventions[i].timestamp - recentInterventions[i - 1].timestamp);
+        const a = recentInterventions[i];
+        const b = recentInterventions[i - 1];
+        if (a && b && typeof a.timestamp === 'number' && typeof b.timestamp === 'number') {
+          intervals.push(a.timestamp - b.timestamp);
+        }
       }
       stats.averageInterval =
         intervals.reduce((sum, interval) => sum + interval, 0) / intervals.length;
@@ -1081,8 +1085,8 @@ export function getInterventionStats(): {
       totalRules: stats.totalRules,
       activeHistory: stats.activeHistory,
       recentInterventions: stats.recentInterventions,
-      mostActiveRule: stats.mostActiveRule,
-      averageInterval: stats.averageInterval,
+      mostActiveRule: stats.mostActiveRule ?? '',
+      averageInterval: stats.averageInterval ?? 0,
     };
   } catch (error) {
     console.error('[NPCIntervention] Error getting intervention stats:', error);

@@ -28,6 +28,7 @@ import {
 } from './memory';
 import { getPersona } from './personas';
 import { checkProactivePrompts, clearPrompt, ProactivePrompt } from './proactive';
+import { pickRandom } from '../utils/random';
 
 export interface ConversationFeatures {
   microHedges: boolean;
@@ -210,7 +211,7 @@ function addMicroHedging(response: string, persona: any): string {
     hedges.push("Based on what I've seen, ", 'From my perspective, ');
   }
 
-  const hedge = hedges[Math.floor(Math.random() * hedges.length)];
+  const hedge = pickRandom(hedges);
   return hedge + response.toLowerCase();
 }
 
@@ -241,7 +242,7 @@ function addSelfCorrection(response: string, persona: any): string {
     corrections.push('Sorry, let me clarify: ', 'What I meant was: ');
   }
 
-  const correction = corrections[Math.floor(Math.random() * corrections.length)];
+  const correction = pickRandom(corrections);
   return correction + response.toLowerCase();
 }
 
@@ -270,8 +271,8 @@ function addMemoryHook(response: string, memory: NPCMemoryState, persona: any): 
       'Continuing from before, ',
     ];
 
-    const hook = hooks[Math.floor(Math.random() * hooks.length)];
-    return hook + response.toLowerCase();
+  const hook = pickRandom(hooks);
+  return hook + response.toLowerCase();
   }
 
   return response;

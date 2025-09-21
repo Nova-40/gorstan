@@ -97,10 +97,11 @@ export function wanderNPC(npcId: string, state: LocalGameState) {
   // Start with adjacent rooms, then expand if none available
   let validRooms: Room[] = adjacentRoomIds
     .map((id) => roomMap[id])
+    .filter(Boolean)
+    .filter((room) => typeof room === 'object')
+    .map((r) => r as Room)
     .filter(
       (room) =>
-        room &&
-        typeof room === 'object' &&
         room.id !== npc.currentRoom && // Don't stay in same room
         !room.id.includes('trap') &&
         !room.id.includes('cutscene') &&

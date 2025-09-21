@@ -21,6 +21,7 @@
 
 import { LocalGameState } from '../state/gameState';
 import { morthosToAl, alToMorthos, aylaSayTo, NPCTalk, ConversationContext } from './talk';
+import { pickRandom } from '../utils/random';
 import { NPC_IDS } from './registry';
 
 // Check if player appears to be stuck in a room
@@ -50,9 +51,10 @@ export function maybeStartBanter(state: LocalGameState, dispatch: any, roomId: s
     return;
   }
 
-  const banter = banters[Math.floor(Math.random() * banters.length)];
+  const banter = banters.length ? pickRandom(banters) : null;
 
   // Randomly choose who starts
+  if (!banter) return;
   if (Math.random() < 0.5) {
     morthosToAl(banter.morthos, ctx);
   } else {

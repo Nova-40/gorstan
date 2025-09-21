@@ -150,13 +150,19 @@ export function meetsThreshold(currentScore: number, thresholdKey: string): bool
 
 // --- Function: getScoreBasedMessage ---
 export function getScoreBasedMessage(currentScore: number): string | null {
-  if (currentScore >= scoreThresholds.legend) {
+  // Coerce thresholds to numbers with safe defaults to satisfy strict checks
+  const legend = scoreThresholds.legend ?? Number.POSITIVE_INFINITY;
+  const master = scoreThresholds.master ?? Number.POSITIVE_INFINITY;
+  const explorer = scoreThresholds.explorer ?? Number.POSITIVE_INFINITY;
+  const rookie = scoreThresholds.rookie ?? Number.POSITIVE_INFINITY;
+
+  if (currentScore >= legend) {
     return 'You are a legendary adventurer!';
-  } else if (currentScore >= scoreThresholds.master) {
+  } else if (currentScore >= master) {
     return 'Your skills are truly masterful.';
-  } else if (currentScore >= scoreThresholds.explorer) {
+  } else if (currentScore >= explorer) {
     return "You're becoming quite the explorer.";
-  } else if (currentScore >= scoreThresholds.rookie) {
+  } else if (currentScore >= rookie) {
     return "You're getting the hang of this!";
   } else if (currentScore <= -100) {
     return 'Perhaps a more careful approach would serve you better...';

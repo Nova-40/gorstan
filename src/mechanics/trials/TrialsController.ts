@@ -26,15 +26,17 @@ export class TrialsController {
       // Phase 1-3: The trials
       for (let i = 0; i < this.phases.length; i++) {
         this.currentPhase = i;
-        demoProgress.currentPhase = this.phases[i].name;
+        const phase = this.phases[i];
+        if (!phase) continue;
+        demoProgress.currentPhase = phase.name ?? null;
         demoProgress.phaseStartTime = Date.now();
 
-        console.log(`[TrialsController] Starting Phase ${i + 1}: ${this.phases[i].name}`);
+        console.log(`[TrialsController] Starting Phase ${i + 1}: ${phase.name}`);
 
-        const phaseController = new this.phases[i].controller();
+        const phaseController = new phase.controller();
         await phaseController.run();
 
-        console.log(`[TrialsController] Completed Phase ${i + 1}: ${this.phases[i].name}`);
+        console.log(`[TrialsController] Completed Phase ${i + 1}: ${phase.name}`);
       }
 
       // Stream reset sequence
@@ -62,7 +64,8 @@ export class TrialsController {
 
   getCurrentPhase(): string {
     if (this.currentPhase < this.phases.length) {
-      return this.phases[this.currentPhase].name;
+      const phase = this.phases[this.currentPhase];
+      return phase ? phase.name : 'Unknown';
     }
     return 'Complete';
   }

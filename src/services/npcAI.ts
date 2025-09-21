@@ -613,7 +613,7 @@ export class NPCAIController {
 
     // 30% chance to call out when player enters cafe
     if (Math.random() < 0.3) {
-      const randomCallout = callouts[Math.floor(Math.random() * callouts.length)];
+      const randomCallout = callouts[Math.floor(Math.random() * callouts.length)] ?? '';
 
       return {
         type: 'callout',
@@ -756,7 +756,12 @@ ${npcProfile.name}'s response:`;
     const state = this.npcStates.get(npcId);
     if (state && Date.now() - state.lastAction > 300000) {
       // 5 minutes
-      return filteredRooms[Math.floor(Math.random() * filteredRooms.length)];
+      try {
+        const { pickRandom } = require('../utils/random');
+        return pickRandom(filteredRooms);
+      } catch (e) {
+        return filteredRooms[0] || null;
+      }
     }
 
     return null;

@@ -253,7 +253,7 @@ describe('MovePolicy', () => {
     test('should fallback to random when no home room', () => {
       const context: NPCMoveContext = {
         ...basicContext,
-        homeRoom: undefined,
+  homeRoom: '',
       };
 
       const policy: MovePolicyConfig = {

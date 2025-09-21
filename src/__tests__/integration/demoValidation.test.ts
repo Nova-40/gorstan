@@ -58,8 +58,13 @@ describe('Demo Mode Functionality Validation', () => {
       expect(expectedDemoCommands).toHaveLength(14);
 
       // Test sequence integrity
-      expect(expectedDemoCommands[0].command).toBe('look');
-      expect(expectedDemoCommands[expectedDemoCommands.length - 1].command).toBe('help');
+      expect(expectedDemoCommands).toHaveLength(14);
+      if (expectedDemoCommands.length > 0) {
+        const first = expectedDemoCommands[0]!;
+        const last = expectedDemoCommands[expectedDemoCommands.length - 1]!;
+        expect(first.command).toBe('look');
+        expect(last.command).toBe('help');
+      }
 
       // Test all commands have valid structure
       expectedDemoCommands.forEach((cmd, index) => {

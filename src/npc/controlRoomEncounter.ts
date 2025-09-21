@@ -376,7 +376,7 @@ export class ControlRoomEncounterOrchestrator {
         speaker: 'morthos',
         text: `Likewise, Al. I've been thinking about our last collaboration.`,
         emotionalTone: 'positive',
-        references: mostRelevantMemory?.sourceEvent.id,
+  ...(mostRelevantMemory ? { references: mostRelevantMemory.sourceEvent.id } : {}),
       },
     ];
 
@@ -422,7 +422,7 @@ export class ControlRoomEncounterOrchestrator {
         speaker: 'morthos',
         text: `I haven't forgotten what happened in ${betrayalMemory.sourceEvent.context.location}.`,
         emotionalTone: 'negative',
-        references: betrayalMemory.sourceEvent.id,
+  ...(betrayalMemory ? { references: betrayalMemory.sourceEvent.id } : {}),
       });
 
       encounter.dialogue.push({
@@ -473,7 +473,7 @@ export class ControlRoomEncounterOrchestrator {
         speaker: 'al',
         text: "We've overcome so much together. I trust your judgment completely.",
         emotionalTone: 'positive',
-        references: cooperationMemories[0].sourceEvent.id,
+  ...(cooperationMemories[0] ? { references: cooperationMemories[0].sourceEvent.id } : {}),
       });
     }
 
@@ -513,12 +513,15 @@ export class ControlRoomEncounterOrchestrator {
     const positiveMemories = memories.filter((m) => m.emotionalImpact === 'positive');
     if (positiveMemories.length > 0) {
       const memory = positiveMemories[0];
-      encounter.dialogue.push({
-        speaker: 'al',
-        text: `I particularly remember ${memory.sourceEvent.description.toLowerCase()}.`,
-        emotionalTone: 'positive',
-        references: memory.sourceEvent.id,
-      });
+      if (memory && memory.sourceEvent) {
+        const desc = memory.sourceEvent.description ? memory.sourceEvent.description.toLowerCase() : '';
+        encounter.dialogue.push({
+          speaker: 'al',
+          text: `I particularly remember ${desc}.`,
+          emotionalTone: 'positive',
+          references: memory.sourceEvent.id,
+        });
+      }
     }
 
     encounter.dialogue.push({
@@ -622,19 +625,21 @@ export class ControlRoomEncounterOrchestrator {
     const dialogue: DialogueOption[] = [];
 
     if (memory.suggestedDialogue && memory.suggestedDialogue.length > 0) {
+      const first = memory.suggestedDialogue[0] || '';
       dialogue.push({
         speaker: 'morthos',
-        text: memory.suggestedDialogue[0],
+        text: first,
         emotionalTone: memory.emotionalImpact,
-        references: memory.sourceEvent.id,
+        ...(memory && memory.sourceEvent ? { references: memory.sourceEvent.id } : {}),
       });
 
       if (memory.suggestedDialogue.length > 1) {
+        const second = memory.suggestedDialogue[1] || '';
         dialogue.push({
           speaker: 'al',
-          text: memory.suggestedDialogue[1],
+          text: second,
           emotionalTone: memory.emotionalImpact,
-          references: memory.sourceEvent.id,
+          ...(memory && memory.sourceEvent ? { references: memory.sourceEvent.id } : {}),
         });
       }
     }

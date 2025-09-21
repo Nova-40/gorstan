@@ -125,7 +125,10 @@ export const ArtifactCard: React.FC<ArtifactCardProps> = ({
                 elementColors[artifact.element],
               )}
             >
-              {artifact.element[0].toUpperCase()}
+              {(() => {
+                const safeElement = artifact.element ?? '';
+                return safeElement.length > 0 ? safeElement.charAt(0).toUpperCase() : '?';
+              })()}
             </div>
             <div>
               <h3 className="text-heading-sm font-semibold text-color-text-primary">
@@ -165,7 +168,7 @@ export const ArtifactCard: React.FC<ArtifactCardProps> = ({
         <div className="mb-space-4">
           <h4 className="text-body-sm font-medium text-color-text-primary mb-space-2">Effects:</h4>
           <div className="space-y-space-1">
-            {artifact.effects.map((effect, index) => (
+            {artifact.effects?.map((effect, index) => (
               <div key={index} className="text-body-xs text-color-text-secondary">
                 • {effect.description}
               </div>

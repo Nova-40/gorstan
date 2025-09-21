@@ -334,7 +334,8 @@ Respond with just the hint text, in Ayla's voice with appropriate cosmic imagery
 
     return {
       shouldInterrupt: true,
-      hintText,
+  // only include hintText when defined to satisfy exactOptionalPropertyTypes
+  hintText: hintText ?? '',
       urgency: 'medium',
       hintType: this.categorizeHint(context, stuckState),
       followUp: '✨ *The cosmic threads shimmer with possibility*',

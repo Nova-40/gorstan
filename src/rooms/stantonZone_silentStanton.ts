@@ -20,7 +20,7 @@
 import { Room } from '../types/Room';
 
 export const silentStanton: Room = {
-  image: 'stantonZone_silentStanton.png',
+  image: 'stantonharcourtZone_silentstanton.png',
   description: [
     'Silent Stanton is a hauntingly quiet part of the village, where the usual sounds of life seem to have been muted.',
     'The streets are empty, and the windows of the cottages are dark, as if the village has been abandoned.',

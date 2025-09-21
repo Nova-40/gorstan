@@ -281,9 +281,9 @@ export const ResponsiveGrid: React.FC<ResponsiveGridProps> = ({
     const currentIndex = breakpointOrder.indexOf(currentBreakpoint);
 
     for (let i = currentIndex; i < breakpointOrder.length; i++) {
-      const bp = breakpointOrder[i];
+      const bp = breakpointOrder[i] as keyof typeof columns;
       if (columns[bp] !== undefined) {
-        return columns[bp];
+        return columns[bp] as number;
       }
     }
     return 1;

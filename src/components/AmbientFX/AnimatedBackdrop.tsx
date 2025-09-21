@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { LazyImage } from '../../utils/assetOptimization';
 
 export type FXType = 'particles' | 'blink-led' | 'crt-scroller' | 'floating-orb' | 'static-overlay';
 
@@ -332,7 +333,12 @@ const AnimatedBackdrop: React.FC<AnimatedBackdropProps> = ({ spec, className = '
       style={{ willChange: 'transform, opacity' }}
     >
       {/* Base image */}
-      <img src={spec.baseImage} alt="Room backdrop" className="w-full h-full object-cover" />
+      <LazyImage
+        src={spec.baseImage}
+        alt="Room backdrop"
+        fallback={'/images/rooms/placeholder-room.png'}
+        className="w-full h-full object-cover"
+      />
 
       {/* FX Layers */}
       {spec.layers.map((layer) => {

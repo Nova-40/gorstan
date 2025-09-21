@@ -4,6 +4,7 @@
  */
 
 import { getRandomQuestion } from './questions';
+import { pickRandom } from '../../utils/random';
 
 export interface ConversationContext {
   visitor_name?: string;
@@ -133,8 +134,8 @@ export class WendellAI {
     topic: string,
     context: ConversationContext,
   ): WendellResponse {
-    const templates = this.getResponseTemplates(responseType);
-    const template = templates[Math.floor(Math.random() * templates.length)];
+  const templates = this.getResponseTemplates(responseType);
+  const template = templates.length ? pickRandom(templates) : '';
 
     let response: WendellResponse = {
       text: template,
@@ -158,6 +159,12 @@ export class WendellAI {
   }
 
   private getResponseTemplates(responseType: string): string[] {
+    const defaultTeaching = [
+      'Ah, you touch upon something quite significant. Let me share what I can...',
+      "Indeed, that is worth discussing. In my years here, I've observed...",
+      'You show wisdom in asking. Perhaps this perspective will help...',
+    ];
+
     const templates: Record<string, string[]> = {
       teaching: [
         'Ah, you touch upon something quite significant. Let me share what I can...',
@@ -186,7 +193,9 @@ export class WendellAI {
       ],
     };
 
-    return templates[responseType] || templates.teaching;
+  const found = templates[responseType];
+  if (found && found.length) return found;
+  return defaultTeaching;
   }
 
   private getTone(responseType: string): WendellResponse['tone'] {
@@ -250,7 +259,7 @@ export class WendellAI {
 
     const knowledge = knowledgeMap[topic] || [];
     if (knowledge.length > 0 && context.trust_level >= 4) {
-      response.knowledge_shared = [knowledge[Math.floor(Math.random() * knowledge.length)]];
+      response.knowledge_shared = [pickRandom(knowledge)];
     }
 
     return response;

@@ -235,7 +235,7 @@ Ready for your own adventure? Join me in Gorstan! 🌟`;
         epic: '#8B5CF6',
         legendary: '#F59E0B',
       };
-      ctx.fillStyle = rarityColors[item.rarity];
+  ctx.fillStyle = rarityColors[item.rarity] ?? '#9CA3AF';
       ctx.fillRect(300, 250, 200, 50);
       ctx.fillStyle = '#ffffff';
       ctx.font = '24px Arial';

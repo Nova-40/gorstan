@@ -47,19 +47,21 @@ export class RockField {
 
     // Create maze-like rock formation with paths
     for (let y = 0; y < height; y++) {
-      tiles[y] = [];
+      const row: number[] = [];
       for (let x = 0; x < width; x++) {
         // Create jagged rock patterns with pathways
         if (x % 3 === 0 || y % 2 === 1) {
-          tiles[y][x] = this.PATH_TILE;
+          row[x] = this.PATH_TILE;
         } else {
-          tiles[y][x] = Math.random() < 0.7 ? this.ROCK_TILE : this.PATH_TILE;
+          row[x] = Math.random() < 0.7 ? this.ROCK_TILE : this.PATH_TILE;
         }
       }
+      tiles[y] = row;
     }
 
-    // Ensure path to exit
-    tiles[height - 1][width - 1] = this.EXIT_TILE;
+  // Ensure path to exit (guard existing row)
+  const lastRow = tiles[height - 1];
+  if (lastRow) lastRow[width - 1] = this.EXIT_TILE;
 
     return {
       width,
@@ -103,6 +105,9 @@ export class RockField {
     if (x < 0 || x >= this.map.width || y < 0 || y >= this.map.height) {
       return false;
     }
-    return this.map.tiles[y][x] !== this.ROCK_TILE;
+  const row = this.map.tiles[y];
+  if (!row) return false;
+  const tile = row[x];
+  return tile !== undefined && tile !== this.ROCK_TILE;
   }
 }

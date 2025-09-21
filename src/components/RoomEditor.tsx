@@ -96,9 +96,19 @@ export default function RoomEditor({
 }: RoomEditorProps): React.JSX.Element {
   // Variable declaration
   const roomIds = Object.keys(rooms);
+  const firstRoomId = roomIds.length > 0 ? roomIds[0] : undefined;
   // Variable declaration
-  const initialRoom =
-    initialRoomId && rooms[initialRoomId] ? rooms[initialRoomId] : rooms[roomIds[0]];
+  const initialRoom: RoomData = initialRoomId && rooms[initialRoomId]
+    ? rooms[initialRoomId]
+    : firstRoomId && rooms[firstRoomId]
+    ? rooms[firstRoomId]
+    : ({
+        id: 'new_room',
+        title: 'New Room',
+        description: '',
+        zone: '',
+        exits: {},
+      } as RoomData);
 
   // React state declaration
   const [index, setIndex] = useState(() =>
@@ -208,9 +218,12 @@ export default function RoomEditor({
     } else if (direction === 'next') {
       newIndex = (index + 1) % roomIds.length;
     }
-    setIndex(newIndex);
-    // Variable declaration
-    const newRoom = rooms[roomIds[newIndex]];
+  setIndex(newIndex);
+  // Variable declaration
+  const newRoomId = roomIds[newIndex];
+  if (!newRoomId) return;
+  const newRoom = rooms[newRoomId];
+  if (!newRoom) return;
     setRoomData({
       ...newRoom,
       exits: newRoom.exits || {},
@@ -792,8 +805,9 @@ function TrapsAndEventsSection({
   const updateTrap = (index: number, updates: Partial<Trap>) => {
     // Variable declaration
     const newTraps = [...(room.traps || [])];
-    newTraps[index] = { ...newTraps[index], ...updates };
-    onUpdate({ traps: newTraps });
+  if (index < 0 || index >= newTraps.length || !newTraps[index]) return;
+  newTraps[index] = { ...newTraps[index], ...updates };
+  onUpdate({ traps: newTraps });
   };
 
   // Variable declaration

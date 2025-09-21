@@ -165,8 +165,14 @@ export function applyAylaPersonality(
   // Add transition if requested
   if (options?.addTransition && context === 'book-discussion') {
     const transitions = AYLA_PERSONALITY.conversationPatterns.bookTransitions;
-    const transition = transitions[Math.floor(Math.random() * transitions.length)];
-    response = `${transition} ${response}`;
+    try {
+      const { pickRandom } = require('../../utils/random');
+      const transition = pickRandom(transitions);
+      response = `${transition} ${response}`;
+    } catch (e) {
+      const transition = transitions[0];
+      response = `${transition} ${response}`;
+    }
   }
 
   // Ensure brevity for book discussions (≤2 sentences)
@@ -185,7 +191,12 @@ export function applyAylaPersonality(
  */
 export function getAylaGreeting(): string {
   const greetings = AYLA_PERSONALITY.conversationPatterns.greetingVariations;
-  return greetings[Math.floor(Math.random() * greetings.length)];
+  try {
+    const { pickRandom } = require('../../utils/random');
+    return pickRandom(greetings);
+  } catch (e) {
+    return greetings[0]!;
+  }
 }
 
 /**
@@ -193,7 +204,12 @@ export function getAylaGreeting(): string {
  */
 export function getAylaCTAIntroduction(): string {
   const intros = AYLA_PERSONALITY.conversationPatterns.ctaIntroductions;
-  return intros[Math.floor(Math.random() * intros.length)];
+  try {
+    const { pickRandom } = require('../../utils/random');
+    return pickRandom(intros);
+  } catch (e) {
+    return intros[0]!;
+  }
 }
 
 /**

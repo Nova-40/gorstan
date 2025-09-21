@@ -19,9 +19,20 @@
 
 import React from 'react';
 import { useGameState } from '../state/gameState';
+import { demoService } from '../demo/DemoModeService';
+import { isDemoRunning } from '../demo/state';
+import { useFlags } from '../hooks/useFlags';
+import { IS_DEV } from '../config/mode';
+import { DEMO_PACKS } from '../demo/DemoPacks';
+import { useState } from 'react';
+import { useMiniQuest } from '../minigames/core/useMiniQuest';
+import { FEATURES } from '../config';
 
 const DebugPanel: React.FC = () => {
   const { state, dispatch } = useGameState();
+  const { hasFlag } = useFlags();
+  const [selectedPack, setSelectedPack] = useState<string | undefined>(DEMO_PACKS[0]?.id);
+  const mini = useMiniQuest();
 
   // Variable declaration
   const clearFlags = () => {
@@ -42,6 +53,37 @@ const DebugPanel: React.FC = () => {
   // JSX return block or main return
   return (
     <div className="debug-panel">
+      {/* Mini-quest quick launcher */}
+      {FEATURES.MINI_QUESTS_ENABLED && (
+        <div style={{ marginBottom: 8 }}>
+          <strong>Mini-Quests</strong>
+          <div style={{ marginTop: 6 }}>
+            <button onClick={() => mini.launch('atomWeaver', state.currentRoomId)}>
+              Play Atom Weaver
+            </button>
+          </div>
+        </div>
+      )}
+      {/* Demo controls (dev only) */}
+      {IS_DEV && hasFlag('DEMO_MODE_ENABLED') && (
+        <div style={{ marginBottom: 8 }}>
+          <strong>Demo</strong>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 6 }}>
+            <select value={selectedPack} onChange={(e) => setSelectedPack(e.target.value)}>
+              {DEMO_PACKS.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+            <button onClick={() => demoService.start(selectedPack)}>Start Demo</button>
+            <button onClick={() => demoService.stop('manual')}>Stop Demo</button>
+            <div style={{ padding: '4px 8px', borderRadius: 8, background: isDemoRunning() ? '#9f7aea' : '#94a3b8', color: '#fff' }}>
+              {isDemoRunning() ? 'Running' : 'Idle'}
+            </div>
+          </div>
+        </div>
+      )}
       <button
         onClick={() =>
           dispatch({ type: 'SET_ROOM', payload: { roomId: 'offgorstanZone_ancientvault' } })

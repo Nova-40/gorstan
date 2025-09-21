@@ -19,7 +19,9 @@
 
 import React, { useState } from 'react';
 
-import { Button } from './button';
+import UIButton from './ui/Button';
+import MenuCard from './ui/MenuCard';
+import MenuGrid from './ui/MenuGrid';
 
 interface TeleportationMenuProps {
   onTeleport: (destination: string) => void;
@@ -193,9 +195,9 @@ const TeleportationMenu: React.FC<TeleportationMenuProps> = ({
           <h2 className="text-xl font-bold text-cyan-300">
             {hasRemoteControl ? '📱 Remote Control Navigation' : '🔮 Navigation Crystal'}
           </h2>
-          <Button onClick={onClose} className="text-red-400 hover:text-red-300">
+          <UIButton onClick={onClose} variant="ghost" className="text-red-400 hover:text-red-300">
             ✕ Close
-          </Button>
+          </UIButton>
         </div>
 
         <div className="mb-4">
@@ -207,37 +209,41 @@ const TeleportationMenu: React.FC<TeleportationMenuProps> = ({
 
           {hasRemoteControl && (
             <div className="flex gap-2 mb-3">
-              <Button
+              <UIButton
                 onClick={() => setSelectedZone('all')}
-                className={`text-xs ${selectedZone === 'all' ? 'bg-cyan-600' : 'bg-gray-700'}`}
+                variant={selectedZone === 'all' ? 'primary' : 'secondary'}
+                className="text-xs"
               >
                 All Zones
-              </Button>
+              </UIButton>
               {zones.map((zone) => (
-                <Button
+                <UIButton
                   key={zone}
                   onClick={() => setSelectedZone(zone)}
-                  className={`text-xs ${selectedZone === zone ? 'bg-cyan-600' : 'bg-gray-700'}`}
+                  variant={selectedZone === zone ? 'primary' : 'secondary'}
+                  className="text-xs"
                 >
                   {zone}
-                </Button>
+                </UIButton>
               ))}
             </div>
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-3 max-h-64 overflow-y-auto">
-          {filteredDestinations.map((destination) => (
-            <Button
-              key={destination.id}
-              onClick={() => handleTeleport(destination.id)}
-              className="text-left p-3 bg-gray-800 hover:bg-gray-700 border border-gray-600"
-            >
-              <div className="text-cyan-300 font-semibold">{destination.name}</div>
-              <div className="text-gray-400 text-xs">{destination.zone}</div>
-              <div className="text-gray-500 text-xs mt-1">{destination.description}</div>
-            </Button>
-          ))}
+        <div className="max-h-64 overflow-y-auto">
+          <MenuGrid cols={2}>
+            {filteredDestinations.map((destination) => (
+              <MenuCard
+                key={destination.id}
+                title={destination.name}
+                subtitle={destination.zone}
+                onActivate={() => handleTeleport(destination.id)}
+                className="bg-gray-800 border-gray-600"
+              >
+                <div className="text-gray-500 text-xs mt-1">{destination.description}</div>
+              </MenuCard>
+            ))}
+          </MenuGrid>
         </div>
 
         <div className="mt-4 text-xs text-gray-500 text-center">

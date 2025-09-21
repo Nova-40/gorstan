@@ -1043,11 +1043,13 @@ export function getItemValue(
   let value = item.value || 0;
 
   if (modifiers) {
-    if (item.category && modifiers[item.category]) {
-      value *= modifiers[item.category];
+    if (item.category) {
+      const catMod = modifiers[item.category];
+      if (catMod !== undefined) value *= catMod;
     }
-    if (item.rarity && modifiers[item.rarity]) {
-      value *= modifiers[item.rarity];
+    if (item.rarity) {
+      const rarityMod = modifiers[item.rarity];
+      if (rarityMod !== undefined) value *= rarityMod;
     }
   }
 

@@ -81,7 +81,7 @@ const PuzzleSolver: React.FC<PuzzleSolverProps> = ({
 
   const handleHintRequest = (hintIndex: number) => {
     onHint(hintIndex);
-    setCurrentHint(puzzle.puzzle.hints[hintIndex]);
+  setCurrentHint(puzzle.puzzle.hints[hintIndex] ?? null);
     setShowHints(true);
   };
 

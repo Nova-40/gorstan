@@ -130,13 +130,23 @@ export function setFlag(
       categorizedFlags[normalizedCategory] = new Set([flag]);
     }
 
-    flagMetadata.set(flag, {
-      setTime: Date.now(),
-      category: normalizedCategory,
-      description,
-      priority,
-      triggeredEvents: [],
-    });
+    flagMetadata.set(
+      flag,
+      description !== undefined
+        ? {
+            setTime: Date.now(),
+            category: normalizedCategory,
+            description,
+            priority,
+            triggeredEvents: [],
+          }
+        : {
+            setTime: Date.now(),
+            category: normalizedCategory,
+            priority,
+            triggeredEvents: [],
+          },
+    );
 
     flagCache.delete(flag);
 
@@ -809,7 +819,10 @@ export function clearAllFlags(): boolean {
     eventTriggers.clear();
 
     Object.keys(categorizedFlags).forEach((key) => {
-      categorizedFlags[key].clear();
+      const setForKey = categorizedFlags[key];
+      if (setForKey) {
+        setForKey.clear();
+      }
     });
 
     localStorage.removeItem('storyProgressState');

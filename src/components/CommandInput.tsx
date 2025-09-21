@@ -18,6 +18,7 @@
 // Parses and processes player commands.
 
 import React, { useState, useCallback, useMemo } from 'react';
+import { isDemoRunning } from '../demo/state';
 
 type CommandInputProps = {
   onCommand: (command: string) => void;
@@ -31,6 +32,10 @@ const CommandInput: React.FC<CommandInputProps> = ({ onCommand, playerName }) =>
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
+      if (isDemoRunning()) {
+        // Ignore player input while demo is running
+        return;
+      }
       if (input.trim()) {
         onCommand(input.trim());
         setInput('');
@@ -52,6 +57,7 @@ const CommandInput: React.FC<CommandInputProps> = ({ onCommand, playerName }) =>
       <div className="border border-blue-500 rounded p-2">
         <input
           type="text"
+          id="command-input-field"
           value={input}
           onChange={handleInputChange}
           placeholder={placeholderText}

@@ -5,6 +5,7 @@
 import type { GameAction } from '../../types/GameTypes';
 import type { LocalGameState } from '../../state/gameState';
 import type { Dispatch } from 'react';
+import { pickRandom } from '../../utils/random';
 
 interface AylaAnalysis {
   playerStuckLevel: number;
@@ -201,7 +202,11 @@ export class EnhancedAylaConversation {
       return 'I notice you seem quite frustrated. Would you like me to provide a more direct hint, or would you prefer to keep exploring on your own?';
     }
 
-    return metaResponses[Math.floor(Math.random() * metaResponses.length)];
+    try {
+      return pickRandom(metaResponses);
+    } catch (e) {
+      return metaResponses[0]!;
+    }
   }
 
   // Generate mediation responses for NPC conflicts
@@ -215,7 +220,11 @@ export class EnhancedAylaConversation {
         '*calmly* Al, Morthos - your rivalry is entertaining but not particularly educational right now.',
       ];
 
-      return mediationResponses[Math.floor(Math.random() * mediationResponses.length)];
+      try {
+        return pickRandom(mediationResponses);
+      } catch (e) {
+        return mediationResponses[0]!;
+      }
     }
 
     return "It seems there's some tension here. Perhaps I can help clarify things for everyone.";
@@ -248,7 +257,11 @@ export class EnhancedAylaConversation {
       'Sometimes the solution requires thinking differently about the problem.',
     ];
 
-    return hints[Math.floor(Math.random() * hints.length)];
+    try {
+      return pickRandom(hints);
+    } catch (e) {
+      return hints[0]!;
+    }
   }
 
   // Generate lore responses
@@ -261,7 +274,11 @@ export class EnhancedAylaConversation {
       'Every NPC you meet has their own story, their own motivations. Even I am part of this larger narrative.',
     ];
 
-    return loreResponses[Math.floor(Math.random() * loreResponses.length)];
+    try {
+      return pickRandom(loreResponses);
+    } catch (e) {
+      return loreResponses[0]!;
+    }
   }
 
   // Generate general guidance responses
@@ -293,7 +310,11 @@ export class EnhancedAylaConversation {
       "I appreciate your curiosity. It's one of the most valuable traits an explorer can have.",
     ];
 
-    return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+    try {
+      return pickRandom(defaultResponses);
+    } catch (e) {
+      return defaultResponses[0]!;
+    }
   }
 
   // Record interaction for learning and improvement
@@ -335,7 +356,7 @@ export class EnhancedAylaConversation {
     }
 
     // Random chance for casual conversation
-    if (Math.random() < 0.05) {
+  if (Math.random() < 0.05) {
       return true;
     }
 
@@ -367,7 +388,11 @@ export class EnhancedAylaConversation {
       "I'm curious about your perspective on what you've experienced here.",
     ];
 
-    return casualStarters[Math.floor(Math.random() * casualStarters.length)];
+    try {
+      return pickRandom(casualStarters);
+    } catch (e) {
+      return casualStarters[0]!;
+    }
   }
 }
 

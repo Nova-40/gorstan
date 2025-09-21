@@ -87,13 +87,13 @@ export function selectWeightedDialogue(
   );
 
   if (validVariations.length === 0) {
-    return variations[0]?.text || '...';
+  return variations[0]?.text ?? '...';
   }
 
   const totalWeight = validVariations.reduce((sum, variation) => sum + variation.weight, 0);
 
   if (totalWeight === 0) {
-    return validVariations[0].text;
+  return validVariations[0]?.text ?? '...';
   }
 
   let random = Math.random() * totalWeight;
@@ -104,8 +104,7 @@ export function selectWeightedDialogue(
       return variation.text;
     }
   }
-
-  return validVariations[validVariations.length - 1].text;
+  return validVariations[validVariations.length - 1]?.text ?? '...';
 }
 
 // --- Function: interpolateDialogue ---
@@ -262,7 +261,7 @@ export function getDialogueVariationsByMood(
     ],
   };
 
-  return moodVariations[baseMood] || moodVariations.neutral;
+  return (moodVariations[baseMood] ?? moodVariations.neutral) as DialogueVariation[];
 }
 
 // --- Function: generateContextualGreeting ---
@@ -287,11 +286,13 @@ export function generateContextualGreeting(npc: string, playerState: DialogueSta
   ];
 
   if (deathCount > 5) {
-    return deathGreetings[deathCount % deathGreetings.length];
+    const idx = deathGreetings.length > 0 ? deathCount % deathGreetings.length : 0;
+    return deathGreetings[idx] ?? '...';
   }
 
   if (resetCount > 3) {
-    return resetGreetings[resetCount % resetGreetings.length];
+    const idx = resetGreetings.length > 0 ? resetCount % resetGreetings.length : 0;
+    return resetGreetings[idx] ?? '...';
   }
 
   if (trust > 7) {

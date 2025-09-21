@@ -98,7 +98,7 @@ export const CelebrationController: React.FC<CelebrationControllerProps> = ({ ch
 
       setState({
         activeCelebrations: filteredCelebrations,
-        currentCelebration,
+  currentCelebration: state.currentCelebration ?? null,
         isLoading: false,
         error: null,
       });
@@ -158,12 +158,15 @@ export const CelebrationController: React.FC<CelebrationControllerProps> = ({ ch
   return (
     <>
       {children}
-      {state.currentCelebration && (
-        <CelebrationOverlay
-          celebration={state.currentCelebration}
-          onDismiss={() => handleDismissCelebration(state.currentCelebration!.id)}
-        />
-      )}
+      {state.currentCelebration && (() => {
+        const celebration = state.currentCelebration!;
+        return (
+          <CelebrationOverlay
+            celebration={celebration}
+            onDismiss={() => handleDismissCelebration(celebration.id)}
+          />
+        );
+      })()}
     </>
   );
 };

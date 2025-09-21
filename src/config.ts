@@ -42,3 +42,10 @@ export const config = {
     forceSeason: import.meta.env.VITE_FORCE_SEASON as null | 'easter' | 'christmas' | 'may13',
   }),
 };
+
+// Feature flags (dev-gated switches)
+export const FEATURES = {
+  DEBUG_MENU_ENABLED: true,
+  DEMO_MODE_ENABLED: true,
+  MINI_QUESTS_ENABLED: true,
+};

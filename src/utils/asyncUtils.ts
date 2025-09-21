@@ -6,9 +6,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 
 // Common loading states
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-
-// Adding default React import for useAsyncCallback
+export interface BasicAsyncState {
   isLoading: boolean;
   error: string | null;
   data?: unknown;
@@ -305,7 +303,7 @@ export class AsyncCache<K, V> {
 export class BatchProcessor<T, R> {
   private batch: T[] = [];
   private timeout: ReturnType<typeof setTimeout> | null = null;
-  private resolvers: Array<(results: R[]) => void> = [];
+  private resolvers: Array<(result: R) => void> = [];
   private rejecters: Array<(error: Error) => void> = [];
 
   constructor(
@@ -318,8 +316,8 @@ export class BatchProcessor<T, R> {
     return new Promise<R>((resolve, reject) => {
       this.batch.push(item);
 
-      const resolverIndex = this.resolvers.length;
-      this.resolvers.push((results: R[]) => resolve(results[resolverIndex]));
+  // Push the resolver function; it will be called with the specific result for this item
+  this.resolvers.push((res: R) => resolve(res));
       this.rejecters.push(reject);
 
       if (this.batch.length >= this.batchSize) {
@@ -350,8 +348,17 @@ export class BatchProcessor<T, R> {
 
     try {
       const results = await this.processor(currentBatch);
-      currentResolvers.forEach((resolve, _index) => {
-        resolve(results);
+      // Resolve each queued promise with its corresponding result
+      currentResolvers.forEach((resolve, idx) => {
+        if (idx < results.length && results[idx] !== undefined) {
+          resolve(results[idx] as R);
+        } else if (results.length > 0 && results[0] !== undefined) {
+          // Fallback: resolve with first result if indexing misaligns
+          resolve(results[0] as R);
+        } else {
+          // As a last resort, throw to signal unexpected processor output
+          throw new Error('BatchProcessor: processor returned no results');
+        }
       });
     } catch (error) {
       const errorObj = error instanceof Error ? error : new Error(String(error));

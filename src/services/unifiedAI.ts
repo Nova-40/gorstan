@@ -135,7 +135,7 @@ export class UnifiedAIIntelligence {
           priority: aylaHint.urgency as any,
           content: enhancedHint,
           source: 'ayla',
-          followUp: aylaHint.followUp,
+          followUp: aylaHint.followUp ?? '',
           metadata: {
             confidence: 0.8,
             reasoning: 'Ayla guidance enhanced with miniquest awareness',
@@ -148,9 +148,9 @@ export class UnifiedAIIntelligence {
     return {
       type: 'hint',
       priority: aylaHint.urgency as any,
-      content: aylaHint.hintText,
+      content: aylaHint.hintText ?? '',
       source: 'ayla',
-      followUp: aylaHint.followUp,
+      followUp: aylaHint.followUp ?? '',
       metadata: {
         confidence: 0.7,
         reasoning: 'Standard Ayla guidance',
@@ -181,10 +181,10 @@ export class UnifiedAIIntelligence {
       );
 
       if (recommendations && recommendations.length > 0) {
-        const topRecommendation = recommendations[0];
+  const topRecommendation = recommendations[0]!;
 
-        // Frame miniquest guidance through Ayla's personality
-        const aylaFramedGuidance = await this.frameMiniquestInAylaVoice(topRecommendation, context);
+  // Frame miniquest guidance through Ayla's personality
+  const aylaFramedGuidance = await this.frameMiniquestInAylaVoice(topRecommendation, context);
 
         return {
           type: 'miniquest',
@@ -336,7 +336,7 @@ Ayla's guidance:`;
     dynamicResponse: AIGuidanceResponse | null,
     context: UnifiedAIContext,
   ): AIGuidanceResponse | null {
-    const responses = [aylaResponse, miniquestResponse, dynamicResponse].filter(Boolean);
+  const responses = [aylaResponse, miniquestResponse, dynamicResponse].filter(Boolean) as AIGuidanceResponse[];
     if (responses.length === 0) {
       return null;
     }
@@ -358,7 +358,7 @@ Ayla's guidance:`;
       return bConfidence - aConfidence;
     });
 
-    return responses[0];
+  return responses[0] ?? null;
   }
 
   /**

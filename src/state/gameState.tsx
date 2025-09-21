@@ -92,8 +92,9 @@ export const initialGameState: LocalGameState = {
   },
   history: [],
   currentRoomId: 'controlnexus',
-  previousRoomId: undefined,
+  // previousRoomId is optional; omit to avoid exactOptionalPropertyTypes conflicts
   roomMap: {},
+  // miniquestState is optional; start as an empty object only if needed by logic
   miniquestState: {},
   flags: {},
   npcsInRoom: [],
@@ -365,7 +366,7 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
     // --- Room Loading/Travel ---
     case 'LOAD_ROOM': {
       const payload = action.payload as { id: string; data: Room };
-      const updatedHistory = addRoomDescriptionToHistory(state.history, payload.data, payload.id);
+  const updatedHistory = addRoomDescriptionToHistory(state.history, payload.data ?? null, payload.id);
       return {
         ...state,
         currentRoomId: payload.id,
@@ -400,8 +401,8 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
         unlockAchievement('reached_final_zone');
       }
 
-      const newRoom = state.roomMap[roomId];
-      const updatedHistory = addRoomDescriptionToHistory(state.history, newRoom, roomId);
+  const newRoom = state.roomMap[roomId];
+  const updatedHistory = addRoomDescriptionToHistory(state.history, newRoom ?? null, roomId);
 
       // Trigger room entry events (including Morthos/Al encounter)
       let encounterFlag = false;
@@ -540,7 +541,7 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
               ? visitedRooms
               : [...visitedRooms, result.updates.currentRoomId],
           };
-          const newRoom = newState.roomMap[result.updates.currentRoomId];
+          const newRoom = newState.roomMap[result.updates.currentRoomId] ?? null;
           newState.history = addRoomDescriptionToHistory(
             newState.history,
             newRoom,
@@ -577,8 +578,8 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
     }
     case 'LOAD_SAVED_GAME': {
       const newRoomId = 'controlnexus';
-      const newRoom = state.roomMap[newRoomId];
-      const updatedHistory = addRoomDescriptionToHistory(state.history, newRoom, newRoomId);
+  const newRoom = state.roomMap[newRoomId];
+  const updatedHistory = addRoomDescriptionToHistory(state.history, newRoom ?? null, newRoomId);
 
       return {
         ...state,
@@ -589,8 +590,8 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
     }
     case 'LOAD_GAME_FROM_STORAGE': {
       const newRoomId = 'controlnexus';
-      const newRoom = state.roomMap[newRoomId];
-      const updatedHistory = addRoomDescriptionToHistory(state.history, newRoom, newRoomId);
+  const newRoom = state.roomMap[newRoomId];
+  const updatedHistory = addRoomDescriptionToHistory(state.history, newRoom ?? null, newRoomId);
 
       return {
         ...state,

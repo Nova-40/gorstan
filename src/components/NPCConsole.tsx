@@ -23,6 +23,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { getNPCResponseWithState } from '../npcs/npcMemory';
 import { getEnhancedAylaResponse } from '../npc/ayla/aylaResponder';
 import { getEnhancedNPCResponse } from '../utils/enhancedNPCResponse';
+import { generateNpcReply } from '../utils/aiAdapter';
+import { engine } from '../ai';
+import { getPersona } from '../npc/personas';
 import { formatDialogue } from '../utils/playerNameUtils';
 import { MessageCircle, X, Send, User } from 'lucide-react';
 import type { NPC } from '../types/NPCTypes';
@@ -343,7 +346,7 @@ const NPCConsole: React.FC<NPCConsoleProps> = ({
 
         const greeting = greetings[Math.floor(Math.random() * greetings.length)];
         // Format greeting with player name
-        const formattedGreeting = formatDialogue(greeting, state);
+  const formattedGreeting = formatDialogue(greeting ?? '', state);
         const welcomeMessage: DialogueMessage = {
           id: `greeting-${Date.now()}`,
           speaker: 'npc',
@@ -372,11 +375,8 @@ const NPCConsole: React.FC<NPCConsoleProps> = ({
       if (npc.id === 'ayla') {
         (async () => {
           try {
-            const enhancedSilenceResponse = await getEnhancedNPCResponse('ayla', '', state);
-            const silenceResponse =
-              enhancedSilenceResponse?.text ||
-              getEnhancedAylaResponse('', state) ||
-              'Silence is a choice. Just not always a good one.';
+            const adapterSilence = await generateNpcReply('ayla', '', state);
+            let silenceResponse = adapterSilence || getEnhancedAylaResponse('', state) || 'Silence is a choice. Just not always a good one.';
             const formattedResponse = formatDialogue(silenceResponse, state);
             setMessages((prev) => [
               ...prev,
@@ -430,16 +430,12 @@ const NPCConsole: React.FC<NPCConsoleProps> = ({
       let responseText: string;
 
       try {
-        // Try enhanced response system first (now async with AI)
-        const enhancedResponse = await getEnhancedNPCResponse(npc.id.toLowerCase(), trimmed, state);
-
-        if (enhancedResponse) {
-          responseText = enhancedResponse.text;
+        const adapterResp = await generateNpcReply(npc.id.toLowerCase(), trimmed, state);
+        if (adapterResp) {
+          responseText = adapterResp;
         } else if (npc.id === 'ayla') {
-          // Fallback to specific Ayla responder for backwards compatibility
           responseText = getEnhancedAylaResponse(trimmed, state);
         } else {
-          // Fallback to existing memory system
           responseText = getNPCResponseWithState(npc, trimmed, state);
         }
       } catch (error) {

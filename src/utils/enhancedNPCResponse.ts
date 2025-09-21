@@ -25,7 +25,7 @@ import {
   getContextualGreeting,
   getIntelligentFallback,
 } from './npcKnowledgeBase';
-import { groqAI } from '../services/groqAI';
+import { generateNpcReply } from './aiAdapter';
 
 export interface EnhancedNPCResponse {
   text: string;
@@ -46,7 +46,7 @@ export async function getEnhancedNPCResponse(
 ): Promise<EnhancedNPCResponse> {
   // Try Groq AI first for dynamic, intelligent responses
   try {
-    const aiResponse = await groqAI.generateNPCResponse(npcId, playerInput, state);
+    const aiResponse = await generateNpcReply(npcId, playerInput, state);
     if (aiResponse) {
       console.log(`[Enhanced NPC] 🤖 AI response for ${npcId}`);
       return {
@@ -54,7 +54,7 @@ export async function getEnhancedNPCResponse(
         mood: detectMoodFromText(aiResponse),
         relationshipChange: calculateAIRelationshipChange(aiResponse),
         followUpTopics: extractTopicsFromResponse(aiResponse),
-        context: { source: 'groq-ai', model: 'llama-3.3-70b' },
+        context: { source: 'ai-adapter' },
       };
     }
   } catch (error: any) {

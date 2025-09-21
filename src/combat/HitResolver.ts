@@ -247,7 +247,7 @@ export const DamageUtils = {
     base,
     element: Element.Physical,
     sourceId,
-    tags,
+    tags: tags ?? [],
   }),
 
   /** Create a fire damage packet */

@@ -5,6 +5,7 @@
 */
 
 import { startDemo } from '../demo/demoRouter';
+import { demoService } from '../demo/DemoModeService';
 
 const IDLE_MS = 150_000; // 2.5 minutes
 let idleTimer: number | null = null;
@@ -70,7 +71,7 @@ function resetTimer() {
     const demoEvent = new CustomEvent('demo-start');
     window.dispatchEvent(demoEvent);
 
-    startDemo('trials-of-gorstan', true);
+  demoService.start('trials-of-gorstan');
   }, IDLE_MS);
 
   // Start the visual countdown
@@ -112,5 +113,5 @@ export function triggerUnattendedDemo() {
   if (idleTimer) {
     window.clearTimeout(idleTimer);
   }
-  startDemo('trials-of-gorstan', true);
+  demoService.start('trials-of-gorstan');
 }

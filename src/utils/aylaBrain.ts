@@ -19,6 +19,7 @@
 
 import type { GameState } from '../state/gameState';
 import { getZoneForRoom } from './roomUtils';
+import { pickRandom } from './random';
 
 /**
  * Returns a special edge-case or meta response for Ayla, or null if no match.
@@ -145,5 +146,9 @@ export function getAylaResponse(input: string, state: GameState): string {
     'Your question makes me consider new connections. Unfortunately, none formed.',
   ];
 
-  return fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
+  try {
+    return pickRandom(fallbackResponses);
+  } catch (e) {
+    return fallbackResponses[0]!;
+  }
 }

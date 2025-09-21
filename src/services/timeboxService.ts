@@ -122,13 +122,17 @@ export class TimeboxService {
     if (remainingMinutes <= 0) {
       return 'critical';
     }
-    if (thresholds.length >= 3 && remainingMinutes <= thresholds[2]) {
+    const t0 = thresholds[0];
+    const t1 = thresholds[1];
+    const t2 = thresholds[2];
+
+    if (thresholds.length >= 3 && typeof t2 === 'number' && remainingMinutes <= t2) {
       return 'critical';
     }
-    if (thresholds.length >= 2 && remainingMinutes <= thresholds[1]) {
+    if (thresholds.length >= 2 && typeof t1 === 'number' && remainingMinutes <= t1) {
       return 'urgent';
     }
-    if (thresholds.length >= 1 && remainingMinutes <= thresholds[0]) {
+    if (thresholds.length >= 1 && typeof t0 === 'number' && remainingMinutes <= t0) {
       return 'early';
     }
 

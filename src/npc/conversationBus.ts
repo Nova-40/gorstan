@@ -25,6 +25,7 @@ import { getVoiceForNPC, recordConversation } from './profiles';
 import { stylize, generateNPCResponse } from './style';
 import { CO_LOCATED_ONLY, CROSS_ROOM_SPEAKERS, MAX_THREAD_EXCHANGES } from './registry';
 import { getEnhancedNPCResponse } from '../utils/enhancedNPCResponse';
+import { generateNpcReply } from '../utils/aiAdapter';
 
 type Dispatch = (action: any) => void;
 
@@ -68,7 +69,7 @@ export function sendNPCMessage(
     to,
     text: rawText,
     ts: Date.now(),
-    topic: opts.topic,
+  topic: opts.topic ?? '',
     visibleToPlayer: opts.visibleToPlayer ?? state.overhearNPCBanter ?? true,
   };
 
@@ -134,17 +135,14 @@ function scheduleNPCReply(
 
       // Generate response using enhanced NPC system or fallback
       let responseText: string;
-      const promptFromNPC = buildPromptFromNPC(from.id, topic);
+  const promptFromNPC = buildPromptFromNPC(from.id, topic ?? '');
 
-      // Try enhanced system first (now async)
+      // Try enhanced system first: groqAI -> engine.reply fallback
       try {
-        const enhancedResponse = await getEnhancedNPCResponse(to.id, promptFromNPC, state);
-        if (enhancedResponse) {
-          responseText = enhancedResponse.text;
-        } else {
-          // Fallback to style-based generation
-          responseText = generateNPCResponse(from.id, to.id, topic, promptFromNPC);
-        }
+        const adapterReply = await generateNpcReply(to.id, promptFromNPC, state, async (id, input, s) =>
+          generateNPCResponse(from.id, to.id, topic, input),
+        );
+        responseText = adapterReply ?? generateNPCResponse(from.id, to.id, topic, promptFromNPC);
       } catch (error) {
         console.warn('Enhanced conversation response failed, using fallback:', error);
         responseText = generateNPCResponse(from.id, to.id, topic, promptFromNPC);
@@ -155,7 +153,7 @@ function scheduleNPCReply(
       const styledResponse = stylize(responseText, voice);
 
       // Send the reply
-      sendNPCMessage(
+          sendNPCMessage(
         { kind: 'NPC', id: to.id },
         { kind: 'NPC', id: from.id },
         styledResponse,
@@ -163,7 +161,7 @@ function scheduleNPCReply(
         dispatch,
         roomId,
         {
-          topic,
+          topic: topic ?? '',
           visibleToPlayer: state.overhearNPCBanter ?? true,
         },
       );

@@ -23,6 +23,7 @@ import { TerminalMessage } from '../components/TerminalConsole';
 import { handleCrossingInteraction, resetCrossingState } from './crossingController';
 import { searchForTraps, canPlayerDisarmTrap } from './trapDetection';
 import { LocalGameState } from '../state/gameState';
+import { isDemoRunning } from '../demo/state';
 
 /**
  * CommandParserParams interface for processing commands
@@ -89,13 +90,28 @@ export function processCommand({
 
   const resolvedInput = aliases[input.toLowerCase().trim()] || input.toLowerCase().trim();
   const commandParts = resolvedInput.split(' ');
-  const verb = commandParts[0];
-  const noun = commandParts.slice(1).join(' ');
+  const verb = commandParts[0] ?? '';
+  const noun = commandParts.slice(1).join(' ') ?? '';
 
   const messages: TerminalMessage[] = [];
   let updates: Partial<LocalGameState> = {};
 
   switch (verb) {
+    // Demo-safe short-circuits
+    case 'speak':
+    case 'talk':
+    case 'ask':
+      if (isDemoRunning()) {
+        return { messages: [{ text: 'During the demo you cannot start conversations. Press ESC to stop the demo.', type: 'system' }] };
+      }
+      break;
+    case 'attack':
+    case 'fight':
+    case 'hit':
+      if (isDemoRunning()) {
+        return { messages: [{ text: 'Combat is disabled during the demo.', type: 'system' }] };
+      }
+      break;
     case 'go':
     case 'move': {
       const direction = noun;
@@ -120,7 +136,7 @@ export function processCommand({
           }
         }
 
-        return { messages, updates };
+  return Object.keys(updates).length > 0 ? { messages, updates } : { messages };
       }
       return { messages: [{ text: "You can't go that way.", type: 'error' }] };
     }
@@ -223,6 +239,7 @@ export function processCommand({
         });
       }
 
+      // End of 'look' case: return accumulated messages
       return { messages };
     }
 
@@ -486,17 +503,22 @@ export function processCommand({
                         : 'system',
           })) || [];
 
-        return {
-          messages,
-          updates: crossingResult.updates,
-        };
+        const updatesObj = crossingResult.updates;
+        if (updatesObj && Object.keys(updatesObj).length > 0) {
+          return { messages, updates: updatesObj };
+        }
+
+        return { messages };
       }
 
       return { messages: [{ text: "I don't understand that command.", type: 'error' }] };
     }
   }
-}
 
+  // Fallback: ensure function returns a CommandResult in all code paths
+  // (should never be reached because switch handles all verbs)
+  return { messages };
+}
 /**
  * Processes room entry logic
  */

@@ -65,6 +65,9 @@ export class UtilityAI {
     // Sort by score and execute best behavior
     scoredBehaviors.sort((a, b) => b.score - a.score);
     const chosenBehavior = scoredBehaviors[0];
+    if (!chosenBehavior) {
+      return;
+    }
 
     this.executeBehavior(chosenBehavior, context);
     this.lastDecisionTime.set(actor.id, now);
@@ -78,7 +81,8 @@ export class UtilityAI {
     const enemies = allActors.filter((a) => a.faction !== actor.faction && a.hp > 0);
     const player = enemies.find((a) => a.id === 'player');
 
-    return { actor, allies, enemies, player };
+  // Cast to AIContext to avoid accidental exactOptionalPropertyTypes mismatches
+  return { actor, allies, enemies, player } as AIContext;
   }
 
   /** Get behaviors for AI archetype */
@@ -142,7 +146,13 @@ export class UtilityAI {
         score = 0;
     }
 
-    return { behavior, score, target };
+    // Avoid including `target` property when it's undefined so exactOptionalPropertyTypes
+    // won't complain about `target: undefined` in object literals.
+    if (target) {
+      return { behavior, score, target };
+    }
+
+    return { behavior, score };
   }
 
   /** Score melee attack behavior */

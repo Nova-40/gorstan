@@ -84,11 +84,11 @@ function handleBookQuery(input: string): string | null {
   for (const pattern of bookPatterns) {
     const match = query.match(pattern);
     if (match) {
-      const bookQuery = match[1];
-      const response = bookLoreService.getAylaResponse(bookQuery);
+  const bookQuery = String(match[1] ?? '');
+  const response = bookLoreService.getAylaResponse(bookQuery);
 
-      if (response) {
-        return applyAylaPersonality(response.response, 'book-discussion', {
+      if (response && response.response) {
+        return applyAylaPersonality(response.response ?? '', 'book-discussion', {
           allowCheekyAside: true,
         });
       }
@@ -103,8 +103,10 @@ function handleBookQuery(input: string): string | null {
     query.includes('author')
   ) {
     const response = bookLoreService.getAylaResponse(query);
-    if (response) {
-      return applyAylaPersonality(response.response, 'book-discussion', { allowCheekyAside: true });
+    if (response && response.response) {
+      return applyAylaPersonality(String(response.response ?? ''), 'book-discussion', {
+        allowCheekyAside: true,
+      });
     }
 
     // Fallback for unrecognized book queries
@@ -147,7 +149,7 @@ function getGenericBookResponse(): string {
     'Reading opens so many doors. What literary adventures have you been on recently?',
   ];
 
-  const response = responses[Math.floor(Math.random() * responses.length)];
+  const response = responses[Math.floor(Math.random() * responses.length)] ?? '';
   return applyAylaPersonality(response, 'book-discussion');
 }
 
@@ -186,7 +188,12 @@ function getCoreAylaResponse(input: string, state: GameState): string {
     "Your curiosity is admirable, even when it leads to areas I can't illuminate. Keep asking!",
   ];
 
-  return contextualFallbacks[Math.floor(Math.random() * contextualFallbacks.length)];
+  try {
+    const { pickRandom } = require('../../utils/random');
+    return pickRandom(contextualFallbacks);
+  } catch (e) {
+    return contextualFallbacks[0]!;
+  }
 }
 
 /**

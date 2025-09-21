@@ -126,7 +126,8 @@ export const getCurrentZone = (state: GameState): string => {
 
   // Variable declaration
   const zoneMatch = currentRoom.match(/^([a-zA-Z]+Zone)/);
-  return zoneMatch ? zoneMatch[1] : '';
+  const zone = String(zoneMatch?.[1] ?? '');
+  return zone;
 };
 
 export const isInZone = (state: GameState, zone: string): boolean => {

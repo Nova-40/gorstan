@@ -49,10 +49,10 @@ export default function BaseDialog({ title, children, onClose, labelledById }: B
         const last = focusables[focusables.length - 1];
         if (e.shiftKey && document.activeElement === first) {
           e.preventDefault();
-          last.focus();
+          if (last) last.focus();
         } else if (!e.shiftKey && document.activeElement === last) {
           e.preventDefault();
-          first.focus();
+          if (first) first.focus();
         }
       }
     };

@@ -35,11 +35,12 @@ export function useGroupConversation(): GroupConversationState {
 
     // Single NPC conversation
     if (relevantNpcs.length <= 1) {
+      const maybePrimary = relevantNpcs[0]?.id;
       return {
         hasGroupConversation: false,
         groupNpcs: relevantNpcs,
         isCompetitiveGroup: false,
-        primaryNpcId: relevantNpcs[0]?.id,
+        ...(maybePrimary ? { primaryNpcId: maybePrimary } : {}),
         conversationType: 'single',
       };
     }
@@ -69,7 +70,7 @@ export function useGroupConversation(): GroupConversationState {
       hasGroupConversation: true,
       groupNpcs: relevantNpcs,
       isCompetitiveGroup: isCompetitive,
-      primaryNpcId,
+      ...(primaryNpcId ? { primaryNpcId } : {}),
       conversationType: isCompetitive ? 'competitive' : 'group',
     };
   }, [state.npcsInRoom]);
@@ -140,7 +141,7 @@ export function useConversationTriggers(): {
     return {
       shouldTriggerGroupGreeting,
       shouldShowCompetitiveDialogue,
-      triggerReason,
+      ...(triggerReason ? { triggerReason } : {}),
     };
   }, [groupState, state.currentRoomId]);
 }

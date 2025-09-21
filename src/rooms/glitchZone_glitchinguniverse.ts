@@ -325,6 +325,15 @@ const glitchinguniverse: Room = {
       },
     },
   },
+
+  // Quantum mini-quest trigger (dev-playable)
+  quantumMiniQuest: {
+  mode: 'random',
+  ids: ['quantummirror','dominicCyclotron','atomWeaver'],
+    seedHint: 'glitchinguniverse',
+    cooldownSec: 60,
+    reusable: true,
+  },
 };
 
 export default glitchinguniverse;

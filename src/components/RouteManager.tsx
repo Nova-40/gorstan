@@ -56,20 +56,23 @@ function routeManagerReducer(
       return {
         ...state,
         currentRoute: action.route,
-        progress: action.progress || {
-          routeId: action.route.id,
-          currentNodeIndex: 0,
-          currentNodeId: action.route.nodes[0]?.id || '',
-          completedNodes: [],
-          skippedNodes: [],
-          elapsedTimeMs: 0,
-          timeStarted: Date.now(),
-          lastSaved: Date.now(),
-          objectives: {
-            completed: [],
-            total: action.route.nodes.map((node) => node.id),
-          },
-        },
+        progress:
+          action.progress !== undefined && action.progress !== null
+            ? action.progress
+            : {
+                routeId: action.route.id,
+                currentNodeIndex: 0,
+                currentNodeId: action.route.nodes[0]?.id || '',
+                completedNodes: [],
+                skippedNodes: [],
+                elapsedTimeMs: 0,
+                timeStarted: Date.now(),
+                lastSaved: Date.now(),
+                objectives: {
+                  completed: [],
+                  total: action.route.nodes.map((node) => node.id),
+                },
+              },
         isActive: true,
         isLoading: false,
         error: null,
@@ -100,13 +103,13 @@ function routeManagerReducer(
       };
 
     case 'EXIT_ROUTE':
+      // Avoid assigning undefined explicitly to timeRemaining; omit it entirely
       return {
         ...state,
         currentRoute: null,
         progress: null,
         isActive: false,
         isLoading: false,
-        timeRemaining: undefined,
       };
 
     case 'SET_ERROR':
@@ -187,7 +190,11 @@ export const RouteManagerProvider: React.FC<RouteManagerProviderProps> = ({
         }
       }
 
-      dispatch({ type: 'ROUTE_LOADED', route, progress: savedProgress || undefined });
+      dispatch(
+        savedProgress
+          ? { type: 'ROUTE_LOADED', route, progress: savedProgress }
+          : { type: 'ROUTE_LOADED', route },
+      );
       onRouteStart?.(route);
     } catch (error) {
       dispatch({

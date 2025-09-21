@@ -10,6 +10,7 @@
 
 // Groq SDK will be imported dynamically inside the constructor
 import type { LocalGameState } from '../state/gameState';
+import { isDemoRunning } from '../demo/state';
 
 interface GroqConfig {
   enabled: boolean;
@@ -47,6 +48,11 @@ class GroqAIService {
     playerMessage: string,
     gameState: LocalGameState,
   ): Promise<string | null> {
+    // During demo mode, avoid calling external AI services to prevent unexpected behavior
+    if (isDemoRunning()) {
+      console.log('[Groq AI] Skipping AI call during demo mode');
+      return null;
+    }
     // Filter out fake group conversation NPCs
     if (npcId === 'group_conversation' || npcId === 'group_chat') {
       console.log(`[Groq AI] ⚠️ Ignoring fake group NPC: ${npcId}`);
@@ -345,6 +351,10 @@ class GroqAIService {
     triggerMessage: string,
     gameState: LocalGameState,
   ): Promise<string | null> {
+    if (isDemoRunning()) {
+      console.log('[Groq AI] Skipping NPC-to-NPC AI call during demo mode');
+      return null;
+    }
     // Filter out fake group conversation NPCs
     if (
       speakingNpcId === 'group_conversation' ||
@@ -528,7 +538,8 @@ class GroqAIService {
   }
 
   private getTodayDate(): string {
-    return new Date().toISOString().split('T')[0];
+  // Ensure a string is always returned (defensive coalesce)
+  return new Date().toISOString().split('T')[0] ?? '';
   }
 
   private resetDailyCountIfNeeded(): void {
@@ -559,10 +570,10 @@ class GroqAIService {
 
     // Get the most recent conversation
     const recentConv = npcConversations[npcConversations.length - 1];
-    const recentExchanges = recentConv.exchanges.slice(-2);
+    const recentExchanges = (recentConv?.exchanges ?? []).slice(-2);
 
     return recentExchanges
-      .map((exchange: any) => `${exchange.from.id}: "${exchange.text}"`)
+      .map((exchange: any) => `${exchange?.from?.id ?? 'unknown'}: "${exchange?.text ?? ''}"`)
       .join(' | ');
   }
 

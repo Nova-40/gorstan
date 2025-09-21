@@ -231,8 +231,9 @@ const RavenInteraction: React.FC<RavenInteractionProps> = ({ onComplete, playerN
 
     // Display entries gradually with glitch effects
     intervalRef.current = setInterval(() => {
-      if (displayedEntries < REDACTED_REGISTER.length) {
-        const entry = REDACTED_REGISTER[displayedEntries];
+  if (displayedEntries < REDACTED_REGISTER.length) {
+  // Guard lookup: provide a safe default entry to satisfy TypeScript strict checks
+  const entry = REDACTED_REGISTER[displayedEntries] ?? { name: 'Unknown', alias: '', reason: '' };
 
         // Add some glitch effects randomly
         const isGlitched = Math.random() < 0.2;

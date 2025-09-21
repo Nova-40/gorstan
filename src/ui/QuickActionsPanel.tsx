@@ -87,6 +87,11 @@ export const CombatActionsPanel: React.FC<QuickActionsPanelProps> = ({ isVisible
 
   const handleSpellCast = (spellId: string) => {
     const currentRoom = state.roomMap[state.currentRoomId];
+    if (!currentRoom) {
+      console.warn('[QuickActionsPanel] handleSpellCast called with no current room');
+      return;
+    }
+
     const result = processCommand({
       input: `cast ${spellId}`,
       currentRoom,
@@ -121,6 +126,11 @@ export const CombatActionsPanel: React.FC<QuickActionsPanelProps> = ({ isVisible
 
   const handleMeleeAttack = () => {
     const currentRoom = state.roomMap[state.currentRoomId];
+    if (!currentRoom) {
+      console.warn('[QuickActionsPanel] handleMeleeAttack called with no current room');
+      return;
+    }
+
     const result = processCommand({
       input: 'melee',
       currentRoom,
@@ -153,6 +163,11 @@ export const CombatActionsPanel: React.FC<QuickActionsPanelProps> = ({ isVisible
 
   const handleParry = () => {
     const currentRoom = state.roomMap[state.currentRoomId];
+    if (!currentRoom) {
+      console.warn('[QuickActionsPanel] handleParry called with no current room');
+      return;
+    }
+
     const result = processCommand({
       input: 'parry',
       currentRoom,
@@ -185,6 +200,11 @@ export const CombatActionsPanel: React.FC<QuickActionsPanelProps> = ({ isVisible
 
   const handleDodge = () => {
     const currentRoom = state.roomMap[state.currentRoomId];
+    if (!currentRoom) {
+      console.warn('[QuickActionsPanel] handleDodge called with no current room');
+      return;
+    }
+
     const result = processCommand({
       input: 'dodge',
       currentRoom,
