@@ -190,9 +190,9 @@ const TeleportationMenu: React.FC<TeleportationMenuProps> = ({
   // JSX return block or main return
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-      <div className="bg-gray-900 border border-cyan-400 rounded-lg p-6 max-w-4xl max-h-96 overflow-hidden">
+  <div className="bg-gray-900 border border-[var(--gorstan-green)] rounded-lg p-6 max-w-4xl max-h-96 overflow-hidden">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-cyan-300">
+          <h2 className="text-xl font-bold text-crt-green">
             {hasRemoteControl ? '📱 Remote Control Navigation' : '🔮 Navigation Crystal'}
           </h2>
           <UIButton onClick={onClose} variant="ghost" className="text-red-400 hover:text-red-300">

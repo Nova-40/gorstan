@@ -24,11 +24,8 @@ const greasystoreroom: Room = {
   zone: 'newyorkZone',
   title: 'Burger Joint Storeroom',
   description: [
-    'You step into a cramped storeroom behind the burger joint kitchen. The air is thick with the lingering aromas of cooking oil and spices, and everything seems to have a subtle sheen of grease.',
-    'Industrial shelving lines the walls, holding restaurant supplies, boxes of napkins, and various kitchen equipment. The concrete floor is stained from years of food service operations.',
-    "Despite the greasy atmosphere, Chef Tony clearly keeps this space organized and functional. He's made it clear that anything here is yours to take if you need it.",
-    'Your eye is drawn to several items scattered on the floor near the back - they seem oddly out of place in a restaurant storage room.',
-  ],
+  "You step into a cramped storeroom behind the burger joint kitchen. The air is thick with the lingering aromas of cooking oil and spices, and everything seems to have a subtle sheen of grease. Industrial shelving lines the walls, holding restaurant supplies, boxes of napkins, and various kitchen equipment. The concrete floor is stained from years of food service operations. Despite the greasy atmosphere, Chef Tony clearly keeps this space organized and functional. He's made it clear that anything here is yours to take if you need it. Your eye is drawn to several items scattered on the floor near the back - they seem oddly out of place in a restaurant storage room.",
+],
   image: 'newyorkZone_storeroom.png',
   ambientAudio: 'storeroom_ambience.mp3',
 
@@ -50,49 +47,55 @@ const greasystoreroom: Room = {
   },
 
   items: [
-    'greasy_napkin_with_plans',
-    'batteries',
-    'gold_coin',
-    'restaurant_supplies',
-    'cooking_oil_containers',
-    'spare_napkins',
-    'kitchen_equipment',
+    { id: 'greasy_napkin_with_plans', name: 'Greasy Napkin With Plans' },
+    { id: 'batteries', name: 'Batteries' },
+    { id: 'gold_coin', name: 'Gold Coin' },
+    { id: 'restaurant_supplies', name: 'Restaurant Supplies' },
+    { id: 'cooking_oil_containers', name: 'Cooking Oil Containers' },
+    { id: 'spare_napkins', name: 'Spare Napkins' },
+    { id: 'kitchen_equipment', name: 'Kitchen Equipment' }
   ],
 
   interactables: {
     greasy_napkin_with_plans: {
-      description:
-        'A used napkin that looks disgusting at first glance, but when you turn it over, you discover intricate quantum physics diagrams and equations written in precise handwriting.',
+      description: [
+  "A used napkin that looks disgusting at first glance, but when you turn it over, you discover intricate quantum physics diagrams and equations written in precise handwriting.",
+],
       actions: ['examine', 'pick_up', 'study_diagrams', 'clean_carefully'],
       requires: [],
     },
     batteries: {
-      description:
-        'A pack of high-quality alkaline batteries, still in their packaging. These could power various electronic devices.',
+      description: [
+  "A pack of high-quality alkaline batteries, still in their packaging. These could power various electronic devices.",
+],
       actions: ['examine', 'pick_up', 'test_power_level'],
       requires: [],
     },
     gold_coin: {
-      description:
-        "A genuine gold coin that gleams despite the greasy environment. It's clearly valuable and completely out of place in a burger joint storeroom.",
+      description: [
+  "A genuine gold coin that gleams despite the greasy environment. It's clearly valuable and completely out of place in a burger joint storeroom.",
+],
       actions: ['examine', 'pick_up', 'assess_value', 'study_markings'],
       requires: [],
     },
     restaurant_supplies: {
-      description:
-        'Standard restaurant equipment and supplies - nothing extraordinary, but Chef Tony said to help yourself.',
+      description: [
+  "Standard restaurant equipment and supplies - nothing extraordinary, but Chef Tony said to help yourself.",
+],
       actions: ['examine', 'browse', 'take_what_needed'],
       requires: [],
     },
     industrial_shelving: {
-      description:
-        'Heavy-duty metal shelving units holding various restaurant supplies and equipment.',
+      description: [
+  "Heavy-duty metal shelving units holding various restaurant supplies and equipment.",
+],
       actions: ['examine', 'search_shelves', 'organize'],
       requires: [],
     },
     greasy_surfaces: {
-      description:
-        'Everything in here has that characteristic restaurant kitchen coating of cooking oils and food residue.',
+      description: [
+  "Everything in here has that characteristic restaurant kitchen coating of cooking oils and food residue.",
+],
       actions: ['examine', 'clean_hands', 'accept_greasiness'],
       requires: [],
     },
@@ -170,17 +173,23 @@ const greasystoreroom: Room = {
 
   secrets: {
     quantum_plans_significance: {
-      description: 'The true value and application of the quantum diagrams on the napkin',
+      description: [
+  "The true value and application of the quantum diagrams on the napkin",
+],
       requirements: ['study quantum diagrams thoroughly', 'understand scientific notation'],
       rewards: ['quantum_physics_knowledge', 'librarian_quest_item'],
     },
     gold_coin_origin: {
-      description: 'How a valuable gold coin ended up in a burger joint storeroom',
+      description: [
+  "How a valuable gold coin ended up in a burger joint storeroom",
+],
       requirements: ['examine gold coin thoroughly', 'study markings'],
       rewards: ['coin_history_knowledge', 'value_assessment'],
     },
     chef_connections: {
-      description: 'Why Chef Tony has such unusual and valuable items in his storeroom',
+      description: [
+  "Why Chef Tony has such unusual and valuable items in his storeroom",
+],
       requirements: ['explore thoroughly', 'appreciate generosity'],
       rewards: ['underground_network_understanding', 'chef_background_knowledge'],
     },
@@ -188,8 +197,9 @@ const greasystoreroom: Room = {
 
   customActions: {
     study_quantum_napkin: {
-      description:
-        "Carefully examine the quantum physics diagrams despite the napkin's greasy condition",
+      description: [
+  "Carefully examine the quantum physics diagrams despite the napkin's greasy condition",
+],
       requirements: ['pick up greasy_napkin_with_plans'],
       effects: [
         'understand_librarian_value',
@@ -198,7 +208,9 @@ const greasystoreroom: Room = {
       ],
     },
     collect_valuable_items: {
-      description: 'Gather the gold coin, batteries, and quantum napkin',
+      description: [
+  "Gather the gold coin, batteries, and quantum napkin",
+],
       requirements: ['chef_authorization'],
       effects: [
         'gain_valuable_resources',
@@ -207,8 +219,9 @@ const greasystoreroom: Room = {
       ],
     },
     thank_chef_mentally: {
-      description:
-        "Appreciate Chef Tony's incredible generosity in letting you take these valuable items",
+      description: [
+  "Appreciate Chef Tony's incredible generosity in letting you take these valuable items",
+],
       requirements: ['examine all valuable items'],
       effects: ['gain_gratitude', 'understand_network_value', 'strengthen_chef_relationship'],
     },

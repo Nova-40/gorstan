@@ -182,6 +182,9 @@ export function onGameEvent(
 }
 
 // Check for conversation opportunities periodically
+// Use a simple module-level weak map to track conversation checks for LocalGameState
+const conversationCheckMap = new WeakMap<LocalGameState, number>();
+
 export function periodicConversationCheck(
   state: LocalGameState,
   dispatch: any,
@@ -189,13 +192,13 @@ export function periodicConversationCheck(
 ): void {
   // Run every 2 minutes when player is active
   const now = Date.now();
-  const lastCheck = (state as any)._lastConversationCheck || 0;
+  const lastCheck = conversationCheckMap.get(state) ?? 0;
 
   if (now - lastCheck < 120000) {
     return;
-  } // 2 minute cooldown
+  }
 
-  (state as any)._lastConversationCheck = now;
+  conversationCheckMap.set(state, now);
 
   // Various triggers
   if (isPlayerStuck(state, roomId)) {

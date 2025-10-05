@@ -24,10 +24,8 @@ const londonhub: Room = {
   zone: 'londonZone',
   title: 'Interdimensional London Hub',
   description: [
-    "You stand in what looks almost exactly like Canary Wharf tube station, but something is fundamentally different. The familiar curved walls and industrial lighting are all there, but where the tracks should be, there's only smooth, polished floor extending into shadowed archways.",
-    'Multiple doorways line the platform walls, each one sliding open with a soft hiss as you approach, revealing glimpses of impossibly varied destinations beyond. Some doors show glimpses of alien skies, others reveal familiar but subtly wrong versions of London streets.',
-    'The electronic departure boards flicker constantly, displaying destinations that shouldn\'t exist: "Platform ∞ - All Realities", "Platform Ω - Temporal Nexus", "Platform ? - [DESTINATION UNKNOWN]".',
-    'Most remarkably, a working escalator rises upward at the far end of the station. Looking up, you can see it gradually transforms from this interdimensional space into what appears to be the real Canary Wharf station above.',
+    "You stand in what looks almost exactly like Canary Wharf tube station, but something is fundamentally different. The familiar curved walls and industrial lighting are all there, but where the tracks should be, there's only smooth, polished floor extending into shadowed archways. Multiple doorways line the platform walls, each one sliding open with a soft hiss as you approach, revealing glimpses of impossibly varied destinations beyond. Some doors show glimpses of alien skies, others reveal familiar but subtly wrong versions of London streets. The electronic departure boards flicker constantly, displaying destinations that make no sense: Platform ∞ - All Realities, Platform Ω - Temporal Nexus.",
+    "Most remarkably, a working escalator rises upward at the far end of the station. Looking up, you can see it gradually transforms from this interdimensional space into what appears to be the real Canary Wharf station above.",
   ],
   image: 'londonZone_londonhub.png',
   ambientAudio: 'interdimensional_station.mp3',
@@ -55,47 +53,53 @@ const londonhub: Room = {
   },
 
   items: [
-    'oyster_card_dimensional',
-    'travel_pass_multiverse',
-    'platform_map_fragment',
-    'reality_anchor_token',
-    'emergency_whistle',
+    { id: 'oyster_card_dimensional', name: 'Dimensional Oyster Card' },
+    { id: 'travel_pass_multiverse', name: 'Multiverse Travel Pass' },
+    { id: 'platform_map_fragment', name: 'Platform Map Fragment' },
+    { id: 'reality_anchor_token', name: 'Reality Anchor Token' },
+    { id: 'emergency_whistle', name: 'Emergency Whistle' }
   ],
 
   interactables: {
     escalator: {
-      description:
-        'A working escalator that rises toward the real Canary Wharf station above. The transition from interdimensional hub to normal reality is visible as you look up.',
+      description: [
+  "A working escalator that rises toward the real Canary Wharf station above. The transition from interdimensional hub to normal reality is visible as you look up.",
+],
       actions: ['examine', 'ride', 'look_up'],
       requires: [],
     },
     departure_boards: {
-      description:
-        'Electronic displays that constantly flicker and change, showing impossible destinations across the multiverse.',
+      description: [
+  "Electronic displays that constantly flicker and change, showing impossible destinations across the multiverse.",
+],
       actions: ['examine', 'read', 'focus_on'],
       requires: [],
     },
     dimensional_doors: {
-      description:
-        'Multiple doorways that open automatically as you approach, each revealing a different reality beyond.',
+      description: [
+  "Multiple doorways that open automatically as you approach, each revealing a different reality beyond.",
+],
       actions: ['examine', 'approach', 'peer_through', 'enter'],
       requires: ['travel_pass_multiverse'],
     },
     platform_edge: {
-      description:
-        "Where the railway tracks should be, there's only smooth floor leading to mysterious archways.",
+      description: [
+  "Where the railway tracks should be, there's only smooth floor leading to mysterious archways.",
+],
       actions: ['examine', 'look_down', 'step_onto'],
       requires: [],
     },
     warning_signs: {
-      description:
-        'Familiar London Underground safety signs, but with additional warnings about dimensional travel.',
+      description: [
+  "Familiar London Underground safety signs, but with additional warnings about dimensional travel.",
+],
       actions: ['examine', 'read'],
       requires: [],
     },
     station_announcements: {
-      description:
-        'The familiar London Underground announcement system, but the messages are distinctly otherworldly.',
+      description: [
+  "The familiar London Underground announcement system, but the messages are distinctly otherworldly.",
+],
       actions: ['listen', 'focus_on'],
       requires: [],
     },
@@ -173,17 +177,23 @@ const londonhub: Room = {
 
   secrets: {
     hidden_platform: {
-      description: 'A concealed platform accessed through a maintenance door',
+      description: [
+  "A concealed platform accessed through a maintenance door",
+],
       requirements: ['examine warning_signs thoroughly', 'use reality_anchor_token'],
       rewards: ['access_to_platform_zero', 'hub_master_key'],
     },
     escalator_secret: {
-      description: 'The true mechanism behind the reality transition on the escalator',
+      description: [
+  "The true mechanism behind the reality transition on the escalator",
+],
       requirements: ['ride escalator multiple times', 'examine transition point'],
       rewards: ['reality_bridge_understanding', 'transition_control'],
     },
     overseer_knowledge: {
-      description: "Deep knowledge about the hub's operation and purpose",
+      description: [
+  "Deep knowledge about the hub's operation and purpose",
+],
       requirements: ['communicate extensively with hub_overseer'],
       rewards: ['hub_operational_manual', 'dimensional_clearance_upgrade'],
     },
@@ -191,17 +201,23 @@ const londonhub: Room = {
 
   customActions: {
     ride_escalator: {
-      description: 'Take the escalator up to the real Canary Wharf station',
+      description: [
+  "Take the escalator up to the real Canary Wharf station",
+],
       requirements: [],
       effects: ['transport_to_trentpark', 'transition_to_baseline_reality'],
     },
     check_departures: {
-      description: 'Study the departure boards for available destinations',
+      description: [
+  "Study the departure boards for available destinations",
+],
       requirements: [],
       effects: ['reveal_travel_options', 'update_destination_knowledge'],
     },
     acquire_travel_pass: {
-      description: 'Obtain proper documentation for interdimensional travel',
+      description: [
+  "Obtain proper documentation for interdimensional travel",
+],
       requirements: ['communicate_with_overseer', 'prove_dimensional_awareness'],
       effects: ['gain_travel_clearance', 'unlock_restricted_destinations'],
     },

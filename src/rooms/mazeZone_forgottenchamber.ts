@@ -24,10 +24,8 @@ const forgottenchamber: Room = {
   zone: 'mazeZone',
   title: 'Forgotten Chamber',
   description: [
-    'You have found a forgotten chamber in the maze. It is dusty and filled with cobwebs.',
-    'Ancient stone walls are covered in faded markings, and the air is thick with the scent of neglect.',
-    'A faint draft hints at hidden passages, and the silence is broken only by the occasional drip of water.',
-  ],
+  "You have found a forgotten chamber in the maze. It is dusty and filled with cobwebs. Ancient stone walls are covered in faded markings, and the air is thick with the scent of neglect. A faint draft hints at hidden passages, and the silence is broken only by the occasional drip of water.",
+],
   image: 'mazeZone_forgottenchamber.png',
   ambientAudio: 'forgotten_chamber_ambience.mp3',
 
@@ -42,21 +40,31 @@ const forgottenchamber: Room = {
     east: 'mazeZone_mazehub',
   },
 
-  items: ['ancient_coin', 'dusty_scroll', 'rusted_key'],
+  items: [
+    { id: 'ancient_coin', name: 'Ancient Coin' },
+    { id: 'dusty_scroll', name: 'Dusty Scroll' },
+    { id: 'rusted_key', name: 'Rusted Key' }
+  ],
 
   interactables: {
     cobwebbed_corner: {
-      description: 'A shadowy corner thick with cobwebs. Something glints beneath the webs.',
+      description: [
+  "A shadowy corner thick with cobwebs. Something glints beneath the webs.",
+],
       actions: ['search', 'clear', 'inspect'],
       requires: [],
     },
     stone_markings: {
-      description: 'Faded markings on the wall, possibly a code or map.',
+      description: [
+  "Faded markings on the wall, possibly a code or map.",
+],
       actions: ['examine', 'trace', 'decode'],
       requires: [],
     },
     loose_stone: {
-      description: 'A stone in the floor that seems slightly out of place.',
+      description: [
+  "A stone in the floor that seems slightly out of place.",
+],
       actions: ['lift', 'inspect', 'move'],
       requires: [],
     },
@@ -124,8 +132,9 @@ const forgottenchamber: Room = {
 
   secrets: {
     hidden_passage: {
-      description:
-        'A concealed passage revealed by decoding the stone markings and moving the loose stone.',
+      description: [
+  "A concealed passage revealed by decoding the stone markings and moving the loose stone.",
+],
       requirements: ['decode stone_markings', 'move loose_stone'],
       rewards: ['maze_shortcut', 'ancient_lore'],
     },
@@ -133,12 +142,16 @@ const forgottenchamber: Room = {
 
   customActions: {
     clear_cobwebs: {
-      description: 'Clear away the cobwebs to reveal what is hidden beneath.',
+      description: [
+  "Clear away the cobwebs to reveal what is hidden beneath.",
+],
       requirements: [],
       effects: ['find_item', 'reduce_hazards'],
     },
     decode_markings: {
-      description: 'Attempt to decode the faded markings on the wall.',
+      description: [
+  "Attempt to decode the faded markings on the wall.",
+],
       requirements: [],
       effects: ['reveal_hint', 'unlock_secret'],
     },

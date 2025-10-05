@@ -24,10 +24,8 @@ const gorstanhub: Room = {
   zone: 'gorstanZone',
   title: 'Gorstan Hub',
   description: [
-    'You arrive at the heart of Gorstan, a bustling hub where ancient stone meets new technology. The plaza is alive with travelers, merchants, and mysterious figures from distant lands.',
-    'Stalls line the square, offering everything from enchanted trinkets to steaming mugs of spiced tea. At the center stands a grand fountain, its waters shimmering with faint magical energy.',
-    'Paths branch out in all directions, each promising adventure, secrets, or perhaps a way home.',
-  ],
+  "You arrive at the heart of Gorstan, a bustling hub where ancient stone meets new technology. The plaza is alive with travelers, merchants, and mysterious figures from distant lands. Stalls line the square, offering everything from enchanted trinkets to steaming mugs of spiced tea. At the center stands a grand fountain, its waters shimmering with faint magical energy. Paths branch out in all directions, each promising adventure, secrets, or perhaps a way home.",
+],
   image: 'gorstanZone_gorstanhub.png',
   ambientAudio: 'market_square.mp3',
 
@@ -46,22 +44,32 @@ const gorstanhub: Room = {
     west: 'gorstanZone_forgottenroad',
   },
 
-  items: ['market_token', 'enchanted_trinket', 'spiced_tea', 'mysterious_note'],
+  items: [
+    { id: 'market_token', name: 'Market Token' },
+    { id: 'enchanted_trinket', name: 'Enchanted Trinket' },
+    { id: 'spiced_tea', name: 'Spiced Tea' },
+    { id: 'mysterious_note', name: 'Mysterious Note' }
+  ],
 
   interactables: {
     fountain: {
-      description:
-        'A grand fountain at the center of the plaza, its waters shimmering with faint magical energy.',
+      description: [
+  "A grand fountain at the center of the plaza, its waters shimmering with faint magical energy.",
+],
       actions: ['examine', 'toss_coin', 'listen'],
       requires: [],
     },
     merchant_stall: {
-      description: 'A colorful stall run by a friendly merchant, offering a variety of goods.',
+      description: [
+  "A colorful stall run by a friendly merchant, offering a variety of goods.",
+],
       actions: ['browse', 'buy', 'chat'],
       requires: ['market_token'],
     },
     notice_board: {
-      description: 'A wooden board covered in notes, job postings, and cryptic messages.',
+      description: [
+  "A wooden board covered in notes, job postings, and cryptic messages.",
+],
       actions: ['read', 'post', 'search'],
       requires: [],
     },
@@ -130,13 +138,16 @@ const gorstanhub: Room = {
 
   secrets: {
     hidden_passage: {
-      description:
-        'A concealed passage behind the fountain, leading to a forgotten part of Gorstan.',
+      description: [
+  "A concealed passage behind the fountain, leading to a forgotten part of Gorstan.",
+],
       requirements: ['examine fountain', 'find mysterious_note'],
       rewards: ['secret_area_access', 'bonus_loot'],
     },
     merchant_secret: {
-      description: 'A rare item only offered to those who help the merchant.',
+      description: [
+  "A rare item only offered to those who help the merchant.",
+],
       requirements: ['help hub_merchant'],
       rewards: ['rare_trinket', 'special_discount'],
     },
@@ -144,12 +155,16 @@ const gorstanhub: Room = {
 
   customActions: {
     make_wish: {
-      description: 'Toss a coin into the fountain and make a wish.',
+      description: [
+  "Toss a coin into the fountain and make a wish.",
+],
       requirements: ['market_token'],
       effects: ['gain_luck', 'unlock_secret'],
     },
     start_performance: {
-      description: 'Start a musical performance to entertain the crowd.',
+      description: [
+  "Start a musical performance to entertain the crowd.",
+],
       requirements: [],
       effects: ['attract_attention', 'earn_tips'],
     },

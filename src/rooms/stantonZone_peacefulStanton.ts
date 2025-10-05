@@ -22,12 +22,8 @@ import { Room } from '../types/Room';
 export const peacefulStanton: Room = {
   image: 'stantonZone_peacefulStanton.png',
   description: [
-    'Peaceful Stanton is a haven of calm, where the gentle hum of nature creates a soothing backdrop.',
-    'The streets are lined with vibrant flower beds, and the cottages here seem to radiate warmth and hospitality.',
-    'A small fountain bubbles quietly at the center of the square, its crystal-clear water catching the sunlight.',
-    'Children’s laughter echoes faintly in the distance, blending harmoniously with the chirping of birds.',
-    'The atmosphere is idyllic, a stark contrast to the other parts of Stanton, offering a moment of respite.',
-  ],
+  "Peaceful Stanton is a haven of calm, where the gentle hum of nature creates a soothing backdrop. The streets are lined with vibrant flower beds, and the cottages here seem to radiate warmth and hospitality. A small fountain bubbles quietly at the center of the square, its crystal-clear water catching the sunlight. Children’s laughter echoes faintly in the distance, blending harmoniously with the chirping of birds. The atmosphere is idyllic, a stark contrast to the other parts of Stanton, offering a moment of respite.",
+],
   zone: 'stantonZone',
   title: 'Peaceful Stanton',
 
@@ -47,21 +43,32 @@ export const peacefulStanton: Room = {
     west: 'ascendantStanton',
   },
 
-  items: ['flower_petals', 'fountain_coin', 'sunlight_crystal', 'childrens_toy'],
+  items: [
+    { id: 'flower_petals', name: 'Flower Petals' },
+    { id: 'fountain_coin', name: 'Fountain Coin' },
+    { id: 'sunlight_crystal', name: 'Sunlight Crystal' },
+    { id: 'childrens_toy', name: 'Childrens Toy' }
+  ],
 
   interactables: {
     fountain: {
-      description: 'A small fountain bubbling quietly at the center of the square.',
+      description: [
+  "A small fountain bubbling quietly at the center of the square.",
+],
       actions: ['examine', 'drink', 'throw_coin'],
       requires: [],
     },
     flower_beds: {
-      description: 'Vibrant flower beds lining the streets, radiating color and life.',
+      description: [
+  "Vibrant flower beds lining the streets, radiating color and life.",
+],
       actions: ['examine', 'collect', 'smell'],
       requires: [],
     },
     cottages: {
-      description: 'Warm and hospitable cottages, inviting you to explore.',
+      description: [
+  "Warm and hospitable cottages, inviting you to explore.",
+],
       actions: ['examine', 'enter', 'knock'],
       requires: [],
     },

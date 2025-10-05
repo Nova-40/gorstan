@@ -24,11 +24,8 @@ const libraryofnine: Room = {
   zone: 'latticeZone',
   title: 'Library of Nine',
   description: [
-    'You enter the Library of Nine, a mysterious annex hidden deep within the lattice. The chamber is circular, lined with nine towering shelves, each filled with tomes bound in shimmering crystal.',
-    'A faint glow emanates from the floor, tracing intricate patterns that connect each shelf to a central pedestal.',
-    'The air is thick with the weight of forbidden knowledge, and the silence is broken only by the occasional whisper of turning pages.',
-    "You sense that each shelf represents a different domain of wisdom, and unlocking their secrets may reveal the library's true purpose.",
-  ],
+  "You enter the Library of Nine, a mysterious annex hidden deep within the lattice. The chamber is circular, lined with nine towering shelves, each filled with tomes bound in shimmering crystal. A faint glow emanates from the floor, tracing intricate patterns that connect each shelf to a central pedestal. The air is thick with the weight of forbidden knowledge, and the silence is broken only by the occasional whisper of turning pages. You sense that each shelf represents a different domain of wisdom, and unlocking their secrets may reveal the library's true purpose.",
+],
   image: 'latticeZone_libraryofnine.png',
   ambientAudio: 'library_of_nine_ambience.mp3',
 
@@ -45,21 +42,22 @@ const libraryofnine: Room = {
   },
 
   items: [
-    'key_tome_1',
-    'key_tome_2',
-    'key_tome_3',
-    'key_tome_4',
-    'key_tome_5',
-    'key_tome_6',
-    'key_tome_7',
-    'key_tome_8',
-    'key_tome_9',
+    { id: 'key_tome_1', name: 'Key Tome 1' },
+    { id: 'key_tome_2', name: 'Key Tome 2' },
+    { id: 'key_tome_3', name: 'Key Tome 3' },
+    { id: 'key_tome_4', name: 'Key Tome 4' },
+    { id: 'key_tome_5', name: 'Key Tome 5' },
+    { id: 'key_tome_6', name: 'Key Tome 6' },
+    { id: 'key_tome_7', name: 'Key Tome 7' },
+    { id: 'key_tome_8', name: 'Key Tome 8' },
+    { id: 'key_tome_9', name: 'Key Tome 9' }
   ],
 
   interactables: {
     central_pedestal: {
-      description:
-        'A pedestal at the center of the room, covered in runes and awaiting the placement of key tomes.',
+      description: [
+  "A pedestal at the center of the room, covered in runes and awaiting the placement of key tomes.",
+],
       actions: ['examine', 'place_tome', 'activate'],
       requires: [
         'key_tome_1',
@@ -74,13 +72,16 @@ const libraryofnine: Room = {
       ],
     },
     shelf_of_origins: {
-      description:
-        'The first shelf, filled with tomes about the beginnings of the lattice and its creators.',
+      description: [
+  "The first shelf, filled with tomes about the beginnings of the lattice and its creators.",
+],
       actions: ['read', 'search', 'decode'],
       requires: [],
     },
     shelf_of_endings: {
-      description: 'The ninth shelf, containing prophecies and records of endings.',
+      description: [
+  "The ninth shelf, containing prophecies and records of endings.",
+],
       actions: ['read', 'search', 'interpret'],
       requires: [],
     },
@@ -150,14 +151,16 @@ const libraryofnine: Room = {
 
   secrets: {
     hidden_compartment: {
-      description:
-        'A secret compartment beneath the central pedestal, revealed when all tomes are placed.',
+      description: [
+  "A secret compartment beneath the central pedestal, revealed when all tomes are placed.",
+],
       requirements: ['allTomesPlaced', 'activatePedestal'],
       rewards: ['ancient_scroll', 'unique_lore'],
     },
     ninekeeper_memory: {
-      description:
-        'A memory fragment from the Ninekeeper, unlocked by decoding both origins and endings.',
+      description: [
+  "A memory fragment from the Ninekeeper, unlocked by decoding both origins and endings.",
+],
       requirements: ['decodeOrigins', 'interpretEndings'],
       rewards: ['ninekeeper_story', 'special_access'],
     },
@@ -165,12 +168,16 @@ const libraryofnine: Room = {
 
   customActions: {
     activate_pedestal: {
-      description: 'Activate the central pedestal once all key tomes are placed.',
+      description: [
+  "Activate the central pedestal once all key tomes are placed.",
+],
       requirements: ['allTomesPlaced'],
       effects: ['reveal_secret', 'summon_ninekeeper'],
     },
     decode_origins: {
-      description: 'Decode the ancient texts on the Shelf of Origins.',
+      description: [
+  "Decode the ancient texts on the Shelf of Origins.",
+],
       requirements: [],
       effects: ['gain_insight', 'unlock_secret'],
     },

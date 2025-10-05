@@ -40,6 +40,7 @@ export interface RestRock {
 }
 
 export class MushroomField {
+  public manager: any;
   private mushrooms: Mushroom[] = [];
   private creaturePacks: CreaturePack[] = [];
   private restRocks: RestRock[] = [];
@@ -49,22 +50,30 @@ export class MushroomField {
   private streamPos = { x: 38, y: 12 };
   private running = false;
   private nextPackId = 0;
+  private deathCount = 0;
 
   constructor() {
     this.initializeMushrooms();
     this.initializeRestRocks();
+    console.log('[MushroomField] constructor: initialized mushrooms=', this.mushrooms.length, 'restRocks=', this.restRocks.length);
   }
 
   async run(): Promise<void> {
     console.log('[MushroomField] Starting mushroom field phase');
 
     return new Promise((resolve) => {
+      // Reset phase-local death counter and sync manager rest rocks
+      this.deathCount = 0;
+      if (this.manager && typeof this.manager.getRestRocks === 'function') {
+        this.restRocks = this.manager.getRestRocks();
+      }
+
       this.displayPhaseIntro();
       this.running = true;
 
       // Main game loop
       const gameLoop = setInterval(() => {
-        this.updateCreaturePacks();
+  this.updateCreaturePacks();
         this.simulatePlayerMovement();
         this.checkMushroomTriggers();
 
@@ -77,6 +86,31 @@ export class MushroomField {
           console.log('[MushroomField] ✨ The pure water causes all creatures to dissolve away!');
           console.log('[MushroomField] 🎉 The field is cleansed! You are safe!');
           resolve();
+          return;
+        }
+
+        // Check player death: if any creature reaches player position (close proximity)
+        const anyCreatureNear = this.getAllCreatures().some((c) => {
+          const d = Math.sqrt(Math.pow(c.x - this.playerPos.x, 2) + Math.pow(c.y - this.playerPos.y, 2));
+          return d < 0.7;
+        });
+
+        if (anyCreatureNear) {
+          const over = this.manager ? this.manager.recordDeath() : false;
+          console.log('[MushroomField] You were overwhelmed!');
+
+          if (over || (this.manager && this.manager.isGameOver && this.manager.isGameOver())) {
+            clearInterval(gameLoop);
+            this.running = false;
+            this.despawnAllCreatures();
+            console.log('[MushroomField] Game Over - too many deaths');
+            // Signal terminal failure
+            resolve();
+            return;
+          }
+
+          // Reset field for retry
+          this.resetFieldAfterDeath();
         }
       }, 300);
 
@@ -163,21 +197,42 @@ export class MushroomField {
         Math.pow(mushroom.x - this.playerPos.x, 2) + Math.pow(mushroom.y - this.playerPos.y, 2),
       );
 
-      // More sensitive trigger distance - harder to avoid
-      if (distance < 2.0) {
-        // Increased from 1.5
-        this.triggerMushroom(mushroom);
+      // Much more sensitive trigger distance - hard to skirt around mushrooms
+      if (distance < 2.5) {
+        // Increased from 1.5 -> 2.0 -> 2.5
 
-        // Chain reaction chance - nearby mushrooms may also trigger!
-        if (Math.random() < 0.3) {
+        // If we already have too many active packs, trigger still happens but may divert to a distant mushroom
+        const activePackCount = this.creaturePacks.filter((p) => p.active).length;
+
+        if (activePackCount >= 4 && Math.random() < 0.6) {
+          // Diversion mechanic: pick a distant mushroom to trigger first so packs spawn away from player
+          const distant = this.mushrooms
+            .filter((m) => !m.triggered && !m.packSpawned && Math.sqrt(Math.pow(m.x - mushroom.x, 2) + Math.pow(m.y - mushroom.y, 2)) > 6);
+          if (distant.length > 0) {
+            const chosen = distant[Math.floor(Math.random() * distant.length)];
+            if (chosen) {
+              console.log('[MushroomField] A distant mushroom convulses, drawing the horde away...');
+              this.triggerMushroom(chosen);
+            } else {
+              this.triggerMushroom(mushroom);
+            }
+          } else {
+            this.triggerMushroom(mushroom);
+          }
+        } else {
+          this.triggerMushroom(mushroom);
+        }
+
+        // Chain reaction chance - now more severe (larger radius)
+        if (Math.random() < 0.45) {
           this.mushrooms.forEach((nearbyShroom) => {
             if (nearbyShroom.id !== mushroom.id && !nearbyShroom.triggered) {
               const nearbyDistance = Math.sqrt(
                 Math.pow(nearbyShroom.x - mushroom.x, 2) + Math.pow(nearbyShroom.y - mushroom.y, 2),
               );
-              if (nearbyDistance < 3) {
+              if (nearbyDistance < 4) {
                 console.log(`[MushroomField] 💥 Chain reaction! Nearby mushroom erupts!`);
-                setTimeout(() => this.triggerMushroom(nearbyShroom), 500);
+                setTimeout(() => this.triggerMushroom(nearbyShroom), 400 + Math.random() * 400);
               }
             }
           });
@@ -190,11 +245,24 @@ export class MushroomField {
     mushroom.triggered = true;
     mushroom.packSpawned = true;
 
+    try {
+      // brief flash for UI
+      // @ts-ignore
+      (window as any).__flashWarning = { type: 'mushroom', time: Date.now(), x: mushroom.x, y: mushroom.y };
+    } catch (e) {}
+
     console.log(`[MushroomField] You step on a spongy mushroom... *CRACK*`);
     console.log(`[MushroomField] 🍄 SPORES BURST IN ALL DIRECTIONS! 🍄`);
     console.log(`[MushroomField] ⚠️  A WAVE OF RAVENOUS CREATURES EMERGES! ⚠️`);
 
     // Spawn a WAVE of creatures - much more threatening
+    // Cap active packs to avoid overwhelming but keep high threat
+    const activePackCount = this.creaturePacks.filter((p) => p.active).length;
+    if (activePackCount >= 6) {
+      // If too many packs, reduce size of this pack but still threaten the player
+      console.log('[MushroomField] Additional mushrooms convulse but fewer creatures emerge...');
+    }
+
     const pack: CreaturePack = {
       id: this.nextPackId++,
       creatures: this.spawnCreatureWave(mushroom.x, mushroom.y),
@@ -213,7 +281,7 @@ export class MushroomField {
 
   private spawnCreatureWave(originX: number, originY: number): Creature[] {
     const creatures: Creature[] = [];
-    const count = 6 + Math.floor(Math.random() * 6); // 6-11 creatures per wave!
+    const count = 6 + Math.floor(Math.random() * 8); // 6-13 creatures per wave!
 
     for (let i = 0; i < count; i++) {
       const angle = (Math.PI * 2 * i) / count + Math.random() * 0.3;
@@ -223,8 +291,8 @@ export class MushroomField {
         id: i,
         x: originX + Math.cos(angle) * distance,
         y: originY + Math.sin(angle) * distance,
-        vx: 0,
-        vy: 0,
+        vx: (Math.cos(angle) * 0.6 + (Math.random() - 0.5) * 0.2),
+        vy: (Math.sin(angle) * 0.6 + (Math.random() - 0.5) * 0.2),
         health: 1,
         aggressive: true,
       });
@@ -320,16 +388,20 @@ export class MushroomField {
 
       if (distance > 0) {
         // More aggressive chase mechanics
-        const chaseStrength = 0.5; // Increased from 0.3
-        const randomness = 0.3; // Reduced randomness for more direct pursuit
-        const flankingOffset = Math.sin((index * Math.PI) / 3) * 0.2; // Coordinated flanking
+        const chaseStrength = 0.8; // stronger pursuit
+        const randomness = 0.15; // less random, more direct
+        const flankingOffset = Math.sin((index * Math.PI) / 3) * 0.25; // Coordinated flanking
 
         creature.vx =
           (dx / distance) * chaseStrength + (Math.random() - 0.5) * randomness + flankingOffset;
         creature.vy = (dy / distance) * chaseStrength + (Math.random() - 0.5) * randomness;
 
-        creature.x += creature.vx;
-        creature.y += creature.vy;
+        // Slight speed boost if not near a rest rock
+        const nearRest = this.restRocks.some((rock) => Math.sqrt(Math.pow(creature.x - rock.x, 2) + Math.pow(creature.y - rock.y, 2)) < 4);
+        const speedMultiplier = nearRest ? 0.9 : 1.15;
+
+        creature.x += creature.vx * speedMultiplier;
+        creature.y += creature.vy * speedMultiplier;
 
         // Keep creatures in bounds
         creature.x = Math.max(1, Math.min(this.fieldWidth - 1, creature.x));
@@ -507,5 +579,31 @@ export class MushroomField {
 
   isRunning(): boolean {
     return this.running;
+  }
+
+  private resetFieldAfterDeath(): void {
+    // Move player back to start and calm a portion of packs
+    this.playerPos = { x: 2, y: 12 };
+
+    // Put some packs to sleep or remove smaller ones to give a chance
+    this.creaturePacks.forEach((pack, idx) => {
+      if (idx % 2 === 0) {
+        pack.sleeping = true;
+        pack.sleepStartTime = Date.now();
+      } else {
+        // reduce pack size slightly
+        pack.creatures.splice(0, Math.floor(pack.creatures.length * 0.25));
+      }
+    });
+
+    // Re-seed some mushrooms to untriggered state near edges to allow more avoidance
+    this.mushrooms.forEach((m) => {
+      if (Math.random() < 0.1) {
+        m.triggered = false;
+        m.packSpawned = false;
+      }
+    });
+
+    console.log('[MushroomField] Field reset after death - try again');
   }
 }

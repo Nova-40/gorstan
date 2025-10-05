@@ -453,9 +453,31 @@ export function initializeGameWandering(): void {
   const originalResume = scheduler.resume.bind(scheduler);
 
   // Monitor for overlay states (would be connected to actual game state)
-  (window as any).wanderScheduler = {
-    pause: originalPause,
-    resume: originalResume,
+  type WindowWanderScheduler = {
+    // Accept either a string reason (for simple calls) or a full PauseScope
+    pause: ((reason: string) => void) & ((scope: PauseScope) => void);
+    resume: ((reason: string) => void) & ((scope: PauseScope) => void);
+    scheduler: WanderScheduler;
+  };
+
+  const host = window as unknown as { wanderScheduler?: WindowWanderScheduler };
+
+  // Provide lightweight wrappers so consumers can call pause/resume with just a reason string
+  host.wanderScheduler = {
+    pause: (arg: string | PauseScope) => {
+      if (typeof arg === 'string') {
+        originalPause({ global: true, reason: arg });
+      } else {
+        originalPause(arg);
+      }
+    },
+    resume: (arg: string | PauseScope) => {
+      if (typeof arg === 'string') {
+        originalResume({ global: true, reason: arg });
+      } else {
+        originalResume(arg);
+      }
+    },
     scheduler,
   };
 

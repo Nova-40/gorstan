@@ -8,6 +8,161 @@ body {
   font-family: 'Courier New', Courier, monospace;
 }
 
+/* Gorstan brand color variables (used by WelcomeScreen) */
+:root {
+  --gorstan-cyan: #06b6d4; /* light cyan (approx Tailwind cyan-500) */
+  --gorstan-cyan-600: #0891b2; /* darker cyan for hovers */
+  --gorstan-green: #22c55e; /* bright green (Tailwind green-500) */
+  --gorstan-green-dark: #16a34a; /* darker green */
+  --gorstan-on-accent: #ffffff;
+
+  --card-bg: rgba(11,18,32,0.6); /* semi-transparent card background for glass effect */
+  --card-border: rgba(34,197,94,0.07);
+}
+
+/* Small helper utilities that let legacy components inherit welcome colours */
+.text-gorstan-accent { color: var(--gorstan-green) !important; }
+.text-gorstan-green { color: var(--gorstan-green) !important; }
+.text-crt-green { color: #6f6 !important; }
+.bg-gorstan-accent { background-color: var(--gorstan-green) !important; }
+.bg-gorstan-accent-strong { background-color: var(--gorstan-green-dark) !important; }
+.bg-gorstan-green { background-color: var(--gorstan-green) !important; }
+.bg-gorstan-green-dark { background-color: var(--gorstan-green-dark) !important; }
+
+.btn-primary {
+  background: linear-gradient(180deg, var(--gorstan-green) 0%, var(--gorstan-green-dark) 100%);
+  color: #000;
+  border: none;
+}
+.btn-primary:hover { filter: brightness(0.98) saturate(1.05); transform: translateY(-1px); }
+.btn-secondary {
+  background: linear-gradient(180deg, #23303a 0%, #1f2933 100%);
+  color: var(--gorstan-on-accent);
+  border: 1px solid rgba(255,255,255,0.03);
+}
+.btn-ghost { background: transparent; color: var(--gorstan-green); border: 1px dashed rgba(34,197,94,0.15); }
+.btn-danger { background: #dc2626; color: #fff; }
+
+/* Focus styles for accessible outlines */
+.btn-primary:focus, .btn-secondary:focus, .btn-ghost:focus, .btn-danger:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(34,197,94,0.12);
+}
+
+.card-root {
+  background: linear-gradient(135deg, rgba(11,18,32,0.7), rgba(6,10,18,0.55));
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(6px) saturate(120%);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+.card-default { box-shadow: 0 12px 30px rgba(2,6,23,0.65); }
+.card-root:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(2,6,23,0.75); }
+.card-focused:focus { box-shadow: 0 0 0 4px rgba(34,197,94,0.16); outline: none; border-color: rgba(34,197,94,0.2); }
+
+/* Ensure card content doesn't overflow rounded corners */
+.card-root img { display: block; max-width: 100%; }
+
+/* Make MenuCard icon follow the accent colour */
+.menu-card-icon {
+  color: var(--gorstan-green);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: rgba(34,197,94,0.06);
+}
+
+/* Utility class to center card content (titles, description, CTA) */
+.card-centered { text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
+
+/* Centered header utility for card titles */
+.card-header-centered { text-align: center; }
+
+/* Compact card variant: reduced padding and softer shadow */
+.card-compact { padding: 0.5rem !important; }
+.card-compact .card-default, .card-compact.card-default { box-shadow: 0 6px 12px rgba(2,6,23,0.45) !important; }
+.card-compact.card-root:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(2,6,23,0.55) !important; }
+
+/* Utility to hide secondary CTAs on small screens */
+.hide-sm { display: none; }
+@media (min-width: 640px) {
+  .hide-sm { display: inline-flex; }
+}
+
+/* Adventure variant for MenuCard: cover image, elevated title, CTA focus */
+.menu-card--adventure {
+  border-radius: 12px;
+  padding: 0.75rem;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+  transition: transform 220ms ease, box-shadow 220ms ease;
+}
+.menu-card--adventure:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.6);
+}
+.menu-card-cover img { display: block; }
+.menu-card--adventure .card-header {
+  padding: 0.5rem 0 0.25rem 0;
+}
+.menu-card--adventure .menu-card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+.menu-card--adventure .menu-card-subtitle {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.78);
+}
+
+/* Compact modifier used in RouteSelectScreen to fit more cards */
+.menu-card-compact { padding: 0.5rem !important; }
+.menu-card-compact .menu-card-cover { height: 96px; }
+.menu-card-compact .menu-card-title { font-size: 0.95rem; }
+.menu-card-compact .menu-card-subtitle { font-size: 0.75rem; }
+
+/* Modern, consistent MenuCard base styles */
+.menu-card {
+  border-radius: 12px;
+  padding: 1rem;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.03);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+.menu-card:focus {
+  outline: none;
+  box-shadow: 0 0 0 6px rgba(34,197,94,0.12);
+  border-color: rgba(34,197,94,0.18);
+}
+.menu-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.6);
+}
+
+.menu-card-title { font-weight: 700; font-size: 1.05rem; }
+.menu-card-subtitle { font-size: 0.85rem; opacity: 0.9; }
+.menu-card-content { padding-top: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.menu-card-footer { margin-top: 0.75rem; display: flex; justify-content: center; }
+
+/* Compact tweak: slightly tighter spacing */
+.menu-card-compact { padding: 0.6rem !important; }
+.menu-card-compact .menu-card-cover { height: 84px; }
+
+/* Welcome screen card tweak: remove top padding/margin so titles start on the first line */
+.welcome-card {
+  padding-top: 0 !important;
+}
+.welcome-card h2,
+.welcome-card h3,
+.welcome-card h4,
+.welcome-card h1 {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+/* end welcome-card styles */
+
+
 #game-root {
   display: grid;
   grid-template-columns: 50% 50%;
@@ -252,4 +407,30 @@ body {
 
 .terminal-error {
   color: #f66;
+}
+
+/* Simple fade-in animation used by credits and founder list */
+.animate-fade-in {
+  animation-name: fadeInUp;
+  animation-duration: 600ms;
+  animation-timing-function: cubic-bezier(.2,.8,.2,1);
+  animation-fill-mode: both;
+}
+
+@keyframes fadeInUp {
+  from { transform: translateY(8px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Subtle animated gradient overlay for credits */
+.animate-gradient {
+  background: linear-gradient(120deg, rgba(255,200,100,0.04), rgba(34,197,94,0.06), rgba(6,182,212,0.02));
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }

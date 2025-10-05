@@ -222,7 +222,7 @@ const JumpTransition: React.FC<JumpTransitionProps> = ({ onComplete }) => {
             )}
             {phase === 'portal' && (
               <motion.span
-                className="text-4xl text-cyan-300"
+                className="text-4xl text-crt-green"
                 animate={{ opacity: [0.7, 1, 0.7] }}
                 transition={{ duration: 0.4, repeat: Infinity }}
                 style={{ textShadow: '0 0 20px #00f5ff' }}
@@ -249,7 +249,7 @@ const JumpTransition: React.FC<JumpTransitionProps> = ({ onComplete }) => {
             {[...Array(12)].map((_, i) => (
               <motion.div
                 key={i}
-                className="absolute w-2 h-2 bg-cyan-400 rounded-full"
+                className="absolute w-2 h-2 bg-[var(--gorstan-green)] rounded-full"
                 initial={{
                   x: '50%',
                   y: '50%',

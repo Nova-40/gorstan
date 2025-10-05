@@ -79,8 +79,8 @@ class MiniquestController {
     // Variable declaration
     const engine = MiniquestEngine.getInstance();
 
-    // Variable declaration
-    const availableQuests = engine.getAvailableQuests(roomId, gameState as any);
+  // Variable declaration
+  const availableQuests = engine.getAvailableQuests(roomId, gameState as unknown as any);
     // Variable declaration
     const allRoomQuests = this.getAllRoomQuests(roomId);
 
@@ -106,22 +106,24 @@ class MiniquestController {
       }
     }
 
-    const miniquests: MiniquestData[] = allRoomQuests.map((quest) => {
+  const allRoomQuestsResolved = engine.getRoomQuests(roomId);
+
+  const miniquests: MiniquestData[] = allRoomQuestsResolved.map((quest) => {
       const baseQuest = {
         id: quest.id,
         title: quest.title,
         description: quest.description,
         type: quest.type,
         rewardPoints: quest.rewardPoints,
-        flagOnCompletion: quest.flagOnCompletion,
-        requiredItems: quest.requiredItems,
-        requiredConditions: quest.requiredConditions,
-        triggerAction: quest.triggerAction,
-        triggerText: quest.triggerText,
-        hint: quest.hint,
-        repeatable: quest.repeatable,
-        timeLimit: quest.timeLimit,
-        difficulty: quest.difficulty,
+        flagOnCompletion: quest.flagOnCompletion || '',
+        requiredItems: quest.requiredItems || [],
+        requiredConditions: quest.requiredConditions || [],
+  triggerAction: quest.triggerAction || '',
+  triggerText: quest.triggerText || '',
+  hint: quest.hint || '',
+        repeatable: !!quest.repeatable,
+  timeLimit: typeof quest.timeLimit === 'number' ? quest.timeLimit : 0,
+        difficulty: (quest.difficulty as 'trivial' | 'easy' | 'medium' | 'hard') || 'medium',
       };
 
       // Enhance with AI recommendations if available
@@ -142,12 +144,12 @@ class MiniquestController {
     });
 
     const progress: { [questId: string]: MiniquestProgress } = {};
+  // Variable declaration
+  const miniquestState = (gameState as unknown as { miniquestState?: Record<string, any> }).miniquestState || {};
     // Variable declaration
-    const miniquestState = (gameState as any).miniquestState || {};
+  const roomState = miniquestState[roomId];
     // Variable declaration
-    const roomState = miniquestState[roomId];
-    // Variable declaration
-    const completedQuests = roomState?.completedQuests || [];
+  const completedQuests = roomState?.completedQuests || [];
 
     miniquests.forEach((quest) => {
       // Variable declaration
@@ -190,11 +192,16 @@ class MiniquestController {
 
     if (aiRecommendations && aiRecommendations.length > 0) {
       // Only include property when we have concrete recommendations
-      (result as any).aiRecommendations = aiRecommendations;
+      result.aiRecommendations = aiRecommendations;
     }
 
     if (aiAnalysis) {
-      (result as any).aiAnalysis = aiAnalysis;
+      result.aiAnalysis = aiAnalysis as {
+        playerFrustrationLevel: number;
+        shouldOfferHelp: boolean;
+        personalizedEncouragement: string;
+        recommendedActions: string[];
+      };
     }
 
     return result;
@@ -227,24 +234,24 @@ class MiniquestController {
       }
 
       // Variable declaration
-      const result = engine.attemptQuest(questId, roomId, gameState as any);
+  const result = engine.attemptQuest(questId, roomId, gameState as unknown as any);
 
       if (result.success && this.dispatch) {
         // Variable declaration
-        const stateUpdate = engine.updateStateAfterCompletion(gameState as any, roomId, questId);
+  const stateUpdate = engine.updateStateAfterCompletion(gameState as unknown as any, roomId, questId);
 
         if (Object.keys(stateUpdate).length > 0) {
           this.dispatch({
             type: 'UPDATE_GAME_STATE',
             payload: stateUpdate,
-          } as any);
+          });
         }
 
         if (result.scoreAwarded) {
           this.dispatch({
             type: 'UPDATE_SCORE',
             payload: { score: (gameState.player.score || 0) + result.scoreAwarded },
-          } as any);
+          });
         }
 
         this.dispatch({
@@ -253,7 +260,7 @@ class MiniquestController {
             text: result.message,
             type: 'achievement',
           },
-        } as any);
+        });
 
         if (result.scoreAwarded) {
           this.dispatch({
@@ -262,7 +269,7 @@ class MiniquestController {
               text: `🏆 Quest completed! +${result.scoreAwarded} points`,
               type: 'system',
             },
-          } as any);
+          });
         }
 
         // Add AI guidance message if available
@@ -273,7 +280,7 @@ class MiniquestController {
               text: `💡 AI Insight: ${aiGuidance}`,
               type: 'system',
             },
-          } as any);
+          });
         }
       }
 
@@ -301,11 +308,8 @@ class MiniquestController {
   }
 
   private getAllRoomQuests(roomId: string): any[] {
-    // Variable declaration
     const engine = MiniquestEngine.getInstance();
-
-    // JSX return block or main return
-    return (engine as any).roomQuests.get(roomId) || [];
+    return engine.getRoomQuests(roomId) || [];
   }
 
   public getAIStatus(): { enabled: boolean; lastUpdate: Date | null; recommendations: number } {

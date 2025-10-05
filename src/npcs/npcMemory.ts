@@ -245,10 +245,14 @@ export function importAllMemory(data: Record<string, NPCMemoryState>): void {
 for (const npc of npcRegistry.values()) {
   // Avoid assigning a broad object literal which may not match the external NPC type.
   // Initialize to an empty memory object if missing, and ensure an 'emotion' key exists.
-  if (!npc.memory) {
-    (npc as any).memory = {};
+  // Assign a separate authoritative memory shape using a narrow unknown cast to avoid
+  // conflicting legacy `NPC.memory` typing. This keeps runtime behavior identical while
+  // avoiding broad `any` usage.
+  const host = npc as unknown as { memory?: NPCMemoryState };
+  if (!host.memory) {
+    host.memory = { interactions: [], state: {} };
   }
-  if (!npc.memory || npc.memory.emotion === undefined) {
-    (npc.memory as any).emotion = 'neutral';
+  if (host.memory.mood === undefined) {
+    host.memory.mood = 'neutral';
   }
 }

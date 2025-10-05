@@ -126,7 +126,7 @@ const InterNPCDemo: React.FC = () => {
 
       <div className="mt-3 text-xs text-gray-500">
         <p>
-          Current Room: <span className="text-cyan-400">{currentRoomId}</span>
+          Current Room: <span className="text-crt-green">{currentRoomId}</span>
         </p>
         <p>NPCs Present: {state.npcsInRoom?.length || 0}</p>
         <p>Overhear Setting: {state.overhearNPCBanter ? '✅ On' : '❌ Off'}</p>

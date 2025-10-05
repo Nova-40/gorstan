@@ -14,29 +14,30 @@ import { Badge } from './ui/Badge';
 import { RouteBadge } from './ui/RouteBadge';
 import { Countdown } from './ui/Countdown';
 import { cn } from '../utils/cn';
-import { startDemo, demoRoutes } from '../demo/demoRouter';
-import { demoService } from '../demo/DemoModeService';
+// Demos moved to DemoScreen; demoRouter/demoService not used here anymore
 import '../ui/theme.css';
 
 interface RouteSelectScreenProps {
   onRouteSelect: (routeId: RouteId) => void;
   onCancel?: () => void;
+  onLoadGame?: () => void;
   className?: string;
 }
 
 export const RouteSelectScreen: React.FC<RouteSelectScreenProps> = ({
   onRouteSelect,
   onCancel,
+  onLoadGame,
   className,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<
-    'demo' | 'short10' | 'short30' | 'full' | null
+    'short10' | 'short30' | 'full' | null
   >(null);
   const [selectedRoute, setSelectedRoute] = useState<RouteId | null>(null);
 
   const routeCategories = getRoutesByCategory();
 
-  const handleCategorySelect = (category: 'demo' | 'short10' | 'short30' | 'full') => {
+  const handleCategorySelect = (category: 'short10' | 'short30' | 'full') => {
     setSelectedCategory(category);
     setSelectedRoute(null);
   };
@@ -56,14 +57,7 @@ export const RouteSelectScreen: React.FC<RouteSelectScreenProps> = ({
     setSelectedRoute(null);
   };
 
-  // Demo route handler
-  const handleDemoStart = (demoRouteId: string) => {
-    console.log(`[RouteSelectScreen] Starting demo route: ${demoRouteId}`);
-  demoService.start(demoRouteId);
-
-    // If we have a route select handler, we might want to notify it
-    // For now, let the demo system handle everything
-  };
+  // demo handling removed — demo routes are presented on the Welcome Demo screen
 
   // Category selection view
   if (!selectedCategory) {
@@ -85,54 +79,7 @@ export const RouteSelectScreen: React.FC<RouteSelectScreenProps> = ({
           </p>
         </div>
 
-        {/* Featured Master Showcase */}
-        {demoRoutes
-          .filter((route) => route.kind === 'featured')
-          .map((route) => (
-            <Card
-              key={route.id}
-              variant="elevated"
-              className={cn(
-                'featured-showcase cursor-pointer',
-                'hover:shadow-elevation-xl transition-all duration-300',
-                'bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200',
-              )}
-              onClick={() => handleDemoStart(route.id)}
-            >
-              <div className="p-space-8">
-                <div className="flex items-center justify-center gap-space-3 mb-space-4">
-                  <Badge variant="success" className="text-sm font-semibold">
-                    ⭐ FEATURED
-                  </Badge>
-                  <Badge variant="primary" className="text-sm">
-                    ~15 minutes
-                  </Badge>
-                  <Badge variant="info" className="text-sm">
-                    Complete Tour
-                  </Badge>
-                </div>
-                <div className="text-center">
-                  <h2 className="text-heading-lg font-bold text-color-text-primary mb-space-3">
-                    {route.title}
-                  </h2>
-                  <p className="text-body-lg text-color-text-secondary mb-space-6 max-w-2xl mx-auto">
-                    {route.summary}
-                  </p>
-                  <Button
-                    variant="primary"
-                    size="lg"
-                    className="px-space-8 py-space-3 text-lg font-semibold"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDemoStart(route.id);
-                    }}
-                  >
-                    🎮 Start Master Showcase
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          ))}
+        {/* Featured Master Showcase removed — replaced by MORE navigation */}
 
         <div className="text-center">
           <h2 className="text-heading-md font-semibold text-color-text-primary mb-space-1">
@@ -143,27 +90,13 @@ export const RouteSelectScreen: React.FC<RouteSelectScreenProps> = ({
           </p>
         </div>
 
-        <div className="">
+        <div className="bg-gradient-to-br from-slate-900 to-black rounded-xl p-3 border border-gray-800 shadow-lg">
           {/* Replace category cards with MenuGrid/MenuCard for consistent UI */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <MenuCard
-              title="Demo Experience"
-              subtitle="New Player Friendly"
-              onActivate={() => handleCategorySelect('demo')}
-            >
-              <div className="p-2">
-                <p className="text-body-sm text-color-text-secondary mb-2">
-                  A guided 5-7 minute introduction to Gorstan with hints and an artifact teaser.
-                </p>
-                <div className="flex items-center gap-2 text-body-xs text-color-text-tertiary">
-                  <Countdown totalSeconds={420} warningThreshold={120} className="text-inherit" />
-                  <span>•</span>
-                  <span>Guided experience</span>
-                </div>
-              </div>
-            </MenuCard>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {/* Top five compact cards so they fit without vertical scroll */}
+            {/* Demo Experience removed — demos are available from the Welcome screen Demo card */}
 
-            <MenuCard title="10-Minute Adventures" subtitle="Quick Play" onActivate={() => handleCategorySelect('short10')}>
+            <MenuCard title="10-Minute Adventures" subtitle="Quick Play" variant="adventure" cover="/images/author/starterframe.png" className="menu-card-compact text-crt-green" onActivate={() => handleCategorySelect('short10')}>
               <div className="p-2">
                 <p className="text-body-sm text-color-text-secondary mb-2">Four focused adventures for short play sessions.</p>
                 <div className="flex items-center gap-2 text-body-xs text-color-text-tertiary">
@@ -174,7 +107,7 @@ export const RouteSelectScreen: React.FC<RouteSelectScreenProps> = ({
               </div>
             </MenuCard>
 
-            <MenuCard title="30-Minute Adventures" subtitle="Extended Play" onActivate={() => handleCategorySelect('short30')}>
+            <MenuCard title="30-Minute Adventures" subtitle="Extended Play" variant="adventure" cover="/images/rooms/fallback.png" className="menu-card-compact text-crt-green" onActivate={() => handleCategorySelect('short30')}>
               <div className="p-2">
                 <p className="text-body-sm text-color-text-secondary mb-2">Immersive stories with richer narratives.</p>
                 <div className="flex items-center gap-2 text-body-xs text-color-text-tertiary">
@@ -185,7 +118,7 @@ export const RouteSelectScreen: React.FC<RouteSelectScreenProps> = ({
               </div>
             </MenuCard>
 
-            <MenuCard title="Full Game Experience" subtitle="Full Story" onActivate={() => handleCategorySelect('full')}>
+            <MenuCard title="Full Game Experience" subtitle="Full Story" variant="adventure" cover="/images/gorstanicon.png" className="menu-card-compact text-crt-green" onActivate={() => handleCategorySelect('full')}>
               <div className="p-2">
                 <p className="text-body-sm text-color-text-secondary mb-2">The complete Gorstan adventure with all puzzles and story elements.</p>
                 <div className="flex items-center gap-2 text-body-xs text-color-text-tertiary">
@@ -193,113 +126,22 @@ export const RouteSelectScreen: React.FC<RouteSelectScreenProps> = ({
                 </div>
               </div>
             </MenuCard>
-          </div>
-        </div>
 
-        {/* Demo Routes Section */}
-        <div className="border-t border-gray-200 pt-space-6">
-          <div className="text-center mb-space-4">
-            <h2 className="text-heading-md font-semibold text-color-text-primary mb-space-2">
-              Quick Demo Routes
-            </h2>
-            <p className="text-body-sm text-color-text-secondary">
-              Experience Gorstan with curated demo adventures
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-3">
-            {demoRoutes
-              .filter((route) => route.kind === 'short')
-              .map((route) => (
-                <Card
-                  key={route.id}
-                  variant="elevated"
-                  className={cn(
-                    'adventure-card demo-short cursor-pointer',
-                    'hover:shadow-elevation-lg transition-all duration-300',
-                  )}
-                  onClick={() => handleDemoStart(route.id)}
-                >
-                  <div className="p-space-4">
-                    <div className="flex items-center gap-space-2 mb-space-2">
-                      <Badge variant="info" className="text-xs">
-                        Demo
-                      </Badge>
-                      <Badge variant="success" className="text-xs">
-                        ~10min
-                      </Badge>
-                    </div>
-                    <h3 className="text-heading-xs font-semibold text-color-text-primary mb-space-1">
-                      {route.title}
-                    </h3>
-                    <p className="text-body-xs text-color-text-secondary mb-space-3">
-                      {route.summary}
-                    </p>
-                    <Button
-                      variant="primary"
-                      size="sm"
-                      className="adventure-button w-full"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDemoStart(route.id);
-                      }}
-                    >
-                      Start Demo
-                    </Button>
+            {/* Continue card moved here from the main menu */}
+            {onLoadGame && (
+              <MenuCard title="Continue" className="menu-card-compact text-crt-green" onActivate={() => onLoadGame && onLoadGame()}>
+                <div className="p-2">
+                  <p className="text-body-sm text-color-text-secondary mb-2">Resume a saved game.</p>
+                  <div>
+                    <Button variant="outline" onClick={() => onLoadGame && onLoadGame()}>Load / Continue</Button>
                   </div>
-                </Card>
-              ))}
-          </div>
-
-          <div className="mt-space-4">
-            <h3 className="text-heading-sm font-medium text-color-text-primary mb-space-3 text-center">
-              Extended Adventures
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-space-3">
-              {demoRoutes
-                .filter((route) => route.kind === 'long')
-                .map((route) => (
-                  <Card
-                    key={route.id}
-                    variant="elevated"
-                    className={cn(
-                      'adventure-card demo-long cursor-pointer',
-                      'hover:shadow-elevation-lg transition-all duration-300',
-                    )}
-                    onClick={() => handleDemoStart(route.id)}
-                  >
-                    <div className="p-space-4">
-                      <div className="flex items-center gap-space-2 mb-space-2">
-                        <Badge variant="secondary" className="text-xs">
-                          Adventure
-                        </Badge>
-                        <Badge variant="warning" className="text-xs">
-                          ~30min
-                        </Badge>
-                      </div>
-                      <h3 className="text-heading-xs font-semibold text-color-text-primary mb-space-1">
-                        {route.title}
-                      </h3>
-                      <p className="text-body-xs text-color-text-secondary mb-space-3">
-                        {route.summary}
-                      </p>
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        className="adventure-button w-full"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDemoStart(route.id);
-                        }}
-                      >
-                        Start Adventure
-                      </Button>
-                    </div>
-                  </Card>
-                ))}
-            </div>
+                </div>
+              </MenuCard>
+            )}
           </div>
         </div>
+
+        {/* Demo Routes moved to dedicated DemoScreen — removed from RouteSelectScreen per UX cleanup */}
 
         {onCancel && (
           <div className="flex justify-center">
@@ -313,15 +155,16 @@ export const RouteSelectScreen: React.FC<RouteSelectScreenProps> = ({
   }
 
   // Route selection within category
-  const categoryRoutes = (selectedCategory && routeCategories[selectedCategory]) || [];
+  const categoryRoutes = (selectedCategory && (routeCategories as any)[selectedCategory]) || [];
   const categoryTitles = {
-    demo: 'Demo Experience',
     short10: '10-Minute Adventures',
     short30: '30-Minute Adventures',
     full: 'Full Game Experience',
   };
 
-  if (selectedCategory === 'demo' || selectedCategory === 'full') {
+  // Quick demos removed — use the Demo screen from the Welcome menu
+
+  if (selectedCategory === 'full') {
     // Single route categories - auto-select
     const route = categoryRoutes[0];
     if (!route) {
@@ -429,7 +272,7 @@ export const RouteSelectScreen: React.FC<RouteSelectScreenProps> = ({
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-space-4">
-        {categoryRoutes.map((route) => (
+  {categoryRoutes.map((route: any) => (
           <Card
             key={route.id}
             variant={selectedRoute === route.id ? 'elevated' : 'outlined'}

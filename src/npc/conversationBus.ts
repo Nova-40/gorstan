@@ -120,14 +120,14 @@ function scheduleNPCReply(
   setTimeout(async () => {
     try {
       // Co-location rule: unless AYLA or explicitly cross-room, require same room
-      const requiresCoLocation =
-        CO_LOCATED_ONLY.includes(from.id as any) && CO_LOCATED_ONLY.includes(to.id as any);
-      const canCrossRooms =
-        CROSS_ROOM_SPEAKERS.includes(from.id as any) || CROSS_ROOM_SPEAKERS.includes(to.id as any);
+      const fromId = String(from.id);
+      const toId = String(to.id);
+      const requiresCoLocation = CO_LOCATED_ONLY.includes(fromId as import('./registry').NPCId) && CO_LOCATED_ONLY.includes(toId as import('./registry').NPCId);
+      const canCrossRooms = CROSS_ROOM_SPEAKERS.includes(fromId as import('./registry').NPCId) || CROSS_ROOM_SPEAKERS.includes(toId as import('./registry').NPCId);
 
       if (requiresCoLocation && !canCrossRooms) {
-        const fromInRoom = state.npcsInRoom?.some((n) => n.id === from.id);
-        const toInRoom = state.npcsInRoom?.some((n) => n.id === to.id);
+        const fromInRoom = state.npcsInRoom?.some((n) => n.id === fromId);
+        const toInRoom = state.npcsInRoom?.some((n) => n.id === toId);
         if (!fromInRoom || !toInRoom) {
           return; // Skip reply if not co-located
         }
@@ -135,7 +135,7 @@ function scheduleNPCReply(
 
       // Generate response using enhanced NPC system or fallback
       let responseText: string;
-  const promptFromNPC = buildPromptFromNPC(from.id, topic ?? '');
+    const promptFromNPC = buildPromptFromNPC(fromId, topic ?? '');
 
       // Try enhanced system first: groqAI -> engine.reply fallback
       try {
@@ -153,9 +153,9 @@ function scheduleNPCReply(
       const styledResponse = stylize(responseText, voice);
 
       // Send the reply
-          sendNPCMessage(
-        { kind: 'NPC', id: to.id },
-        { kind: 'NPC', id: from.id },
+      sendNPCMessage(
+        { kind: 'NPC', id: toId },
+        { kind: 'NPC', id: fromId },
         styledResponse,
         state,
         dispatch,
@@ -191,6 +191,9 @@ export function isThreadAtLimit(thread: ConversationThread): boolean {
 }
 
 // Check cooldown for NPC pair in a room
+// Use a WeakMap to track banter timestamps per game state without mutating state
+const banterLastMap = new WeakMap<LocalGameState, Record<string, number>>();
+
 export function canStartConversation(
   npc1: string,
   npc2: string,
@@ -198,7 +201,8 @@ export function canStartConversation(
   state: LocalGameState,
 ): boolean {
   const key = `banter:${roomId}:${[npc1, npc2].sort().join('-')}`;
-  const lastBanter = (state as any)._banterLast?.[key] ?? 0;
+  const map = banterLastMap.get(state) ?? {};
+  const lastBanter = map[key] ?? 0;
   const cooldown = 90000; // 90 seconds
 
   return Date.now() - lastBanter > cooldown;
@@ -212,8 +216,7 @@ export function recordConversationStart(
   state: LocalGameState,
 ): void {
   const key = `banter:${roomId}:${[npc1, npc2].sort().join('-')}`;
-  (state as any)._banterLast = {
-    ...(state as any)._banterLast,
-    [key]: Date.now(),
-  };
+  const map = banterLastMap.get(state) ?? {};
+  map[key] = Date.now();
+  banterLastMap.set(state, map);
 }

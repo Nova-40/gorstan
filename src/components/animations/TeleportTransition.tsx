@@ -142,7 +142,7 @@ const TeleportTransition: React.FC<TeleportTransitionProps> = ({
         >
           {}
           <motion.div
-            className="w-32 h-32 rounded-full bg-gradient-to-r from-cyan-400 to-purple-600"
+            className="w-32 h-32 rounded-full bg-gradient-to-r from-[var(--gorstan-green)] to-purple-600"
             animate={{
               scale: phase === 'transport' ? [1, 1.5, 1] : [1, 1.2, 1],
               opacity:
@@ -169,7 +169,7 @@ const TeleportTransition: React.FC<TeleportTransitionProps> = ({
         {[...Array(8)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-2 h-2 bg-cyan-400 rounded-full"
+            className="absolute w-2 h-2 bg-[var(--gorstan-green)] rounded-full"
             style={{
               left: '50%',
               top: '50%',
@@ -200,7 +200,7 @@ const TeleportTransition: React.FC<TeleportTransitionProps> = ({
             }}
             transition={{ duration: 0.5 }}
           >
-            <div className="text-cyan-300 text-xl font-bold tracking-wide">Teleporting to</div>
+            <div className="text-crt-green text-xl font-bold tracking-wide">Teleporting to</div>
             <div className="text-white text-2xl font-bold mt-2 glow">{destinationName}</div>
           </motion.div>
         )}
@@ -209,7 +209,7 @@ const TeleportTransition: React.FC<TeleportTransitionProps> = ({
         {[...Array(3)].map((_, i) => (
           <motion.div
             key={`ring-${i}`}
-            className="absolute border-2 border-cyan-400 rounded-full"
+            className="absolute border-2 border-[var(--gorstan-green)] rounded-full"
             style={{
               width: `${(i + 1) * 80}px`,
               height: `${(i + 1) * 80}px`,

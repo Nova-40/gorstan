@@ -24,10 +24,8 @@ const labyrinthbend: Room = {
   zone: 'mazeZone',
   title: 'Labyrinth Bend',
   description: [
-    'You find yourself at a sharp bend in the labyrinth, where the walls seem to shift and shimmer as if alive.',
-    'The air is thick with mystery, and faint whispers echo from unseen corners.',
-    'Shadows twist along the floor, and the sense of direction is easily lost here.',
-  ],
+  "You find yourself at a sharp bend in the labyrinth, where the walls seem to shift and shimmer as if alive. The air is thick with mystery, and faint whispers echo from unseen corners. Shadows twist along the floor, and the sense of direction is easily lost here.",
+],
   image: 'mazeZone_labyrinthbend.png',
   ambientAudio: 'labyrinth_whispers.mp3',
 
@@ -42,16 +40,23 @@ const labyrinthbend: Room = {
     south: 'mazeZone_secretmazeentry',
   },
 
-  items: ['shimmering_stone', 'whisper_note'],
+  items: [
+    { id: 'shimmering_stone', name: 'Shimmering Stone' },
+    { id: 'whisper_note', name: 'Whisper Note' }
+  ],
 
   interactables: {
     shifting_wall: {
-      description: 'A section of wall that appears to move when not directly observed.',
+      description: [
+  "A section of wall that appears to move when not directly observed.",
+],
       actions: ['examine', 'touch', 'mark'],
       requires: [],
     },
     echo_corner: {
-      description: 'A shadowy corner where whispers seem loudest.',
+      description: [
+  "A shadowy corner where whispers seem loudest.",
+],
       actions: ['listen', 'search', 'speak'],
       requires: [],
     },
@@ -120,8 +125,9 @@ const labyrinthbend: Room = {
 
   secrets: {
     hidden_passage: {
-      description:
-        'A secret passage revealed by marking the shifting wall and listening to the correct whisper.',
+      description: [
+  "A secret passage revealed by marking the shifting wall and listening to the correct whisper.",
+],
       requirements: ['mark shifting_wall', 'listen echo_corner'],
       rewards: ['shortcut_access', 'labyrinth_lore'],
     },
@@ -129,12 +135,16 @@ const labyrinthbend: Room = {
 
   customActions: {
     mark_shifting_wall: {
-      description: 'Mark the shifting wall to track its movement.',
+      description: [
+  "Mark the shifting wall to track its movement.",
+],
       requirements: ['shimmering_stone'],
       effects: ['set_wallMarked', 'reduce_disorientation'],
     },
     listen_to_whispers: {
-      description: 'Focus on the whispers to discern a hidden message.',
+      description: [
+  "Focus on the whispers to discern a hidden message.",
+],
       requirements: [],
       effects: ['gain_hint', 'unlock_secret'],
     },

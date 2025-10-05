@@ -17,12 +17,18 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Game module.
 
-export async function debugWorldLoader(): Promise<Record<string, any>> {
+export interface DebugRoom {
+  id: string;
+  name: string;
+  [key: string]: unknown;
+}
+
+export async function debugWorldLoader(): Promise<Record<string, DebugRoom>> {
   try {
     console.log('[DEBUG] Starting world load...');
 
     // Mock room loading - in a real implementation this would load from files
-    const rooms: Record<string, any> = {
+    const rooms: Record<string, DebugRoom> = {
       start: { id: 'start', name: 'Starting Room' },
       reset: { id: 'reset', name: 'Reset Room' },
     };

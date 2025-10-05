@@ -46,6 +46,34 @@ import DeviceProfiler, {
   type PerformanceMetrics,
 } from './DeviceProfiler';
 
+// Minimal safe default settings to avoid loose 'any' fallbacks
+const DEFAULT_PERFORMANCE_SETTINGS: PerformanceSettings = {
+  autoAdjust: false,
+  graphicsQuality: 1,
+  audioQuality: 1,
+  animationQuality: 'medium',
+  textureQuality: 'medium',
+  particleEffects: true,
+  shadowQuality: 'medium',
+  backgroundProcessing: true,
+  autoSaveFrequency: 60,
+  preloadDistance: 1,
+  maxCachedAssets: 50,
+  memoryTargetMB: 400,
+  garbageCollectionThreshold: 0.6,
+  resourcePoolSize: 50,
+  imageCompression: 'light',
+  prefetchEnabled: true,
+  bandwidthLimit: 0,
+};
+
+// Narrow type for the performance.memory object when present
+interface PerformanceMemoryInfo {
+  usedJSHeapSize?: number;
+  jsHeapSizeLimit?: number;
+  totalJSHeapSize?: number;
+}
+
 export interface OptimizationProfile {
   name: string;
   description: string;
@@ -199,7 +227,7 @@ export class PerformanceManager {
       this.currentSettings = this.optimizationProfiles[0].settings;
     } else {
       // Fallback safe default
-      this.currentSettings = { autoAdjust: false } as any;
+      this.currentSettings = { ...DEFAULT_PERFORMANCE_SETTINGS };
     }
   }
 
@@ -245,7 +273,7 @@ export class PerformanceManager {
       } else if (this.optimizationProfiles[0]?.settings) {
         this.currentSettings = this.optimizationProfiles[0].settings;
       } else {
-        this.currentSettings = { autoAdjust: false } as any;
+        this.currentSettings = { ...DEFAULT_PERFORMANCE_SETTINGS };
       }
     }
   }
@@ -316,9 +344,9 @@ export class PerformanceManager {
       return {
         name: 'Default',
         description: 'Default fallback profile',
-        settings: { autoAdjust: false } as any,
+        settings: { ...DEFAULT_PERFORMANCE_SETTINGS },
         deviceTargets: { minPerformanceTier: 'low', platforms: ['desktop'], memoryRange: [0, 1024] },
-      } as any;
+      } as OptimizationProfile;
     }
 
     return top.profile;
@@ -410,8 +438,8 @@ export class PerformanceManager {
    */
   private measureMemoryUsage(): number {
     if ('memory' in performance) {
-      const memory = (performance as any).memory;
-      if (memory.usedJSHeapSize) {
+      const memory = (performance as unknown as { memory?: PerformanceMemoryInfo }).memory;
+      if (memory && typeof memory.usedJSHeapSize === 'number') {
         return memory.usedJSHeapSize / (1024 * 1024); // Convert to MB
       }
     }
@@ -704,9 +732,15 @@ export class PerformanceManager {
    * Force garbage collection (if available)
    */
   forceGarbageCollection(): void {
-    if ('gc' in window && typeof (window as any).gc === 'function') {
-      (window as any).gc();
-      console.log('[PerformanceManager] Forced garbage collection');
+    // Some environments (node, some browsers with flags) expose a global gc function
+    const maybeGC = (window as unknown as { gc?: unknown }).gc;
+    if (typeof maybeGC === 'function') {
+      try {
+        (maybeGC as Function)();
+        console.log('[PerformanceManager] Forced garbage collection');
+      } catch (e) {
+        // Ignore failures
+      }
     }
   }
 

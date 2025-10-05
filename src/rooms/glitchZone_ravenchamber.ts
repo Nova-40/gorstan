@@ -47,8 +47,8 @@ const ravenchamber: Room = {
     classified: true,
     securityClearanceRequired: true,
   },
-  interactables: [
-    {
+  interactables: {
+    console: {
       id: 'console',
       name: 'R.A.V.E.N. Console',
       description: '💻 A massive, ominous terminal. Ancient servers hum with classified data.',
@@ -61,11 +61,10 @@ const ravenchamber: Room = {
         'access archive': 'Attempting to access the redacted archive...',
       },
     },
-    {
+    screens: {
       id: 'screens',
       name: 'Cracked Screens',
-      description:
-        'Multiple screens line the walls, displaying corrupted data streams and glitched interfaces.',
+      description: 'Multiple screens line the walls, displaying corrupted data streams and glitched interfaces.',
       commands: ['look screens', 'examine screens', 'watch screens'],
       responses: {
         examine:
@@ -74,11 +73,10 @@ const ravenchamber: Room = {
           'The screens are unresponsive to your touch, continuing their endless loops of broken code.',
       },
     },
-    {
+    pedestal: {
       id: 'pedestal',
       name: 'Blue Pedestal',
-      description:
-        'A sunken pedestal at the far end of the chamber, glowing with faint blue light.',
+      description: 'A sunken pedestal at the far end of the chamber, glowing with faint blue light.',
       commands: ['examine pedestal', 'touch pedestal', 'approach pedestal'],
       responses: {
         examine:
@@ -86,7 +84,7 @@ const ravenchamber: Room = {
         touch: 'The pedestal feels warm to the touch, as if powered by some unknown energy source.',
       },
     },
-  ],
+  },
 
   // Custom room logic for redacted players
   onEnter: (gameState: any) => {
@@ -108,7 +106,9 @@ const ravenchamber: Room = {
   customExits: {
     back: {
       destination: 'glitchinguniverse',
-      description: 'A crackling rift in the wall leads back to the glitching universe.',
+      description: [
+  'A crackling rift in the wall leads back to the glitching universe.',
+],
       condition: () => true,
     },
   },
@@ -116,7 +116,9 @@ const ravenchamber: Room = {
   // Room-specific commands
   customCommands: {
     'interact console': {
-      description: 'Interact with the R.A.V.E.N. console',
+      description: [
+  'Interact with the R.A.V.E.N. console',
+],
       handler: (gameState: any) => {
         return {
           messages: [
@@ -134,7 +136,9 @@ const ravenchamber: Room = {
       },
     },
     'access archive': {
-      description: 'Access the R.A.V.E.N. archive system',
+      description: [
+  'Access the R.A.V.E.N. archive system',
+],
       handler: (gameState: any) => {
         const messages = [];
 
@@ -172,7 +176,9 @@ const ravenchamber: Room = {
       },
     },
     yes: {
-      description: 'Confirm R.A.V.E.N. register display',
+      description: [
+  'Confirm R.A.V.E.N. register display',
+],
       handler: (gameState: any) => {
         if (!gameState.flags?.ravenPromptActive) {
           return {
@@ -298,7 +304,9 @@ const ravenchamber: Room = {
       },
     },
     no: {
-      description: 'Decline R.A.V.E.N. register display',
+      description: [
+  'Decline R.A.V.E.N. register display',
+],
       handler: (gameState: any) => {
         if (!gameState.flags?.ravenPromptActive) {
           return {
@@ -332,7 +340,9 @@ const ravenchamber: Room = {
       },
     },
     declassify: {
-      description: 'Attempt to declassify restricted information',
+      description: [
+  'Attempt to declassify restricted information',
+],
       handler: (gameState: any) => {
         if (gameState.flags?.playerIsRedacted) {
           return {
@@ -360,7 +370,9 @@ const ravenchamber: Room = {
       },
     },
     'i know too much': {
-      description: 'Passphrase for redacted individuals',
+      description: [
+  'Passphrase for redacted individuals',
+],
       handler: (gameState: any) => {
         if (gameState.flags?.playerIsRedacted) {
           return {

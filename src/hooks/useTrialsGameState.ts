@@ -56,6 +56,7 @@ interface TrialsGameState {
   achievements: string[];
   currentObjective: string;
   hints: string[];
+  phaseText?: string | undefined;
 }
 
 const PHASE_OBJECTIVES = {
@@ -117,6 +118,7 @@ export function useTrialsGameState() {
     achievements: [],
     currentObjective: PHASE_OBJECTIVES['rock-field'],
     hints: PHASE_HINTS['rock-field'],
+    phaseText: undefined,
   });
 
   const [isPaused, setIsPaused] = useState(false);
@@ -125,6 +127,16 @@ export function useTrialsGameState() {
   const trialsControllerRef = useRef<TrialsController | undefined>(undefined);
   const mushroomFieldRef = useRef<MushroomField | undefined>(undefined);
   const lastUpdateTime = useRef<number>(Date.now());
+
+  // Minimal interface for optional active phase controllers exposed on window
+  interface ActivePhaseController {
+    getRocks?: () => Array<{ id: number; x: number; y: number }>;
+    getMushrooms?: () => Array<{ id: number; x: number; y: number; triggered?: boolean }>;
+    getAllCreatures?: () => Array<{ id: number; x: number; y: number; health?: number; aggressive?: boolean }>;
+    getRestRocks?: () => Array<{ id: number; x: number; y: number; occupied?: boolean; cooldownUntil?: number; cooldownRemaining?: number }>;
+    onPlayerMove?: () => void;
+    run?: () => Promise<void>;
+  }
 
   // Initialize game
   const startGame = useCallback(() => {
@@ -139,7 +151,7 @@ export function useTrialsGameState() {
       phase: 'rock-field',
       phaseName: 'Rock Field Navigation',
       phaseProgress: 0,
-      playerPos: { x: 2, y: 12 },
+      playerPos: { x: 0, y: 0 },
       playerHealth: 100,
       playerEnergy: 100,
       playerStamina: 100,
@@ -154,28 +166,81 @@ export function useTrialsGameState() {
     }));
 
     console.log('[TrialsGameState] Game started');
-  }, []);
-
-  // Stop game
-  const stopGame = useCallback(() => {
-    setIsActive(false);
-    setIsPaused(false);
-    if (gameLoopRef.current) {
-      cancelAnimationFrame(gameLoopRef.current);
+    // Show medium synopsis from TrialsManager if available
+    try {
+      // Access a possibly injected TrialsManager on window with a narrow local type
+      const maybeMgr = (window as unknown as { __trialsManager?: unknown }).__trialsManager;
+      if (
+        maybeMgr &&
+        typeof (maybeMgr as { getSynopsis?: unknown }).getSynopsis === 'function'
+      ) {
+        const mgr = maybeMgr as { getSynopsis: () => string };
+        setGameState((prev) => ({ ...prev, phaseText: mgr.getSynopsis() }));
+      }
+    } catch (e) {}
+    // Start the TrialsController run loop so phase controllers initialize and spawn content
+    try {
+      // fire-and-forget the async run; keep reference for later
+      const controller = trialsControllerRef.current;
+      if (controller && typeof controller.run === 'function') {
+        (async () => {
+          try {
+            await controller.run();
+            console.log('[TrialsGameState] TrialsController finished all phases');
+            // End the active game when trials complete
+            setIsActive(false);
+          } catch (err: unknown) {
+            console.error('[TrialsGameState] TrialsController error', err);
+            // If game over was signaled, stop the game loop
+            if (
+              err &&
+              typeof err === 'object' &&
+              err !== null &&
+              'message' in err &&
+              typeof (err as { message?: unknown }).message === 'string' &&
+              (err as { message?: string }).message?.includes('GAME_OVER')
+            ) {
+              setIsActive(false);
+            }
+          }
+        })();
+      }
+    } catch (e) {
+      // swallow - not critical for start
     }
-    console.log('[TrialsGameState] Game stopped');
-  }, []);
-
-  // Pause/Resume
-  const pauseGame = useCallback(() => {
-    setIsPaused(true);
-    console.log('[TrialsGameState] Game paused');
-  }, []);
-
-  const resumeGame = useCallback(() => {
-    setIsPaused(false);
-    lastUpdateTime.current = Date.now();
-    console.log('[TrialsGameState] Game resumed');
+      try {
+        // Narrow the trials controller's activeController if present
+        const controller = trialsControllerRef.current;
+        const active = (controller as unknown as { activeController?: unknown })?.activeController as ActivePhaseController | undefined;
+        if (active && typeof active.run === 'function') {
+          (async () => {
+            try {
+              const runFn = active.run;
+              if (typeof runFn === 'function') {
+                await runFn();
+              }
+              console.log('[TrialsGameState] TrialsController finished all phases');
+              // End the active game when trials complete
+              setIsActive(false);
+            } catch (err: unknown) {
+              console.error('[TrialsGameState] TrialsController error', err);
+              // If game over was signaled, stop the game loop
+              if (
+                err &&
+                typeof err === 'object' &&
+                err !== null &&
+                'message' in err &&
+                typeof (err as { message?: unknown }).message === 'string' &&
+                (err as { message?: string }).message?.includes('GAME_OVER')
+              ) {
+                setIsActive(false);
+              }
+            }
+          })();
+        }
+      } catch (e) {
+        // swallow - not critical for start
+      }
   }, []);
 
   // Generate initial rest rocks
@@ -242,9 +307,42 @@ export function useTrialsGameState() {
           score: newScore,
         };
       });
+
+      // Notify TrialsController's active phase controller (e.g., RockField) that the player moved
+      try {
+        const controller = trialsControllerRef.current;
+        const active = (controller as unknown as { activeController?: unknown })?.activeController;
+        if (active && typeof (active as { onPlayerMove?: unknown }).onPlayerMove === 'function') {
+          (active as { onPlayerMove: () => void }).onPlayerMove();
+        }
+      } catch (e) {
+        // swallow - optional linkage
+      }
     },
     [isPaused, isActive],
   );
+
+  // Stop game
+  const stopGame = useCallback(() => {
+    setIsActive(false);
+    setIsPaused(false);
+    if (gameLoopRef.current) {
+      cancelAnimationFrame(gameLoopRef.current);
+    }
+    console.log('[TrialsGameState] Game stopped');
+  }, []);
+
+  // Pause/Resume
+  const pauseGame = useCallback(() => {
+    setIsPaused(true);
+    console.log('[TrialsGameState] Game paused');
+  }, []);
+
+  const resumeGame = useCallback(() => {
+    setIsPaused(false);
+    lastUpdateTime.current = Date.now();
+    console.log('[TrialsGameState] Game resumed');
+  }, []);
 
   // Player actions
   const performAction = useCallback(
@@ -371,63 +469,106 @@ export function useTrialsGameState() {
         });
 
         // Update creatures (basic AI for non-mushroom phases, sync with MushroomField for mushroom phase)
-        if (prev.phase === 'mushroom-field' && mushroomFieldRef.current) {
-          // Sync with enhanced MushroomField
-          const fieldMushrooms = mushroomFieldRef.current.getMushrooms();
-          const fieldCreatures = mushroomFieldRef.current.getAllCreatures();
-          const fieldRocks = mushroomFieldRef.current.getRestRocks();
-
-          newState.mushrooms = fieldMushrooms.map((m) => ({
-            id: m.id,
-            x: m.x,
-            y: m.y,
-            triggered: m.triggered,
-            glowing: Math.random() > 0.8, // Add some visual variety
-          }));
-
-          newState.creatures = fieldCreatures.map((c) => ({
-            id: c.id,
-            x: c.x,
-            y: c.y,
-            health: c.health,
-            aggressive: c.aggressive,
-            type: 'six-legged-mutant' as const,
-          }));
-
-          newState.restRocks = fieldRocks.map((r) => ({
-            id: r.id,
-            x: r.x,
-            y: r.y,
-            occupied: r.occupied,
-            available: Date.now() >= r.cooldownUntil,
-            cooldownRemaining: Math.max(0, (r.cooldownUntil - Date.now()) / 1000),
-          }));
-
-          // Update MushroomField player position
-          // (The MushroomField's internal logic will handle creature AI and triggering)
-        } else {
-          // Basic AI for other phases
-          newState.creatures = prev.creatures.map((creature) => {
-            if (creature.aggressive) {
-              // Move towards player
-              const dx = prev.playerPos.x - creature.x;
-              const dy = prev.playerPos.y - creature.y;
-              const distance = Math.sqrt(dx * dx + dy * dy);
-
-              if (distance > 0.5) {
-                const speed = 0.02; // creatures move slower than player
-                creature.x += (dx / distance) * speed * deltaTime;
-                creature.y += (dy / distance) * speed * deltaTime;
-              }
-
-              // Random chance to become less aggressive
-              if (Math.random() < 0.001) {
-                creature.aggressive = false;
-              }
+        // Prefer syncing from any active phase controller exposed on window (TrialsController sets this)
+        try {
+          // Access a potentially injected active phase controller on window with narrow guards
+          const activePhase = (window as unknown as { __activePhase?: unknown }).__activePhase as ActivePhaseController | undefined;
+          if (activePhase) {
+            const active = activePhase as ActivePhaseController;
+            // RandomRocks and similar expose getRocks()
+            if (typeof active.getRocks === 'function') {
+              const rocks = active.getRocks();
+              newState.creatures = rocks.map((r) => ({
+                id: r.id,
+                x: r.x,
+                y: r.y,
+                health: 100,
+                aggressive: false,
+                type: 'six-legged-mutant' as const,
+              }));
             }
 
-            return creature;
-          });
+            // RockField exposes getRollingRocks() which UI already reads from __activeRockField
+            // MushroomField exposes getMushrooms/getAllCreatures/getRestRocks
+            if (typeof active.getMushrooms === 'function') {
+              const fieldMushrooms = active.getMushrooms();
+              const fieldCreatures = typeof active.getAllCreatures === 'function' ? active.getAllCreatures() : [];
+              const fieldRocks = typeof active.getRestRocks === 'function' ? active.getRestRocks() : [];
+
+              newState.mushrooms = fieldMushrooms.map((m) => ({
+                id: m.id,
+                x: m.x,
+                y: m.y,
+                triggered: !!m.triggered,
+                glowing: Math.random() > 0.7,
+              }));
+
+              newState.creatures = fieldCreatures.map((c) => ({
+                id: c.id,
+                x: c.x,
+                y: c.y,
+                health: c.health ?? 100,
+                aggressive: c.aggressive ?? true,
+                type: 'six-legged-mutant' as const,
+              }));
+
+              newState.restRocks = fieldRocks.map((r) => ({
+                id: r.id,
+                x: r.x,
+                y: r.y,
+                occupied: !!r.occupied,
+                available: Date.now() >= (r.cooldownUntil ?? r.cooldownRemaining ?? 0),
+                cooldownRemaining: Math.max(0, ((r.cooldownUntil ?? Date.now()) - Date.now()) / 1000),
+              }));
+            }
+
+            // If no specialized sync, fall back to basic AI movement for existing creatures
+            if (!newState.creatures || newState.creatures.length === 0) {
+              newState.creatures = prev.creatures.map((creature) => {
+                if (creature.aggressive) {
+                  const dx = prev.playerPos.x - creature.x;
+                  const dy = prev.playerPos.y - creature.y;
+                  const distance = Math.sqrt(dx * dx + dy * dy);
+
+                  if (distance > 0.5) {
+                    const speed = 0.02; // creatures move slower than player
+                    creature.x += (dx / distance) * speed * deltaTime;
+                    creature.y += (dy / distance) * speed * deltaTime;
+                  }
+
+                  if (Math.random() < 0.001) {
+                    creature.aggressive = false;
+                  }
+                }
+
+                return creature;
+              });
+            }
+          } else {
+            // Basic AI when no active phase controller is exposed
+            newState.creatures = prev.creatures.map((creature) => {
+              if (creature.aggressive) {
+                const dx = prev.playerPos.x - creature.x;
+                const dy = prev.playerPos.y - creature.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance > 0.5) {
+                  const speed = 0.02; // creatures move slower than player
+                  creature.x += (dx / distance) * speed * deltaTime;
+                  creature.y += (dy / distance) * speed * deltaTime;
+                }
+
+                if (Math.random() < 0.001) {
+                  creature.aggressive = false;
+                }
+              }
+
+              return creature;
+            });
+          }
+        } catch (e) {
+          // on any sync error, fall back to existing AI
+          newState.creatures = prev.creatures.map((creature) => creature);
         }
 
         // Check for creature collisions
@@ -456,16 +597,44 @@ export function useTrialsGameState() {
           newState.phase = 'random-rocks';
           newState.phaseName = 'Random Rock Challenge';
           newState.phaseProgress = 0;
-          newState.currentObjective = PHASE_OBJECTIVES['random-rocks'];
-          newState.hints = PHASE_HINTS['random-rocks'];
+          // Use TrialsManager for hints and lore if available
+          try {
+            const maybeMgr = (window as unknown as { __trialsManager?: unknown }).__trialsManager;
+            if (maybeMgr && typeof (maybeMgr as { showHint?: unknown }).showHint === 'function') {
+              const mgr = maybeMgr as { showHint: (k: string) => string[] | undefined; displayLore?: (k: string) => string };
+              newState.currentObjective = PHASE_OBJECTIVES['random-rocks'];
+              newState.hints = mgr.showHint('random-rocks') || PHASE_HINTS['random-rocks'];
+              newState.phaseText = typeof mgr.displayLore === 'function' ? mgr.displayLore('random-rocks') : undefined;
+            } else {
+              newState.currentObjective = PHASE_OBJECTIVES['random-rocks'];
+              newState.hints = PHASE_HINTS['random-rocks'];
+            }
+          } catch (e) {
+            newState.currentObjective = PHASE_OBJECTIVES['random-rocks'];
+            newState.hints = PHASE_HINTS['random-rocks'];
+          }
           newState.achievements = [...prev.achievements, 'Rock Field Master'];
           newState.playerPos = { x: 2, y: 12 }; // Reset position
         } else if (prev.phaseProgress >= 100 && prev.phase === 'random-rocks') {
           newState.phase = 'mushroom-field';
           newState.phaseName = 'Mushroom Field Trials';
           newState.phaseProgress = 0;
-          newState.currentObjective = PHASE_OBJECTIVES['mushroom-field'];
-          newState.hints = PHASE_HINTS['mushroom-field'];
+          // Use manager hints and rest rocks
+          try {
+            const maybeMgr = (window as unknown as { __trialsManager?: unknown }).__trialsManager;
+            if (maybeMgr && typeof (maybeMgr as { showHint?: unknown }).showHint === 'function') {
+              const mgr = maybeMgr as { showHint: (k: string) => string[] | undefined; displayLore?: (k: string) => string };
+              newState.currentObjective = PHASE_OBJECTIVES['mushroom-field'];
+              newState.hints = mgr.showHint('mushroom-field') || PHASE_HINTS['mushroom-field'];
+              newState.phaseText = typeof mgr.displayLore === 'function' ? mgr.displayLore('mushroom-field') : undefined;
+            } else {
+              newState.currentObjective = PHASE_OBJECTIVES['mushroom-field'];
+              newState.hints = PHASE_HINTS['mushroom-field'];
+            }
+          } catch (e) {
+            newState.currentObjective = PHASE_OBJECTIVES['mushroom-field'];
+            newState.hints = PHASE_HINTS['mushroom-field'];
+          }
           newState.achievements = [...prev.achievements, 'Rock Dodger'];
           newState.playerPos = { x: 2, y: 12 };
 

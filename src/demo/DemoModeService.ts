@@ -1,4 +1,5 @@
-import { demoController, startDemo, stopDemo } from './demoController';
+import { demoController, stopDemo } from './demoController';
+import { startDemo as startDemoRoute } from './demoRouter';
 import { setDemoRunning } from './state';
 import { track } from '../lib/analytics';
 
@@ -21,8 +22,12 @@ export class DemoModeService {
       this.setOverlayBanner?.('Autoplay Demo — press ESC to regain control');
       track?.('demo_start', { packId });
     } catch {}
-    // delegate to existing controller
-    await startDemo();
+    // delegate to demo router (start selected route if provided)
+    if (packId) {
+      await startDemoRoute(packId);
+    } else {
+      await startDemoRoute('trials-of-gorstan');
+    }
   }
 
   public stop(reason?: string) {

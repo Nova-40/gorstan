@@ -22,12 +22,8 @@ import { Room } from '../types/Room';
 export const silentStanton: Room = {
   image: 'stantonharcourtZone_silentstanton.png',
   description: [
-    'Silent Stanton is a hauntingly quiet part of the village, where the usual sounds of life seem to have been muted.',
-    'The streets are empty, and the windows of the cottages are dark, as if the village has been abandoned.',
-    'A thick mist hangs in the air, obscuring your vision and muffling your footsteps.',
-    'At the center of this eerie silence stands a solitary bell tower, its spire barely visible through the fog.',
-    'The atmosphere is oppressive, and the silence feels almost alive, pressing down on you with an intangible weight.',
-  ],
+  "Silent Stanton is a hauntingly quiet part of the village, where the usual sounds of life seem to have been muted. The streets are empty, and the windows of the cottages are dark, as if the village has been abandoned. A thick mist hangs in the air, obscuring your vision and muffling your footsteps. At the center of this eerie silence stands a solitary bell tower, its spire barely visible through the fog. The atmosphere is oppressive, and the silence feels almost alive, pressing down on you with an intangible weight.",
+],
   zone: 'stantonZone',
   title: 'Silent Stanton',
 
@@ -47,21 +43,32 @@ export const silentStanton: Room = {
     west: 'ascendantStanton',
   },
 
-  items: ['mist_shard', 'bell_fragment', 'cobblestone_piece', 'ancient_scroll'],
+  items: [
+    { id: 'mist_shard', name: 'Mist Shard' },
+    { id: 'bell_fragment', name: 'Bell Fragment' },
+    { id: 'cobblestone_piece', name: 'Cobblestone Piece' },
+    { id: 'ancient_scroll', name: 'Ancient Scroll' }
+  ],
 
   interactables: {
     bell_tower: {
-      description: 'A solitary bell tower barely visible through the fog.',
+      description: [
+  "A solitary bell tower barely visible through the fog.",
+],
       actions: ['examine', 'ring', 'climb'],
       requires: [],
     },
     mist: {
-      description: 'A thick mist that hangs in the air, obscuring vision and muffling sound.',
+      description: [
+  "A thick mist that hangs in the air, obscuring vision and muffling sound.",
+],
       actions: ['examine', 'walk', 'collect'],
       requires: [],
     },
     dark_cottages: {
-      description: 'Darkened cottages with empty windows, adding to the eerie silence.',
+      description: [
+  "Darkened cottages with empty windows, adding to the eerie silence.",
+],
       actions: ['examine', 'enter', 'knock'],
       requires: [],
     },

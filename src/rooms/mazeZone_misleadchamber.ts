@@ -24,10 +24,8 @@ const misleadchamber: Room = {
   zone: 'mazeZone',
   title: 'Mislead Chamber',
   description: [
-    'You enter the Mislead Chamber, where the walls seem to bend and twist, distorting your sense of direction.',
-    'Reflections flicker in the corners of your eyes, and footsteps echo in impossible patterns.',
-    'Every exit looks identical, and the air is thick with the feeling that something is not as it seems.',
-  ],
+  "You enter the Mislead Chamber, where the walls seem to bend and twist, distorting your sense of direction. Reflections flicker in the corners of your eyes, and footsteps echo in impossible patterns. Every exit looks identical, and the air is thick with the feeling that something is not as it seems.",
+],
   image: 'mazeZone_misleadchamber.png',
   ambientAudio: 'mislead_chamber_ambience.mp3',
 
@@ -44,18 +42,23 @@ const misleadchamber: Room = {
     west: 'mazeZone_anothermazeroom',
   },
 
-  items: ['distorted_map', 'mirror_shard'],
+  items: [
+    { id: 'distorted_map', name: 'Distorted Map' },
+    { id: 'mirror_shard', name: 'Mirror Shard' }
+  ],
 
   interactables: {
     mirrored_wall: {
-      description:
-        "A wall that reflects your image, but the reflection doesn't always match your movements.",
+      description: [
+  "A wall that reflects your image, but the reflection doesn't always match your movements.",
+],
       actions: ['examine', 'touch', 'mark'],
       requires: [],
     },
     echoing_floor: {
-      description:
-        'The floor here amplifies every sound, making it hard to tell where noises originate.',
+      description: [
+  "The floor here amplifies every sound, making it hard to tell where noises originate.",
+],
       actions: ['listen', 'tap', 'search'],
       requires: [],
     },
@@ -111,8 +114,9 @@ const misleadchamber: Room = {
 
   secrets: {
     hidden_door: {
-      description:
-        'A concealed door revealed by marking the mirrored wall and listening for a unique echo.',
+      description: [
+  "A concealed door revealed by marking the mirrored wall and listening for a unique echo.",
+],
       requirements: ['mark mirrored_wall', 'listen echoing_floor'],
       rewards: ['shortcut_access', 'mislead_lore'],
     },
@@ -120,12 +124,16 @@ const misleadchamber: Room = {
 
   customActions: {
     mark_mirrored_wall: {
-      description: 'Mark the mirrored wall to test which reflection is real.',
+      description: [
+  "Mark the mirrored wall to test which reflection is real.",
+],
       requirements: ['mirror_shard'],
       effects: ['set_wallMarked', 'reduce_disorientation'],
     },
     listen_to_floor: {
-      description: 'Listen carefully to the floor to discern the true exit.',
+      description: [
+  "Listen carefully to the floor to discern the true exit.",
+],
       requirements: [],
       effects: ['gain_hint', 'unlock_secret'],
     },

@@ -29,6 +29,24 @@ import type { NPC } from '../types/NPCTypes';
 import type { ConversationThread } from '../types/dialogue';
 import { conversationsReducer } from '../reducers/conversations';
 
+// Local types for NPC conversation tracking
+type NPCConversationEntry = {
+  topic: string;
+  playerInput: string;
+  npcResponse: string;
+  timestamp: number;
+  mood?: string | undefined;
+};
+
+type NPCHistory = {
+  lastInteraction?: number;
+  totalInteractions?: number;
+  entries?: NPCConversationEntry[];
+  relationship?: number;
+  knownTopics?: string[];
+  unresolved?: unknown[];
+};
+
 // --- Util: Add Room Description To History ---
 function addRoomDescriptionToHistory(
   history: GameMessage[],
@@ -129,6 +147,8 @@ export const initialGameState: LocalGameState = {
     achievements: [],
     codexEntries: {},
   },
+  // Persisted per-room micro-objective completions: { [roomId]: string[] }
+  microObjectiveState: {},
   messages: [],
   inventory: [],
   // Inter-NPC conversation system
@@ -636,10 +656,10 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
         'payload' in action &&
         action.payload &&
         typeof action.payload === 'object' &&
-        Object.prototype.hasOwnProperty.call(action.payload, 'flag') &&
-        (action.payload as any).flag !== undefined
+        Object.prototype.hasOwnProperty.call(action.payload, 'flag')
       ) {
-        const { flag, value } = action.payload as { flag: string; value: any };
+        const pl = action.payload as { flag: string; value?: unknown };
+        const { flag, value } = pl;
 
         // Score events based on flag changes
         const scoreEvents: Record<string, { positive?: string; negative?: string }> = {
@@ -690,8 +710,9 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
         const newFlags = { ...state.flags };
         if (typeof flag === 'string') {
           newFlags[flag] = true;
-        } else if (typeof flag === 'object' && flag && (flag as any).key) {
-          newFlags[(flag as any).key] = (flag as any).value;
+        } else if (typeof flag === 'object' && flag && 'key' in flag) {
+          const f = flag as { key: string; value: boolean };
+          newFlags[f.key] = f.value;
         }
         return {
           ...state,
@@ -726,7 +747,8 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
 
     // --- Trap & Damage ---
     case 'TRIGGER_TRAP': {
-      const trap = action.payload as any;
+      const trap = action.payload as { id?: string; description?: string; effect?: any } | undefined;
+      if (!trap) return state;
       const currentHealth = state.player.health || 100;
       const damage = trap.effect?.damage || 0;
       const newHealth = Math.max(0, currentHealth - damage);
@@ -761,11 +783,16 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
       }
 
       const updatedRoomMap = { ...state.roomMap };
-      const currentRoom = updatedRoomMap[state.currentRoomId] as any;
+      const currentRoom = updatedRoomMap[state.currentRoomId] as Partial<import('../types/Room').Room> | undefined;
       if (currentRoom?.traps) {
-        const trapIndex = currentRoom.traps.findIndex((t: any) => t.id === trap.id);
+  const trapIndex = currentRoom.traps.findIndex((t: unknown) => typeof t === 'object' && t !== null && (t as Record<string, unknown>).id === trap?.id);
         if (trapIndex !== -1) {
-          currentRoom.traps[trapIndex].triggered = true;
+          // mark trap triggered if structure supports it
+          const trapItem = currentRoom.traps[trapIndex];
+          if (trapItem && typeof trapItem === 'object') {
+            // Use a narrow assertion for the triggered flag
+            (trapItem as { triggered?: boolean }).triggered = true;
+          }
         }
       }
 
@@ -790,6 +817,39 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
           score: 0,
         },
       };
+    }
+    // Persist micro-objective completion
+    case 'COMPLETE_MICROOBJECTIVE': {
+      // payload expected: { roomId: string, objectiveId: string }
+      const payload = action.payload as { roomId: string; objectiveId: string } | undefined;
+      if (!payload || !payload.roomId || !payload.objectiveId) return state;
+
+      const current = state.microObjectiveState || {};
+      const completedForRoom = new Set(current[payload.roomId] || []);
+      if (completedForRoom.has(payload.objectiveId)) return state; // already completed
+
+      completedForRoom.add(payload.objectiveId);
+
+      const newState = {
+        ...state,
+        microObjectiveState: {
+          ...current,
+          [payload.roomId]: Array.from(completedForRoom),
+        },
+      } as LocalGameState;
+
+      // fire a notification event so UI systems can react (toasts already exist)
+      const event = new CustomEvent('gorstan-notification', {
+        detail: {
+          type: 'micro_objective_completed',
+          title: 'Objective Complete',
+          description: payload.objectiveId,
+          duration: 3000,
+        },
+      });
+      window.dispatchEvent(event);
+
+      return newState;
     }
     case 'UPDATE_SCORE': {
       return {
@@ -903,9 +963,9 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
         filteredItems = (originalItems as string[]).filter((roomItem) => roomItem !== item);
       } else {
         // Handle RoomItem[] type
-        filteredItems = (originalItems as any[]).filter((roomItem) =>
-          typeof roomItem === 'object' ? roomItem.name !== item : roomItem !== item,
-        );
+        filteredItems = (originalItems as Array<unknown>).filter((roomItem) =>
+          typeof roomItem === 'object' && roomItem !== null ? ((roomItem as Record<string, unknown>).name as string) !== item : roomItem !== item,
+        ) as typeof originalItems;
       }
 
       return {
@@ -993,15 +1053,19 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
         npcResponse: string;
         mood?: string;
       };
-      const currentHistory = (state.flags?.npcConversations as any) || {};
-      const npcHistory = currentHistory[npcId] || {
-        lastInteraction: 0,
-        totalInteractions: 0,
-        entries: [],
-        relationship: 0,
-        knownTopics: [],
-        unresolved: [],
-      };
+      const currentHistoryRaw = state.flags?.npcConversations;
+      const currentHistory = typeof currentHistoryRaw === 'object' && currentHistoryRaw ? (currentHistoryRaw as Record<string, unknown>) : {};
+      const nhRaw = currentHistory[npcId];
+      const npcHistory: NPCHistory = typeof nhRaw === 'object' && nhRaw
+        ? (nhRaw as NPCHistory)
+        : {
+            lastInteraction: 0,
+            totalInteractions: 0,
+            entries: [] as NPCConversationEntry[],
+            relationship: 0,
+            knownTopics: [] as string[],
+            unresolved: [] as unknown[],
+          };
 
       const newEntry = {
         topic,
@@ -1011,16 +1075,17 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
         mood,
       };
 
+      const previousEntries = Array.isArray(npcHistory.entries) ? npcHistory.entries : [];
       const updatedHistory = {
         ...currentHistory,
         [npcId]: {
           ...npcHistory,
           lastInteraction: Date.now(),
-          totalInteractions: npcHistory.totalInteractions + 1,
-          entries: [...npcHistory.entries.slice(-9), newEntry], // Keep last 10 entries
-          knownTopics: [...new Set([...npcHistory.knownTopics, topic])],
+          totalInteractions: (npcHistory.totalInteractions || 0) + 1,
+          entries: [...previousEntries.slice(-9), newEntry], // Keep last 10 entries
+          knownTopics: Array.from(new Set([...(npcHistory.knownTopics || []), topic])),
           currentTopic: topic,
-        },
+        } as NPCHistory,
       };
 
       return {
@@ -1035,16 +1100,17 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
     case 'UPDATE_NPC_CONVERSATION_HISTORY': {
       const { npcId, history } = action.payload as {
         npcId: string;
-        history: any;
+        history: unknown;
       };
-      const currentHistory = (state.flags?.npcConversations as any) || {};
+      const currentHistoryRaw2 = state.flags?.npcConversations;
+      const currentHistory2 = typeof currentHistoryRaw2 === 'object' && currentHistoryRaw2 ? (currentHistoryRaw2 as Record<string, unknown>) : {};
 
       return {
         ...state,
         flags: {
           ...state.flags,
           npcConversations: {
-            ...currentHistory,
+            ...currentHistory2,
             [npcId]: history,
           },
         },
@@ -1135,10 +1201,20 @@ export const GameStateContext = createContext<
   | undefined
 >(undefined);
 
+// Local helper types for extended dispatch actions used only in this file
+export interface CompleteMicroObjectivePayload {
+  roomId: string;
+  objectiveId: string;
+}
+
+export type LocalGameAction = GameAction | { type: 'COMPLETE_MICROOBJECTIVE'; payload: CompleteMicroObjectivePayload };
+
 export const GameStateProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = useReducer(gameStateReducer, initialGameState);
   return (
-    <GameStateContext.Provider value={{ state, dispatch }}>{children}</GameStateContext.Provider>
+    <GameStateContext.Provider value={{ state, dispatch: dispatch as Dispatch<LocalGameAction> }}>
+      {children}
+    </GameStateContext.Provider>
   );
 };
 
@@ -1173,6 +1249,10 @@ export interface LocalGameState {
     resetButtonPressCount?: number;
     triggerResetEscalation?: boolean;
     [key: string]: any;
+  };
+  // persistent micro-objective completion state per room
+  microObjectiveState?: {
+    [roomId: string]: string[]; // array of completed objective ids for the room
   };
   npcsInRoom: NPC[];
   roomVisitCount: Record<string, number>;

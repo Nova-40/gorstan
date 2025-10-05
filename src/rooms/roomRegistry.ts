@@ -160,7 +160,8 @@ import villagegreen from './stantonZone_villagegreen';
 import windingpath from './mazeZone_windingpath';
 
 // Variable declaration
-const roomRegistry = {
+import type { Room } from '../types/Room';
+const roomRegistry: Record<string, Room | any> = {
   elfhame,
   faeglade,
   faelake,
@@ -233,6 +234,7 @@ const roomRegistry = {
   silentStanton,
   stantonharcourt,
   villagegreen,
+  interactables: {},
 };
 
 export default roomRegistry;

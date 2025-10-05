@@ -124,6 +124,7 @@ type GameStage =
   | 'routeSelect'
   | 'intro'
   | 'demo'
+  | 'demoList'
   | 'game'
   | 'trialsGame'
   | 'transition_jump'
@@ -2153,7 +2154,28 @@ const AppCore: React.FC = () => {
           // Fallback to original welcome screen credits path
           dispatch({ type: 'SET_FLAG', payload: { flag: 'openCredits', value: true } });
         }}
+        onOpenDemo={() => {
+          // Switch to the dedicated demo listing screen
+          dispatch({ type: 'ADVANCE_STAGE', payload: 'demoList' });
+        }}
       />
+    );
+  }
+  if (stage === 'demoList') {
+    const DemoScreen = React.lazy(() => import('./DemoScreen'));
+    return (
+      <React.Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading demos…</div>}>
+        <DemoScreen
+          onClose={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'welcome' })}
+          onStartDemo={(routeId: string) => {
+            // Prepare demo player and advance to demo stage
+            dispatch({ type: 'SET_PLAYER_NAME', payload: 'Demo Player' });
+            dispatch({ type: 'ADVANCE_STAGE', payload: 'demo' });
+            // Start demo via service (banner/analytics handled there)
+            demoService.start(routeId);
+          }}
+        />
+      </React.Suspense>
     );
   }
   if (stage === 'demo') {
@@ -2222,6 +2244,7 @@ const AppCore: React.FC = () => {
           }
         }}
         onCancel={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'welcome' })}
+        onLoadGame={() => dispatch({ type: 'LOAD_SAVED_GAME' })}
       />
     );
   }

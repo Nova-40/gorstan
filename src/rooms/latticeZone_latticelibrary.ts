@@ -24,11 +24,8 @@ const latticelibrary: Room = {
   zone: 'latticeZone',
   title: 'The Lattice Library',
   description: [
-    'You are in the Lattice Library. It is a vast library, filled with books on every conceivable subject.',
-    'Shelves stretch into the distance, their contents glowing faintly with encoded knowledge.',
-    'The air is thick with the hum of information, and crystalline terminals float between the aisles.',
-    "You sense that some of the books are more than they appear—some whisper, some shimmer, and some seem to rearrange themselves when you aren't looking.",
-  ],
+  "You are in the Lattice Library. It is a vast library, filled with books on every conceivable subject. Shelves stretch into the distance, their contents glowing faintly with encoded knowledge. The air is thick with the hum of information, and crystalline terminals float between the aisles. You sense that some of the books are more than they appear—some whisper, some shimmer, and some seem to rearrange themselves when you aren't looking.",
+],
   image: 'latticeZone_latticelibrary.png',
   ambientAudio: 'library_resonance.mp3',
 
@@ -44,15 +41,21 @@ const latticelibrary: Room = {
     south: 'latticeZone_latticehub',
   },
 
-  items: ['encrypted_tome', 'floating_scroll', 'crystal_index', 'ancient_codex'],
+  items: [
+    { id: 'encrypted_tome', name: 'Encrypted Tome' },
+    { id: 'floating_scroll', name: 'Floating Scroll' },
+    { id: 'crystal_index', name: 'Crystal Index' },
+    { id: 'ancient_codex', name: 'Ancient Codex' }
+  ],
 
   traps: [
     {
       id: 'knowledge_overload',
       type: 'damage',
       severity: 'major',
-      description:
-        'Accessing the forbidden archives overloads your mind! Ancient knowledge floods your consciousness causing severe mental strain!',
+      description: [
+  "Accessing the forbidden archives overloads your mind! Ancient knowledge floods your consciousness causing severe mental strain!",
+],
       trigger: 'enter',
       effect: {
         damage: 35,
@@ -67,17 +70,23 @@ const latticelibrary: Room = {
 
   interactables: {
     crystal_terminal: {
-      description: "A floating terminal that provides access to the library's digital archives.",
+      description: [
+  "A floating terminal that provides access to the library's digital archives.",
+],
       actions: ['access', 'search', 'download'],
       requires: [],
     },
     shifting_shelf: {
-      description: 'A shelf that seems to rearrange its books when not observed directly.',
+      description: [
+  "A shelf that seems to rearrange its books when not observed directly.",
+],
       actions: ['observe', 'search', 'stabilize'],
       requires: [],
     },
     whispering_book: {
-      description: 'A book that whispers secrets when held close.',
+      description: [
+  "A book that whispers secrets when held close.",
+],
       actions: ['listen', 'read', 'decode'],
       requires: ['encrypted_tome'],
     },
@@ -146,13 +155,16 @@ const latticelibrary: Room = {
 
   secrets: {
     hidden_archive: {
-      description: 'A concealed archive containing forbidden knowledge.',
+      description: [
+  "A concealed archive containing forbidden knowledge.",
+],
       requirements: ['stabilize shifting_shelf', 'decode whispering_book'],
       rewards: ['forbidden_tome', 'library_lore'],
     },
     librarian_memory: {
-      description:
-        'A memory fragment from the Librarian Echo, unlocked by accessing the crystal terminal.',
+      description: [
+  "A memory fragment from the Librarian Echo, unlocked by accessing the crystal terminal.",
+],
       requirements: ['access crystal_terminal', 'talk to librarian_echo'],
       rewards: ['echo_story', 'unique_item'],
     },
@@ -160,12 +172,16 @@ const latticelibrary: Room = {
 
   customActions: {
     decode_knowledge: {
-      description: 'Attempt to decode encrypted knowledge from a tome.',
+      description: [
+  "Attempt to decode encrypted knowledge from a tome.",
+],
       requirements: ['encrypted_tome'],
       effects: ['gain_insight', 'unlock_secret'],
     },
     stabilize_shelves: {
-      description: 'Stabilize the shifting shelves to reveal hidden books.',
+      description: [
+  "Stabilize the shifting shelves to reveal hidden books.",
+],
       requirements: [],
       effects: ['find_hidden_book', 'reduce_hazards'],
     },

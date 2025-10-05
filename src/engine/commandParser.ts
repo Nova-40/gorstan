@@ -98,7 +98,6 @@ export function processCommand({
 
   switch (verb) {
     // Demo-safe short-circuits
-    case 'speak':
     case 'talk':
     case 'ask':
       if (isDemoRunning()) {

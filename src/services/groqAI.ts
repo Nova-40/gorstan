@@ -70,7 +70,7 @@ class GroqAIService {
 
       console.log(`[Groq AI] Generating response for ${npcId}...`);
 
-      const chatCompletion = (await Promise.race([
+      const _chatResult = await Promise.race([
         this.groq.chat.completions.create({
           messages: [
             {
@@ -90,10 +90,15 @@ class GroqAIService {
         new Promise((_, reject) =>
           setTimeout(() => reject(new Error('AI response timeout')), this.config.timeout),
         ),
-      ])) as any;
+      ]);
+
+      // Narrow the response shape safely instead of relying on `any`
+      const chatCompletion = (_chatResult as unknown) as {
+        choices?: Array<{ message?: { content?: string } }>;
+      };
 
       this.incrementRequestCount();
-      const response = chatCompletion.choices[0]?.message?.content?.trim();
+  const response = (chatCompletion.choices?.[0]?.message?.content || '').trim() || null;
 
       if (response) {
         console.log(`[Groq AI] ✅ ${npcId}: ${response}`);
@@ -384,7 +389,7 @@ class GroqAIService {
 
       console.log(`[Groq AI] Generating NPC-to-NPC: ${speakingNpcId} → ${targetNpcId}`);
 
-      const chatCompletion = (await Promise.race([
+      const _chatResult = await Promise.race([
         this.groq.chat.completions.create({
           messages: [
             {
@@ -406,10 +411,15 @@ class GroqAIService {
         new Promise((_, reject) =>
           setTimeout(() => reject(new Error('AI response timeout')), this.config.timeout),
         ),
-      ])) as any;
+      ]);
+
+      // Narrow the response shape safely instead of relying on `any`
+      const chatCompletion = (_chatResult as unknown) as {
+        choices?: Array<{ message?: { content?: string } }>;
+      };
 
       this.incrementRequestCount();
-      const response = chatCompletion.choices[0]?.message?.content?.trim();
+  const response = (chatCompletion.choices?.[0]?.message?.content || '').trim() || null;
 
       if (response) {
         console.log(`[Groq AI] ✅ ${speakingNpcId} → ${targetNpcId}: ${response}`);

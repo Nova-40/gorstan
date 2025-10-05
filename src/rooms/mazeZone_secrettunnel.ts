@@ -24,10 +24,8 @@ const secrettunnel: Room = {
   zone: 'mazeZone',
   title: 'Secret Tunnel',
   description: [
-    'You step into a narrow tunnel that seems to stretch endlessly.',
-    'The walls are damp and covered in glowing moss, casting an eerie green light.',
-    'The air is thick and humid, and every sound seems to echo for far too long.',
-  ],
+  "You step into a narrow tunnel that seems to stretch endlessly. The walls are damp and covered in glowing moss, casting an eerie green light. The air is thick and humid, and every sound seems to echo for far too long.",
+],
   image: 'mazeZone_secrettunnel.png',
   ambientAudio: 'secret_tunnel_ambience.mp3',
 
@@ -43,21 +41,31 @@ const secrettunnel: Room = {
     east: 'mazeZone_pollysbay',
   },
 
-  items: ['glowing_moss', 'damp_note', 'rusted_coin'],
+  items: [
+    { id: 'glowing_moss', name: 'Glowing Moss' },
+    { id: 'damp_note', name: 'Damp Note' },
+    { id: 'rusted_coin', name: 'Rusted Coin' }
+  ],
 
   interactables: {
     moss_patch: {
-      description: 'A patch of glowing moss, brighter than the rest.',
+      description: [
+  "A patch of glowing moss, brighter than the rest.",
+],
       actions: ['examine', 'collect', 'search'],
       requires: [],
     },
     slippery_floor: {
-      description: 'The floor here is slick with moisture, making footing treacherous.',
+      description: [
+  "The floor here is slick with moisture, making footing treacherous.",
+],
       actions: ['examine', 'steady', 'clean'],
       requires: [],
     },
     hidden_crack: {
-      description: 'A narrow crack in the wall, just wide enough to peer through.',
+      description: [
+  "A narrow crack in the wall, just wide enough to peer through.",
+],
       actions: ['peer', 'listen', 'insert_item'],
       requires: [],
     },
@@ -114,7 +122,9 @@ const secrettunnel: Room = {
 
   secrets: {
     hidden_cache: {
-      description: 'A small cache behind the moss patch, revealed by searching carefully.',
+      description: [
+  "A small cache behind the moss patch, revealed by searching carefully.",
+],
       requirements: ['search moss_patch'],
       rewards: ['rare_item', 'tunnel_lore'],
     },
@@ -122,12 +132,16 @@ const secrettunnel: Room = {
 
   customActions: {
     collect_moss: {
-      description: 'Carefully collect a sample of the glowing moss.',
+      description: [
+  "Carefully collect a sample of the glowing moss.",
+],
       requirements: [],
       effects: ['set_mossCollected', 'gain_light_source'],
     },
     peer_crack: {
-      description: 'Peer through the hidden crack to spot a secret.',
+      description: [
+  "Peer through the hidden crack to spot a secret.",
+],
       requirements: [],
       effects: ['set_crackExamined', 'reveal_hint'],
     },

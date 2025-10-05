@@ -14,10 +14,10 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const cardVariants = {
-  default: 'bg-gray-800 shadow-md border border-neutral-200',
-  elevated: 'bg-gray-800 shadow-lg border border-gray-700',
-  outlined: 'bg-gray-800 border-2 border-neutral-300',
-  ghost: 'bg-gray-800/60 ring-0',
+  default: 'card-root card-default',
+  elevated: 'card-root shadow-lg',
+  outlined: 'card-root border-2',
+  ghost: 'card-root bg-transparent/30 ring-0',
   flat: 'bg-neutral-50',
 };
 
@@ -56,7 +56,8 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
         onKeyDown={isInteractive ? handleKeyDown : onKeyDown}
         onClick={onClick}
         className={cn(
-          'rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-colors',
+          'rounded-lg focus:outline-none focus:ring-2 transition-colors text-crt-green',
+          'focus:card-focused',
           cardVariants[variant],
           cardPadding[padding],
           cardSizes[size],
@@ -79,7 +80,7 @@ export interface CardHeaderProps extends HTMLAttributes<HTMLDivElement> {
 export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
   ({ className, children, ...props }, ref) => {
     return (
-      <div ref={ref} className={cn('mb-4', className)} {...props}>
+      <div ref={ref} className={cn('mb-4 card-header-centered', className)} {...props}>
         {children}
       </div>
     );

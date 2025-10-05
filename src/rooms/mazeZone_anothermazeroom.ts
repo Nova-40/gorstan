@@ -24,10 +24,8 @@ const anothermazeroom: Room = {
   zone: 'mazeZone',
   title: 'Another Maze Room',
   description: [
-    'You are in another room in the maze. It looks much like the others.',
-    "The walls are featureless and the air is still, making it difficult to tell if you've been here before.",
-    'Dim light filters in from unseen sources, casting shifting shadows on the floor.',
-  ],
+  "You are in another room in the maze. It looks much like the others. The walls are featureless and the air is still, making it difficult to tell if you've been here before. Dim light filters in from unseen sources, casting shifting shadows on the floor.",
+],
   image: 'mazeZone_anothermazeroom.png',
   ambientAudio: 'maze_ambience.mp3',
 
@@ -42,16 +40,23 @@ const anothermazeroom: Room = {
     south: 'mazeZone_stillamazeroom',
   },
 
-  items: ['chalk_piece', 'maze_map_fragment'],
+  items: [
+    { id: 'chalk_piece', name: 'Chalk Piece' },
+    { id: 'maze_map_fragment', name: 'Maze Map Fragment' }
+  ],
 
   interactables: {
     wall: {
-      description: 'A blank, cold wall. It might be useful for marking your path.',
+      description: [
+  "A blank, cold wall. It might be useful for marking your path.",
+],
       actions: ['examine', 'mark', 'knock'],
       requires: [],
     },
     floor: {
-      description: 'The floor is smooth stone, worn by countless footsteps.',
+      description: [
+  "The floor is smooth stone, worn by countless footsteps.",
+],
       actions: ['examine', 'search', 'listen'],
       requires: [],
     },
@@ -107,7 +112,9 @@ const anothermazeroom: Room = {
 
   secrets: {
     hidden_passage: {
-      description: 'A concealed passage revealed by marking the correct wall.',
+      description: [
+  "A concealed passage revealed by marking the correct wall.",
+],
       requirements: ['mark wall', 'listen for echo'],
       rewards: ['shortcut_access', 'maze_lore'],
     },
@@ -115,7 +122,9 @@ const anothermazeroom: Room = {
 
   customActions: {
     mark_wall: {
-      description: 'Mark the wall to keep track of your path.',
+      description: [
+  "Mark the wall to keep track of your path.",
+],
       requirements: ['chalk_piece'],
       effects: ['set_wallMarked', 'reduce_disorientation'],
     },

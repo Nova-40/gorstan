@@ -24,11 +24,8 @@ const findlaterscornercoffeeshop: Room = {
   zone: 'londonZone',
   title: "Findlater's Corner Coffee Shop",
   description: [
-    "You step into a cozy corner coffee shop that feels eerily familiar, though you can't quite place when you've been here before. The warm aroma of freshly ground coffee beans fills the air, mixing with the scent of pastries and the gentle hum of conversation.",
-    'Mismatched vintage furniture creates intimate seating areas throughout the space. Exposed brick walls are adorned with local artwork and old photographs of the neighborhood. Soft jazz plays in the background, adding to the welcoming atmosphere.',
-    'Behind the polished wooden counter, a friendly barista with bright eyes and a warm smile has already begun preparing a coffee before you even approached. She works with practiced efficiency, as if she knew exactly what you wanted.',
-    "The morning light streams through large windows, casting golden patterns across the worn wooden floors. This place has the comfortable feel of somewhere you've spent countless hours, even though the specific memories remain frustratingly just out of reach.",
-  ],
+  "You step into a cozy corner coffee shop that feels eerily familiar, though you can't quite place when you've been here before. The warm aroma of freshly ground coffee beans fills the air, mixing with the scent of pastries and the gentle hum of conversation. Mismatched vintage furniture creates intimate seating areas throughout the space. Exposed brick walls are adorned with local artwork and old photographs of the neighborhood. Soft jazz plays in the background, adding to the welcoming atmosphere. Behind the polished wooden counter, a friendly barista with bright eyes and a warm smile has already begun preparing a coffee before you even approached. She works with practiced efficiency, as if she knew exactly what you wanted. The morning light streams through large windows, casting golden patterns across the worn wooden floors. This place has the comfortable feel of somewhere you've spent countless hours, even though the specific memories remain frustratingly just out of reach.",
+],
   image: 'londonZone_findlaters.png',
   ambientAudio: 'cozy_cafe_ambience.mp3',
 
@@ -52,48 +49,54 @@ const findlaterscornercoffeeshop: Room = {
   },
 
   items: [
-    'coffee_shop_menu',
-    'local_newspaper',
-    'receipt_with_date',
-    'loyalty_card',
-    'business_card_collection',
-    'forgotten_notebook',
+    { id: 'coffee_shop_menu', name: 'Coffee Shop Menu' },
+    { id: 'local_newspaper', name: 'Local Newspaper' },
+    { id: 'receipt_with_date', name: 'Receipt With Date' },
+    { id: 'loyalty_card', name: 'Loyalty Card' },
+    { id: 'business_card_collection', name: 'Business Card Collection' },
+    { id: 'forgotten_notebook', name: 'Forgotten Notebook' }
   ],
 
   interactables: {
     barista: {
-      description:
-        "A cheerful barista with knowing eyes who seems to recognize you. She's already preparing your usual order with practiced precision.",
+      description: [
+  "A cheerful barista with knowing eyes who seems to recognize you. She's already preparing your usual order with practiced precision.",
+],
       actions: ['talk', 'order_coffee', 'ask_about_visits'],
       requires: [],
     },
     coffee_counter: {
-      description:
-        'A beautifully maintained wooden counter with an impressive espresso machine and display of pastries.',
+      description: [
+  "A beautifully maintained wooden counter with an impressive espresso machine and display of pastries.",
+],
       actions: ['examine', 'lean_on', 'order'],
       requires: [],
     },
     vintage_furniture: {
-      description:
-        'Eclectic mix of comfortable chairs and small tables, each piece with its own character and story.',
+      description: [
+  "Eclectic mix of comfortable chairs and small tables, each piece with its own character and story.",
+],
       actions: ['examine', 'sit', 'choose_favorite_spot'],
       requires: [],
     },
     wall_photos: {
-      description:
-        'Black and white photographs of the neighborhood through the decades. Some faces look vaguely familiar.',
+      description: [
+  "Black and white photographs of the neighborhood through the decades. Some faces look vaguely familiar.",
+],
       actions: ['examine', 'study_faces', 'read_captions'],
       requires: [],
     },
     corner_booth: {
-      description:
-        'A particularly cozy booth in the corner that feels like it might have been "your spot" at some point.',
+      description: [
+  "A particularly cozy booth in the corner that feels like it might have been \"your spot\" at some point.",
+],
       actions: ['examine', 'sit', 'reminisce'],
       requires: [],
     },
     coffee_machine: {
-      description:
-        'A professional espresso machine that hisses and steams as the barista works her magic.',
+      description: [
+  "A professional espresso machine that hisses and steams as the barista works her magic.",
+],
       actions: ['examine', 'listen', 'watch_preparation'],
       requires: [],
     },
@@ -179,7 +182,9 @@ const findlaterscornercoffeeshop: Room = {
 
   secrets: {
     forgotten_routine: {
-      description: 'Your old regular routine and what brought you here every week',
+      description: [
+  "Your old regular routine and what brought you here every week",
+],
       requirements: [
         'talk extensively with barista',
         'sit in corner_booth',
@@ -188,12 +193,16 @@ const findlaterscornercoffeeshop: Room = {
       rewards: ['memory_restoration', 'understanding_of_past_life'],
     },
     neighborhood_connections: {
-      description: 'The web of relationships you had in this community',
+      description: [
+  "The web of relationships you had in this community",
+],
       requirements: ['study wall_photos', 'talk with regular_customer', 'examine business_cards'],
       rewards: ['community_knowledge', 'local_network_access'],
     },
     the_usual_order: {
-      description: 'The specific coffee order that defines your connection to this place',
+      description: [
+  "The specific coffee order that defines your connection to this place",
+],
       requirements: ['accept barista offer', 'taste the coffee', 'remember preferences'],
       rewards: ['comfort_item', 'identity_anchor'],
     },
@@ -201,22 +210,30 @@ const findlaterscornercoffeeshop: Room = {
 
   customActions: {
     order_usual: {
-      description: "Accept the barista's offer to make your usual coffee",
+      description: [
+  "Accept the barista's offer to make your usual coffee",
+],
       requirements: ['talk with barista'],
       effects: ['receive_perfect_coffee', 'trigger_strong_memories', 'feel_belonging'],
     },
     accept_free_coffee: {
-      description: "Accept the barista's complimentary coffee offer",
+      description: [
+  "Accept the barista's complimentary coffee offer",
+],
       requirements: [],
       effects: ['receive_coffee', 'feel_welcomed', 'barista_kindness'],
     },
     sit_in_usual_spot: {
-      description: 'Claim the corner booth that feels like it was always yours',
+      description: [
+  "Claim the corner booth that feels like it was always yours",
+],
       requirements: ['examine corner_booth'],
       effects: ['access_stored_memories', 'feel_deep_familiarity', 'understand_routine'],
     },
     piece_together_past: {
-      description: 'Use clues in the cafe to reconstruct your history here',
+      description: [
+  "Use clues in the cafe to reconstruct your history here",
+],
       requirements: ['examine wall_photos', 'talk with multiple npcs', 'find forgotten_notebook'],
       effects: ['restore_memory_fragments', 'understand_community_role', 'regain_identity_piece'],
     },

@@ -6,8 +6,19 @@ import type { LocalGameState } from '../state/gameState';
 import type { NPC } from '../types/NPCTypes';
 import { pickRandom } from '../utils/random';
 
+// Intelligence profile shape used by the engine
+interface IntelligenceProfile {
+  memory: number;
+  adaptability: number;
+  observation: number;
+  creativity: number;
+  keywords: string[];
+  responses: 'formal' | 'cryptic' | 'balanced' | 'energetic' | 'academic' | 'wise' | string;
+  helpfulness: number;
+}
+
 // Core intelligence traits for different NPC archetypes
-const NPC_INTELLIGENCE_PROFILES = {
+const NPC_INTELLIGENCE_PROFILES: Record<string, IntelligenceProfile> = {
   bureaucrat: {
     // Al
     memory: 0.9,
@@ -78,6 +89,8 @@ interface NPCMemoryEntry {
   knownFacts: string[];
   lastResponse: string;
   conversationStyle: 'formal' | 'casual' | 'hostile' | 'friendly';
+  // Optional runtime-only timestamp of last interaction (may be assigned elsewhere)
+  lastInteractionTime?: number;
 }
 
 class NPCIntelligenceEngine {
@@ -134,27 +147,27 @@ class NPCIntelligenceEngine {
   }
 
   // Get intelligence profile for NPC
-  private getIntelligenceProfile(npc: NPC) {
+  private getIntelligenceProfile(npc: NPC): IntelligenceProfile {
     // Determine archetype from personality traits
     const traits = npc.personalityTraits || [];
 
     if (traits.includes('bureaucratic') || traits.includes('methodical')) {
-      return NPC_INTELLIGENCE_PROFILES.bureaucrat;
+      return NPC_INTELLIGENCE_PROFILES['bureaucrat']!;
     }
     if (traits.includes('mysterious') || traits.includes('cryptic')) {
-      return NPC_INTELLIGENCE_PROFILES.mystic;
+      return NPC_INTELLIGENCE_PROFILES['mystic']!;
     }
     if (traits.includes('helpful') || traits.includes('guide')) {
-      return NPC_INTELLIGENCE_PROFILES.guide;
+      return NPC_INTELLIGENCE_PROFILES['guide']!;
     }
     if (traits.includes('curious') || traits.includes('explorer')) {
-      return NPC_INTELLIGENCE_PROFILES.explorer;
+      return NPC_INTELLIGENCE_PROFILES['explorer']!;
     }
     if (traits.includes('scholarly') || traits.includes('wise')) {
-      return NPC_INTELLIGENCE_PROFILES.scholar;
+      return NPC_INTELLIGENCE_PROFILES['scholar']!;
     }
     if (traits.includes('streetwise') || traits.includes('practical')) {
-      return NPC_INTELLIGENCE_PROFILES.survivor;
+      return NPC_INTELLIGENCE_PROFILES['survivor']!;
     }
 
     // Default balanced profile
@@ -272,7 +285,7 @@ class NPCIntelligenceEngine {
   private craftResponse(
     npc: NPC,
     memory: NPCMemoryEntry,
-    profile: any,
+    profile: IntelligenceProfile,
     input: string,
     intent: string,
     state: LocalGameState,
@@ -337,7 +350,7 @@ class NPCIntelligenceEngine {
   }
 
   // Apply personality to response
-  private applyPersonality(response: string, profile: any, memory: NPCMemoryEntry): string {
+  private applyPersonality(response: string, profile: IntelligenceProfile, memory: NPCMemoryEntry): string {
     switch (profile.responses) {
       case 'formal':
         return `*adjusts papers* ${response} Please allow me to provide the proper documentation.`;
@@ -402,8 +415,8 @@ class NPCIntelligenceEngine {
     const baseChance = 0.05 + memory.relationship * 0.05;
 
     // Recent interaction increases chance
-    if (memory.interactions > 0) {
-      const timeSinceLastInteraction = Date.now() - (memory as any).lastInteractionTime;
+    if (memory.interactions > 0 && typeof memory.lastInteractionTime === 'number') {
+      const timeSinceLastInteraction = Date.now() - memory.lastInteractionTime;
       if (timeSinceLastInteraction < 60000) {
         // Within last minute
         return Math.random() < baseChance * 2;

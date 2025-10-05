@@ -24,11 +24,8 @@ const moreissues: Room = {
   zone: 'glitchZone',
   title: 'More Issues Detected',
   description: [
-    'You have entered a sector where errors multiply and diagnostics spiral out of control. The air is thick with static, and the walls are covered in cascading warning messages.',
-    'Every surface flickers with unresolved exceptions and recursive error codes. The ground feels unstable, as if the logic holding this place together is on the verge of collapse.',
-    'Occasionally, you spot ghostly figures—remnants of failed processes—wandering aimlessly, muttering about lost packets and corrupted stacks.',
-    'A central pillar of red light pulses with each new issue detected, sending ripples of instability through the environment.',
-  ],
+  "You have entered a sector where errors multiply and diagnostics spiral out of control. The air is thick with static, and the walls are covered in cascading warning messages. Every surface flickers with unresolved exceptions and recursive error codes. The ground feels unstable, as if the logic holding this place together is on the verge of collapse. Occasionally, you spot ghostly figures—remnants of failed processes—wandering aimlessly, muttering about lost packets and corrupted stacks. A central pillar of red light pulses with each new issue detected, sending ripples of instability through the environment.",
+],
   image: 'glitchZone_moreissues.png',
   ambientAudio: 'error_loop.mp3',
 
@@ -47,22 +44,32 @@ const moreissues: Room = {
     west: 'issuesdetected',
   },
 
-  items: ['error_patch', 'recursive_log', 'unstable_stack', 'ghost_packet'],
+  items: [
+    { id: 'error_patch', name: 'Error Patch' },
+    { id: 'recursive_log', name: 'Recursive Log' },
+    { id: 'unstable_stack', name: 'Unstable Stack' },
+    { id: 'ghost_packet', name: 'Ghost Packet' }
+  ],
 
   interactables: {
     error_pillar: {
-      description:
-        'A towering pillar of red light that pulses with every new error detected in the system.',
+      description: [
+  "A towering pillar of red light that pulses with every new error detected in the system.",
+],
       actions: ['examine', 'analyze', 'attempt_stabilize'],
       requires: [],
     },
     ghost_process: {
-      description: 'A translucent figure endlessly repeating the same failed operation.',
+      description: [
+  "A translucent figure endlessly repeating the same failed operation.",
+],
       actions: ['observe', 'debug', 'free'],
       requires: [],
     },
     warning_wall: {
-      description: 'A wall covered in scrolling warning messages and exception traces.',
+      description: [
+  "A wall covered in scrolling warning messages and exception traces.",
+],
       actions: ['read', 'trace', 'patch'],
       requires: [],
     },
@@ -130,12 +137,16 @@ const moreissues: Room = {
 
   secrets: {
     hidden_patch: {
-      description: 'A hidden patch routine buried in the warning wall.',
+      description: [
+  "A hidden patch routine buried in the warning wall.",
+],
       requirements: ['trace warning_wall', 'apply patch'],
       rewards: ['system_stability', 'alternate_exit'],
     },
     ghost_origin: {
-      description: "The true cause of the ghost process's failure.",
+      description: [
+  "The true cause of the ghost process's failure.",
+],
       requirements: ['debug ghost_process', 'free ghost_process'],
       rewards: ['ghost_backstory', 'unique_item'],
     },
@@ -143,12 +154,16 @@ const moreissues: Room = {
 
   customActions: {
     apply_patch: {
-      description: 'Apply a patch to a critical error in the system.',
+      description: [
+  "Apply a patch to a critical error in the system.",
+],
       requirements: ['error_patch'],
       effects: ['reduce_error_cascade', 'unlock_exit'],
     },
     break_loop: {
-      description: 'Attempt to break a recursive logic loop.',
+      description: [
+  "Attempt to break a recursive logic loop.",
+],
       requirements: ['recursive_log'],
       effects: ['free_ghost_process', 'reduce_hazards'],
     },

@@ -39,10 +39,13 @@ export { CelebrationController } from './celebrateController';
 export type { CelebrationData, CelebrationIndex } from './celebrateGate';
 export type { Span } from './gen/util';
 
+// Local static helper imports to avoid dynamic import reporter warnings
+import { hasCelebrations } from './celebrateGate';
+
 // Utility for checking if celebration system should be enabled
 export async function shouldShowCelebrations(): Promise<boolean> {
   try {
-    const { hasCelebrations } = await import('./celebrateGate');
+    // Prefer static import usage to avoid mixed import reporter warnings
     return await hasCelebrations();
   } catch {
     return false;

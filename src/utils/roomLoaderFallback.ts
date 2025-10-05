@@ -26,8 +26,8 @@ const emergencyRooms: Record<string, Room> = {
     description:
       'You are in the central control nexus. This is the heart of the multiverse navigation system. Strange lights pulse from crystalline structures embedded in the walls.',
     image: 'introZone_controlnexus.png',
-    zone: 'introZone',
-    flags: {} as any,
+  zone: 'introZone',
+  flags: {},
     exits: {
       north: 'controlroom',
       south: 'crossing',
@@ -43,8 +43,8 @@ const emergencyRooms: Record<string, Room> = {
     description:
       'A high-tech control room with banks of monitors and control panels. The air hums with electronic activity.',
     image: 'introZone_controlroom.png',
-    zone: 'introZone',
-    flags: {} as any,
+  zone: 'introZone',
+  flags: {},
     exits: {
       south: 'controlnexus',
     },
@@ -58,8 +58,8 @@ const emergencyRooms: Record<string, Room> = {
     description:
       'A mystical crossroads where multiple pathways converge. Energy crackles in the air, and you can sense multiple destinations beckoning.',
     image: 'introZone_crossing.png',
-    zone: 'introZone',
-    flags: {} as any,
+  zone: 'introZone',
+  flags: {},
     exits: {
       north: 'controlnexus',
       west: 'gorstanhub',
@@ -76,8 +76,8 @@ const emergencyRooms: Record<string, Room> = {
     description:
       'The central hub of Gorstan, a mystical realm of ancient power. Mist swirls around stone archways leading to various parts of this magical land.',
     image: 'gorstanZone_gorstanhub.png',
-    zone: 'gorstanZone',
-    flags: {} as any,
+  zone: 'gorstanZone',
+  flags: {},
     exits: {
       east: 'crossing',
       north: 'carronspire',
@@ -94,8 +94,8 @@ const emergencyRooms: Record<string, Room> = {
     description:
       'A bustling intersection in modern London. The familiar sounds of city life surround you - traffic, conversations, and the distant chime of Big Ben.',
     image: 'londonZone_londonhub.png',
-    zone: 'londonZone',
-    flags: {} as any,
+  zone: 'londonZone',
+  flags: {},
     exits: {
       west: 'crossing',
       north: 'cafeoffice',
@@ -112,8 +112,8 @@ const emergencyRooms: Record<string, Room> = {
     description:
       'The heart of Manhattan. Skyscrapers tower above you, yellow cabs honk in the distance, and the energy of the city that never sleeps pulses all around.',
     image: 'newyorkZone_manhattanhub.png',
-    zone: 'newyorkZone',
-    flags: {} as any,
+  zone: 'newyorkZone',
+  flags: {},
     exits: {
       northwest: 'crossing',
       north: 'centralpark',

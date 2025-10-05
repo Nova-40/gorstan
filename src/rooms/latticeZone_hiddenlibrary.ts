@@ -24,16 +24,17 @@ const hiddenlibrary: Room = {
   zone: 'latticeZone',
   title: 'Hidden Library',
   description: [
-    'A dimly lit library filled with ancient tomes and scrolls. The air is thick with the scent of old paper and ink.',
-    'Shelves stretch high into the shadows, and the faint sound of whispers can be heard as if the books themselves are alive.',
-    'A single desk sits in the center, illuminated by a flickering lantern.',
-  ],
+  "A dimly lit library filled with ancient tomes and scrolls. The air is thick with the scent of old paper and ink. Shelves stretch high into the shadows, and the faint sound of whispers can be heard as if the books themselves are alive. A single desk sits in the center, illuminated by a flickering lantern.",
+],
   image: 'latticeZone_hiddenlibrary.png',
   exits: {
     north: 'latticehub',
     south: 'latticespire',
   },
-  items: ['ancienttome', 'scrollofwisdom'],
+  items: [
+    { id: 'ancienttome', name: 'Ancienttome' },
+    { id: 'scrollofwisdom', name: 'Scrollofwisdom' }
+  ],
   npcs: ['librarian'],
   flags: {
     libraryExplored: false,
@@ -45,6 +46,7 @@ const hiddenlibrary: Room = {
     difficulty: 'moderate',
     estimatedPlayTime: '5-10 minutes',
   },
+  interactables: {},
 };
 
 export default hiddenlibrary;

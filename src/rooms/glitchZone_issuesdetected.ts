@@ -24,11 +24,8 @@ const issuesdetected: Room = {
   zone: 'glitchZone',
   title: 'Issues Detected',
   description: [
-    'The fabric of reality seems to be tearing apart in this area. Glitches and visual artifacts flicker in and out of existence, and the air crackles with unstable energy.',
-    'Warning messages cascade down translucent screens that flicker in and out of existence. The environment pulses with instability—walls occasionally pixelate and reform, the floor sometimes gives way to glimpses of raw data streams beneath.',
-    'Red warning lights strobe intermittently, casting everything in an urgent, alarm-like glow. Floating holographic displays show cascading error messages, system diagnostics, and repair protocols.',
-    "It's as if you've stepped inside a computer that's desperately trying to fix itself. The only way out may be to intervene directly with the system's failing logic.",
-  ],
+  "The fabric of reality seems to be tearing apart in this area. Glitches and visual artifacts flicker in and out of existence, and the air crackles with unstable energy. Warning messages cascade down translucent screens that flicker in and out of existence. The environment pulses with instability—walls occasionally pixelate and reform, the floor sometimes gives way to glimpses of raw data streams beneath. Red warning lights strobe intermittently, casting everything in an urgent, alarm-like glow. Floating holographic displays show cascading error messages, system diagnostics, and repair protocols. It's as if you've stepped inside a computer that's desperately trying to fix itself. The only way out may be to intervene directly with the system's failing logic.",
+],
   image: 'glitchZone_issuesdetected.png',
   ambientAudio: 'system_diagnostics_ambience.mp3',
 
@@ -53,35 +50,39 @@ const issuesdetected: Room = {
   },
 
   items: [
-    'diagnostic_scanner',
-    'error_log_fragment',
-    'repair_protocol_manual',
-    'system_backup_core',
-    'quantum_stabilizer_shard',
+    { id: 'diagnostic_scanner', name: 'Diagnostic Scanner' },
+    { id: 'error_log_fragment', name: 'Error Log Fragment' },
+    { id: 'repair_protocol_manual', name: 'Repair Protocol Manual' },
+    { id: 'system_backup_core', name: 'System Backup Core' },
+    { id: 'quantum_stabilizer_shard', name: 'Quantum Stabilizer Shard' }
   ],
 
   interactables: {
     error_cascade_display: {
-      description:
-        'A holographic waterfall of error messages and system warnings scrolling past at incredible speed. Critical issues are highlighted in pulsing red.',
+      description: [
+  "A holographic waterfall of error messages and system warnings scrolling past at incredible speed. Critical issues are highlighted in pulsing red.",
+],
       actions: ['read', 'analyze', 'filter_errors', 'pause_stream'],
       requires: [],
     },
     diagnostic_terminal: {
-      description:
-        'A flickering terminal interface showing system health metrics, all of which are displaying alarming readings in red and orange.',
+      description: [
+  "A flickering terminal interface showing system health metrics, all of which are displaying alarming readings in red and orange.",
+],
       actions: ['examine', 'run_diagnostics', 'access_logs', 'attempt_repairs'],
       requires: ['diagnostic_scanner'],
     },
     reality_integrity_monitor: {
-      description:
-        "A complex display showing the structural integrity of reality itself. Multiple sections flash red with 'CRITICAL' warnings.",
+      description: [
+  "A complex display showing the structural integrity of reality itself. Multiple sections flash red with 'CRITICAL' warnings.",
+],
       actions: ['examine', 'check_status', 'analyze_failures', 'stabilize_sections'],
       requires: ['quantum_stabilizer_shard'],
     },
     system_core_chamber: {
-      description:
-        "A transparent chamber containing what appears to be the core processing unit of this reality. It's sparking and showing signs of severe damage.",
+      description: [
+  "A transparent chamber containing what appears to be the core processing unit of this reality. It's sparking and showing signs of severe damage.",
+],
       actions: ['examine', 'attempt_repair', 'backup_data', 'emergency_shutdown'],
       requires: ['repair_protocol_manual'],
     },
@@ -162,12 +163,16 @@ const issuesdetected: Room = {
 
   secrets: {
     hiddenPanel: {
-      description: 'A concealed maintenance panel behind the main console.',
+      description: [
+  "A concealed maintenance panel behind the main console.",
+],
       requirements: ['examine diagnostic_terminal thoroughly', 'use diagnostic_scanner'],
       rewards: ['backup_data_crystal', 'emergency_codes'],
     },
     operatorLogs: {
-      description: 'Personal logs from the previous operator.',
+      description: [
+  "Personal logs from the previous operator.",
+],
       requirements: ['activate diagnostic_terminal', 'run diagnostics'],
       rewards: ['backstory_revelation', 'dimensional_map_fragment'],
     },
@@ -175,12 +180,16 @@ const issuesdetected: Room = {
 
   customActions: {
     scan: {
-      description: 'Perform a dimensional scan of the area.',
+      description: [
+  "Perform a dimensional scan of the area.",
+],
       requirements: ['diagnostic_scanner'],
       effects: ['reveal_hidden_exits', 'update_dimensional_map'],
     },
     calibrate: {
-      description: 'Calibrate the dimensional stabilizers.',
+      description: [
+  "Calibrate the dimensional stabilizers.",
+],
       requirements: ['repair_protocol_manual'],
       effects: ['improve_stability_index', 'unlock_advanced_controls'],
     },

@@ -72,7 +72,10 @@ export class AIMiniquestService {
   ): Promise<AIMiniquestRecommendation[]> {
     try {
       // Always get fallback recommendations first
-      const fallbackQuests = this.fallbackEngine.getAvailableQuests(roomId, gameState as any);
+      const fallbackQuests = this.fallbackEngine.getAvailableQuests(
+        roomId,
+        gameState as unknown as any,
+      );
 
       if (!this.aiEnabled || !this.canMakeAIRequest(gameState.player.name)) {
         return this.convertToAIRecommendations(fallbackQuests);
@@ -92,7 +95,10 @@ export class AIMiniquestService {
         : this.convertToAIRecommendations(fallbackQuests);
     } catch (error) {
       console.warn('AI quest recommendation failed, using fallback:', error);
-      const fallbackQuests = this.fallbackEngine.getAvailableQuests(roomId, gameState as any);
+      const fallbackQuests = this.fallbackEngine.getAvailableQuests(
+        roomId,
+        gameState as unknown as any,
+      );
       return this.convertToAIRecommendations(fallbackQuests);
     }
   }
@@ -205,8 +211,8 @@ Focus on creating a smooth, engaging experience that builds player confidence wh
     playerProfile: PlayerProfile,
     gameState: LocalGameState,
   ): Promise<AIMiniquestAnalysis | null> {
-    const recentMessages = gameState.messages?.slice(-10) || [];
-    const recentCommands = (gameState as any).recentCommands?.slice(-5) || [];
+  const recentMessages = gameState.messages?.slice(-10) || [];
+  const recentCommands = (gameState as unknown as { recentCommands?: string[] }).recentCommands?.slice(-5) || [];
 
     const prompt = `Analyze this player's current state in the text adventure game Gorstan:
 
@@ -222,7 +228,7 @@ RECENT ACTIVITY:
       .map((m) => m.text)
       .slice(-3)
       .join(' | ')}
-- Session Length: ${Math.floor((Date.now() - (gameState as any).sessionStart || Date.now()) / 60000)} minutes
+- Session Length: ${Math.floor((Date.now() - ((gameState as unknown as { sessionStart?: number }).sessionStart || Date.now())) / 60000)} minutes
 
 TASK: Provide psychological analysis and guidance recommendations.
 
@@ -351,7 +357,7 @@ Make hints progressive (start subtle, get more specific) and encouraging.`;
    */
   private updateProfileFromGameState(profile: PlayerProfile, gameState: LocalGameState): void {
     // Update quest completion stats
-    const miniquestState = (gameState as any).miniquestState || {};
+  const miniquestState = (gameState as unknown as { miniquestState?: Record<string, any> }).miniquestState || {};
     let totalCompleted = 0;
 
     Object.values(miniquestState).forEach((roomState: any) => {
@@ -363,7 +369,7 @@ Make hints progressive (start subtle, get more specific) and encouraging.`;
     profile.currentProgress.questsCompleted = totalCompleted;
 
     // Analyze play style from recent commands
-    const recentCommands = (gameState as any).recentCommands || [];
+  const recentCommands = (gameState as unknown as { recentCommands?: string[] }).recentCommands || [];
     if (recentCommands.length > 0) {
       const examineCount = recentCommands.filter(
         (cmd: string) => cmd.includes('examine') || cmd.includes('look'),
@@ -394,7 +400,7 @@ Make hints progressive (start subtle, get more specific) and encouraging.`;
       questId: quest.id,
       confidence: 0.7, // Default confidence for fallback
       reasoning: `Available ${quest.type} quest with ${quest.difficulty} difficulty`,
-      difficulty: quest.difficulty as any,
+  difficulty: (quest.difficulty as 'trivial' | 'easy' | 'medium' | 'hard') || 'medium',
       estimatedCompletionTime: this.estimateCompletionTime(quest),
       prerequisites: quest.requiredItems || [],
       hints: quest.hint

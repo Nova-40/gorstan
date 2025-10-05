@@ -230,6 +230,17 @@ src/
 - [ ] Book discussions respond correctly
 - [ ] Trap detection warnings appear
 
+## NPC Dialogue & AI Providers
+
+The project supports an extensible dialogue system allowing NPCs to be driven by either an external LLM or an offline deterministic tree.
+
+- Environment variables:
+  - `GORSTAN_AI_PROVIDER` — 'openai' to enable LLM provider, otherwise 'offline' (default).
+  - `GORSTAN_AI_API_KEY` — API key string for the provider. If absent, the engine will not make network calls.
+  - `GORSTAN_AI_MODEL` — preferred model name (default: 'gpt-5').
+
+If AI is disabled or no key is present the engine falls back to the `OfflineTreeProvider` which returns deterministic, test-friendly replies. All provider replies are vetted by `LoreGate` to avoid contradictions with canonical lore.
+
 ## REBUILD INSTRUCTIONS
 
 1. **Initialize Project**

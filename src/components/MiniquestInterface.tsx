@@ -119,7 +119,7 @@ const MiniquestInterface: React.FC<MiniquestInterfaceProps> = ({
       if (questProgress?.completed) {
         return {
           status: quest.repeatable ? 'repeatable' : 'completed',
-          color: quest.repeatable ? 'text-cyan-400' : 'text-green-400',
+          color: quest.repeatable ? 'text-crt-green' : 'text-gorstan-green',
           icon: quest.repeatable ? (
             <RotateCcw className="w-4 h-4" />
           ) : (

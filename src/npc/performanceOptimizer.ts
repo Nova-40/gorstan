@@ -59,6 +59,13 @@ export const DEFAULT_PERFORMANCE_THRESHOLDS: PerformanceThresholds = {
   maxNPCCount: 20, // Maximum active NPCs
 };
 
+// Narrow type for performance.memory when available
+interface PerformanceMemoryInfo {
+  usedJSHeapSize?: number;
+  jsHeapSizeLimit?: number;
+  totalJSHeapSize?: number;
+}
+
 // ===== MEMORY MANAGEMENT =====
 
 class MemoryPool<T> {
@@ -192,8 +199,10 @@ export class BatchProcessor<T> {
       console.error('[BatchProcessor] Error processing batch:', error);
       // Re-queue failed items (up to 3 retries)
       batch.forEach((item) => {
-        if ((item as any)._retries < 3) {
-          (item as any)._retries = ((item as any)._retries || 0) + 1;
+        const it = item as unknown as { _retries?: number };
+        const retries = typeof it._retries === 'number' ? it._retries : 0;
+        if (retries < 3) {
+          it._retries = retries + 1;
           this.queue.unshift(item);
         }
       });
@@ -388,9 +397,11 @@ export class NPCPerformanceOptimizer {
 
   private updateMetrics(): void {
     // Update memory usage
-    if (typeof window !== 'undefined' && (performance as any).memory) {
-      const memInfo = (performance as any).memory;
-      this.metrics.memoryUsageMB = memInfo.usedJSHeapSize / (1024 * 1024);
+    if (typeof window !== 'undefined') {
+      const memInfo = (performance as unknown as { memory?: PerformanceMemoryInfo }).memory;
+      if (memInfo && typeof memInfo.usedJSHeapSize === 'number') {
+        this.metrics.memoryUsageMB = memInfo.usedJSHeapSize / (1024 * 1024);
+      }
     }
 
     // Clean old errors (older than 1 minute)

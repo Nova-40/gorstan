@@ -24,18 +24,17 @@ const ravenChamberRoom: Room = {
   zone: 'glitchZone',
   title: 'R.A.V.E.N. Chamber',
   description: [
-    'You step into a narrow chamber humming with quiet static. Cracked screens line the walls, some looping nonsense glyphs, others frozen mid-boot.',
-    'At the far end, a sunken pedestal glows faintly blue. As you approach, an ancient AI console flickers to life, casting harsh white light.',
-    'A synthetic voice—fragmented and uncertain—calls out to you, mistaking you for someone else.',
-    'The air feels heavy with the weight of classified information and forgotten secrets.',
-  ],
+  "You step into a narrow chamber humming with quiet static. Cracked screens line the walls, some looping nonsense glyphs, others frozen mid-boot. At the far end, a sunken pedestal glows faintly blue. As you approach, an ancient AI console flickers to life, casting harsh white light. A synthetic voice—fragmented and uncertain—calls out to you, mistaking you for someone else. The air feels heavy with the weight of classified information and forgotten secrets.",
+],
   image: 'glitchrealm-zoneravenroom.png',
   ambientAudio: 'glitchZone.mp3',
   exits: {
     back: 'glitchinguniverse',
     out: 'glitchinguniverse',
   },
-  items: [],
+  items: [
+    
+  ],
   npcs: [],
   flags: {
     console_accessible: true,
@@ -51,8 +50,9 @@ const ravenChamberRoom: Room = {
     console: {
       id: 'console',
       name: 'AI Console',
-      description:
-        'An ancient AI console with holographic displays and a palm scanner. The screen flickers with fragments of corrupted data.',
+      description: [
+  "An ancient AI console with holographic displays and a palm scanner. The screen flickers with fragments of corrupted data.",
+],
       commands: ['interact console', 'access archive', 'activate console', 'touch console'],
       responses: {
         examine:
@@ -65,8 +65,9 @@ const ravenChamberRoom: Room = {
     screens: {
       id: 'screens',
       name: 'Cracked Screens',
-      description:
-        'Multiple screens line the walls, displaying corrupted data streams and glitched interfaces.',
+      description: [
+  "Multiple screens line the walls, displaying corrupted data streams and glitched interfaces.",
+],
       commands: ['look screens', 'examine screens', 'watch screens'],
       responses: {
         examine:
@@ -78,8 +79,9 @@ const ravenChamberRoom: Room = {
     pedestal: {
       id: 'pedestal',
       name: 'Blue Pedestal',
-      description:
-        'A sunken pedestal at the far end of the chamber, glowing with faint blue light.',
+      description: [
+  "A sunken pedestal at the far end of the chamber, glowing with faint blue light.",
+],
       commands: ['examine pedestal', 'touch pedestal', 'approach pedestal'],
       responses: {
         examine:
@@ -108,7 +110,9 @@ const ravenChamberRoom: Room = {
   // Room-specific commands
   customCommands: {
     declassify: {
-      description: 'Attempt to declassify restricted information',
+      description: [
+  "Attempt to declassify restricted information",
+],
       handler: (gameState: any) => {
         if (gameState.flags?.playerIsRedacted) {
           return {
@@ -136,7 +140,9 @@ const ravenChamberRoom: Room = {
       },
     },
     'i know too much': {
-      description: 'Passphrase for redacted individuals',
+      description: [
+  "Passphrase for redacted individuals",
+],
       handler: (gameState: any) => {
         if (gameState.flags?.playerIsRedacted) {
           return {

@@ -28,6 +28,8 @@ interface WelcomeScreenProps {
   onBegin: () => void;
   onLoadGame: () => void;
   onStartDemo?: () => void;
+  onOpenCredits?: () => void;
+  onOpenDemo?: () => void;
 }
 
 interface AylaGuidanceProps {
@@ -170,9 +172,34 @@ const RadialProgressRing: React.FC<RadialProgressRingProps> = ({ progress }) => 
   );
 };
 
-const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onStartDemo }) => {
+const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onStartDemo, onOpenCredits, onOpenDemo }) => {
   const [showAylaGuidance, setShowAylaGuidance] = useState(false);
   const [timerProgress, setTimerProgress] = useState(0);
+
+  // Set a CSS variable --vh to represent 1% of the viewport height to handle mobile browser chrome
+  // This allows using calc(var(--vh) * 100) for a reliable full-viewport height.
+  useEffect(() => {
+    const setVh = () => {
+      try {
+        document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+      } catch (e) {
+        // ignore in non-browser environments
+      }
+    };
+    setVh();
+    let t: any = null;
+    const onResize = () => {
+      if (t) clearTimeout(t);
+      t = setTimeout(setVh, 120);
+    };
+    window.addEventListener('resize', onResize);
+    window.addEventListener('orientationchange', onResize);
+    return () => {
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('orientationchange', onResize);
+      if (t) clearTimeout(t);
+    };
+  }, []);
 
   // Carousel state — rotate through a few featured books
   const featuredBooks = (bookData as any).books.slice(0, 6);
@@ -225,53 +252,54 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
   // Pricing copy
   const pricing = {
     standard: {
-      price: '£5',
+  price: '£9.99',
       cadence: 'per month',
       headline: 'Standard Supporter',
       blurb: 'Keep Gorstan thriving — monthly support that funds development, hosting, and small features.',
-      cta: 'Support — £5 / month',
+  cta: 'Support — £9.99 / month',
     },
     founders: {
-      price: '£12',
+  price: '£9.99',
       cadence: 'per month',
       headline: "Founders (limited to 50)",
       blurb: 'Founders receive early beta access, direct feedback channels to the team, and a name in the credits.',
-      cta: 'Become a Founder — £12 / month',
+  cta: 'Become a Founder — £9.99 / month',
       limit: 50,
     },
   };
 
   return (
     <>
-      <div className="max-w-6xl mx-auto px-6 py-8">
+  <div className="max-w-6xl mx-auto px-6 py-6" style={{ minHeight: 'calc(var(--vh, 1vh) * 100)', display: 'flex', flexDirection: 'column' }}>
         <header className="flex items-center justify-between gap-6 mb-6">
             <div className="flex items-center gap-4">
             <LazyImage src={'/images/gorstanicon.png'} fallback={'/images/fallback.png'} alt="Gorstan" className="w-16 h-16 rounded-md" />
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold">Welcome to Gorstan</h1>
-              <div className="text-sm text-gray-300 mt-1">{getVersionString()}</div>
+              <h1 className="text-3xl md:text-4xl font-bold">Gorstan — Explore the Multiverse</h1>
+              <div className="text-sm text-gray-300 mt-1">A story-driven exploration where your choices ripple across realities — {getVersionString()}</div>
             </div>
           </div>
 
             <div className="flex items-center gap-3">
               <a href="https://www.patreon.com/gorstan" target="_blank" rel="noopener noreferrer">
-                <UIButton variant="secondary" className="text-sm">Support on Patreon</UIButton>
+                <UIButton variant="secondary" className="text-sm">Support Gorstan</UIButton>
               </a>
-              <UIButton onClick={onBegin} variant="primary" className="text-sm">Enter</UIButton>
+              <UIButton onClick={onBegin} variant="primary" className="text-sm">Start Playing</UIButton>
+              <UIButton onClick={() => onOpenCredits?.()} variant="ghost" className="text-sm">Credits</UIButton>
             </div>
         </header>
 
-        <main className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <main className="grid grid-cols-1 lg:grid-cols-3 gap-6" style={{ flex: 1, overflowY: 'auto' }}>
           {/* Left: Carousel + carousel details */}
           <section className="lg:col-span-2 space-y-4">
-            <div className="bg-gradient-to-br from-slate-900 to-black rounded-xl p-4 border border-gray-800 shadow-lg">
-              <div className="flex items-center justify-between mb-4">
+            <div className="bg-gradient-to-br from-slate-900 to-black rounded-xl p-3 border border-gray-800 shadow-lg welcome-card [&>*:first-child]:mt-0">
+              <div className="flex items-center justify-between mb-3">
                 <h2 className="text-xl font-semibold">Featured Books</h2>
-                <div className="text-sm text-gray-400">Explore the Gorstan reading list</div>
+                <div className="text-sm text-gray-400">Hand-picked reads from the Gorstan universe</div>
               </div>
 
               <div className="flex gap-4 items-center">
-                <div className="w-40 h-56 bg-gray-800 rounded-md flex-shrink-0 overflow-hidden shadow-inner">
+                <div className="w-36 h-48 bg-gray-800 rounded-md flex-shrink-0 overflow-hidden shadow-inner">
                   <LazyImage
                     src={
                       BOOK_COVERS[featuredBooks[carouselIndex].id]
@@ -287,27 +315,37 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
                 <div className="flex-1">
                   <h3 className="text-2xl font-bold">{featuredBooks[carouselIndex].title}</h3>
                   <div className="text-sm text-gray-300 mb-2">by {featuredBooks[carouselIndex].author}</div>
-                  <p className="text-gray-200 mb-4 line-clamp-3">{featuredBooks[carouselIndex].description}</p>
+                  <p className="text-gray-200 mb-3 line-clamp-3">{featuredBooks[carouselIndex].description}</p>
                   <div className="flex gap-3">
                     <a
                       href={`https://thegorstanchronicles.com/books/${featuredBooks[carouselIndex].id}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-2 rounded-md"
+                      className="no-underline"
                     >
-                      Learn more
+                      <UIButton variant="primary" className="text-sm">Read a free excerpt</UIButton>
                     </a>
                     <a
                       href="https://geoffwebsterbooks.com"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm bg-gray-700 hover:bg-gray-600 text-white px-3 py-2 rounded-md"
+                      className="no-underline hide-sm"
                     >
-                      Browse store
+                      <UIButton variant="secondary" className="text-sm">Visit Store</UIButton>
                     </a>
                   </div>
                 </div>
               </div>
+
+                  {/* Demo Experiences card — opens the demo listing */}
+                  <MenuCard title="Demo Experiences" subtitle="Try a curated demo" className="bg-gradient-to-br from-slate-900 to-black rounded-xl p-4 border border-gray-800 shadow welcome-card [&>*:first-child]:mt-0" onActivate={() => onOpenDemo && onOpenDemo()}>
+                    <div className="p-2">
+                      <p className="text-sm text-gray-300 mb-2">Bring up short, curated demo experiences — quick introductions to the game's mechanics and story.</p>
+                      <div className="flex items-center gap-2">
+                        <UIButton variant="ghost" onClick={() => onOpenDemo && onOpenDemo()}>View Demos</UIButton>
+                      </div>
+                    </div>
+                  </MenuCard>
             </div>
 
             {/* Grid of book cards */}
@@ -315,9 +353,9 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
               {((bookData as any).books || []).slice(0, 6).map((b: any) => (
                 <article
                   key={b.id}
-                  className="bg-gradient-to-br from-slate-900 to-slate-800 p-3 rounded-lg border border-gray-800 shadow-sm flex flex-col"
+                  className="bg-gradient-to-br from-slate-900 to-slate-800 p-2 rounded-lg border border-gray-800 shadow-sm flex flex-col welcome-card [&>*:first-child]:mt-0"
                 >
-                  <div className="w-full h-40 bg-gray-900 rounded-md overflow-hidden mb-3">
+                  <div className="w-full h-40 bg-gray-900 rounded-md overflow-hidden mb-3 relative">
                     <LazyImage
                       src={
                         BOOK_COVERS[b.id]
@@ -328,26 +366,17 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
                       alt={b.title}
                       className="w-full h-full object-cover"
                     />
+                    <span className="absolute top-2 left-2 bg-[var(--gorstan-green)] text-black text-xs px-2 py-0.5 rounded">Sample</span>
                   </div>
                   <h4 className="font-semibold text-lg">{b.title}</h4>
                   <div className="text-xs text-gray-400 mb-2">by {b.author}</div>
                   <p className="text-sm text-gray-300 flex-1 line-clamp-3">{b.description}</p>
-                  <div className="mt-3 flex gap-2">
-                    <a
-                      href={`https://thegorstanchronicles.com/books/${b.id}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs bg-cyan-600 hover:bg-cyan-500 text-white px-2 py-1 rounded-md"
-                    >
-                      Details
+                  <div className="mt-2 flex gap-2">
+                    <a href={`https://thegorstanchronicles.com/books/${b.id}`} target="_blank" rel="noopener noreferrer" className="no-underline hide-sm">
+                      <UIButton variant="secondary" className="text-xs">Details</UIButton>
                     </a>
-                    <a
-                      href={`https://thegorstanchronicles.com/books/${b.id}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded-md"
-                    >
-                      Buy
+                    <a href={`https://thegorstanchronicles.com/books/${b.id}`} target="_blank" rel="noopener noreferrer" className="no-underline">
+                      <UIButton variant="secondary" className="text-xs">Buy</UIButton>
                     </a>
                   </div>
                 </article>
@@ -357,43 +386,43 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
 
           {/* Right: Pricing / FAQ cards */}
           <aside className="space-y-4">
-            <div className="bg-gradient-to-br from-slate-900 to-black rounded-xl p-4 border border-gray-800 shadow-lg">
+            <div className="bg-gradient-to-br from-slate-900 to-black rounded-xl p-4 border border-gray-800 shadow-lg welcome-card [&>*:first-child]:mt-0">
               <h3 className="text-lg font-semibold mb-2">Support Gorstan</h3>
-              <p className="text-sm text-gray-300 mb-4">Your membership helps pay for hosting, development, and continuing the world of Gorstan.</p>
+              <p className="text-sm text-gray-300 mb-4">Help keep Gorstan growing — your support funds new content, server costs, and ongoing development.</p>
 
               <div className="space-y-3">
-                <MenuCard title={pricing.standard.headline} subtitle={pricing.standard.cadence} className="bg-gray-850 border-gray-700">
+                <MenuCard title={pricing.standard.headline} subtitle={pricing.standard.cadence} className="bg-gray-850 border-gray-700 welcome-card [&>*:first-child]:mt-0">
                   <div className="flex items-baseline justify-between">
                     <div>
-                          <div className="text-2xl font-bold">{pricing.standard.price} <span className="text-sm font-medium">{pricing.standard.cadence}</span></div>
+                      <div className="text-2xl font-bold">{pricing.standard.price} <span className="text-sm font-medium">{pricing.standard.cadence}</span></div>
                     </div>
                     <div>
-                          <a href="https://www.patreon.com/gorstan" target="_blank" rel="noopener noreferrer">
-                            <UIButton variant="primary" className="text-sm">{pricing.standard.cta}</UIButton>
-                          </a>
+                      <a href="https://www.patreon.com/gorstan" target="_blank" rel="noopener noreferrer" className="no-underline">
+                        <UIButton variant="primary" className="text-sm w-full">{pricing.standard.cta}</UIButton>
+                      </a>
                     </div>
                   </div>
-                      <div className="text-xs text-gray-400 mt-2">{pricing.standard.blurb}</div>
-                    </MenuCard>
+                  <div className="text-xs text-gray-400 mt-2">{pricing.standard.blurb}</div>
+                </MenuCard>
 
-                    <MenuCard title={pricing.founders.headline} subtitle={`Limited to ${pricing.founders.limit}`} className="bg-gradient-to-br from-yellow-900 to-orange-800 border-yellow-700">
+                <MenuCard title={pricing.founders.headline} subtitle={`Limited to ${pricing.founders.limit}`} className="bg-gradient-to-br from-yellow-900 to-orange-800 border-yellow-700 welcome-card [&>*:first-child]:mt-0">
                   <div className="flex items-baseline justify-between">
                     <div>
-                          <div className="text-2xl font-bold text-yellow-50">{pricing.founders.price} <span className="text-sm font-medium">{pricing.founders.cadence}</span></div>
+                      <div className="text-2xl font-bold text-yellow-50">{pricing.founders.price} <span className="text-sm font-medium">{pricing.founders.cadence}</span></div>
                     </div>
                     <div className="text-right">
-                          <div className="text-xs text-yellow-100">Limited to {pricing.founders.limit}</div>
-                          <a href="https://www.patreon.com/gorstan" target="_blank" rel="noopener noreferrer">
-                            <UIButton variant="secondary" className="mt-2 inline-block text-sm font-semibold">{pricing.founders.cta}</UIButton>
-                          </a>
+                      <div className="text-xs text-yellow-100">Limited to {pricing.founders.limit}</div>
+                      <a href="https://www.patreon.com/gorstan" target="_blank" rel="noopener noreferrer" className="no-underline">
+                        <UIButton variant="primary" className="mt-2 inline-block text-sm font-semibold w-full">{pricing.founders.cta}</UIButton>
+                      </a>
                     </div>
                   </div>
-                      <div className="text-xs text-yellow-100 mt-2">{pricing.founders.blurb}</div>
-                    </MenuCard>
+                  <div className="text-xs text-yellow-100 mt-2">{pricing.founders.blurb}</div>
+                </MenuCard>
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-slate-900 to-black rounded-xl p-4 border border-gray-800 shadow">
+            <div className="bg-gradient-to-br from-slate-900 to-black rounded-xl p-4 border border-gray-800 shadow welcome-card [&>*:first-child]:mt-0">
               <h4 className="text-sm font-semibold mb-2">FAQ</h4>
               <div className="text-xs text-gray-300 space-y-2">
                 <div>
@@ -412,20 +441,15 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
             </div>
 
             {/* Author card */}
-            <div className="bg-gradient-to-br from-slate-900 to-black rounded-xl p-4 border border-gray-800 shadow">
+            <div className="bg-gradient-to-br from-slate-900 to-black rounded-xl p-4 border border-gray-800 shadow welcome-card [&>*:first-child]:mt-0">
               <h4 className="text-sm font-semibold mb-2">About the Author</h4>
               <div className="flex items-center gap-3">
                 <LazyImage src={'/images/author/geoff_webster_headshot.jpg'} fallback={'/images/gorstanicon.png'} alt="Geoff Webster" className="w-12 h-12 rounded-md object-cover" />
                 <div>
                   <div className="font-medium">Geoff Webster</div>
                   <div className="text-xs text-gray-400">Author of The Gorstan Chronicles</div>
-                  <a
-                    href="https://geoffwebsterbooks.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-2 inline-block text-xs text-cyan-400 hover:underline"
-                  >
-                    Visit Geoff's site
+                  <a href="https://geoffwebsterbooks.com" target="_blank" rel="noopener noreferrer" className="no-underline mt-2 inline-block" aria-label="Open author site (opens in new tab)">
+                    <UIButton variant="secondary" className="text-xs">Author site</UIButton>
                   </a>
                 </div>
               </div>

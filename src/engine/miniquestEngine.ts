@@ -264,6 +264,11 @@ class MiniquestEngine {
     return messages;
   }
 
+  // Public getter to return raw Miniquest objects for a room (safe access)
+  public getRoomQuests(roomId: string): Miniquest[] {
+    return this.roomQuests.get(roomId) || [];
+  }
+
   public initializeState(): MiniquestState {
     return {};
   }

@@ -17,6 +17,14 @@
 // (c) Geoff Webster 2025
 
 import type { Room } from '../types/Room';
+import { roomSchema } from '../schema/roomSchema';
+import { getFallbackRoom } from './roomLoaderFallback';
+import {
+  incrementTotalLoads,
+  incrementFallbacks,
+  incrementValidationFailures,
+  getLoaderMetrics,
+} from './loaderMetrics';
 
 interface RoomLoader {
   (): Promise<Room>;
@@ -30,63 +38,36 @@ interface LazyRoomRegistry {
  * Optimized lazy-loading room registry
  * Only loads room modules when actually needed
  */
-const lazyRoomRegistry: LazyRoomRegistry = {
-  // Core intro rooms (always loaded for performance)
-  controlnexus: () => import('../rooms/introZone_controlnexus').then((m) => m.default),
-  controlroom: () => import('../rooms/introZone_controlroom').then((m) => m.default),
-  crossing: () => import('../rooms/introZone_crossing').then((m) => m.default),
-  hiddenlab: () => import('../rooms/introZone_hiddenlab').then((m) => m.default),
+// Build a lazy registry using Vite's import.meta.glob so Vite can statically analyze room modules.
+// Use globEager to synchronously import room modules at build time and then
+// wrap them in promise-returning loaders.
+type RoomModule = { default?: Room } | Room;
+const eagerModules = (import.meta as unknown as { globEager: (pattern: string) => Record<string, RoomModule> }).globEager('../rooms/*.ts');
 
-  // Elfhame Zone - lazy loaded
-  elfhame: () => import('../rooms/elfhameZone_elfhame').then((m) => m.default),
-  faeglade: () => import('../rooms/elfhameZone_faeglade').then((m) => m.default),
-  faelake: () => import('../rooms/elfhameZone_faelake').then((m) => m.default),
-  faelakenorthshore: () => import('../rooms/elfhameZone_faelakenorthshore').then((m) => m.default),
-  faepalacedungeons: () => import('../rooms/elfhameZone_faepalacedungeons').then((m) => m.default),
-  faepalacemainhall: () => import('../rooms/elfhameZone_faepalacemainhall').then((m) => m.default),
-  faepalacerhianonsroom: () =>
-    import('../rooms/elfhameZone_faepalacerhianonsroom').then((m) => m.default),
+  const lazyRoomRegistry: LazyRoomRegistry = Object.keys(eagerModules).reduce((acc, path) => {
+  const segments = path.replace(/\\/g, '/').split('/');
+  const fileName = segments[segments.length - 1] || '';
+  const baseName = fileName.replace(/\.ts$/, '');
+  const normalizedRoomId = baseName.split('_').slice(-1)[0];
 
-  // Glitch Zone - lazy loaded
-  datavoid: () => import('../rooms/glitchZone_datavoid').then((m) => m.default),
-  failure: () => import('../rooms/glitchZone_failure').then((m) => m.default),
-  glitchinguniverse: () => import('../rooms/glitchZone_glitchinguniverse').then((m) => m.default),
-  issuesdetected: () => import('../rooms/glitchZone_issuesdetected').then((m) => m.default),
-  moreissues: () => import('../rooms/glitchZone_moreissues').then((m) => m.default),
-  ravenchamber: () => import('../rooms/glitchZone_ravenchamber').then((m) => m.default),
+  if (!normalizedRoomId) return acc;
 
-  // Gorstan Zone - lazy loaded
-  carronspire: () => import('../rooms/gorstanZone_carronspire').then((m) => m.default),
-  gorstanhub: () => import('../rooms/gorstanZone_gorstanhub').then((m) => m.default),
-  gorstanvillage: () => import('../rooms/gorstanZone_gorstanvillage').then((m) => m.default),
-  torridon: () => import('../rooms/gorstanZone_torridon').then((m) => m.default),
-  torridoninn: () => import('../rooms/gorstanZone_torridoninn').then((m) => m.default),
-  torridoninthepast: () => import('../rooms/gorstanZone_torridoninthepast').then((m) => m.default),
+  const mod = eagerModules[path] as RoomModule | undefined;
+  if (!mod) return acc;
 
-  // Lattice Zone - lazy loaded
-  hiddenlibrary: () => import('../rooms/latticeZone_hiddenlibrary').then((m) => m.default),
-  lattice: () => import('../rooms/latticeZone_lattice').then((m) => m.default),
-  latticehub: () => import('../rooms/latticeZone_latticehub').then((m) => m.default),
-  latticelibrary: () => import('../rooms/latticeZone_latticelibrary').then((m) => m.default),
-  latticeobservationentrance: () =>
-    import('../rooms/latticeZone_latticeobservationentrance').then((m) => m.default),
-  latticeobservatory: () =>
-    import('../rooms/latticeZone_latticeobservatory').then((m) => m.default),
-  latticespire: () => import('../rooms/latticeZone_latticespire').then((m) => m.default),
-  libraryofnine: () => import('../rooms/latticeZone_libraryofnine').then((m) => m.default),
+  // Return a loader function that returns the already-imported module as a Promise
+  acc[normalizedRoomId] = async () => {
+    const m = mod as RoomModule;
+    // If module is an ES module with default export
+    if (m && typeof m === 'object' && 'default' in m && m.default && typeof m.default === 'object') {
+      return m.default as Room;
+    }
+    // Otherwise assume module itself is a Room
+    return (m as Room) as Room;
+  };
 
-  // London Zone - lazy loaded
-  cafeoffice: () => import('../rooms/londonZone_cafeoffice').then((m) => m.default),
-  dalesapartment: () => import('../rooms/londonZone_dalesapartment').then((m) => m.default),
-  findlaters: () => import('../rooms/londonZone_findlaters').then((m) => m.default),
-  findlaterscornercoffeeshop: () =>
-    import('../rooms/londonZone_findlaterscornercoffeeshop').then((m) => m.default),
-  londonhub: () => import('../rooms/londonZone_londonhub').then((m) => m.default),
-  stkatherinesdock: () => import('../rooms/londonZone_stkatherinesdock').then((m) => m.default),
-  trentpark: () => import('../rooms/londonZone_trentpark').then((m) => m.default),
-
-  // Other zones continue...
-};
+  return acc;
+}, {} as LazyRoomRegistry);
 
 // Room cache for loaded rooms
 const roomCache = new Map<string, Room>();
@@ -137,10 +118,29 @@ export async function loadOptimizedRoom(roomId: string): Promise<Room | null> {
 
   metrics.cacheMisses++;
   metrics.totalLoads++;
+  incrementTotalLoads();
 
   // Create loading promise
   const loadingPromise = loader()
     .then((room) => {
+      // Validate room shape at runtime and fail fast if invalid
+      try {
+        roomSchema.parse(room);
+      } catch (err) {
+        console.warn(`[OptimizedRoomLoader] Room validation failed for ${roomId}. Falling back to emergency room.`, err);
+        incrementValidationFailures();
+        const fallback = getFallbackRoom(roomId);
+        if (fallback) {
+          incrementFallbacks();
+          roomCache.set(roomId, fallback);
+          loadingPromises.delete(roomId);
+          return fallback;
+        }
+
+        // No fallback available: return null to allow callers to handle it
+        loadingPromises.delete(roomId);
+        return null as unknown as Room;
+      }
       const loadTime = performance.now() - startTime;
       metrics.loadTimes[roomId] = loadTime;
 
@@ -210,6 +210,17 @@ export async function preloadAdjacentRooms(currentRoomId: string): Promise<void>
  */
 export function getLoadingMetrics(): LoadingMetrics {
   return { ...metrics };
+}
+
+// Expose loader metrics in dev for quick debugging
+if (import.meta.env.DEV) {
+  const win = window as unknown as { gorstan?: Record<string, any> };
+  win.gorstan = {
+    ...(win.gorstan || {}),
+    loaderMetrics: {
+      getMetrics: () => ({ ...getLoadingMetrics(), ...getLoaderMetrics() }),
+    },
+  };
 }
 
 /**

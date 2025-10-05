@@ -78,7 +78,7 @@ export class PuzzleEngine {
     // Variable declaration
     const puzzleIds = this.roomPuzzles.get(roomId) || [];
     // Variable declaration
-    const puzzleState = (gameState as any).puzzleState || {};
+  const puzzleState = (gameState as unknown as { puzzleState?: Record<string, any> }).puzzleState || {};
 
     return puzzleIds
       .map((id) => this.puzzles.get(id))
@@ -203,8 +203,9 @@ export class PuzzleEngine {
               r.story = puzzle.rewards!.story;
             }
 
-            if ((puzzle.rewards as any).teleport) {
-              (r as any).teleport = (puzzle.rewards as any).teleport;
+            const teleportVal = (puzzle.rewards as unknown as { teleport?: string }).teleport;
+            if (teleportVal) {
+              (r as any).teleport = teleportVal;
             }
 
             return r as PuzzleResult['rewards'];

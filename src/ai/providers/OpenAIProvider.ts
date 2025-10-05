@@ -1,10 +1,4 @@
-import crypto from "crypto";
 import { NpcAiProvider, GenerateOptions } from "../NpcAI";
-
-function hashHistory(history: GenerateOptions["history"]): string {
-  const s = history.map(h => `${h.from}:${h.text}`).join("|");
-  return crypto.createHash("sha256").update(s).digest("hex");
-}
 
 export function OpenAIProvider(makeCall: (prompt: string) => Promise<string>): NpcAiProvider {
   return {

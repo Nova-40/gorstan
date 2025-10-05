@@ -14,9 +14,33 @@
   Full licence terms: see EULA.md in the project root.
 */
 
-import { NPC } from '../types/NPCTypes';
+import { NPC, NPCMemory } from '../types/NPCTypes';
 
-export const al: NPC = {
+function normalizeNPC(obj: Record<string, any>): NPC {
+  const defaultMemory: NPCMemory = {
+    interactions: 0,
+    lastInteraction: 0,
+    playerActions: [],
+    relationship: 0,
+    knownFacts: [],
+  };
+  const base: Partial<NPC> = {
+    id: String(obj.id || obj.name || 'unknown'),
+    name: obj.name || String(obj.id || 'Unknown'),
+    description: obj.personality || obj.description || '',
+    mood: (obj.mood as any) || 'neutral',
+    health: typeof obj.health === 'number' ? obj.health : 100,
+    maxHealth: typeof obj.maxHealth === 'number' ? obj.maxHealth : 100,
+    memory: obj.memory ?? defaultMemory,
+    conversation: obj.conversation,
+    inventory: obj.inventory ?? [],
+    flags: obj.flags ?? [],
+    special: obj.special ?? {},
+  };
+  return { ...base, ...obj } as unknown as NPC;
+}
+
+export const al: NPC = normalizeNPC({
   id: 'al',
   name: 'Al',
   portrait: '/images/Al.png',
@@ -29,9 +53,9 @@ export const al: NPC = {
     knownFacts: [],
   },
   currentRoom: 'controlroom',
-} as any;
+});
 
-export const morthos: NPC = {
+export const morthos: NPC = normalizeNPC({
   id: 'morthos',
   name: 'Morthos',
   portrait: '/images/Morthos.png',
@@ -44,9 +68,9 @@ export const morthos: NPC = {
     knownFacts: [],
   },
   currentRoom: 'glitchgate',
-} as any;
+});
 
-export const polly: NPC = {
+export const polly: NPC = normalizeNPC({
   id: 'polly',
   name: 'Polly',
   portrait: '/images/npcs/polly.png',
@@ -59,9 +83,9 @@ export const polly: NPC = {
     knownFacts: [],
   },
   currentRoom: 'glitchgate',
-} as any;
+});
 
-export const wendell: NPC = {
+export const wendell: NPC = normalizeNPC({
   id: 'mrwendell',
   name: 'Mr. Wendell',
   portrait: '/images/npcs/mrwendell.png',
@@ -74,9 +98,9 @@ export const wendell: NPC = {
     knownFacts: [],
   },
   currentRoom: 'stantonhub',
-} as any;
+});
 
-export const dominic: NPC = {
+export const dominic: NPC = normalizeNPC({
   id: 'dominic',
   name: 'Dominic',
   portrait: '/images/npcs/dominic.png',
@@ -89,7 +113,7 @@ export const dominic: NPC = {
     knownFacts: [],
   },
   currentRoom: 'burgerjoint',
-} as any;
+});
 
 export const wanderers = [al, morthos, polly, wendell, dominic];
 

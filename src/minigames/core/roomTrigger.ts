@@ -21,7 +21,8 @@ export async function maybeLaunchRoomMini(cfg: QuantumMiniCfg, roomId: string) {
 
   // Preload the module folder if possible
   try {
-    void import(/* webpackPrefetch: true */ `../${chosen}/${chosen}Game`).catch(()=>{});
+  // Include file extension in dynamic import so Vite can statically analyze the import path.
+  void import(/* webpackPrefetch: true */ `../${chosen}/${chosen}Game.js`).catch(()=>{});
   } catch (e) {
     // ignore
   }

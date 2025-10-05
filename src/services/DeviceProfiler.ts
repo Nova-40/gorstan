@@ -141,8 +141,9 @@ export class DeviceProfiler {
   private estimateMemory(): number {
     // Modern browsers provide memory info
     if ('memory' in performance) {
-      const perfMemory = (performance as any).memory;
-      if (perfMemory.jsHeapSizeLimit) {
+      const perfObj = performance as unknown as { memory?: { jsHeapSizeLimit?: number; usedJSHeapSize?: number } };
+      const perfMemory = perfObj.memory;
+      if (perfMemory && typeof perfMemory.jsHeapSizeLimit === 'number') {
         // Convert bytes to GB, estimate total system memory
         const heapGB = perfMemory.jsHeapSizeLimit / (1024 * 1024 * 1024);
         return Math.max(2, Math.round(heapGB * 8)); // Rough estimate
@@ -236,14 +237,15 @@ export class DeviceProfiler {
   private async detectNetworkSpeed(): Promise<'slow' | 'medium' | 'fast'> {
     // Modern connection API
     if ('connection' in navigator) {
-      const connection = (navigator as any).connection;
+      const nav = navigator as unknown as { connection?: { effectiveType?: string; downlink?: number } };
+      const connection = nav.connection;
       if (connection) {
-        const effectiveType = connection.effectiveType;
+        const effectiveType = typeof connection.effectiveType === 'string' ? connection.effectiveType : undefined;
 
-        if (effectiveType === '4g' || connection.downlink > 10) {
+        if (effectiveType === '4g' || (typeof connection.downlink === 'number' && connection.downlink > 10)) {
           return 'fast';
         }
-        if (effectiveType === '3g' || connection.downlink > 1.5) {
+        if (effectiveType === '3g' || (typeof connection.downlink === 'number' && connection.downlink > 1.5)) {
           return 'medium';
         }
         return 'slow';
