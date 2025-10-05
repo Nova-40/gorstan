@@ -17,7 +17,7 @@
 import React, { useState } from 'react';
 import { Share2, Download, Copy, Twitter, Trophy, Star, MapPin } from 'lucide-react';
 import { useGameState } from '../state/gameState';
-import { showNotification } from './QuickWinNotifications';
+import { showNotification } from '../utils/notificationCenter';
 
 interface ShareableAchievement {
   id: string;

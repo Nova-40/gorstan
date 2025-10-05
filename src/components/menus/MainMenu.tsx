@@ -3,6 +3,7 @@ import MenuGrid from '../ui/MenuGrid';
 import MenuCard from '../ui/MenuCard';
 import UIButton from '../ui/Button';
 import LicenseModal from '../LicenseModal';
+import SmartImage from '../media/SmartImage';
 
 interface MainMenuProps {
   onBegin: () => void;
@@ -56,7 +57,7 @@ const MainMenu: React.FC<MainMenuProps> = ({ onBegin, onLoadGame, onStartDemo, o
 
           <MenuCard title="About the Author">
             <div className="p-2 flex items-center gap-3">
-              <img src="/images/author/geoff_webster_headshot.jpg" alt="Geoff Webster" className="w-20 h-20 rounded-full object-cover shadow-md" />
+              <SmartImage src="/images/author/geoff_webster_headshot.jpg" alt="Geoff Webster" className="w-20 h-20 rounded-full object-cover shadow-md" />
               <div className="flex flex-col">
                 <div className="mb-1 text-crt-green">Learn more about Geoff Webster.</div>
                 <a href="https://author.geoffwebster.example" target="_blank" rel="noopener noreferrer" className="no-underline" aria-label="Open author site (opens in new tab)">
@@ -106,7 +107,7 @@ const RotatingSeriesCard: React.FC = () => {
 
         {index === 1 && (
           <div className="flex flex-col items-center gap-2 w-full px-2">
-            <img src="/images/books/findlaters.cover.png" alt="Findlater's Corner cover" className="max-h-20 w-auto rounded shadow-lg object-contain" />
+            <SmartImage src="/images/books/findlaters.cover.png" alt="Findlater's Corner cover" className="max-h-20 w-auto rounded shadow-lg object-contain" />
             <div className="text-md font-semibold text-crt-green">Findlater's Corner</div>
             <div className="text-sm text-crt-green/80 mt-1 text-center">A cozy, curious tale — perfect for new readers.</div>
             <div className="mt-2">

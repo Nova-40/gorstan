@@ -17,6 +17,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig({
   plugins: [react()],
@@ -28,44 +29,54 @@ export default defineConfig({
   build: {
     // Increase chunk size warning limit for Vercel
     chunkSizeWarningLimit: 1000,
-    // Enable sourcemaps for production debugging
+    // Build tuning for smaller vendor and better tree-shaking
+    target: 'es2020',
+    cssCodeSplit: true,
     sourcemap: false,
-    // Minimize output
-    minify: 'terser',
-    // Target modern browsers for better optimization
-    target: 'esnext',
+    minify: 'esbuild',
     rollupOptions: {
+      // Conditionally attach analysis plugins when running `npm run analyze`.
+      // npm sets `npm_lifecycle_event` to the script name; pnpm also forwards this env var.
+      plugins: (process.env.npm_lifecycle_event === 'analyze')
+        ? [
+            visualizer({
+              filename: 'dist/bundle-stats.html',
+              title: 'Gorstan bundle analysis',
+              open: false,
+              gzipSize: true,
+            }),
+          ]
+        : [],
       output: {
         // Optimize chunk naming for caching
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash].[ext]',
-        // Use a function to create deterministic chunks for major folders and heavy deps.
-        // This reduces churn when modules are both statically and dynamically imported.
-        manualChunks(id) {
+        // Map heavy vendor packages into dedicated chunks to keep vendor lean
+        manualChunks: (id) => {
           if (!id) return null;
-          // node_modules go into vendor chunks by package name
           if (id.includes('node_modules')) {
-            if (id.includes('framer-motion')) return 'framer-motion';
-            if (id.includes('lucide-react')) return 'lucide-react';
-            if (id.includes('react') || id.includes('react-dom')) return 'react-vendor';
-            if (id.includes('groq-sdk') || id.includes('groq')) return 'ai-services';
-            if (id.includes('valtio') || id.includes('zustand') || id.includes('@tanstack')) return 'state-management';
+            if (id.includes('framer-motion')) return 'motion';
+            if (id.includes('lucide-react')) return 'icons';
+            if (id.includes('react')) return 'react';
             return 'vendor';
           }
-
-          // Group internal source folders into stable chunks
-          if (id.includes('/src/minigames/') || id.includes('\\src\\minigames\\')) return 'minigames';
-          if (id.includes('/src/ai/') || id.includes('\\src\\ai\\')) return 'ai-services';
-          if (id.includes('/src/npc/') || id.includes('\\src\\npc\\')) return 'npc';
-          if (id.includes('/src/components/') || id.includes('\\src\\components\\')) return 'components';
-          if (id.includes('/src/logic/') || id.includes('\\src\\logic\\')) return 'game-logic';
-          if (id.includes('/src/engine/') || id.includes('\\src\\engine\\')) return 'game-engine';
-
-          return null; // let Rollup decide
-        }
-      }
-    }
+          // Create per-zone chunks for room modules (src/rooms/zoneName_*)
+          if (id.includes('/src/rooms/') || id.includes('src\\rooms\\')) {
+            const m = id.match(/rooms[\\\/]([a-zA-Z0-9_-]+)_/);
+            if (m && m[1]) return `zone-${m[1]}`;
+            return 'rooms';
+          }
+          return null;
+        },
+      },
+      // Aggressive treeshake hints to reduce accidental bloat
+      treeshake: {
+        moduleSideEffects: false,
+        propertyReadSideEffects: false,
+        tryCatchDeoptimization: false,
+      },
+    },
   }
 });
 

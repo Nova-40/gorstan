@@ -1,0 +1,12 @@
+Diffstat summary (HEAD vs backup/aggressive-prune-2025-09-21):
+273 files changed, 30466 insertions(+), 2366 deletions(-)
+
+Top-level created/modified highlights:
+- src/core/npcs/* (new dialogue engine, providers, lore gate, hook, tests)
+- tests/unit/npcs/* (new unit tests for dialogue system)
+- docs/system-map.md (updated to describe NPC dialogue system)
+- README.md (AI & offline fallbacks documented)
+- vitest.config.ts (coverage gating added for NPC modules)
+
+Local WIP branch: wip/pr2-local
+Commit message: "WIP: PR2 local snapshot (do not push)"

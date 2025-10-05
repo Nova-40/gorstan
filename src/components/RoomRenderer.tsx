@@ -24,6 +24,8 @@ import { Bone, Fish, Bot, UserCircle, ChefHat, Shield } from 'lucide-react';
 import { RoomNPC } from '../types/Room';
 
 import { useGameState } from '../state/gameState';
+import SmartImage from './media/SmartImage';
+import SmartVideo from './media/SmartVideo';
 import MicroObjectives from './MicroObjectives';
 
 const npcIconMap: Record<string, React.ElementType> = {
@@ -143,15 +145,11 @@ const RoomRenderer: React.FC = () => {
       {}
       {room.image ? (
         <div className="room-image-wrapper h-full w-full overflow-hidden">
-          <img
-            src={`/images/${room.image}`}
-            alt={room.title}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              console.log(`Failed to load image: /images/${room.image}`);
-              e.currentTarget.style.display = 'none';
-            }}
-          />
+          {room.image.toLowerCase().endsWith('.gif') ? (
+            <SmartVideo src={`/images/${room.image}`} className="w-full h-full object-cover" />
+          ) : (
+            <SmartImage src={`/images/${room.image}`} alt={room.title} className="w-full h-full object-cover" sizes="100vw" />
+          )}
         </div>
       ) : (
         <div className="room-no-image h-full w-full flex items-center justify-center bg-gray-900 text-green-600">

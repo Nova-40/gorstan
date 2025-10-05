@@ -30,27 +30,34 @@ const DramaticWaitTransition = lazyFeature(() => import('./animations/DramaticWa
 const JumpTransition = lazyFeature(() => import('./animations/JumpTransition'));
 const SipTransition = lazyFeature(() => import('./animations/SipTransition'));
 const WaitTransition = lazyFeature(() => import('./animations/WaitTransition'));
-import MultiverseRebootSequence from './MultiverseRebootSequence';
-import PlayerNameCapture from './PlayerNameCapture';
-import PlayerStatsPanel from './PlayerStatsPanel';
-import PresentNPCsPanel from './PresentNPCsPanel';
-import InventoryPanel from './InventoryPanel';
-import DebugPanel from './DebugPanel';
-import RoomRenderer from './RoomRenderer';
-import RoomTransition from './animations/RoomTransition';
-import SplashScreen from './SplashScreen';
-import TeletypeIntro from './TeletypeIntro';
-import TerminalConsole from './TerminalConsole';
-import WelcomeScreen from './WelcomeScreen';
-import MainMenu from './menus/MainMenu';
-import PauseMenu from './menus/PauseMenu';
-import { RouteSelectScreen } from './RouteSelectScreen';
-import TeleportManager from './animations/TeleportManager';
-import QuickActionsPanel from './QuickActionsPanel';
-import CombatActionsPanel from '../ui/QuickActionsPanel';
-import BlueButtonWarningModal from './BlueButtonWarningModal';
-import QuickWinNotifications from './QuickWinNotifications';
-import ProgressDashboard from './ProgressDashboard';
+const MultiverseRebootSequence = lazyFeature(() => import('./MultiverseRebootSequence'));
+const PlayerNameCapture = lazyFeature(() => import('./PlayerNameCapture'));
+// Lazy-load more UI panels so they can be split out of the main components chunk
+const PlayerStatsPanel = lazyFeature(() => import('./PlayerStatsPanel'));
+const PresentNPCsPanel = lazyFeature(() => import('./PresentNPCsPanel'));
+// Lazy-load heavy or non-critical UI panels to keep initial bundle small
+const InventoryPanel = lazyFeature(() => import('./InventoryPanel'));
+const DebugPanel = lazyFeature(() => import('./DebugPanel'));
+const RoomRenderer = lazyFeature(() => import('./RoomRenderer'));
+// Lazy-load RoomTransition so framer-motion inside it is not pulled into the initial chunk
+const RoomTransition = lazyFeature(() => import('./animations/RoomTransition'));
+const SplashScreen = lazyFeature(() => import('./SplashScreen'));
+const TeletypeIntro = lazyFeature(() => import('./TeletypeIntro'));
+const TerminalConsole = lazyFeature(() => import('./TerminalConsole'));
+const WelcomeScreen = lazyFeature(() => import('./WelcomeScreen'));
+const MainMenu = lazyFeature(() => import('./menus/MainMenu'));
+const PauseMenu = lazyFeature(() => import('./menus/PauseMenu'));
+const RouteSelectScreen = lazyFeature(() =>
+  import('./RouteSelectScreen').then((m) => ({ default: m.RouteSelectScreen })),
+);
+// Teleport overlays are visually heavy—load manager lazily and prefetch overlays on demand
+const TeleportManager = lazyFeature(() => import('./animations/TeleportManager'));
+// Note: prefetch helper is a named export from the module; import via loadModule or dynamic import below when needed
+const QuickActionsPanel = lazyFeature(() => import('./QuickActionsPanel'));
+const CombatActionsPanel = lazyFeature(() => import('../ui/QuickActionsPanel'));
+const BlueButtonWarningModal = lazyFeature(() => import('./BlueButtonWarningModal'));
+const QuickWinNotifications = lazyFeature(() => import('./QuickWinNotifications'));
+const ProgressDashboard = lazyFeature(() => import('./ProgressDashboard'));
 
 import { useFlags } from '../hooks/useFlags';
 import { useGameState } from '../state/gameState';
@@ -80,12 +87,12 @@ import { getTrapByRoom } from '../engine/trapController';
 
 import { UseItemModal } from './UseItemModal';
 import { InventoryModal } from './InventoryModal';
-import ModalOverlay from './ModalOverlay';
-import PickUpItemModal from './PickUpItemModal';
-import SaveGameModal from './SaveGameModal';
+const ModalOverlay = lazyFeature(() => import('./ModalOverlay'));
+const PickUpItemModal = lazyFeature(() => import('./PickUpItemModal'));
+const SaveGameModal = lazyFeature(() => import('./SaveGameModal'));
 import { SaveManager } from '../services/SaveManager';
-import NPCConsole from './NPCConsole';
-import EnhancedNPCConsole from './EnhancedNPCConsole';
+const NPCConsole = lazyFeature(() => import('./NPCConsole'));
+const EnhancedNPCConsole = lazyFeature(() => import('./EnhancedNPCConsole'));
 import Modal from './Modal';
 import AylaHintPopup from './AylaHintPopup';
 import { npcReact } from '../engine/npcEngine';
@@ -707,57 +714,23 @@ const AppCore: React.FC = () => {
 
   // NPC AI Behavior Generation
   useEffect(() => {
-    const generateNPCBehaviors = async () => {
-      if (!room || npcsInRoom.length === 0) {
-        return;
-      }
-
-      for (const npc of npcsInRoom) {
+    let cancelled = false;
+    const timeout = setTimeout(() => {
+      (async () => {
+        if (cancelled) return;
         try {
-          const npcProfile = npcAI.getAllNPCs().find((p) => p.npcId === npc.id);
-          if (!npcProfile) {
-            continue;
-          }
-
-          const context = {
-            npcProfile,
-            currentRoom: room,
-            playerPresent: true,
-            gameState: state,
-            recentPlayerActions: commandHistory.slice(-5),
-            timeInRoom: Date.now() - roomEntryTime,
-            nearbyNPCs: npcsInRoom.map((n) => n.id).filter((id) => id !== npc.id),
-          };
-
-          const behavior = await npcAI.generateNPCBehavior(context);
-          if (behavior && behavior.shouldDisplay) {
-            setNpcBehaviors((prev) => ({
-              ...prev,
-              [npc.id]: behavior.content,
-            }));
-
-            // Display behavior in console if significant
-            if (behavior.priority === 'high' || behavior.type === 'callout') {
-              dispatch({
-                type: 'ADD_MESSAGE',
-                payload: {
-                  id: Date.now().toString(),
-                  text: `**${npc.name}**: ${behavior.content}`,
-                  type: 'npc',
-                  timestamp: Date.now(),
-                },
-              });
-            }
-          }
-        } catch (error) {
-          console.warn(`[NPC AI] Behavior generation failed for ${npc.id}:`, error);
+          const mod = await import('./AppCore.behaviors');
+          await mod.default(npcsInRoom, room, commandHistory, roomEntryTime, state, dispatch);
+        } catch (err) {
+          console.warn('[AppCore] Lazy NPC behavior module failed to load or run', err);
         }
-      }
-    };
+      })();
+    }, 2000);
 
-    // Generate behaviors after a short delay when room/NPCs change
-    const timeout = setTimeout(generateNPCBehaviors, 2000);
-    return () => clearTimeout(timeout);
+    return () => {
+      cancelled = true;
+      clearTimeout(timeout);
+    };
   }, [room, npcsInRoom, commandHistory, roomEntryTime, state, dispatch]);
 
   // NPC Console functions
@@ -2003,23 +1976,27 @@ const AppCore: React.FC = () => {
         );
       case 'npcConsole':
           return isGroupConversation ? (
-          <EnhancedNPCConsole
-            isOpen={true}
-            npcs={npcsInRoom}
-            activeNpcId={selectedNPC?.id ?? ''}
-            isGroupConversation={true}
-            onClose={closeModal}
-            onSendMessage={handleNPCMessage}
-            playerName={playerName}
-          />
+          <React.Suspense fallback={null}>
+            <EnhancedNPCConsole
+              isOpen={true}
+              npcs={npcsInRoom}
+              activeNpcId={selectedNPC?.id ?? ''}
+              isGroupConversation={true}
+              onClose={closeModal}
+              onSendMessage={handleNPCMessage}
+              playerName={playerName}
+            />
+          </React.Suspense>
         ) : (
-          <NPCConsole
-            isOpen={true}
-            npc={selectedNPC}
-            onClose={closeModal}
-            onSendMessage={handleNPCMessage}
-            playerName={playerName}
-          />
+          <React.Suspense fallback={null}>
+            <NPCConsole
+              isOpen={true}
+              npc={selectedNPC}
+              onClose={closeModal}
+              onSendMessage={handleNPCMessage}
+              playerName={playerName}
+            />
+          </React.Suspense>
         );
       case 'npcSelection':
         return (
@@ -2081,10 +2058,18 @@ const AppCore: React.FC = () => {
 
   // Enhanced teleport rendering with proper typing
   if (teleportType === 'fractal') {
-    return <TeleportManager teleportType="fractal" onComplete={handleTeleportComplete} />;
+    return (
+      <React.Suspense fallback={null}>
+        <TeleportManager teleportType="fractal" onComplete={handleTeleportComplete} />
+      </React.Suspense>
+    );
   }
   if (teleportType === 'trek') {
-    return <TeleportManager teleportType="trek" onComplete={handleTeleportComplete} />;
+    return (
+      <React.Suspense fallback={null}>
+        <TeleportManager teleportType="trek" onComplete={handleTeleportComplete} />
+      </React.Suspense>
+    );
   }
 
   // Enhanced stage-based rendering with proper typing
@@ -2230,8 +2215,8 @@ const AppCore: React.FC = () => {
   }
   if (stage === 'routeSelect') {
     return (
-      <RouteSelectScreen
-        onRouteSelect={(routeId) => {
+        <RouteSelectScreen
+        onRouteSelect={(routeId: string) => {
           dispatch({ type: 'SET_ROUTE', payload: routeId });
           // Different paths based on route selection
           if (routeId === 'demo') {
@@ -2312,37 +2297,50 @@ const AppCore: React.FC = () => {
       ) : null}
 
       <MultiverseRebootSequence />
-      <RoomTransition
-        isActive={roomTransitionActive && transitionInfo.shouldAnimate}
-        transitionType={transitionInfo.transitionType}
-        fromZone={transitionInfo.fromZone ?? ''}
-        toZone={transitionInfo.toZone ?? ''}
-        onComplete={() => {
-          setRoomTransitionActive(false);
-          setLastMovementAction('');
-        }}
-      />
+      <React.Suspense fallback={null}>
+        <RoomTransition
+          isActive={roomTransitionActive && transitionInfo.shouldAnimate}
+          transitionType={transitionInfo.transitionType}
+          fromZone={transitionInfo.fromZone ?? ''}
+          toZone={transitionInfo.toZone ?? ''}
+          onComplete={() => {
+            setRoomTransitionActive(false);
+            setLastMovementAction('');
+          }}
+        />
+      </React.Suspense>
 
       <div className="quad quad-1">
-        <RoomRenderer />
+        <React.Suspense fallback={<div />}> 
+          <RoomRenderer />
+        </React.Suspense>
         {/* Compact Progress Display in corner */}
         <div className="absolute top-2 left-2">
-          <ProgressDashboard compact={true} className="w-48" />
+          <React.Suspense fallback={null}>
+            <ProgressDashboard compact={true} className="w-48" />
+          </React.Suspense>
         </div>
       </div>
 
       <div className="quad quad-2">
-        <TerminalConsole messages={state.history} />
+        <React.Suspense fallback={<div />}> 
+          <TerminalConsole messages={state.history} />
+        </React.Suspense>
       </div>
 
       <div className="quad quad-3">
-        <PlayerStatsPanel />
+        <React.Suspense fallback={null}>
+          <PlayerStatsPanel />
+        </React.Suspense>
         <CommandInput onCommand={handleCommand} playerName={playerName} />
-        <PresentNPCsPanel npcs={npcsInRoom} onTalkToNPC={handleOpenNPCConsole} />
+        <React.Suspense fallback={null}>
+          <PresentNPCsPanel npcs={npcsInRoom} onTalkToNPC={handleOpenNPCConsole} />
+        </React.Suspense>
       </div>
 
       <div className="quad quad-4">
-        <QuickActionsPanel
+        <React.Suspense fallback={null}>
+          <QuickActionsPanel
           availableDirections={availableDirections}
           directionRoomTitles={directionRoomTitles}
           onShowInventory={() => openModal('inventory')}
@@ -2390,6 +2388,12 @@ const AppCore: React.FC = () => {
             const sitRoomId = currentRoom?.exits?.sit;
             console.log('[AppCore] Sit room ID:', sitRoomId);
             if (sitRoomId) {
+              // Prefetch teleport overlays when the player sits to warm module cache
+              try {
+                import('./animations/TeleportManager').then((m) => m.prefetchTeleportOverlay?.('fractal')).catch(() => {});
+              } catch (e) {
+                // ignore prefetch errors
+              }
               handleRoomChange(sitRoomId);
             } else {
               console.warn('🚫 Sit exit not found from current room:', state.currentRoomId);
@@ -2405,40 +2409,55 @@ const AppCore: React.FC = () => {
           onTalkToNPC={handleOpenNPCConsole}
           hasActiveTraps={hasActiveTraps}
           onDisarmTrap={handleDisarmTrap}
-        />
+          />
+        </React.Suspense>
       </div>
 
       {hasFlag('showInventory') && (
         <div className="quad quad-4 inventory-container">
-          <InventoryPanel />
+          <React.Suspense fallback={null}>
+            <InventoryPanel />
+          </React.Suspense>
         </div>
       )}
 
-      {hasFlag('showDebugPanel') && <DebugPanel />}
+      {hasFlag('showDebugPanel') && (
+        <React.Suspense fallback={null}>
+          <DebugPanel />
+        </React.Suspense>
+      )}
 
       {/* Combat Actions Panel - only show during combat */}
-      <CombatActionsPanel />
+      <React.Suspense fallback={null}>
+        <CombatActionsPanel />
+      </React.Suspense>
 
       {/* Enhanced modal overlay with proper typing */}
-      <ModalOverlay isOpen={Boolean(modal)} onClose={closeModal}>
-        {renderModalContent()}
-      </ModalOverlay>
+      <React.Suspense fallback={null}>
+        <ModalOverlay isOpen={Boolean(modal)} onClose={closeModal}>
+          {renderModalContent()}
+        </ModalOverlay>
+      </React.Suspense>
 
       {/* Pause Menu Overlay */}
-      <PauseMenu
-        isOpen={showPause}
-        onResume={handleResume}
-        onSave={() => openModal('saveGame')}
-        onLoad={() => openModal('saveGame')}
-        onOptions={() => dispatch({ type: 'OPEN_OPTIONS' })}
-        onQuitToMain={handleQuitToMain}
-      />
+      <React.Suspense fallback={null}>
+        <PauseMenu
+          isOpen={showPause}
+          onResume={handleResume}
+          onSave={() => openModal('saveGame')}
+          onLoad={() => openModal('saveGame')}
+          onOptions={() => dispatch({ type: 'OPEN_OPTIONS' })}
+          onQuitToMain={handleQuitToMain}
+        />
+      </React.Suspense>
 
       {/* Blue Button Warning Modal */}
-      <BlueButtonWarningModal
-        isOpen={Boolean(state.player.flags?.showBlueButtonWarning)}
-        onClose={() => dispatch({ type: 'DISMISS_BLUE_BUTTON_WARNING' })}
-      />
+      <React.Suspense fallback={null}>
+        <BlueButtonWarningModal
+          isOpen={Boolean(state.player.flags?.showBlueButtonWarning)}
+          onClose={() => dispatch({ type: 'DISMISS_BLUE_BUTTON_WARNING' })}
+        />
+      </React.Suspense>
 
       {/* Ayla Hint Popup */}
       {currentHint && (
@@ -2492,7 +2511,9 @@ const AppCore: React.FC = () => {
       {/* Celebration System Active */}
 
       {/* Quick Win Notifications System */}
-      <QuickWinNotifications />
+      <React.Suspense fallback={null}>
+        <QuickWinNotifications />
+      </React.Suspense>
     </div>
   );
 };

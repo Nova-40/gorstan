@@ -1,0 +1,122 @@
+[
+  {
+    "name": "lucide-react",
+    "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\lucide-react",
+    "raw": 35183176,
+    "gz": 948
+  },
+  {
+    "name": "typescript",
+    "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\typescript",
+    "raw": 23622869,
+    "gz": 1254
+  },
+  {
+    "name": "date-fns",
+    "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\date-fns",
+    "raw": 22601076,
+    "gz": 13534
+  },
+  {
+    "name": "happy-dom",
+    "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\happy-dom",
+    "raw": 16222084,
+    "gz": 918
+  },
+  {
+    "name": "@babel",
+    "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\@babel",
+    "raw": 10780457,
+    "gz": 0
+  },
+  {
+    "name": "@esbuild",
+    "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\@esbuild",
+    "raw": 10558982,
+    "gz": 0
+  },
+  {
+    "name": "lightningcss-win32-x64-msvc",
+    "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\lightningcss-win32-x64-msvc",
+    "raw": 8760936,
+    "gz": 365
+  },
+  {
+    "name": "prettier",
+    "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\prettier",
+    "raw": 8458264,
+    "gz": 1123
+  },
+  {
+    "name": ".vite",
+    "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.vite",
+    "raw": 8262266,
+    "gz": 0
+  },
+  {
+    "name": "playwright-core",
+    "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\playwright-core",
+    "raw": 8031811,
+    "gz": 516
+  },
+  {
+    "name": "react-dom",
+    "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\react-dom",
+    "raw": 6552556,
+    "gz": 677
+  },
+  {
+    "name": "@rollup",
+    "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\@rollup",
+    "raw": 4685765,
+    "gz": 0
+  },
+  {
+    "name": "@hebcal",
+    "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\@hebcal",
+    "raw": 4335139,
+    "gz": 0
+  },
+  {
+    "name": "playwright",
+    "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\playwright",
+    "raw": 4101438,
+    "gz": 645
+  },
+  {
+    "name": "eslint",
+    "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\eslint",
+    "raw": 4091886,
+    "gz": 2170
+  },
+  {
+    "name": "zod",
+    "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\zod",
+    "raw": 3957803,
+    "gz": 950
+  },
+  {
+    "name": "@testing-library",
+    "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\@testing-library",
+    "raw": 3772894,
+    "gz": 0
+  },
+  {
+    "name": "@typescript-eslint",
+    "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\@typescript-eslint",
+    "raw": 3605376,
+    "gz": 0
+  },
+  {
+    "name": "@types",
+    "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\@types",
+    "raw": 3588438,
+    "gz": 0
+  },
+  {
+    "name": "@tailwindcss",
+    "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\@tailwindcss",
+    "raw": 3522810,
+    "gz": 0
+  }
+]
