@@ -68,6 +68,12 @@ Icon?
 vite-env.d.ts
 tsconfig.tsbuildinfo
 
+# Ignore large release archives and binary bundles (prevent accidental commits)
+# These large ZIP files are present in the repo history; this prevents new ones
+# from being added. If you want to remove the historical blobs, see notes below.
+*.zip
+gorstan*.zip
+
 node_modules
 dist
 .DS_Store
