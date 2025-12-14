@@ -7,6 +7,7 @@
 */
 
 import { groqAI } from './groqAI';
+import { aiMiniquestService as staticAIMiniquestService } from './aiMiniquestService';
 import type { LocalGameState } from '../state/gameState';
 import type { Room } from '../types/Room';
 
@@ -334,7 +335,8 @@ Respond with just the hint text, in Ayla's voice with appropriate cosmic imagery
 
     return {
       shouldInterrupt: true,
-      hintText,
+  // only include hintText when defined to satisfy exactOptionalPropertyTypes
+  hintText: hintText ?? '',
       urgency: 'medium',
       hintType: this.categorizeHint(context, stuckState),
       followUp: '✨ *The cosmic threads shimmer with possibility*',
@@ -402,8 +404,15 @@ Respond with just the hint text, in Ayla's voice with appropriate cosmic imagery
   ): Promise<string | null> {
     try {
       // Dynamic import to avoid circular dependencies
-      const { aiMiniquestService } = await import('./aiMiniquestService');
-      const MiniquestController = (await import('../engine/miniquestController')).default;
+      // Prefer the static import to avoid mixed static/dynamic imports during build.
+      const aiMiniquestService = staticAIMiniquestService;
+      let MiniquestController: any;
+      try {
+        MiniquestController = (await import('../engine/miniquestController')).default;
+      } catch (e) {
+        // Fallback: try to use global or previously loaded controller
+        MiniquestController = (window as any).MiniquestController ?? null;
+      }
 
       const controller = MiniquestController.getInstance();
       const aiStatus = controller.getAIStatus();

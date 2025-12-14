@@ -18,9 +18,15 @@
 // Handles NPC logic, memory, or rendering.
 
 import { useEffect } from 'react';
+import type { Dispatch } from 'react';
+import type { Room } from '../types/Room';
+import type { LocalGameState } from '../state/gameState';
+import type { GameAction } from '../types/GameTypes';
 import { useGameState } from '../state/gameState';
 import { useFlags } from './useFlags';
 import { useModuleLoader } from './useModuleLoader';
+// Statically import wandering controller to avoid mixed static/dynamic imports during build
+import * as WanderingController from '../engine/wanderingNPCController';
 import { useTimers } from './useTimers';
 // Adjust the import according to the actual export in flagRegistry.ts
 import { FlagMap } from '../state/flagRegistry';
@@ -56,10 +62,14 @@ export const useNPCController = () => {
       // Set flag to trigger NPC movement evaluation
       setFlag(npcFlags.evaluateWanderingNPCs, true);
 
-      // Optimized module loading with error handling
-      loadModule('../engine/wanderingNPCController')
-        .then((mod) => {
-          if (mod?.wanderNPC && state.roomMap && !state.flags?.pollyTakeoverInProgress) {
+      // Use the statically imported WanderingController to avoid mixed imports
+      try {
+        type WanderingControllerModule = {
+          wanderNPC?: (npcId: string, state: LocalGameState) => void;
+        };
+
+        const mod = WanderingController as unknown as WanderingControllerModule;
+        if (mod?.wanderNPC && state.roomMap && !state.flags?.pollyTakeoverInProgress) {
             // Dynamic NPC list from current game state instead of hardcoded
             const wanderingNPCs =
               state.npcsInRoom
@@ -81,25 +91,25 @@ export const useNPCController = () => {
             // Batch process NPCs with error handling
             wanderingNPCs.forEach((npcId) => {
               try {
-                mod.wanderNPC(npcId, state);
+                mod.wanderNPC?.(npcId, state as LocalGameState);
               } catch (error) {
                 console.warn(`[NPC] Failed to move ${npcId}:`, error);
               }
             });
           }
-        })
-        .catch((error) => {
-          console.warn('[NPC] Module loading failed:', error);
-        });
+      } catch (error) {
+        console.warn('[NPC] WanderingController failed:', error);
+      }
     }, 18000); // Optimized to 18 seconds to avoid conflicts
 
     // Enhanced cleanup
     return () => {
       clearInterval(movementInterval);
       // Clean up any lingering window intervals
-      if ((window as any).npcMovementInterval) {
-        clearInterval((window as any).npcMovementInterval);
-        delete (window as any).npcMovementInterval;
+        const win = window as Window & { npcMovementInterval?: number };
+        if (typeof win.npcMovementInterval !== 'undefined') {
+          clearInterval(win.npcMovementInterval);
+          delete win.npcMovementInterval;
       }
     };
   }, [state.roomMap, state.flags?.pollyTakeoverInProgress, state.flags?.isSystemTransition]);
@@ -126,23 +136,33 @@ export const useNPCController = () => {
     const flag = npcFlags.evaluateWanderingNPCs || 'evaluateWanderingNPCs';
     if (room && hasFlag(flag)) {
       clearFlag(flag);
-      loadModule('../engine/wanderingNPCController').then((mod) => {
-        mod?.handleRoomEntryForWanderingNPCs?.(room, state, dispatch);
-      });
+      try {
+        type WanderingControllerModule = {
+          handleRoomEntryForWanderingNPCs?: (room: Room | unknown, state: LocalGameState, dispatch: Dispatch<GameAction>) => void;
+        };
+        const mod = WanderingController as unknown as WanderingControllerModule;
+        mod.handleRoomEntryForWanderingNPCs?.(room as Room, state as LocalGameState, dispatch as Dispatch<GameAction>);
+      } catch (e) {
+        console.warn('[NPC] handleRoomEntryForWanderingNPCs failed:', e);
+      }
     }
   }, [room, hasFlag(npcFlags.evaluateWanderingNPCs), state]);
 
   // React effect hook
   useEffect(() => {
     if (hasFlag(debugFlags.debugSpawnNPC) && hasFlag(debugFlags.debugSpawnRoom)) {
-      loadModule('../engine/wanderingNPCController').then((mod) => {
+      try {
+        type WanderingControllerModule = {
+          debugSpawnWanderingNPC?: (npc: string, room: string, dispatch: Dispatch<GameAction>) => boolean;
+        };
+        const mod = WanderingController as unknown as WanderingControllerModule;
         if (mod?.debugSpawnWanderingNPC) {
           // Variable declaration
           const npc = debugFlags.debugSpawnNPC;
           // Variable declaration
           const room = debugFlags.debugSpawnRoom;
           // Variable declaration
-          const success = mod.debugSpawnWanderingNPC(npc, room, dispatch);
+          const success = mod.debugSpawnWanderingNPC(npc, room, dispatch as Dispatch<GameAction>);
           dispatch({
             type: 'ADD_MESSAGE',
             payload: {
@@ -154,7 +174,9 @@ export const useNPCController = () => {
             },
           });
         }
-      });
+      } catch (e) {
+        console.warn('[NPC] debugSpawnWanderingNPC failed:', e);
+      }
       clearFlag(debugFlags.debugSpawnNPC);
       clearFlag(debugFlags.debugSpawnRoom);
     }
@@ -163,9 +185,15 @@ export const useNPCController = () => {
   // React effect hook
   useEffect(() => {
     if (hasFlag(debugFlags.debugListNPCs)) {
-      loadModule('../engine/wanderingNPCController').then((mod) => {
-        mod?.debugListActiveWanderingNPCs?.();
-      });
+      try {
+        type WanderingControllerModule = {
+          debugListActiveWanderingNPCs?: () => void;
+        };
+        const mod = WanderingController as unknown as WanderingControllerModule;
+        mod.debugListActiveWanderingNPCs?.();
+      } catch (e) {
+        console.warn('[NPC] debugListActiveWanderingNPCs failed:', e);
+      }
       clearFlag(debugFlags.debugListNPCs);
     }
   }, [hasFlag(debugFlags.debugListNPCs)]);
@@ -176,19 +204,28 @@ export const useNPCController = () => {
     const pending = hasFlag(npcFlags.pendingWendellCommand);
     if (pending) {
       loadModule('../engine/mrWendellController').then((mod) => {
-        if (mod?.handleWendellInteraction) {
-          // Variable declaration
-          const result = mod.handleWendellInteraction(pending, state, dispatch);
-          if (!result?.handled) {
-            dispatch({
-              type: 'ADD_MESSAGE',
-              payload: {
-                text: "I don't understand that command.",
-                type: 'error',
-                timestamp: Date.now(),
-              },
-            });
-          }
+        type WendellModule = {
+          handleWendellInteraction?: (
+            pending: string | boolean,
+            state: LocalGameState,
+            dispatch: Dispatch<GameAction>,
+          ) => { handled?: boolean } | Promise<{ handled?: boolean }>;
+        };
+        const m = mod as unknown as WendellModule;
+        if (m?.handleWendellInteraction) {
+          const result = m.handleWendellInteraction(pending, state as LocalGameState, dispatch as Dispatch<GameAction>);
+          Promise.resolve(result).then((r) => {
+            if (!r?.handled) {
+              dispatch({
+                type: 'ADD_MESSAGE',
+                payload: {
+                  text: "I don't understand that command.",
+                  type: 'error',
+                  timestamp: Date.now(),
+                },
+              });
+            }
+          });
         }
       });
       clearFlag(npcFlags.pendingWendellCommand);
@@ -201,19 +238,28 @@ export const useNPCController = () => {
     const pending = hasFlag(npcFlags.pendingLibrarianCommand);
     if (pending) {
       loadModule('../engine/librarianController').then((mod) => {
-        if (mod?.handleLibrarianInteraction) {
-          // Variable declaration
-          const result = mod.handleLibrarianInteraction(pending, state, dispatch);
-          if (!result?.handled) {
-            dispatch({
-              type: 'ADD_MESSAGE',
-              payload: {
-                text: "I don't understand that command.",
-                type: 'error',
-                timestamp: Date.now(),
-              },
-            });
-          }
+        type LibrarianModule = {
+          handleLibrarianInteraction?: (
+            pending: string | boolean,
+            state: LocalGameState,
+            dispatch: Dispatch<GameAction>,
+          ) => { handled?: boolean } | Promise<{ handled?: boolean }>;
+        };
+        const m = mod as unknown as LibrarianModule;
+        if (m?.handleLibrarianInteraction) {
+          const result = m.handleLibrarianInteraction(pending, state as LocalGameState, dispatch as Dispatch<GameAction>);
+          Promise.resolve(result).then((r) => {
+            if (!r?.handled) {
+              dispatch({
+                type: 'ADD_MESSAGE',
+                payload: {
+                  text: "I don't understand that command.",
+                  type: 'error',
+                  timestamp: Date.now(),
+                },
+              });
+            }
+          });
         }
       });
       clearFlag(npcFlags.pendingLibrarianCommand);
@@ -225,9 +271,12 @@ export const useNPCController = () => {
     if (hasFlag(npcFlags.forceWendellSpawn) && room) {
       setFlag('wasRudeToNPC', true);
       loadModule('../engine/mrWendellController').then(() => {
-        loadModule('../engine/wanderingNPCController').then((wmod) => {
-          wmod?.handleRoomEntryForWanderingNPCs?.(room, state, dispatch);
-        });
+        try {
+          const wmod = WanderingController as unknown as { handleRoomEntryForWanderingNPCs?: (room: any, state: any, dispatch: any) => void };
+          wmod.handleRoomEntryForWanderingNPCs?.(room, state, dispatch);
+        } catch (e) {
+          console.warn('[NPC] handleRoomEntryForWanderingNPCs failed:', e);
+        }
         dispatch({
           type: 'ADD_MESSAGE',
           payload: {
@@ -246,9 +295,12 @@ export const useNPCController = () => {
     if (hasFlag(npcFlags.forceLibrarianSpawn) && room) {
       setFlag('needsLibrarianHelp', true);
       loadModule('../engine/librarianController').then(() => {
-        loadModule('../engine/wanderingNPCController').then((wmod) => {
-          wmod?.handleRoomEntryForWanderingNPCs?.(room, state, dispatch);
-        });
+        try {
+          const wmod = WanderingController as unknown as { handleRoomEntryForWanderingNPCs?: (room: any, state: any, dispatch: any) => void };
+          wmod.handleRoomEntryForWanderingNPCs?.(room, state, dispatch);
+        } catch (e) {
+          console.warn('[NPC] handleRoomEntryForWanderingNPCs failed:', e);
+        }
         dispatch({
           type: 'ADD_MESSAGE',
           payload: {

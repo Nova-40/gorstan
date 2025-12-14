@@ -101,17 +101,39 @@ export const detectDevice = (): DeviceInfo => {
 
 // Performance monitoring
 export const monitorPerformance = (): PerformanceMetrics => {
-  const connection =
-    (navigator as any).connection ||
-    (navigator as any).mozConnection ||
-    (navigator as any).webkitConnection;
-  const battery = (navigator as any).battery || (navigator as any).getBattery?.();
+  // Narrow types for browser-specific APIs
+  interface NetworkInformationLike {
+    effectiveType?: string;
+    rtt?: number;
+  }
 
-  return {
+  interface BatteryLike {
+    level?: number;
+    charging?: boolean;
+  }
+
+  const nav = navigator as Navigator & { connection?: NetworkInformationLike; mozConnection?: NetworkInformationLike; webkitConnection?: NetworkInformationLike; battery?: BatteryLike; getBattery?: () => Promise<BatteryLike> };
+
+  const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
+  // getBattery may return a promise or battery object; handle both
+  let battery: BatteryLike | undefined;
+  try {
+    if (typeof nav.getBattery === 'function') {
+      // If available, use async getBattery — but we cannot await in this sync function.
+      // So attempt to read nav.battery fallback, otherwise undefined.
+      battery = nav.battery;
+    } else {
+      battery = nav.battery;
+    }
+  } catch (e) {
+    battery = undefined;
+  }
+
+  const batteryLevelVal = battery?.level;
+  const base: PerformanceMetrics = {
     fps: 60, // Will be updated by actual FPS monitoring
-    memoryUsage: (performance as any).memory?.usedJSHeapSize || 0,
-    batteryLevel: battery?.level,
-    isLowPowerMode: battery?.charging === false && battery?.level < 0.2,
+    memoryUsage: (performance as Performance & { memory?: { usedJSHeapSize?: number } }).memory?.usedJSHeapSize || 0,
+    isLowPowerMode: battery?.charging === false && (batteryLevelVal ?? 1) < 0.2,
     connectionType: connection
       ? connection.effectiveType === '4g'
         ? '4g'
@@ -121,8 +143,15 @@ export const monitorPerformance = (): PerformanceMetrics => {
             ? '2g'
             : 'wifi'
       : 'wifi',
-    latency: connection?.rtt || 50,
+    latency: connection?.rtt ?? 50,
   };
+
+  if (batteryLevelVal !== undefined) {
+    // Conditionally add optional batteryLevel to avoid assigning `undefined`
+    (base as PerformanceMetrics).batteryLevel = batteryLevelVal;
+  }
+
+  return base;
 };
 
 // Accessibility detection
@@ -274,9 +303,11 @@ export const setupGestureHandling = (element: HTMLElement, handlers: GestureHand
   element.addEventListener(
     'touchstart',
     (e) => {
-      const touch = e.touches[0];
-      startX = touch.clientX;
-      startY = touch.clientY;
+      const touch = e.touches && e.touches[0];
+      if (touch) {
+        startX = touch.clientX;
+        startY = touch.clientY;
+      }
       startTime = Date.now();
       isLongPress = false;
 
@@ -307,7 +338,10 @@ export const setupGestureHandling = (element: HTMLElement, handlers: GestureHand
         return;
       } // Don't process swipe if long press occurred
 
-      const touch = e.changedTouches[0];
+      const touch = e.changedTouches && e.changedTouches[0];
+      if (!touch) {
+        return;
+      }
       const endX = touch.clientX;
       const endY = touch.clientY;
       const endTime = Date.now();

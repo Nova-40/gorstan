@@ -24,10 +24,8 @@ const controlnexus: Room = {
   zone: 'introZone',
   title: 'The Control Nexus',
   description: [
-    'You stand in a circular chamber that pulses with dormant energy. The curved walls are lined with darkened screens, their surfaces occasionally flickering with cryptic data streams and static bursts.',
-    'Thick cables snake across the polished floor like technological vines, converging at a central console. A single command chair faces this nexus of control, its ergonomic form suggesting long periods of monitoring.',
-    'The air carries a faint ozone scent, and you can hear the subtle hum of sleeping systems waiting to be awakened. This place feels like the nerve center of something vast and important.',
-  ],
+  "You stand in a circular chamber that pulses with dormant energy. The curved walls are lined with darkened screens, their surfaces occasionally flickering with cryptic data streams and static bursts. Thick cables snake across the polished floor like technological vines, converging at a central console. A single command chair faces this nexus of control, its ergonomic form suggesting long periods of monitoring. The air carries a faint ozone scent, and you can hear the subtle hum of sleeping systems waiting to be awakened. This place feels like the nerve center of something vast and important.",
+],
   image: 'introZone_controlnexus.gif',
   ambientAudio: 'lowhum.mp3',
 
@@ -49,30 +47,36 @@ const controlnexus: Room = {
     sit: 'hiddenlab',
   },
 
-  items: [],
+  items: [
+    
+  ],
 
   interactables: {
     console: {
-      description:
-        'The main control console glows with a soft blue light, its interface displaying streams of dimensional data.',
+      description: [
+  "The main control console glows with a soft blue light, its interface displaying streams of dimensional data.",
+],
       actions: ['activate', 'examine', 'use'],
       requires: [],
     },
     chair: {
-      description:
-        'A sophisticated command chair with neural interface ports and biometric sensors.',
+      description: [
+  "A sophisticated command chair with neural interface ports and biometric sensors.",
+],
       actions: ['sit', 'examine'],
       requires: [],
     },
     screens: {
-      description:
-        'Wall-mounted displays showing various dimensional readings and system diagnostics.',
+      description: [
+  "Wall-mounted displays showing various dimensional readings and system diagnostics.",
+],
       actions: ['examine', 'activate'],
       requires: ['strangekey'],
     },
     cables: {
-      description:
-        'Thick fiber-optic cables pulse with faint light, carrying vast amounts of data.',
+      description: [
+  "Thick fiber-optic cables pulse with faint light, carrying vast amounts of data.",
+],
       actions: ['examine', 'trace'],
       requires: [],
     },
@@ -141,12 +145,16 @@ const controlnexus: Room = {
 
   secrets: {
     hiddenPanel: {
-      description: 'A concealed maintenance panel behind the main console',
+      description: [
+  "A concealed maintenance panel behind the main console",
+],
       requirements: ['examine console thoroughly', 'use strangekey'],
       rewards: ['backup_data_crystal', 'emergency_codes'],
     },
     operatorLogs: {
-      description: 'Personal logs from the previous operator',
+      description: [
+  "Personal logs from the previous operator",
+],
       requirements: ['activate console', 'sit in chair'],
       rewards: ['backstory_revelation', 'dimensional_map_fragment'],
     },
@@ -154,12 +162,16 @@ const controlnexus: Room = {
 
   customActions: {
     scan: {
-      description: 'Perform a dimensional scan of the area',
+      description: [
+  "Perform a dimensional scan of the area",
+],
       requirements: ['console_activated'],
       effects: ['reveal_hidden_exits', 'update_dimensional_map'],
     },
     calibrate: {
-      description: 'Calibrate the dimensional stabilizers',
+      description: [
+  "Calibrate the dimensional stabilizers",
+],
       requirements: ['operator_manual_read', 'chair_occupied'],
       effects: ['improve_stability_index', 'unlock_advanced_controls'],
     },

@@ -24,10 +24,8 @@ const latticeobservationentrance: Room = {
   zone: 'latticeZone',
   title: 'Lattice Observation Entrance',
   description: [
-    'You stand at the entrance to the Lattice Observation Deck, where crystalline corridors stretch ahead, shimmering with refracted light.',
-    'The air hums with a quiet energy, and translucent panels display shifting patterns and data streams.',
-    'A sense of anticipation fills the space, as if the lattice itself is aware of your presence.',
-  ],
+  "You stand at the entrance to the Lattice Observation Deck, where crystalline corridors stretch ahead, shimmering with refracted light. The air hums with a quiet energy, and translucent panels display shifting patterns and data streams. A sense of anticipation fills the space, as if the lattice itself is aware of your presence.",
+],
   image: 'offmultiverseZone_controlnexusreturned.png',
   ambientAudio: 'lattice_entrance_ambience.mp3',
 
@@ -43,21 +41,31 @@ const latticeobservationentrance: Room = {
     south: 'latticeZone_latticehub',
   },
 
-  items: ['observation_pass', 'crystal_badge', 'data_tablet'],
+  items: [
+    { id: 'observation_pass', name: 'Observation Pass' },
+    { id: 'crystal_badge', name: 'Crystal Badge' },
+    { id: 'data_tablet', name: 'Data Tablet' }
+  ],
 
   interactables: {
     security_panel: {
-      description: 'A crystalline panel with access controls for the observation deck.',
+      description: [
+  "A crystalline panel with access controls for the observation deck.",
+],
       actions: ['examine', 'scan_pass', 'override'],
       requires: ['observation_pass'],
     },
     info_display: {
-      description: 'A floating display showing real-time data about the lattice.',
+      description: [
+  "A floating display showing real-time data about the lattice.",
+],
       actions: ['read', 'analyze', 'download'],
       requires: [],
     },
     energy_node: {
-      description: 'A small node pulsing with lattice energy, powering the entrance systems.',
+      description: [
+  "A small node pulsing with lattice energy, powering the entrance systems.",
+],
       actions: ['examine', 'stabilize', 'absorb'],
       requires: [],
     },
@@ -126,12 +134,16 @@ const latticeobservationentrance: Room = {
 
   secrets: {
     hidden_access: {
-      description: 'A concealed access route to a maintenance corridor.',
+      description: [
+  "A concealed access route to a maintenance corridor.",
+],
       requirements: ['override security_panel', 'analyze info_display'],
       rewards: ['maintenance_access', 'hidden_lore'],
     },
     attendant_memory: {
-      description: 'A memory fragment from the attendant, unlocked by repeated interactions.',
+      description: [
+  "A memory fragment from the attendant, unlocked by repeated interactions.",
+],
       requirements: ['talk to observation_attendant', 'download info_display'],
       rewards: ['attendant_story', 'unique_item'],
     },
@@ -139,12 +151,16 @@ const latticeobservationentrance: Room = {
 
   customActions: {
     override_security: {
-      description: 'Attempt to override the security panel for alternate access.',
+      description: [
+  "Attempt to override the security panel for alternate access.",
+],
       requirements: ['data_tablet'],
       effects: ['bypass_security', 'trigger_alarm'],
     },
     analyze_energy: {
-      description: 'Analyze the energy node for fluctuations.',
+      description: [
+  "Analyze the energy node for fluctuations.",
+],
       requirements: [],
       effects: ['stabilize_node', 'gain_insight'],
     },

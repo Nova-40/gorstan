@@ -24,11 +24,8 @@ const hiddenlab: Room = {
   zone: 'introZone',
   title: 'The Hidden Laboratory',
   description: [
-    'You descend into a laboratory that feels fundamentally wrong. The air is thick with an oppressive sense of dread, as if the very molecules remember some terrible experiment.',
-    "Shattered equipment lies scattered across workbenches, their surfaces still bearing scorch marks from forces that shouldn't exist. Empty containment units line the walls, their glass fronts spider-webbed with cracks.",
-    'In the center of the room stands a massive apparatus - some kind of reality manipulation device. Its crystalline core is dark now, but you can feel it humming with residual energy.',
-    'Most disturbing of all is a large sign made of psychic paper mounted prominently on the wall. The text shifts and wavers, but the message is clear and chilling - it appears to be written in your own handwriting.',
-  ],
+  "You descend into a laboratory that feels fundamentally wrong. The air is thick with an oppressive sense of dread, as if the very molecules remember some terrible experiment. Shattered equipment lies scattered across workbenches, their surfaces still bearing scorch marks from forces that shouldn't exist. Empty containment units line the walls, their glass fronts spider-webbed with cracks. In the center of the room stands a massive apparatus - some kind of reality manipulation device. Its crystalline core is dark now, but you can feel it humming with residual energy. Most disturbing of all is a large sign made of psychic paper mounted prominently on the wall. The text shifts and wavers, but the message is clear and chilling - it appears to be written in your own handwriting.",
+],
   image: 'introZone_hiddenlab.png',
   ambientAudio: 'laboratory_dread.mp3',
 
@@ -48,11 +45,11 @@ const hiddenlab: Room = {
   },
 
   items: [
-    'broken_reality_core',
-    'experiment_notes',
-    'temporal_paradox_detector',
-    'reality_scar_analyzer',
-    'failed_reset_log',
+    { id: 'broken_reality_core', name: 'Broken Reality Core' },
+    { id: 'experiment_notes', name: 'Experiment Notes' },
+    { id: 'temporal_paradox_detector', name: 'Temporal Paradox Detector' },
+    { id: 'reality_scar_analyzer', name: 'Reality Scar Analyzer' },
+    { id: 'failed_reset_log', name: 'Failed Reset Log' }
   ],
 
   traps: [
@@ -60,8 +57,9 @@ const hiddenlab: Room = {
       id: 'reality_feedback',
       type: 'damage',
       severity: 'minor',
-      description:
-        'The broken reality core sparks with unstable energy! Temporal distortions lash out, causing minor reality burns!',
+      description: [
+  "The broken reality core sparks with unstable energy! Temporal distortions lash out, causing minor reality burns!",
+],
       trigger: 'enter',
       effect: {
         damage: 10,
@@ -76,38 +74,44 @@ const hiddenlab: Room = {
 
   interactables: {
     psychic_paper_sign: {
-      description:
-        'A large sign made of psychic paper. The text reads: "RESET LIMIT REACHED - Don\'t, whatever you do, try and reset the multiverse again." The handwriting looks disturbingly familiar - like your own.',
+      description: [
+  "A large sign made of psychic paper. The text reads: \"RESET LIMIT REACHED - Don\\",
+],
       actions: ['examine', 'read', 'touch'],
       requires: [],
     },
     reality_apparatus: {
-      description:
-        'A massive, damaged device that once manipulated the fundamental forces of reality. Its crystalline core is cracked and dark.',
+      description: [
+  "A massive, damaged device that once manipulated the fundamental forces of reality. Its crystalline core is cracked and dark.",
+],
       actions: ['examine', 'analyze', 'activate'],
       requires: ['temporal_paradox_detector'],
     },
     shattered_equipment: {
-      description:
-        'Workbenches covered with the remains of sophisticated instruments, destroyed by forces beyond comprehension.',
+      description: [
+  "Workbenches covered with the remains of sophisticated instruments, destroyed by forces beyond comprehension.",
+],
       actions: ['examine', 'search', 'analyze'],
       requires: [],
     },
     containment_units: {
-      description:
-        'Empty glass containers that once held samples of reality itself. The cracks in the glass seem to bend light in impossible ways.',
+      description: [
+  "Empty glass containers that once held samples of reality itself. The cracks in the glass seem to bend light in impossible ways.",
+],
       actions: ['examine', 'open', 'analyze'],
       requires: ['reality_scar_analyzer'],
     },
     scorch_marks: {
-      description:
-        'Dark burns on every surface, not from fire but from reality itself being torn and twisted.',
+      description: [
+  "Dark burns on every surface, not from fire but from reality itself being torn and twisted.",
+],
       actions: ['examine', 'analyze', 'measure'],
       requires: [],
     },
     experimental_logs: {
-      description:
-        'Scattered research notes and data tablets, many partially destroyed or corrupted.',
+      description: [
+  "Scattered research notes and data tablets, many partially destroyed or corrupted.",
+],
       actions: ['examine', 'read', 'compile'],
       requires: [],
     },
@@ -186,17 +190,23 @@ const hiddenlab: Room = {
 
   secrets: {
     reset_attempts_log: {
-      description: 'A hidden log detailing multiple failed attempts to reset reality',
+      description: [
+  "A hidden log detailing multiple failed attempts to reset reality",
+],
       requirements: ['examine experimental_logs thoroughly', 'analyze reality_apparatus'],
       rewards: ['reset_count_revelation', 'timeline_branching_data'],
     },
     personal_message: {
-      description: 'A more detailed personal message hidden within the psychic paper',
+      description: [
+  "A more detailed personal message hidden within the psychic paper",
+],
       requirements: ['read psychic_paper_sign multiple times', 'encounter reality_echo'],
       rewards: ['full_warning_text', 'temporal_coordinates'],
     },
     apparatus_blueprints: {
-      description: 'Technical specifications for the reality manipulation device',
+      description: [
+  "Technical specifications for the reality manipulation device",
+],
       requirements: ['search shattered_equipment', 'analyze containment_units'],
       rewards: ['construction_knowledge', 'safety_protocols'],
     },
@@ -204,17 +214,23 @@ const hiddenlab: Room = {
 
   customActions: {
     attempt_repair: {
-      description: 'Try to repair the damaged reality apparatus (EXTREMELY DANGEROUS)',
+      description: [
+  "Try to repair the damaged reality apparatus (EXTREMELY DANGEROUS)",
+],
       requirements: ['broken_reality_core', 'experiment_notes', 'ignore_all_warnings'],
       effects: ['catastrophic_failure', 'reality_cascade', 'timeline_destruction'],
     },
     heed_warning: {
-      description: 'Take the psychic paper warning seriously and avoid dangerous actions',
+      description: [
+  "Take the psychic paper warning seriously and avoid dangerous actions",
+],
       requirements: ['psychic_paper_sign_read', 'echo_encountered'],
       effects: ['prevent_catastrophe', 'maintain_timeline_stability'],
     },
     analyze_paradox: {
-      description: 'Study the temporal paradox created by the failed experiments',
+      description: [
+  "Study the temporal paradox created by the failed experiments",
+],
       requirements: ['temporal_paradox_detector', 'failed_reset_log', 'reality_scar_analyzer'],
       effects: ['understand_consequences', 'gain_temporal_knowledge'],
     },

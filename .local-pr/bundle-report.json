@@ -1,0 +1,285 @@
+{
+  "totalJsGz": 406205,
+  "totalCssGz": 23168,
+  "topChunks": [
+    {
+      "name": "assets/components-DJ0mK8NS.js",
+      "raw": 818357,
+      "gz": 229595
+    },
+    {
+      "name": "assets/react-vendor-CCdUaJp8.js",
+      "raw": 193804,
+      "gz": 60430
+    },
+    {
+      "name": "assets/vendor-_hX5tDzP.js",
+      "raw": 91464,
+      "gz": 28680
+    },
+    {
+      "name": "assets/framer-motion-C-5CqFYl.js",
+      "raw": 77835,
+      "gz": 25226
+    },
+    {
+      "name": "assets/npc-CeKgwPzk.js",
+      "raw": 64341,
+      "gz": 22698
+    },
+    {
+      "name": "assets/game-engine-zej2Q_z3.js",
+      "raw": 41683,
+      "gz": 14392
+    },
+    {
+      "name": "assets/ai-services-Cliun7GE.js",
+      "raw": 22074,
+      "gz": 8443
+    },
+    {
+      "name": "assets/lucide-react-DEVHtWhg.js",
+      "raw": 30708,
+      "gz": 7248
+    },
+    {
+      "name": "assets/minigames-CNk1PQav.js",
+      "raw": 9145,
+      "gz": 3569
+    },
+    {
+      "name": "assets/index-BH2DhGAi.js",
+      "raw": 5240,
+      "gz": 2402
+    }
+  ],
+  "topFiles": [
+    {
+      "name": "images/rooms/introZone_controlnexus.gif",
+      "raw": 4624181,
+      "gz": 4570579
+    },
+    {
+      "name": "images/variants/rooms/introZone_controlnexus-poster.jpg",
+      "raw": 4624181,
+      "gz": 4570579
+    },
+    {
+      "name": "images/variants/rooms/introZone_controlnexus.mp4",
+      "raw": 4624181,
+      "gz": 4570579
+    },
+    {
+      "name": "images/variants/rooms/introZone_controlnexus.webm",
+      "raw": 4624181,
+      "gz": 4570579
+    },
+    {
+      "name": "images/rooms/glitchZone_moreissues.png",
+      "raw": 3064658,
+      "gz": 3038670
+    },
+    {
+      "name": "images/variants/rooms/glitchZone_moreissues-1200.avif",
+      "raw": 3064658,
+      "gz": 3038670
+    },
+    {
+      "name": "images/variants/rooms/glitchZone_moreissues-1200.webp",
+      "raw": 3064658,
+      "gz": 3038670
+    },
+    {
+      "name": "images/variants/rooms/glitchZone_moreissues-1920.avif",
+      "raw": 3064658,
+      "gz": 3038670
+    },
+    {
+      "name": "images/variants/rooms/glitchZone_moreissues-1920.webp",
+      "raw": 3064658,
+      "gz": 3038670
+    },
+    {
+      "name": "images/variants/rooms/glitchZone_moreissues-480.avif",
+      "raw": 3064658,
+      "gz": 3038670
+    }
+  ],
+  "duplicates": {
+    "react": [
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.ignored\\@testing-library\\react",
+        "version": "16.3.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.ignored\\@types\\react",
+        "version": "19.1.13"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.ignored\\react",
+        "version": "19.1.1"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.pnpm\\@tanstack+react-query@5.90.2_react@19.2.0\\node_modules\\react",
+        "version": "19.2.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.pnpm\\@testing-library+react@16.3_264a653ef991d63d84fe7767e9f85a79\\node_modules\\@testing-library\\react",
+        "version": "16.3.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.pnpm\\@testing-library+react@16.3_264a653ef991d63d84fe7767e9f85a79\\node_modules\\@types\\react",
+        "version": "19.2.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.pnpm\\@testing-library+react@16.3_264a653ef991d63d84fe7767e9f85a79\\node_modules\\react",
+        "version": "19.2.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.pnpm\\@types+react-dom@19.2.0_@types+react@19.2.0\\node_modules\\@types\\react",
+        "version": "19.2.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.pnpm\\@types+react@19.2.0\\node_modules\\@types\\react",
+        "version": "19.2.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.pnpm\\@vercel+analytics@1.5.0_react@19.2.0\\node_modules\\react",
+        "version": "19.2.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.pnpm\\@vercel+speed-insights@1.2.0_react@19.2.0\\node_modules\\react",
+        "version": "19.2.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.pnpm\\framer-motion@12.23.22_reac_7da0fdb73d115f1cc4526d79d40b03a1\\node_modules\\react",
+        "version": "19.2.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.pnpm\\lucide-react@0.541.0_react@19.2.0\\node_modules\\react",
+        "version": "19.2.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.pnpm\\react-dom@19.2.0_react@19.2.0\\node_modules\\react",
+        "version": "19.2.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.pnpm\\react@19.2.0\\node_modules\\react",
+        "version": "19.2.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.pnpm\\valtio@2.1.8_@types+react@19.2.0_react@19.2.0\\node_modules\\@types\\react",
+        "version": "19.2.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.pnpm\\valtio@2.1.8_@types+react@19.2.0_react@19.2.0\\node_modules\\react",
+        "version": "19.2.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.pnpm\\zustand@5.0.8_@types+react@19.2.0_react@19.2.0\\node_modules\\@types\\react",
+        "version": "19.2.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.pnpm\\zustand@5.0.8_@types+react@19.2.0_react@19.2.0\\node_modules\\react",
+        "version": "19.2.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\@testing-library\\react",
+        "version": "16.3.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\@types\\react",
+        "version": "19.2.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\react",
+        "version": "19.2.0"
+      }
+    ],
+    "react-dom": [
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.ignored\\@types\\react-dom",
+        "version": "19.1.9"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.ignored\\react-dom",
+        "version": "19.1.1"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.pnpm\\@testing-library+react@16.3_264a653ef991d63d84fe7767e9f85a79\\node_modules\\@types\\react-dom",
+        "version": "19.2.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.pnpm\\@testing-library+react@16.3_264a653ef991d63d84fe7767e9f85a79\\node_modules\\react-dom",
+        "version": "19.2.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.pnpm\\@types+react-dom@19.2.0_@types+react@19.2.0\\node_modules\\@types\\react-dom",
+        "version": "19.2.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.pnpm\\framer-motion@12.23.22_reac_7da0fdb73d115f1cc4526d79d40b03a1\\node_modules\\react-dom",
+        "version": "19.2.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.pnpm\\react-dom@19.2.0_react@19.2.0\\node_modules\\react-dom",
+        "version": "19.2.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\@types\\react-dom",
+        "version": "19.2.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\react-dom",
+        "version": "19.2.0"
+      }
+    ],
+    "date-fns": [
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.ignored\\date-fns",
+        "version": "4.1.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.pnpm\\date-fns@4.1.0\\node_modules\\date-fns",
+        "version": "4.1.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\date-fns",
+        "version": "4.1.0"
+      }
+    ],
+    "framer-motion": [
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.ignored\\framer-motion",
+        "version": "12.23.16"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.pnpm\\framer-motion@12.23.22_reac_7da0fdb73d115f1cc4526d79d40b03a1\\node_modules\\framer-motion",
+        "version": "12.23.22"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\framer-motion",
+        "version": "12.23.22"
+      }
+    ],
+    "lucide-react": [
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.ignored\\lucide-react",
+        "version": "0.541.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\.pnpm\\lucide-react@0.541.0_react@19.2.0\\node_modules\\lucide-react",
+        "version": "0.541.0"
+      },
+      {
+        "path": "C:\\Users\\geoff\\Development\\gorstan\\node_modules\\lucide-react",
+        "version": "0.541.0"
+      }
+    ]
+  },
+  "treeShakeHints": {
+    "moment": false,
+    "lodash": false,
+    "date-fns": true
+  }
+}

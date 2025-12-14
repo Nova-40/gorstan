@@ -24,11 +24,8 @@ const failure: Room = {
   zone: 'glitchZone',
   title: 'Failure Node',
   description: [
-    'You have entered a zone where the very concept of success has been erased. The environment is bleak and fragmented, with broken code and shattered logic floating in the air.',
-    'Every step feels heavy, as if the world itself is weighed down by countless failed attempts and abandoned processes.',
-    'Error messages flicker on invisible screens, and the ground is littered with the remnants of corrupted data and lost hopes.',
-    'A sense of overwhelming defeat permeates the area, but perhaps, within the ruins, a new path can be forged.',
-  ],
+  "You have entered a zone where the very concept of success has been erased. The environment is bleak and fragmented, with broken code and shattered logic floating in the air. Every step feels heavy, as if the world itself is weighed down by countless failed attempts and abandoned processes. Error messages flicker on invisible screens, and the ground is littered with the remnants of corrupted data and lost hopes. A sense of overwhelming defeat permeates the area, but perhaps, within the ruins, a new path can be forged.",
+],
   image: 'glitchZone_failure.png',
   ambientAudio: 'failure_static.mp3',
 
@@ -47,21 +44,32 @@ const failure: Room = {
     west: 'moreissues',
   },
 
-  items: ['broken_code_fragment', 'error_log', 'null_pointer', 'lost_packet'],
+  items: [
+    { id: 'broken_code_fragment', name: 'Broken Code Fragment' },
+    { id: 'error_log', name: 'Error Log' },
+    { id: 'null_pointer', name: 'Null Pointer' },
+    { id: 'lost_packet', name: 'Lost Packet' }
+  ],
 
   interactables: {
     error_screen: {
-      description: 'A floating screen displaying endless streams of error messages.',
+      description: [
+  "A floating screen displaying endless streams of error messages.",
+],
       actions: ['examine', 'debug', 'clear'],
       requires: [],
     },
     corrupted_ground: {
-      description: 'The ground is unstable, made up of failed code and broken logic.',
+      description: [
+  "The ground is unstable, made up of failed code and broken logic.",
+],
       actions: ['examine', 'stabilize', 'search'],
       requires: [],
     },
     abandoned_process: {
-      description: 'A ghostly remnant of a process that never completed.',
+      description: [
+  "A ghostly remnant of a process that never completed.",
+],
       actions: ['examine', 'restart', 'terminate'],
       requires: [],
     },
@@ -129,12 +137,16 @@ const failure: Room = {
 
   secrets: {
     hidden_reboot: {
-      description: 'A hidden system reboot protocol buried in the error logs.',
+      description: [
+  "A hidden system reboot protocol buried in the error logs.",
+],
       requirements: ['analyze error_screen', 'find lost_packet'],
       rewards: ['system_reboot', 'alternate_exit'],
     },
     echo_origin: {
-      description: 'The true story of the Echo of Failure, revealed through lost packets.',
+      description: [
+  "The true story of the Echo of Failure, revealed through lost packets.",
+],
       requirements: ['find lost_packet', 'talk to failure_echo'],
       rewards: ['echo_backstory', 'unique_item'],
     },
@@ -142,12 +154,16 @@ const failure: Room = {
 
   customActions: {
     attempt_reboot: {
-      description: 'Try to reboot the system from within the node.',
+      description: [
+  "Try to reboot the system from within the node.",
+],
       requirements: ['error_log', 'broken_code_fragment'],
       effects: ['temporary_stability', 'unlock_exit'],
     },
     accept_failure: {
-      description: 'Embrace the lessons of failure to find a new path.',
+      description: [
+  "Embrace the lessons of failure to find a new path.",
+],
       requirements: [],
       effects: ['gain_insight', 'reduce_hazards'],
     },

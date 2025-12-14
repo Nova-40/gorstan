@@ -1,0 +1,8 @@
+{
+  "source": "gorstan-pre-clean-backup",
+  "version": "1.0.0",
+  "fragments": [
+    "intro.md"
+  ],
+  "notes": "Canonical lore fragments. Use LoreGate to validate NPC lines against these fragments."
+}

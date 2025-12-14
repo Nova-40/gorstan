@@ -24,11 +24,8 @@ const arbitercore: Room = {
   zone: 'offgorstanZone',
   title: 'Arbiter Core',
   description: [
-    'You stand within the Arbiter Core, the enigmatic heart of judgment and balance for all realities.',
-    'Pulsing energy conduits arc overhead, casting shifting shadows across the obsidian floor.',
-    'Glyphs of law and chaos spiral along the walls, and a central core pulses with the power to rewrite fate.',
-    'The air vibrates with the tension of decisions yet to be made.',
-  ],
+  "You stand within the Arbiter Core, the enigmatic heart of judgment and balance for all realities. Pulsing energy conduits arc overhead, casting shifting shadows across the obsidian floor. Glyphs of law and chaos spiral along the walls, and a central core pulses with the power to rewrite fate. The air vibrates with the tension of decisions yet to be made.",
+],
   image: 'offgorstanZone_arbitercore.png',
   ambientAudio: 'arbiter_core_ambience.mp3',
 
@@ -43,15 +40,20 @@ const arbitercore: Room = {
     south: 'offgorstanZone_voidatrium',
   },
 
-  items: ['core_fragment', 'judgment_token', 'balance_crystal'],
+  items: [
+    { id: 'core_fragment', name: 'Core Fragment' },
+    { id: 'judgment_token', name: 'Judgment Token' },
+    { id: 'balance_crystal', name: 'Balance Crystal' }
+  ],
 
   traps: [
     {
       id: 'judgment_field',
       type: 'damage',
       severity: 'major', // Reduced from 'fatal'
-      description:
-        'The Arbiter Core judges you harshly! Reality-altering energy strikes you as the universe weighs your actions!',
+      description: [
+  "The Arbiter Core judges you harshly! Reality-altering energy strikes you as the universe weighs your actions!",
+],
       trigger: 'enter',
       effect: {
         damage: 35, // Reduced from 90 to 35 - severe but survivable
@@ -66,18 +68,23 @@ const arbitercore: Room = {
 
   interactables: {
     central_core: {
-      description:
-        'A massive, pulsing core at the center of the chamber, radiating both order and chaos.',
+      description: [
+  "A massive, pulsing core at the center of the chamber, radiating both order and chaos.",
+],
       actions: ['examine', 'activate', 'attune'],
       requires: ['judgment_token'],
     },
     law_glyphs: {
-      description: 'Glyphs representing the laws of reality, glowing with a steady blue light.',
+      description: [
+  "Glyphs representing the laws of reality, glowing with a steady blue light.",
+],
       actions: ['study', 'trace', 'decode'],
       requires: [],
     },
     chaos_glyphs: {
-      description: 'Glyphs representing chaos, flickering with unpredictable energy.',
+      description: [
+  "Glyphs representing chaos, flickering with unpredictable energy.",
+],
       actions: ['observe', 'touch', 'interpret'],
       requires: [],
     },
@@ -141,7 +148,9 @@ const arbitercore: Room = {
 
   secrets: {
     hidden_conduit: {
-      description: 'A secret conduit revealed by attuning to both law and chaos glyphs.',
+      description: [
+  "A secret conduit revealed by attuning to both law and chaos glyphs.",
+],
       requirements: ['decode law_glyphs', 'interpret chaos_glyphs'],
       rewards: ['balance_artifact', 'arbiter_lore'],
     },
@@ -149,17 +158,23 @@ const arbitercore: Room = {
 
   customActions: {
     attune_core: {
-      description: "Attune yourself to the Arbiter Core's balance.",
+      description: [
+  "Attune yourself to the Arbiter Core's balance.",
+],
       requirements: ['judgment_token'],
       effects: ['set_coreActivated', 'unlock_secret'],
     },
     decode_law: {
-      description: 'Decode the law glyphs to understand the rules of reality.',
+      description: [
+  "Decode the law glyphs to understand the rules of reality.",
+],
       requirements: [],
       effects: ['set_lawDecoded', 'gain_insight'],
     },
     interpret_chaos: {
-      description: 'Interpret the chaos glyphs to glimpse possible futures.',
+      description: [
+  "Interpret the chaos glyphs to glimpse possible futures.",
+],
       requirements: [],
       effects: ['set_chaosInterpreted', 'gain_foresight'],
     },

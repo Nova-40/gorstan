@@ -1,0 +1,38 @@
+/* Minimal console-styled overlay */
+.miniquest-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #e6e6e6;
+  font-family: "Courier New", Courier, monospace;
+  z-index: 9999;
+}
+
+.miniquest-screen {
+  width: 960px;
+  max-width: calc(100% - 32px);
+  height: 640px;
+  background: linear-gradient(180deg, #050505, #101010);
+  border: 2px solid #2e2e2e;
+  padding: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.8);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.miniquest-topbar { display:flex; justify-content:space-between; font-size:14px; }
+.miniquest-console { flex:1; background: rgba(0,0,0,0.6); padding: 8px; overflow:auto; white-space:pre-wrap; }
+.miniquest-controls { display:flex; gap:8px; justify-content:flex-end; }
+
+/* subtle scanline */
+.miniquest-screen::before {
+  content: "";
+  position:absolute; inset:0; pointer-events:none;
+  background-image: linear-gradient(rgba(255,255,255,0.01) 1px, transparent 1px);
+  background-size: 100% 4px;
+  mix-blend-mode: overlay;
+}

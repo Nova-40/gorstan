@@ -20,6 +20,7 @@
 import roomRegistry from '../rooms/roomRegistry';
 
 import type { Room } from '../types/Room';
+import type { RoomItem, RoomNPC } from '../types/Room';
 
 type RoomId = string;
 
@@ -42,16 +43,14 @@ function isValidRoomId(id: string): boolean {
 }
 
 // --- Function: validateRoomSchema ---
-function validateRoomSchema(room: any): room is RoomDefinition {
-  // JSX return block or main return
-  return (
-    room &&
-    typeof room === 'object' &&
-    typeof room.id === 'string' &&
-    typeof room.title === 'string' &&
-    (typeof room.description === 'string' || Array.isArray(room.description)) &&
-    typeof room.image === 'string'
-  );
+function validateRoomSchema(room: unknown): room is RoomDefinition {
+  if (!room || typeof room !== 'object') return false;
+  const r = room as Record<string, unknown>;
+  if (typeof r.id !== 'string') return false;
+  if (typeof r.title !== 'string') return false;
+  if (!(typeof r.description === 'string' || Array.isArray(r.description))) return false;
+  if (typeof r.image !== 'string') return false;
+  return true;
 }
 
 // --- Function: isNonEmptyString ---
@@ -64,22 +63,18 @@ function initializeRooms(): void {
   console.log('[roomLoader] Initializing rooms...');
   console.log('[roomLoader] roomRegistry keys:', Object.keys(roomRegistry));
 
-  for (const [, room] of Object.entries(roomRegistry)) {
-    if (!room || typeof room.id !== 'string') {
-      console.warn('[roomLoader] Skipping invalid room entry in registry:', room);
+  for (const [, roomEntry] of Object.entries(roomRegistry)) {
+    const candidate = roomEntry as unknown;
+    if (!validateRoomSchema(candidate)) {
+      console.warn('[roomLoader] Skipping invalid room entry in registry:', candidate);
       continue;
     }
 
-    // Variable declaration
-    const roomId = room.id;
+    const r = candidate as RoomDefinition;
+    const roomId = r.id;
 
     if (!isValidRoomId(roomId)) {
       console.warn(`[roomLoader] Invalid room ID format: ${roomId}`);
-      continue;
-    }
-
-    if (!validateRoomSchema(room)) {
-      console.warn(`[roomLoader] Room ${roomId} failed schema validation`);
       continue;
     }
 
@@ -87,7 +82,7 @@ function initializeRooms(): void {
       console.warn(`[roomLoader] Duplicate room ID detected: ${roomId}. Overwriting.`);
     }
 
-    roomMap.set(roomId, room);
+    roomMap.set(roomId, r);
   }
 
   console.log(`[roomLoader] Initialized ${roomMap.size} rooms`);
@@ -140,22 +135,33 @@ export function getAllRoomsAsObject(): Record<string, Room> {
 
   const obj: Record<string, Room> = {};
   for (const [id, room] of roomMap.entries()) {
+    const base = room as RoomDefinition & Record<string, unknown>;
+    const zoneVal = typeof base.zone === 'string' ? (base.zone as string) : '';
+    const flagsVal = base.flags && typeof base.flags === 'object' ? (base.flags as Record<string, unknown>) : {};
+    const roomsVal = Array.isArray(base.rooms) ? (base.rooms as unknown[]) : [];
+
+    const items: RoomItem[] = Array.isArray(base.items)
+      ? (base.items as unknown[]).filter((it): it is RoomItem => typeof it === 'object' || typeof it === 'string') as RoomItem[]
+      : [];
+
+    const npcs: RoomNPC[] = Array.isArray(base.npcs)
+      ? (base.npcs as unknown[]).map((npc) => {
+          if (typeof npc === 'string') return { id: npc } as RoomNPC;
+          if (npc && typeof npc === 'object' && typeof (npc as any).id === 'string') return npc as RoomNPC;
+          return { id: 'unknown' } as RoomNPC;
+        })
+      : [];
+
     obj[id] = {
       ...room,
       description: Array.isArray(room.description) ? room.description.join('\n') : room.description,
-      zone: (room as any).zone ?? '',
-      flags: (room as any).flags ?? [],
+      zone: zoneVal,
+      flags: flagsVal,
       exits: room.exits ?? {},
-      items: Array.isArray(room.items)
-        ? (room.items as unknown as import('../types/Room').RoomItem[])
-        : [],
-      npcs: Array.isArray(room.npcs)
-        ? room.npcs.map((npc) =>
-            typeof npc === 'string' ? ({ id: npc } as import('../types/Room').RoomNPC) : npc,
-          )
-        : [],
-      rooms: (room as any).rooms ?? [],
-    };
+      items,
+      npcs,
+      rooms: roomsVal,
+    } as unknown as Room;
   }
 
   console.log('[roomLoader] Returning', Object.keys(obj).length, 'rooms');

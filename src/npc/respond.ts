@@ -21,6 +21,7 @@ import { NPCPersona, getPersona } from './personas';
 import { ContextSnapshot } from './context';
 import { NPCMemoryState, getMemorySummary } from './memory';
 import { IntentResult } from './intent';
+import { pickRandom } from '../utils/random';
 
 export interface ResponseTemplate {
   base: string;
@@ -361,7 +362,8 @@ function addMemoryReferences(response: string, memorySummary: any, persona: NPCP
  * Choose a random synonym from a list
  */
 function chooseSynonym(options: string[]): string {
-  return options[Math.floor(Math.random() * options.length)];
+  if (!options || options.length === 0) return '';
+  return pickRandom(options);
 }
 
 /**

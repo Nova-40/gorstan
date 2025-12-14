@@ -42,12 +42,13 @@ const CreditsScreen: React.FC<CreditsScreenProps> = ({ onRestart }) => {
   ]);
 
   const [visibleLines, setVisibleLines] = useState<string[]>([]);
+  const [founders, setFounders] = useState<string[]>([]);
 
   useEffect(() => {
     let index = 0;
     const interval = setInterval(() => {
       if (index < lines.length) {
-        setVisibleLines((prev) => [...prev, lines[index]]);
+  setVisibleLines((prev) => [...prev, lines[index] ?? '']);
         index++;
       } else {
         clearInterval(interval);
@@ -57,11 +58,26 @@ const CreditsScreen: React.FC<CreditsScreenProps> = ({ onRestart }) => {
     return () => clearInterval(interval);
   }, [lines]);
 
+  useEffect(() => {
+    // import helper lazily to avoid SSR issues and keep initial bundle small
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { readFounders } = require('../../utils/founders');
+      const data = readFounders();
+      setFounders(data.slice(0, 100));
+    } catch (e) {
+      // ignore
+    }
+  }, []);
+
   return (
-    <div className="p-6 bg-black text-green-400 min-h-screen flex flex-col justify-center items-center font-mono">
-      <div className="max-w-lg w-full">
+    <div className="p-6 bg-black text-green-400 min-h-screen flex flex-col justify-center items-center font-mono relative overflow-hidden">
+      {/* subtle animated background gradient */}
+      <div className="absolute inset-0 pointer-events-none opacity-30 animate-gradient" aria-hidden />
+
+      <div className="max-w-lg w-full z-10">
         {visibleLines.map((line, i) => (
-          <div key={i} className="mb-2 text-center">
+          <div key={i} className="mb-2 text-center opacity-0 animate-fade-in" style={{ animationDelay: `${i * 120}ms`, animationFillMode: 'forwards' }}>
             {line === '☕ Buy Geoff a Coffee' ? (
               <a
                 href="https://buymeacoffee.com/gorstan"
@@ -92,6 +108,21 @@ const CreditsScreen: React.FC<CreditsScreenProps> = ({ onRestart }) => {
             )}
           </div>
         ))}
+
+        {/* Founders donors section */}
+        {founders.length > 0 && (
+          <div className="mt-8 text-center">
+            <div className="text-xl font-semibold text-yellow-300 mb-2">Founder Donors</div>
+            <div className="text-sm text-yellow-200 mb-4">Those who purchased a Founder licence — thank you.</div>
+            <div className="grid grid-cols-1 gap-1">
+              {founders.map((f, idx) => (
+                <div key={idx} className="opacity-0 text-yellow-100 animate-fade-in" style={{ animationDelay: `${500 + idx * 90}ms`, animationFillMode: 'forwards' }}>
+                  • {f}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

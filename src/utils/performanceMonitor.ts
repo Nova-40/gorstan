@@ -133,9 +133,12 @@ class PerformanceMonitor {
         return;
       }
 
-      if ('memory' in performance) {
-        const memory = (performance as any).memory;
-        this.metrics.memoryUsage = Math.round(memory.usedJSHeapSize / 1024 / 1024);
+        if ('memory' in performance) {
+          // performance.memory is non-standard but present in some browsers (Chrome)
+          const mem = (performance as Performance & { memory?: { usedJSHeapSize?: number } }).memory;
+          if (mem && typeof mem.usedJSHeapSize === 'number') {
+            this.metrics.memoryUsage = Math.round((mem.usedJSHeapSize || 0) / 1024 / 1024);
+          }
 
         if (this.metrics.memoryUsage > this.thresholds.maxMemoryUsage) {
           this.addWarning(`High memory usage: ${this.metrics.memoryUsage}MB`);
@@ -323,8 +326,9 @@ if (import.meta.env.DEV) {
   performanceMonitor.startMonitoring();
 
   // Add global performance commands for debugging
-  (window as any).gorstan = {
-    ...(window as any).gorstan,
+  const win = window as unknown as { gorstan?: Record<string, any> };
+  win.gorstan = {
+    ...(win.gorstan || {}),
     performance: {
       getMetrics: () => performanceMonitor.getMetrics(),
       getReport: () => console.log(performanceMonitor.generateReport()),

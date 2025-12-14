@@ -7,15 +7,17 @@ import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
 import { cn } from '../../utils/cn';
 
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {
-  variant?: 'default' | 'elevated' | 'outlined' | 'flat';
+  variant?: 'default' | 'elevated' | 'outlined' | 'ghost' | 'flat';
   padding?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'sm' | 'md' | 'lg';
   children: ReactNode;
 }
 
 const cardVariants = {
-  default: 'bg-gray-800 shadow-md border border-neutral-200',
-  elevated: 'bg-gray-800 shadow-lg',
-  outlined: 'bg-gray-800 border-2 border-neutral-300',
+  default: 'card-root card-default',
+  elevated: 'card-root shadow-lg',
+  outlined: 'card-root border-2',
+  ghost: 'card-root bg-transparent/30 ring-0',
   flat: 'bg-neutral-50',
 };
 
@@ -27,12 +29,40 @@ const cardPadding = {
   xl: 'p-10',
 };
 
+const cardSizes = {
+  sm: 'text-sm',
+  md: 'text-base',
+  lg: 'text-lg',
+};
+
 export const Card = forwardRef<HTMLDivElement, CardProps>(
-  ({ variant = 'default', padding = 'md', className, children, ...props }, ref) => {
+  ({ variant = 'default', padding = 'md', size = 'md', className, children, onClick, onKeyDown, ...props }, ref) => {
+    // If the card is interactive (has onClick), make it keyboard-activatable and announce as a group for accessibility
+    const isInteractive = typeof onClick === 'function';
+
+    const handleKeyDown = (e: any) => {
+      if (isInteractive && (e.key === 'Enter' || e.key === ' ')) {
+        e.preventDefault();
+        (onClick as any)(e);
+      }
+      if (typeof onKeyDown === 'function') onKeyDown(e);
+    };
+
     return (
       <div
         ref={ref}
-        className={cn('rounded-lg', cardVariants[variant], cardPadding[padding], className)}
+        role={isInteractive ? 'group' : undefined}
+        tabIndex={isInteractive ? 0 : undefined}
+        onKeyDown={isInteractive ? handleKeyDown : onKeyDown}
+        onClick={onClick}
+        className={cn(
+          'rounded-lg focus:outline-none focus:ring-2 transition-colors text-crt-green',
+          'focus:card-focused',
+          cardVariants[variant],
+          cardPadding[padding],
+          cardSizes[size],
+          className,
+        )}
         {...props}
       >
         {children}
@@ -50,7 +80,7 @@ export interface CardHeaderProps extends HTMLAttributes<HTMLDivElement> {
 export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
   ({ className, children, ...props }, ref) => {
     return (
-      <div ref={ref} className={cn('mb-4', className)} {...props}>
+      <div ref={ref} className={cn('mb-4 card-header-centered', className)} {...props}>
         {children}
       </div>
     );

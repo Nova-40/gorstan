@@ -24,7 +24,7 @@ import React, { useState } from 'react';
 import { Heart, Star, Package, Share2, Calendar, BarChart3 } from 'lucide-react';
 
 import { useGameState } from '../state/gameState';
-import ProgressDashboard from './ProgressDashboard';
+import ProgressDashboard from './ProgressDashboard.lazy';
 import CollectionDisplay from './CollectionDisplay';
 import ChallengeSystem from './ChallengeSystem';
 import SocialSharing from './SocialSharing';

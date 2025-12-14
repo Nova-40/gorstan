@@ -24,10 +24,8 @@ const mirrorhall: Room = {
   zone: 'mazeZone',
   title: 'Mirror Hall',
   description: [
-    'You step into a hall of mirrors that stretches endlessly in all directions.',
-    'Each reflection seems to show a slightly different version of yourself, some familiar, others unsettlingly alien.',
-    'The air is cool and silent, broken only by the faint sound of your own footsteps echoing from every direction.',
-  ],
+  "You step into a hall of mirrors that stretches endlessly in all directions. Each reflection seems to show a slightly different version of yourself, some familiar, others unsettlingly alien. The air is cool and silent, broken only by the faint sound of your own footsteps echoing from every direction.",
+],
   image: 'mazeZone_mirrorhall.png',
   ambientAudio: 'mirror_hall_ambience.mp3',
 
@@ -43,16 +41,23 @@ const mirrorhall: Room = {
     south: 'mazeZone_mazeecho',
   },
 
-  items: ['mirror_fragment', 'reflection_note'],
+  items: [
+    { id: 'mirror_fragment', name: 'Mirror Fragment' },
+    { id: 'reflection_note', name: 'Reflection Note' }
+  ],
 
   interactables: {
     main_mirror: {
-      description: 'A large mirror at the end of the hall, its surface rippling as if alive.',
+      description: [
+  "A large mirror at the end of the hall, its surface rippling as if alive.",
+],
       actions: ['examine', 'touch', 'step_through'],
       requires: [],
     },
     distorted_reflection: {
-      description: "A reflection that doesn't quite match your movements.",
+      description: [
+  "A reflection that doesn't quite match your movements.",
+],
       actions: ['observe', 'mimic', 'question'],
       requires: [],
     },
@@ -112,8 +117,9 @@ const mirrorhall: Room = {
 
   secrets: {
     hidden_passage: {
-      description:
-        'A hidden passage revealed by stepping through the main mirror after mimicking the distorted reflection.',
+      description: [
+  "A hidden passage revealed by stepping through the main mirror after mimicking the distorted reflection.",
+],
       requirements: ['mimic distorted_reflection', 'step_through main_mirror'],
       rewards: ['shortcut_access', 'mirror_lore'],
     },
@@ -121,12 +127,16 @@ const mirrorhall: Room = {
 
   customActions: {
     mimic_reflection: {
-      description: 'Mimic the movements of the distorted reflection.',
+      description: [
+  "Mimic the movements of the distorted reflection.",
+],
       requirements: [],
       effects: ['set_reflectionMimicked', 'reveal_hint'],
     },
     step_through_mirror: {
-      description: 'Step through the main mirror to discover a hidden path.',
+      description: [
+  "Step through the main mirror to discover a hidden path.",
+],
       requirements: [],
       effects: ['set_mirrorTouched', 'unlock_secret'],
     },

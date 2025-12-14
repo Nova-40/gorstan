@@ -24,10 +24,8 @@ const torridoninthepast: Room = {
   zone: 'gorstanZone',
   title: 'Torridon in the Past',
   description: [
-    'You find yourself in Torridon as it once was—before the modern roads and bustling trade. The air is crisp, and the land is wild and untamed.',
-    'Primitive stone huts dot the landscape, and villagers move about their daily routines, unaware of the changes the future will bring.',
-    'A sense of history permeates everything, from the ancient tools to the unspoiled fields stretching toward the horizon.',
-  ],
+  "You find yourself in Torridon as it once was—before the modern roads and bustling trade. The air is crisp, and the land is wild and untamed. Primitive stone huts dot the landscape, and villagers move about their daily routines, unaware of the changes the future will bring. A sense of history permeates everything, from the ancient tools to the unspoiled fields stretching toward the horizon.",
+],
   image: 'gorstanZone_torridoninthepast.png',
   ambientAudio: 'ancient_wind.mp3',
 
@@ -46,21 +44,32 @@ const torridoninthepast: Room = {
     west: 'gorstanZone_highpass',
   },
 
-  items: ['ancient_tool', 'primitive_artifact', 'wild_herb', 'old_map_fragment'],
+  items: [
+    { id: 'ancient_tool', name: 'Ancient Tool' },
+    { id: 'primitive_artifact', name: 'Primitive Artifact' },
+    { id: 'wild_herb', name: 'Wild Herb' },
+    { id: 'old_map_fragment', name: 'Old Map Fragment' }
+  ],
 
   interactables: {
     stone_hut: {
-      description: 'A simple stone hut, home to a family of early settlers.',
+      description: [
+  "A simple stone hut, home to a family of early settlers.",
+],
       actions: ['enter', 'observe', 'search'],
       requires: [],
     },
     fire_pit: {
-      description: 'A communal fire pit where villagers gather for warmth and storytelling.',
+      description: [
+  "A communal fire pit where villagers gather for warmth and storytelling.",
+],
       actions: ['sit', 'listen', 'share_story'],
       requires: [],
     },
     ancient_tree: {
-      description: 'A towering tree that has stood for centuries, witnessing the passage of time.',
+      description: [
+  "A towering tree that has stood for centuries, witnessing the passage of time.",
+],
       actions: ['examine', 'climb', 'collect_herb'],
       requires: [],
     },
@@ -128,12 +137,16 @@ const torridoninthepast: Room = {
 
   secrets: {
     hidden_cave: {
-      description: 'A concealed cave behind the ancient tree, containing relics of the past.',
+      description: [
+  "A concealed cave behind the ancient tree, containing relics of the past.",
+],
       requirements: ['climb ancient_tree', 'search area'],
       rewards: ['ancient_relic', 'hidden_lore'],
     },
     ancestor_story: {
-      description: "A tale of the village's founders, revealed by Elder Iona.",
+      description: [
+  "A tale of the village's founders, revealed by Elder Iona.",
+],
       requirements: ['talk to elder_iona', 'listen at fire_pit'],
       rewards: ['quest_hook', 'unique_item'],
     },
@@ -141,12 +154,16 @@ const torridoninthepast: Room = {
 
   customActions: {
     share_story: {
-      description: 'Share a story with the villagers to gain their trust.',
+      description: [
+  "Share a story with the villagers to gain their trust.",
+],
       requirements: [],
       effects: ['gain_trust', 'unlock_quest'],
     },
     explore_cave: {
-      description: 'Venture into the hidden cave for secrets of the past.',
+      description: [
+  "Venture into the hidden cave for secrets of the past.",
+],
       requirements: ['find hidden_cave'],
       effects: ['discover_relic', 'gain_lore'],
     },

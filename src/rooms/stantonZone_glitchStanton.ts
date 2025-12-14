@@ -22,12 +22,8 @@ import { Room } from '../types/Room';
 export const glitchStanton: Room = {
   image: 'stantonZone_glitchStanton.png',
   description: [
-    'Glitch Stanton is a fractured version of the village, where reality itself seems to be unraveling.',
-    'The streets flicker and shift, alternating between cobblestone paths and jagged voids.',
-    'Cottages appear and disappear, their forms distorted and unstable.',
-    'A strange hum fills the air, resonating with the glitches that ripple through the environment.',
-    'At the center of this chaos stands a shimmering portal, its edges crackling with energy.',
-  ],
+  "Glitch Stanton is a fractured version of the village, where reality itself seems to be unraveling. The streets flicker and shift, alternating between cobblestone paths and jagged voids. Cottages appear and disappear, their forms distorted and unstable. A strange hum fills the air, resonating with the glitches that ripple through the environment. At the center of this chaos stands a shimmering portal, its edges crackling with energy.",
+],
   zone: 'stantonZone',
   title: 'Glitch Stanton',
 
@@ -47,21 +43,32 @@ export const glitchStanton: Room = {
     west: 'ascendantStanton',
   },
 
-  items: ['glitch_fragment', 'portal_shard', 'unstable_rune', 'dimensional_anchor'],
+  items: [
+    { id: 'glitch_fragment', name: 'Glitch Fragment' },
+    { id: 'portal_shard', name: 'Portal Shard' },
+    { id: 'unstable_rune', name: 'Unstable Rune' },
+    { id: 'dimensional_anchor', name: 'Dimensional Anchor' }
+  ],
 
   interactables: {
     portal: {
-      description: 'A shimmering portal crackling with unstable energy.',
+      description: [
+  "A shimmering portal crackling with unstable energy.",
+],
       actions: ['examine', 'enter', 'stabilize'],
       requires: [],
     },
     glitching_streets: {
-      description: 'Streets flickering and shifting between cobblestone paths and voids.',
+      description: [
+  "Streets flickering and shifting between cobblestone paths and voids.",
+],
       actions: ['examine', 'walk', 'repair'],
       requires: [],
     },
     unstable_cottages: {
-      description: 'Cottages appearing and disappearing, their forms distorted.',
+      description: [
+  "Cottages appearing and disappearing, their forms distorted.",
+],
       actions: ['examine', 'enter', 'stabilize'],
       requires: [],
     },

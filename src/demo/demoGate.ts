@@ -7,6 +7,7 @@
 */
 
 import { startDemo, setDemoDispatch } from './demoController';
+import { demoService } from './DemoModeService';
 import type { Dispatch } from 'react';
 import type { GameAction } from '../types/GameTypes';
 
@@ -29,7 +30,7 @@ export function initializeDemo(dispatch: Dispatch<GameAction>): void {
   if (isDemoEnvironment()) {
     console.log('[DemoGate] Demo environment detected, starting demo...');
     setTimeout(() => {
-      startDemo();
+      demoService.start();
     }, 1000);
   }
 }
@@ -38,9 +39,9 @@ export function initializeDemo(dispatch: Dispatch<GameAction>): void {
 export function handleDemoCommand(command: string): boolean {
   const trimmed = command.trim().toLowerCase();
 
-  if (trimmed === 'demo') {
+    if (trimmed === 'demo') {
     console.log('[DemoGate] Starting demo via console command');
-    startDemo();
+    demoService.start();
     return true;
   }
 

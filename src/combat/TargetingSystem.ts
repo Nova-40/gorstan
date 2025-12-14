@@ -63,7 +63,7 @@ export class TargetingSystem {
 
     // If no position data, return first valid target
     if (!from.position) {
-      return validTargets[0];
+  return validTargets[0]! ?? null;
     }
 
     // Find closest by distance
@@ -86,7 +86,7 @@ export class TargetingSystem {
       }
     }
 
-    return nearest || validTargets[0];
+  return (nearest ?? validTargets[0]!) ?? null;
   }
 
   /** Cycle to next valid target */
@@ -102,7 +102,13 @@ export class TargetingSystem {
       : -1;
 
     const nextIndex = (currentIndex + 1) % validTargets.length;
-    const nextTarget = validTargets[nextIndex];
+    const nextTarget = validTargets[nextIndex] ?? validTargets[0];
+
+    // nextTarget should be defined because validTargets.length > 0, but guard defensively
+    if (!nextTarget) {
+      this.currentTarget = null;
+      return null;
+    }
 
     this.currentTarget = nextTarget.id;
     return nextTarget;

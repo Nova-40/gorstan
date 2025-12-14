@@ -24,12 +24,9 @@ const datavoid: Room = {
   zone: 'glitchZone',
   title: 'The Data Void',
   description: [
-    'You find yourself in a void of pure data, where streams of binary code flow like rivers and fragments of corrupted files drift aimlessly.',
-    'The air hums with the sound of processing power, and the ground beneath your feet is a shifting mosaic of broken algorithms.',
-    'Occasionally, you catch glimpses of familiar objects or faces, distorted and fragmented as if pulled from the depths of a failing hard drive.',
-    'This place feels unstable, as if it could collapse into nothingness at any moment, taking you with it.',
-  ],
-  image: 'glitchZone_datavoid.png',
+  "You find yourself in a void of pure data, where streams of binary code flow like rivers and fragments of corrupted files drift aimlessly. The air hums with the sound of processing power, and the ground beneath your feet is a shifting mosaic of broken algorithms. Occasionally, you catch glimpses of familiar objects or faces, distorted and fragmented as if pulled from the depths of a failing hard drive. This place feels unstable, as if it could collapse into nothingness at any moment, taking you with it.",
+],
+  image: 'glitchrealm_datavoid.png',
   ambientAudio: 'data_void_hum.mp3',
 
   consoleIntro: [
@@ -48,15 +45,21 @@ const datavoid: Room = {
     west: 'failure',
   },
 
-  items: ['fragmented_code', 'corrupted_file', 'binary_shard', 'data_crystal'],
+  items: [
+    { id: 'fragmented_code', name: 'Fragmented Code' },
+    { id: 'corrupted_file', name: 'Corrupted File' },
+    { id: 'binary_shard', name: 'Binary Shard' },
+    { id: 'data_crystal', name: 'Data Crystal' }
+  ],
 
   traps: [
     {
       id: 'void_collapse',
       type: 'damage',
       severity: 'major', // Reduced from 'fatal'
-      description:
-        'Reality fragments around you as the data void destabilizes! Digital chaos tears at your existence!',
+      description: [
+  "Reality fragments around you as the data void destabilizes! Digital chaos tears at your existence!",
+],
       trigger: 'enter',
       effect: {
         damage: 25, // Reduced from 80 to 25 - still significant but not instant death
@@ -70,17 +73,23 @@ const datavoid: Room = {
 
   interactables: {
     binary_river: {
-      description: 'A flowing stream of binary code, shimmering with unstable energy.',
+      description: [
+  "A flowing stream of binary code, shimmering with unstable energy.",
+],
       actions: ['examine', 'touch', 'decode'],
       requires: [],
     },
     corrupted_fragments: {
-      description: 'Fragments of corrupted files drifting aimlessly in the void.',
+      description: [
+  "Fragments of corrupted files drifting aimlessly in the void.",
+],
       actions: ['examine', 'collect', 'analyze'],
       requires: [],
     },
     unstable_ground: {
-      description: 'A shifting mosaic of broken algorithms beneath your feet.',
+      description: [
+  "A shifting mosaic of broken algorithms beneath your feet.",
+],
       actions: ['examine', 'stabilize', 'avoid'],
       requires: [],
     },
@@ -148,13 +157,16 @@ const datavoid: Room = {
 
   secrets: {
     hidden_backup: {
-      description: 'A hidden backup sector containing lost data.',
+      description: [
+  "A hidden backup sector containing lost data.",
+],
       requirements: ['analyze corrupted_fragments', 'decode binary_river'],
       rewards: ['restore_memory', 'unlock_safe_exit'],
     },
     wraith_origin: {
-      description:
-        'The true identity of the Data Wraith, revealed through collected code fragments.',
+      description: [
+  "The true identity of the Data Wraith, revealed through collected code fragments.",
+],
       requirements: ['collect fragmented_code', 'help data_wraith'],
       rewards: ['wraith_backstory', 'unique_item'],
     },
@@ -162,12 +174,16 @@ const datavoid: Room = {
 
   customActions: {
     restore_data: {
-      description: 'Attempt to restore a corrupted file using collected data.',
+      description: [
+  "Attempt to restore a corrupted file using collected data.",
+],
       requirements: ['corrupted_file', 'data_crystal'],
       effects: ['recover_information', 'reduce_corruption'],
     },
     stabilize_void: {
-      description: 'Try to stabilize the void using binary shards.',
+      description: [
+  "Try to stabilize the void using binary shards.",
+],
       requirements: ['binary_shard'],
       effects: ['temporary_stability', 'reduce_hazards'],
     },

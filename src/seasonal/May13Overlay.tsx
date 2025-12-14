@@ -63,7 +63,7 @@ export default function May13Overlay({ onClose }: Props) {
           <button
             onClick={onClose}
             autoFocus
-            className="rounded bg-cyan-600 px-3 py-1.5 text-sm hover:bg-cyan-500 focus:outline-none focus:ring focus:ring-cyan-400"
+            className="rounded bg-[var(--gorstan-green)] px-3 py-1.5 text-sm hover:bg-[var(--gorstan-green-dark)] focus:outline-none focus:ring focus:ring-[var(--gorstan-green)]"
           >
             Continue
           </button>

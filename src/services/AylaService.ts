@@ -21,6 +21,7 @@
 import type { GameState } from '../state/gameState';
 import intentsData from '../data/ayla/intents.json';
 import edgeCasesData from '../data/ayla/edgeCases.json';
+import { pickRandom } from '../utils/random';
 
 interface ConversationContext {
   history: Array<{ speaker: 'player' | 'ayla'; message: string; timestamp: number }>;
@@ -256,12 +257,15 @@ export class AylaService {
 
     // Sort by score and return best match if above threshold
     scores.sort((a, b) => b.score - a.score);
-    if (scores.length > 0 && scores[0].score >= 5) {
-      return {
-        confidence: Math.min(scores[0].score / 20, 0.9),
-        response: this.selectResponse(scores[0].responses),
-        topic: scores[0].topic,
-      };
+    if (scores.length > 0) {
+      const top = scores[0]!;
+      if (top.score >= 5) {
+        return {
+          confidence: Math.min(top.score / 20, 0.9),
+          response: this.selectResponse(top.responses),
+          topic: top.topic,
+        };
+      }
     }
 
     return null;
@@ -362,7 +366,7 @@ export class AylaService {
       );
     }
 
-    return fallbacks[Math.floor(Math.random() * fallbacks.length)];
+  return pickRandom(fallbacks);
   }
 
   /**
@@ -447,8 +451,9 @@ export class AylaService {
     return conversationContexts.get(sessionId)!;
   }
 
-  private selectResponse(responses: string[]): string {
-    return responses[Math.floor(Math.random() * responses.length)];
+  private selectResponse(responses?: string[] | null): string {
+    if (!responses || responses.length === 0) return '';
+    return pickRandom(responses);
   }
 
   private getFlagValue(state: GameState, flagKey: string): boolean {
@@ -486,29 +491,34 @@ export class AylaService {
   }
 
   private levenshteinDistance(str1: string, str2: string): number {
-    const matrix = Array(str2.length + 1)
-      .fill(null)
-      .map(() => Array(str1.length + 1).fill(null));
+
+    const matrix: number[][] = [];
+
+    // Initialize rows explicitly so TypeScript knows rows are present
+    for (let j = 0; j <= str2.length; j++) {
+      // fill with explicit zeros so indices 0..str1.length exist
+      const row = new Array<number>(str1.length + 1);
+      for (let k = 0; k <= str1.length; k++) row[k] = 0;
+      matrix[j] = row;
+    }
 
     for (let i = 0; i <= str1.length; i++) {
-      matrix[0][i] = i;
+      matrix[0]![i] = i;
     }
     for (let j = 0; j <= str2.length; j++) {
-      matrix[j][0] = j;
+      matrix[j]![0] = j;
     }
 
     for (let j = 1; j <= str2.length; j++) {
+      const rowJ = matrix[j]! as number[];
+      const rowJm1 = matrix[j - 1]! as number[];
       for (let i = 1; i <= str1.length; i++) {
         const indicator = str1[i - 1] === str2[j - 1] ? 0 : 1;
-        matrix[j][i] = Math.min(
-          matrix[j][i - 1] + 1,
-          matrix[j - 1][i] + 1,
-          matrix[j - 1][i - 1] + indicator,
-        );
+        rowJ[i] = Math.min(rowJ[i - 1]! + 1, rowJm1[i]! + 1, rowJm1[i - 1]! + indicator);
       }
     }
 
-    return matrix[str2.length][str1.length];
+  return matrix[str2.length]![str1.length]!;
   }
 
   /**

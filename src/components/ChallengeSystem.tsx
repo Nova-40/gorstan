@@ -17,7 +17,7 @@
 import React, { useState, useEffect } from 'react';
 import { Clock, Trophy, Target, Calendar, Star, Award, Timer } from 'lucide-react';
 import { useGameState } from '../state/gameState';
-import { showNotification } from './QuickWinNotifications';
+import { showNotification } from '../utils/notificationCenter';
 
 interface Challenge {
   id: string;

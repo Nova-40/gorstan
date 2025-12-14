@@ -30,6 +30,8 @@ import type { Room } from '../types/Room';
 // Removed duplicate Room import
 
 import { useGameState } from '../state/gameState';
+import SmartImage from '../components/media/SmartImage';
+import SmartVideo from '../components/media/SmartVideo';
 
 const GameEngine: React.FC = () => {
   const { state, dispatch } = useGameState();
@@ -57,12 +59,11 @@ const GameEngine: React.FC = () => {
       <div className="p-2 border border-green-500 overflow-auto">
         <div className="text-2xl mb-2 font-bold">{room.title}</div>
         {room.image && (
-          <img
-            src={room.image}
-            alt={room.title}
-            className="w-full max-h-64 object-contain mb-2 rounded"
-            style={{ background: '#0a0a0a', border: '1px solid #1fa350' }}
-          />
+          (room.image.toLowerCase().endsWith('.gif')) ? (
+            <SmartVideo src={`/images/${room.image}`} className="w-full max-h-64 object-contain mb-2 rounded" />
+          ) : (
+            <SmartImage src={`/images/${room.image}`} alt={room.title} className="w-full max-h-64 object-contain mb-2 rounded" />
+          )
         )}
         <pre className="whitespace-pre-wrap text-base">{room.description}</pre>
         {room.items && room.items.length > 0 && (

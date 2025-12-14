@@ -22,6 +22,8 @@ import { LocalGameState } from '../state/gameState';
 import { Room } from '../types/Room';
 import { Dispatch } from 'react';
 import { maybeTriggerInquisitionTrap } from './trapEngine';
+// Statically import wandering controller to avoid mixed static/dynamic imports
+import * as WanderingController from './wanderingNPCController';
 import { detectTrapsOnEntry } from './trapDetection';
 
 /**
@@ -192,20 +194,28 @@ export function triggerNPCMovement(
   dispatch: Dispatch<GameAction>,
 ): void {
   // Import and use wandering controller
-  import('./wanderingNPCController').then((mod) => {
-    if (mod.wanderNPC) {
-      // Trigger movement for wandering NPCs
-      const wanderingNPCs = [
-        'morthos',
-        'al_escape_artist',
-        'polly',
-        'dominic_wandering',
-        'mr_wendell',
-      ];
-
-      wanderingNPCs.forEach((npcId) => {
+  // Prefer static import; keep dynamic import as a fallback for older builds
+  const mod = WanderingController as any;
+  if (mod && typeof mod.wanderNPC === 'function') {
+    const wanderingNPCs = ['morthos', 'al_escape_artist', 'polly', 'dominic_wandering', 'mr_wendell'];
+    wanderingNPCs.forEach((npcId) => {
+      try {
         mod.wanderNPC(npcId, gameState);
-      });
+      } catch (e) {
+        console.warn('[triggerNPCMovement] wanderNPC failed for', npcId, e);
+      }
+    });
+    return;
+  }
+
+  // Dynamic fallback removed: prefer static WanderingController import to keep imports consistent
+  try {
+    const dyn: any = WanderingController as any;
+    if (dyn && typeof dyn.wanderNPC === 'function') {
+      const wanderingNPCs = ['morthos', 'al_escape_artist', 'polly', 'dominic_wandering', 'mr_wendell'];
+      wanderingNPCs.forEach((npcId) => dyn.wanderNPC(npcId, gameState));
     }
-  });
+  } catch (e) {
+    console.warn('[RoomEventHandler] WanderingController invocation failed:', e);
+  }
 }

@@ -198,7 +198,7 @@ const ShadowEncountersScreen: React.FC<ShadowEncountersScreenProps> = ({
             </div>
             <div className="flex items-center space-x-2">
               <span className="text-gray-400">Active Entities:</span>
-              <span className="text-cyan-400">{activeEntities.length}</span>
+              <span className="text-crt-green">{activeEntities.length}</span>
             </div>
           </div>
           <div className="flex items-center space-x-2">

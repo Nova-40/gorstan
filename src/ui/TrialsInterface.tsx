@@ -57,6 +57,7 @@ interface TrialsGameState {
   achievements: string[];
   currentObjective: string;
   hints: string[];
+  phaseText?: string | undefined;
 }
 
 interface TrialsInterfaceProps {
@@ -191,6 +192,60 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
       ctx.moveTo(0, y * tileSize - cameraOffset.y);
       ctx.lineTo(canvas.width, y * tileSize - cameraOffset.y);
       ctx.stroke();
+    }
+
+    // Render mushrooms with enhanced visual threat indicators
+    // If the active phase exposes a tile map (RockField), render tiles first so path/rock layout is visible
+    try {
+      // @ts-ignore
+      const activePhase = (window as any).__activePhase;
+      if (activePhase && typeof activePhase.getMap === 'function') {
+        const map = activePhase.getMap();
+        const mapTileSize = tileSize;
+        for (let my = 0; my < map.height; my++) {
+          const row = map.tiles[my];
+          if (!row) continue;
+          for (let mx = 0; mx < map.width; mx++) {
+            const t = row[mx];
+            const tx = mx * mapTileSize - cameraOffset.x;
+            const ty = my * mapTileSize - cameraOffset.y;
+            if (t === undefined) continue;
+            // Rock tile
+            if (t === 1) {
+              ctx.fillStyle = '#333333';
+              ctx.fillRect(tx, ty, mapTileSize, mapTileSize);
+              // rock texture lines
+              ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              ctx.moveTo(tx + 2, ty + 2);
+              ctx.lineTo(tx + mapTileSize - 2, ty + mapTileSize - 2);
+              ctx.stroke();
+            } else if (t === 0) {
+              // Path tile - prominent lighter color with pulsing overlay
+              ctx.fillStyle = '#0f3b2d';
+              ctx.fillRect(tx, ty, mapTileSize, mapTileSize);
+              const pulse = (Math.sin(Date.now() * 0.006 + (mx + my) * 0.2) + 1) * 0.5; // 0..1
+              ctx.fillStyle = `rgba(32,200,150,${0.06 * pulse})`;
+              ctx.fillRect(tx, ty, mapTileSize, mapTileSize);
+              // subtle border
+              ctx.strokeStyle = 'rgba(255,255,255,0.02)';
+              ctx.strokeRect(tx + 0.5, ty + 0.5, mapTileSize - 1, mapTileSize - 1);
+            } else if (t === 2) {
+              // Exit tile - bright highlight
+              ctx.fillStyle = '#1a8b4a';
+              ctx.fillRect(tx, ty, mapTileSize, mapTileSize);
+              ctx.fillStyle = 'rgba(255,255,255,0.06)';
+              ctx.fillRect(tx + 2, ty + 2, mapTileSize - 4, mapTileSize - 4);
+              ctx.strokeStyle = '#7CFFB2';
+              ctx.lineWidth = 2;
+              ctx.strokeRect(tx + 1, ty + 1, mapTileSize - 2, mapTileSize - 2);
+            }
+          }
+        }
+      }
+    } catch (e) {
+      // ignore map rendering errors
     }
 
     // Render mushrooms with enhanced visual threat indicators
@@ -332,6 +387,121 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
       ctx.lineWidth = 2;
       ctx.strokeRect(x, y, tileSize, tileSize);
     }
+
+    // Render rolling rocks from active RockField if present on window
+    try {
+      // @ts-ignore
+      const activeRockField = (window as any).__activeRockField;
+      if (activeRockField && typeof activeRockField.getRollingRocks === 'function') {
+        const rolling = activeRockField.getRollingRocks();
+        // draw asteroids for rolling rocks
+        const drawAsteroid = (cx: number, cy: number, radius: number, seed: number, rot: number) => {
+          // seeded random helper
+          let s = seed || 1;
+          const rand = () => {
+            s = (s * 9301 + 49297) % 233280;
+            return s / 233280;
+          };
+
+          const points = 10;
+          ctx.save();
+          ctx.translate(cx, cy);
+          ctx.rotate(rot);
+
+          // main body
+          ctx.beginPath();
+          for (let i = 0; i < points; i++) {
+            const a = (i / points) * Math.PI * 2;
+            const r = radius * (0.75 + rand() * 0.6);
+            const x = Math.cos(a) * r;
+            const y = Math.sin(a) * r;
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.closePath();
+
+          const grad = ctx.createRadialGradient(-radius * 0.3, -radius * 0.3, radius * 0.1, 0, 0, radius);
+          grad.addColorStop(0, '#b08a57');
+          grad.addColorStop(0.6, '#8b5a2b');
+          grad.addColorStop(1, '#4b2f1a');
+          ctx.fillStyle = grad;
+          ctx.fill();
+
+          // craters
+          const craterCount = 2 + Math.floor(rand() * 3);
+          for (let c = 0; c < craterCount; c++) {
+            const ca = rand() * Math.PI * 2;
+            const cr = rand() * radius * 0.5;
+            const cxOff = Math.cos(ca) * cr * 0.6;
+            const cyOff = Math.sin(ca) * cr * 0.6;
+            ctx.beginPath();
+            ctx.fillStyle = 'rgba(0,0,0,0.18)';
+            ctx.arc(cxOff, cyOff, Math.max(2, radius * (0.12 + rand() * 0.12)), 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // subtle outline
+          ctx.strokeStyle = 'rgba(0,0,0,0.35)';
+          ctx.lineWidth = Math.max(1, radius * 0.06);
+          ctx.stroke();
+          ctx.restore();
+        };
+
+        rolling.forEach((r: any) => {
+          const rx = r.x * tileSize - cameraOffset.x + tileSize / 2;
+          const ry = r.y * tileSize - cameraOffset.y + tileSize / 2;
+          const rad = Math.max(6, r.size * 6);
+          // rotation based on id + time for motion
+          const rot = ((Date.now() / 1000) * 0.6 + (r.id % 17) * 0.37) % (Math.PI * 2);
+          if (rx >= -80 && rx <= canvas.width + 80 && ry >= -80 && ry <= canvas.height + 80) {
+            drawAsteroid(rx, ry, rad, r.id + 137, rot);
+            // shadow
+            ctx.fillStyle = 'rgba(0,0,0,0.18)';
+            ctx.fillRect(rx - 4, ry + rad * 0.6, Math.max(6, rad * 0.8), 3);
+          }
+        });
+      }
+    } catch (e) {
+      // ignore
+    }
+
+    // Also draw moving rocks from active phase if present (RandomRocks)
+    try {
+      // @ts-ignore
+      const activePhase = (window as any).__activePhase;
+      if (activePhase && typeof activePhase.getRocks === 'function') {
+        const rocks = activePhase.getRocks();
+        rocks.forEach((r: any) => {
+          const rx = r.x * tileSize - cameraOffset.x + tileSize / 2;
+          const ry = r.y * tileSize - cameraOffset.y + tileSize / 2;
+          const rad = Math.max(5, (r.size || 1) * 5);
+          const rot = ((Date.now() / 1000) * 0.8 + (r.id % 23) * 0.21) % (Math.PI * 2);
+          if (rx >= -80 && rx <= canvas.width + 80 && ry >= -80 && ry <= canvas.height + 80) {
+            // reuse drawAsteroid (ensure defined)
+            try {
+              // drawAsteroid is defined in the rolling rocks block; recreate small helper here to be safe
+              let s = r.id || 1;
+              const rand = () => { s = (s * 9301 + 49297) % 233280; return s / 233280; };
+              ctx.save(); ctx.translate(rx, ry); ctx.rotate(rot);
+              ctx.beginPath();
+              const pts = 10;
+              for (let i = 0; i < pts; i++) {
+                const a = (i / pts) * Math.PI * 2;
+                const rr = rad * (0.8 + rand() * 0.5);
+                const x = Math.cos(a) * rr; const y = Math.sin(a) * rr;
+                if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+              }
+              ctx.closePath();
+              const grad = ctx.createRadialGradient(-rad * 0.3, -rad * 0.3, rad * 0.1, 0, 0, rad);
+              grad.addColorStop(0,'#caa37a'); grad.addColorStop(0.6,'#9a6b3a'); grad.addColorStop(1,'#55321a');
+              ctx.fillStyle = grad; ctx.fill();
+              ctx.strokeStyle = 'rgba(0,0,0,0.35)'; ctx.lineWidth = Math.max(1, rad * 0.06); ctx.stroke();
+              ctx.restore();
+            } catch (er) {}
+          }
+        });
+      }
+    } catch (e) {}
   }, [gameState, cameraOffset, selectedTile]);
 
   // Animation loop
@@ -369,6 +539,11 @@ export const TrialsInterface: React.FC<TrialsInterfaceProps> = ({
       <div className="trials-header">
         <div className="phase-info">
           <h2 className="phase-title">{gameState.phaseName}</h2>
+          {gameState.phaseText && (
+            <div className="phase-text" style={{ opacity: 0.95 }}>
+              {gameState.phaseText}
+            </div>
+          )}
           <div className="phase-progress">
             <div className="progress-bar" style={{ width: `${gameState.phaseProgress}%` }} />
           </div>

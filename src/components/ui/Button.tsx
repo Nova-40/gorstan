@@ -1,3 +1,39 @@
+import React from 'react';
+
+export interface UIButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
+}
+
+export const UIButton: React.FC<UIButtonProps> = ({ variant = 'primary', className = '', children, ...props }) => {
+  const base = 'inline-flex items-center justify-center rounded-md font-semibold transition-all';
+  const variants: Record<string, string> = {
+    primary: 'btn-primary px-4 py-2',
+    secondary: 'btn-secondary px-3 py-1',
+    ghost: 'btn-ghost px-2 py-1',
+    danger: 'btn-danger px-3 py-1',
+  };
+
+  return (
+    <button className={`${base} ${variants[variant] || variants.primary} ${className}`} {...props}>
+      {children}
+    </button>
+  );
+};
+
+export default UIButton;
+
+// Primary/Secondary convenience wrappers
+export const PrimaryButton: React.FC<UIButtonProps> = ({ children, className, ...props }) => (
+  <UIButton variant="primary" className={`px-4 py-2 ${className || ''}`} {...props}>
+    {children}
+  </UIButton>
+);
+
+export const SecondaryButton: React.FC<UIButtonProps> = ({ children, className, ...props }) => (
+  <UIButton variant="secondary" className={`px-3 py-1 ${className || ''}`} {...props}>
+    {children}
+  </UIButton>
+);
 /**
  * Enhanced Button Component
  * Provides consistent button styling across the application with full accessibility support
@@ -17,16 +53,14 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
 }
 
-const buttonVariants = {
-  primary: 'bg-primary-500 hover:bg-primary-600 focus:ring-primary-500 text-white shadow-md',
-  secondary:
-    'bg-neutral-100 hover:bg-neutral-200 focus:ring-neutral-500 text-neutral-900 shadow-sm',
-  danger: 'bg-danger-500 hover:bg-danger-600 focus:ring-danger-500 text-white shadow-md',
-  success: 'bg-success-500 hover:bg-success-600 focus:ring-success-500 text-white shadow-md',
-  warning: 'bg-warning-500 hover:bg-warning-600 focus:ring-warning-500 text-white shadow-md',
-  ghost: 'hover:bg-neutral-100 focus:ring-neutral-500 text-neutral-700',
-  outline:
-    'border-2 border-primary-500 hover:bg-primary-50 focus:ring-primary-500 text-primary-700',
+  const buttonVariants = {
+  primary: 'btn-primary shadow-md',
+  secondary: 'btn-secondary shadow-sm',
+  danger: 'btn-danger shadow-md',
+  success: 'bg-green-600 text-white shadow-md',
+  warning: 'bg-yellow-500 text-white shadow-md',
+  ghost: 'btn-ghost',
+  outline: 'border-2 border-[var(--gorstan-cyan)] text-[var(--gorstan-cyan)]',
 };
 
 const buttonSizes = {

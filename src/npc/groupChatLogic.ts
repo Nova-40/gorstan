@@ -523,16 +523,19 @@ export class GroupChatManager {
 
     // If player interrupts during important discussions
     if (playerMessage && state.flags?.npcDiscussionActive) {
-      const speaker = context.npcsInRoom[Math.floor(Math.random() * context.npcsInRoom.length)];
+      const speaker =
+        context.npcsInRoom[Math.floor(Math.random() * context.npcsInRoom.length)] ?? ({ id: 'al' } as NPC);
 
-      setTimeout(() => {
-        NPCTalk.any(
-          speaker.id,
-          'player',
-          '*holds up hand politely* One moment please - we need to discuss something important first.',
-          ctx,
-        );
-      }, 1000);
+      if (speaker && speaker.id) {
+        setTimeout(() => {
+          NPCTalk.any(
+            speaker.id,
+            'player',
+            '*holds up hand politely* One moment please - we need to discuss something important first.',
+            ctx,
+          );
+        }, 1000);
+      }
 
       return;
     }
@@ -568,7 +571,12 @@ export class GroupChatManager {
         },
       ];
 
-      const topic = discussionTopics[Math.floor(Math.random() * discussionTopics.length)];
+      const topic = discussionTopics.length > 0 ? discussionTopics[Math.floor(Math.random() * discussionTopics.length)] : undefined;
+
+      if (!topic) {
+        // No topic available — nothing to schedule
+        return;
+      }
 
       // Start discussion
       setTimeout(() => {

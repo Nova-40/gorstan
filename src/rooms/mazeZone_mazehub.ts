@@ -24,10 +24,8 @@ const mazehub: Room = {
   zone: 'mazeZone',
   title: 'Maze Hub',
   description: [
-    'You stand at the heart of the maze—a central chamber from which many passages branch out.',
-    'The walls here are marked with faded symbols, and the floor is worn smooth by countless footsteps.',
-    "A faint breeze stirs the air, carrying distant echoes from the maze's winding corridors.",
-  ],
+  "You stand at the heart of the maze—a central chamber from which many passages branch out. The walls here are marked with faded symbols, and the floor is worn smooth by countless footsteps. A faint breeze stirs the air, carrying distant echoes from the maze's winding corridors.",
+],
   image: 'mazeZone_mazehub.png',
   ambientAudio: 'maze_hub_ambience.mp3',
 
@@ -44,17 +42,24 @@ const mazehub: Room = {
     west: 'mazeZone_anothermazeroom',
   },
 
-  items: ['hub_map_fragment', 'worn_compass', 'old_lantern'],
+  items: [
+    { id: 'hub_map_fragment', name: 'Hub Map Fragment' },
+    { id: 'worn_compass', name: 'Worn Compass' },
+    { id: 'old_lantern', name: 'Old Lantern' }
+  ],
 
   interactables: {
     central_marker: {
-      description: 'A stone marker at the center of the hub, inscribed with cryptic runes.',
+      description: [
+  "A stone marker at the center of the hub, inscribed with cryptic runes.",
+],
       actions: ['examine', 'trace', 'decode'],
       requires: [],
     },
     directional_signs: {
-      description:
-        'A set of signs pointing in various directions, though some are missing or faded.',
+      description: [
+  "A set of signs pointing in various directions, though some are missing or faded.",
+],
       actions: ['read', 'adjust', 'replace'],
       requires: [],
     },
@@ -119,7 +124,9 @@ const mazehub: Room = {
 
   secrets: {
     hidden_cache: {
-      description: 'A hidden cache beneath the central marker, revealed by decoding the runes.',
+      description: [
+  "A hidden cache beneath the central marker, revealed by decoding the runes.",
+],
       requirements: ['decode central_marker'],
       rewards: ['rare_map_fragment', 'maze_lore'],
     },
@@ -127,12 +134,16 @@ const mazehub: Room = {
 
   customActions: {
     trace_marker: {
-      description: 'Trace the runes on the central marker to reveal hidden paths.',
+      description: [
+  "Trace the runes on the central marker to reveal hidden paths.",
+],
       requirements: [],
       effects: ['reveal_hint', 'unlock_secret'],
     },
     adjust_signs: {
-      description: 'Adjust the directional signs to help future explorers.',
+      description: [
+  "Adjust the directional signs to help future explorers.",
+],
       requirements: [],
       effects: ['improve_navigation', 'gain_trust'],
     },

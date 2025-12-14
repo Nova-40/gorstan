@@ -21,6 +21,9 @@ import { FlagMap } from '../state/flagRegistry';
 const { npc, debug } = FlagMap;
 
 import { useEffect } from 'react';
+import type { Dispatch } from 'react';
+import type { LocalGameState } from '../state/gameState';
+import type { GameAction } from '../types/GameTypes';
 
 import { useFlags } from './useFlags';
 
@@ -28,7 +31,7 @@ import { useModuleLoader } from './useModuleLoader';
 
 import { useTimers } from './useTimers';
 
-export const useOptimizedEffects = (state: any, dispatch: any, room: any) => {
+export const useOptimizedEffects = (state: LocalGameState, dispatch: Dispatch<GameAction>, room: unknown) => {
   const { hasFlag, clearFlag, setFlag } = useFlags();
   const { loadModule } = useModuleLoader();
   const { setTimer } = useTimers();
@@ -43,9 +46,9 @@ export const useOptimizedEffects = (state: any, dispatch: any, room: any) => {
       effectsToRun.push(() => {
         console.log('[DEBUG] System Status:');
         console.log('- Current Stage:', state.stage);
-        console.log('- Room Count:', Object.keys(state.roomMap || {}).length);
+  console.log('- Room Count:', Object.keys(state.roomMap || {}).length);
         console.log('- Flag Count:', Object.keys(flags).length);
-        console.log('- Inventory Count:', state.player?.inventory?.length || 0);
+  console.log('- Inventory Count:', state.player?.inventory?.length || 0);
 
         dispatch({
           type: 'ADD_MESSAGE',
@@ -120,18 +123,16 @@ export const useOptimizedEffects = (state: any, dispatch: any, room: any) => {
     if (hasFlag(debug.debugPerformance)) {
       effectsToRun.push(() => {
         // Variable declaration
-        const performance = window.performance;
-        // Variable declaration
-        const memory = (performance as any).memory;
+        const perf = window.performance as Performance & { memory?: { usedJSHeapSize?: number; totalJSHeapSize?: number } };
 
         console.log('[DEBUG] Performance Metrics:');
         console.log(
           '- Memory Used:',
-          memory ? `${(memory.usedJSHeapSize / 1024 / 1024).toFixed(2)} MB` : 'N/A',
+          perf.memory ? `${(perf.memory.usedJSHeapSize || 0 / 1024 / 1024).toFixed(2)} MB` : 'N/A',
         );
         console.log(
           '- Memory Total:',
-          memory ? `${(memory.totalJSHeapSize / 1024 / 1024).toFixed(2)} MB` : 'N/A',
+          perf.memory ? `${(perf.memory.totalJSHeapSize || 0 / 1024 / 1024).toFixed(2)} MB` : 'N/A',
         );
         console.log('- Navigation Timing:', performance.getEntriesByType('navigation'));
 

@@ -64,8 +64,8 @@ export const useRoomTransition = (
       setTransitionInfo({
         shouldAnimate: true,
         transitionType: 'chair_portal',
-        fromZone: fromRoom.zone,
-        toZone: toRoom.zone,
+  fromZone: fromRoom.zone ?? '',
+  toZone: toRoom.zone ?? '',
       });
       return;
     }
@@ -74,8 +74,8 @@ export const useRoomTransition = (
       setTransitionInfo({
         shouldAnimate: true,
         transitionType: 'portal',
-        fromZone: fromRoom.zone,
-        toZone: toRoom.zone,
+  fromZone: fromRoom.zone ?? '',
+  toZone: toRoom.zone ?? '',
       });
       return;
     }
@@ -84,8 +84,8 @@ export const useRoomTransition = (
       setTransitionInfo({
         shouldAnimate: true,
         transitionType: 'zone_change',
-        fromZone: fromRoom.zone,
-        toZone: toRoom.zone,
+  fromZone: fromRoom.zone ?? '',
+  toZone: toRoom.zone ?? '',
       });
       return;
     }
@@ -93,8 +93,8 @@ export const useRoomTransition = (
     setTransitionInfo({
       shouldAnimate: true,
       transitionType: 'normal',
-      fromZone: fromRoom.zone,
-      toZone: toRoom.zone,
+  fromZone: fromRoom.zone ?? '',
+  toZone: toRoom.zone ?? '',
     });
   }, [fromRoom, toRoom, triggerAction]);
 

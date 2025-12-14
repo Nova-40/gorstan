@@ -313,22 +313,23 @@ class GameStateOptimizer {
    * Perform automatic cleanup based on memory usage
    */
   private performAutomaticCleanup(): void {
-    if ('memory' in performance) {
-      const memory = (performance as any).memory;
-      const memoryUsageMB = memory.usedJSHeapSize / 1024 / 1024;
+    if ((performance as Performance & { memory?: { usedJSHeapSize?: number } }).memory) {
+      const memory = (performance as Performance & { memory?: { usedJSHeapSize?: number } }).memory!;
+      const memoryUsageMB = (memory.usedJSHeapSize || 0) / 1024 / 1024;
 
       if (memoryUsageMB > this.settings.memoryThreshold) {
         console.log(
           `[GameStateOptimizer] Memory usage high (${memoryUsageMB.toFixed(1)}MB), triggering cleanup`,
         );
 
-        // Trigger garbage collection if available
-        if ('gc' in window && typeof (window as any).gc === 'function') {
-          (window as any).gc();
+        // Trigger garbage collection if available (non-standard)
+        const win = window as Window & { gc?: () => void; gorstan?: any };
+        if (typeof win.gc === 'function') {
+          win.gc();
         }
 
         // Reduce history length temporarily
-        this.settings.maxHistoryLength = Math.max(50, this.settings.maxHistoryLength * 0.8);
+        this.settings.maxHistoryLength = Math.max(50, Math.floor(this.settings.maxHistoryLength * 0.8));
 
         console.log(
           `[GameStateOptimizer] Reduced max history length to ${this.settings.maxHistoryLength}`,
@@ -420,14 +421,15 @@ export const gameStateOptimizer = new GameStateOptimizer();
 if (import.meta.env.DEV) {
   gameStateOptimizer.startAutoOptimization();
 
-  // Add global commands
-  (window as any).gorstan = {
-    ...(window as any).gorstan,
+  // Add global commands (typed minimal exposure)
+  const win = window as Window & { gorstan?: Record<string, any> };
+  win.gorstan = {
+    ...(win.gorstan || {}),
     optimizer: {
       getMetrics: () => gameStateOptimizer.getMetrics(),
       getReport: () => console.log(gameStateOptimizer.generateReport()),
       getSettings: () => gameStateOptimizer.getSettings(),
-      updateSettings: (settings: any) => gameStateOptimizer.updateSettings(settings),
+      updateSettings: (settings: Partial<OptimizationSettings>) => gameStateOptimizer.updateSettings(settings),
     },
   };
 }

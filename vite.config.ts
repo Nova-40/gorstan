@@ -17,6 +17,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig({
   plugins: [react()],
@@ -28,39 +29,54 @@ export default defineConfig({
   build: {
     // Increase chunk size warning limit for Vercel
     chunkSizeWarningLimit: 1000,
-    // Enable sourcemaps for production debugging
+    // Build tuning for smaller vendor and better tree-shaking
+    target: 'es2020',
+    cssCodeSplit: true,
     sourcemap: false,
-    // Minimize output
-    minify: 'terser',
-    // Target modern browsers for better optimization
-    target: 'esnext',
+    minify: 'esbuild',
     rollupOptions: {
+      // Conditionally attach analysis plugins when running `npm run analyze`.
+      // npm sets `npm_lifecycle_event` to the script name; pnpm also forwards this env var.
+      plugins: (process.env.npm_lifecycle_event === 'analyze')
+        ? [
+            visualizer({
+              filename: 'dist/bundle-stats.html',
+              title: 'Gorstan bundle analysis',
+              open: false,
+              gzipSize: true,
+            }),
+          ]
+        : [],
       output: {
         // Optimize chunk naming for caching
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash].[ext]',
-        manualChunks: {
-          // Split large dependencies into separate chunks
-          'framer-motion': ['framer-motion'],
-          'lucide-react': ['lucide-react'],
-          'react-vendor': ['react', 'react-dom'],
-          // Split game engine into separate chunks
-          'game-engine': [
-            './src/engine/commandParser',
-            './src/engine/wanderingNPCController',
-            './src/engine/librarianController',
-            './src/engine/mrWendellController'
-          ],
-          'game-logic': [
-            './src/logic/achievementEngine',
-            './src/logic/codexTracker',
-            './src/state/scoreManager',
-            './src/state/scoreEffects'
-          ]
-        }
-      }
-    }
+        // Map heavy vendor packages into dedicated chunks to keep vendor lean
+        manualChunks: (id) => {
+          if (!id) return null;
+          if (id.includes('node_modules')) {
+            if (id.includes('framer-motion')) return 'motion';
+            if (id.includes('lucide-react')) return 'icons';
+            if (id.includes('react')) return 'react';
+            return 'vendor';
+          }
+          // Create per-zone chunks for room modules (src/rooms/zoneName_*)
+          if (id.includes('/src/rooms/') || id.includes('src\\rooms\\')) {
+            const m = id.match(/rooms[\\\/]([a-zA-Z0-9_-]+)_/);
+            if (m && m[1]) return `zone-${m[1]}`;
+            return 'rooms';
+          }
+          return null;
+        },
+      },
+      // Aggressive treeshake hints to reduce accidental bloat
+      treeshake: {
+        moduleSideEffects: false,
+        propertyReadSideEffects: false,
+        tryCatchDeoptimization: false,
+      },
+    },
   }
 });
 

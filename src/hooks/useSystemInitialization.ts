@@ -28,6 +28,9 @@ import { useFlags } from './useFlags';
 import { useGameState } from '../state/gameState';
 
 import { useModuleLoader } from './useModuleLoader';
+// Statically import common engine modules to avoid mixed import chunking
+import * as WanderingController from '../engine/wanderingNPCController';
+import * as AchievementEngine from '../logic/achievementEngine';
 
 import { useTimers } from './useTimers';
 
@@ -50,14 +53,22 @@ export const useSystemInitialization = () => {
           dispatch({ type: 'SET_ROOM_MAP', payload: roomMap });
           setFlag(FlagRegistryType.transition.roomMapReady, true);
 
-          const achievementModule = await loadModule('../logic/achievementEngine');
-          if (achievementModule?.initializeAchievementEngine) {
-            achievementModule.initializeAchievementEngine();
+          // Use statically imported modules to avoid mixed import reporter warnings
+          try {
+            // Statically imported module may or may not expose initializeAchievementEngine
+            if (typeof (AchievementEngine as unknown as { initializeAchievementEngine?: unknown }).initializeAchievementEngine === 'function') {
+              (AchievementEngine as unknown as { initializeAchievementEngine: () => void }).initializeAchievementEngine();
+            }
+          } catch (e) {
+            console.warn('[SYSTEM] Achievement engine init failed:', e);
           }
 
-          const npcModule = await loadModule('../engine/wanderingNPCController');
-          if (npcModule?.initializeWanderingNPCs) {
-            npcModule.initializeWanderingNPCs();
+          try {
+            if (typeof (WanderingController as unknown as { initializeWanderingNPCs?: unknown }).initializeWanderingNPCs === 'function') {
+              (WanderingController as unknown as { initializeWanderingNPCs: () => void }).initializeWanderingNPCs();
+            }
+          } catch (e) {
+            console.warn('[SYSTEM] Wandering NPC init failed:', e);
           }
 
           systemsInitialized.current = true;

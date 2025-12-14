@@ -99,7 +99,7 @@ export const isInventoryFull = (state: GameState, maxItems: number = 50): boolea
   return getInventoryCount(state) >= maxItems;
 };
 
-export const getCurrentRoomFlags = (state: GameState): Record<string, any> => {
+export const getCurrentRoomFlags = (state: GameState): Record<string, boolean> => {
   // Variable declaration
   const currentRoom = getCurrentLocation(state);
   if (!currentRoom) {
@@ -110,10 +110,10 @@ export const getCurrentRoomFlags = (state: GameState): Record<string, any> => {
     .filter(([key]) => key.includes(currentRoom))
     .reduce(
       (acc, [key, value]) => {
-        acc[key] = value;
+        acc[key] = Boolean(value);
         return acc;
       },
-      {} as Record<string, any>,
+    {} as Record<string, boolean>,
     );
 };
 
@@ -126,22 +126,23 @@ export const getCurrentZone = (state: GameState): string => {
 
   // Variable declaration
   const zoneMatch = currentRoom.match(/^([a-zA-Z]+Zone)/);
-  return zoneMatch ? zoneMatch[1] : '';
+  const zone = zoneMatch && zoneMatch[1] ? String(zoneMatch[1]) : '';
+  return zone;
 };
 
 export const isInZone = (state: GameState, zone: string): boolean => {
   return getCurrentZone(state) === zone;
 };
 
-export const getFlagsMatching = (state: GameState, pattern: RegExp): Record<string, any> => {
+export const getFlagsMatching = (state: GameState, pattern: RegExp): Record<string, boolean> => {
   return Object.entries(state.flags || {})
     .filter(([key]) => pattern.test(key))
     .reduce(
       (acc, [key, value]) => {
-        acc[key] = value;
+        acc[key] = Boolean(value);
         return acc;
       },
-      {} as Record<string, any>,
+    {} as Record<string, boolean>,
     );
 };
 

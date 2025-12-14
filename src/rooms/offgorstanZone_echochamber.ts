@@ -24,10 +24,8 @@ const echochamber: Room = {
   zone: 'offgorstanZone',
   title: 'Echo Chamber',
   description: [
-    'You enter the Echo Chamber, a vast domed space where every sound is magnified and repeated endlessly.',
-    'The walls are smooth and curved, designed to reflect even the faintest whisper.',
-    'A strange resonance fills the air, making it difficult to distinguish your own thoughts from the echoes.',
-  ],
+  "You enter the Echo Chamber, a vast domed space where every sound is magnified and repeated endlessly. The walls are smooth and curved, designed to reflect even the faintest whisper. A strange resonance fills the air, making it difficult to distinguish your own thoughts from the echoes.",
+],
   image: 'offgorstanZone_echochamber.png',
   ambientAudio: 'echo_chamber_ambience.mp3',
 
@@ -42,16 +40,23 @@ const echochamber: Room = {
     south: 'offgorstanZone_voidatrium',
   },
 
-  items: ['resonant_crystal', 'echo_scroll'],
+  items: [
+    { id: 'resonant_crystal', name: 'Resonant Crystal' },
+    { id: 'echo_scroll', name: 'Echo Scroll' }
+  ],
 
   interactables: {
     resonance_wall: {
-      description: 'A section of wall that vibrates with every sound, amplifying echoes.',
+      description: [
+  "A section of wall that vibrates with every sound, amplifying echoes.",
+],
       actions: ['listen', 'touch', 'mark'],
       requires: [],
     },
     central_dais: {
-      description: 'A raised platform at the center, where echoes converge and intensify.',
+      description: [
+  "A raised platform at the center, where echoes converge and intensify.",
+],
       actions: ['stand', 'speak', 'observe'],
       requires: [],
     },
@@ -107,8 +112,9 @@ const echochamber: Room = {
 
   secrets: {
     hidden_message: {
-      description:
-        'A secret message revealed by standing on the dais and speaking the correct phrase.',
+      description: [
+  "A secret message revealed by standing on the dais and speaking the correct phrase.",
+],
       requirements: ['stand central_dais', 'speak phrase'],
       rewards: ['echo_lore', 'resonant_hint'],
     },
@@ -116,12 +122,16 @@ const echochamber: Room = {
 
   customActions: {
     mark_resonance_wall: {
-      description: 'Mark the resonance wall to track your presence.',
+      description: [
+  "Mark the resonance wall to track your presence.",
+],
       requirements: [],
       effects: ['set_wallMarked', 'reduce_disorientation'],
     },
     stand_on_dais: {
-      description: 'Stand on the central dais to focus the echoes.',
+      description: [
+  "Stand on the central dais to focus the echoes.",
+],
       requirements: [],
       effects: ['gain_hint', 'unlock_secret'],
     },

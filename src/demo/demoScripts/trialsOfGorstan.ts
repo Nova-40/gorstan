@@ -6,7 +6,8 @@
 
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import TrialsGame from '../../components/TrialsGame';
+// Load TrialsGame dynamically to match AppCore's lazy loading and avoid mixed imports
+const TrialsGameLoader = () => import('../../components/TrialsGame');
 import { clearDemo } from '../demoRouter';
 
 export async function startTrialsOfGorstan(): Promise<void> {
@@ -52,12 +53,18 @@ export async function startTrialsOfGorstan(): Promise<void> {
       console.log('[TrialsOfGorstan] Returning to Choose Your Adventure...');
     };
 
+    // Dynamically load the TrialsGame component and render it
+    const TrialsGameComponent = React.lazy(TrialsGameLoader);
     root.render(
-      React.createElement(TrialsGame, {
-        onComplete: handleComplete,
-        onQuit: handleQuit,
-        autoStart: true,
-      }),
+      React.createElement(
+        React.Suspense,
+        { fallback: React.createElement('div', null, 'Loading Trials...') },
+        React.createElement(TrialsGameComponent, {
+          onComplete: handleComplete,
+          onQuit: handleQuit,
+          autoStart: true,
+        }),
+      ),
     );
   } catch (error) {
     console.error('[TrialsOfGorstan] Demo failed:', error);

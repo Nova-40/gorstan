@@ -173,16 +173,20 @@ export class StatusSystem {
     if (existingIndex >= 0) {
       const existing = actor.statuses[existingIndex];
 
-      if (newStatus.stacks !== undefined && existing.stacks !== undefined) {
-        // Stack the effect
-        existing.stacks += newStatus.stacks;
-        existing.durationMs = Math.max(existing.durationMs, newStatus.durationMs);
+      // Defensive: if the slot unexpectedly doesn't contain a status, fall back to adding
+      if (!existing) {
+        actor.statuses.push(newStatus);
+        newStatus.onApply?.(actor);
+      } else if (newStatus.stacks !== undefined && existing.stacks !== undefined) {
+        // Stack the effect (use numeric defaults to avoid undefined arithmetic)
+        existing.stacks = (existing.stacks || 0) + (newStatus.stacks || 0);
+        existing.durationMs = Math.max(existing.durationMs ?? 0, newStatus.durationMs ?? 0);
 
         // Check for special stack thresholds
         this.checkStackThresholds(actor, existing);
       } else {
         // Refresh duration for non-stackable effects
-        existing.durationMs = newStatus.durationMs;
+        existing.durationMs = newStatus.durationMs ?? existing.durationMs;
       }
     } else {
       // Add new status
@@ -199,7 +203,9 @@ export class StatusSystem {
     const index = actor.statuses.findIndex((s) => s.id === statusId);
     if (index >= 0) {
       const status = actor.statuses[index];
-      status.onRemove?.(actor);
+      if (status) {
+        status.onRemove?.(actor);
+      }
       actor.statuses.splice(index, 1);
     }
   }
@@ -211,10 +217,18 @@ export class StatusSystem {
     // Update durations
     for (let i = actor.statuses.length - 1; i >= 0; i--) {
       const status = actor.statuses[i];
-      status.durationMs -= deltaTime;
+      if (!status) {
+        // Defensive: skip holes if any
+        continue;
+      }
+
+      status.durationMs = (status.durationMs ?? 0) - deltaTime;
 
       if (status.durationMs <= 0) {
-        status.onRemove?.(actor);
+        const maybeStatus = actor.statuses[i];
+        if (maybeStatus) {
+          maybeStatus.onRemove?.(actor);
+        }
         actor.statuses.splice(i, 1);
       }
     }
@@ -224,6 +238,7 @@ export class StatusSystem {
       this.lastTick = currentTime;
 
       for (const status of actor.statuses) {
+        if (!status) continue;
         status.onTick?.(actor);
       }
     }
@@ -294,6 +309,7 @@ export class StatusSystem {
   /** Clear all status effects from an actor */
   clearAllStatuses(actor: Actor): void {
     for (const status of [...actor.statuses]) {
+      if (!status) continue;
       status.onRemove?.(actor);
     }
     actor.statuses.length = 0;

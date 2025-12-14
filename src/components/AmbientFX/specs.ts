@@ -1,7 +1,11 @@
 import { RoomFXSpec } from './AnimatedBackdrop';
 
 const base = import.meta.env.BASE_URL ?? '/';
-const img = (name: string) => `${base}images/rooms/${name}`;
+const PLACEHOLDER = `${base}images/rooms/placeholder-room.png`;
+const img = (name?: string) => {
+  if (!name) return PLACEHOLDER;
+  return `${base}images/rooms/${name}`;
+};
 
 // Control Nexus - High-tech control room with blinking indicators and data streams
 export const controlNexusFX: RoomFXSpec = {

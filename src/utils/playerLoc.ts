@@ -35,6 +35,8 @@ export interface PlayerLocation {
  * Note: This is a placeholder implementation for privacy/security
  * In a real game, you might use geolocation APIs with user consent
  */
+import { pickRandom } from './random';
+
 export function getPlayerLocation(): Promise<PlayerLocation> {
   return new Promise((resolve) => {
     // Simulate location detection with fake data for game narrative
@@ -48,7 +50,12 @@ export function getPlayerLocation(): Promise<PlayerLocation> {
     ];
 
     // Randomly select a location for narrative purposes
-    const randomLocation = mockLocations[Math.floor(Math.random() * mockLocations.length)];
+    let randomLocation: PlayerLocation;
+    try {
+      randomLocation = pickRandom(mockLocations);
+    } catch (e) {
+      randomLocation = mockLocations[0]!;
+    }
 
     // Simulate async location detection
     setTimeout(() => {
@@ -62,7 +69,11 @@ export function getPlayerLocation(): Promise<PlayerLocation> {
  */
 export function getCurrentWeather(): string {
   const weatherOptions = ['rainy', 'sunny', 'cloudy', 'snowy', 'foggy', 'clear', 'stormy'];
-  return weatherOptions[Math.floor(Math.random() * weatherOptions.length)];
+  try {
+    return pickRandom(weatherOptions);
+  } catch (e) {
+    return weatherOptions[0]!;
+  }
 }
 
 /**

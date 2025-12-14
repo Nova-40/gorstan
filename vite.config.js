@@ -52,16 +52,26 @@ export default defineConfig({
         chunkSizeWarningLimit: 1200,
         rollupOptions: {
             output: {
-                manualChunks: {
-                    // Core React chunk
-                    'react-vendor': ['react', 'react-dom'],
-                    // Heavy UI libraries
-                    'framer-motion': ['framer-motion'],
-                    'lucide-react': ['lucide-react'],
-                    // Game state management
-                    'state-management': ['valtio', 'zustand', '@tanstack/react-query'],
-                    // AI services (can be lazy loaded)
-                    'ai-services': ['groq-sdk'],
+                // Use a manualChunks function for deterministic grouping of vendor and src folders
+                manualChunks(id) {
+                    if (!id) return null;
+                    if (id.includes('node_modules')) {
+                        if (id.includes('framer-motion')) return 'framer-motion';
+                        if (id.includes('lucide-react')) return 'lucide-react';
+                        if (id.includes('react') || id.includes('react-dom')) return 'react-vendor';
+                        if (id.includes('groq-sdk') || id.includes('groq')) return 'ai-services';
+                        if (id.includes('valtio') || id.includes('zustand') || id.includes('@tanstack')) return 'state-management';
+                        return 'vendor';
+                    }
+
+                    if (id.includes('/src/minigames/') || id.includes('\\src\\minigames\\')) return 'minigames';
+                    if (id.includes('/src/ai/') || id.includes('\\src\\ai\\')) return 'ai-services';
+                    if (id.includes('/src/npc/') || id.includes('\\src\\npc\\')) return 'npc';
+                    if (id.includes('/src/components/') || id.includes('\\src\\components\\')) return 'components';
+                    if (id.includes('/src/logic/') || id.includes('\\src\\logic\\')) return 'game-logic';
+                    if (id.includes('/src/engine/') || id.includes('\\src\\engine\\')) return 'game-engine';
+
+                    return null;
                 }
             }
         }

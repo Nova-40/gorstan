@@ -116,10 +116,17 @@ async function runFractureSaga(): Promise<void> {
     function collectNextShard() {
       if (shardIndex < shards.length) {
         setTimeout(() => {
-          collectShard(shards[shardIndex]).then(() => {
+          const shard = shards[shardIndex];
+          if (shard) {
+            collectShard(shard).then(() => {
+              shardIndex++;
+              collectNextShard();
+            });
+          } else {
+            // safety: advance index to avoid infinite loop
             shardIndex++;
             collectNextShard();
-          });
+          }
         }, 1500);
       } else {
         setTimeout(() => {

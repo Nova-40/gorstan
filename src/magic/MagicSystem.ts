@@ -81,8 +81,8 @@ export class MagicSystem {
       actor: caster,
       spell,
       startTime: Date.now(),
-      target,
     };
+    if (target) (castState as CastState).target = target;
 
     this.activeCasts.push(castState);
 
@@ -119,7 +119,8 @@ export class MagicSystem {
     // Update existing or add new cooldown
     const existingIndex = actorCooldowns.findIndex((cd) => cd.spellId === spellId);
     if (existingIndex >= 0) {
-      actorCooldowns[existingIndex].remainingMs = durationMs;
+      const existing = actorCooldowns[existingIndex];
+      if (existing) existing.remainingMs = durationMs;
     } else {
       actorCooldowns.push({ spellId, remainingMs: durationMs });
     }
@@ -130,8 +131,10 @@ export class MagicSystem {
   /** Update spell cooldowns */
   private updateCooldowns(deltaTime: number): void {
     for (const [, actorCooldowns] of this.cooldowns) {
+      if (!actorCooldowns) continue;
       for (let i = actorCooldowns.length - 1; i >= 0; i--) {
         const cooldown = actorCooldowns[i];
+        if (!cooldown) continue;
         cooldown.remainingMs -= deltaTime;
 
         if (cooldown.remainingMs <= 0) {
@@ -147,9 +150,11 @@ export class MagicSystem {
 
     for (let i = this.activeCasts.length - 1; i >= 0; i--) {
       const castState = this.activeCasts[i];
+      if (!castState) continue;
       const elapsed = currentTime - castState.startTime;
 
-      if (elapsed >= (castState.spell.cast.channelMs || 1000)) {
+      const channelMs = (castState.spell && castState.spell.cast && castState.spell.cast.channelMs) || 1000;
+      if (elapsed >= channelMs) {
         // Complete the cast
         this.completeCast(castState);
         this.activeCasts.splice(i, 1);
@@ -159,28 +164,30 @@ export class MagicSystem {
 
   /** Complete a spell cast */
   private completeCast(castState: CastState): void {
-    const { actor, spell, target } = castState;
+  if (!castState) return;
+  const { actor, spell, target } = castState;
+  if (!actor || !spell) return;
 
-    // Execute spell effects
-    spell.execute(actor, target);
+  // Execute spell effects
+  spell.execute(actor, target as any);
 
-    // Start cooldown
-    this.startCooldown(actor.id, spell.id, spell.cooldownMs);
+  // Start cooldown
+  this.startCooldown(actor.id, spell.id, spell.cooldownMs);
 
-    // Return actor to idle state
-    actor.state = CombatState.Idle;
+  // Return actor to idle state
+  actor.state = CombatState.Idle;
 
-    // Show completion feedback
-    showCombatCue(() => COMBAT_CUES.spellCast(spell.name));
-    combatAudio.spellCast(spell.id);
+  // Show completion feedback
+  showCombatCue(() => COMBAT_CUES.spellCast(spell.name));
+  combatAudio.spellCast(spell.id);
   }
 
   /** Cancel active cast for actor */
   cancelCast(actorId: string): boolean {
-    const castIndex = this.activeCasts.findIndex((cs) => cs.actor.id === actorId);
+    const castIndex = this.activeCasts.findIndex((cs) => cs && cs.actor && cs.actor.id === actorId);
     if (castIndex >= 0) {
       const castState = this.activeCasts[castIndex];
-      castState.actor.state = CombatState.Idle;
+      if (castState && castState.actor) castState.actor.state = CombatState.Idle;
       this.activeCasts.splice(castIndex, 1);
       return true;
     }

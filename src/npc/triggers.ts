@@ -21,6 +21,7 @@
 
 import { LocalGameState } from '../state/gameState';
 import { morthosToAl, alToMorthos, aylaSayTo, NPCTalk, ConversationContext } from './talk';
+import { pickRandom } from '../utils/random';
 import { NPC_IDS } from './registry';
 
 // Check if player appears to be stuck in a room
@@ -50,9 +51,10 @@ export function maybeStartBanter(state: LocalGameState, dispatch: any, roomId: s
     return;
   }
 
-  const banter = banters[Math.floor(Math.random() * banters.length)];
+  const banter = banters.length ? pickRandom(banters) : null;
 
   // Randomly choose who starts
+  if (!banter) return;
   if (Math.random() < 0.5) {
     morthosToAl(banter.morthos, ctx);
   } else {
@@ -180,6 +182,9 @@ export function onGameEvent(
 }
 
 // Check for conversation opportunities periodically
+// Use a simple module-level weak map to track conversation checks for LocalGameState
+const conversationCheckMap = new WeakMap<LocalGameState, number>();
+
 export function periodicConversationCheck(
   state: LocalGameState,
   dispatch: any,
@@ -187,13 +192,13 @@ export function periodicConversationCheck(
 ): void {
   // Run every 2 minutes when player is active
   const now = Date.now();
-  const lastCheck = (state as any)._lastConversationCheck || 0;
+  const lastCheck = conversationCheckMap.get(state) ?? 0;
 
   if (now - lastCheck < 120000) {
     return;
-  } // 2 minute cooldown
+  }
 
-  (state as any)._lastConversationCheck = now;
+  conversationCheckMap.set(state, now);
 
   // Various triggers
   if (isPlayerStuck(state, roomId)) {

@@ -8,27 +8,34 @@ import { Room } from '../types/Room';
 const artifactChamber: Room = {
   id: 'artifactChamber',
   title: 'Artifact Chamber',
-  description:
-    'A hidden chamber filled with ancient runes and a glowing pedestal at its center. The artifact rests here, waiting for a worthy challenger.',
+  description: [
+  "A hidden chamber filled with ancient runes and a glowing pedestal at its center. The artifact rests here, waiting for a worthy challenger.",
+],
   image: 'artifactChamber.png',
   zone: 'glitchZone',
   flags: {},
   exits: {
     north: 'glitchZone_ravenchamber',
   },
-  items: ['quantumArtifact', 'fireballScroll'],
+  items: [
+    { id: 'quantumArtifact', name: 'QuantumArtifact' },
+    { id: 'fireballScroll', name: 'FireballScroll' }
+  ],
   npcs: [],
   rooms: [],
   puzzles: ['artifactPuzzle'],
   interactables: {
     magicBarrier: {
-      description: 'A shimmering magical barrier blocks access to the artifact.',
+      description: [
+  "A shimmering magical barrier blocks access to the artifact.",
+],
       actions: ['dispel'],
       requires: ['dispelBarrierSpell'],
     },
     artifact: {
-      description:
-        'The artifact glows with immense magical energy, ready to empower a worthy challenger.',
+      description: [
+  "The artifact glows with immense magical energy, ready to empower a worthy challenger.",
+],
       actions: ['absorbMagic'],
       effects: ['boostMagic'],
     },

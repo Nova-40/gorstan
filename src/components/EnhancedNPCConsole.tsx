@@ -11,6 +11,7 @@ import { formatDialogue } from '../utils/playerNameUtils';
 import { getEnhancedNPCResponse } from '../utils/enhancedNPCResponse';
 import { groqAI } from '../services/groqAI';
 import { GroupChatManager } from '../npc/groupChatLogic';
+import { generateNpcReply } from '../utils/aiAdapter';
 
 interface EnhancedDialogueMessage {
   id: string;
@@ -289,6 +290,13 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Safe random picker that always returns a string fallback when array is empty
+  const safePick = (arr: string[], fallback: string): string => {
+  if (!arr || arr.length === 0) return fallback;
+  const idx = Math.floor(Math.random() * arr.length);
+  return (arr[idx] ?? fallback) as string;
+  };
+
   const handleSendMessage = () => {
     if (!primaryNpc) {
       return;
@@ -562,10 +570,11 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
     }
 
     // Default fallback to truly random selection
-    const fallbackNpcs = realNpcs.map((npc) => npc.id);
-    const randomNpc = fallbackNpcs[Math.floor(Math.random() * fallbackNpcs.length)];
-    console.log(`[Enhanced NPC Console] 🎯 Fallback random selection chose: ${randomNpc}`);
-    return randomNpc;
+  const fallbackNpcs = realNpcs.map((npc) => npc.id);
+  const fallback = primaryNpc?.id ?? realNpcs[0]?.id ?? 'al';
+  const randomNpc = safePick(fallbackNpcs, fallback);
+  console.log(`[Enhanced NPC Console] 🎯 Fallback random selection chose: ${randomNpc}`);
+  return randomNpc;
   };
 
   const handleGroupResponse = async (playerMessage: string) => {
@@ -796,8 +805,7 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
     try {
       console.log(`[Enhanced NPC Console] 🤖 Attempting AI response for ${npcId}`);
 
-      // Create a shorter timeout for faster fallback
-      const enhancedResponsePromise = getEnhancedNPCResponse(npcId, playerMessage, state);
+      const enhancedResponsePromise = generateNpcReply(npcId, playerMessage, state);
       const timeoutPromise = new Promise<never>((_, reject) => {
         setTimeout(() => {
           console.log(
@@ -807,13 +815,11 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
         }, 5000); // Shorter timeout for faster fallback
       });
 
-      const enhancedResponse = await Promise.race([enhancedResponsePromise, timeoutPromise]);
+      const enhancedResponse = await Promise.race([enhancedResponsePromise, timeoutPromise]) as string | null;
 
-      if (enhancedResponse?.text && enhancedResponse.text.trim().length > 0) {
-        console.log(
-          `[Enhanced NPC Console] ✅ AI response success for ${npcId}: ${enhancedResponse.text}`,
-        );
-        return enhancedResponse.text;
+      if (enhancedResponse && enhancedResponse.trim().length > 0) {
+        console.log(`[Enhanced NPC Console] ✅ AI response success for ${npcId}: ${enhancedResponse}`);
+        return enhancedResponse;
       } else {
         console.log(
           `[Enhanced NPC Console] ⚠️ AI response empty for ${npcId}, using scripted fallback`,
@@ -841,16 +847,16 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
           (response) => !npcHistory.includes(response) || npcHistory.length >= responses.length,
         );
 
-        const selectedResponse =
-          availableResponses.length > 0
-            ? availableResponses[Math.floor(Math.random() * availableResponses.length)]
-            : responses[Math.floor(Math.random() * responses.length)];
+        const selectedResponse = availableResponses.length
+          ? safePick(availableResponses, safePick(responses, 'I have nothing to say.'))
+          : safePick(responses, 'I have nothing to say.');
 
-        // Update history
+        // Update history (ensure string[])
         const newHistory = [...npcHistory, selectedResponse].slice(-3); // Keep last 3 responses
+        const cleanedHistory = newHistory.filter((s): s is string => typeof s === 'string');
         setResponseHistory((prev) => ({
           ...prev,
-          [npcId]: newHistory,
+          [npcId]: cleanedHistory,
         }));
 
         return selectedResponse;
@@ -1126,13 +1132,11 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
       );
     }
 
-    // Try enhanced NPC response system as secondary option
+    // Try enhanced NPC response system as secondary option (groqAI -> engine fallback)
     try {
       const contextualPrompt = `${originalNpcId} just said: "${originalResponse}". Respond as ${reactingNpcId} would in a competitive group conversation.`;
-      const enhancedResponse = await getEnhancedNPCResponse(reactingNpcId, contextualPrompt, state);
-      if (enhancedResponse?.text) {
-        return enhancedResponse.text;
-      }
+      const adapterReply = await generateNpcReply(reactingNpcId, contextualPrompt, state);
+      if (adapterReply) return adapterReply;
     } catch (error) {
       console.warn(`Enhanced inter-NPC response failed for ${reactingNpcId}:`, error);
     }
@@ -1141,10 +1145,10 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
     if (reactingNpcId === 'morthos' && originalNpcId === 'al') {
       const responses = [
         '*mechanical whirring* *shadows writhe with amusement* Forms and documentation? How... quaint. Real power requires no paperwork, seeker.',
-        '*sparks fly* *laughs darkly* The bureaucrat speaks of protocols while the multiverse crumbles around us. Choose wisdom over paperwork.',
+        '*sparks fly* *dark chuckle* The bureaucrat speaks of protocols while the multiverse crumbles around us. Choose wisdom over paperwork.',
         '*clank* *voice drips with sarcasm* Yes, by all means, fill out Form 27-B while reality itself demands immediate action.',
       ];
-      return responses[Math.floor(Math.random() * responses.length)];
+  return safePick(responses, '*mechanical whirring* *shadows writhe with amusement*');
     }
 
     if (reactingNpcId === 'al' && originalNpcId === 'morthos') {
@@ -1153,7 +1157,7 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
         '*shuffles papers pointedly* While my colleague speaks of transcending boundaries, I deal with the practical matter of preventing reality cascades.',
         '*voice tight with professional disagreement* Chaos masquerading as wisdom has cost us three research stations this quarter alone.',
       ];
-      return responses[Math.floor(Math.random() * responses.length)];
+  return safePick(responses, '*adjusts glasses with visible irritation*');
     }
 
     return '*observes the exchange with interest*';

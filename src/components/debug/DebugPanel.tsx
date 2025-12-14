@@ -19,6 +19,7 @@
 
 import React, { useState } from 'react';
 import { useGameState } from '../../state/gameState';
+import { listMiniQuests } from '../../minigames/core/MiniQuestRegistry';
 
 // Variable declaration
 const DebugPanel = () => {
@@ -69,6 +70,14 @@ const DebugPanel = () => {
       {isOpen && (
         <div className="debug-content">
           <h2>Debug Panel</h2>
+          <div style={{ marginTop: 8 }}>
+            <h3>Mini-quests</h3>
+            {listMiniQuests().map(m => (
+              <button key={m.id} onClick={() => { (window as any).mini?.launch(m.id, 'debug'); }} style={{display:'block', marginBottom:6}}>
+                Launch: {m.displayName}
+              </button>
+            ))}
+          </div>
           <button onClick={handleRevealRooms}>Reveal All Rooms</button>
           <button onClick={() => handleJump('controlnexus')}>Jump to Control Nexus</button>
           <button onClick={() => handleAddItem('coffee')}>Add Coffee</button>

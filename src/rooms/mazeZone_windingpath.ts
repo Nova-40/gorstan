@@ -24,10 +24,8 @@ const windingpath: Room = {
   zone: 'mazeZone',
   title: 'Winding Path',
   description: [
-    'You find yourself on a winding path that twists and turns unpredictably.',
-    'The ground is uneven, and the air is filled with the sound of distant footsteps.',
-    'Shadows flicker along the walls, and every turn looks much like the last.',
-  ],
+  "You find yourself on a winding path that twists and turns unpredictably. The ground is uneven, and the air is filled with the sound of distant footsteps. Shadows flicker along the walls, and every turn looks much like the last.",
+],
   image: 'mazeZone_windingpath.png',
   ambientAudio: 'winding_path_ambience.mp3',
 
@@ -42,16 +40,23 @@ const windingpath: Room = {
     south: 'mazeZone_labyrinthbend',
   },
 
-  items: ['worn_shoe', 'path_marker'],
+  items: [
+    { id: 'worn_shoe', name: 'Worn Shoe' },
+    { id: 'path_marker', name: 'Path Marker' }
+  ],
 
   interactables: {
     uneven_ground: {
-      description: 'The ground here is rough and uneven, making each step uncertain.',
+      description: [
+  "The ground here is rough and uneven, making each step uncertain.",
+],
       actions: ['examine', 'steady', 'search'],
       requires: [],
     },
     shadow_wall: {
-      description: 'A wall where shadows seem to move independently of any light source.',
+      description: [
+  "A wall where shadows seem to move independently of any light source.",
+],
       actions: ['observe', 'touch', 'mark'],
       requires: [],
     },
@@ -112,7 +117,9 @@ const windingpath: Room = {
 
   secrets: {
     hidden_niche: {
-      description: 'A small niche in the shadow wall, revealed by marking it.',
+      description: [
+  "A small niche in the shadow wall, revealed by marking it.",
+],
       requirements: ['mark shadow_wall'],
       rewards: ['hidden_item', 'maze_lore'],
     },
@@ -120,12 +127,16 @@ const windingpath: Room = {
 
   customActions: {
     mark_shadow_wall: {
-      description: 'Mark the shadow wall to track your progress.',
+      description: [
+  "Mark the shadow wall to track your progress.",
+],
       requirements: ['path_marker'],
       effects: ['set_wallMarked', 'reduce_disorientation'],
     },
     steady_on_ground: {
-      description: 'Steady yourself on the uneven ground.',
+      description: [
+  "Steady yourself on the uneven ground.",
+],
       requirements: [],
       effects: ['reduce_tripping', 'gain_confidence'],
     },

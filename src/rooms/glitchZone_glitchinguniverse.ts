@@ -24,11 +24,8 @@ const glitchinguniverse: Room = {
   zone: 'glitchZone',
   title: 'Glitching Universe',
   description: [
-    'You are adrift in a chaotic maelstrom of data and fractured light. The universe here is tearing itself apart—fragments of other realities flicker in and out of existence, sometimes overlapping, sometimes colliding.',
-    'Gravity is inconsistent, and the very concept of "up" or "down" seems to change with every step. Glitches ripple through the air, distorting your vision and making it difficult to trust your senses.',
-    'Occasionally, you glimpse echoes of familiar places—rooms, faces, memories—before they dissolve into static. The only constant is the overwhelming sense that reality is on the verge of collapse.',
-    'A swirling vortex pulses at the center of this realm, drawing in debris and stray code from broken worlds. It might be your only way out, but it radiates instability and danger.',
-  ],
+  "You are adrift in a chaotic maelstrom of data and fractured light. The universe here is tearing itself apart—fragments of other realities flicker in and out of existence, sometimes overlapping, sometimes colliding. Gravity is inconsistent, and the very concept of \"up\" or \"down\" seems to change with every step. Glitches ripple through the air, distorting your vision and making it difficult to trust your senses. Occasionally, you glimpse echoes of familiar places—rooms, faces, memories—before they dissolve into static. The only constant is the overwhelming sense that reality is on the verge of collapse. A swirling vortex pulses at the center of this realm, drawing in debris and stray code from broken worlds. It might be your only way out, but it radiates instability and danger.",
+],
   image: 'glitchZone_glitchinguniverse.png',
   ambientAudio: 'glitch_maelstrom.mp3',
 
@@ -50,24 +47,32 @@ const glitchinguniverse: Room = {
     secret: 'ravenchamber',
   },
 
-  items: ['fragmented_memory', 'glitch_crystal', 'unstable_code_shard', 'echo_of_home'],
+  items: [
+    { id: 'fragmented_memory', name: 'Fragmented Memory' },
+    { id: 'glitch_crystal', name: 'Glitch Crystal' },
+    { id: 'unstable_code_shard', name: 'Unstable Code Shard' },
+    { id: 'echo_of_home', name: 'Echo Of Home' }
+  ],
 
   interactables: {
     vortex: {
-      description:
-        'A swirling vortex of corrupted data and broken reality. It pulses with dangerous energy, but might be a way out.',
+      description: [
+  "A swirling vortex of corrupted data and broken reality. It pulses with dangerous energy, but might be a way out.",
+],
       actions: ['examine', 'approach', 'enter', 'throw_item'],
       requires: [],
     },
     glitch_field: {
-      description:
-        'A shimmering patch of air where reality seems especially thin. Objects and sounds distort unpredictably here.',
+      description: [
+  "A shimmering patch of air where reality seems especially thin. Objects and sounds distort unpredictably here.",
+],
       actions: ['examine', 'touch', 'analyze'],
       requires: [],
     },
     echoes: {
-      description:
-        'Flickering images of people and places from other realities. They seem almost real, but vanish if you get too close.',
+      description: [
+  "Flickering images of people and places from other realities. They seem almost real, but vanish if you get too close.",
+],
       actions: ['observe', 'listen', 'interact'],
       requires: [],
     },
@@ -135,13 +140,16 @@ const glitchinguniverse: Room = {
 
   secrets: {
     hidden_exit: {
-      description:
-        'A hidden, stable exit that only appears if you resist the echoes and analyze the glitch field.',
+      description: [
+  "A hidden, stable exit that only appears if you resist the echoes and analyze the glitch field.",
+],
       requirements: ['analyze glitch_field', 'resist echoes'],
       rewards: ['safe_exit', 'bonus_lore'],
     },
     specter_origin: {
-      description: 'The true identity of the Glitch Specter, revealed through fragmented memories.',
+      description: [
+  "The true identity of the Glitch Specter, revealed through fragmented memories.",
+],
       requirements: ['collect fragmented_memory', 'speak with glitch_specter'],
       rewards: ['specter_backstory', 'unique_item'],
     },
@@ -149,12 +157,16 @@ const glitchinguniverse: Room = {
 
   customActions: {
     stabilize_reality: {
-      description: 'Attempt to stabilize a small area of the glitching universe.',
+      description: [
+  "Attempt to stabilize a small area of the glitching universe.",
+],
       requirements: ['glitch_crystal', 'unstable_code_shard'],
       effects: ['temporary_safety', 'reduce_hazards'],
     },
     merge_echoes: {
-      description: 'Try to merge two echoes to reveal a hidden truth.',
+      description: [
+  "Try to merge two echoes to reveal a hidden truth.",
+],
       requirements: ['observe echoes', 'interact echoes'],
       effects: ['reveal_hidden_memory', 'risk_backlash'],
     },
@@ -163,7 +175,9 @@ const glitchinguniverse: Room = {
   // Special access to R.A.V.E.N. Chamber
   customCommands: {
     declassify: {
-      description: 'Attempt to access classified systems',
+      description: [
+  "Attempt to access classified systems",
+],
       handler: (gameState: any) => {
         return {
           messages: [
@@ -181,7 +195,9 @@ const glitchinguniverse: Room = {
       },
     },
     'walk backwards': {
-      description: 'Walk backwards into a glitch wall',
+      description: [
+  "Walk backwards into a glitch wall",
+],
       handler: (gameState: any) => {
         const messages = [
           {
@@ -219,7 +235,9 @@ const glitchinguniverse: Room = {
       },
     },
     'interact glitch wall': {
-      description: 'Interact with the glitching walls',
+      description: [
+  "Interact with the glitching walls",
+],
       handler: (gameState: any) => {
         const interactionCount = (gameState.flags?.glitchWallInteractions || 0) + 1;
 
@@ -259,7 +277,9 @@ const glitchinguniverse: Room = {
       },
     },
     'seek classified data': {
-      description: 'Search for hidden classified information',
+      description: [
+  "Search for hidden classified information",
+],
       handler: (gameState: any) => {
         return {
           messages: [
@@ -281,7 +301,9 @@ const glitchinguniverse: Room = {
       },
     },
     'follow data trail': {
-      description: 'Follow traces of classified data',
+      description: [
+  "Follow traces of classified data",
+],
       handler: (gameState: any) => {
         return {
           messages: [
@@ -303,7 +325,9 @@ const glitchinguniverse: Room = {
       },
     },
     'access restricted archives': {
-      description: 'Attempt to access restricted system archives',
+      description: [
+  "Attempt to access restricted system archives",
+],
       handler: (gameState: any) => {
         return {
           messages: [
@@ -324,6 +348,15 @@ const glitchinguniverse: Room = {
         };
       },
     },
+  },
+
+  // Quantum mini-quest trigger (dev-playable)
+  quantumMiniQuest: {
+  mode: 'random',
+  ids: ['quantummirror','dominicCyclotron','atomWeaver'],
+    seedHint: 'glitchinguniverse',
+    cooldownSec: 60,
+    reusable: true,
   },
 };
 

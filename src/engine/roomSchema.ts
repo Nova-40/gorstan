@@ -205,7 +205,7 @@ export function validateRoomWithDetails(data: unknown): ValidationResult {
       };
     }
 
-    const errors = validateRoomSchema.errors;
+  const errors = validateRoomSchema.errors ?? [];
     const warnings: string[] = [];
     const suggestions: string[] = [];
 
@@ -266,13 +266,21 @@ export function validateRoomWithDetails(data: unknown): ValidationResult {
       }
     }
 
-    return {
+    const result: ValidationResult = {
       valid: false,
       errors,
       errorMessage,
-      warnings: warnings.length > 0 ? warnings : undefined,
-      suggestions: suggestions.length > 0 ? suggestions : undefined,
     };
+
+    if (warnings.length > 0) {
+      result.warnings = warnings;
+    }
+
+    if (suggestions.length > 0) {
+      result.suggestions = suggestions;
+    }
+
+    return result;
   } catch (error) {
     console.error('[RoomSchema] Error during validation:', error);
     return {

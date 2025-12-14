@@ -55,7 +55,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
             `,
           }}
         >
-          GORSTAN
+          Gorstan the Game
         </h1>
 
         {}
@@ -70,7 +70,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
             `,
           }}
         >
-          The Game Beta 2
+          Beta 3
         </p>
 
         {}

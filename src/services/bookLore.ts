@@ -158,7 +158,10 @@ class BookLoreService {
       return null;
     }
     const randomIndex = Math.floor(Math.random() * this.loreData.books.length);
-    return this.loreData.books[randomIndex];
+  // Return null when the randomly selected entry is undefined to match the
+  // declared return type BookLoreEntry | null.
+  const entry = this.loreData.books[randomIndex];
+  return entry === undefined ? null : entry;
   }
 
   /**

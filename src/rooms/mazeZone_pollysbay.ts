@@ -24,10 +24,8 @@ const pollysbay: Room = {
   zone: 'mazeZone',
   title: "Polly's Bay",
   description: [
-    "You arrive at Polly's Bay, a tranquil cove within the labyrinth.",
-    'The water glows faintly under the moonlight, and the air carries the scent of salt and mystery.',
-    "Gentle waves lap at the shore, and the labyrinth's stone walls rise around the bay, enclosing it in quiet solitude.",
-  ],
+  "You arrive at Polly's Bay, a tranquil cove within the labyrinth. The water glows faintly under the moonlight, and the air carries the scent of salt and mystery. Gentle waves lap at the shore, and the labyrinth's stone walls rise around the bay, enclosing it in quiet solitude.",
+],
   image: 'mazeZone_pollysbay.png',
   ambientAudio: 'pollys_bay_ambience.mp3',
 
@@ -42,21 +40,31 @@ const pollysbay: Room = {
     south: 'mazeZone_secrettunnel',
   },
 
-  items: ['glowing_shell', 'message_bottle', 'smooth_pebble'],
+  items: [
+    { id: 'glowing_shell', name: 'Glowing Shell' },
+    { id: 'message_bottle', name: 'Message Bottle' },
+    { id: 'smooth_pebble', name: 'Smooth Pebble' }
+  ],
 
   interactables: {
     shoreline: {
-      description: 'A sandy shoreline dotted with shells and pebbles.',
+      description: [
+  "A sandy shoreline dotted with shells and pebbles.",
+],
       actions: ['search', 'collect', 'listen'],
       requires: [],
     },
     moonlit_water: {
-      description: 'The water glows with an ethereal light, reflecting the moon above.',
+      description: [
+  "The water glows with an ethereal light, reflecting the moon above.",
+],
       actions: ['observe', 'wade', 'fill_bottle'],
       requires: [],
     },
     hidden_cove: {
-      description: 'A shadowy alcove at the edge of the bay, partially concealed by rocks.',
+      description: [
+  "A shadowy alcove at the edge of the bay, partially concealed by rocks.",
+],
       actions: ['explore', 'search', 'rest'],
       requires: [],
     },
@@ -119,7 +127,9 @@ const pollysbay: Room = {
 
   secrets: {
     hidden_cache: {
-      description: 'A cache of treasures buried in the sand, revealed by searching the shoreline.',
+      description: [
+  "A cache of treasures buried in the sand, revealed by searching the shoreline.",
+],
       requirements: ['search shoreline'],
       rewards: ['rare_pearl', 'bay_lore'],
     },
@@ -127,12 +137,16 @@ const pollysbay: Room = {
 
   customActions: {
     collect_shell: {
-      description: 'Collect a glowing shell from the shoreline.',
+      description: [
+  "Collect a glowing shell from the shoreline.",
+],
       requirements: [],
       effects: ['set_shellCollected', 'gain_light_source'],
     },
     explore_cove: {
-      description: 'Explore the hidden cove for secrets or a place to rest.',
+      description: [
+  "Explore the hidden cove for secrets or a place to rest.",
+],
       requirements: [],
       effects: ['set_coveExplored', 'restore_energy'],
     },

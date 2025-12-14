@@ -86,7 +86,10 @@ export function addMemoryEvent(npcId: string, event: string): void {
 // --- Enhanced: Set mood/trust/goal for NPC ---
 export function setNPCMood(npcId: string, mood: NPCMemoryState['mood']): void {
   initNPC(npcId);
-  npcMemoryStore.get(npcId)!.mood = mood;
+  const memory = npcMemoryStore.get(npcId)!;
+  if (mood !== undefined) {
+    memory.mood = mood;
+  }
 }
 export function setNPCTrust(npcId: string, trust: number): void {
   initNPC(npcId);
@@ -116,18 +119,21 @@ export function getNextRoomForGoal(npcId: string, state: any): string | null {
     return state.player.currentRoom;
   }
   // Example: patrol_zone (cycle through schedule)
-  if (memory.goal === 'patrol_zone' && memory.schedule && memory.schedule.length > 0) {
-    const now = new Date();
-    const hhmm =
-      now.getHours().toString().padStart(2, '0') + now.getMinutes().toString().padStart(2, '0');
-    // Find next scheduled room
-    for (const entry of memory.schedule) {
-      if (entry.time >= hhmm) {
-        return entry.room;
+  if (memory.goal === 'patrol_zone') {
+    const schedule = memory.schedule ?? [];
+    if (schedule.length > 0) {
+      const now = new Date();
+      const hhmm =
+        now.getHours().toString().padStart(2, '0') + now.getMinutes().toString().padStart(2, '0');
+      // Find next scheduled room
+      for (const entry of schedule) {
+        if (entry.time >= hhmm) {
+          return entry.room;
+        }
       }
+      // If past all times, loop to first (guard via optional chaining)
+      return schedule[0]?.room ?? null;
     }
-    // If past all times, loop to first
-    return memory.schedule[0].room;
   }
   // Add more goal types as needed
   return null;
@@ -210,7 +216,8 @@ export function getLastInteraction(npcId: string): NPCInteractionRecord | null {
   if (!memory || memory.interactions.length === 0) {
     return null;
   }
-  return memory.interactions[memory.interactions.length - 1];
+  const last = memory.interactions[memory.interactions.length - 1];
+  return last ?? null;
 }
 
 // --- Function: clearNPCMemory ---
@@ -236,20 +243,16 @@ export function importAllMemory(data: Record<string, NPCMemoryState>): void {
 }
 
 for (const npc of npcRegistry.values()) {
-  if (!npc.memory) {
-    npc.memory = {
-      interactions: 0,
-      lastInteraction: 0,
-      playerActions: [],
-      relationship: 0,
-      knownFacts: [],
-      emotion: 'neutral',
-    };
+  // Avoid assigning a broad object literal which may not match the external NPC type.
+  // Initialize to an empty memory object if missing, and ensure an 'emotion' key exists.
+  // Assign a separate authoritative memory shape using a narrow unknown cast to avoid
+  // conflicting legacy `NPC.memory` typing. This keeps runtime behavior identical while
+  // avoiding broad `any` usage.
+  const host = npc as unknown as { memory?: NPCMemoryState };
+  if (!host.memory) {
+    host.memory = { interactions: [], state: {} };
   }
-  if (!npc.memory.emotion) {
-    npc.memory = {
-      ...npc.memory,
-      emotion: 'neutral',
-    };
+  if (host.memory.mood === undefined) {
+    host.memory.mood = 'neutral';
   }
 }

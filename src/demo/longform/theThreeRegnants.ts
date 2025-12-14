@@ -48,10 +48,22 @@ async function runRegnantsSaga(): Promise<void> {
     function nextPhase() {
       if (phase < phases.length) {
         setTimeout(() => {
-          phases[phase]().then(() => {
+          const fn = phases[phase];
+          if (fn) {
+            const maybe = fn();
+            if (maybe && typeof (maybe as any).then === 'function') {
+              (maybe as Promise<void>).then(() => {
+                phase++;
+                nextPhase();
+              });
+            } else {
+              phase++;
+              nextPhase();
+            }
+          } else {
             phase++;
             nextPhase();
-          });
+          }
         }, 1000);
       } else {
         resolve();

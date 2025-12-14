@@ -17,7 +17,7 @@
 import React, { useState } from 'react';
 import { Share2, Download, Copy, Twitter, Trophy, Star, MapPin } from 'lucide-react';
 import { useGameState } from '../state/gameState';
-import { showNotification } from './QuickWinNotifications';
+import { showNotification } from '../utils/notificationCenter';
 
 interface ShareableAchievement {
   id: string;
@@ -235,7 +235,7 @@ Ready for your own adventure? Join me in Gorstan! 🌟`;
         epic: '#8B5CF6',
         legendary: '#F59E0B',
       };
-      ctx.fillStyle = rarityColors[item.rarity];
+  ctx.fillStyle = rarityColors[item.rarity] ?? '#9CA3AF';
       ctx.fillRect(300, 250, 200, 50);
       ctx.fillStyle = '#ffffff';
       ctx.font = '24px Arial';

@@ -51,7 +51,15 @@ class ShadowEncounterService {
       activeEntities: new Map(),
       discoveredEntities: [],
       interactionHistory: [],
-      difficultySettings: DIFFICULTY_CONFIGS.normal,
+      // Use the 'normal' difficulty if available, otherwise fall back to a safe default
+      difficultySettings:
+        DIFFICULTY_CONFIGS.normal ?? {
+          baseSpawnRate: 0.1,
+          difficultyMultiplier: 1.0,
+          maxConcurrentEncounters: 2,
+          stressDecayRate: 1.0,
+          quantumInterference: 1.0,
+        },
       quantumEffects: new Map(),
       playerFearLevel: 0,
       adaptiveDifficulty: {
@@ -217,7 +225,7 @@ class ShadowEncounterService {
       }
     }
 
-    return eligibleEntities[0]; // Fallback
+  return eligibleEntities[0] ?? null; // Fallback
   }
 
   private spawnEntity(entityTemplate: ShadowEntity): void {
@@ -438,18 +446,24 @@ class ShadowEncounterService {
       Math.min(100, this.shadowState.encounterState.playerStress + stressChange),
     );
 
+    const interactionResult: ShadowInteraction['result'] = {
+      success,
+      effect: `${interactionType} ${success ? 'succeeded' : 'failed'}`,
+      stressChange,
+      entityResponse,
+      experienceGained,
+    } as ShadowInteraction['result'];
+
+    if (artifactIds.length > 0) {
+      // Only include artifactEffectiveness when artifacts were provided
+      (interactionResult as any).artifactEffectiveness = effectiveness;
+    }
+
     return {
       type: interactionType,
       entityId: entity.id,
       timestamp: Date.now(),
-      result: {
-        success,
-        effect: `${interactionType} ${success ? 'succeeded' : 'failed'}`,
-        stressChange,
-        entityResponse,
-        experienceGained,
-        artifactEffectiveness: artifactIds.length > 0 ? effectiveness : undefined,
-      },
+      result: interactionResult,
     };
   }
 
@@ -545,15 +559,16 @@ class ShadowEncounterService {
     this.updateAdaptiveDifficulty();
 
     // Emit event
+    const eventDetails: any = { roomId: encounter.roomId, outcome };
+    if (encounter.rewards?.experienceGained !== undefined) {
+      eventDetails.experienceGained = encounter.rewards.experienceGained;
+    }
+
     this.emitEvent({
       type: outcome === 'success' ? 'victory' : 'escape',
       entityId: encounter.entityId,
       timestamp: Date.now(),
-      details: {
-        roomId: encounter.roomId,
-        outcome,
-        experienceGained: encounter.rewards?.experienceGained,
-      },
+      details: eventDetails,
     });
   }
 

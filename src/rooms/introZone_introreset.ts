@@ -24,11 +24,8 @@ const introreset: Room = {
   zone: 'introZone',
   title: 'The Reset Chamber',
   description: [
-    "You stand in a peculiar chamber where the very fabric of reality seems unstable. The walls shimmer with an otherworldly quality, and the dimensions feel subtly wrong - distances appear to shift when you're not looking directly at them.",
-    'At the center of the room sits an ornate chair that seems to pulse with dimensional energy. Strange symbols carved into its armrests glow faintly with an inner light.',
-    'Mounted on the far wall is a large, bright blue button enclosed in a protective transparent case. Whatever you do, do not press it. The psychic paper next to it flickers with warnings that seem oddly personal. It feels as though the button is aware of you. Above it, a sign made of what appears to be psychic paper shifts and changes, always displaying text in whatever language you can read.',
-    'The air itself feels thick with potential, as if this place exists at the intersection of multiple realities. You can sense that choices made here will have far-reaching consequences.',
-  ],
+  "You stand in a peculiar chamber where the very fabric of reality seems unstable. The walls shimmer with an otherworldly quality, and the dimensions feel subtly wrong - distances appear to shift when you're not looking directly at them. At the center of the room sits an ornate chair that seems to pulse with dimensional energy. Strange symbols carved into its armrests glow faintly with an inner light. Mounted on the far wall is a large, bright blue button enclosed in a protective transparent case. Whatever you do, do not press it. The psychic paper next to it flickers with warnings that seem oddly personal. It feels as though the button is aware of you. Above it, a sign made of what appears to be psychic paper shifts and changes, always displaying text in whatever language you can read. The air itself feels thick with potential, as if this place exists at the intersection of multiple realities. You can sense that choices made here will have far-reaching consequences.",
+],
   image: 'introZone_resetroom.png',
   ambientAudio: 'dimensional_distortion.mp3',
 
@@ -52,42 +49,53 @@ const introreset: Room = {
     sit: 'trentpark',
   },
 
-  items: ['dimensional_stabilizer', 'reality_anchor', 'psychic_paper_fragment', 'temporal_compass'],
+  items: [
+    { id: 'dimensional_stabilizer', name: 'Dimensional Stabilizer' },
+    { id: 'reality_anchor', name: 'Reality Anchor' },
+    { id: 'psychic_paper_fragment', name: 'Psychic Paper Fragment' },
+    { id: 'temporal_compass', name: 'Temporal Compass' }
+  ],
 
   interactables: {
     chair: {
-      description:
-        'An ornate chair carved from what appears to be crystallized time itself. Sitting in it would transport you to Trent Park.',
+      description: [
+  "An ornate chair carved from what appears to be crystallized time itself. Sitting in it would transport you to Trent Park.",
+],
       actions: ['examine', 'sit', 'touch'],
       requires: [],
     },
     blue_button: {
-      description:
-        'A large, ominous blue button sealed behind protective glass. Every instinct screams not to touch it.',
+      description: [
+  "A large, ominous blue button sealed behind protective glass. Every instinct screams not to touch it.",
+],
       actions: ['examine', 'break_glass'],
       requires: ['dimensional_stabilizer'],
     },
     psychic_paper: {
-      description:
-        'A strange sign that adapts its text to be readable by any sentient being. Currently it reads: "Do NOT touch this button."',
+      description: [
+  "A strange sign that adapts its text to be readable by any sentient being. Currently it reads: \"Do NOT touch this button.\"",
+],
       actions: ['examine', 'read', 'touch'],
       requires: [],
     },
     protective_case: {
-      description:
-        'A transparent protective case surrounding the blue button, sealed with dimensional locks.',
+      description: [
+  "A transparent protective case surrounding the blue button, sealed with dimensional locks.",
+],
       actions: ['examine', 'break', 'unlock'],
       requires: ['reality_anchor'],
     },
     dimensional_anomaly: {
-      description:
-        'The air itself seems to ripple and bend here, creating visible distortions in space.',
+      description: [
+  "The air itself seems to ripple and bend here, creating visible distortions in space.",
+],
       actions: ['examine', 'study', 'stabilize'],
       requires: ['temporal_compass'],
     },
     carved_symbols: {
-      description:
-        "Ancient symbols carved into the chair's armrests pulse with otherworldly energy.",
+      description: [
+  "Ancient symbols carved into the chair's armrests pulse with otherworldly energy.",
+],
       actions: ['examine', 'trace', 'activate'],
       requires: [],
     },
@@ -162,7 +170,9 @@ const introreset: Room = {
 
   secrets: {
     button_purpose: {
-      description: 'The true purpose of the blue button - a reality reset mechanism',
+      description: [
+  "The true purpose of the blue button - a reality reset mechanism",
+],
       requirements: [
         'examine blue_button thoroughly',
         'read psychic_paper',
@@ -171,12 +181,16 @@ const introreset: Room = {
       rewards: ['cosmic_knowledge', 'reality_understanding'],
     },
     chair_destination: {
-      description: 'Detailed information about where the chair will transport you',
+      description: [
+  "Detailed information about where the chair will transport you",
+],
       requirements: ['sit in chair briefly', 'examine carved_symbols'],
       rewards: ['trent_park_coordinates', 'portal_map'],
     },
     guardian_wisdom: {
-      description: 'Ancient knowledge from the Guardian of Thresholds',
+      description: [
+  "Ancient knowledge from the Guardian of Thresholds",
+],
       requirements: ['summon reality_guardian', 'ask about consequences'],
       rewards: ['multiverse_secrets', 'timeline_knowledge'],
     },
@@ -184,17 +198,23 @@ const introreset: Room = {
 
   customActions: {
     sit_in_chair: {
-      description: 'Sit in the dimensional chair to travel to Trent Park',
+      description: [
+  "Sit in the dimensional chair to travel to Trent Park",
+],
       requirements: [],
       effects: ['transport_to_trent_park', 'end_intro_sequence'],
     },
     press_button: {
-      description: 'Press the blue button (EXTREME CAUTION ADVISED)',
+      description: [
+  "Press the blue button (EXTREME CAUTION ADVISED)",
+],
       requirements: ['break_protective_case', 'override_safety_locks'],
       effects: ['trigger_reality_reset', 'catastrophic_consequences'],
     },
     stabilize_reality: {
-      description: 'Attempt to stabilize the dimensional anomalies',
+      description: [
+  "Attempt to stabilize the dimensional anomalies",
+],
       requirements: ['dimensional_stabilizer', 'reality_anchor', 'temporal_compass'],
       effects: ['reduce_instability', 'reveal_hidden_paths'],
     },

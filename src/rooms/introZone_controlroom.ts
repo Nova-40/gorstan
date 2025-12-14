@@ -24,11 +24,8 @@ const controlroom: Room = {
   zone: 'introZone',
   title: 'Primary Control Room',
   description: [
-    'You enter a sophisticated control chamber that serves as the operational heart of the facility. Banks of monitoring equipment line the walls, their displays showing real-time data from across the dimensional network.',
-    'Multiple workstations are arranged in a semicircle, each equipped with specialized interfaces for different aspects of multiverse monitoring. The room has a distinctly more active feel than the Nexus below.',
-    'Emergency lighting casts a red tint over everything, and warning indicators flash intermittently. A large tactical display dominates the far wall, showing a complex web of dimensional pathways.',
-    'The air is thick with tension and the acrid smell of overworked electronics. This is clearly where critical decisions are made.',
-  ],
+  "You enter a sophisticated control chamber that serves as the operational heart of the facility. Banks of monitoring equipment line the walls, their displays showing real-time data from across the dimensional network. Multiple workstations are arranged in a semicircle, each equipped with specialized interfaces for different aspects of multiverse monitoring. The room has a distinctly more active feel than the Nexus below. Emergency lighting casts a red tint over everything, and warning indicators flash intermittently. A large tactical display dominates the far wall, showing a complex web of dimensional pathways. The air is thick with tension and the acrid smell of overworked electronics. This is clearly where critical decisions are made.",
+],
   image: 'introZone_controlroom.png',
   ambientAudio: 'control_room_ambience.mp3',
 
@@ -52,10 +49,10 @@ const controlroom: Room = {
   },
 
   items: [
-    'tacticaldisplay_datacard',
-    'emergency_override_key',
-    'dimensional_scanner',
-    'operator_badge',
+    { id: 'tacticaldisplay_datacard', name: 'Tacticaldisplay Datacard' },
+    { id: 'emergency_override_key', name: 'Emergency Override Key' },
+    { id: 'dimensional_scanner', name: 'Dimensional Scanner' },
+    { id: 'operator_badge', name: 'Operator Badge' }
   ],
 
   traps: [
@@ -63,7 +60,9 @@ const controlroom: Room = {
       id: 'voltage_spike',
       type: 'damage',
       severity: 'minor',
-      description: 'A hidden voltage spike arcs from the console!',
+      description: [
+  "A hidden voltage spike arcs from the console!",
+],
       trigger: 'enter',
       effect: {
         damage: 15,
@@ -77,35 +76,44 @@ const controlroom: Room = {
 
   interactables: {
     tactical_display: {
-      description:
-        'A massive wall-mounted display showing the dimensional network as interconnected nodes and pathways.',
+      description: [
+  "A massive wall-mounted display showing the dimensional network as interconnected nodes and pathways.",
+],
       actions: ['examine', 'activate', 'analyze'],
       requires: [],
     },
     monitoring_stations: {
-      description:
-        'Advanced workstations with multiple screens and control interfaces for network oversight.',
+      description: [
+  "Advanced workstations with multiple screens and control interfaces for network oversight.",
+],
       actions: ['activate', 'examine', 'operate'],
       requires: ['operator_badge'],
     },
     emergency_panel: {
-      description: 'A red-illuminated emergency control panel with critical system overrides.',
+      description: [
+  "A red-illuminated emergency control panel with critical system overrides.",
+],
       actions: ['activate', 'examine', 'use'],
       requires: ['emergency_override_key'],
     },
     communication_array: {
-      description:
-        'A sophisticated communication system for contact with other dimensional stations.',
+      description: [
+  "A sophisticated communication system for contact with other dimensional stations.",
+],
       actions: ['activate', 'examine', 'broadcast'],
       requires: [],
     },
     central_console: {
-      description: 'The primary control interface with master controls for the entire facility.',
+      description: [
+  "The primary control interface with master controls for the entire facility.",
+],
       actions: ['activate', 'examine', 'operate'],
       requires: ['operator_badge'],
     },
     hidden_hatch: {
-      description: 'A concealed floor hatch that leads to the hidden laboratory below.',
+      description: [
+  "A concealed floor hatch that leads to the hidden laboratory below.",
+],
       actions: ['examine', 'open', 'use'],
       requires: ['emergency_override_key'],
     },
@@ -185,17 +193,23 @@ const controlroom: Room = {
 
   secrets: {
     operator_logs: {
-      description: 'Personal logs from facility operators during the crisis',
+      description: [
+  "Personal logs from facility operators during the crisis",
+],
       requirements: ['activate monitoring_stations', 'access central_console'],
       rewards: ['crisis_timeline', 'evacuation_procedures'],
     },
     backup_protocols: {
-      description: 'Hidden backup protocols for network restoration',
+      description: [
+  "Hidden backup protocols for network restoration",
+],
       requirements: ['activate emergency_panel', 'examine tactical_display'],
       rewards: ['restoration_codes', 'backup_power_access'],
     },
     hidden_communications: {
-      description: 'Secret communication channels to other facilities',
+      description: [
+  "Secret communication channels to other facilities",
+],
       requirements: ['activate communication_array', 'use dimensional_scanner'],
       rewards: ['contact_information', 'emergency_frequencies'],
     },
@@ -203,17 +217,23 @@ const controlroom: Room = {
 
   customActions: {
     emergency_lockdown: {
-      description: 'Initiate facility-wide emergency lockdown protocols',
+      description: [
+  "Initiate facility-wide emergency lockdown protocols",
+],
       requirements: ['emergency_override_key', 'master_controls_accessed'],
       effects: ['secure_all_exits', 'activate_containment_procedures'],
     },
     network_diagnostic: {
-      description: 'Run comprehensive diagnostic on the dimensional network',
+      description: [
+  "Run comprehensive diagnostic on the dimensional network",
+],
       requirements: ['monitoring_stations_active', 'tactical_display_analyzed'],
       effects: ['reveal_network_status', 'identify_failure_points'],
     },
     coordinate_evacuation: {
-      description: 'Coordinate evacuation procedures for connected facilities',
+      description: [
+  "Coordinate evacuation procedures for connected facilities",
+],
       requirements: ['communications_established', 'emergency_protocols_activated'],
       effects: ['initiate_evacuation_sequence', 'broadcast_emergency_instructions'],
     },
@@ -300,7 +320,9 @@ const controlroom: Room = {
   // Custom command handlers for this room
   customCommands: {
     'check morthos al encounter': {
-      description: 'Trigger the initial Morthos and Al encounter',
+      description: [
+  "Trigger the initial Morthos and Al encounter",
+],
       handler: (gameState: any) => {
         if (gameState.flags?.hasMetMorthosAl) {
           return {

@@ -24,6 +24,9 @@ import { Bone, Fish, Bot, UserCircle, ChefHat, Shield } from 'lucide-react';
 import { RoomNPC } from '../types/Room';
 
 import { useGameState } from '../state/gameState';
+import SmartImage from './media/SmartImage';
+import SmartVideo from './media/SmartVideo';
+import MicroObjectives from './MicroObjectives';
 
 const npcIconMap: Record<string, React.ElementType> = {
   'mr wendell': Bone,
@@ -94,11 +97,13 @@ const RoomRenderer: React.FC = () => {
         entryMessages.push(...consoleIntroMessages);
       }
 
-      // Variable declaration
-      const roomData = room as any;
-      if (roomData.traps && roomData.traps.length > 0 && !state.player?.flags?.trapsDisabled) {
-        // Variable declaration
-        const activeTrap = roomData.traps.find((trap: any) => !trap.triggered);
+      // Handle traps if present
+      if (!state.player?.flags?.trapsDisabled && Array.isArray((room as unknown as { traps?: unknown }).traps)) {
+        const trapsRaw = (room as unknown as { traps?: unknown }).traps as unknown[] | undefined;
+        const traps = (trapsRaw || []).filter((t): t is { id?: string; triggered?: boolean } =>
+          typeof t === 'object' && t !== null && ('id' in (t as Record<string, unknown>) || 'triggered' in (t as Record<string, unknown>)),
+        );
+        const activeTrap = traps.find((t) => !t.triggered);
         if (activeTrap) {
           dispatch({ type: 'TRIGGER_TRAP', payload: activeTrap });
         }
@@ -111,7 +116,7 @@ const RoomRenderer: React.FC = () => {
         const message = {
           id: `room-entry-${room.id}-${entryTimestamp}-${index}`,
           text: msg.text,
-          type: msg.type as any,
+          type: (msg.type as 'narrative' | 'system' | 'action' | 'error') || 'system',
           timestamp: entryTimestamp + index,
         };
         dispatch({ type: 'RECORD_MESSAGE', payload: message });
@@ -140,15 +145,11 @@ const RoomRenderer: React.FC = () => {
       {}
       {room.image ? (
         <div className="room-image-wrapper h-full w-full overflow-hidden">
-          <img
-            src={`/images/${room.image}`}
-            alt={room.title}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              console.log(`Failed to load image: /images/${room.image}`);
-              e.currentTarget.style.display = 'none';
-            }}
-          />
+          {room.image.toLowerCase().endsWith('.gif') ? (
+            <SmartVideo src={`/images/${room.image}`} className="w-full h-full object-cover" />
+          ) : (
+            <SmartImage src={`/images/${room.image}`} alt={room.title} className="w-full h-full object-cover" sizes="100vw" />
+          )}
         </div>
       ) : (
         <div className="room-no-image h-full w-full flex items-center justify-center bg-gray-900 text-green-600">
@@ -165,6 +166,8 @@ const RoomRenderer: React.FC = () => {
           <source src={room.music} type="audio/mpeg" />
         </audio>
       )}
+      {/* Micro-objectives overlay */}
+      <MicroObjectives />
     </div>
   );
 };

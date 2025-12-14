@@ -59,7 +59,7 @@ export const CollectionDisplay: React.FC<CollectionDisplayProps> = ({
       description: getItemDescription(item),
       type: getItemType(item),
       rarity: getItemRarity(item),
-      discoveredAt: state.player.currentRoom,
+  discoveredAt: state.player.currentRoom ?? '',
       discoveredTime: Date.now(),
       loreEntry: getItemLore(item),
       value: getItemValue(item),

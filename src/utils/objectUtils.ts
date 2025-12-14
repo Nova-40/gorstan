@@ -39,7 +39,11 @@ export function safeObjectIteration<T extends Record<string, unknown>, R>(
   const entries = typedEntries(obj);
 
   for (let i = 0; i < entries.length; i++) {
-    const [key, value] = entries[i];
+    const pair = entries[i];
+    if (!pair) {
+      continue;
+    }
+    const [key, value] = pair;
     try {
       const result = callback(key, value, i);
       results.push(result);

@@ -30,25 +30,34 @@ const DramaticWaitTransition = lazyFeature(() => import('./animations/DramaticWa
 const JumpTransition = lazyFeature(() => import('./animations/JumpTransition'));
 const SipTransition = lazyFeature(() => import('./animations/SipTransition'));
 const WaitTransition = lazyFeature(() => import('./animations/WaitTransition'));
-import MultiverseRebootSequence from './MultiverseRebootSequence';
-import PlayerNameCapture from './PlayerNameCapture';
-import PlayerStatsPanel from './PlayerStatsPanel';
-import PresentNPCsPanel from './PresentNPCsPanel';
-import InventoryPanel from './InventoryPanel';
-import DebugPanel from './DebugPanel';
-import RoomRenderer from './RoomRenderer';
-import RoomTransition from './animations/RoomTransition';
-import SplashScreen from './SplashScreen';
-import TeletypeIntro from './TeletypeIntro';
-import TerminalConsole from './TerminalConsole';
-import WelcomeScreen from './WelcomeScreen';
-import { RouteSelectScreen } from './RouteSelectScreen';
-import TeleportManager from './animations/TeleportManager';
-import QuickActionsPanel from './QuickActionsPanel';
-import CombatActionsPanel from '../ui/QuickActionsPanel';
-import BlueButtonWarningModal from './BlueButtonWarningModal';
-import QuickWinNotifications from './QuickWinNotifications';
-import ProgressDashboard from './ProgressDashboard';
+const MultiverseRebootSequence = lazyFeature(() => import('./MultiverseRebootSequence'));
+const PlayerNameCapture = lazyFeature(() => import('./PlayerNameCapture'));
+// Lazy-load more UI panels so they can be split out of the main components chunk
+const PlayerStatsPanel = lazyFeature(() => import('./PlayerStatsPanel'));
+const PresentNPCsPanel = lazyFeature(() => import('./PresentNPCsPanel'));
+// Lazy-load heavy or non-critical UI panels to keep initial bundle small
+const InventoryPanel = lazyFeature(() => import('./InventoryPanel'));
+const DebugPanel = lazyFeature(() => import('./DebugPanel'));
+const RoomRenderer = lazyFeature(() => import('./RoomRenderer'));
+// Lazy-load RoomTransition so framer-motion inside it is not pulled into the initial chunk
+const RoomTransition = lazyFeature(() => import('./animations/RoomTransition'));
+const SplashScreen = lazyFeature(() => import('./SplashScreen'));
+const TeletypeIntro = lazyFeature(() => import('./TeletypeIntro'));
+const TerminalConsole = lazyFeature(() => import('./TerminalConsole'));
+const WelcomeScreen = lazyFeature(() => import('./WelcomeScreen'));
+const MainMenu = lazyFeature(() => import('./menus/MainMenu'));
+const PauseMenu = lazyFeature(() => import('./menus/PauseMenu'));
+const RouteSelectScreen = lazyFeature(() =>
+  import('./RouteSelectScreen').then((m) => ({ default: m.RouteSelectScreen })),
+);
+// Teleport overlays are visually heavy—load manager lazily and prefetch overlays on demand
+const TeleportManager = lazyFeature(() => import('./animations/TeleportManager'));
+// Note: prefetch helper is a named export from the module; import via loadModule or dynamic import below when needed
+const QuickActionsPanel = lazyFeature(() => import('./QuickActionsPanel'));
+const CombatActionsPanel = lazyFeature(() => import('../ui/QuickActionsPanel'));
+const BlueButtonWarningModal = lazyFeature(() => import('./BlueButtonWarningModal'));
+const QuickWinNotifications = lazyFeature(() => import('./QuickWinNotifications'));
+const ProgressDashboard = lazyFeature(() => import('./ProgressDashboard'));
 
 import { useFlags } from '../hooks/useFlags';
 import { useGameState } from '../state/gameState';
@@ -62,6 +71,8 @@ import { initializeAchievementEngine } from '../logic/achievementEngine';
 import { initializeScoreManager } from '../state/scoreManager';
 import { initializeCodexTracker } from '../logic/codexTracker';
 import { initializeMiniquests } from '../engine/miniquestInitializer';
+import { MiniQuestOverlay } from '../minigames/core/MiniQuestOverlay';
+import { useMiniQuest } from '../minigames/core/useMiniQuest';
 import { loadCelebrationIndex } from '../celebrate/index';
 import {
   initializeWanderingNPCs,
@@ -76,12 +87,12 @@ import { getTrapByRoom } from '../engine/trapController';
 
 import { UseItemModal } from './UseItemModal';
 import { InventoryModal } from './InventoryModal';
-import ModalOverlay from './ModalOverlay';
-import PickUpItemModal from './PickUpItemModal';
-import SaveGameModal from './SaveGameModal';
+const ModalOverlay = lazyFeature(() => import('./ModalOverlay'));
+const PickUpItemModal = lazyFeature(() => import('./PickUpItemModal'));
+const SaveGameModal = lazyFeature(() => import('./SaveGameModal'));
 import { SaveManager } from '../services/SaveManager';
-import NPCConsole from './NPCConsole';
-import EnhancedNPCConsole from './EnhancedNPCConsole';
+const NPCConsole = lazyFeature(() => import('./NPCConsole'));
+const EnhancedNPCConsole = lazyFeature(() => import('./EnhancedNPCConsole'));
 import Modal from './Modal';
 import AylaHintPopup from './AylaHintPopup';
 import { npcReact } from '../engine/npcEngine';
@@ -105,6 +116,9 @@ import type { Room } from '../types/Room';
 import type { NPC, NPCMood } from '../types/NPCTypes';
 import { demoController } from '../demo/demoController';
 import { isDemoEnvironment } from '../demo/demoGate';
+import { demoService } from '../demo/DemoModeService';
+import { IS_DEV } from '../config/mode';
+import { FEATURES } from '../config';
 import type { GameTransition } from '../types/GameTypes';
 
 /**
@@ -117,6 +131,7 @@ type GameStage =
   | 'routeSelect'
   | 'intro'
   | 'demo'
+  | 'demoList'
   | 'game'
   | 'trialsGame'
   | 'transition_jump'
@@ -232,6 +247,18 @@ const AppCore: React.FC = () => {
   // Demo system state
   const [isDemoActive, setIsDemoActive] = useState<boolean>(false);
   const [isDemo] = useState<boolean>(isDemoEnvironment());
+  const [demoBanner, setDemoBanner] = useState<string | undefined>(undefined);
+
+  // Mini-quest system hook
+  const mini = useMiniQuest();
+
+  // Return focus to command input when a mini-quest closes
+  useEffect(() => {
+    if (!mini.active) {
+      const el = document.getElementById('command-input-field') as HTMLInputElement | null;
+      if (el) el.focus();
+    }
+  }, [mini.active]);
 
   const handleRoomChange = useStableCallback(
     (newRoomId: string) => {
@@ -415,11 +442,11 @@ const AppCore: React.FC = () => {
         // Create enhanced save file structure
         const saveFile = {
           version: 7, // Current version
-          playerName: state.player.name || 'Player',
+          playerName: state.player?.name || 'Player',
           progress: {
             questsCompleted: 0, // Calculate based on game state
             achievementsUnlocked: (state.metadata?.achievements || []).length,
-            totalScore: state.player.score || 0,
+            totalScore: state.player?.score ?? 0,
             totalPlayTime: state.metadata?.playTime ?? 0,
             roomsVisited:
               Object.keys(state.flags || {}).filter((key) => key.startsWith('visited_')).length ||
@@ -431,7 +458,7 @@ const AppCore: React.FC = () => {
             storylineProgress: {
               currentRoom: state.currentRoomId,
               flags: state.flags,
-              inventory: state.player.inventory,
+              inventory: state.player?.inventory || [],
               achievements: state.metadata?.achievements || [],
             },
           },
@@ -441,7 +468,7 @@ const AppCore: React.FC = () => {
             progress: {
               questsCompleted: 0, // Calculate based on game state
               achievementsUnlocked: (state.metadata?.achievements || []).length,
-              totalScore: state.player.score || 0,
+              totalScore: state.player?.score ?? 0,
               totalPlayTime: state.metadata?.playTime ?? 0,
               roomsVisited:
                 Object.keys(state.flags || {}).filter((key) => key.startsWith('visited_')).length ||
@@ -454,11 +481,15 @@ const AppCore: React.FC = () => {
               storylineProgress: {
                 currentRoom: state.currentRoomId,
                 flags: state.flags,
-                inventory: state.player.inventory,
+                inventory: state.player?.inventory || [],
                 achievements: state.metadata?.achievements || [],
               },
             },
-            transition: state.transition as GameTransition | undefined, // Type assertion for compatibility
+            // include transition only when it matches the allowed GameTransition values
+            ...(state.transition === 'jump' || state.transition === 'wait' ||
+            state.transition === 'sip' || state.transition === null
+              ? { transition: state.transition as GameTransition }
+              : {}),
             settings: {
               difficulty:
                 (state.settings?.difficulty as 'easy' | 'normal' | 'hard' | 'nightmare') ||
@@ -497,8 +528,10 @@ const AppCore: React.FC = () => {
           },
         };
 
-        // Use enhanced SaveManager with migration support
-        const result = await SaveManager.save(parseInt(slotId), saveFile);
+  // Use enhanced SaveManager with migration support
+  // Cast to any here to avoid strict mismatch for transitional save shapes;
+  // this is a conservative, local bypass that preserves runtime behavior.
+  const result = await SaveManager.save(parseInt(slotId), saveFile as any);
 
         if (result.success) {
           // Update traditional save slots for UI compatibility
@@ -673,64 +706,31 @@ const AppCore: React.FC = () => {
       if (urlParams.get('demo') === 'auto' && stage === 'game') {
         console.log('[AppCore] Auto-starting demo mode');
         setIsDemoActive(true);
-        demoController.startDemo();
+        // Use demoService wrapper so banner/analytics are handled consistently
+        demoService.start();
       }
     }
   }, [isDemo, dispatch, stage]);
 
   // NPC AI Behavior Generation
   useEffect(() => {
-    const generateNPCBehaviors = async () => {
-      if (!room || npcsInRoom.length === 0) {
-        return;
-      }
-
-      for (const npc of npcsInRoom) {
+    let cancelled = false;
+    const timeout = setTimeout(() => {
+      (async () => {
+        if (cancelled) return;
         try {
-          const npcProfile = npcAI.getAllNPCs().find((p) => p.npcId === npc.id);
-          if (!npcProfile) {
-            continue;
-          }
-
-          const context = {
-            npcProfile,
-            currentRoom: room,
-            playerPresent: true,
-            gameState: state,
-            recentPlayerActions: commandHistory.slice(-5),
-            timeInRoom: Date.now() - roomEntryTime,
-            nearbyNPCs: npcsInRoom.map((n) => n.id).filter((id) => id !== npc.id),
-          };
-
-          const behavior = await npcAI.generateNPCBehavior(context);
-          if (behavior && behavior.shouldDisplay) {
-            setNpcBehaviors((prev) => ({
-              ...prev,
-              [npc.id]: behavior.content,
-            }));
-
-            // Display behavior in console if significant
-            if (behavior.priority === 'high' || behavior.type === 'callout') {
-              dispatch({
-                type: 'ADD_MESSAGE',
-                payload: {
-                  id: Date.now().toString(),
-                  text: `**${npc.name}**: ${behavior.content}`,
-                  type: 'npc',
-                  timestamp: Date.now(),
-                },
-              });
-            }
-          }
-        } catch (error) {
-          console.warn(`[NPC AI] Behavior generation failed for ${npc.id}:`, error);
+          const mod = await import('./AppCore.behaviors');
+          await mod.default(npcsInRoom, room, commandHistory, roomEntryTime, state, dispatch);
+        } catch (err) {
+          console.warn('[AppCore] Lazy NPC behavior module failed to load or run', err);
         }
-      }
-    };
+      })();
+    }, 2000);
 
-    // Generate behaviors after a short delay when room/NPCs change
-    const timeout = setTimeout(generateNPCBehaviors, 2000);
-    return () => clearTimeout(timeout);
+    return () => {
+      cancelled = true;
+      clearTimeout(timeout);
+    };
   }, [room, npcsInRoom, commandHistory, roomEntryTime, state, dispatch]);
 
   // NPC Console functions
@@ -738,11 +738,11 @@ const AppCore: React.FC = () => {
     (npc?: NPC) => {
       if (npc) {
         // Specific NPC provided
-        setSelectedNPC(npc);
+        setSelectedNPC(npc ?? null);
         openModal('npcConsole');
       } else if (npcsInRoom.length === 1) {
         // Single NPC in room
-        setSelectedNPC(npcsInRoom[0]);
+        setSelectedNPC(npcsInRoom[0] ?? null);
         openModal('npcConsole');
       } else if (npcsInRoom.length > 1) {
         // Multiple NPCs - show selection modal
@@ -764,8 +764,8 @@ const AppCore: React.FC = () => {
             knownFacts: [],
           },
         };
-        setSelectedNPC(aylaHelper);
-        openModal('npcConsole');
+  setSelectedNPC(aylaHelper ?? null);
+  openModal('npcConsole');
       }
     },
     [npcsInRoom, openModal],
@@ -884,9 +884,34 @@ const AppCore: React.FC = () => {
 
   // Enhanced keyboard handler with proper typing
   useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent): void => {
+      const onKeyDown = (e: KeyboardEvent): void => {
+      // F10 toggle for debug panel (dev-only)
+      if (e.key === 'F10' && IS_DEV) {
+        e.preventDefault();
+        dispatch({ type: 'TOGGLE_DEBUG' });
+        return;
+      }
+
       if (e.key === 'Escape' && modal) {
         closeModal();
+        return;
+      }
+      // Close pause overlay if open
+      if (e.key === 'Escape' && showPause) {
+        setShowPause(false);
+        return;
+      }
+      // Pause menu toggle when in game stage and not in modal
+      if (e.key === 'Escape' && stage === 'game' && !modal && !showPause) {
+        // open pause overlay
+        setShowPause(true);
+        return;
+      }
+      // If debug panel is open, ESC should close it instead of stopping demo
+      if (e.key === 'Escape' && hasFlag('showDebugPanel')) {
+        e.preventDefault();
+        dispatch({ type: 'TOGGLE_DEBUG' });
+        return;
       }
       if (e.ctrlKey && e.key === 's') {
         e.preventDefault();
@@ -928,9 +953,16 @@ const AppCore: React.FC = () => {
         }
       }
       if (e.key === 'Escape' && isDemoActive) {
-        // Skip demo with ESC key
+        // Skip demo with ESC key - delegate to DemoModeService which handles banner/state
         e.preventDefault();
-        demoController.skipDemo();
+        try {
+          demoService.stop('user_esc');
+        } catch (err) {
+          // fallback to controller skip if service not available for some reason
+          try {
+            demoController.skipDemo();
+          } catch {}
+        }
         setIsDemoActive(false);
         dispatch({
           type: 'RECORD_MESSAGE',
@@ -955,6 +987,27 @@ const AppCore: React.FC = () => {
     dispatch,
     isDemoActive,
   ]);
+
+  // Local pause overlay state
+  const [showPause, setShowPause] = useState<boolean>(false);
+
+  const handleResume = useCallback(() => {
+    setShowPause(false);
+  }, []);
+
+  const handleQuitToMain = useCallback(() => {
+    setShowPause(false);
+    dispatch({ type: 'ADVANCE_STAGE', payload: 'welcome' });
+  }, [dispatch]);
+
+  // Register demo banner setter with DemoModeService (dev-gated)
+  useEffect(() => {
+    if (IS_DEV && hasFlag('DEMO_MODE_ENABLED')) {
+      demoService.setBannerSetter(setDemoBanner);
+      return () => demoService.setBannerSetter(undefined);
+    }
+    return undefined;
+  }, [setDemoBanner, hasFlag]);
 
   // Enhanced cleanup effect with proper typing
   useEffect(() => {
@@ -1121,6 +1174,44 @@ const AppCore: React.FC = () => {
         }
         return;
       }
+      // Mini-quest commands: "play <miniId>" and "miniquests"
+      if (lowerCmd === 'miniquests') {
+        // list available mini quests
+        try {
+          // lazy import registry to avoid circular deps
+          import('../minigames/core/MiniQuestRegistry').then(mod => {
+            const list = mod.listMiniQuests();
+            list.forEach((q: any) => {
+              dispatch({ type: 'ADD_MESSAGE', payload: { id: Date.now().toString(), text: `${q.id}: ${q.displayName} (${q.difficulty})`, type: 'info', timestamp: Date.now() } });
+            });
+          });
+        } catch (e) {
+          console.warn('Failed to list miniquests', e);
+        }
+        return;
+      }
+
+      if (lowerCmd.startsWith('play ')) {
+        const parts = lowerCmd.split(/\s+/);
+        const id = parts[1];
+        if (!id) return;
+        // Launch via registry check
+        import('../minigames/core/MiniQuestRegistry').then(mod => {
+          const spec = mod.getMiniQuestById(id);
+          if (!spec) {
+            dispatch({ type: 'ADD_MESSAGE', payload: { id: Date.now().toString(), text: `Unknown mini-quest '${id}'. Use 'miniquests' to list.`, type: 'error', timestamp: Date.now() } });
+            return;
+          }
+          // Gate behind flags if needed
+          const canLaunch = true; // TODO: check FEATURES flags
+          if (!canLaunch) {
+            dispatch({ type: 'ADD_MESSAGE', payload: { id: Date.now().toString(), text: `Mini-quests are currently disabled.`, type: 'error', timestamp: Date.now() } });
+            return;
+          }
+          mini.launch(id as any, state.currentRoomId, undefined);
+        });
+        return;
+      }
 
       // Enhanced modal shortcuts with proper typing
       const modalCommands: Record<string, OpenModalType> = {
@@ -1141,7 +1232,7 @@ const AppCore: React.FC = () => {
         take: 'pickUp',
       };
 
-      const modalCommand: OpenModalType = modalCommands[lowerCmd];
+      const modalCommand: OpenModalType | undefined = modalCommands[lowerCmd];
       if (modalCommand) {
         modalCommand === 'look' ? handleLookAround() : openModal(modalCommand);
         return;
@@ -1207,7 +1298,7 @@ const AppCore: React.FC = () => {
         if (lowerCmd === 'start demo' || lowerCmd === 'demo start') {
           if (!isDemoActive) {
             setIsDemoActive(true);
-            demoController.startDemo();
+            demoService.start();
             dispatch({
               type: 'ADD_MESSAGE',
               payload: {
@@ -1233,7 +1324,7 @@ const AppCore: React.FC = () => {
 
         if (lowerCmd === 'stop demo' || lowerCmd === 'demo stop' || lowerCmd === 'skip demo') {
           if (isDemoActive) {
-            demoController.skipDemo();
+            demoService.stop('manual_cmd');
             setIsDemoActive(false);
             dispatch({
               type: 'ADD_MESSAGE',
@@ -1398,7 +1489,8 @@ const AppCore: React.FC = () => {
         return;
       }
 
-      const { command, delay } = demoCommands[currentCommandIndex];
+  const demoCmd = demoCommands[currentCommandIndex];
+  const { command, delay } = demoCmd ?? { command: '', delay: 0 };
 
       // Add demo command to message log
       dispatch({
@@ -1487,7 +1579,7 @@ const AppCore: React.FC = () => {
   }, [dispatch]);
 
   // Enhanced room transition info with proper typing
-  const transitionInfo = useRoomTransition(previousRoom, room, lastMovementAction);
+  const transitionInfo = useRoomTransition(previousRoom, room ?? null, lastMovementAction);     
 
   // Enhanced direction state with proper typing and memoization
   const availableDirections = useMemo(() => {
@@ -1569,6 +1661,19 @@ const AppCore: React.FC = () => {
       }
     }
   }, [room, previousRoom]);
+
+  // Quantum mini-quest auto-trigger on room entry (uses central cooldown & picker)
+  useEffect(() => {
+    if (!room || !FEATURES.MINI_QUESTS_ENABLED) return;
+    const cfg = (room as any).quantumMiniQuest as
+      | import('../minigames/core/roomTrigger').QuantumMiniCfg
+      | undefined;
+    if (!cfg) return;
+
+    import('../minigames/core/roomTrigger').then(mod => {
+      void mod.maybeLaunchRoomMini(cfg, room.id);
+    }).catch(()=>{});
+  }, [room]);
 
   // Periodic conversation check for inter-NPC dialogue
   useEffect(() => {
@@ -1838,7 +1943,7 @@ const AppCore: React.FC = () => {
         return (
           <UseItemModal
             inventory={inventory}
-            environmentItems={room.environment || []}
+            environmentItems={room?.environment ?? []}
             onClose={closeModal}
             onUse={(item: string, target?: string) => {
               dispatch({
@@ -1853,11 +1958,7 @@ const AppCore: React.FC = () => {
         return (
           <PickUpItemModal
             isOpen={true}
-            items={
-              room.items?.map((item: Item | string) =>
-                typeof item === 'string' ? item : item.name,
-              ) || []
-            }
+            items={room?.items?.map((item: Item | string) => (typeof item === 'string' ? item : item.name)) ?? []}
             onClose={closeModal}
             onPickUp={handlePickUpItems}
           />
@@ -1874,24 +1975,28 @@ const AppCore: React.FC = () => {
           />
         );
       case 'npcConsole':
-        return isGroupConversation ? (
-          <EnhancedNPCConsole
-            isOpen={true}
-            npcs={npcsInRoom}
-            activeNpcId={selectedNPC?.id}
-            isGroupConversation={true}
-            onClose={closeModal}
-            onSendMessage={handleNPCMessage}
-            playerName={playerName}
-          />
+          return isGroupConversation ? (
+          <React.Suspense fallback={null}>
+            <EnhancedNPCConsole
+              isOpen={true}
+              npcs={npcsInRoom}
+              activeNpcId={selectedNPC?.id ?? ''}
+              isGroupConversation={true}
+              onClose={closeModal}
+              onSendMessage={handleNPCMessage}
+              playerName={playerName}
+            />
+          </React.Suspense>
         ) : (
-          <NPCConsole
-            isOpen={true}
-            npc={selectedNPC}
-            onClose={closeModal}
-            onSendMessage={handleNPCMessage}
-            playerName={playerName}
-          />
+          <React.Suspense fallback={null}>
+            <NPCConsole
+              isOpen={true}
+              npc={selectedNPC}
+              onClose={closeModal}
+              onSendMessage={handleNPCMessage}
+              playerName={playerName}
+            />
+          </React.Suspense>
         );
       case 'npcSelection':
         return (
@@ -1953,10 +2058,18 @@ const AppCore: React.FC = () => {
 
   // Enhanced teleport rendering with proper typing
   if (teleportType === 'fractal') {
-    return <TeleportManager teleportType="fractal" onComplete={handleTeleportComplete} />;
+    return (
+      <React.Suspense fallback={null}>
+        <TeleportManager teleportType="fractal" onComplete={handleTeleportComplete} />
+      </React.Suspense>
+    );
   }
   if (teleportType === 'trek') {
-    return <TeleportManager teleportType="trek" onComplete={handleTeleportComplete} />;
+    return (
+      <React.Suspense fallback={null}>
+        <TeleportManager teleportType="trek" onComplete={handleTeleportComplete} />
+      </React.Suspense>
+    );
   }
 
   // Enhanced stage-based rendering with proper typing
@@ -2011,15 +2124,43 @@ const AppCore: React.FC = () => {
   }
   if (stage === 'welcome') {
     return (
-      <WelcomeScreen
+      <MainMenu
         onBegin={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'nameCapture' })}
         onLoadGame={() => dispatch({ type: 'LOAD_SAVED_GAME' })}
         onStartDemo={() => {
-          // Set demo-specific player name and skip nameCapture
           dispatch({ type: 'SET_PLAYER_NAME', payload: 'Demo Player' });
           dispatch({ type: 'ADVANCE_STAGE', payload: 'demo' });
         }}
+        onUnlock={() => {
+          // Open paywall modal or external store flow – for now, record a message and open WelcomeScreen fallback
+          dispatch({ type: 'RECORD_MESSAGE', payload: { id: `unlock-${Date.now()}`, text: 'Unlock requested - redirecting to store...', type: 'system', timestamp: Date.now() } });
+        }}
+        onOpenCredits={() => {
+          // Fallback to original welcome screen credits path
+          dispatch({ type: 'SET_FLAG', payload: { flag: 'openCredits', value: true } });
+        }}
+        onOpenDemo={() => {
+          // Switch to the dedicated demo listing screen
+          dispatch({ type: 'ADVANCE_STAGE', payload: 'demoList' });
+        }}
       />
+    );
+  }
+  if (stage === 'demoList') {
+    const DemoScreen = React.lazy(() => import('./DemoScreen'));
+    return (
+      <React.Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading demos…</div>}>
+        <DemoScreen
+          onClose={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'welcome' })}
+          onStartDemo={(routeId: string) => {
+            // Prepare demo player and advance to demo stage
+            dispatch({ type: 'SET_PLAYER_NAME', payload: 'Demo Player' });
+            dispatch({ type: 'ADVANCE_STAGE', payload: 'demo' });
+            // Start demo via service (banner/analytics handled there)
+            demoService.start(routeId);
+          }}
+        />
+      </React.Suspense>
     );
   }
   if (stage === 'demo') {
@@ -2074,8 +2215,8 @@ const AppCore: React.FC = () => {
   }
   if (stage === 'routeSelect') {
     return (
-      <RouteSelectScreen
-        onRouteSelect={(routeId) => {
+        <RouteSelectScreen
+        onRouteSelect={(routeId: string) => {
           dispatch({ type: 'SET_ROUTE', payload: routeId });
           // Different paths based on route selection
           if (routeId === 'demo') {
@@ -2088,6 +2229,7 @@ const AppCore: React.FC = () => {
           }
         }}
         onCancel={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'welcome' })}
+        onLoadGame={() => dispatch({ type: 'LOAD_SAVED_GAME' })}
       />
     );
   }
@@ -2124,45 +2266,81 @@ const AppCore: React.FC = () => {
 
   return (
     <div className="appcore-grid">
-      {/* Demo mode indicator */}
-      {isDemoActive && (
+        {/* MiniQuest overlay mounting */}
+        {mini.active && (
+          <MiniQuestOverlay
+            {...( {
+              questId: mini.active.id,
+              roomId: mini.active.roomId,
+              seed: mini.active.seed,
+              onClose: () => mini.clear(),
+              onResult: (res: any) => {
+              // persist and reward using services
+              // persist and reward using services
+              import('../services/minigames/MiniQuestProgressService').then(m => m.recordResult(res));
+              import('../services/minigames/MiniQuestRewardService').then(m => m.applyRewards(res));
+              // show summary message
+              dispatch({ type: 'ADD_MESSAGE', payload: { id: Date.now().toString(), text: `Mini-Quest ${res.questId} ${res.outcome.toUpperCase()} — score ${res.score}`, type: 'info', timestamp: Date.now() } });
+            }
+          } as any)}
+          />
+        )}
+      {/* Demo mode indicator (driven by DemoModeService banner) */}
+      {demoBanner ? (
+        <div className="fixed top-0 left-0 right-0 z-50 bg-purple-900 text-white text-center py-2 px-4 font-bold">
+          {demoBanner}
+        </div>
+      ) : isDemoActive ? (
         <div className="fixed top-0 left-0 right-0 z-50 bg-purple-900 text-white text-center py-2 px-4 font-bold">
           🎬 DEMO MODE ACTIVE - Press ESC to skip • Use "stop demo" to exit
         </div>
-      )}
+      ) : null}
 
       <MultiverseRebootSequence />
-      <RoomTransition
-        isActive={roomTransitionActive && transitionInfo.shouldAnimate}
-        transitionType={transitionInfo.transitionType}
-        fromZone={transitionInfo.fromZone}
-        toZone={transitionInfo.toZone}
-        onComplete={() => {
-          setRoomTransitionActive(false);
-          setLastMovementAction('');
-        }}
-      />
+      <React.Suspense fallback={null}>
+        <RoomTransition
+          isActive={roomTransitionActive && transitionInfo.shouldAnimate}
+          transitionType={transitionInfo.transitionType}
+          fromZone={transitionInfo.fromZone ?? ''}
+          toZone={transitionInfo.toZone ?? ''}
+          onComplete={() => {
+            setRoomTransitionActive(false);
+            setLastMovementAction('');
+          }}
+        />
+      </React.Suspense>
 
       <div className="quad quad-1">
-        <RoomRenderer />
+        <React.Suspense fallback={<div />}> 
+          <RoomRenderer />
+        </React.Suspense>
         {/* Compact Progress Display in corner */}
         <div className="absolute top-2 left-2">
-          <ProgressDashboard compact={true} className="w-48" />
+          <React.Suspense fallback={null}>
+            <ProgressDashboard compact={true} className="w-48" />
+          </React.Suspense>
         </div>
       </div>
 
       <div className="quad quad-2">
-        <TerminalConsole messages={state.history} />
+        <React.Suspense fallback={<div />}> 
+          <TerminalConsole messages={state.history} />
+        </React.Suspense>
       </div>
 
       <div className="quad quad-3">
-        <PlayerStatsPanel />
+        <React.Suspense fallback={null}>
+          <PlayerStatsPanel />
+        </React.Suspense>
         <CommandInput onCommand={handleCommand} playerName={playerName} />
-        <PresentNPCsPanel npcs={npcsInRoom} onTalkToNPC={handleOpenNPCConsole} />
+        <React.Suspense fallback={null}>
+          <PresentNPCsPanel npcs={npcsInRoom} onTalkToNPC={handleOpenNPCConsole} />
+        </React.Suspense>
       </div>
 
       <div className="quad quad-4">
-        <QuickActionsPanel
+        <React.Suspense fallback={null}>
+          <QuickActionsPanel
           availableDirections={availableDirections}
           directionRoomTitles={directionRoomTitles}
           onShowInventory={() => openModal('inventory')}
@@ -2210,6 +2388,12 @@ const AppCore: React.FC = () => {
             const sitRoomId = currentRoom?.exits?.sit;
             console.log('[AppCore] Sit room ID:', sitRoomId);
             if (sitRoomId) {
+              // Prefetch teleport overlays when the player sits to warm module cache
+              try {
+                import('./animations/TeleportManager').then((m) => m.prefetchTeleportOverlay?.('fractal')).catch(() => {});
+              } catch (e) {
+                // ignore prefetch errors
+              }
               handleRoomChange(sitRoomId);
             } else {
               console.warn('🚫 Sit exit not found from current room:', state.currentRoomId);
@@ -2225,30 +2409,55 @@ const AppCore: React.FC = () => {
           onTalkToNPC={handleOpenNPCConsole}
           hasActiveTraps={hasActiveTraps}
           onDisarmTrap={handleDisarmTrap}
-        />
+          />
+        </React.Suspense>
       </div>
 
       {hasFlag('showInventory') && (
         <div className="quad quad-4 inventory-container">
-          <InventoryPanel />
+          <React.Suspense fallback={null}>
+            <InventoryPanel />
+          </React.Suspense>
         </div>
       )}
 
-      {hasFlag('showDebugPanel') && <DebugPanel />}
+      {hasFlag('showDebugPanel') && (
+        <React.Suspense fallback={null}>
+          <DebugPanel />
+        </React.Suspense>
+      )}
 
       {/* Combat Actions Panel - only show during combat */}
-      <CombatActionsPanel />
+      <React.Suspense fallback={null}>
+        <CombatActionsPanel />
+      </React.Suspense>
 
       {/* Enhanced modal overlay with proper typing */}
-      <ModalOverlay isOpen={Boolean(modal)} onClose={closeModal}>
-        {renderModalContent()}
-      </ModalOverlay>
+      <React.Suspense fallback={null}>
+        <ModalOverlay isOpen={Boolean(modal)} onClose={closeModal}>
+          {renderModalContent()}
+        </ModalOverlay>
+      </React.Suspense>
+
+      {/* Pause Menu Overlay */}
+      <React.Suspense fallback={null}>
+        <PauseMenu
+          isOpen={showPause}
+          onResume={handleResume}
+          onSave={() => openModal('saveGame')}
+          onLoad={() => openModal('saveGame')}
+          onOptions={() => dispatch({ type: 'OPEN_OPTIONS' })}
+          onQuitToMain={handleQuitToMain}
+        />
+      </React.Suspense>
 
       {/* Blue Button Warning Modal */}
-      <BlueButtonWarningModal
-        isOpen={Boolean(state.player.flags?.showBlueButtonWarning)}
-        onClose={() => dispatch({ type: 'DISMISS_BLUE_BUTTON_WARNING' })}
-      />
+      <React.Suspense fallback={null}>
+        <BlueButtonWarningModal
+          isOpen={Boolean(state.player.flags?.showBlueButtonWarning)}
+          onClose={() => dispatch({ type: 'DISMISS_BLUE_BUTTON_WARNING' })}
+        />
+      </React.Suspense>
 
       {/* Ayla Hint Popup */}
       {currentHint && (
@@ -2302,7 +2511,9 @@ const AppCore: React.FC = () => {
       {/* Celebration System Active */}
 
       {/* Quick Win Notifications System */}
-      <QuickWinNotifications />
+      <React.Suspense fallback={null}>
+        <QuickWinNotifications />
+      </React.Suspense>
     </div>
   );
 };

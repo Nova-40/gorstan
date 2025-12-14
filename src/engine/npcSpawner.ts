@@ -461,7 +461,9 @@ function evaluateValue(actual: any, expected: any, operator?: string): boolean {
 // --- Function: getRoomZone ---
 function getRoomZone(roomId: string, room: Room): string {
   if (roomId.includes('Zone_')) {
-    return roomId.split('Zone_')[0].toLowerCase();
+    const parts = roomId.split('Zone_');
+  const prefix = String(parts && parts.length > 0 ? parts[0] : '');
+  return prefix.toLowerCase();
   }
 
   if (room.title?.toLowerCase().includes('puzzle')) {

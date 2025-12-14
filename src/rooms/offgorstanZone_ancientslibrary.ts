@@ -24,11 +24,8 @@ const ancientslibrary: Room = {
   zone: 'offgorstanZone',
   title: "Ancients' Library",
   description: [
-    "You stand within the Ancients' Library, the true repository of all knowledge from all nine universes and all six iterations.",
-    'Towering shelves spiral into infinity, each filled with tomes, scrolls, and crystalline data-cores inscribed with secrets lost to time.',
-    'The air hums with the resonance of wisdom, and the architecture shifts subtly as if responding to your thoughts.',
-    'A central dais glows with the light of convergence, where the boundaries of reality and possibility blur.',
-  ],
+  "You stand within the Ancients' Library, the true repository of all knowledge from all nine universes and all six iterations. Towering shelves spiral into infinity, each filled with tomes, scrolls, and crystalline data-cores inscribed with secrets lost to time. The air hums with the resonance of wisdom, and the architecture shifts subtly as if responding to your thoughts. A central dais glows with the light of convergence, where the boundaries of reality and possibility blur.",
+],
   image: 'offgorstanZone_ancientslibrary.png',
   ambientAudio: 'ancients_library_ambience.mp3',
 
@@ -46,28 +43,32 @@ const ancientslibrary: Room = {
   },
 
   items: [
-    'codex_of_iterations',
-    'universal_index',
-    'infinite_scroll',
-    'crystal_datacore',
-    'ancient_quill',
+    { id: 'codex_of_iterations', name: 'Codex Of Iterations' },
+    { id: 'universal_index', name: 'Universal Index' },
+    { id: 'infinite_scroll', name: 'Infinite Scroll' },
+    { id: 'crystal_datacore', name: 'Crystal Datacore' },
+    { id: 'ancient_quill', name: 'Ancient Quill' }
   ],
 
   interactables: {
     central_dais: {
-      description:
-        'A luminous dais at the heart of the library, pulsing with the energy of all realities.',
+      description: [
+  "A luminous dais at the heart of the library, pulsing with the energy of all realities.",
+],
       actions: ['examine', 'activate', 'attune'],
       requires: ['codex_of_iterations'],
     },
     infinite_shelves: {
-      description:
-        'Shelves that spiral endlessly, each containing knowledge from a different universe and iteration.',
+      description: [
+  "Shelves that spiral endlessly, each containing knowledge from a different universe and iteration.",
+],
       actions: ['search', 'read', 'catalogue'],
       requires: [],
     },
     knowledge_conduit: {
-      description: "A crystalline conduit that allows direct access to the library's archives.",
+      description: [
+  "A crystalline conduit that allows direct access to the library's archives.",
+],
       actions: ['interface', 'download', 'query'],
       requires: ['universal_index'],
     },
@@ -137,14 +138,16 @@ const ancientslibrary: Room = {
 
   secrets: {
     hidden_chamber: {
-      description:
-        'A secret chamber accessible only by attuning the dais with the Codex of Iterations.',
+      description: [
+  "A secret chamber accessible only by attuning the dais with the Codex of Iterations.",
+],
       requirements: ['activate central_dais', 'attune codex_of_iterations'],
       rewards: ['ultimate_truth', 'ancient_artifact'],
     },
     curator_memory: {
-      description:
-        'A memory fragment from the Omniscient Curator, unlocked by accessing the knowledge conduit.',
+      description: [
+  "A memory fragment from the Omniscient Curator, unlocked by accessing the knowledge conduit.",
+],
       requirements: ['interface knowledge_conduit'],
       rewards: ['curator_story', 'unique_insight'],
     },
@@ -152,12 +155,16 @@ const ancientslibrary: Room = {
 
   customActions: {
     attune_library: {
-      description: "Attune yourself to the library's omniversal resonance.",
+      description: [
+  "Attune yourself to the library's omniversal resonance.",
+],
       requirements: ['codex_of_iterations'],
       effects: ['unlock_hidden_chamber', 'gain_omniversal_vision'],
     },
     catalogue_tome: {
-      description: 'Catalogue a tome from a specific universe and iteration.',
+      description: [
+  "Catalogue a tome from a specific universe and iteration.",
+],
       requirements: [],
       effects: ['record_knowledge', 'gain_insight'],
     },

@@ -24,11 +24,8 @@ const lattice: Room = {
   zone: 'latticeZone',
   title: 'The Lattice',
   description: [
-    'You are in the Lattice. It is a strange, crystalline structure that seems to hum with power.',
-    'The walls and floor are made of interlocking facets, glowing with shifting colors and patterns.',
-    'Energy pulses through the latticework, and the air vibrates with a low, resonant tone.',
-    'You sense that this place is both ancient and alive, watching and waiting.',
-  ],
+  "You are in the Lattice. It is a strange, crystalline structure that seems to hum with power. The walls and floor are made of interlocking facets, glowing with shifting colors and patterns. Energy pulses through the latticework, and the air vibrates with a low, resonant tone. You sense that this place is both ancient and alive, watching and waiting.",
+],
   image: 'latticeZone_lattice.png',
   ambientAudio: 'lattice_resonance.mp3',
 
@@ -45,21 +42,31 @@ const lattice: Room = {
     south: 'latticeZone_latticehub',
   },
 
-  items: ['crystal_shard', 'energy_node', 'pattern_fragment'],
+  items: [
+    { id: 'crystal_shard', name: 'Crystal Shard' },
+    { id: 'energy_node', name: 'Energy Node' },
+    { id: 'pattern_fragment', name: 'Pattern Fragment' }
+  ],
 
   interactables: {
     energy_conduit: {
-      description: 'A glowing conduit pulsing with raw energy.',
+      description: [
+  "A glowing conduit pulsing with raw energy.",
+],
       actions: ['examine', 'redirect', 'absorb'],
       requires: [],
     },
     facet_panel: {
-      description: 'A section of the lattice that seems to respond to touch.',
+      description: [
+  "A section of the lattice that seems to respond to touch.",
+],
       actions: ['touch', 'analyze', 'activate'],
       requires: ['pattern_fragment'],
     },
     resonance_node: {
-      description: 'A node emitting a deep, harmonic resonance.',
+      description: [
+  "A node emitting a deep, harmonic resonance.",
+],
       actions: ['listen', 'tune', 'synchronize'],
       requires: [],
     },
@@ -128,13 +135,16 @@ const lattice: Room = {
 
   secrets: {
     hidden_chamber: {
-      description: 'A concealed chamber revealed by synchronizing the resonance node.',
+      description: [
+  "A concealed chamber revealed by synchronizing the resonance node.",
+],
       requirements: ['tune resonance_node', 'activate facet_panel'],
       rewards: ['rare_crystal', 'lattice_lore'],
     },
     echo_memory: {
-      description:
-        'A memory fragment from the Lattice Echo, unlocked by collecting all pattern fragments.',
+      description: [
+  "A memory fragment from the Lattice Echo, unlocked by collecting all pattern fragments.",
+],
       requirements: ['collect pattern_fragment', 'talk to lattice_echo'],
       rewards: ['echo_story', 'unique_item'],
     },
@@ -142,12 +152,16 @@ const lattice: Room = {
 
   customActions: {
     synchronize_patterns: {
-      description: 'Attempt to synchronize the lattice patterns for a hidden effect.',
+      description: [
+  "Attempt to synchronize the lattice patterns for a hidden effect.",
+],
       requirements: ['pattern_fragment'],
       effects: ['reveal_secret', 'stabilize_energy'],
     },
     absorb_energy: {
-      description: 'Absorb energy from the conduit to power a device.',
+      description: [
+  "Absorb energy from the conduit to power a device.",
+],
       requirements: ['energy_node'],
       effects: ['charge_device', 'risk_overload'],
     },

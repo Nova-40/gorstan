@@ -229,6 +229,18 @@ export interface AnomalyDefinition {
 }
 
 /**
+ * Lightweight config for developer-gated mini-quest triggers on room entry.
+ * This is intentionally small and optional so it doesn't affect saves or runtime state.
+ */
+export interface QuantumMiniQuest {
+  readonly mode: 'random' | 'fixed';
+  readonly ids: readonly string[];
+  readonly seedHint?: string;
+  readonly cooldownSec?: number;
+  readonly reusable?: boolean;
+}
+
+/**
  * Enhanced Room interface with comprehensive typing
  * Core Logic Preserved: All original room properties maintained
  */
@@ -266,6 +278,7 @@ export interface Room {
   readonly memoryHooks?: readonly string[];
   readonly anomalies?: readonly AnomalyDefinition[];
   readonly microQuestId?: string;
+  readonly quantumMiniQuest?: QuantumMiniQuest;
 }
 
 /**

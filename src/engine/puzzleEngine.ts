@@ -78,7 +78,7 @@ export class PuzzleEngine {
     // Variable declaration
     const puzzleIds = this.roomPuzzles.get(roomId) || [];
     // Variable declaration
-    const puzzleState = (gameState as any).puzzleState || {};
+  const puzzleState = (gameState as unknown as { puzzleState?: Record<string, any> }).puzzleState || {};
 
     return puzzleIds
       .map((id) => this.puzzles.get(id))
@@ -182,10 +182,47 @@ export class PuzzleEngine {
         console.warn('Failed to apply puzzle solve score:', error);
       }
 
+      // Ensure rewards is a concrete object matching PuzzleResult.rewards shape (omit teleport when missing)
+      const rewards = puzzle.rewards
+        ? ((): PuzzleResult['rewards'] => {
+            const r: Partial<PuzzleResult['rewards']> = {};
+
+            if (typeof puzzle.rewards!.score === 'number') {
+              r.score = puzzle.rewards!.score;
+            }
+
+            if (Array.isArray(puzzle.rewards!.items) && puzzle.rewards!.items.length > 0) {
+              r.items = puzzle.rewards!.items;
+            }
+
+            if (Array.isArray(puzzle.rewards!.achievements) && puzzle.rewards!.achievements.length > 0) {
+              r.achievements = puzzle.rewards!.achievements;
+            }
+
+            if (Array.isArray(puzzle.rewards!.story) && puzzle.rewards!.story.length > 0) {
+              r.story = puzzle.rewards!.story;
+            }
+
+            const teleportVal = (puzzle.rewards as unknown as { teleport?: string }).teleport;
+            if (teleportVal) {
+              (r as any).teleport = teleportVal;
+            }
+
+            return r as PuzzleResult['rewards'];
+          })()
+        : undefined;
+
+      if (rewards === undefined) {
+        return {
+          ...result,
+          completed: true,
+        };
+      }
+
       return {
         ...result,
         completed: true,
-        rewards: puzzle.rewards,
+        rewards,
       };
     }
 
@@ -389,27 +426,31 @@ export class PuzzleEngine {
   }
 
   private validateGenericPuzzle(puzzle: PuzzleData, solution: any): PuzzleResult {
-    if (puzzle.components?.length === 1 && puzzle.components[0].type === 'text_input') {
-      // Variable declaration
-      const userAnswer = solution[puzzle.components[0].id]?.toLowerCase().trim();
+    if (puzzle.components?.length === 1) {
+      const comp0 = puzzle.components[0];
+      if (comp0 && comp0.type === 'text_input') {
+        // Variable declaration
+        const raw = (solution && solution[comp0.id]) ?? '';
+        const userAnswer = String(raw).toLowerCase().trim();
 
-      const exampleAnswers: { [key: string]: string[] } = {
-        riddle_answer: ['mirror', 'reflection', 'looking glass'],
-        password_entry: ['stanton harcourt', 'stantonharcourt', 'stanton'],
-        mathematical_solution: ['42', 'forty-two', 'forty two'],
-      };
+        const exampleAnswers: { [key: string]: string[] } = {
+          riddle_answer: ['mirror', 'reflection', 'looking glass'],
+          password_entry: ['stanton harcourt', 'stantonharcourt', 'stanton'],
+          mathematical_solution: ['42', 'forty-two', 'forty two'],
+        };
 
-      // Variable declaration
-      const acceptedAnswers = exampleAnswers[puzzle.id] || [];
-      // Variable declaration
-      const isCorrect = acceptedAnswers.includes(userAnswer);
+        // Variable declaration
+        const acceptedAnswers = exampleAnswers[puzzle.id] || [];
+        // Variable declaration
+        const isCorrect = acceptedAnswers.includes(userAnswer);
 
-      return {
-        success: isCorrect,
-        feedback: isCorrect
-          ? 'Correct! Your answer is accepted.'
-          : "That's not the answer I was looking for. Try thinking about it differently.",
-      };
+        return {
+          success: isCorrect,
+          feedback: isCorrect
+            ? 'Correct! Your answer is accepted.'
+            : "That's not the answer I was looking for. Try thinking about it differently.",
+        };
+      }
     }
 
     return {

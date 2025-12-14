@@ -24,10 +24,8 @@ const gorstanvillage: Room = {
   zone: 'gorstanZone',
   title: 'Gorstan Village',
   description: [
-    'You are in the village of Gorstan. It is a quaint, peaceful village, nestled in a valley. The villagers are friendly and welcoming.',
-    'Stone cottages with mossy roofs line the winding paths, and the scent of fresh bread drifts from the bakery.',
-    'Children play near a bubbling stream, and elders gather around a communal fire, sharing stories of old Gorstan legends.',
-  ],
+  "You are in the village of Gorstan. It is a quaint, peaceful village, nestled in a valley. The villagers are friendly and welcoming. Stone cottages with mossy roofs line the winding paths, and the scent of fresh bread drifts from the bakery. Children play near a bubbling stream, and elders gather around a communal fire, sharing stories of old Gorstan legends.",
+],
   image: 'gorstanZone_gorstanvillage.png',
   ambientAudio: 'village_ambience.mp3',
 
@@ -46,21 +44,32 @@ const gorstanvillage: Room = {
     west: 'gorstanZone_carronspire',
   },
 
-  items: ['fresh_bread', 'village_token', 'old_map', 'herbal_poultice'],
+  items: [
+    { id: 'fresh_bread', name: 'Fresh Bread' },
+    { id: 'village_token', name: 'Village Token' },
+    { id: 'old_map', name: 'Old Map' },
+    { id: 'herbal_poultice', name: 'Herbal Poultice' }
+  ],
 
   interactables: {
     bakery: {
-      description: 'A warm, inviting bakery with the scent of fresh bread wafting out.',
+      description: [
+  "A warm, inviting bakery with the scent of fresh bread wafting out.",
+],
       actions: ['enter', 'buy_bread', 'talk_to_baker'],
       requires: [],
     },
     village_green: {
-      description: 'A grassy area where villagers gather for festivals and meetings.',
+      description: [
+  "A grassy area where villagers gather for festivals and meetings.",
+],
       actions: ['rest', 'listen', 'join_gathering'],
       requires: [],
     },
     blacksmith: {
-      description: 'A sturdy stone building where the village blacksmith works.',
+      description: [
+  "A sturdy stone building where the village blacksmith works.",
+],
       actions: ['enter', 'commission_item', 'talk_to_blacksmith'],
       requires: [],
     },
@@ -128,12 +137,16 @@ const gorstanvillage: Room = {
 
   secrets: {
     hidden_garden: {
-      description: 'A secret garden behind the bakery, known only to a few villagers.',
+      description: [
+  "A secret garden behind the bakery, known only to a few villagers.",
+],
       requirements: ['talk_to_baker', 'explore_bakery'],
       rewards: ['rare_herbs', 'hidden_lore'],
     },
     ancient_token: {
-      description: 'An old token with mysterious engravings, found by the stream.',
+      description: [
+  "An old token with mysterious engravings, found by the stream.",
+],
       requirements: ['search_stream', 'talk_to_children'],
       rewards: ['quest_hook', 'unique_item'],
     },
@@ -141,12 +154,16 @@ const gorstanvillage: Room = {
 
   customActions: {
     share_story: {
-      description: 'Share a story with the villagers to gain their trust.',
+      description: [
+  "Share a story with the villagers to gain their trust.",
+],
       requirements: [],
       effects: ['gain_trust', 'unlock_quest'],
     },
     help_villager: {
-      description: 'Assist a villager with a small task.',
+      description: [
+  "Assist a villager with a small task.",
+],
       requirements: [],
       effects: ['earn_reward', 'improve_reputation'],
     },

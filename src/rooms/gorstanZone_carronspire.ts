@@ -24,10 +24,8 @@ const carronspire: Room = {
   zone: 'gorstanZone',
   title: 'Carron Spire',
   description: [
-    'You stand at the base of Carron Spire, a towering monolith of ancient stone that pierces the sky. The spire is etched with runes that pulse faintly with a blue light, and the air is charged with a sense of history and power.',
-    'Wind howls around the spire, carrying whispers of forgotten legends. The ground is littered with fragments of old banners and the remains of long-extinct flora.',
-    'A narrow, spiraling staircase winds up the outside of the spire, vanishing into the mist above. At the base, a weathered plaque hints at secrets hidden within.',
-  ],
+  "You stand at the base of Carron Spire, a towering monolith of ancient stone that pierces the sky. The spire is etched with runes that pulse faintly with a blue light, and the air is charged with a sense of history and power. Wind howls around the spire, carrying whispers of forgotten legends. The ground is littered with fragments of old banners and the remains of long-extinct flora. A narrow, spiraling staircase winds up the outside of the spire, vanishing into the mist above. At the base, a weathered plaque hints at secrets hidden within.",
+],
   image: 'gorstanZone_carronspire.png',
   ambientAudio: 'windy_peak.mp3',
 
@@ -46,22 +44,32 @@ const carronspire: Room = {
     west: 'gorstanZone_forgottenroad',
   },
 
-  items: ['ancient_rune_fragment', 'weathered_plaque', 'mysterious_key', 'old_banner'],
+  items: [
+    { id: 'ancient_rune_fragment', name: 'Ancient Rune Fragment' },
+    { id: 'weathered_plaque', name: 'Weathered Plaque' },
+    { id: 'mysterious_key', name: 'Mysterious Key' },
+    { id: 'old_banner', name: 'Old Banner' }
+  ],
 
   interactables: {
     spiral_staircase: {
-      description: 'A narrow, spiraling staircase carved into the stone, leading up into the mist.',
+      description: [
+  "A narrow, spiraling staircase carved into the stone, leading up into the mist.",
+],
       actions: ['climb', 'examine', 'listen'],
       requires: [],
     },
     rune_panel: {
-      description:
-        'A section of the spire covered in glowing runes. Some appear to be interactive.',
+      description: [
+  "A section of the spire covered in glowing runes. Some appear to be interactive.",
+],
       actions: ['examine', 'activate', 'translate'],
       requires: ['ancient_rune_fragment'],
     },
     plaque: {
-      description: 'A weathered plaque at the base of the spire, inscribed with faded text.',
+      description: [
+  "A weathered plaque at the base of the spire, inscribed with faded text.",
+],
       actions: ['read', 'clean', 'interpret'],
       requires: [],
     },
@@ -129,13 +137,16 @@ const carronspire: Room = {
 
   secrets: {
     hidden_chamber: {
-      description:
-        'A concealed chamber halfway up the spire, accessible only by activating the correct runes.',
+      description: [
+  "A concealed chamber halfway up the spire, accessible only by activating the correct runes.",
+],
       requirements: ['activate rune_panel', 'climb spiral_staircase'],
       rewards: ['ancient_artifact', 'lore_scroll'],
     },
     spire_vision: {
-      description: 'A vision of the past and future, granted at the summit.',
+      description: [
+  "A vision of the past and future, granted at the summit.",
+],
       requirements: ['ascend to summit', 'meet spire_keeper'],
       rewards: ['future_hint', 'historic_revelation'],
     },
@@ -143,12 +154,16 @@ const carronspire: Room = {
 
   customActions: {
     invoke_wind: {
-      description: 'Call upon the mountain winds to clear the mist.',
+      description: [
+  "Call upon the mountain winds to clear the mist.",
+],
       requirements: ['weathered_plaque'],
       effects: ['improve_visibility', 'reveal_hidden_path'],
     },
     restore_runes: {
-      description: 'Restore the power of the runes using a fragment.',
+      description: [
+  "Restore the power of the runes using a fragment.",
+],
       requirements: ['ancient_rune_fragment'],
       effects: ['activate_rune_panel', 'summon_spire_keeper'],
     },

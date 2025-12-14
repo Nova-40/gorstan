@@ -1,0 +1,538 @@
+{
+  "books\\findlaters.cover.png": {
+    "original": "books\\findlaters.cover.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "books\\quantum.lattice.cover.png": {
+    "original": "books\\quantum.lattice.cover.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "fallback.png": {
+    "original": "fallback.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "gorstanicon.png": {
+    "original": "gorstanicon.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "npcs\\artifactChamber.png": {
+    "original": "npcs\\artifactChamber.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "npcs\\Ayla.png": {
+    "original": "npcs\\Ayla.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "npcs\\Barista.png": {
+    "original": "npcs\\Barista.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "npcs\\Librarian.png": {
+    "original": "npcs\\Librarian.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "npcs\\Polly2.png": {
+    "original": "npcs\\Polly2.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\burger-joint.png": {
+    "original": "rooms\\burger-joint.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\cafe.png": {
+    "original": "rooms\\cafe.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\control-nexus.png": {
+    "original": "rooms\\control-nexus.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\elfhameZone_elfhame.png": {
+    "original": "rooms\\elfhameZone_elfhame.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\elfhameZone_faeglade.png": {
+    "original": "rooms\\elfhameZone_faeglade.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\elfhameZone_faelake.png": {
+    "original": "rooms\\elfhameZone_faelake.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\elfhameZone_faelakenorthshore.png": {
+    "original": "rooms\\elfhameZone_faelakenorthshore.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\elfhameZone_faepalace.png": {
+    "original": "rooms\\elfhameZone_faepalace.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\elfhameZone_faepalacedungeon.png": {
+    "original": "rooms\\elfhameZone_faepalacedungeon.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\elfhameZone_lucidveil.png": {
+    "original": "rooms\\elfhameZone_lucidveil.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\elfhameZone_rhianonschamber.png": {
+    "original": "rooms\\elfhameZone_rhianonschamber.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\genericZone_surrealPlaceholder.png": {
+    "original": "rooms\\genericZone_surrealPlaceholder.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\glitchrealm-zoneravenroom.png": {
+    "original": "rooms\\glitchrealm-zoneravenroom.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\glitchrealm_datavoid.png": {
+    "original": "rooms\\glitchrealm_datavoid.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\glitchrealm_glitchexit.png": {
+    "original": "rooms\\glitchrealm_glitchexit.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\glitchrealm_glitchrealmhub.png": {
+    "original": "rooms\\glitchrealm_glitchrealmhub.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\glitchZone_glitchinguniverse.png": {
+    "original": "rooms\\glitchZone_glitchinguniverse.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\glitchZone_issuesdetected.png": {
+    "original": "rooms\\glitchZone_issuesdetected.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\glitchZone_moreissues.png": {
+    "original": "rooms\\glitchZone_moreissues.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\gorstanZone_carronspire.png": {
+    "original": "rooms\\gorstanZone_carronspire.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\gorstanZone_exit.png": {
+    "original": "rooms\\gorstanZone_exit.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\gorstanZone_gorstanhub.png": {
+    "original": "rooms\\gorstanZone_gorstanhub.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\gorstanZone_gorstanvillage.png": {
+    "original": "rooms\\gorstanZone_gorstanvillage.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\gorstanZone_spare.png": {
+    "original": "rooms\\gorstanZone_spare.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\gorstanZone_torridon.png": {
+    "original": "rooms\\gorstanZone_torridon.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\gorstanZone_torridonbefore.png": {
+    "original": "rooms\\gorstanZone_torridonbefore.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\gorstanZone_torridoninn.png": {
+    "original": "rooms\\gorstanZone_torridoninn.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\hub.png": {
+    "original": "rooms\\hub.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\introZone_controlnexus.png": {
+    "original": "rooms\\introZone_controlnexus.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\introZone_controlroom.png": {
+    "original": "rooms\\introZone_controlroom.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\introZone_crossing.png": {
+    "original": "rooms\\introZone_crossing.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\introZone_hiddenlab.png": {
+    "original": "rooms\\introZone_hiddenlab.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\introZone_introreset.png": {
+    "original": "rooms\\introZone_introreset.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\introZone_introstreet1.png": {
+    "original": "rooms\\introZone_introstreet1.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\introZone_resetroom.png": {
+    "original": "rooms\\introZone_resetroom.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\latticehub.png": {
+    "original": "rooms\\latticehub.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\latticeZone_hiddenlibrary.png": {
+    "original": "rooms\\latticeZone_hiddenlibrary.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\latticeZone_hub.png": {
+    "original": "rooms\\latticeZone_hub.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\latticeZone_lattice.png": {
+    "original": "rooms\\latticeZone_lattice.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\latticeZone_latticelibrary.png": {
+    "original": "rooms\\latticeZone_latticelibrary.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\latticeZone_libraryofnine.png": {
+    "original": "rooms\\latticeZone_libraryofnine.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\latticeZone_primeconfluence.png": {
+    "original": "rooms\\latticeZone_primeconfluence.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\liminalhub.png": {
+    "original": "rooms\\liminalhub.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\londonZone_cafeoffice.png": {
+    "original": "rooms\\londonZone_cafeoffice.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\londonZone_dalesapartment.png": {
+    "original": "rooms\\londonZone_dalesapartment.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\londonZone_findlaters.png": {
+    "original": "rooms\\londonZone_findlaters.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\londonZone_londonhub.png": {
+    "original": "rooms\\londonZone_londonhub.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\londonZone_stkatherinesdock.png": {
+    "original": "rooms\\londonZone_stkatherinesdock.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\londonZone_trentpark.png": {
+    "original": "rooms\\londonZone_trentpark.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\mazeZone_exit.png": {
+    "original": "rooms\\mazeZone_exit.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\mazeZone_forgottenchamber.png": {
+    "original": "rooms\\mazeZone_forgottenchamber.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\mazeZone_introstreetclear.png": {
+    "original": "rooms\\mazeZone_introstreetclear.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\mazeZone_mazehub.png": {
+    "original": "rooms\\mazeZone_mazehub.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\mazeZone_mirrorhall.png": {
+    "original": "rooms\\mazeZone_mirrorhall.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\mazeZone_misleadchamber.png": {
+    "original": "rooms\\mazeZone_misleadchamber.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\mazeZone_pollysbay.png": {
+    "original": "rooms\\mazeZone_pollysbay.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\mazeZone_room.png": {
+    "original": "rooms\\mazeZone_room.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\mazeZone_secretmazeentry.png": {
+    "original": "rooms\\mazeZone_secretmazeentry.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\mazeZone_secrettunnel.png": {
+    "original": "rooms\\mazeZone_secrettunnel.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\mazeZone_storagechamber.png": {
+    "original": "rooms\\mazeZone_storagechamber.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\newyorkZone_aevirawarehouse.png": {
+    "original": "rooms\\newyorkZone_aevirawarehouse.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\newyorkZone_burgerjoint.png": {
+    "original": "rooms\\newyorkZone_burgerjoint.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\newyorkZone_centralpark.png": {
+    "original": "rooms\\newyorkZone_centralpark.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\newyorkZone_manhattanhub.png": {
+    "original": "rooms\\newyorkZone_manhattanhub.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\newyorkZone_storeroom.png": {
+    "original": "rooms\\newyorkZone_storeroom.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\offgorstanZone_ancientvault.png": {
+    "original": "rooms\\offgorstanZone_ancientvault.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\offgorstanZone_exit.png": {
+    "original": "rooms\\offgorstanZone_exit.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\offgorstanZone_multiversehub.png": {
+    "original": "rooms\\offgorstanZone_multiversehub.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\offmultiverseZone_controlnexusreturned.png": {
+    "original": "rooms\\offmultiverseZone_controlnexusreturned.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\offmultiverseZone_observationroom.png": {
+    "original": "rooms\\offmultiverseZone_observationroom.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\stantonharcourtZone_silentstanton.png": {
+    "original": "rooms\\stantonharcourtZone_silentstanton.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\stantonharcourtZone_stantonharcourt.png": {
+    "original": "rooms\\stantonharcourtZone_stantonharcourt.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\stantonZone_ascendantStanton.png": {
+    "original": "rooms\\stantonZone_ascendantStanton.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\stantonZone_glitchStanton.png": {
+    "original": "rooms\\stantonZone_glitchStanton.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\stantonZone_villagegreen.png": {
+    "original": "rooms\\stantonZone_villagegreen.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "starterframe.png": {
+    "original": "starterframe.png",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "variants\\rooms\\introZone_controlnexus-poster.jpg": {
+    "original": "variants\\rooms\\introZone_controlnexus-poster.jpg",
+    "variants": {},
+    "avif": null,
+    "webp": null
+  },
+  "rooms\\introZone_controlnexus.gif": {
+    "original": "rooms\\introZone_controlnexus.gif",
+    "variants": {},
+    "webm": "optimized\\rooms\\introZone_controlnexus.webm",
+    "sizes": {}
+  },
+  "variants\\rooms\\introZone_controlnexus.mp4": {
+    "original": "variants\\rooms\\introZone_controlnexus.mp4",
+    "variants": {},
+    "webm": "optimized\\variants\\rooms\\introZone_controlnexus.webm",
+    "sizes": {},
+    "mp4": "optimized\\variants\\rooms\\introZone_controlnexus.mp4"
+  },
+  "variants\\rooms\\introZone_controlnexus.webm": {
+    "original": "variants\\rooms\\introZone_controlnexus.webm",
+    "variants": {},
+    "webm": "optimized\\variants\\rooms\\introZone_controlnexus.webm",
+    "sizes": {},
+    "mp4": "optimized\\variants\\rooms\\introZone_controlnexus.mp4"
+  }
+}

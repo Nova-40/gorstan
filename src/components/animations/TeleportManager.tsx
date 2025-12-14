@@ -15,8 +15,9 @@
 */
 
 import React, { useState, useEffect, useMemo } from 'react';
-import FractalTeleportOverlay from './FractalTeleportOverlay';
-import TrekTeleportOverlay from './TrekTeleportOverlay';
+// Lazy-load heavy overlay components so TeleportManager stays small
+const FractalTeleportOverlay = React.lazy(() => import('./FractalTeleportOverlay'));
+const TrekTeleportOverlay = React.lazy(() => import('./TrekTeleportOverlay'));
 
 type TeleportType = 'fractal' | 'trek' | null;
 
@@ -70,12 +71,25 @@ const TeleportManager: React.FC<{
 
   console.log('[TeleportManager] Rendering teleport animation:', teleportType);
 
-  // Optimized component selection
-  return teleportType === 'fractal' ? (
-    <FractalTeleportOverlay onComplete={onComplete} />
-  ) : (
-    <TrekTeleportOverlay onComplete={onComplete} />
+  // Optimized component selection - wrap lazy overlays with Suspense
+  return (
+    <React.Suspense fallback={null}>
+      {teleportType === 'fractal' ? (
+        <FractalTeleportOverlay onComplete={onComplete} />
+      ) : (
+        <TrekTeleportOverlay onComplete={onComplete} />
+      )}
+    </React.Suspense>
   );
 };
+
+// Prefetch helper to warm module cache for overlays
+export function prefetchTeleportOverlay(type: 'fractal' | 'trek') {
+  if (type === 'fractal') {
+    import('./FractalTeleportOverlay');
+  } else {
+    import('./TrekTeleportOverlay');
+  }
+}
 
 export default TeleportManager;

@@ -24,10 +24,8 @@ const secretmazeentry: Room = {
   zone: 'mazeZone',
   title: 'Secret Maze Entry',
   description: [
-    'You find yourself at the hidden entry to the maze, where ancient carvings on the walls hint at forgotten secrets.',
-    'The air is heavy with anticipation, and the stone beneath your feet is worn by countless travelers.',
-    'A faint glow from the carvings suggests there may be more to this place than meets the eye.',
-  ],
+  "You find yourself at the hidden entry to the maze, where ancient carvings on the walls hint at forgotten secrets. The air is heavy with anticipation, and the stone beneath your feet is worn by countless travelers. A faint glow from the carvings suggests there may be more to this place than meets the eye.",
+],
   image: 'mazeZone_secretmazeentry.png',
   ambientAudio: 'secret_entry_ambience.mp3',
 
@@ -42,16 +40,23 @@ const secretmazeentry: Room = {
     east: 'mazeZone_secrettunnel',
   },
 
-  items: ['carved_stone_fragment', 'ancient_token'],
+  items: [
+    { id: 'carved_stone_fragment', name: 'Carved Stone Fragment' },
+    { id: 'ancient_token', name: 'Ancient Token' }
+  ],
 
   interactables: {
     ancient_carvings: {
-      description: "Intricate carvings on the wall, depicting scenes of the maze's creation.",
+      description: [
+  "Intricate carvings on the wall, depicting scenes of the maze's creation.",
+],
       actions: ['examine', 'trace', 'decode'],
       requires: [],
     },
     hidden_floor_panel: {
-      description: 'A section of floor that seems slightly raised, as if it could be moved.',
+      description: [
+  "A section of floor that seems slightly raised, as if it could be moved.",
+],
       actions: ['inspect', 'move', 'search'],
       requires: [],
     },
@@ -116,7 +121,9 @@ const secretmazeentry: Room = {
 
   secrets: {
     hidden_compartment: {
-      description: 'A secret compartment beneath the floor panel, revealed by moving it.',
+      description: [
+  "A secret compartment beneath the floor panel, revealed by moving it.",
+],
       requirements: ['move hidden_floor_panel'],
       rewards: ['rare_token', 'maze_entry_lore'],
     },
@@ -124,12 +131,16 @@ const secretmazeentry: Room = {
 
   customActions: {
     trace_carvings: {
-      description: 'Trace the ancient carvings to reveal hidden patterns.',
+      description: [
+  "Trace the ancient carvings to reveal hidden patterns.",
+],
       requirements: [],
       effects: ['set_carvingsDecoded', 'reveal_hint'],
     },
     move_panel: {
-      description: 'Move the hidden floor panel to search for secrets.',
+      description: [
+  "Move the hidden floor panel to search for secrets.",
+],
       requirements: [],
       effects: ['set_panelMoved', 'unlock_secret'],
     },

@@ -71,7 +71,7 @@ class PuzzleController {
 
     puzzles.forEach((puzzle: PuzzleData) => {
       // Variable declaration
-      const puzzleState = (gameState as any).puzzleState?.[puzzle.id];
+  const puzzleState = (gameState as unknown as { puzzleState?: Record<string, any> }).puzzleState?.[puzzle.id];
       // Variable declaration
       const solved = puzzleState?.solved;
       // Variable declaration
@@ -151,26 +151,32 @@ class PuzzleController {
     this.currentPuzzle = puzzle;
 
     // Variable declaration
-    const puzzleState = (gameState as any).puzzleState?.[puzzle.id];
+  const puzzleState = (gameState as unknown as { puzzleState?: Record<string, any> }).puzzleState?.[puzzle.id];
     // Variable declaration
     const currentAttempt = puzzleState?.attempts || 0;
 
-    let timeRemaining: number | undefined;
+    let timeRemaining = 0;
     if (puzzle.timeLimit && puzzleState?.timeStarted) {
       // Variable declaration
       const elapsed = (Date.now() - puzzleState.timeStarted) / 1000;
       timeRemaining = Math.max(0, puzzle.timeLimit - elapsed);
     }
 
-    return {
+    const result: PuzzleControllerResult = {
       showPuzzleModal: true,
       puzzle,
       onSubmit: this.createSubmitHandler(puzzle, gameState),
       onClose: this.createCloseHandler(),
       onHint: this.createHintHandler(puzzle),
       currentAttempt,
-      timeRemaining,
     };
+
+    if (timeRemaining !== undefined) {
+      // only include the property when we have a concrete number to satisfy exactOptionalPropertyTypes
+      result.timeRemaining = timeRemaining;
+    }
+
+    return result;
   }
 
   private createSubmitHandler(puzzle: PuzzleData, gameState: LocalGameState) {
@@ -313,7 +319,8 @@ class PuzzleController {
       });
     }
 
-    if ((rewards as any).teleport) {
+    const teleportTarget = (rewards as unknown as { teleport?: string }).teleport;
+    if (teleportTarget) {
       setTimeout(() => {
         this.dispatch!({
           type: 'ADD_MESSAGE',
@@ -327,7 +334,7 @@ class PuzzleController {
 
         this.dispatch!({
           type: 'MOVE_TO_ROOM',
-          payload: (rewards as any).teleport!,
+          payload: teleportTarget,
         });
       }, 2000);
     }
@@ -353,7 +360,7 @@ class PuzzleController {
     }
 
     // Variable declaration
-    const puzzleState = (gameState as any).puzzleState?.[puzzle.id];
+  const puzzleState = (gameState as unknown as { puzzleState?: Record<string, any> }).puzzleState?.[puzzle.id];
 
     if (puzzleState?.solved && !puzzle.type.includes('repeatable')) {
       return {
@@ -415,7 +422,8 @@ class PuzzleController {
 
     // Variable declaration
     const solvedCount = allPuzzles.filter(
-      (puzzle: PuzzleData) => (gameState as any).puzzleState?.[puzzle.id]?.solved,
+      (puzzle: PuzzleData) =>
+        (gameState as unknown as { puzzleState?: Record<string, any> }).puzzleState?.[puzzle.id]?.solved,
     ).length;
 
     return {

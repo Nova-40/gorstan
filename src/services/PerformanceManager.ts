@@ -46,6 +46,34 @@ import DeviceProfiler, {
   type PerformanceMetrics,
 } from './DeviceProfiler';
 
+// Minimal safe default settings to avoid loose 'any' fallbacks
+const DEFAULT_PERFORMANCE_SETTINGS: PerformanceSettings = {
+  autoAdjust: false,
+  graphicsQuality: 1,
+  audioQuality: 1,
+  animationQuality: 'medium',
+  textureQuality: 'medium',
+  particleEffects: true,
+  shadowQuality: 'medium',
+  backgroundProcessing: true,
+  autoSaveFrequency: 60,
+  preloadDistance: 1,
+  maxCachedAssets: 50,
+  memoryTargetMB: 400,
+  garbageCollectionThreshold: 0.6,
+  resourcePoolSize: 50,
+  imageCompression: 'light',
+  prefetchEnabled: true,
+  bandwidthLimit: 0,
+};
+
+// Narrow type for the performance.memory object when present
+interface PerformanceMemoryInfo {
+  usedJSHeapSize?: number;
+  jsHeapSizeLimit?: number;
+  totalJSHeapSize?: number;
+}
+
 export interface OptimizationProfile {
   name: string;
   description: string;
@@ -192,7 +220,15 @@ export class PerformanceManager {
 
   private constructor() {
     this.deviceProfiler = DeviceProfiler.getInstance();
-    this.currentSettings = this.optimizationProfiles[1].settings; // Default to balanced
+    // Default to the 'Balanced' profile when available, otherwise fall back to the first profile
+    if (this.optimizationProfiles.length > 1 && this.optimizationProfiles[1]?.settings) {
+      this.currentSettings = this.optimizationProfiles[1].settings;
+    } else if (this.optimizationProfiles.length > 0 && this.optimizationProfiles[0]?.settings) {
+      this.currentSettings = this.optimizationProfiles[0].settings;
+    } else {
+      // Fallback safe default
+      this.currentSettings = { ...DEFAULT_PERFORMANCE_SETTINGS };
+    }
   }
 
   static getInstance(): PerformanceManager {
@@ -229,7 +265,16 @@ export class PerformanceManager {
     } catch (error) {
       console.error('[PerformanceManager] Initialization failed:', error);
       // Fall back to safe defaults
-      this.currentSettings = this.optimizationProfiles[2].settings; // Battery saver
+      // Prefer Battery Saver if present, otherwise fall back to Balanced or the first profile
+      if (this.optimizationProfiles[2]?.settings) {
+        this.currentSettings = this.optimizationProfiles[2].settings;
+      } else if (this.optimizationProfiles[1]?.settings) {
+        this.currentSettings = this.optimizationProfiles[1].settings;
+      } else if (this.optimizationProfiles[0]?.settings) {
+        this.currentSettings = this.optimizationProfiles[0].settings;
+      } else {
+        this.currentSettings = { ...DEFAULT_PERFORMANCE_SETTINGS };
+      }
     }
   }
 
@@ -288,9 +333,23 @@ export class PerformanceManager {
       return { profile, score };
     });
 
-    // Return the highest scoring profile
+    // Return the highest scoring profile, or fall back to the first predefined profile
     scoredProfiles.sort((a, b) => b.score - a.score);
-    return scoredProfiles[0].profile;
+    const top = scoredProfiles[0];
+    if (!top) {
+      if (this.optimizationProfiles.length > 0) {
+        return this.optimizationProfiles[0] as OptimizationProfile;
+      }
+      // Construct a minimal default profile
+      return {
+        name: 'Default',
+        description: 'Default fallback profile',
+        settings: { ...DEFAULT_PERFORMANCE_SETTINGS },
+        deviceTargets: { minPerformanceTier: 'low', platforms: ['desktop'], memoryRange: [0, 1024] },
+      } as OptimizationProfile;
+    }
+
+    return top.profile;
   }
 
   /**
@@ -379,8 +438,8 @@ export class PerformanceManager {
    */
   private measureMemoryUsage(): number {
     if ('memory' in performance) {
-      const memory = (performance as any).memory;
-      if (memory.usedJSHeapSize) {
+      const memory = (performance as unknown as { memory?: PerformanceMemoryInfo }).memory;
+      if (memory && typeof memory.usedJSHeapSize === 'number') {
         return memory.usedJSHeapSize / (1024 * 1024); // Convert to MB
       }
     }
@@ -673,9 +732,15 @@ export class PerformanceManager {
    * Force garbage collection (if available)
    */
   forceGarbageCollection(): void {
-    if ('gc' in window && typeof (window as any).gc === 'function') {
-      (window as any).gc();
-      console.log('[PerformanceManager] Forced garbage collection');
+    // Some environments (node, some browsers with flags) expose a global gc function
+    const maybeGC = (window as unknown as { gc?: unknown }).gc;
+    if (typeof maybeGC === 'function') {
+      try {
+        (maybeGC as Function)();
+        console.log('[PerformanceManager] Forced garbage collection');
+      } catch (e) {
+        // Ignore failures
+      }
     }
   }
 

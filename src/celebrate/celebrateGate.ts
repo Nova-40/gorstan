@@ -99,7 +99,9 @@ export async function loadCelebrationIndex(): Promise<CelebrationIndex | null> {
  * Check if a date falls within a celebration span
  */
 export function isDateInSpan(date: Date, span: Span): boolean {
-  const dateStr = date.toISOString().split('T')[0]; // YYYY-MM-DD format
+  const iso = date.toISOString();
+  const dateStr = iso ? iso.split('T')[0] : '';
+  if (!dateStr) return false;
   return dateStr >= span.start && dateStr <= span.end;
 }
 

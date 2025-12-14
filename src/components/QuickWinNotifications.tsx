@@ -107,7 +107,7 @@ const Notification: React.FC<NotificationProps> = ({ notification, onDismiss }) 
       case 'level_up':
         return 'border-orange-500 bg-orange-900/20 text-orange-300';
       case 'item_collected':
-        return 'border-cyan-500 bg-cyan-900/20 text-cyan-300';
+  return 'border-[var(--gorstan-cyan)] bg-[rgba(6,182,212,0.08)] text-crt-green';
       default:
         return 'border-gray-500 bg-gray-900/20 text-gray-300';
     }

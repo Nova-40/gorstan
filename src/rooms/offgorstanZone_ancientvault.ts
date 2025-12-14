@@ -24,10 +24,8 @@ const ancientvault: Room = {
   zone: 'offgorstanZone',
   title: 'Ancient Vault',
   description: [
-    'You step into the ancient vault, a place of forgotten treasures and lingering mysteries.',
-    'The air is thick with the scent of old parchment and rusting metal.',
-    'Dim light glints off piles of relics, and the silence is broken only by the faint creak of ancient hinges.',
-  ],
+  "You step into the ancient vault, a place of forgotten treasures and lingering mysteries. The air is thick with the scent of old parchment and rusting metal. Dim light glints off piles of relics, and the silence is broken only by the faint creak of ancient hinges.",
+],
   image: 'offgorstanZone_ancientvault.png',
   ambientAudio: 'ancient_vault_ambience.mp3',
 
@@ -42,21 +40,32 @@ const ancientvault: Room = {
     south: 'offgorstanZone_multiversehub',
   },
 
-  items: ['rusted_key', 'ancient_coin', 'sealed_scroll', 'mysterious_amulet'],
+  items: [
+    { id: 'rusted_key', name: 'Rusted Key' },
+    { id: 'ancient_coin', name: 'Ancient Coin' },
+    { id: 'sealed_scroll', name: 'Sealed Scroll' },
+    { id: 'mysterious_amulet', name: 'Mysterious Amulet' }
+  ],
 
   interactables: {
     locked_chest: {
-      description: 'A heavy chest bound with iron bands and an intricate lock.',
+      description: [
+  "A heavy chest bound with iron bands and an intricate lock.",
+],
       actions: ['examine', 'unlock', 'open'],
       requires: ['rusted_key'],
     },
     dusty_shelf: {
-      description: 'A shelf lined with relics, some covered in dust and cobwebs.',
+      description: [
+  "A shelf lined with relics, some covered in dust and cobwebs.",
+],
       actions: ['search', 'clean', 'inspect'],
       requires: [],
     },
     vault_door: {
-      description: 'The massive door you entered through, engraved with ancient runes.',
+      description: [
+  "The massive door you entered through, engraved with ancient runes.",
+],
       actions: ['examine', 'trace', 'listen'],
       requires: [],
     },
@@ -114,7 +123,9 @@ const ancientvault: Room = {
 
   secrets: {
     hidden_compartment: {
-      description: 'A secret compartment inside the locked chest, revealed by careful inspection.',
+      description: [
+  "A secret compartment inside the locked chest, revealed by careful inspection.",
+],
       requirements: ['open locked_chest', 'inspect chest'],
       rewards: ['rare_artifact', 'vault_lore'],
     },
@@ -122,12 +133,16 @@ const ancientvault: Room = {
 
   customActions: {
     unlock_chest: {
-      description: 'Unlock the chest using the rusted key.',
+      description: [
+  "Unlock the chest using the rusted key.",
+],
       requirements: ['rusted_key'],
       effects: ['set_chestOpened', 'reveal_secret'],
     },
     search_shelf: {
-      description: 'Search the dusty shelf for hidden relics.',
+      description: [
+  "Search the dusty shelf for hidden relics.",
+],
       requirements: [],
       effects: ['set_shelfSearched', 'find_item'],
     },

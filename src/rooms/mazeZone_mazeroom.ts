@@ -24,10 +24,8 @@ const mazeroom: Room = {
   zone: 'mazeZone',
   title: 'Maze Room',
   description: [
-    'You are in a nondescript room within the maze. The walls are plain and the air is still.',
-    'There are faint scuff marks on the floor, evidence of many travelers passing through.',
-    'Every direction looks much the same, making it easy to lose your sense of direction.',
-  ],
+  "You are in a nondescript room within the maze. The walls are plain and the air is still. There are faint scuff marks on the floor, evidence of many travelers passing through. Every direction looks much the same, making it easy to lose your sense of direction.",
+],
   image: 'mazeZone_mazeroom.png',
   ambientAudio: 'maze_ambience.mp3',
 
@@ -44,16 +42,23 @@ const mazeroom: Room = {
     west: 'mazeZone_anothermazeroom',
   },
 
-  items: ['chalk_piece', 'maze_map_fragment'],
+  items: [
+    { id: 'chalk_piece', name: 'Chalk Piece' },
+    { id: 'maze_map_fragment', name: 'Maze Map Fragment' }
+  ],
 
   interactables: {
     wall: {
-      description: 'A blank wall, cold to the touch. It might be useful for marking your path.',
+      description: [
+  "A blank wall, cold to the touch. It might be useful for marking your path.",
+],
       actions: ['examine', 'mark', 'knock'],
       requires: [],
     },
     floor: {
-      description: 'Smooth stone, worn by many footsteps.',
+      description: [
+  "Smooth stone, worn by many footsteps.",
+],
       actions: ['examine', 'search', 'listen'],
       requires: [],
     },
@@ -109,8 +114,9 @@ const mazeroom: Room = {
 
   secrets: {
     hidden_passage: {
-      description:
-        'A hidden passage revealed by marking the correct wall and listening for echoes.',
+      description: [
+  "A hidden passage revealed by marking the correct wall and listening for echoes.",
+],
       requirements: ['mark wall', 'listen for echo'],
       rewards: ['shortcut_access', 'maze_lore'],
     },
@@ -118,7 +124,9 @@ const mazeroom: Room = {
 
   customActions: {
     mark_wall: {
-      description: 'Mark the wall to keep track of your path.',
+      description: [
+  "Mark the wall to keep track of your path.",
+],
       requirements: ['chalk_piece'],
       effects: ['set_wallMarked', 'reduce_disorientation'],
     },

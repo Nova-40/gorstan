@@ -56,15 +56,15 @@ export default function StartPromptDialog({ open, onStart, onCancel }: Props) {
           initial={{ scale: 0.95 }}
           animate={{ scale: 1 }}
           exit={{ scale: 0.95 }}
-          className="relative bg-gradient-to-br from-slate-900 to-black border-2 border-cyan-400 rounded-xl p-6 max-w-md w-full"
+          className="relative bg-gradient-to-br from-slate-900 to-black border-2 border-[var(--gorstan-green)] rounded-xl p-6 max-w-md w-full"
         >
-          <h2 id="start-dialog-title" className="text-xl font-bold text-cyan-300 mb-3">
+          <h2 id="start-dialog-title" className="text-xl font-bold text-crt-green mb-3">
             Ready to Begin?
           </h2>
           <p className="text-gray-300 mb-6 text-sm">Start your adventure or continue the demo.</p>
           <div className="flex gap-3 justify-end">
             <button
-              className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors focus:ring-2 focus:ring-cyan-400"
+              className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors focus:ring-2 focus:ring-[var(--gorstan-green)]"
               onClick={onCancel}
             >
               Continue Demo

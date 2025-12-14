@@ -24,6 +24,7 @@ import {
   getRelationshipLevel,
   getNPCConversationHistory,
 } from './npcConversationHistory';
+import { pickRandom } from './random';
 
 export interface KnowledgeResponse {
   responses: string[];
@@ -203,7 +204,7 @@ export function getKnowledgeBaseReply(
   }
 
   // Return intelligent fallback
-  return selectResponse(universalKnowledge.unknown, state, npcId, 'unknown');
+  return selectResponse(universalKnowledge.unknown!, state, npcId, 'unknown');
 }
 
 /**
@@ -225,12 +226,17 @@ function selectResponse(
     const lastConv = getNPCConversationHistory(state, npcId).entries.slice(-1)[0];
     const lastResponse = lastConv?.npcResponse;
     const availableResponses = responses.filter((r) => formatDialogue(r, state) !== lastResponse);
-    selectedResponse =
-      availableResponses.length > 0
-        ? availableResponses[Math.floor(Math.random() * availableResponses.length)]
-        : responses[Math.floor(Math.random() * responses.length)];
+    try {
+      selectedResponse = availableResponses.length > 0 ? pickRandom(availableResponses) : pickRandom(responses);
+    } catch (e) {
+      selectedResponse = availableResponses[0] ?? responses[0] ?? '';
+    }
   } else {
-    selectedResponse = responses[Math.floor(Math.random() * responses.length)];
+    try {
+      selectedResponse = pickRandom(responses);
+    } catch (e) {
+      selectedResponse = responses[0] ?? '';
+    }
   }
 
   return formatDialogue(selectedResponse, state);
@@ -282,5 +288,9 @@ export function getIntelligentFallback(
     `That's a complex question, ${playerName}. Give me time to think about it.`,
   ];
 
-  return fallbacks[Math.floor(Math.random() * fallbacks.length)];
+  try {
+    return pickRandom(fallbacks);
+  } catch (e) {
+    return fallbacks[0]!;
+  }
 }

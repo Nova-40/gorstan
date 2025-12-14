@@ -115,8 +115,7 @@ export const initialGameState: GameState = {
   lastSave: Date.now(),
 
   isTransitioning: false,
-  targetRoom: undefined,
-  lastCommand: undefined,
+  // optional fields omitted to satisfy exactOptionalPropertyTypes
 };
 
 // --- Function: gameStateReducer ---
@@ -156,7 +155,6 @@ export function gameStateReducer(state: GameState, action: GameAction): GameStat
             ? state.visitedRooms
             : [...state.visitedRooms, action.payload],
           isTransitioning: false,
-          targetRoom: undefined,
           lastSave: Date.now(),
         };
 
@@ -240,7 +238,7 @@ export function gameStateReducer(state: GameState, action: GameAction): GameStat
         return {
           ...state,
           isTransitioning: action.payload.isTransitioning,
-          targetRoom: action.payload.targetRoom,
+            targetRoom: action.payload.targetRoom ?? state.targetRoom ?? '',
         };
 
       case 'UPDATE_NPC_RELATIONSHIP':
@@ -372,13 +370,12 @@ export function mergeLoadedState(
     return currentState;
   }
 
-  return {
-    ...currentState,
-    ...loadedState,
+    return {
+      ...currentState,
+      ...loadedState,
 
-    sessionStart: Date.now(),
-    isTransitioning: false,
-    targetRoom: undefined,
-    lastSave: Date.now(),
-  };
+      sessionStart: Date.now(),
+      isTransitioning: false,
+      lastSave: Date.now(),
+    };
 }

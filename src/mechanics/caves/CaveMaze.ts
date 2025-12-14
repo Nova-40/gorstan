@@ -5,6 +5,7 @@
 */
 
 import { Artifact } from './Artifact';
+import { pickRandom } from '../../utils/random';
 
 export interface CaveTile {
   x: number;
@@ -52,19 +53,20 @@ export class CaveMaze {
     const width = 21; // Odd number for proper maze generation
     const height = 15;
 
-    // Initialize with all walls
+    // Initialize with all walls (build rows explicitly to avoid undefined indexing)
     const tiles: CaveTile[][] = [];
     for (let y = 0; y < height; y++) {
-      tiles[y] = [];
+      const row: CaveTile[] = [];
       for (let x = 0; x < width; x++) {
-        tiles[y][x] = {
+        row.push({
           x,
           y,
           type: 'wall',
           visited: false,
           illuminated: false,
-        };
+        });
       }
+      tiles.push(row);
     }
 
     // Generate maze using recursive backtracking
@@ -72,18 +74,27 @@ export class CaveMaze {
 
     // Set entrance
     const entrance = { x: 1, y: 1 };
-    tiles[entrance.y][entrance.x].type = 'entrance';
+    const entranceRow = tiles[entrance.y];
+    if (entranceRow) {
+      const entranceTile = entranceRow[entrance.x];
+      if (entranceTile) entranceTile.type = 'entrance';
+    }
 
-    // Place artifact in a dead end
-    const artifactLocation = this.findGoodArtifactLocation(tiles, width, height);
-    tiles[artifactLocation.y][artifactLocation.x].type = 'artifact';
+  // Place artifact in a dead end (fall back to entrance if none found)
+  const artifactLocation = this.findGoodArtifactLocation(tiles, width, height);
+    const finalArtifactLocation = artifactLocation ?? entrance;
+    const artRow = tiles[finalArtifactLocation.y];
+    if (artRow) {
+      const artTile = artRow[finalArtifactLocation.x];
+      if (artTile) artTile.type = 'artifact';
+    }
 
     return {
       width,
       height,
       tiles,
       entrance,
-      artifactLocation,
+      artifactLocation: finalArtifactLocation,
     };
   }
 
@@ -97,8 +108,9 @@ export class CaveMaze {
     // Seeded random number generator
     const random = this.seededRandom();
 
-    tiles[y][x].type = 'floor';
-    tiles[y][x].visited = true;
+  if (!tiles[y] || !tiles[y][x]) return;
+  tiles[y][x].type = 'floor';
+  tiles[y][x].visited = true;
 
     // Define directions (up, right, down, left)
     const directions = [
@@ -108,10 +120,15 @@ export class CaveMaze {
       { dx: -2, dy: 0 },
     ];
 
-    // Shuffle directions for randomness
+    // Shuffle directions for randomness (safe swap)
     for (let i = directions.length - 1; i > 0; i--) {
       const j = Math.floor(random() * (i + 1));
-      [directions[i], directions[j]] = [directions[j], directions[i]];
+      const a = directions[i];
+      const b = directions[j];
+      if (a && b) {
+        directions[i] = b;
+        directions[j] = a;
+      }
     }
 
     // Try each direction
@@ -120,10 +137,21 @@ export class CaveMaze {
       const newY = y + dir.dy;
 
       // Check bounds
-      if (newX > 0 && newX < width - 1 && newY > 0 && newY < height - 1) {
+      if (
+        newX > 0 &&
+        newX < width - 1 &&
+        newY > 0 &&
+        newY < height - 1 &&
+        tiles[newY] &&
+        tiles[newY][newX]
+      ) {
         if (!tiles[newY][newX].visited) {
           // Carve path between current and new cell
-          tiles[y + dir.dy / 2][x + dir.dx / 2].type = 'floor';
+          const midY = y + dir.dy / 2;
+          const midX = x + dir.dx / 2;
+          if (tiles[midY] && tiles[midY][midX]) {
+            tiles[midY][midX].type = 'floor';
+          }
           this.carveMaze(tiles, newX, newY, width, height);
         }
       }
@@ -147,18 +175,26 @@ export class CaveMaze {
 
     // Find all floor tiles
     for (let y = 1; y < height - 1; y++) {
+      const row = tiles[y];
+      if (!row) continue;
       for (let x = 1; x < width - 1; x++) {
-        if (tiles[y][x].type === 'floor') {
+        const t = row[x];
+        if (!t) continue;
+        if (t.type === 'floor') {
           floorTiles.push({ x, y });
         }
       }
     }
 
-    // Find a tile that's reasonably far from entrance and preferably a dead end
-    let bestLocation = floorTiles[0];
-    let bestScore = 0;
+  // Find a tile that's reasonably far from entrance and preferably a dead end
+  if (floorTiles.length === 0) return { x: 1, y: 1 };
 
-    floorTiles.forEach((tile) => {
+  let bestLocation: { x: number; y: number } = { x: 1, y: 1 };
+  let bestScore = 0;
+
+  if (floorTiles.length > 0) bestLocation = floorTiles[0] || bestLocation;
+
+  floorTiles.forEach((tile) => {
       // Distance from entrance
       const distance = Math.abs(tile.x - 1) + Math.abs(tile.y - 1);
 
@@ -173,7 +209,9 @@ export class CaveMaze {
 
       adjacent.forEach((adj) => {
         if (adj.x >= 0 && adj.x < width && adj.y >= 0 && adj.y < height) {
-          if (tiles[adj.y][adj.x].type === 'floor') {
+          const adjRow = tiles[adj.y];
+          const adjTile = adjRow ? adjRow[adj.x] : undefined;
+          if (adjTile && adjTile.type === 'floor') {
             adjacentFloors++;
           }
         }
@@ -188,7 +226,7 @@ export class CaveMaze {
       }
     });
 
-    return bestLocation;
+  return bestLocation;
   }
 
   private displayCaveIntro(): void {
@@ -248,12 +286,16 @@ export class CaveMaze {
     });
 
     if (validMoves.length > 0) {
-      const move = validMoves[Math.floor(Math.random() * validMoves.length)];
+      const move = pickRandom(validMoves);
+      if (!move) return; // defensive - abort if no selection
+
       this.playerPos.x += move.dx;
       this.playerPos.y += move.dy;
 
-      // Illuminate current position
-      this.maze.tiles[this.playerPos.y][this.playerPos.x].illuminated = true;
+      // Illuminate current position (guard row/index access)
+      const row = this.maze.tiles[this.playerPos.y];
+      const tile = row ? row[this.playerPos.x] : undefined;
+      if (tile) tile.illuminated = true;
 
       // Generate exploration flavor text
       const explorationTexts = [
@@ -264,7 +306,7 @@ export class CaveMaze {
         `A cool breeze flows from the ${move.desc}...`,
       ];
 
-      const text = explorationTexts[Math.floor(Math.random() * explorationTexts.length)];
+      const text = pickRandom(explorationTexts) ?? '';
       console.log(`[CaveMaze] ${text}`);
     } else {
       console.log('[CaveMaze] Dead end - backtracking...');
@@ -277,9 +319,14 @@ export class CaveMaze {
     if (x < 0 || x >= this.maze.width || y < 0 || y >= this.maze.height) {
       return false;
     }
+    const row = this.maze.tiles[y];
+    if (!row) return false;
+    const tile = row[x];
+    if (!tile) return false;
 
-    const tile = this.maze.tiles[y][x];
-    return tile.type === 'floor' || tile.type === 'entrance' || tile.type === 'artifact';
+    return (
+      tile.type === 'floor' || tile.type === 'entrance' || tile.type === 'artifact'
+    );
   }
 
   private checkArtifactDiscovery(): boolean {

@@ -192,8 +192,10 @@ export class NPCPresenceProvider {
     state.currentRoom = toRoom;
     state.lastMoveTime = Date.now();
     state.isMoving = false;
-    state.moveStartTime = undefined;
-    state.targetRoom = undefined;
+  // Clear optional fields by deleting them on a Partial view to satisfy exactOptionalPropertyTypes
+  const partialState = state as unknown as Partial<NPCPresenceState>;
+  delete partialState.moveStartTime;
+  delete partialState.targetRoom;
 
     this.emitUpdate({
       type: 'npc_entered',
@@ -223,9 +225,10 @@ export class NPCPresenceProvider {
       return false;
     }
 
-    state.isMoving = false;
-    state.moveStartTime = undefined;
-    state.targetRoom = undefined;
+  state.isMoving = false;
+  const partialState2 = state as unknown as Partial<NPCPresenceState>;
+  delete partialState2.moveStartTime;
+  delete partialState2.targetRoom;
 
     this.emitUpdate({
       type: 'npc_stopped',
@@ -260,12 +263,15 @@ export class NPCPresenceProvider {
     const npcSet = this.roomOccupancy.get(roomId) || new Set();
     const capacity = this.roomCapacities.get(roomId);
 
-    return {
+    const base: RoomOccupancy = {
       roomId,
       npcIds: Array.from(npcSet),
-      capacity,
+      // include capacity only when defined to satisfy exactOptionalPropertyTypes
       isFull: capacity ? npcSet.size >= capacity : false,
+      ...(capacity !== undefined ? { capacity } : {}),
     };
+
+    return base;
   }
 
   /**

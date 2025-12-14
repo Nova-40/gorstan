@@ -24,11 +24,8 @@ const ancientsroom: Room = {
   zone: 'offgorstanZone',
   title: "Ancients' Room",
   description: [
-    "You enter a quiet chamber set apart from the infinite shelves of the Ancients' Library.",
-    'The walls are inscribed with shifting glyphs, softly glowing with ancient power.',
-    'A sense of timelessness pervades the air, and the silence is deep and contemplative.',
-    'In the center stands a pedestal holding a single artifact, radiating significance.',
-  ],
+  "You enter a quiet chamber set apart from the infinite shelves of the Ancients' Library. The walls are inscribed with shifting glyphs, softly glowing with ancient power. A sense of timelessness pervades the air, and the silence is deep and contemplative. In the center stands a pedestal holding a single artifact, radiating significance.",
+],
   image: 'offgorstanZone_ancientsroom.png',
   ambientAudio: 'ancients_room_ambience.mp3',
 
@@ -42,17 +39,23 @@ const ancientsroom: Room = {
     south: 'offgorstanZone_ancientslibrary',
   },
 
-  items: ['ancient_artifact', 'inscribed_scroll'],
+  items: [
+    { id: 'ancient_artifact', name: 'Ancient Artifact' },
+    { id: 'inscribed_scroll', name: 'Inscribed Scroll' }
+  ],
 
   interactables: {
     artifact_pedestal: {
-      description: 'A pedestal at the center of the room, supporting a mysterious artifact.',
+      description: [
+  "A pedestal at the center of the room, supporting a mysterious artifact.",
+],
       actions: ['examine', 'take', 'activate'],
       requires: [],
     },
     glyphic_walls: {
-      description:
-        'Walls covered in shifting glyphs that seem to rearrange themselves as you watch.',
+      description: [
+  "Walls covered in shifting glyphs that seem to rearrange themselves as you watch.",
+],
       actions: ['study', 'trace', 'decode'],
       requires: [],
     },
@@ -109,7 +112,9 @@ const ancientsroom: Room = {
 
   secrets: {
     hidden_compartment: {
-      description: 'A secret compartment in the pedestal, revealed by activating the artifact.',
+      description: [
+  "A secret compartment in the pedestal, revealed by activating the artifact.",
+],
       requirements: ['activate artifact_pedestal'],
       rewards: ['ancient_memory', 'unique_lore'],
     },
@@ -117,12 +122,16 @@ const ancientsroom: Room = {
 
   customActions: {
     activate_artifact: {
-      description: 'Activate the artifact to reveal its hidden memory.',
+      description: [
+  "Activate the artifact to reveal its hidden memory.",
+],
       requirements: [],
       effects: ['set_artifactExamined', 'unlock_secret'],
     },
     decode_glyphs: {
-      description: 'Decode the shifting glyphs to gain insight.',
+      description: [
+  "Decode the shifting glyphs to gain insight.",
+],
       requirements: [],
       effects: ['set_glyphsDecoded', 'gain_knowledge'],
     },

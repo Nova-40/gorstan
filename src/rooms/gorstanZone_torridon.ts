@@ -24,10 +24,8 @@ const torridon: Room = {
   zone: 'gorstanZone',
   title: 'Torridon Outskirts',
   description: [
-    'You stand on the outskirts of Torridon, where rolling hills meet the edge of the wilds. The wind carries the scent of pine and distant rain.',
-    'A narrow path leads toward the heart of the settlement, while another winds off into the misty highlands.',
-    'Travelers and traders pass by, exchanging news and goods. The area feels both welcoming and full of untold stories.',
-  ],
+  "You stand on the outskirts of Torridon, where rolling hills meet the edge of the wilds. The wind carries the scent of pine and distant rain. A narrow path leads toward the heart of the settlement, while another winds off into the misty highlands. Travelers and traders pass by, exchanging news and goods. The area feels both welcoming and full of untold stories.",
+],
   image: 'gorstanZone_torridon.png',
   ambientAudio: 'windy_fields.mp3',
 
@@ -45,21 +43,32 @@ const torridon: Room = {
     west: 'gorstanZone_highpass',
   },
 
-  items: ['pine_cone', 'weathered_map', 'traveler_note', 'wildflower'],
+  items: [
+    { id: 'pine_cone', name: 'Pine Cone' },
+    { id: 'weathered_map', name: 'Weathered Map' },
+    { id: 'traveler_note', name: 'Traveler Note' },
+    { id: 'wildflower', name: 'Wildflower' }
+  ],
 
   interactables: {
     signpost: {
-      description: 'A wooden signpost pointing toward various destinations.',
+      description: [
+  "A wooden signpost pointing toward various destinations.",
+],
       actions: ['read', 'inspect', 'follow_direction'],
       requires: [],
     },
     campfire: {
-      description: 'A small campfire where travelers gather to rest and share stories.',
+      description: [
+  "A small campfire where travelers gather to rest and share stories.",
+],
       actions: ['sit', 'listen', 'share_story'],
       requires: [],
     },
     trader_cart: {
-      description: 'A cart loaded with goods from distant lands.',
+      description: [
+  "A cart loaded with goods from distant lands.",
+],
       actions: ['browse', 'trade', 'chat'],
       requires: [],
     },
@@ -127,12 +136,16 @@ const torridon: Room = {
 
   secrets: {
     hidden_path: {
-      description: 'A secret path leading into the highlands, revealed by a careful search.',
+      description: [
+  "A secret path leading into the highlands, revealed by a careful search.",
+],
       requirements: ['inspect signpost', 'talk to wandering_trader'],
       rewards: ['shortcut_access', 'unique_view'],
     },
     trader_secret: {
-      description: 'A rare item offered only to those who share a story at the campfire.',
+      description: [
+  "A rare item offered only to those who share a story at the campfire.",
+],
       requirements: ['share_story', 'rest at campfire'],
       rewards: ['rare_supply', 'special_discount'],
     },
@@ -140,12 +153,16 @@ const torridon: Room = {
 
   customActions: {
     share_story: {
-      description: 'Share a story at the campfire to gain trust and information.',
+      description: [
+  "Share a story at the campfire to gain trust and information.",
+],
       requirements: [],
       effects: ['gain_trust', 'unlock_secret'],
     },
     explore_highlands: {
-      description: 'Venture into the misty highlands for adventure.',
+      description: [
+  "Venture into the misty highlands for adventure.",
+],
       requirements: ['weathered_map'],
       effects: ['discover_new_area', 'find_treasure'],
     },

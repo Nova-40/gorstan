@@ -75,7 +75,6 @@ const DEFAULT_GAME_STATE: Partial<LocalGameState> = {
   stage: 'game',
   transition: null,
   currentRoomId: 'controlnexus',
-  previousRoomId: undefined,
   history: [],
   flags: {},
   npcsInRoom: [],
@@ -174,7 +173,7 @@ export function executeReset(
 
     // Create new base state
     const newState: LocalGameState = {
-      ...DEFAULT_GAME_STATE,
+      ...(DEFAULT_GAME_STATE as LocalGameState),
       player: {
         id: 'player',
         name: currentState?.player?.name || '',
@@ -303,7 +302,7 @@ export function executeReset(
 
     // Fallback to minimal safe state
     return {
-      ...DEFAULT_GAME_STATE,
+      ...(DEFAULT_GAME_STATE as LocalGameState),
       player: {
         id: 'player',
         name: '',
