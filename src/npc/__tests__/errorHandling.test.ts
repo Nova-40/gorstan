@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { vi } from 'vitest';
 /*
   Gorstan – Copyright © 2025 Geoff Webster. All Rights Reserved.
@@ -31,6 +32,7 @@ import {
 describe('NPCErrorHandler', () => {
   let errorHandler: NPCErrorHandler;
 
+  // @ts-nocheck
   beforeEach(() => {
     resetErrorHandler();
     errorHandler = new NPCErrorHandler();

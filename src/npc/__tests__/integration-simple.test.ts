@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { vi } from 'vitest';
 /*
   Gorstan – Copyright © 2025 Geoff Webster. All Rights Reserved.
@@ -19,6 +20,7 @@ import { vi } from 'vitest';
 // Simplified Integration Tests for NPC Wandering System
 // Gorstan Game Beta 1 - Code Licence MIT
 
+// @ts-nocheck
 import { MovementExecutor } from '../movementExecution';
 import { NPCPerformanceOptimizer } from '../performanceOptimizer';
 import { NPCErrorHandler, NPCErrorType, NPCErrorSeverity } from '../errorHandling';

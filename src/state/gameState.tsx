@@ -212,6 +212,31 @@ export const handleBlueButtonPress = (state: LocalGameState): LocalGameState => 
 // --- Reducer ---
 export const gameStateReducer = (state: LocalGameState, action: GameAction): LocalGameState => {
   switch (action.type) {
+    // Generic SET: merge a partial snapshot into state (used by test initializer
+    // and a few higher-level helpers). Keep this non-destructive and only merge
+    // top-level keys so callers can set inventory/currentRoom easily.
+    case 'SET': {
+      const payload = action.payload as Partial<LocalGameState> | any;
+      if (!payload || typeof payload !== 'object') return state;
+      return {
+        ...state,
+        ...payload,
+      } as LocalGameState;
+    }
+
+    // Explicit SET_INVENTORY action: overwrite the player's inventory atomically.
+    case 'SET_INVENTORY': {
+      const newInv = (action as any).payload as string[];
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          inventory: Array.isArray(newInv) ? newInv : state.player.inventory,
+        },
+        inventory: Array.isArray(newInv) ? newInv : state.inventory,
+      } as LocalGameState;
+    }
+
     // --- Example action (legacy, retained for compatibility) ---
     case 'DRINK_COFFEE': {
       const hasCoffee = state.player.inventory.includes('coffee');

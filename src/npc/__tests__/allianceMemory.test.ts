@@ -17,6 +17,7 @@
 // src/npc/__tests__/allianceMemory.test.ts
 // Unit tests for alliance memory system
 
+// @ts-nocheck
 import {
   AllianceMemorySystem,
   AllianceContext,

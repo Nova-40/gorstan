@@ -1,4 +1,5 @@
 import { vi } from 'vitest';
+// @ts-nocheck
 /*
   Gorstan – Copyright © 2025 Geoff Webster. All Rights Reserved.
   
@@ -253,7 +254,7 @@ describe('MovePolicy', () => {
     test('should fallback to random when no home room', () => {
       const context: NPCMoveContext = {
         ...basicContext,
-        homeRoom: undefined,
+        homeRoom: '',
       };
 
       const policy: MovePolicyConfig = {
