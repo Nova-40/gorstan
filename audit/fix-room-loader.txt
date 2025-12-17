@@ -1,0 +1,10 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.15 [39m[90mC:/Users/geoff/Development/gorstan[39m
+
+ [32mΓ£ô[39m __tests__/unit/validateAllRooms.spec.ts [2m([22m[2m1 test[22m[2m)[22m[33m 498[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m   Start at [22m 11:26:23
+[2m   Duration [22m 5.31s[2m (transform 1.06s, setup 251ms, import 2.83s, tests 498ms, environment 1.41s)[22m
+

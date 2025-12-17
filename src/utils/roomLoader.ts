@@ -19,8 +19,9 @@
 
 import roomRegistry from '../rooms/roomRegistry';
 
-import type { Room } from '../types/Room';
-import type { RoomItem, RoomNPC } from '../types/Room';
+import { debugLog, debugWarn } from './debugLog';
+
+import type { Room, RoomItem, RoomNPC } from '../types/Room';
 
 type RoomId = string;
 
@@ -44,12 +45,12 @@ function isValidRoomId(id: string): boolean {
 
 // --- Function: validateRoomSchema ---
 function validateRoomSchema(room: unknown): room is RoomDefinition {
-  if (!room || typeof room !== 'object') return false;
+  if (!room || typeof room !== 'object') {return false;}
   const r = room as Record<string, unknown>;
-  if (typeof r.id !== 'string') return false;
-  if (typeof r.title !== 'string') return false;
-  if (!(typeof r.description === 'string' || Array.isArray(r.description))) return false;
-  if (typeof r.image !== 'string') return false;
+  if (typeof r.id !== 'string') {return false;}
+  if (typeof r.title !== 'string') {return false;}
+  if (!(typeof r.description === 'string' || Array.isArray(r.description))) {return false;}
+  if (typeof r.image !== 'string') {return false;}
   return true;
 }
 
@@ -60,13 +61,14 @@ function isNonEmptyString(value: any): value is string {
 
 // --- Function: initializeRooms ---
 function initializeRooms(): void {
-  console.log('[roomLoader] Initializing rooms...');
-  console.log('[roomLoader] roomRegistry keys:', Object.keys(roomRegistry));
+  debugLog('[roomLoader] Initializing rooms...');
+  const registryKeys = Object.keys(roomRegistry);
+  debugLog('[roomLoader] roomRegistry count:', registryKeys.length);
 
   for (const [, roomEntry] of Object.entries(roomRegistry)) {
     const candidate = roomEntry as unknown;
     if (!validateRoomSchema(candidate)) {
-      console.warn('[roomLoader] Skipping invalid room entry in registry:', candidate);
+      debugWarn('[roomLoader] Skipping invalid room entry in registry:', candidate);
       continue;
     }
 
@@ -74,18 +76,19 @@ function initializeRooms(): void {
     const roomId = r.id;
 
     if (!isValidRoomId(roomId)) {
-      console.warn(`[roomLoader] Invalid room ID format: ${roomId}`);
+      debugWarn(`[roomLoader] Invalid room ID format: ${roomId}`);
       continue;
     }
 
     if (roomMap.has(roomId)) {
-      console.warn(`[roomLoader] Duplicate room ID detected: ${roomId}. Overwriting.`);
+      debugWarn(`[roomLoader] Duplicate room ID detected: ${roomId}. Overwriting.`);
     }
 
     roomMap.set(roomId, r);
   }
 
-  console.log(`[roomLoader] Initialized ${roomMap.size} rooms`);
+  debugLog(`[roomLoader] Initialized ${roomMap.size} rooms`);
+  debugLog('[roomLoader] roomRegistry vs loaded:', { registry: registryKeys.length, loaded: roomMap.size });
   if (roomMap.size === 0) {
     console.error('[roomLoader] No rooms were loaded! This is a critical error.');
   }
@@ -98,7 +101,7 @@ export function loadRoomById(id: string): RoomDefinition | null {
   // Variable declaration
   const room = roomMap.get(id as RoomId) || null;
   if (!room) {
-    console.warn(
+    debugWarn(
       `[roomLoader] Room transition failed: Room '${id}' does not exist. Falling back to 'controlnexus'.`,
     );
   }
@@ -126,7 +129,7 @@ export function validateRooms(): string[] {
 
 // --- Function: getAllRoomsAsObject ---
 export function getAllRoomsAsObject(): Record<string, Room> {
-  console.log('[roomLoader] getAllRoomsAsObject called, roomMap size:', roomMap.size);
+  debugLog('[roomLoader] getAllRoomsAsObject called, roomMap size:', roomMap.size);
 
   if (roomMap.size === 0) {
     console.error('[roomLoader] roomMap is empty! Attempting to reinitialize...');
@@ -146,8 +149,8 @@ export function getAllRoomsAsObject(): Record<string, Room> {
 
     const npcs: RoomNPC[] = Array.isArray(base.npcs)
       ? (base.npcs as unknown[]).map((npc) => {
-          if (typeof npc === 'string') return { id: npc } as RoomNPC;
-          if (npc && typeof npc === 'object' && typeof (npc as any).id === 'string') return npc as RoomNPC;
+          if (typeof npc === 'string') {return { id: npc } as RoomNPC;}
+          if (npc && typeof npc === 'object' && typeof (npc as any).id === 'string') {return npc as RoomNPC;}
           return { id: 'unknown' } as RoomNPC;
         })
       : [];
@@ -164,6 +167,6 @@ export function getAllRoomsAsObject(): Record<string, Room> {
     } as unknown as Room;
   }
 
-  console.log('[roomLoader] Returning', Object.keys(obj).length, 'rooms');
+  debugLog('[roomLoader] Returning', Object.keys(obj).length, 'rooms');
   return obj;
 }

@@ -1,0 +1,59 @@
+Wrote C:\Users\geoff\Development\gorstan\public\images\_optimized.json
+Wrote C:\Users\geoff\Development\gorstan\src\lib\optimized.ts
+[36mvite v7.2.7 [32mbuilding client environment for production...[36m[39m
+transforming...
+[32mΓ£ô[39m 2537 modules transformed.
+rendering chunks...
+computing gzip size...
+[2mdist/[22m[32mindex.html                                   [39m[1m[2m  2.58 kB[22m[1m[22m[2m Γöé gzip:   1.05 kB[22m
+[2mdist/[22m[35massets/minigames-CK1sG-FM.css                [39m[1m[2m  0.86 kB[22m[1m[22m[2m Γöé gzip:   0.47 kB[22m
+[2mdist/[22m[35massets/components-CEaK046s.css               [39m[1m[2m 42.19 kB[22m[1m[22m[2m Γöé gzip:   8.94 kB[22m
+[2mdist/[22m[35massets/index-B2R-2nuk.css                    [39m[1m[2m 87.86 kB[22m[1m[22m[2m Γöé gzip:  13.83 kB[22m
+[2mdist/[22m[36massets/MiniQuestRewardService-cStqXHdj.js    [39m[1m[2m  0.12 kB[22m[1m[22m[2m Γöé gzip:   0.12 kB[22m
+[2mdist/[22m[36massets/MiniQuestProgressService-B48YkreF.js  [39m[1m[2m  0.50 kB[22m[1m[22m[2m Γöé gzip:   0.31 kB[22m
+[2mdist/[22m[36massets/game-logic-Dy61aajC.js                [39m[1m[2m  2.57 kB[22m[1m[22m[2m Γöé gzip:   1.19 kB[22m
+[2mdist/[22m[36massets/QuickActionsPanel-D0jQrUSx.js         [39m[1m[2m  5.45 kB[22m[1m[22m[2m Γöé gzip:   1.91 kB[22m
+[2mdist/[22m[36massets/index-BXq8rQ3g.js                     [39m[1m[2m  5.53 kB[22m[1m[22m[2m Γöé gzip:   2.56 kB[22m
+[2mdist/[22m[36massets/minigames-BTB_KNev.js                 [39m[1m[2m  9.15 kB[22m[1m[22m[2m Γöé gzip:   3.57 kB[22m
+[2mdist/[22m[36massets/lucide-react-h4xn57Hj.js              [39m[1m[2m 18.77 kB[22m[1m[22m[2m Γöé gzip:   7.04 kB[22m
+[2mdist/[22m[36massets/ai-services-Cliun7GE.js               [39m[1m[2m 22.07 kB[22m[1m[22m[2m Γöé gzip:   8.44 kB[22m
+[2mdist/[22m[36massets/npc-6rZyRvmT.js                       [39m[1m[2m 58.52 kB[22m[1m[22m[2m Γöé gzip:  20.47 kB[22m
+[2mdist/[22m[36massets/game-engine-v-19vHM7.js               [39m[1m[2m 64.53 kB[22m[1m[22m[2m Γöé gzip:  21.10 kB[22m
+[2mdist/[22m[36massets/framer-motion-C1FbEo5S.js             [39m[1m[2m 77.81 kB[22m[1m[22m[2m Γöé gzip:  25.28 kB[22m
+[2mdist/[22m[36massets/vendor-Dfro4JGE.js                    [39m[1m[2m101.96 kB[22m[1m[22m[2m Γöé gzip:  31.67 kB[22m
+[2mdist/[22m[36massets/react-vendor-DfqbgBpH.js              [39m[1m[2m141.85 kB[22m[1m[22m[2m Γöé gzip:  45.39 kB[22m
+[2mdist/[22m[36massets/components-BzJ8F2E2.js                [39m[1m[2m957.21 kB[22m[1m[22m[2m Γöé gzip: 266.81 kB[22m
+[32mΓ£ô built in 35.76s[39m
+\n--- Dev server audio range check (localhost:5173) ---
+ERROR: Response status code does not indicate success: 416 (Range Not Satisfiable).
+\n--- Replaced public/audio/intro.mp3 with introZone.mp3 (non-empty) ---
+intro.mp3 size bytes: 8586
+Range StatusCode=206
+Content-Range=bytes 0-1/8586
+\n--- pnpm run build (after intro.mp3 fix) ---
+Wrote C:\Users\geoff\Development\gorstan\public\images\_optimized.json
+Wrote C:\Users\geoff\Development\gorstan\src\lib\optimized.ts
+[36mvite v7.2.7 [32mbuilding client environment for production...[36m[39m
+transforming...
+[32mΓ£ô[39m 2537 modules transformed.
+rendering chunks...
+computing gzip size...
+[2mdist/[22m[32mindex.html                                   [39m[1m[2m  2.58 kB[22m[1m[22m[2m Γöé gzip:   1.05 kB[22m
+[2mdist/[22m[35massets/minigames-CK1sG-FM.css                [39m[1m[2m  0.86 kB[22m[1m[22m[2m Γöé gzip:   0.47 kB[22m
+[2mdist/[22m[35massets/components-CEaK046s.css               [39m[1m[2m 42.19 kB[22m[1m[22m[2m Γöé gzip:   8.94 kB[22m
+[2mdist/[22m[35massets/index-B2R-2nuk.css                    [39m[1m[2m 87.86 kB[22m[1m[22m[2m Γöé gzip:  13.83 kB[22m
+[2mdist/[22m[36massets/MiniQuestRewardService-cStqXHdj.js    [39m[1m[2m  0.12 kB[22m[1m[22m[2m Γöé gzip:   0.12 kB[22m
+[2mdist/[22m[36massets/MiniQuestProgressService-B48YkreF.js  [39m[1m[2m  0.50 kB[22m[1m[22m[2m Γöé gzip:   0.31 kB[22m
+[2mdist/[22m[36massets/game-logic-Dy61aajC.js                [39m[1m[2m  2.57 kB[22m[1m[22m[2m Γöé gzip:   1.19 kB[22m
+[2mdist/[22m[36massets/QuickActionsPanel-D0jQrUSx.js         [39m[1m[2m  5.45 kB[22m[1m[22m[2m Γöé gzip:   1.91 kB[22m
+[2mdist/[22m[36massets/index-BXq8rQ3g.js                     [39m[1m[2m  5.53 kB[22m[1m[22m[2m Γöé gzip:   2.56 kB[22m
+[2mdist/[22m[36massets/minigames-BTB_KNev.js                 [39m[1m[2m  9.15 kB[22m[1m[22m[2m Γöé gzip:   3.57 kB[22m
+[2mdist/[22m[36massets/lucide-react-h4xn57Hj.js              [39m[1m[2m 18.77 kB[22m[1m[22m[2m Γöé gzip:   7.04 kB[22m
+[2mdist/[22m[36massets/ai-services-Cliun7GE.js               [39m[1m[2m 22.07 kB[22m[1m[22m[2m Γöé gzip:   8.44 kB[22m
+[2mdist/[22m[36massets/npc-6rZyRvmT.js                       [39m[1m[2m 58.52 kB[22m[1m[22m[2m Γöé gzip:  20.47 kB[22m
+[2mdist/[22m[36massets/game-engine-v-19vHM7.js               [39m[1m[2m 64.53 kB[22m[1m[22m[2m Γöé gzip:  21.10 kB[22m
+[2mdist/[22m[36massets/framer-motion-C1FbEo5S.js             [39m[1m[2m 77.81 kB[22m[1m[22m[2m Γöé gzip:  25.28 kB[22m
+[2mdist/[22m[36massets/vendor-Dfro4JGE.js                    [39m[1m[2m101.96 kB[22m[1m[22m[2m Γöé gzip:  31.67 kB[22m
+[2mdist/[22m[36massets/react-vendor-DfqbgBpH.js              [39m[1m[2m141.85 kB[22m[1m[22m[2m Γöé gzip:  45.39 kB[22m
+[2mdist/[22m[36massets/components-BzJ8F2E2.js                [39m[1m[2m957.21 kB[22m[1m[22m[2m Γöé gzip: 266.81 kB[22m
+[32mΓ£ô built in 54.02s[39m

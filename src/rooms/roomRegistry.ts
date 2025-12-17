@@ -119,6 +119,16 @@ import mazeecho from './mazeZone_mazeecho';
 
 import mazehub from './mazeZone_mazehub';
 
+import postNyRabbitClearing from './rabbitTrialArc_postNyRabbitClearing';
+
+import rabbitTrial01Gate from './rabbitTrialArc_trial01Gate';
+
+import trialMountainDescent from './rabbitTrialArc_mountainDescent';
+
+import trialGolemPass from './rabbitTrialArc_golemPass';
+
+import trialVillage from './rabbitTrialArc_trialVillage';
+
 import mazeroom from './mazeZone_mazeroom';
 
 import mirrorhall from './mazeZone_mirrorhall';
@@ -221,6 +231,11 @@ const roomRegistry: Record<string, Room | any> = {
   centralpark,
   greasystoreroom,
   manhattanhub,
+  postNyRabbitClearing,
+  rabbitTrial01Gate,
+  trialMountainDescent,
+  trialGolemPass,
+  trialVillage,
   ancientslibrary,
   ancientsroom,
   ancientvault,
@@ -234,7 +249,6 @@ const roomRegistry: Record<string, Room | any> = {
   silentStanton,
   stantonharcourt,
   villagegreen,
-  interactables: {},
 };
 
 export default roomRegistry;
