@@ -118,319 +118,123 @@ body {
 
 /* Compact modifier used in RouteSelectScreen to fit more cards */
 .menu-card-compact { padding: 0.5rem !important; }
-.menu-card-compact .menu-card-cover { height: 96px; }
-.menu-card-compact .menu-card-title { font-size: 0.95rem; }
-.menu-card-compact .menu-card-subtitle { font-size: 0.75rem; }
 
-/* Modern, consistent MenuCard base styles */
-.menu-card {
-  border-radius: 12px;
-  padding: 1rem;
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  border: 1px solid rgba(255,255,255,0.03);
-  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
-}
-.menu-card:focus {
-  outline: none;
-  box-shadow: 0 0 0 6px rgba(34,197,94,0.12);
-  border-color: rgba(34,197,94,0.18);
-}
-.menu-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 18px 40px rgba(0,0,0,0.6);
+/* Clickable room layer: visual hotspots translate clicks into parser commands. */
+.clickable-room-wrapper {
+  position: relative;
 }
 
-.menu-card-title { font-weight: 700; font-size: 1.05rem; }
-.menu-card-subtitle { font-size: 0.85rem; opacity: 0.9; }
-.menu-card-content { padding-top: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
-.menu-card-footer { margin-top: 0.75rem; display: flex; justify-content: center; }
-
-/* Compact tweak: slightly tighter spacing */
-.menu-card-compact { padding: 0.6rem !important; }
-.menu-card-compact .menu-card-cover { height: 84px; }
-
-/* Welcome screen card tweak: remove top padding/margin so titles start on the first line */
-.welcome-card {
-  padding-top: 0 !important;
-}
-.welcome-card h2,
-.welcome-card h3,
-.welcome-card h4,
-.welcome-card h1 {
-  margin-top: 0 !important;
-  padding-top: 0 !important;
-}
-/* end welcome-card styles */
-
-
-#game-root {
-  display: grid;
-  grid-template-columns: 50% 50%;
-  grid-template-rows: 50% 50%;
-  height: 100vh;
-  width: 100vw;
+.clickable-room-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
 }
 
-.quad {
-  border: 1px solid #0f0;
-  box-sizing: border-box;
-  overflow: hidden;
-  padding: 10px;
-}
-
-.quad1 {
-  grid-area: 1 / 1 / 2 / 2;
-} /* Top-left */
-.quad2 {
-  grid-area: 1 / 2 / 2 / 3;
-} /* Top-right */
-.quad3 {
-  grid-area: 2 / 1 / 3 / 2;
-} /* Bottom-left */
-.quad4 {
-  grid-area: 2 / 2 / 3 / 3;
-} /* Bottom-right */
-
-.terminal-console {
-  background-color: #000;
-  color: #0f0;
-  padding: 10px;
-  height: 100%;
-  overflow-y: auto;
-  font-size: 14px;
-  line-height: 1.4;
-  border-left: 2px solid #0f0;
-}
-
-.command-input {
-  width: 100%;
-  padding: 8px;
-  background: #111;
-  border: 1px solid #0f0;
-  color: #0f0;
-}
-
-.direction-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  padding: 10px;
-}
-
-.icon-button {
-  background: none;
-  border: none;
-  color: #666;
+.clickable-hotspot {
+  position: absolute;
+  display: block;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
   cursor: pointer;
-  transition: color 0.2s ease-in-out;
+  pointer-events: auto;
 }
 
-.icon-button.active {
-  color: #0f0;
+.clickable-hotspot:focus-visible {
+  outline: 2px solid rgba(34, 197, 94, 0.95);
+  outline-offset: 2px;
+  background: rgba(34, 197, 94, 0.12);
 }
 
-.icon-button:hover {
-  color: #6f6;
+.clickable-hotspot:hover {
+  background: rgba(34, 197, 94, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.22);
 }
 
-.npc-icon {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 8px;
+.clickable-hotspot--exit,
+.clickable-hotspot--door,
+.clickable-hotspot--lockedDoor {
+  cursor: alias;
 }
 
-/* AppCore styles */
-.appcore-grid {
-  display: grid;
-  grid-template-columns: 50% 50%;
-  grid-template-rows: 50% 50%;
-  height: 100vh;
-  width: 100vw;
-  gap: 2px;
-  background-color: #000;
+.clickable-hotspot--portableObject {
+  cursor: grab;
 }
 
-.appcore-loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  width: 100vw;
-  background-color: #000;
-  color: #0f0;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 18px;
+.clickable-hotspot--machine,
+.clickable-hotspot--button,
+.clickable-hotspot--switch,
+.clickable-hotspot--lever {
+  cursor: pointer;
 }
 
-.quad {
-  border: 1px solid #0f0;
-  box-sizing: border-box;
-  overflow: hidden;
-  padding: 10px;
-  background-color: #000;
+.clickable-hotspot--character {
+  cursor: help;
 }
 
-.quad-1 {
-  grid-area: 1 / 1 / 2 / 2;
-  position: relative; /* Enable absolute positioning for children */
-} /* Top-left - Room Renderer */
-.quad-2 {
-  grid-area: 1 / 2 / 2 / 3;
-} /* Top-right - Terminal Console */
-.quad-3 {
-  grid-area: 2 / 1 / 3 / 2;
-} /* Bottom-left - Command Input & NPCs */
-.quad-4 {
-  grid-area: 2 / 2 / 3 / 3;
-} /* Bottom-right - Direction Icons & Actions */
-
-/* Panel styles */
-.quick-actions-panel {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 8px;
+.clickable-hotspot--debug {
+  background: rgba(34, 197, 94, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.55);
 }
 
-.quick-action {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border: 1px solid #0f0;
-  border-radius: 4px;
-  background: #111;
-  color: #0f0;
-  transition: all 0.2s;
+.clickable-hotspot-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translateY(-100%);
+  max-width: 18rem;
+  padding: 0.15rem 0.35rem;
+  border: 1px solid rgba(34, 197, 94, 0.75);
+  border-radius: 0.25rem;
+  background: rgba(0, 0, 0, 0.88);
+  color: #86efac;
+  font-size: 0.7rem;
+  white-space: nowrap;
+  pointer-events: none;
 }
 
-.quick-action.active {
-  background: #0f0;
-  color: #000;
+.clickable-context-menu {
+  position: fixed;
+  z-index: 9999;
+  min-width: 11rem;
+  max-width: 18rem;
+  padding: 0.35rem;
+  border: 1px solid rgba(34, 197, 94, 0.65);
+  border-radius: 0.5rem;
+  background: rgba(4, 12, 8, 0.96);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.65);
+  color: #bbf7d0;
+  pointer-events: auto;
 }
 
-.quick-action.inactive {
-  opacity: 0.5;
-  color: #555;
-  border-color: #555;
+.clickable-context-menu-title {
+  padding: 0.3rem 0.45rem 0.4rem;
+  border-bottom: 1px solid rgba(34, 197, 94, 0.25);
+  color: #22c55e;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
-.direction-icons-panel {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 4px;
-  padding: 8px;
+.clickable-context-menu-item {
+  display: block;
+  width: 100%;
+  padding: 0.45rem 0.5rem;
+  border: 0;
+  border-radius: 0.35rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
 }
 
-.direction-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border: 1px solid #0f0;
-  border-radius: 4px;
-  background: #111;
-  color: #0f0;
-  transition: all 0.2s;
-}
-
-.direction-icon.active {
-  background: #0f0;
-  color: #000;
-}
-
-.direction-icon.inactive {
-  opacity: 0.5;
-  color: #555;
-  border-color: #555;
-}
-
-.present-npcs-panel {
-  padding: 8px;
-  margin-top: 8px;
-}
-
-.npc-label {
-  color: #0f0;
-  font-size: 12px;
-  margin-bottom: 4px;
-}
-
-.npc-icon-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-/* Room Renderer styles */
-.room-container {
-  background: #000;
-  color: #0f0;
-  border: 1px solid #0f0;
-}
-
-.room-image-wrapper img {
-  border: 1px solid #0f0;
-}
-
-.room-content {
-  background: #000;
-  color: #0f0;
-}
-
-.room-footer {
-  background: #111;
-  border-top: 1px solid #0f0;
-}
-
-/* Terminal Console styles */
-.terminal-line {
-  margin-bottom: 4px;
-  font-family: 'Courier New', Courier, monospace;
-}
-
-.terminal-narrative {
-  color: #6f6;
-}
-
-.terminal-action {
-  color: #ff6;
-}
-
-.terminal-system {
-  color: #0ff;
-}
-
-.terminal-error {
-  color: #f66;
-}
-
-/* Simple fade-in animation used by credits and founder list */
-.animate-fade-in {
-  animation-name: fadeInUp;
-  animation-duration: 600ms;
-  animation-timing-function: cubic-bezier(.2,.8,.2,1);
-  animation-fill-mode: both;
-}
-
-@keyframes fadeInUp {
-  from { transform: translateY(8px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-/* Subtle animated gradient overlay for credits */
-.animate-gradient {
-  background: linear-gradient(120deg, rgba(255,200,100,0.04), rgba(34,197,94,0.06), rgba(6,182,212,0.02));
-  background-size: 400% 400%;
-  animation: gradientShift 8s ease infinite;
-}
-
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+.clickable-context-menu-item:hover,
+.clickable-context-menu-item:focus-visible {
+  outline: none;
+  background: rgba(34, 197, 94, 0.14);
+  color: #dcfce7;
 }
