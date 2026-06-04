@@ -15,9 +15,9 @@
 */
 
 // Gorstan and characters (c) Geoff Webster 2025
-// Renders room descriptions and image logic.
+// Renders room descriptions, image logic, and optional clickable room hotspots.
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import { Bone, Fish, Bot, UserCircle, ChefHat, Shield } from 'lucide-react';
 
@@ -27,6 +27,8 @@ import { useGameState } from '../state/gameState';
 import SmartImage from './media/SmartImage';
 import SmartVideo from './media/SmartVideo';
 import MicroObjectives from './MicroObjectives';
+import ClickableRoomOverlay from './ClickableRoomOverlay';
+import type { ClickableHotspot } from '../ui/clickableRooms/types';
 
 const npcIconMap: Record<string, React.ElementType> = {
   'mr wendell': Bone,
@@ -62,6 +64,13 @@ const RoomRenderer: React.FC = () => {
   // React state declaration
   const [looked, setLooked] = useState(false);
   const [lastRoomId, setLastRoomId] = useState<string | null>(null);
+
+  const handleClickableRoomCommand = useCallback(
+    (command: string): void => {
+      dispatch({ type: 'COMMAND_INPUT', payload: command });
+    },
+    [dispatch],
+  );
 
   // React effect hook
   useEffect(() => {
@@ -138,18 +147,26 @@ const RoomRenderer: React.FC = () => {
 
   // Variable declaration
   const hasExtraDetails = room.items && room.items.length > 0;
+  const roomHotspots = ((room as any).clickHotspots || (room as any).hotspots || []) as ClickableHotspot[];
+  const showHotspotDebug = Boolean(state.settings?.debugMode || state.flags?.showClickableHotspots);
 
   // JSX return block or main return
   return (
     <div className="room-container flex flex-col h-full bg-black rounded-lg shadow-inner overflow-hidden border border-green-600">
       {}
       {room.image ? (
-        <div className="room-image-wrapper h-full w-full overflow-hidden">
+        <div className="room-image-wrapper h-full w-full overflow-hidden clickable-room-wrapper">
           {room.image.toLowerCase().endsWith('.gif') ? (
             <SmartVideo src={`/images/${room.image}`} className="w-full h-full object-cover" />
           ) : (
             <SmartImage src={`/images/${room.image}`} alt={room.title} className="w-full h-full object-cover" sizes="100vw" />
           )}
+          <ClickableRoomOverlay
+            hotspots={roomHotspots}
+            state={state}
+            onCommand={handleClickableRoomCommand}
+            debug={showHotspotDebug}
+          />
         </div>
       ) : (
         <div className="room-no-image h-full w-full flex items-center justify-center bg-gray-900 text-green-600">
