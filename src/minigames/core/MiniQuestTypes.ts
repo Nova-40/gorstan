@@ -1,3 +1,5 @@
+import type { ComponentType } from "react";
+
 export type MiniQuestId =
   | "atomWeaver"
   | "paradoxRunner"
@@ -35,7 +37,7 @@ export interface MiniQuestProps {
 export interface MiniQuestSpec {
   id: MiniQuestId;
   displayName: string;
-  mount: React.ComponentType<MiniQuestProps>;
+  mount: ComponentType<MiniQuestProps>;
   weight?: number;
   tags?: Array<"puzzle"|"reflex"|"quantum"|"casino"|"narrative">;
   defaultRoomBindings?: string[];
