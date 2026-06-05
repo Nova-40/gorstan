@@ -21,6 +21,8 @@ Main exports:
 - `AppCoreOverlays`
 - `useResolvedNPCs`
 - `useRoomDirections`
+- `useAppCoreNavigationHistory`
+- `useAppCoreMiniQuests`
 - `useAppCoreModalState`
 - `useAppCoreNPCConsole`
 - `useAppCoreLookAround`
@@ -45,20 +47,22 @@ Wire in small commits:
 2. Replace the local lazy component declarations with the lazy component registry.
 3. Replace NPC resolution with `useResolvedNPCs`.
 4. Replace direction memo blocks with `useRoomDirections`.
-5. Replace fullscreen and sound state with `useAppCoreSystemControls`.
-6. Replace look modal state and handler with `useAppCoreLookAround`.
-7. Replace pickup handling with `useAppCoreInventoryActions`.
-8. Replace save-slot state and handlers with `useAppCoreSaveLoad`.
-9. Replace teleport and transition state with `useAppCoreTransitions`.
-10. Replace NPC console state and handlers with `useAppCoreNPCConsole`.
-11. Replace hint, guidance and AI monitor state with `useAppCoreAI`.
-12. Replace demo state and effects with `useAppCoreDemo`.
-13. Replace keyboard shortcut effect with `useAppCoreKeyboard`.
-14. Replace room bootstrap with `useRoomWorldInitialisation`.
-15. Replace room lifecycle effects with `useAppCoreRoomLifecycle`.
-16. Replace stage rendering with `GameStageRouter`.
-17. Replace the four-quadrant game JSX with `GameShell`.
-18. Replace overlay JSX with `AppCoreOverlays`.
+5. Replace room history/backout state with `useAppCoreNavigationHistory`.
+6. Replace miniquest bridge logic with `useAppCoreMiniQuests`.
+7. Replace fullscreen and sound state with `useAppCoreSystemControls`.
+8. Replace look modal state and handler with `useAppCoreLookAround`.
+9. Replace pickup handling with `useAppCoreInventoryActions`.
+10. Replace save-slot state and handlers with `useAppCoreSaveLoad`.
+11. Replace teleport and transition state with `useAppCoreTransitions`.
+12. Replace NPC console state and handlers with `useAppCoreNPCConsole`.
+13. Replace hint, guidance and AI monitor state with `useAppCoreAI`.
+14. Replace demo state and effects with `useAppCoreDemo`.
+15. Replace keyboard shortcut effect with `useAppCoreKeyboard`.
+16. Replace room bootstrap with `useRoomWorldInitialisation`.
+17. Replace room lifecycle effects with `useAppCoreRoomLifecycle`.
+18. Replace stage rendering with `GameStageRouter`.
+19. Replace the four-quadrant game JSX with `GameShell`.
+20. Replace overlay JSX with `AppCoreOverlays`.
 
 ## Behaviour checks after wiring
 
@@ -70,8 +74,10 @@ After each wiring commit, run the build and test the obvious user journeys:
 - same-zone movement
 - cross-zone teleport movement
 - Control Nexus sit transition
+- backout button behaviour and messages
 - `look`, `inventory`, `pick up`, `use item`, `talk to ayla`
 - `miniquests` and `play <id>`
+- miniquest close returns focus to command input
 - Run Bag pickup capacity increase
 - Dominic pickup special handling
 - save, load and delete save
