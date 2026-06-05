@@ -31,7 +31,8 @@ interface GameShellProps {
   readonly isFullscreen: boolean;
   readonly soundOn: boolean;
   readonly isDemoActive: boolean;
-  readonly ctrlClickDebug?: boolean;
+  readonly ctrlClickOnInstructions: boolean;
+  readonly canBackout: boolean;
   readonly onCommand: (command: string) => void;
   readonly onTalkToNPC: (npc?: NPC) => void;
   readonly onShowInventory: () => void;
@@ -45,9 +46,10 @@ interface GameShellProps {
   readonly onJump: () => void;
   readonly onMove: (direction: string) => void;
   readonly onSit: () => void;
-  readonly onBackout?: () => void;
-  readonly onDisarmTrap?: () => void;
-  readonly hasActiveTraps?: boolean;
+  readonly onDebugMenu: () => void;
+  readonly onBackout: () => void;
+  readonly onDisarmTrap: () => void;
+  readonly hasActiveTraps: boolean;
 }
 
 const GameShell: React.FC<GameShellProps> = ({
@@ -60,7 +62,8 @@ const GameShell: React.FC<GameShellProps> = ({
   isFullscreen,
   soundOn,
   isDemoActive,
-  ctrlClickDebug = false,
+  ctrlClickOnInstructions,
+  canBackout,
   onCommand,
   onTalkToNPC,
   onShowInventory,
@@ -74,9 +77,10 @@ const GameShell: React.FC<GameShellProps> = ({
   onJump,
   onMove,
   onSit,
+  onDebugMenu,
   onBackout,
   onDisarmTrap,
-  hasActiveTraps = false,
+  hasActiveTraps,
 }) => {
   return (
     <>
@@ -122,16 +126,20 @@ const GameShell: React.FC<GameShellProps> = ({
             isFullscreen={isFullscreen}
             soundOn={soundOn}
             onToggleSound={onToggleSound}
-            isDemoActive={isDemoActive}
             onJump={onJump}
             onMove={onMove}
             onSit={onSit}
             playerName={playerName}
-            ctrlClickDebug={ctrlClickDebug}
-            currentRoomId={currentRoomId}
+            ctrlClickOnInstructions={ctrlClickOnInstructions}
+            onDebugMenu={onDebugMenu}
             onBackout={onBackout}
-            onDisarmTrap={onDisarmTrap}
+            canBackout={canBackout}
+            currentRoomId={currentRoomId}
+            npcsInRoom={npcsInRoom}
+            onTalkToNPC={onTalkToNPC}
             hasActiveTraps={hasActiveTraps}
+            onDisarmTrap={onDisarmTrap}
+            isDemoActive={isDemoActive}
           />
         </React.Suspense>
       </div>
