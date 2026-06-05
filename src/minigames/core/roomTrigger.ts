@@ -1,6 +1,5 @@
 import { pickWeighted } from './selectMini';
 import { canTrigger, stampTrigger } from './cooldown';
-import { listMiniQuests } from '../core/MiniQuestRegistry';
 
 export type QuantumMiniCfg = {
   mode: 'fixed' | 'random';
@@ -8,6 +7,14 @@ export type QuantumMiniCfg = {
   seedHint?: string;
   cooldownSec?: number;
   reusable?: boolean;
+};
+
+const MINI_PRELOADERS: Record<string, () => Promise<unknown>> = {
+  atomWeaver: () => import('../atomweaver/AtomWeaverGame'),
+  paradoxRunner: () => import('../paradoxrunner/ParadoxRunnerGame'),
+  quantumMirror: () => import('../quantummirror/QuantumMirrorGame'),
+  colliderRoyale: () => import('../colliderroyale/ColliderRoyaleGame'),
+  doubleSlitRun: () => import('../doubleslitrun/DoubleSlitRunGame'),
 };
 
 // Attempt to launch a mini for a room according to a quantumMiniQuest config.
@@ -19,20 +26,17 @@ export async function maybeLaunchRoomMini(cfg: QuantumMiniCfg, roomId: string) {
   if (!chosen) return undefined;
   if (!canTrigger(roomId, chosen, cfg.cooldownSec ?? 0)) return undefined;
 
-  // Preload the module folder if possible
-  try {
-  // Include file extension in dynamic import so Vite can statically analyze the import path.
-  void import(/* webpackPrefetch: true */ `../${chosen}/${chosen}Game.js`).catch(()=>{});
-  } catch (e) {
-    // ignore
+  const preload = MINI_PRELOADERS[chosen];
+  if (preload) {
+    void preload().catch(() => {});
   }
 
-  // Use the global mini launcher if present
   try {
     (window as any).mini?.launch(chosen, roomId);
     stampTrigger(roomId, chosen);
-  } catch (e) {
+  } catch {
     // ignore
   }
+
   return chosen;
 }
