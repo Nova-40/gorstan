@@ -5,6 +5,7 @@
 */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 
 import type { Room } from '../../types/Room';
 import type { NPC } from '../../types/NPCTypes';
@@ -19,7 +20,7 @@ interface UseAppCoreLookAroundArgs {
 
 interface UseAppCoreLookAroundResult {
   readonly lookLines: string[];
-  readonly setLookLines: React.Dispatch<React.SetStateAction<string[]>>;
+  readonly setLookLines: Dispatch<SetStateAction<string[]>>;
   readonly handleLookAround: () => void;
 }
 
