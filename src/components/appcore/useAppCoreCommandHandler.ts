@@ -11,6 +11,7 @@ import { npcReact } from '../../engine/npcEngine';
 import { aiUsageMonitor } from '../../services/aiUsageMonitor';
 import { demoController } from '../../demo/demoController';
 import { demoService } from '../../demo/DemoModeService';
+import { itemDescriptions } from '../../data/itemDescriptions';
 import type { Room } from '../../types/Room';
 import type { NPC } from '../../types/NPCTypes';
 import type { OpenModalType } from './AppCoreTypes';
@@ -140,7 +141,10 @@ export function useAppCoreCommandHandler({
         const item = lowerCommand.replace('look at ', '').trim();
         if (item) {
           if (inventory.includes(item)) {
-            recordMessage(dispatch, `You look at the ${item}, but it doesn't seem particularly special.`);
+            const description =
+              itemDescriptions[item] ||
+              `You look at the ${item}, but it doesn't seem particularly special.`;
+            recordMessage(dispatch, description);
           } else {
             recordMessage(dispatch, `You're not carrying a '${item}'.`, 'error');
           }
