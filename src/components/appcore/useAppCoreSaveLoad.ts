@@ -39,6 +39,11 @@ function recordMessage(dispatch: (action: any) => void, text: string, type: 'sys
   });
 }
 
+function getSavedCurrentRoom(saveFile: SaveFile, fallbackRoomId: string): string {
+  const currentRoom = saveFile.progress.storylineProgress?.currentRoom;
+  return typeof currentRoom === 'string' && currentRoom.length > 0 ? currentRoom : fallbackRoomId;
+}
+
 export function useAppCoreSaveLoad({ state, dispatch, closeModal }: UseAppCoreSaveLoadArgs): UseAppCoreSaveLoadResult {
   const [saveSlots, setSaveSlots] = useState<AppCoreSaveSlot[]>([]);
 
@@ -106,7 +111,7 @@ export function useAppCoreSaveLoad({ state, dispatch, closeModal }: UseAppCoreSa
           id: slotId,
           name: slotName,
           playerName: saveFile.playerName,
-          currentRoom: saveFile.progress.storylineProgress?.currentRoom as string || state.currentRoomId,
+          currentRoom: getSavedCurrentRoom(saveFile, state.currentRoomId),
           timestamp: Date.now(),
           score: saveFile.progress.totalScore,
           playTime: state.metadata?.playTime || 0,
