@@ -5,6 +5,7 @@
 */
 
 import { useCallback, useState } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 
 import type { OpenModalType } from './AppCoreTypes';
 
@@ -17,7 +18,7 @@ interface UseAppCoreModalStateResult {
   readonly modal: OpenModalType;
   readonly openModal: (name: OpenModalType) => void;
   readonly closeModal: () => void;
-  readonly setModal: React.Dispatch<React.SetStateAction<OpenModalType>>;
+  readonly setModal: Dispatch<SetStateAction<OpenModalType>>;
 }
 
 export function useAppCoreModalState({
