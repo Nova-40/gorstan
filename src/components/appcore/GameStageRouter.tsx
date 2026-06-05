@@ -46,6 +46,19 @@ const LoadingDemo: React.FC = () => (
   </div>
 );
 
+const LoadingStage: React.FC = () => (
+  <div className="flex items-center justify-center min-h-screen bg-black text-green-400">
+    <div className="text-center space-y-4">
+      <div className="animate-spin w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full mx-auto" />
+      <p className="text-lg">Loading Gorstan…</p>
+    </div>
+  </div>
+);
+
+const StageSuspense: React.FC<{ readonly children: React.ReactNode }> = ({ children }) => (
+  <React.Suspense fallback={<LoadingStage />}>{children}</React.Suspense>
+);
+
 const GameStageRouter: React.FC<GameStageRouterProps> = ({
   stage,
   transitionType,
@@ -60,63 +73,85 @@ const GameStageRouter: React.FC<GameStageRouterProps> = ({
 }) => {
   if (teleportType === 'fractal' || teleportType === 'trek') {
     return (
-      <React.Suspense fallback={null}>
+      <StageSuspense>
         <TeleportManager teleportType={teleportType} onComplete={handleTeleportComplete} />
-      </React.Suspense>
+      </StageSuspense>
     );
   }
 
   if (transitionType === 'jump') {
-    return <JumpTransition onComplete={() => setReadyForTransition(true)} />;
+    return (
+      <StageSuspense>
+        <JumpTransition onComplete={() => setReadyForTransition(true)} />
+      </StageSuspense>
+    );
   }
 
   if (transitionType === 'sip') {
-    return <SipTransition onComplete={() => setReadyForTransition(true)} />;
+    return (
+      <StageSuspense>
+        <SipTransition onComplete={() => setReadyForTransition(true)} />
+      </StageSuspense>
+    );
   }
 
   if (transitionType === 'wait') {
-    return <WaitTransition onComplete={() => setReadyForTransition(true)} />;
+    return (
+      <StageSuspense>
+        <WaitTransition onComplete={() => setReadyForTransition(true)} />
+      </StageSuspense>
+    );
   }
 
   if (transitionType === 'dramatic_wait') {
-    return <DramaticWaitTransition onComplete={() => setReadyForTransition(true)} />;
+    return (
+      <StageSuspense>
+        <DramaticWaitTransition onComplete={() => setReadyForTransition(true)} />
+      </StageSuspense>
+    );
   }
 
   if (stage === 'splash') {
-    return <SplashScreen onComplete={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'welcome' })} />;
+    return (
+      <StageSuspense>
+        <SplashScreen onComplete={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'welcome' })} />
+      </StageSuspense>
+    );
   }
 
   if (stage === 'welcome') {
     return (
-      <MainMenu
-        onBegin={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'nameCapture' })}
-        onLoadGame={() => dispatch({ type: 'LOAD_SAVED_GAME' })}
-        onStartDemo={() => {
-          dispatch({ type: 'SET_PLAYER_NAME', payload: 'Demo Player' });
-          dispatch({ type: 'ADVANCE_STAGE', payload: 'demo' });
-        }}
-        onUnlock={() => {
-          dispatch({
-            type: 'RECORD_MESSAGE',
-            payload: {
-              id: `unlock-${Date.now()}`,
-              text: 'Unlock requested - redirecting to store...',
-              type: 'system',
-              timestamp: Date.now(),
-            },
-          });
-        }}
-        onOpenCredits={() => {
-          dispatch({ type: 'SET_FLAG', payload: { flag: 'openCredits', value: true } });
-        }}
-        onOpenDemo={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'demoList' })}
-      />
+      <StageSuspense>
+        <MainMenu
+          onBegin={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'nameCapture' })}
+          onLoadGame={() => dispatch({ type: 'LOAD_SAVED_GAME' })}
+          onStartDemo={() => {
+            dispatch({ type: 'SET_PLAYER_NAME', payload: 'Demo Player' });
+            dispatch({ type: 'ADVANCE_STAGE', payload: 'demo' });
+          }}
+          onUnlock={() => {
+            dispatch({
+              type: 'RECORD_MESSAGE',
+              payload: {
+                id: `unlock-${Date.now()}`,
+                text: 'Unlock requested - redirecting to store...',
+                type: 'system',
+                timestamp: Date.now(),
+              },
+            });
+          }}
+          onOpenCredits={() => {
+            dispatch({ type: 'SET_FLAG', payload: { flag: 'openCredits', value: true } });
+          }}
+          onOpenDemo={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'demoList' })}
+        />
+      </StageSuspense>
     );
   }
 
   if (stage === 'demoList') {
     return (
-      <React.Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading demos…</div>}>
+      <StageSuspense>
         <DemoScreen
           onClose={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'welcome' })}
           onStartDemo={(routeId: string) => {
@@ -125,7 +160,7 @@ const GameStageRouter: React.FC<GameStageRouterProps> = ({
             startDemoRoute(routeId);
           }}
         />
-      </React.Suspense>
+      </StageSuspense>
     );
   }
 
@@ -135,73 +170,69 @@ const GameStageRouter: React.FC<GameStageRouterProps> = ({
 
   if (stage === 'trialsGame') {
     return (
-      <React.Suspense
-        fallback={
-          <div className="flex items-center justify-center min-h-screen bg-black text-purple-400">
-            <div className="text-center space-y-4">
-              <div className="animate-spin w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full mx-auto" />
-              <h2 className="text-2xl font-bold">Loading Trials of Gorstan...</h2>
-              <p className="text-lg">Preparing your interactive adventure</p>
-            </div>
-          </div>
-        }
-      >
+      <StageSuspense>
         <TrialsGame
           onComplete={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'routeSelect' })}
           onQuit={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'routeSelect' })}
           autoStart={true}
         />
-      </React.Suspense>
+      </StageSuspense>
     );
   }
 
   if (stage === 'nameCapture') {
     return (
-      <PlayerNameCapture
-        onNameSubmit={(name: string) => {
-          dispatch({ type: 'SET_PLAYER_NAME', payload: name });
-          dispatch({ type: 'ADVANCE_STAGE', payload: 'routeSelect' });
-        }}
-      />
+      <StageSuspense>
+        <PlayerNameCapture
+          onNameSubmit={(name: string) => {
+            dispatch({ type: 'SET_PLAYER_NAME', payload: name });
+            dispatch({ type: 'ADVANCE_STAGE', payload: 'routeSelect' });
+          }}
+        />
+      </StageSuspense>
     );
   }
 
   if (stage === 'routeSelect') {
     return (
-      <RouteSelectScreen
-        onRouteSelect={(routeId: string) => {
-          dispatch({ type: 'SET_ROUTE', payload: routeId });
-          if (routeId === 'demo') {
-            dispatch({ type: 'ADVANCE_STAGE', payload: 'demo' });
-          } else if (routeId === 'short10_trialsofgorstan') {
-            dispatch({ type: 'ADVANCE_STAGE', payload: 'trialsGame' });
-          } else {
-            dispatch({ type: 'ADVANCE_STAGE', payload: 'intro' });
-          }
-        }}
-        onCancel={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'welcome' })}
-        onLoadGame={() => dispatch({ type: 'LOAD_SAVED_GAME' })}
-      />
+      <StageSuspense>
+        <RouteSelectScreen
+          onRouteSelect={(routeId: string) => {
+            dispatch({ type: 'SET_ROUTE', payload: routeId });
+            if (routeId === 'demo') {
+              dispatch({ type: 'ADVANCE_STAGE', payload: 'demo' });
+            } else if (routeId === 'short10_trialsofgorstan') {
+              dispatch({ type: 'ADVANCE_STAGE', payload: 'trialsGame' });
+            } else {
+              dispatch({ type: 'ADVANCE_STAGE', payload: 'intro' });
+            }
+          }}
+          onCancel={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'welcome' })}
+          onLoadGame={() => dispatch({ type: 'LOAD_SAVED_GAME' })}
+        />
+      </StageSuspense>
     );
   }
 
   if (stage === 'intro') {
     return (
-      <TeletypeIntro
-        playerName={playerName}
-        onComplete={(data: IntroCompletionData) => {
-          if (data.targetRoom) {
-            setTransitionTargetRoom(data.targetRoom);
-          }
-          if (data.inventoryBonus) {
-            setTransitionInventory(data.inventoryBonus);
-          }
-          const targetStage = `transition_${data.route}` as GameStage;
-          setTimeout(() => {
-            dispatch({ type: 'ADVANCE_STAGE', payload: targetStage });
-          }, 750);
-        }}
-      />
+      <StageSuspense>
+        <TeletypeIntro
+          playerName={playerName}
+          onComplete={(data: IntroCompletionData) => {
+            if (data.targetRoom) {
+              setTransitionTargetRoom(data.targetRoom);
+            }
+            if (data.inventoryBonus) {
+              setTransitionInventory(data.inventoryBonus);
+            }
+            const targetStage = `transition_${data.route}` as GameStage;
+            setTimeout(() => {
+              dispatch({ type: 'ADVANCE_STAGE', payload: targetStage });
+            }, 750);
+          }}
+        />
+      </StageSuspense>
     );
   }
 
