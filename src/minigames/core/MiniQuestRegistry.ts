@@ -1,4 +1,4 @@
-import { MiniQuestSpec, MiniQuestId } from "./MiniQuestTypes";
+import type { MiniQuestSpec, MiniQuestId } from "./MiniQuestTypes";
 import { AtomWeaverGame } from "../atomweaver/AtomWeaverGame";
 import { ParadoxRunnerGame } from "../paradoxrunner/ParadoxRunnerGame";
 import QuantumMirrorGame from "../quantummirror/QuantumMirrorGame";
