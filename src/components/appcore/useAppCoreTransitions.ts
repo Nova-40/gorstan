@@ -5,6 +5,7 @@
 */
 
 import { useCallback, useEffect, useState } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 
 import { useRoomTransition } from '../../hooks/useRoomTransition';
 import type { Room } from '../../types/Room';
@@ -21,23 +22,23 @@ interface UseAppCoreTransitionsArgs {
 
 interface UseAppCoreTransitionsResult {
   readonly teleportType: TeleportType;
-  readonly setTeleportType: React.Dispatch<React.SetStateAction<TeleportType>>;
+  readonly setTeleportType: Dispatch<SetStateAction<TeleportType>>;
   readonly teleportCallback: () => void;
-  readonly setTeleportCallback: React.Dispatch<React.SetStateAction<() => void>>;
+  readonly setTeleportCallback: Dispatch<SetStateAction<() => void>>;
   readonly transitionType: string | null;
-  readonly setTransitionType: React.Dispatch<React.SetStateAction<string | null>>;
+  readonly setTransitionType: Dispatch<SetStateAction<string | null>>;
   readonly readyForTransition: boolean;
-  readonly setReadyForTransition: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly setReadyForTransition: Dispatch<SetStateAction<boolean>>;
   readonly transitionTargetRoom: string;
-  readonly setTransitionTargetRoom: React.Dispatch<React.SetStateAction<string>>;
+  readonly setTransitionTargetRoom: Dispatch<SetStateAction<string>>;
   readonly transitionInventory: string[];
-  readonly setTransitionInventory: React.Dispatch<React.SetStateAction<string[]>>;
+  readonly setTransitionInventory: Dispatch<SetStateAction<string[]>>;
   readonly lastMovementAction: string;
-  readonly setLastMovementAction: React.Dispatch<React.SetStateAction<string>>;
+  readonly setLastMovementAction: Dispatch<SetStateAction<string>>;
   readonly roomTransitionActive: boolean;
-  readonly setRoomTransitionActive: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly setRoomTransitionActive: Dispatch<SetStateAction<boolean>>;
   readonly previousRoom: Room | null;
-  readonly setPreviousRoom: React.Dispatch<React.SetStateAction<Room | null>>;
+  readonly setPreviousRoom: Dispatch<SetStateAction<Room | null>>;
   readonly transitionInfo: ReturnType<typeof useRoomTransition>;
   readonly handleRoomChange: (newRoomId: string) => void;
   readonly handleTeleportComplete: () => void;
@@ -62,6 +63,7 @@ export function useAppCoreTransitions({
   const [roomTransitionActive, setRoomTransitionActive] = useState<boolean>(false);
   const [previousRoom, setPreviousRoom] = useState<Room | null>(null);
 
+  void state;
   const transitionInfo = useRoomTransition(previousRoom, room ?? null, lastMovementAction);
 
   const handleRoomChange = useCallback(
