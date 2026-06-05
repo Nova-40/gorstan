@@ -7,6 +7,7 @@
 import { useCallback, useEffect } from 'react';
 
 import { useMiniQuest } from '../../minigames/core/useMiniQuest';
+import type { MiniQuestId, MiniQuestResult } from '../../minigames/core/MiniQuestTypes';
 
 interface UseAppCoreMiniQuestsArgs {
   readonly dispatch: (action: any) => void;
@@ -17,7 +18,7 @@ interface UseAppCoreMiniQuestsResult {
   readonly mini: ReturnType<typeof useMiniQuest>;
   readonly launchMiniQuest: (id: string) => void;
   readonly clearMiniQuest: () => void;
-  readonly handleMiniQuestResult: (result: any) => void;
+  readonly handleMiniQuestResult: (result: MiniQuestResult) => void;
 }
 
 export function useAppCoreMiniQuests({
@@ -35,7 +36,7 @@ export function useAppCoreMiniQuests({
 
   const launchMiniQuest = useCallback(
     (id: string): void => {
-      mini.launch(id as any, currentRoomId, undefined);
+      mini.launch(id as MiniQuestId, currentRoomId, undefined);
     },
     [mini, currentRoomId],
   );
@@ -45,7 +46,7 @@ export function useAppCoreMiniQuests({
   }, [mini]);
 
   const handleMiniQuestResult = useCallback(
-    (result: any): void => {
+    (result: MiniQuestResult): void => {
       import('../../services/minigames/MiniQuestProgressService').then((module) =>
         module.recordResult(result),
       );
