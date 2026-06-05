@@ -15,7 +15,7 @@
 */
 
 // Gorstan and characters (c) Geoff Webster 2025
-// Renders room descriptions, image logic, and optional clickable room hotspots.
+// Renders room descriptions, image logic, optional sprites/effects, and clickable room hotspots.
 
 import React, { useState, useEffect, useCallback } from 'react';
 
@@ -28,7 +28,10 @@ import SmartImage from './media/SmartImage';
 import SmartVideo from './media/SmartVideo';
 import MicroObjectives from './MicroObjectives';
 import ClickableRoomOverlay from './ClickableRoomOverlay';
+import ItemSpriteLayer from './visual/ItemSpriteLayer';
+import RoomEffectsLayer from './visual/RoomEffectsLayer';
 import type { ClickableHotspot } from '../ui/clickableRooms/types';
+import type { RoomEffect, RoomItemPlacement } from '../ui/visualRooms/types';
 
 const npcIconMap: Record<string, React.ElementType> = {
   'mr wendell': Bone,
@@ -44,11 +47,9 @@ interface NpcDisplayProps {
 }
 
 const NpcDisplay: React.FC<NpcDisplayProps> = ({ npc }) => {
-  // Variable declaration
   const Icon = npcIconMap[npc.name.toLowerCase()] || UserCircle;
-  // Variable declaration
   const description = npc.entryMessage || `${npc.name} is here.`;
-  // JSX return block or main return
+
   return (
     <div className="npc-item flex items-center space-x-2" title={description}>
       <Icon size={20} className="text-green-400" />
@@ -59,10 +60,8 @@ const NpcDisplay: React.FC<NpcDisplayProps> = ({ npc }) => {
 
 const RoomRenderer: React.FC = () => {
   const { state, dispatch } = useGameState();
-  // Variable declaration
   const room = state.roomMap?.[state.currentRoomId];
-  // React state declaration
-  const [looked, setLooked] = useState(false);
+  const [, setLooked] = useState(false);
   const [lastRoomId, setLastRoomId] = useState<string | null>(null);
 
   const handleClickableRoomCommand = useCallback(
@@ -72,31 +71,26 @@ const RoomRenderer: React.FC = () => {
     [dispatch],
   );
 
-  // React effect hook
   useEffect(() => {
     setLooked(false);
 
     if (room && room.id !== lastRoomId) {
       setLastRoomId(room.id);
 
-      // Variable declaration
       const descriptionLines = Array.isArray(room.description)
         ? room.description
         : [room.description ?? 'You see nothing of note.'];
 
-      // Variable declaration
       const entryMessages = [
         { text: `--- ${room.title} ---`, type: 'narrative' },
         ...descriptionLines.map((line) => ({ text: line, type: 'narrative' })),
       ];
 
       if (room.consoleIntro && room.consoleIntro.length > 0) {
-        // Variable declaration
         const interpolateText = (text: string): string => {
           return text.replace(/\{\{PLAYER_NAME\}\}/g, state.player?.name || 'Player');
         };
 
-        // Variable declaration
         const consoleIntroMessages = [
           { text: '', type: 'system' },
           { text: `=== ${room.title.toUpperCase()} ===`, type: 'system' },
@@ -118,10 +112,8 @@ const RoomRenderer: React.FC = () => {
         }
       }
 
-      // Variable declaration
       const entryTimestamp = Date.now();
       entryMessages.forEach((msg, index) => {
-        // Variable declaration
         const message = {
           id: `room-entry-${room.id}-${entryTimestamp}-${index}`,
           text: msg.text,
@@ -131,10 +123,9 @@ const RoomRenderer: React.FC = () => {
         dispatch({ type: 'RECORD_MESSAGE', payload: message });
       });
     }
-  }, [room?.id, lastRoomId, room, dispatch]);
+  }, [room?.id, lastRoomId, room, dispatch, state.player?.name, state.player?.flags?.trapsDisabled]);
 
   if (!room || !room.id) {
-    // JSX return block or main return
     return (
       <div className="room-container p-4 text-center text-red-500">
         Error: No room data available.
@@ -145,15 +136,20 @@ const RoomRenderer: React.FC = () => {
     );
   }
 
-  // Variable declaration
-  const hasExtraDetails = room.items && room.items.length > 0;
-  const roomHotspots = ((room as any).clickHotspots || (room as any).hotspots || []) as ClickableHotspot[];
-  const showHotspotDebug = Boolean(state.settings?.debugMode || state.flags?.showClickableHotspots);
+  const visualRoom = room as typeof room & {
+    clickHotspots?: ClickableHotspot[];
+    hotspots?: ClickableHotspot[];
+    itemPlacements?: RoomItemPlacement[];
+    effects?: RoomEffect[];
+  };
 
-  // JSX return block or main return
+  const roomHotspots = (visualRoom.clickHotspots || visualRoom.hotspots || []) as ClickableHotspot[];
+  const itemPlacements = (visualRoom.itemPlacements || []) as RoomItemPlacement[];
+  const roomEffects = (visualRoom.effects || []) as RoomEffect[];
+  const showVisualDebug = Boolean(state.settings?.debugMode || state.flags?.showClickableHotspots);
+
   return (
     <div className="room-container flex flex-col h-full bg-black rounded-lg shadow-inner overflow-hidden border border-green-600">
-      {}
       {room.image ? (
         <div className="room-image-wrapper h-full w-full overflow-hidden clickable-room-wrapper">
           {room.image.toLowerCase().endsWith('.gif') ? (
@@ -161,11 +157,25 @@ const RoomRenderer: React.FC = () => {
           ) : (
             <SmartImage src={`/images/${room.image}`} alt={room.title} className="w-full h-full object-cover" sizes="100vw" />
           )}
+
+          <ItemSpriteLayer
+            placements={itemPlacements}
+            state={state}
+            roomId={room.id}
+            debug={showVisualDebug}
+          />
+
+          <RoomEffectsLayer
+            effects={roomEffects}
+            state={state}
+            debug={showVisualDebug}
+          />
+
           <ClickableRoomOverlay
             hotspots={roomHotspots}
             state={state}
             onCommand={handleClickableRoomCommand}
-            debug={showHotspotDebug}
+            debug={showVisualDebug}
           />
         </div>
       ) : (
@@ -177,7 +187,6 @@ const RoomRenderer: React.FC = () => {
         </div>
       )}
 
-      {}
       {room.music && (
         <audio autoPlay loop>
           <source src={room.music} type="audio/mpeg" />
