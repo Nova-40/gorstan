@@ -5,6 +5,7 @@
 */
 
 import { useCallback, useState } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 
 import { npcReact } from '../../engine/npcEngine';
 import type { NPC } from '../../types/NPCTypes';
@@ -20,9 +21,9 @@ interface UseAppCoreNPCConsoleArgs {
 
 interface UseAppCoreNPCConsoleResult {
   readonly selectedNPC: NPC | null;
-  readonly setSelectedNPC: React.Dispatch<React.SetStateAction<NPC | null>>;
+  readonly setSelectedNPC: Dispatch<SetStateAction<NPC | null>>;
   readonly isGroupConversation: boolean;
-  readonly setIsGroupConversation: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly setIsGroupConversation: Dispatch<SetStateAction<boolean>>;
   readonly handleOpenNPCConsole: (npc?: NPC) => void;
   readonly handleTalkToAyla: () => void;
   readonly handleNPCMessage: (message: string, npcId: string) => void;
