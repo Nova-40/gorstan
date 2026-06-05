@@ -5,6 +5,7 @@
 */
 
 import { useCallback, useEffect, useState } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 
 import { demoController } from '../../demo/demoController';
 import { isDemoEnvironment } from '../../demo/demoGate';
@@ -17,16 +18,16 @@ interface UseAppCoreDemoArgs {
   readonly stage: GameStage;
   readonly hasFlag: (flag: string) => boolean;
   readonly setTeleportType: (type: TeleportType) => void;
-  readonly setTeleportCallback: (callback: () => void) => void;
+  readonly setTeleportCallback: Dispatch<SetStateAction<() => void>>;
   readonly handleCommand: (command: string) => void;
 }
 
 interface UseAppCoreDemoResult {
   readonly isDemo: boolean;
   readonly isDemoActive: boolean;
-  readonly setIsDemoActive: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly setIsDemoActive: Dispatch<SetStateAction<boolean>>;
   readonly demoBanner?: string;
-  readonly setDemoBanner: React.Dispatch<React.SetStateAction<string | undefined>>;
+  readonly setDemoBanner: Dispatch<SetStateAction<string | undefined>>;
   readonly startDemoMode: () => void;
   readonly startDemoRoute: (routeId?: string) => void;
 }
@@ -51,7 +52,7 @@ export function useAppCoreDemo({
 
     const teleportTrigger = (teleportType: 'fractal' | 'trek', callback: () => void) => {
       setTeleportType(teleportType);
-      setTeleportCallback(callback);
+      setTeleportCallback(() => callback);
     };
 
     demoController.setTeleportTrigger(teleportTrigger);
