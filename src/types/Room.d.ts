@@ -57,6 +57,7 @@ export interface RoomExits {
   down?: string;
   in?: string;
   out?: string;
+  back?: string;
   jump?: string;
   return?: string;
   portal?: string;
