@@ -10,6 +10,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { SaveManager } from '../../services/SaveManager';
+import type { SaveFile } from '../../services/SaveManager';
 import type { AppCoreSaveSlot } from './AppCoreTypes';
 
 interface UseAppCoreSaveLoadArgs {
@@ -43,11 +44,6 @@ export function useAppCoreSaveLoad({ state, dispatch, closeModal }: UseAppCoreSa
 
   const loadSaveSlots = useCallback(async () => {
     try {
-      const saved = localStorage.getItem('gorstan_save_slots');
-      if (saved) {
-        setSaveSlots(JSON.parse(saved));
-      }
-
       const saveSlotInfos = await SaveManager.listSlots();
       setSaveSlots(
         saveSlotInfos.map((slot) => ({
@@ -68,8 +64,8 @@ export function useAppCoreSaveLoad({ state, dispatch, closeModal }: UseAppCoreSa
   const handleSave = useCallback(
     async (slotId: string, slotName: string) => {
       try {
-        const saveFile = {
-          version: 7,
+        const saveFile: SaveFile = {
+          version: SaveManager.CURRENT_VERSION,
           playerName: state.player?.name || 'Player',
           progress: {
             questsCompleted: 0,
@@ -89,9 +85,9 @@ export function useAppCoreSaveLoad({ state, dispatch, closeModal }: UseAppCoreSa
           timestamp: new Date().toISOString(),
           gameState: state,
           metadata: {
-            saveVersion: 7,
+            saveVersion: SaveManager.CURRENT_VERSION,
             gameVersion: '3.8.8',
-            features: ['save_migration_v7', 'backward_compatibility', 'data_integrity_checking'],
+            features: ['modern_save_system', 'data_integrity_checking', 'automatic_optimization'],
             compatibility: {
               minGameVersion: '3.8.0',
               maxGameVersion: '9.9.9',
@@ -99,7 +95,8 @@ export function useAppCoreSaveLoad({ state, dispatch, closeModal }: UseAppCoreSa
           },
         };
 
-        const result = await SaveManager.save(parseInt(slotId, 10), saveFile as any);
+        const numericSlotId = Number.parseInt(slotId, 10);
+        const result = await SaveManager.save(numericSlotId, saveFile);
         if (!result.success) {
           throw new Error(result.message);
         }
@@ -109,15 +106,14 @@ export function useAppCoreSaveLoad({ state, dispatch, closeModal }: UseAppCoreSa
           id: slotId,
           name: slotName,
           playerName: saveFile.playerName,
-          currentRoom: saveFile.progress.storylineProgress.currentRoom || state.currentRoomId,
+          currentRoom: saveFile.progress.storylineProgress?.currentRoom as string || state.currentRoomId,
           timestamp: Date.now(),
           score: saveFile.progress.totalScore,
           playTime: state.metadata?.playTime || 0,
         });
 
         setSaveSlots(newSlots);
-        localStorage.setItem('gorstan_save_slots', JSON.stringify(newSlots));
-        recordMessage(dispatch, `Game saved as "${slotName}" with migration support`);
+        recordMessage(dispatch, `Game saved as "${slotName}"`);
         closeModal();
       } catch (error) {
         console.error('Failed to save game:', error);
@@ -130,7 +126,7 @@ export function useAppCoreSaveLoad({ state, dispatch, closeModal }: UseAppCoreSa
   const handleLoad = useCallback(
     async (slotId: string) => {
       try {
-        const saveFile = await SaveManager.load(parseInt(slotId, 10));
+        const saveFile = await SaveManager.load(Number.parseInt(slotId, 10));
         if (!saveFile) {
           throw new Error('Save file not found or corrupted');
         }
@@ -138,14 +134,14 @@ export function useAppCoreSaveLoad({ state, dispatch, closeModal }: UseAppCoreSa
         const gameState = saveFile.gameState;
         if (gameState) {
           dispatch({ type: 'ADVANCE_STAGE', payload: gameState.stage });
-          dispatch({ type: 'SET_PLAYER_NAME', payload: gameState.player.name });
+          dispatch({ type: 'SET_PLAYER_NAME', payload: gameState.player?.name || saveFile.playerName });
           dispatch({ type: 'MOVE_TO_ROOM', payload: gameState.currentRoomId });
 
           Object.entries(gameState.flags || {}).forEach(([flag, value]) => {
             dispatch({ type: 'SET_FLAG', payload: { flag, value } });
           });
 
-          if (gameState.player.inventory) {
+          if (gameState.player?.inventory) {
             gameState.player.inventory.forEach((item: string) => {
               dispatch({ type: 'ADD_TO_INVENTORY', payload: item });
             });
@@ -165,13 +161,17 @@ export function useAppCoreSaveLoad({ state, dispatch, closeModal }: UseAppCoreSa
   const handleDeleteSave = useCallback(
     (slotId: string) => {
       try {
-        localStorage.removeItem(`gorstan_save_${slotId}`);
+        const deleted = SaveManager.deleteSave(Number.parseInt(slotId, 10));
+        if (!deleted) {
+          throw new Error('Save delete failed');
+        }
+
         const newSlots = saveSlots.filter((slot) => slot.id !== slotId);
         setSaveSlots(newSlots);
-        localStorage.setItem('gorstan_save_slots', JSON.stringify(newSlots));
         recordMessage(dispatch, 'Save deleted successfully');
       } catch (error) {
         console.error('Failed to delete save:', error);
+        recordMessage(dispatch, `Failed to delete save: ${error}`, 'error');
       }
     },
     [saveSlots, dispatch],
