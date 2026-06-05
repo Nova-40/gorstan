@@ -74,3 +74,5 @@ export { useAppCoreRoomLifecycle } from './useAppCoreRoomLifecycle';
 export { useAppCoreAI } from './useAppCoreAI';
 export { useAppCoreCommandHandler } from './useAppCoreCommandHandler';
 export { useAppCoreInventoryActions } from './useAppCoreInventoryActions';
+export { useAppCoreNavigationHistory } from './useAppCoreNavigationHistory';
+export { useAppCoreMiniQuests } from './useAppCoreMiniQuests';
