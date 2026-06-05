@@ -1,4 +1,4 @@
-import { MiniQuestResult } from "../../minigames/core/MiniQuestTypes";
+import type { MiniQuestResult } from "../../minigames/core/MiniQuestTypes";
 const KEY = "gorstan.miniquest.progress";
 export type ProgressMap = Record<string, { runs: number; bestScore: number; last: number }>;
 
