@@ -65,6 +65,10 @@ interface AppCoreOverlaysProps {
   readonly onCloseAIMonitor: () => void;
 }
 
+const OverlaySuspense: React.FC<{ readonly children: React.ReactNode }> = ({ children }) => (
+  <React.Suspense fallback={null}>{children}</React.Suspense>
+);
+
 const AppCoreOverlays: React.FC<AppCoreOverlaysProps> = ({
   demoBanner,
   isDemoActive,
@@ -109,9 +113,11 @@ const AppCoreOverlays: React.FC<AppCoreOverlaysProps> = ({
         </div>
       ) : null}
 
-      <MultiverseRebootSequence />
+      <OverlaySuspense>
+        <MultiverseRebootSequence />
+      </OverlaySuspense>
 
-      <React.Suspense fallback={null}>
+      <OverlaySuspense>
         <RoomTransition
           isActive={roomTransitionActive && transitionInfo.shouldAnimate}
           transitionType={transitionInfo.transitionType}
@@ -119,25 +125,25 @@ const AppCoreOverlays: React.FC<AppCoreOverlaysProps> = ({
           toZone={transitionInfo.toZone ?? ''}
           onComplete={onRoomTransitionComplete}
         />
-      </React.Suspense>
+      </OverlaySuspense>
 
       {showDebugPanel && (
-        <React.Suspense fallback={null}>
+        <OverlaySuspense>
           <DebugPanel />
-        </React.Suspense>
+        </OverlaySuspense>
       )}
 
-      <React.Suspense fallback={null}>
+      <OverlaySuspense>
         <CombatActionsPanel />
-      </React.Suspense>
+      </OverlaySuspense>
 
-      <React.Suspense fallback={null}>
+      <OverlaySuspense>
         <ModalOverlay isOpen={modalOpen} onClose={onCloseModal}>
           {modalContent}
         </ModalOverlay>
-      </React.Suspense>
+      </OverlaySuspense>
 
-      <React.Suspense fallback={null}>
+      <OverlaySuspense>
         <PauseMenu
           isOpen={showPause}
           onResume={onResume}
@@ -146,14 +152,14 @@ const AppCoreOverlays: React.FC<AppCoreOverlaysProps> = ({
           onOptions={onOptions}
           onQuitToMain={onQuitToMain}
         />
-      </React.Suspense>
+      </OverlaySuspense>
 
-      <React.Suspense fallback={null}>
+      <OverlaySuspense>
         <BlueButtonWarningModal
           isOpen={showBlueButtonWarning}
           onClose={onDismissBlueButtonWarning}
         />
-      </React.Suspense>
+      </OverlaySuspense>
 
       {currentHint && (
         <AylaHintPopup
@@ -164,30 +170,36 @@ const AppCoreOverlays: React.FC<AppCoreOverlaysProps> = ({
       )}
 
       {currentGuidance && (
-        <UnifiedAIPopup
-          guidance={currentGuidance}
-          onDismiss={onDismissGuidance}
-          onTalkToAyla={onTalkToAylaFromGuidance}
-          onOpenMiniquests={onOpenMiniquestsFromGuidance}
-        />
+        <OverlaySuspense>
+          <UnifiedAIPopup
+            guidance={currentGuidance}
+            onDismiss={onDismissGuidance}
+            onTalkToAyla={onTalkToAylaFromGuidance}
+            onOpenMiniquests={onOpenMiniquestsFromGuidance}
+          />
+        </OverlaySuspense>
       )}
 
-      <PerformanceDashboard
-        isOpen={showPerformanceDashboard}
-        onClose={onClosePerformanceDashboard}
-      />
+      <OverlaySuspense>
+        <PerformanceDashboard
+          isOpen={showPerformanceDashboard}
+          onClose={onClosePerformanceDashboard}
+        />
+      </OverlaySuspense>
 
       {showAIMonitor && (
-        <AIMonitorDisplay
-          updates={gameplayUpdates}
-          npcBehaviors={npcBehaviors}
-          onClose={onCloseAIMonitor}
-        />
+        <OverlaySuspense>
+          <AIMonitorDisplay
+            updates={gameplayUpdates}
+            npcBehaviors={npcBehaviors}
+            onClose={onCloseAIMonitor}
+          />
+        </OverlaySuspense>
       )}
 
-      <React.Suspense fallback={null}>
+      <OverlaySuspense>
         <QuickWinNotifications />
-      </React.Suspense>
+      </OverlaySuspense>
     </>
   );
 };
