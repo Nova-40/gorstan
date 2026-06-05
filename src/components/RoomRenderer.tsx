@@ -47,13 +47,14 @@ interface NpcDisplayProps {
 }
 
 const NpcDisplay: React.FC<NpcDisplayProps> = ({ npc }) => {
-  const Icon = npcIconMap[npc.name.toLowerCase()] || UserCircle;
-  const description = npc.entryMessage || `${npc.name} is here.`;
+  const displayName = npc.name ?? npc.id ?? 'Unknown visitor';
+  const Icon = npcIconMap[displayName.toLowerCase()] || UserCircle;
+  const description = npc.entryMessage || `${displayName} is here.`;
 
   return (
     <div className="npc-item flex items-center space-x-2" title={description}>
       <Icon size={20} className="text-green-400" />
-      <span className="npc-name font-medium text-green-300">{npc.name}</span>
+      <span className="npc-name font-medium text-green-300">{displayName}</span>
     </div>
   );
 };
