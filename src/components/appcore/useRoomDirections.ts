@@ -40,6 +40,8 @@ export function useRoomDirections(room: Room | undefined, roomMap: Record<string
       sit: room?.exits?.sit ? (roomMap[room.exits.sit]?.title ?? room.exits.sit) : '',
       up: room?.exits?.up ? (roomMap[room.exits.up]?.title ?? room.exits.up) : '',
       down: room?.exits?.down ? (roomMap[room.exits.down]?.title ?? room.exits.down) : '',
+      back: room?.exits?.back ? (roomMap[room.exits.back]?.title ?? room.exits.back) : '',
+      out: room?.exits?.out ? (roomMap[room.exits.out]?.title ?? room.exits.out) : '',
     }),
     [room?.exits, roomMap],
   );
