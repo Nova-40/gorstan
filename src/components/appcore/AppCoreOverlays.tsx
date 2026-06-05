@@ -8,7 +8,6 @@
 import React from 'react';
 
 import AylaHintPopup from '../AylaHintPopup';
-import type { NPC } from '../../types/NPCTypes';
 import type { AylaHintResponse } from '../../services/aylaHintSystem';
 import type { AIGuidanceResponse } from '../../services/unifiedAI';
 import type { GameplayUpdate } from '../../services/aiUsageMonitor';
@@ -26,13 +25,15 @@ import {
   UnifiedAIPopup,
 } from './AppCoreLazyComponents';
 
+export type RoomTransitionKind = 'zone_change' | 'portal' | 'normal' | 'chair_portal';
+
 interface AppCoreOverlaysProps {
   readonly demoBanner?: string;
   readonly isDemoActive: boolean;
   readonly roomTransitionActive: boolean;
   readonly transitionInfo: {
     shouldAnimate: boolean;
-    transitionType: string;
+    transitionType: RoomTransitionKind;
     fromZone?: string | null;
     toZone?: string | null;
   };
