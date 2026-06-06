@@ -42,6 +42,7 @@ interface AppCoreOverlaysProps {
   readonly modalOpen: boolean;
   readonly onCloseModal: () => void;
   readonly modalContent: React.ReactNode;
+  readonly modalContentOwnsOverlay?: boolean;
   readonly showPause: boolean;
   readonly onResume: () => void;
   readonly onSave: () => void;
@@ -79,6 +80,7 @@ const AppCoreOverlays: React.FC<AppCoreOverlaysProps> = ({
   modalOpen,
   onCloseModal,
   modalContent,
+  modalContentOwnsOverlay = false,
   showPause,
   onResume,
   onSave,
@@ -137,11 +139,15 @@ const AppCoreOverlays: React.FC<AppCoreOverlaysProps> = ({
         <CombatActionsPanel />
       </OverlaySuspense>
 
-      <OverlaySuspense>
-        <ModalOverlay isOpen={modalOpen} onClose={onCloseModal}>
-          {modalContent}
-        </ModalOverlay>
-      </OverlaySuspense>
+      {modalContentOwnsOverlay ? (
+        modalOpen ? <OverlaySuspense>{modalContent}</OverlaySuspense> : null
+      ) : (
+        <OverlaySuspense>
+          <ModalOverlay isOpen={modalOpen} onClose={onCloseModal}>
+            {modalContent}
+          </ModalOverlay>
+        </OverlaySuspense>
+      )}
 
       <OverlaySuspense>
         <PauseMenu
