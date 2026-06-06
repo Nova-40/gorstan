@@ -73,6 +73,80 @@ const aliases: Record<string, string> = {
   'check for': 'search',
 };
 
+function normaliseName(value: string): string {
+  return value.toLowerCase().trim();
+}
+
+function objectName(entry: unknown): string | null {
+  if (typeof entry === 'string') return entry;
+  if (!entry || typeof entry !== 'object') return null;
+
+  const candidate = entry as { name?: unknown; title?: unknown; id?: unknown; label?: unknown };
+  return String(candidate.name ?? candidate.title ?? candidate.label ?? candidate.id ?? '').trim() || null;
+}
+
+function objectDescription(entry: unknown): string | null {
+  if (!entry || typeof entry !== 'object') return null;
+
+  const candidate = entry as {
+    description?: unknown;
+    examine?: unknown;
+    inspect?: unknown;
+    text?: unknown;
+    content?: unknown;
+    entryMessage?: unknown;
+  };
+
+  const value = candidate.description
+    ?? candidate.examine
+    ?? candidate.inspect
+    ?? candidate.text
+    ?? candidate.content
+    ?? candidate.entryMessage;
+
+  if (Array.isArray(value)) return value.map(String).join('\n');
+  if (typeof value === 'string') return value;
+  return null;
+}
+
+function matchesObjectName(entry: unknown, target: string): boolean {
+  const name = objectName(entry);
+  if (!name) return false;
+
+  const normalisedName = normaliseName(name);
+  const normalisedTarget = normaliseName(target);
+
+  return normalisedName === normalisedTarget
+    || normalisedName.includes(normalisedTarget)
+    || normalisedTarget.includes(normalisedName);
+}
+
+function inspectObject(target: string, currentRoom: Room, gameState: LocalGameState): TerminalMessage[] | null {
+  const roomAsAny = currentRoom as any;
+  const candidates: unknown[] = [
+    ...(currentRoom.items ?? []),
+    ...(roomAsAny.environment ?? []),
+    ...(roomAsAny.objects ?? []),
+    ...(roomAsAny.hotspots ?? []),
+    ...(currentRoom.npcs ?? []),
+    ...(gameState.npcsInRoom ?? []),
+  ];
+
+  const match = candidates.find((candidate) => matchesObjectName(candidate, target));
+  if (!match) return null;
+
+  const name = objectName(match) ?? target;
+  const description = objectDescription(match);
+
+  return [
+    { text: `--- ${name} ---`, type: 'lore' },
+    {
+      text: description ?? `You inspect the ${name}, but nothing more immediately suggests itself.`,
+      type: description ? 'lore' : 'info',
+    },
+  ];
+}
+
 /**
  * Parses and processes player commands
  */
@@ -208,6 +282,15 @@ export function processCommand({
 
     case 'inspect':
     case 'look': {
+      if (noun) {
+        const inspected = inspectObject(noun, currentRoom, gameState);
+        if (inspected) {
+          return { messages: inspected };
+        }
+
+        return { messages: [{ text: `You do not see anything obvious called "${noun}" here.`, type: 'info' }] };
+      }
+
       const descriptionLines = Array.isArray(currentRoom.description)
         ? currentRoom.description
         : [currentRoom.description];
