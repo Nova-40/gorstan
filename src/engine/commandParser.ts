@@ -206,6 +206,7 @@ export function processCommand({
       };
     }
 
+    case 'inspect':
     case 'look': {
       const descriptionLines = Array.isArray(currentRoom.description)
         ? currentRoom.description
@@ -238,7 +239,7 @@ export function processCommand({
         });
       }
 
-      // End of 'look' case: return accumulated messages
+      // End of 'look'/'inspect' case: return accumulated messages
       return { messages };
     }
 
