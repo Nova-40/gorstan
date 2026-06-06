@@ -17,15 +17,36 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Game module.
 
-import AppCore from './components/AppCore.modular';
+import LegacyAppCore from './components/AppCore';
+import ModularAppCore from './components/AppCore.modular';
 import { CelebrationController } from './celebrate';
 
 import React from 'react';
 
 import { GameStateProvider } from './state/gameState';
 
+type AppCoreMode = 'legacy' | 'modular';
+
+function getAppCoreMode(): AppCoreMode {
+  if (typeof window === 'undefined') {
+    return 'modular';
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const queryMode = params.get('appcore');
+  if (queryMode === 'legacy' || queryMode === 'modular') {
+    window.localStorage.setItem('gorstan.appcore', queryMode);
+    return queryMode;
+  }
+
+  const storedMode = window.localStorage.getItem('gorstan.appcore');
+  return storedMode === 'legacy' ? 'legacy' : 'modular';
+}
+
 const App: React.FC = () => {
-  // JSX return block or main return
+  const mode = getAppCoreMode();
+  const AppCore = mode === 'legacy' ? LegacyAppCore : ModularAppCore;
+
   return (
     <GameStateProvider>
       <CelebrationController>
