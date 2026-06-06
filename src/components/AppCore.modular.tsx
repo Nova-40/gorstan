@@ -89,6 +89,10 @@ const AppCoreModularDraft: React.FC = () => {
   const history = state.history || [];
   const inventory = state.player?.inventory || state.inventory || [];
   const roomItems = useMemo(() => room?.items?.map(roomItemName) ?? [], [room?.items]);
+  const useTargets = useMemo(() => {
+    const environmentTargets = Array.isArray(room?.environment) ? room.environment.map(roomItemName) : [];
+    return Array.from(new Set([...roomItems, ...environmentTargets, ...npcsInRoom.map((npc) => npc.name || npc.id)]));
+  }, [room?.environment, roomItems, npcsInRoom]);
   const npcsInRoom = useResolvedNPCs(state.npcsInRoom as Array<NPC | string> | undefined, currentRoomId);
   const { availableDirections, directionRoomTitles } = useRoomDirections(room, roomMap);
 
@@ -98,6 +102,8 @@ const AppCoreModularDraft: React.FC = () => {
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [roomEntryTime, setRoomEntryTime] = useState(Date.now());
   const [roomFallbackAttempted, setRoomFallbackAttempted] = useState(false);
+  const [selectedUseItem, setSelectedUseItem] = useState<string>('');
+  const [selectedUseTarget, setSelectedUseTarget] = useState<string>('');
 
   const systemControls = useAppCoreSystemControls({ dispatch });
   const transitions = useAppCoreTransitions({ state, dispatch, room, roomMap, currentRoomId, stage });
@@ -198,10 +204,46 @@ const AppCoreModularDraft: React.FC = () => {
         return (
           <div className="console-theme modal-panel">
             <h2>Use Item</h2>
-            <p>Select an item by typing a command such as:</p>
-            <pre>use item</pre>
-            <pre>use item with target</pre>
-            <p>The full visual use-item chooser is pending in the modular AppCore.</p>
+            {inventory.length === 0 ? (
+              <p>You are not carrying anything usable.</p>
+            ) : (
+              <>
+                <label>
+                  Item
+                  <select value={selectedUseItem} onChange={(event) => setSelectedUseItem(event.target.value)}>
+                    <option value="">Choose an item…</option>
+                    {inventory.map((item) => (
+                      <option key={item} value={item}>{item}</option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Target optional
+                  <select value={selectedUseTarget} onChange={(event) => setSelectedUseTarget(event.target.value)}>
+                    <option value="">No target</option>
+                    {useTargets.map((target) => (
+                      <option key={target} value={target}>{target}</option>
+                    ))}
+                  </select>
+                </label>
+                <button
+                  type="button"
+                  disabled={!selectedUseItem}
+                  onClick={() => {
+                    const command = selectedUseTarget
+                      ? `use ${selectedUseItem} with ${selectedUseTarget}`
+                      : `use ${selectedUseItem}`;
+                    commandHandler.handleCommand(command);
+                    modalState.closeModal();
+                    setSelectedUseItem('');
+                    setSelectedUseTarget('');
+                  }}
+                >
+                  Use selected item
+                </button>
+              </>
+            )}
+            <p className="modal-hint">This sends the same command as the parser.</p>
           </div>
         );
       case 'pickUp':
@@ -279,6 +321,11 @@ const AppCoreModularDraft: React.FC = () => {
   }, [
     modalState.modal,
     modalState.closeModal,
+    inventory,
+    selectedUseItem,
+    selectedUseTarget,
+    useTargets,
+    commandHandler,
     roomItems,
     inventoryActions.handlePickUpItems,
     saveLoad.handleSave,
