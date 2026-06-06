@@ -43,6 +43,7 @@ import {
   useRoomDirections,
   useRoomWorldInitialisation,
   type GameStage,
+  type OpenModalType,
   type RoomTransitionKind,
 } from './appcore';
 
@@ -66,6 +67,14 @@ function roomItemName(item: unknown): string {
     return String((item as { id?: unknown }).id ?? 'unknown');
   }
   return 'unknown';
+}
+
+function modalOwnsOverlay(modal: OpenModalType): boolean {
+  return modal === 'pickUp'
+    || modal === 'saveGame'
+    || modal === 'npcConsole'
+    || modal === 'npcSelection'
+    || modal === 'trapManagement';
 }
 
 const AppCoreModularDraft: React.FC = () => {
@@ -357,6 +366,7 @@ const AppCoreModularDraft: React.FC = () => {
         modalOpen={modalState.modal !== null}
         onCloseModal={modalState.closeModal}
         modalContent={modalContent}
+        modalContentOwnsOverlay={modalOwnsOverlay(modalState.modal)}
         showPause={showPause}
         onResume={() => setShowPause(false)}
         onSave={() => modalState.openModal('saveGame')}
