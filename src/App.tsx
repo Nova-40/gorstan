@@ -27,6 +27,22 @@ import { GameStateProvider } from './state/gameState';
 
 type AppCoreMode = 'legacy' | 'modular';
 
+function readStoredAppCoreMode(): AppCoreMode | null {
+  try {
+    return window.localStorage.getItem('gorstan.appcore') === 'legacy' ? 'legacy' : null;
+  } catch {
+    return null;
+  }
+}
+
+function storeAppCoreMode(mode: AppCoreMode): void {
+  try {
+    window.localStorage.setItem('gorstan.appcore', mode);
+  } catch {
+    // Keep the URL override working even if storage is blocked.
+  }
+}
+
 function getAppCoreMode(): AppCoreMode {
   if (typeof window === 'undefined') {
     return 'modular';
@@ -35,12 +51,11 @@ function getAppCoreMode(): AppCoreMode {
   const params = new URLSearchParams(window.location.search);
   const queryMode = params.get('appcore');
   if (queryMode === 'legacy' || queryMode === 'modular') {
-    window.localStorage.setItem('gorstan.appcore', queryMode);
+    storeAppCoreMode(queryMode);
     return queryMode;
   }
 
-  const storedMode = window.localStorage.getItem('gorstan.appcore');
-  return storedMode === 'legacy' ? 'legacy' : 'modular';
+  return readStoredAppCoreMode() ?? 'modular';
 }
 
 const App: React.FC = () => {
