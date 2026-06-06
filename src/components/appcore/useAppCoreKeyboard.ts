@@ -30,6 +30,17 @@ interface UseAppCoreKeyboardArgs {
   readonly handleOpenNPCConsole: (npc?: NPC) => void;
 }
 
+function isEditableTarget(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) return false;
+
+  const tagName = target.tagName.toLowerCase();
+  if (tagName === 'input' || tagName === 'textarea' || tagName === 'select' || tagName === 'button') {
+    return true;
+  }
+
+  return target.isContentEditable || Boolean(target.closest('[contenteditable="true"]'));
+}
+
 export function useAppCoreKeyboard({
   modal,
   closeModal,
@@ -49,6 +60,8 @@ export function useAppCoreKeyboard({
 }: UseAppCoreKeyboardArgs): void {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent): void => {
+      const editableTarget = isEditableTarget(event.target);
+
       if (event.key === 'F10' && IS_DEV) {
         event.preventDefault();
         dispatch({ type: 'TOGGLE_DEBUG' });
@@ -73,6 +86,10 @@ export function useAppCoreKeyboard({
       if (event.key === 'Escape' && hasFlag('showDebugPanel')) {
         event.preventDefault();
         dispatch({ type: 'TOGGLE_DEBUG' });
+        return;
+      }
+
+      if (editableTarget) {
         return;
       }
 
