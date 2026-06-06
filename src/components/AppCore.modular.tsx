@@ -361,6 +361,7 @@ const AppCoreModularDraft: React.FC = () => {
         setTransitionInventory={transitions.setTransitionInventory}
         handleTeleportComplete={transitions.handleTeleportComplete}
         startDemoRoute={demo.startDemoRoute}
+        onLoadGame={() => modalState.openModal('saveGame')}
       />
     );
   }
