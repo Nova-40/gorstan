@@ -1,11 +1,11 @@
 /*
   Gorstan – Copyright © 2025 Geoff Webster. All Rights Reserved.
 
-  Non-live modular AppCore integration draft.
+  Modular AppCore coordinator.
 
-  This component is intentionally not imported by App.tsx yet. It exists to let
-  TypeScript/Vercel check the modular AppCore contracts before the live
-  AppCore.tsx coordinator is replaced.
+  This component is the live modular AppCore entry point. It wires the extracted
+  AppCore hooks and presentation components while keeping the parser/game-state
+  pipeline canonical.
 */
 
 import React, { useMemo, useState } from 'react';
@@ -16,8 +16,15 @@ import type { NPC } from '../types/NPCTypes';
 import type { Room } from '../types/Room';
 import {
   AppCoreOverlays,
+  EnhancedNPCConsole,
   GameShell,
   GameStageRouter,
+  InventoryPanel,
+  NPCConsole,
+  NPCSelectionModal,
+  PickUpItemModal,
+  SaveGameModal,
+  TrapManagementModal,
   useAppCoreAI,
   useAppCoreCommandHandler,
   useAppCoreDemo,
@@ -50,6 +57,17 @@ function resolveMoveTarget(room: Room | undefined, direction: string): string {
   return exits[direction] ?? direction;
 }
 
+function roomItemName(item: unknown): string {
+  if (typeof item === 'string') return item;
+  if (item && typeof item === 'object' && 'name' in item) {
+    return String((item as { name?: unknown }).name ?? 'unknown');
+  }
+  if (item && typeof item === 'object' && 'id' in item) {
+    return String((item as { id?: unknown }).id ?? 'unknown');
+  }
+  return 'unknown';
+}
+
 const AppCoreModularDraft: React.FC = () => {
   const { state, dispatch } = useGameState();
   const { hasFlag } = useFlags();
@@ -61,6 +79,7 @@ const AppCoreModularDraft: React.FC = () => {
   const playerName = state.player?.name || state.playerName || 'Player';
   const history = state.history || [];
   const inventory = state.player?.inventory || state.inventory || [];
+  const roomItems = useMemo(() => room?.items?.map(roomItemName) ?? [], [room?.items]);
   const npcsInRoom = useResolvedNPCs(state.npcsInRoom as Array<NPC | string> | undefined, currentRoomId);
   const { availableDirections, directionRoomTitles } = useRoomDirections(room, roomMap);
 
@@ -162,13 +181,116 @@ const AppCoreModularDraft: React.FC = () => {
     handleOpenNPCConsole: npcConsole.handleOpenNPCConsole,
   });
 
+  const modalContent = useMemo((): React.ReactNode => {
+    switch (modalState.modal) {
+      case 'inventory':
+        return <InventoryPanel />;
+      case 'useItem':
+        return (
+          <div className="console-theme modal-panel">
+            <h2>Use Item</h2>
+            <p>Select an item by typing a command such as:</p>
+            <pre>use item</pre>
+            <pre>use item with target</pre>
+            <p>The full visual use-item chooser is pending in the modular AppCore.</p>
+          </div>
+        );
+      case 'pickUp':
+        return (
+          <PickUpItemModal
+            isOpen={true}
+            items={roomItems}
+            onClose={modalState.closeModal}
+            onPickUp={inventoryActions.handlePickUpItems}
+          />
+        );
+      case 'saveGame':
+        return (
+          <SaveGameModal
+            isOpen={true}
+            onClose={modalState.closeModal}
+            onSave={saveLoad.handleSave}
+            onLoad={saveLoad.handleLoad}
+            onDelete={saveLoad.handleDeleteSave}
+            saveSlots={saveLoad.saveSlots}
+          />
+        );
+      case 'npcConsole':
+        return npcConsole.isGroupConversation ? (
+          <EnhancedNPCConsole
+            isOpen={true}
+            npcs={npcsInRoom}
+            activeNpcId={npcConsole.selectedNPC?.id ?? ''}
+            isGroupConversation={true}
+            onClose={modalState.closeModal}
+            onSendMessage={npcConsole.handleNPCMessage}
+            playerName={playerName}
+          />
+        ) : (
+          <NPCConsole
+            isOpen={true}
+            npc={npcConsole.selectedNPC}
+            onClose={modalState.closeModal}
+            onSendMessage={npcConsole.handleNPCMessage}
+            playerName={playerName}
+          />
+        );
+      case 'npcSelection':
+        return (
+          <NPCSelectionModal
+            isOpen={true}
+            npcs={npcsInRoom}
+            onSelectNPC={npcConsole.handleSelectNPC}
+            onClose={modalState.closeModal}
+            onTalkToAll={npcConsole.handleGroupConversation}
+            onTalkToAyla={npcConsole.handleTalkToAyla}
+          />
+        );
+      case 'look':
+        return (
+          <div className="look-modal-content">
+            {lookAround.lookLines.map((line, index) => (
+              <div key={`${line}-${index}`} className="look-line">
+                {line}
+              </div>
+            ))}
+          </div>
+        );
+      case 'trapManagement':
+        return (
+          <TrapManagementModal
+            isOpen={true}
+            onClose={modalState.closeModal}
+            currentRoomId={currentRoomId}
+          />
+        );
+      default:
+        return null;
+    }
+  }, [
+    modalState.modal,
+    modalState.closeModal,
+    roomItems,
+    inventoryActions.handlePickUpItems,
+    saveLoad.handleSave,
+    saveLoad.handleLoad,
+    saveLoad.handleDeleteSave,
+    saveLoad.saveSlots,
+    npcConsole.isGroupConversation,
+    npcConsole.selectedNPC,
+    npcConsole.handleNPCMessage,
+    npcConsole.handleSelectNPC,
+    npcConsole.handleGroupConversation,
+    npcConsole.handleTalkToAyla,
+    npcsInRoom,
+    playerName,
+    lookAround.lookLines,
+    currentRoomId,
+  ]);
+
   void roomEntryTime;
-  void inventoryActions;
   void miniquests.mini;
-  void saveLoad.saveSlots;
   void navigation.roomHistory;
-  void npcConsole.selectedNPC;
-  void npcConsole.isGroupConversation;
 
   if (stage !== 'game') {
     return (
@@ -234,12 +356,12 @@ const AppCoreModularDraft: React.FC = () => {
         showDebugPanel={Boolean(state.settings?.debugMode || state.flags?.showDebugPanel)}
         modalOpen={modalState.modal !== null}
         onCloseModal={modalState.closeModal}
-        modalContent={null}
+        modalContent={modalContent}
         showPause={showPause}
         onResume={() => setShowPause(false)}
         onSave={() => modalState.openModal('saveGame')}
-        onLoad={() => dispatch({ type: 'LOAD_SAVED_GAME' })}
-        onOptions={() => dispatch({ type: 'RECORD_MESSAGE', payload: { id: `options-${Date.now()}`, text: 'Options are not wired in the modular draft yet.', type: 'system', timestamp: Date.now() } })}
+        onLoad={() => modalState.openModal('saveGame')}
+        onOptions={() => dispatch({ type: 'RECORD_MESSAGE', payload: { id: `options-${Date.now()}`, text: 'Options are not wired in the modular AppCore yet.', type: 'system', timestamp: Date.now() } })}
         onQuitToMain={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'welcome' })}
         showBlueButtonWarning={Boolean(state.flags?.showBlueButtonWarning)}
         onDismissBlueButtonWarning={() => dispatch({ type: 'SET_FLAG', payload: { flag: 'showBlueButtonWarning', value: false } })}
