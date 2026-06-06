@@ -44,6 +44,26 @@ function getSavedCurrentRoom(saveFile: SaveFile, fallbackRoomId: string): string
   return typeof currentRoom === 'string' && currentRoom.length > 0 ? currentRoom : fallbackRoomId;
 }
 
+function getSavedInventory(saveFile: SaveFile, gameState: any): string[] {
+  const progressInventory = saveFile.progress.storylineProgress?.inventory;
+  if (Array.isArray(progressInventory)) return progressInventory.filter((item): item is string => typeof item === 'string');
+
+  const playerInventory = gameState?.player?.inventory;
+  if (Array.isArray(playerInventory)) return playerInventory.filter((item): item is string => typeof item === 'string');
+
+  return [];
+}
+
+function getSavedFlags(saveFile: SaveFile, gameState: any): Record<string, unknown> {
+  const progressFlags = saveFile.progress.storylineProgress?.flags;
+  if (progressFlags && typeof progressFlags === 'object') return progressFlags as Record<string, unknown>;
+
+  const stateFlags = gameState?.flags;
+  if (stateFlags && typeof stateFlags === 'object') return stateFlags as Record<string, unknown>;
+
+  return {};
+}
+
 export function useAppCoreSaveLoad({ state, dispatch, closeModal }: UseAppCoreSaveLoadArgs): UseAppCoreSaveLoadResult {
   const [saveSlots, setSaveSlots] = useState<AppCoreSaveSlot[]>([]);
 
@@ -137,22 +157,27 @@ export function useAppCoreSaveLoad({ state, dispatch, closeModal }: UseAppCoreSa
         }
 
         const gameState = saveFile.gameState;
-        if (gameState) {
-          dispatch({ type: 'ADVANCE_STAGE', payload: gameState.stage });
-          dispatch({ type: 'SET_PLAYER_NAME', payload: gameState.player?.name || saveFile.playerName });
-          dispatch({ type: 'MOVE_TO_ROOM', payload: gameState.currentRoomId });
+        const savedRoomId = getSavedCurrentRoom(saveFile, gameState?.currentRoomId || state.currentRoomId || 'controlnexus');
+        const savedFlags = getSavedFlags(saveFile, gameState);
+        const savedInventory = getSavedInventory(saveFile, gameState);
 
-          Object.entries(gameState.flags || {}).forEach(([flag, value]) => {
-            dispatch({ type: 'SET_FLAG', payload: { flag, value } });
-          });
-
-          if (gameState.player?.inventory) {
-            gameState.player.inventory.forEach((item: string) => {
-              dispatch({ type: 'ADD_TO_INVENTORY', payload: item });
-            });
-          }
+        if (gameState?.roomMap) {
+          dispatch({ type: 'LOAD_ROOM_MAP', payload: gameState.roomMap });
         }
 
+        dispatch({ type: 'ADVANCE_STAGE', payload: 'game' });
+        dispatch({ type: 'SET_PLAYER_NAME', payload: gameState?.player?.name || saveFile.playerName || 'Player' });
+        dispatch({ type: 'MOVE_TO_ROOM', payload: savedRoomId });
+
+        Object.entries(savedFlags).forEach(([flag, value]) => {
+          dispatch({ type: 'SET_FLAG', payload: { flag, value } });
+        });
+
+        savedInventory.forEach((item) => {
+          dispatch({ type: 'ADD_TO_INVENTORY', payload: item });
+        });
+
+        recordMessage(dispatch, `Loaded save "${saveFile.playerName || slotId}"`);
         await loadSaveSlots();
         closeModal();
       } catch (error) {
@@ -160,7 +185,7 @@ export function useAppCoreSaveLoad({ state, dispatch, closeModal }: UseAppCoreSa
         recordMessage(dispatch, `Failed to load game: ${error}`, 'error');
       }
     },
-    [dispatch, closeModal, loadSaveSlots],
+    [dispatch, closeModal, loadSaveSlots, state.currentRoomId],
   );
 
   const handleDeleteSave = useCallback(
