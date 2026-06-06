@@ -15,6 +15,7 @@ import { useFlags } from '../hooks/useFlags';
 import { MiniQuestOverlay } from '../minigames/core/MiniQuestOverlay';
 import type { NPC } from '../types/NPCTypes';
 import type { Room } from '../types/Room';
+import UseItemChooser from './appcore/UseItemChooser';
 import {
   AppCoreOverlays,
   EnhancedNPCConsole,
@@ -103,8 +104,6 @@ const AppCoreModularDraft: React.FC = () => {
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [roomEntryTime, setRoomEntryTime] = useState(Date.now());
   const [roomFallbackAttempted, setRoomFallbackAttempted] = useState(false);
-  const [selectedUseItem, setSelectedUseItem] = useState<string>('');
-  const [selectedUseTarget, setSelectedUseTarget] = useState<string>('');
 
   const systemControls = useAppCoreSystemControls({ dispatch });
   const transitions = useAppCoreTransitions({ state, dispatch, room, roomMap, currentRoomId, stage });
@@ -203,49 +202,12 @@ const AppCoreModularDraft: React.FC = () => {
         return <InventoryPanel />;
       case 'useItem':
         return (
-          <div className="console-theme modal-panel">
-            <h2>Use Item</h2>
-            {inventory.length === 0 ? (
-              <p>You are not carrying anything usable.</p>
-            ) : (
-              <>
-                <label>
-                  Item
-                  <select value={selectedUseItem} onChange={(event) => setSelectedUseItem(event.target.value)}>
-                    <option value="">Choose an item…</option>
-                    {inventory.map((item) => (
-                      <option key={item} value={item}>{item}</option>
-                    ))}
-                  </select>
-                </label>
-                <label>
-                  Target optional
-                  <select value={selectedUseTarget} onChange={(event) => setSelectedUseTarget(event.target.value)}>
-                    <option value="">No target</option>
-                    {useTargets.map((target) => (
-                      <option key={target} value={target}>{target}</option>
-                    ))}
-                  </select>
-                </label>
-                <button
-                  type="button"
-                  disabled={!selectedUseItem}
-                  onClick={() => {
-                    const command = selectedUseTarget
-                      ? `use ${selectedUseItem} with ${selectedUseTarget}`
-                      : `use ${selectedUseItem}`;
-                    commandHandler.handleCommand(command);
-                    modalState.closeModal();
-                    setSelectedUseItem('');
-                    setSelectedUseTarget('');
-                  }}
-                >
-                  Use selected item
-                </button>
-              </>
-            )}
-            <p className="modal-hint">This sends the same command as the parser.</p>
-          </div>
+          <UseItemChooser
+            inventory={inventory}
+            targets={useTargets}
+            onCommand={commandHandler.handleCommand}
+            onClose={modalState.closeModal}
+          />
         );
       case 'pickUp':
         return (
@@ -323,10 +285,8 @@ const AppCoreModularDraft: React.FC = () => {
     modalState.modal,
     modalState.closeModal,
     inventory,
-    selectedUseItem,
-    selectedUseTarget,
     useTargets,
-    commandHandler,
+    commandHandler.handleCommand,
     roomItems,
     inventoryActions.handlePickUpItems,
     saveLoad.handleSave,
