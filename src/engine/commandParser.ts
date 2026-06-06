@@ -263,11 +263,20 @@ export function processCommand({
         return { messages: [{ text: 'What do you want to use?', type: 'error' }] };
       }
 
-      if (!gameState.player.inventory.includes(noun)) {
-        return { messages: [{ text: `You don't have a ${noun} to use.`, type: 'error' }] };
+      const [itemName, targetName] = noun.split(/\s+with\s+/, 2).map((part) => part.trim());
+
+      if (!itemName) {
+        return { messages: [{ text: 'What do you want to use?', type: 'error' }] };
       }
 
-      messages.push({ text: `You use the ${noun}.`, type: 'info' });
+      if (!gameState.player.inventory.includes(itemName)) {
+        return { messages: [{ text: `You don't have a ${itemName} to use.`, type: 'error' }] };
+      }
+
+      messages.push({
+        text: targetName ? `You use the ${itemName} with the ${targetName}.` : `You use the ${itemName}.`,
+        type: 'info',
+      });
       return { messages };
     }
 
