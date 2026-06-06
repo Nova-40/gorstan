@@ -89,11 +89,11 @@ const AppCoreModularDraft: React.FC = () => {
   const history = state.history || [];
   const inventory = state.player?.inventory || state.inventory || [];
   const roomItems = useMemo(() => room?.items?.map(roomItemName) ?? [], [room?.items]);
+  const npcsInRoom = useResolvedNPCs(state.npcsInRoom as Array<NPC | string> | undefined, currentRoomId);
   const useTargets = useMemo(() => {
     const environmentTargets = Array.isArray(room?.environment) ? room.environment.map(roomItemName) : [];
     return Array.from(new Set([...roomItems, ...environmentTargets, ...npcsInRoom.map((npc) => npc.name || npc.id)]));
   }, [room?.environment, roomItems, npcsInRoom]);
-  const npcsInRoom = useResolvedNPCs(state.npcsInRoom as Array<NPC | string> | undefined, currentRoomId);
   const { availableDirections, directionRoomTitles } = useRoomDirections(room, roomMap);
 
   const [showPause, setShowPause] = useState(false);
