@@ -12,6 +12,7 @@ import React, { useMemo, useState } from 'react';
 
 import { useGameState } from '../state/gameState';
 import { useFlags } from '../hooks/useFlags';
+import { MiniQuestOverlay } from '../minigames/core/MiniQuestOverlay';
 import type { NPC } from '../types/NPCTypes';
 import type { Room } from '../types/Room';
 import {
@@ -345,7 +346,6 @@ const AppCoreModularDraft: React.FC = () => {
   ]);
 
   void roomEntryTime;
-  void miniquests.mini;
   void navigation.roomHistory;
 
   if (stage !== 'game') {
@@ -368,6 +368,16 @@ const AppCoreModularDraft: React.FC = () => {
 
   return (
     <>
+      {miniquests.mini.active && (
+        <MiniQuestOverlay
+          questId={miniquests.mini.active.id}
+          roomId={miniquests.mini.active.roomId}
+          seed={miniquests.mini.active.seed}
+          onClose={miniquests.clearMiniQuest}
+          onResult={miniquests.handleMiniQuestResult}
+        />
+      )}
+
       <GameShell
         history={history}
         playerName={playerName}
