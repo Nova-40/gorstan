@@ -34,6 +34,7 @@ interface GameStageRouterProps {
   readonly setTransitionInventory: (items: string[]) => void;
   readonly handleTeleportComplete: () => void;
   readonly startDemoRoute: (routeId?: string) => void;
+  readonly onLoadGame: () => void;
 }
 
 const LoadingDemo: React.FC = () => (
@@ -70,6 +71,7 @@ const GameStageRouter: React.FC<GameStageRouterProps> = ({
   setTransitionInventory,
   handleTeleportComplete,
   startDemoRoute,
+  onLoadGame,
 }) => {
   if (teleportType === 'fractal' || teleportType === 'trek') {
     return (
@@ -124,7 +126,7 @@ const GameStageRouter: React.FC<GameStageRouterProps> = ({
       <StageSuspense>
         <MainMenu
           onBegin={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'nameCapture' })}
-          onLoadGame={() => dispatch({ type: 'LOAD_SAVED_GAME' })}
+          onLoadGame={onLoadGame}
           onStartDemo={() => {
             dispatch({ type: 'SET_PLAYER_NAME', payload: 'Demo Player' });
             dispatch({ type: 'ADVANCE_STAGE', payload: 'demo' });
@@ -208,7 +210,7 @@ const GameStageRouter: React.FC<GameStageRouterProps> = ({
             }
           }}
           onCancel={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'welcome' })}
-          onLoadGame={() => dispatch({ type: 'LOAD_SAVED_GAME' })}
+          onLoadGame={onLoadGame}
         />
       </StageSuspense>
     );
