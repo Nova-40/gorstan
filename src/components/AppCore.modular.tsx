@@ -329,21 +329,66 @@ const AppCoreModularDraft: React.FC = () => {
   void roomEntryTime;
   void navigation.roomHistory;
 
+  const overlays = (
+    <AppCoreOverlays
+      demoBanner={demo.demoBanner}
+      isDemoActive={demo.isDemoActive}
+      showGameplayOverlays={stage === 'game'}
+      roomTransitionActive={transitions.roomTransitionActive}
+      transitionInfo={{
+        shouldAnimate: transitions.transitionInfo.shouldAnimate,
+        transitionType: transitions.transitionInfo.transitionType as RoomTransitionKind,
+        fromZone: transitions.transitionInfo.fromZone,
+        toZone: transitions.transitionInfo.toZone,
+      }}
+      onRoomTransitionComplete={transitions.handleRoomTransitionComplete}
+      showDebugPanel={Boolean(state.settings?.debugMode || state.flags?.showDebugPanel)}
+      modalOpen={modalState.modal !== null}
+      onCloseModal={modalState.closeModal}
+      modalContent={modalContent}
+      modalContentOwnsOverlay={modalOwnsOverlay(modalState.modal)}
+      showPause={showPause}
+      onResume={() => setShowPause(false)}
+      onSave={() => modalState.openModal('saveGame')}
+      onLoad={() => modalState.openModal('saveGame')}
+      onOptions={() => dispatch({ type: 'RECORD_MESSAGE', payload: { id: `options-${Date.now()}`, text: 'Options are not wired in the modular AppCore yet.', type: 'system', timestamp: Date.now() } })}
+      onQuitToMain={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'welcome' })}
+      showBlueButtonWarning={Boolean(state.flags?.showBlueButtonWarning)}
+      onDismissBlueButtonWarning={() => dispatch({ type: 'SET_FLAG', payload: { flag: 'showBlueButtonWarning', value: false } })}
+      currentHint={ai.currentHint}
+      onDismissHint={() => ai.setCurrentHint(null)}
+      onTalkToAylaFromHint={npcConsole.handleTalkToAyla}
+      currentGuidance={ai.currentGuidance}
+      onDismissGuidance={() => ai.setCurrentGuidance(null)}
+      onTalkToAylaFromGuidance={npcConsole.handleTalkToAyla}
+      onOpenMiniquestsFromGuidance={() => commandHandler.handleCommand('miniquests')}
+      showPerformanceDashboard={showPerformanceDashboard}
+      onClosePerformanceDashboard={() => setShowPerformanceDashboard(false)}
+      showAIMonitor={ai.showAIMonitor}
+      gameplayUpdates={ai.gameplayUpdates}
+      npcBehaviors={ai.npcBehaviors}
+      onCloseAIMonitor={() => ai.setShowAIMonitor(false)}
+    />
+  );
+
   if (stage !== 'game') {
     return (
-      <GameStageRouter
-        stage={stage}
-        transitionType={transitions.transitionType}
-        teleportType={transitions.teleportType}
-        playerName={playerName}
-        dispatch={dispatch}
-        setReadyForTransition={transitions.setReadyForTransition}
-        setTransitionTargetRoom={transitions.setTransitionTargetRoom}
-        setTransitionInventory={transitions.setTransitionInventory}
-        handleTeleportComplete={transitions.handleTeleportComplete}
-        startDemoRoute={demo.startDemoRoute}
-        onLoadGame={() => modalState.openModal('saveGame')}
-      />
+      <>
+        <GameStageRouter
+          stage={stage}
+          transitionType={transitions.transitionType}
+          teleportType={transitions.teleportType}
+          playerName={playerName}
+          dispatch={dispatch}
+          setReadyForTransition={transitions.setReadyForTransition}
+          setTransitionTargetRoom={transitions.setTransitionTargetRoom}
+          setTransitionInventory={transitions.setTransitionInventory}
+          handleTeleportComplete={transitions.handleTeleportComplete}
+          startDemoRoute={demo.startDemoRoute}
+          onLoadGame={() => modalState.openModal('saveGame')}
+        />
+        {overlays}
+      </>
     );
   }
 
@@ -389,45 +434,7 @@ const AppCoreModularDraft: React.FC = () => {
         onDisarmTrap={() => modalState.openModal('trapManagement')}
         hasActiveTraps={isActiveTrap(room)}
       />
-
-      <AppCoreOverlays
-        demoBanner={demo.demoBanner}
-        isDemoActive={demo.isDemoActive}
-        roomTransitionActive={transitions.roomTransitionActive}
-        transitionInfo={{
-          shouldAnimate: transitions.transitionInfo.shouldAnimate,
-          transitionType: transitions.transitionInfo.transitionType as RoomTransitionKind,
-          fromZone: transitions.transitionInfo.fromZone,
-          toZone: transitions.transitionInfo.toZone,
-        }}
-        onRoomTransitionComplete={transitions.handleRoomTransitionComplete}
-        showDebugPanel={Boolean(state.settings?.debugMode || state.flags?.showDebugPanel)}
-        modalOpen={modalState.modal !== null}
-        onCloseModal={modalState.closeModal}
-        modalContent={modalContent}
-        modalContentOwnsOverlay={modalOwnsOverlay(modalState.modal)}
-        showPause={showPause}
-        onResume={() => setShowPause(false)}
-        onSave={() => modalState.openModal('saveGame')}
-        onLoad={() => modalState.openModal('saveGame')}
-        onOptions={() => dispatch({ type: 'RECORD_MESSAGE', payload: { id: `options-${Date.now()}`, text: 'Options are not wired in the modular AppCore yet.', type: 'system', timestamp: Date.now() } })}
-        onQuitToMain={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'welcome' })}
-        showBlueButtonWarning={Boolean(state.flags?.showBlueButtonWarning)}
-        onDismissBlueButtonWarning={() => dispatch({ type: 'SET_FLAG', payload: { flag: 'showBlueButtonWarning', value: false } })}
-        currentHint={ai.currentHint}
-        onDismissHint={() => ai.setCurrentHint(null)}
-        onTalkToAylaFromHint={npcConsole.handleTalkToAyla}
-        currentGuidance={ai.currentGuidance}
-        onDismissGuidance={() => ai.setCurrentGuidance(null)}
-        onTalkToAylaFromGuidance={npcConsole.handleTalkToAyla}
-        onOpenMiniquestsFromGuidance={() => commandHandler.handleCommand('miniquests')}
-        showPerformanceDashboard={showPerformanceDashboard}
-        onClosePerformanceDashboard={() => setShowPerformanceDashboard(false)}
-        showAIMonitor={ai.showAIMonitor}
-        gameplayUpdates={ai.gameplayUpdates}
-        npcBehaviors={ai.npcBehaviors}
-        onCloseAIMonitor={() => ai.setShowAIMonitor(false)}
-      />
+      {overlays}
     </>
   );
 };

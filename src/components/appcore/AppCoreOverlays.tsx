@@ -30,6 +30,7 @@ export type RoomTransitionKind = 'zone_change' | 'portal' | 'normal' | 'chair_po
 interface AppCoreOverlaysProps {
   readonly demoBanner?: string;
   readonly isDemoActive: boolean;
+  readonly showGameplayOverlays?: boolean;
   readonly roomTransitionActive: boolean;
   readonly transitionInfo: {
     shouldAnimate: boolean;
@@ -73,6 +74,7 @@ const OverlaySuspense: React.FC<{ readonly children: React.ReactNode }> = ({ chi
 const AppCoreOverlays: React.FC<AppCoreOverlaysProps> = ({
   demoBanner,
   isDemoActive,
+  showGameplayOverlays = true,
   roomTransitionActive,
   transitionInfo,
   onRoomTransitionComplete,
@@ -119,15 +121,17 @@ const AppCoreOverlays: React.FC<AppCoreOverlaysProps> = ({
         <MultiverseRebootSequence />
       </OverlaySuspense>
 
-      <OverlaySuspense>
-        <RoomTransition
-          isActive={roomTransitionActive && transitionInfo.shouldAnimate}
-          transitionType={transitionInfo.transitionType}
-          fromZone={transitionInfo.fromZone ?? ''}
-          toZone={transitionInfo.toZone ?? ''}
-          onComplete={onRoomTransitionComplete}
-        />
-      </OverlaySuspense>
+      {showGameplayOverlays && (
+        <OverlaySuspense>
+          <RoomTransition
+            isActive={roomTransitionActive && transitionInfo.shouldAnimate}
+            transitionType={transitionInfo.transitionType}
+            fromZone={transitionInfo.fromZone ?? ''}
+            toZone={transitionInfo.toZone ?? ''}
+            onComplete={onRoomTransitionComplete}
+          />
+        </OverlaySuspense>
+      )}
 
       {showDebugPanel && (
         <OverlaySuspense>
@@ -135,9 +139,11 @@ const AppCoreOverlays: React.FC<AppCoreOverlaysProps> = ({
         </OverlaySuspense>
       )}
 
-      <OverlaySuspense>
-        <CombatActionsPanel />
-      </OverlaySuspense>
+      {showGameplayOverlays && (
+        <OverlaySuspense>
+          <CombatActionsPanel />
+        </OverlaySuspense>
+      )}
 
       {modalContentOwnsOverlay ? (
         modalOpen ? <OverlaySuspense>{modalContent}</OverlaySuspense> : null
@@ -149,25 +155,29 @@ const AppCoreOverlays: React.FC<AppCoreOverlaysProps> = ({
         </OverlaySuspense>
       )}
 
-      <OverlaySuspense>
-        <PauseMenu
-          isOpen={showPause}
-          onResume={onResume}
-          onSave={onSave}
-          onLoad={onLoad}
-          onOptions={onOptions}
-          onQuitToMain={onQuitToMain}
-        />
-      </OverlaySuspense>
+      {showGameplayOverlays && (
+        <OverlaySuspense>
+          <PauseMenu
+            isOpen={showPause}
+            onResume={onResume}
+            onSave={onSave}
+            onLoad={onLoad}
+            onOptions={onOptions}
+            onQuitToMain={onQuitToMain}
+          />
+        </OverlaySuspense>
+      )}
 
-      <OverlaySuspense>
-        <BlueButtonWarningModal
-          isOpen={showBlueButtonWarning}
-          onClose={onDismissBlueButtonWarning}
-        />
-      </OverlaySuspense>
+      {showGameplayOverlays && (
+        <OverlaySuspense>
+          <BlueButtonWarningModal
+            isOpen={showBlueButtonWarning}
+            onClose={onDismissBlueButtonWarning}
+          />
+        </OverlaySuspense>
+      )}
 
-      {currentHint && (
+      {showGameplayOverlays && currentHint && (
         <AylaHintPopup
           hint={currentHint}
           onDismiss={onDismissHint}
@@ -175,7 +185,7 @@ const AppCoreOverlays: React.FC<AppCoreOverlaysProps> = ({
         />
       )}
 
-      {currentGuidance && (
+      {showGameplayOverlays && currentGuidance && (
         <OverlaySuspense>
           <UnifiedAIPopup
             guidance={currentGuidance}
@@ -186,14 +196,16 @@ const AppCoreOverlays: React.FC<AppCoreOverlaysProps> = ({
         </OverlaySuspense>
       )}
 
-      <OverlaySuspense>
-        <PerformanceDashboard
-          isOpen={showPerformanceDashboard}
-          onClose={onClosePerformanceDashboard}
-        />
-      </OverlaySuspense>
+      {showGameplayOverlays && (
+        <OverlaySuspense>
+          <PerformanceDashboard
+            isOpen={showPerformanceDashboard}
+            onClose={onClosePerformanceDashboard}
+          />
+        </OverlaySuspense>
+      )}
 
-      {showAIMonitor && (
+      {showGameplayOverlays && showAIMonitor && (
         <OverlaySuspense>
           <AIMonitorDisplay
             updates={gameplayUpdates}
