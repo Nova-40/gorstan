@@ -55,6 +55,7 @@ describe('AppCore quick-action contract', () => {
       const checkForHints = vi.fn().mockResolvedValue(undefined);
       const launchMiniQuest = vi.fn();
       const setIsDemoActive = vi.fn();
+      const pushCurrentRoomToHistory = vi.fn();
 
       const { result } = renderHook(() =>
         useAppCoreCommandHandler({
@@ -70,6 +71,7 @@ describe('AppCore quick-action contract', () => {
           setCommandHistory,
           setLastMovementAction,
           setPreviousRoom,
+          pushCurrentRoomToHistory,
           handleLookAround,
           openModal,
           checkForHints,
@@ -84,6 +86,88 @@ describe('AppCore quick-action contract', () => {
       expect(handleLookAround).not.toHaveBeenCalled();
     },
   );
+
+  it('movement commands must push the current room to history before command dispatch', () => {
+    const dispatch = vi.fn();
+    const setCommandHistory = vi.fn();
+    const setLastMovementAction = vi.fn();
+    const setPreviousRoom = vi.fn();
+    const handleLookAround = vi.fn();
+    const openModal = vi.fn();
+    const checkForHints = vi.fn().mockResolvedValue(undefined);
+    const launchMiniQuest = vi.fn();
+    const setIsDemoActive = vi.fn();
+    const pushCurrentRoomToHistory = vi.fn();
+
+    const { result } = renderHook(() =>
+      useAppCoreCommandHandler({
+        state: initialGameState,
+        dispatch,
+        room,
+        currentRoomId: room.id,
+        inventory: [],
+        npcsInRoom: [],
+        isDemo: false,
+        isDemoActive: false,
+        setIsDemoActive,
+        setCommandHistory,
+        setLastMovementAction,
+        setPreviousRoom,
+        handleLookAround,
+        openModal,
+        checkForHints,
+        launchMiniQuest,
+        pushCurrentRoomToHistory,
+      }),
+    );
+
+    result.current.handleCommand('north');
+
+    expect(pushCurrentRoomToHistory).toHaveBeenCalledTimes(1);
+    expect(setLastMovementAction).toHaveBeenCalledWith('north');
+    expect(setPreviousRoom).toHaveBeenCalledWith(room);
+    expect(dispatch).toHaveBeenCalledWith({ type: 'COMMAND_INPUT', payload: 'north' });
+  });
+
+  it('non-movement actions must not push room history', () => {
+    const dispatch = vi.fn();
+    const setCommandHistory = vi.fn();
+    const setLastMovementAction = vi.fn();
+    const setPreviousRoom = vi.fn();
+    const handleLookAround = vi.fn();
+    const openModal = vi.fn();
+    const checkForHints = vi.fn().mockResolvedValue(undefined);
+    const launchMiniQuest = vi.fn();
+    const setIsDemoActive = vi.fn();
+    const pushCurrentRoomToHistory = vi.fn();
+
+    const { result } = renderHook(() =>
+      useAppCoreCommandHandler({
+        state: initialGameState,
+        dispatch,
+        room,
+        currentRoomId: room.id,
+        inventory: [],
+        npcsInRoom: [],
+        isDemo: false,
+        isDemoActive: false,
+        setIsDemoActive,
+        setCommandHistory,
+        setLastMovementAction,
+        setPreviousRoom,
+        handleLookAround,
+        openModal,
+        checkForHints,
+        launchMiniQuest,
+        pushCurrentRoomToHistory,
+      }),
+    );
+
+    result.current.handleCommand('inventory');
+
+    expect(pushCurrentRoomToHistory).not.toHaveBeenCalled();
+    expect(openModal).toHaveBeenCalledWith('inventory');
+  });
 
   it('explicit modular press action preserves legacy introreset blue-button routing', () => {
     const dispatch = vi.fn();
@@ -102,6 +186,7 @@ describe('AppCore quick-action contract', () => {
         setCommandHistory: vi.fn(),
         setLastMovementAction: vi.fn(),
         setPreviousRoom: vi.fn(),
+        pushCurrentRoomToHistory: vi.fn(),
         handleLookAround: vi.fn(),
         openModal: vi.fn(),
         checkForHints: vi.fn().mockResolvedValue(undefined),
@@ -132,6 +217,7 @@ describe('AppCore quick-action contract', () => {
         setCommandHistory: vi.fn(),
         setLastMovementAction: vi.fn(),
         setPreviousRoom: vi.fn(),
+        pushCurrentRoomToHistory: vi.fn(),
         handleLookAround: vi.fn(),
         openModal: vi.fn(),
         checkForHints: vi.fn().mockResolvedValue(undefined),

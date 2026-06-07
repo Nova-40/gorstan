@@ -29,6 +29,7 @@ interface UseAppCoreCommandHandlerArgs {
   readonly setCommandHistory: Dispatch<SetStateAction<string[]>>;
   readonly setLastMovementAction: Dispatch<SetStateAction<string>>;
   readonly setPreviousRoom: Dispatch<SetStateAction<Room | null>>;
+  readonly pushCurrentRoomToHistory: () => void;
   readonly handleLookAround: () => void;
   readonly openModal: (name: OpenModalType) => void;
   readonly checkForHints: (command: string, lowerCommand: string) => Promise<void>;
@@ -65,6 +66,7 @@ export function useAppCoreCommandHandler({
   setCommandHistory,
   setLastMovementAction,
   setPreviousRoom,
+  pushCurrentRoomToHistory,
   handleLookAround,
   openModal,
   checkForHints,
@@ -168,7 +170,10 @@ export function useAppCoreCommandHandler({
 
       if (isMovementCommand) {
         setLastMovementAction(lowerCommand);
-        if (room) setPreviousRoom(room);
+        if (room) {
+          pushCurrentRoomToHistory();
+          setPreviousRoom(room);
+        }
       } else {
         setLastMovementAction('');
         if (room) setPreviousRoom(room);
@@ -231,6 +236,7 @@ export function useAppCoreCommandHandler({
       setCommandHistory,
       setLastMovementAction,
       setPreviousRoom,
+      pushCurrentRoomToHistory,
       handleLookAround,
       openModal,
       checkForHints,

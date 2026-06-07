@@ -79,6 +79,10 @@ function modalOwnsOverlay(modal: OpenModalType): boolean {
     || modal === 'trapManagement';
 }
 
+function hasRoomExit(room: Room | undefined, exitName: string): boolean {
+  return Boolean(room?.exits?.[exitName]);
+}
+
 const AppCoreModularDraft: React.FC = () => {
   const { state, dispatch } = useGameState();
   const { hasFlag } = useFlags();
@@ -147,11 +151,28 @@ const AppCoreModularDraft: React.FC = () => {
     setCommandHistory,
     setLastMovementAction: transitions.setLastMovementAction,
     setPreviousRoom: transitions.setPreviousRoom,
+    pushCurrentRoomToHistory: navigation.pushCurrentRoomToHistory,
     handleLookAround: lookAround.handleLookAround,
     openModal: modalState.openModal,
     checkForHints: ai.checkForHints,
     launchMiniQuest: miniquests.launchMiniQuest,
   });
+
+  const handleDirectionalMove = (direction: string): void => {
+    if (hasRoomExit(room, direction)) {
+      navigation.pushCurrentRoomToHistory();
+    }
+
+    transitions.handleRoomChange(resolveMoveTarget(room, direction));
+  };
+
+  const handleQuickExit = (exitName: 'jump' | 'sit'): void => {
+    if (hasRoomExit(room, exitName)) {
+      navigation.pushCurrentRoomToHistory();
+    }
+
+    transitions.handleQuickExit(exitName);
+  };
 
   const demo = useAppCoreDemo({
     dispatch,
@@ -360,9 +381,9 @@ const AppCoreModularDraft: React.FC = () => {
         onCoffee={() => commandHandler.handleCommand('coffee')}
         onFullscreen={systemControls.toggleFullscreen}
         onToggleSound={systemControls.toggleSound}
-        onJump={() => transitions.handleQuickExit('jump')}
-        onMove={(direction) => transitions.handleRoomChange(resolveMoveTarget(room, direction))}
-        onSit={() => transitions.handleQuickExit('sit')}
+        onJump={() => handleQuickExit('jump')}
+        onMove={handleDirectionalMove}
+        onSit={() => handleQuickExit('sit')}
         onDebugMenu={() => dispatch({ type: 'TOGGLE_DEBUG' })}
         onBackout={navigation.handleBackout}
         onDisarmTrap={() => modalState.openModal('trapManagement')}
