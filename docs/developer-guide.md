@@ -30,26 +30,19 @@ Current high-level call tree:
 src/App.tsx
 └─ <GameStateProvider>
    └─ <CelebrationController>
-      └─ <AppCore />
-         ├─ loads room map via getAllRoomsAsObject()
-         │  └─ src/utils/roomLoader.ts
-         │     └─ src/rooms/roomRegistry.ts
-         │        └─ src/rooms/*Zone_*.ts room definition files
-         ├─ renders game-stage UI
-         ├─ lazy-loads RoomRenderer
-         │  └─ src/components/RoomRenderer.tsx
-         │     ├─ reads current room from state.roomMap[state.currentRoomId]
-         │     ├─ renders room image via SmartImage / SmartVideo
-         │     ├─ extracts room.clickHotspots or room.hotspots
-         │     └─ renders ClickableRoomOverlay
-         │        └─ src/components/ClickableRoomOverlay.tsx
-         │           ├─ filters visible/enabled hotspots using menu helpers
-         │           ├─ shows action menu for non-exit hotspots
-         │           └─ dispatches command string to RoomRenderer
-         └─ dispatches COMMAND_INPUT to gameState reducer
-            └─ src/state/gameState.tsx
-               └─ processCommand()
-                  └─ src/engine/commandParser.ts
+    └─ <AppCore.modular />
+      ├─ routes stages via src/components/appcore/GameStageRouter.tsx
+      ├─ renders the in-game shell via src/components/appcore/GameShell.tsx
+      ├─ renders overlays via src/components/appcore/AppCoreOverlays.tsx
+      ├─ loads room map via getAllRoomsAsObject()
+      │  └─ src/utils/roomLoader.ts
+      │     └─ src/rooms/roomRegistry.ts
+      │        └─ src/rooms/*Zone_*.ts room definition files
+      ├─ renders room visuals through RoomRenderer inside GameShell
+      └─ dispatches COMMAND_INPUT to gameState reducer
+        └─ src/state/gameState.tsx
+          └─ processCommand()
+            └─ src/engine/commandParser.ts
 ```
 
 Command flow:
@@ -81,9 +74,9 @@ Top-level app wrapper.
 Responsibilities:
 
 ```text
-- Imports AppCore
+- Imports AppCore.modular
 - Wraps the app in GameStateProvider
-- Wraps AppCore in CelebrationController
+- Wraps the runtime shell in CelebrationController
 ```
 
 Notes:
@@ -92,38 +85,37 @@ Notes:
 This should remain very small. Do not put game logic here.
 ```
 
-### `src/components/AppCore.tsx`
+### `src/components/AppCore.modular.tsx`
 
 Main UI and orchestration component.
 
 Responsibilities:
 
 ```text
-- Owns a large part of the UI routing by game stage
-- Lazy-loads major UI panels and transition components
-- Connects to game state via useGameState()
+- Acts as the canonical runtime coordinator
+- Composes GameStageRouter, GameShell and AppCoreOverlays
+- Connects modular controllers in src/components/appcore/
 - Loads room data via getAllRoomsAsObject()
-- Integrates achievements, score, miniquests, NPC systems, demo mode, AI helpers and transitions
 - Dispatches state actions through the central reducer
+- Keeps parser and reducer authority outside the presentation layer
 ```
 
 Red-team notes:
 
 ```text
-- AppCore is already very large and acts as a god component.
-- Further visual-room work should avoid adding more room-rendering logic here.
-- Keep new visual-room layers inside RoomRenderer or dedicated visual components.
+- The retired legacy AppCore god component has been removed.
+- New runtime orchestration should stay inside the modular coordinator and extracted hooks.
+- New visual-room layers should remain inside RoomRenderer or dedicated visual components.
 ```
 
-Recommended future split:
+Current modular structure:
 
 ```text
-AppCore
+AppCore.modular
 ├─ GameStageRouter
-├─ CommandController
-├─ ModalController
-├─ RoomShell
-└─ SystemOverlayController
+├─ GameShell
+├─ AppCoreOverlays
+└─ appcore hooks/controllers
 ```
 
 ### `src/state/gameState.tsx`
@@ -644,7 +636,7 @@ interface RoomEffect {
 
 ```text
 1. Clean .bak2 files or move them to an archive branch/directory.
-2. Split AppCore into smaller controllers.
+2. Keep the modular AppCore layer documented and lean.
 3. Generate documentation automatically from room/item registries.
 4. Add tests for hotspot command generation.
 ```
@@ -664,7 +656,7 @@ interface RoomEffect {
 ### What is fragile
 
 ```text
-- AppCore is too large and should not absorb more responsibilities.
+- The canonical runtime shell should stay split across coordinator, shell, overlays and hooks.
 - Parser support and hotspot default command strings may not be fully aligned.
 - Visual sprites/effects are not yet rendered at runtime.
 - Item movement/drop behaviour is not yet rich enough for the planned sprite system.
@@ -678,7 +670,7 @@ interface RoomEffect {
 - Do not bake movable items into room backgrounds.
 - Do not make every room a full animated GIF/video.
 - Do not duplicate item definitions across multiple files.
-- Do not keep expanding AppCore for every new visual feature.
+- Do not collapse new visual features back into a single runtime god component.
 ```
 
 ## 8. Working rules for future development

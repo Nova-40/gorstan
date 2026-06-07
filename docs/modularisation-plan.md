@@ -1,12 +1,12 @@
-# Gorstan Modularisation Plan
+# Gorstan Modularisation Status
 
-This document records the red-team judgement on whether AppCore and related files need modularising as Gorstan moves into the hybrid illustrated room / point-and-click build.
+This document records the completed AppCore modularisation outcome and the remaining architectural guidance for the hybrid illustrated room / point-and-click build.
 
-## Verdict
+## Outcome
 
-Yes, modularisation makes sense, but it should be incremental.
+AppCore modularisation is complete.
 
-Do not pause development for a grand architecture rewrite. The immediate win is to keep new visual-room work out of `AppCore` and inside dedicated presentation components.
+The canonical runtime now keeps new visual-room work out of the coordinator and inside dedicated presentation components.
 
 ## What has already been modularised
 
@@ -50,54 +50,51 @@ effects: []
 
 The renderer should treat missing visual data as an empty layer.
 
-## AppCore judgement
+## AppCore status
 
-`src/components/AppCore.tsx` does need modularising, but not as the next urgent task.
+`src/components/AppCore.tsx` has been retired. The canonical runtime is `src/components/AppCore.modular.tsx`.
 
-Current issue:
+Current structure:
 
 ```text
-AppCore handles too many responsibilities:
-- game stage routing
-- modal state
-- transitions
-- room loading
-- NPC wiring
-- AI helpers
-- demo mode
-- save/load hooks
-- performance dashboards
-- command-adjacent behaviour
+main.tsx
+-> App.tsx
+-> GameStateProvider
+-> CelebrationController
+-> AppCore.modular.tsx
+	├─ GameStageRouter
+	├─ GameShell
+	├─ AppCoreOverlays
+	└─ appcore hooks/controllers
 ```
 
-Risk:
+Runtime rule:
 
 ```text
-If we add visual-room, sprite, effects, inventory icon and action-menu logic here, AppCore becomes harder to reason about and more likely to break unrelated systems.
+Keep game authority in the reducer and parser.
+Keep runtime orchestration in AppCore.modular and extracted hooks.
+Keep visual-room presentation inside RoomRenderer and related view components.
 ```
 
-Decision:
+Why this split stays canonical:
 
 ```text
-Do not add new room visual responsibilities to AppCore.
-Use AppCore only to mount the room/game shell and dispatch actions.
+The retired legacy AppCore concentrated too many responsibilities in one file.
+The modular structure isolates stage routing, shell rendering, overlays and controller effects.
+New work should extend those modular seams rather than reintroducing a god component.
 ```
 
-Recommended future split:
+Canonical modular structure:
 
 ```text
-AppCore
+AppCore.modular
 ├─ GameStageRouter
-├─ RoomGameShell
-├─ ModalController
-├─ TransitionController
-├─ SaveLoadController
-├─ NPCControllerBridge
-├─ AIOverlayController
-└─ DebugOverlayController
+├─ GameShell
+├─ AppCoreOverlays
+└─ appcore hooks/controllers
 ```
 
-But this should be done in stages after the visual-room layer is stable.
+This migration is complete and should remain the baseline architecture.
 
 ## RoomRenderer judgement
 
@@ -174,27 +171,15 @@ special visual/drop messages
 
 This split is good. Keep it.
 
-## Files that probably need modularising later
+## Historical note
 
-### 1. `src/components/AppCore.tsx`
+The original plan targeted `src/components/AppCore.tsx` for staged extraction. That work is now complete, and legacy AppCore has been removed from the runtime and source tree.
 
-Priority: High, but not before the sprite/effects layer works.
+Follow-up work should focus on keeping the modular surfaces small, not on reopening the retired AppCore path.
 
-Reason:
+## Files that still need careful modular boundaries
 
-```text
-It is the main god component.
-```
-
-Suggested first extraction:
-
-```text
-src/components/core/GameStageRouter.tsx
-src/components/core/ModalController.tsx
-src/components/core/TransitionController.tsx
-```
-
-### 2. `src/state/gameState.tsx`
+### `src/state/gameState.tsx`
 
 Priority: Medium.
 

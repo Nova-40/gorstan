@@ -74,12 +74,12 @@ interface GameState {
 
 ## COMPONENT HIERARCHY
 
-### Core Shell: `AppCore.tsx`
-- Stage management (splash → main → ending)
-- Room loading with teleport animations
-- Modal system (inventory, NPCs, save/load, use items)
-- Back button history tracking
-- Performance monitoring integration
+### Core Shell: `AppCore.modular.tsx`
+- Canonical runtime coordinator mounted by `src/App.tsx`
+- Stage routing via `GameStageRouter.tsx`
+- In-game shell composition via `GameShell.tsx`
+- Modal and overlay composition via `AppCoreOverlays.tsx`
+- Controller logic owned by hooks under `src/components/appcore/`
 
 ### UI Components Pattern
 ```
@@ -269,8 +269,9 @@ If AI is disabled or no key is present the engine falls back to the `OfflineTree
    - `tsconfig.json`, `package.json` (dependencies)
 
 5. **Component Architecture**
-   - `AppCore.tsx` (main shell)
-   - Modal components (inventory, NPCs, save/load)
+  - `App.tsx` (top-level wrapper)
+  - `AppCore.modular.tsx` (canonical runtime shell)
+  - `GameStageRouter.tsx`, `GameShell.tsx`, `AppCoreOverlays.tsx`
    - UI primitives and game components
 
 ## GAME CONTENT SUMMARY

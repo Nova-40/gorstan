@@ -1,10 +1,20 @@
-# AppCore Modular Wiring Guide
+# AppCore Modular Architecture Guide
 
-This guide records how to wire the modular AppCore layer into `src/components/AppCore.tsx`.
+This guide records the completed AppCore modular runtime and preserves the migration order as historical reference.
+
+## Canonical runtime
+
+```text
+main.tsx
+-> App.tsx
+-> GameStateProvider
+-> CelebrationController
+-> AppCore.modular.tsx
+```
 
 ## Principle
 
-AppCore should coordinate only. Hooks own controller state and effects. Components own rendering. The reducer and parser remain canonical.
+AppCore.modular should coordinate only. Hooks own controller state and effects. Components own rendering. The reducer and parser remain canonical.
 
 ## Modular target
 
@@ -37,11 +47,21 @@ Main exports:
 - `useAppCoreRoomLifecycle`
 - `useAppCoreCommandHandler`
 
-Use the barrel import from `./appcore` when wiring.
+This barrel remains the canonical import surface for the modular controller layer.
 
-## Wiring order
+## Current modular structure
 
-Wire in small commits:
+```text
+src/components/AppCore.modular.tsx
+├─ GameStageRouter
+├─ GameShell
+├─ AppCoreOverlays
+└─ appcore hooks/controllers
+```
+
+## Historical migration order
+
+The staged extraction completed in small commits using this order:
 
 1. Replace inline AppCore type declarations with imports from `./appcore`.
 2. Replace the local lazy component declarations with the lazy component registry.
@@ -64,9 +84,9 @@ Wire in small commits:
 19. Replace the four-quadrant game JSX with `GameShell`.
 20. Replace overlay JSX with `AppCoreOverlays`.
 
-## Behaviour checks after wiring
+## Behaviour checks after migration
 
-After each wiring commit, run the build and test the obvious user journeys:
+The migration was validated against these user journeys and they remain the architecture-sensitive checks to rerun after future AppCore changes:
 
 - splash to welcome to name capture to route select
 - normal game start
@@ -87,7 +107,7 @@ After each wiring commit, run the build and test the obvious user journeys:
 
 ## Important caution
 
-The current AppCore mixes `ADD_MESSAGE` and `RECORD_MESSAGE`. The extracted hooks preserve the existing pattern where copied. Do not rationalise those action names during the modular wiring pass; do it later at reducer level.
+The retired legacy AppCore mixed `ADD_MESSAGE` and `RECORD_MESSAGE`. The extracted hooks preserved the existing pattern where copied. Do not rationalise those action names during unrelated AppCore maintenance; do it later at reducer level.
 
 ## Hybrid game rule
 

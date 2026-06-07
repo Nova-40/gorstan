@@ -5,8 +5,9 @@ This document maps the major modules, routes, assets, NPCs, puzzles, transitions
 ## Core entry points
 - `index.html` — Vite entry point
 - `src/main.tsx` — React bootstrap
-- `src/App.tsx` — App shell and stage transitions
-- `src/AppCore.tsx` — game loop, routing through console (exists in canonical plan)
+- `src/App.tsx` — top-level app wrapper and provider composition
+- `src/components/AppCore.modular.tsx` — canonical runtime coordinator
+- `src/components/appcore/` — modular stage router, game shell, overlays, and controller hooks
 
 ## Core managers
 - `src/state` — React context and reducers (game state, persistence)

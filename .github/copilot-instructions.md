@@ -4,7 +4,7 @@
 Use this file to get quickly productive working in the Gorstan codebase. Focus on actionable, discoverable patterns only.
 
 1) Big picture
-- This is a client-side React + TypeScript single-page game built with Vite. Main entry: `src/main.tsx` / `index.html`. The app shell and stage transitions are in `src/App.tsx` / `src/AppCore.tsx` patterns (see `src/App.tsx`).
+- This is a client-side React + TypeScript single-page game built with Vite. Main entry: `src/main.tsx` / `index.html`. The runtime path is `src/main.tsx` -> `src/App.tsx` -> `GameStateProvider` -> `CelebrationController` -> `src/components/AppCore.modular.tsx`.
 - Core domains: engine (game logic), rooms (content), state (game state/context), NPCs (controllers), UI components. Look under `src/engine`, `src/rooms` (or `src/rooms/*`), `src/state`, `src/npcs`, and `src/components`.
 
 2) Developer workflows (most important commands)
