@@ -103,6 +103,7 @@ const AppCoreModularDraft: React.FC = () => {
   const { availableDirections, directionRoomTitles } = useRoomDirections(room, roomMap);
 
   const [showPause, setShowPause] = useState(false);
+  const [showOptionsUnavailable, setShowOptionsUnavailable] = useState(false);
   const [showPerformanceDashboard, setShowPerformanceDashboard] = useState(false);
   const [draftDemoActive, setDraftDemoActive] = useState(false);
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
@@ -217,7 +218,24 @@ const AppCoreModularDraft: React.FC = () => {
     handleOpenNPCConsole: npcConsole.handleOpenNPCConsole,
   });
 
+  const closeActiveModal = (): void => {
+    setShowOptionsUnavailable(false);
+    modalState.closeModal();
+  };
+
   const modalContent = useMemo((): React.ReactNode => {
+    if (showOptionsUnavailable) {
+      return (
+        <div className="console-theme modal-panel">
+          <h2>Options Unavailable</h2>
+          <p>Options are not available in the modular AppCore yet.</p>
+          <button type="button" onClick={() => setShowOptionsUnavailable(false)}>
+            Close
+          </button>
+        </div>
+      );
+    }
+
     switch (modalState.modal) {
       case 'inventory':
         return <InventoryPanel />;
@@ -303,6 +321,7 @@ const AppCoreModularDraft: React.FC = () => {
         return null;
     }
   }, [
+    showOptionsUnavailable,
     modalState.modal,
     modalState.closeModal,
     inventory,
@@ -343,15 +362,18 @@ const AppCoreModularDraft: React.FC = () => {
       }}
       onRoomTransitionComplete={transitions.handleRoomTransitionComplete}
       showDebugPanel={Boolean(state.settings?.debugMode || state.flags?.showDebugPanel)}
-      modalOpen={modalState.modal !== null}
-      onCloseModal={modalState.closeModal}
+      modalOpen={modalState.modal !== null || showOptionsUnavailable}
+      onCloseModal={closeActiveModal}
       modalContent={modalContent}
       modalContentOwnsOverlay={modalOwnsOverlay(modalState.modal)}
       showPause={showPause}
       onResume={() => setShowPause(false)}
       onSave={() => modalState.openModal('saveGame')}
       onLoad={() => modalState.openModal('saveGame')}
-      onOptions={() => dispatch({ type: 'RECORD_MESSAGE', payload: { id: `options-${Date.now()}`, text: 'Options are not wired in the modular AppCore yet.', type: 'system', timestamp: Date.now() } })}
+      onOptions={() => {
+        setShowPause(false);
+        setShowOptionsUnavailable(true);
+      }}
       onQuitToMain={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'welcome' })}
       showBlueButtonWarning={Boolean(state.flags?.showBlueButtonWarning)}
       onDismissBlueButtonWarning={() => dispatch({ type: 'SET_FLAG', payload: { flag: 'showBlueButtonWarning', value: false } })}
