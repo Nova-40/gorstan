@@ -1,538 +1,2045 @@
 {
-  "books\\findlaters.cover.png": {
-    "original": "books\\findlaters.cover.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "books\\quantum.lattice.cover.png": {
-    "original": "books\\quantum.lattice.cover.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "fallback.png": {
-    "original": "fallback.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "gorstanicon.png": {
-    "original": "gorstanicon.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "npcs\\artifactChamber.png": {
-    "original": "npcs\\artifactChamber.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "npcs\\Ayla.png": {
-    "original": "npcs\\Ayla.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "npcs\\Barista.png": {
-    "original": "npcs\\Barista.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "npcs\\Librarian.png": {
-    "original": "npcs\\Librarian.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "npcs\\Polly2.png": {
-    "original": "npcs\\Polly2.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\burger-joint.png": {
-    "original": "rooms\\burger-joint.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\cafe.png": {
-    "original": "rooms\\cafe.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\control-nexus.png": {
-    "original": "rooms\\control-nexus.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\elfhameZone_elfhame.png": {
-    "original": "rooms\\elfhameZone_elfhame.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\elfhameZone_faeglade.png": {
-    "original": "rooms\\elfhameZone_faeglade.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\elfhameZone_faelake.png": {
-    "original": "rooms\\elfhameZone_faelake.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\elfhameZone_faelakenorthshore.png": {
-    "original": "rooms\\elfhameZone_faelakenorthshore.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\elfhameZone_faepalace.png": {
-    "original": "rooms\\elfhameZone_faepalace.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\elfhameZone_faepalacedungeon.png": {
-    "original": "rooms\\elfhameZone_faepalacedungeon.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\elfhameZone_lucidveil.png": {
-    "original": "rooms\\elfhameZone_lucidveil.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\elfhameZone_rhianonschamber.png": {
-    "original": "rooms\\elfhameZone_rhianonschamber.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\genericZone_surrealPlaceholder.png": {
-    "original": "rooms\\genericZone_surrealPlaceholder.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\glitchrealm-zoneravenroom.png": {
-    "original": "rooms\\glitchrealm-zoneravenroom.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\glitchrealm_datavoid.png": {
-    "original": "rooms\\glitchrealm_datavoid.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\glitchrealm_glitchexit.png": {
-    "original": "rooms\\glitchrealm_glitchexit.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\glitchrealm_glitchrealmhub.png": {
-    "original": "rooms\\glitchrealm_glitchrealmhub.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\glitchZone_glitchinguniverse.png": {
-    "original": "rooms\\glitchZone_glitchinguniverse.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\glitchZone_issuesdetected.png": {
-    "original": "rooms\\glitchZone_issuesdetected.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\glitchZone_moreissues.png": {
-    "original": "rooms\\glitchZone_moreissues.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\gorstanZone_carronspire.png": {
-    "original": "rooms\\gorstanZone_carronspire.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\gorstanZone_exit.png": {
-    "original": "rooms\\gorstanZone_exit.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\gorstanZone_gorstanhub.png": {
-    "original": "rooms\\gorstanZone_gorstanhub.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\gorstanZone_gorstanvillage.png": {
-    "original": "rooms\\gorstanZone_gorstanvillage.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\gorstanZone_spare.png": {
-    "original": "rooms\\gorstanZone_spare.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\gorstanZone_torridon.png": {
-    "original": "rooms\\gorstanZone_torridon.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\gorstanZone_torridonbefore.png": {
-    "original": "rooms\\gorstanZone_torridonbefore.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\gorstanZone_torridoninn.png": {
-    "original": "rooms\\gorstanZone_torridoninn.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\hub.png": {
-    "original": "rooms\\hub.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\introZone_controlnexus.png": {
-    "original": "rooms\\introZone_controlnexus.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\introZone_controlroom.png": {
-    "original": "rooms\\introZone_controlroom.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\introZone_crossing.png": {
-    "original": "rooms\\introZone_crossing.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\introZone_hiddenlab.png": {
-    "original": "rooms\\introZone_hiddenlab.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\introZone_introreset.png": {
-    "original": "rooms\\introZone_introreset.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\introZone_introstreet1.png": {
-    "original": "rooms\\introZone_introstreet1.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\introZone_resetroom.png": {
-    "original": "rooms\\introZone_resetroom.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\latticehub.png": {
-    "original": "rooms\\latticehub.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\latticeZone_hiddenlibrary.png": {
-    "original": "rooms\\latticeZone_hiddenlibrary.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\latticeZone_hub.png": {
-    "original": "rooms\\latticeZone_hub.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\latticeZone_lattice.png": {
-    "original": "rooms\\latticeZone_lattice.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\latticeZone_latticelibrary.png": {
-    "original": "rooms\\latticeZone_latticelibrary.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\latticeZone_libraryofnine.png": {
-    "original": "rooms\\latticeZone_libraryofnine.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\latticeZone_primeconfluence.png": {
-    "original": "rooms\\latticeZone_primeconfluence.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\liminalhub.png": {
-    "original": "rooms\\liminalhub.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\londonZone_cafeoffice.png": {
-    "original": "rooms\\londonZone_cafeoffice.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\londonZone_dalesapartment.png": {
-    "original": "rooms\\londonZone_dalesapartment.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\londonZone_findlaters.png": {
-    "original": "rooms\\londonZone_findlaters.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\londonZone_londonhub.png": {
-    "original": "rooms\\londonZone_londonhub.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\londonZone_stkatherinesdock.png": {
-    "original": "rooms\\londonZone_stkatherinesdock.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\londonZone_trentpark.png": {
-    "original": "rooms\\londonZone_trentpark.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\mazeZone_exit.png": {
-    "original": "rooms\\mazeZone_exit.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\mazeZone_forgottenchamber.png": {
-    "original": "rooms\\mazeZone_forgottenchamber.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\mazeZone_introstreetclear.png": {
-    "original": "rooms\\mazeZone_introstreetclear.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\mazeZone_mazehub.png": {
-    "original": "rooms\\mazeZone_mazehub.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\mazeZone_mirrorhall.png": {
-    "original": "rooms\\mazeZone_mirrorhall.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\mazeZone_misleadchamber.png": {
-    "original": "rooms\\mazeZone_misleadchamber.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\mazeZone_pollysbay.png": {
-    "original": "rooms\\mazeZone_pollysbay.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\mazeZone_room.png": {
-    "original": "rooms\\mazeZone_room.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\mazeZone_secretmazeentry.png": {
-    "original": "rooms\\mazeZone_secretmazeentry.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\mazeZone_secrettunnel.png": {
-    "original": "rooms\\mazeZone_secrettunnel.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\mazeZone_storagechamber.png": {
-    "original": "rooms\\mazeZone_storagechamber.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\newyorkZone_aevirawarehouse.png": {
-    "original": "rooms\\newyorkZone_aevirawarehouse.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\newyorkZone_burgerjoint.png": {
-    "original": "rooms\\newyorkZone_burgerjoint.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\newyorkZone_centralpark.png": {
-    "original": "rooms\\newyorkZone_centralpark.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\newyorkZone_manhattanhub.png": {
-    "original": "rooms\\newyorkZone_manhattanhub.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\newyorkZone_storeroom.png": {
-    "original": "rooms\\newyorkZone_storeroom.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\offgorstanZone_ancientvault.png": {
-    "original": "rooms\\offgorstanZone_ancientvault.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\offgorstanZone_exit.png": {
-    "original": "rooms\\offgorstanZone_exit.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\offgorstanZone_multiversehub.png": {
-    "original": "rooms\\offgorstanZone_multiversehub.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\offmultiverseZone_controlnexusreturned.png": {
-    "original": "rooms\\offmultiverseZone_controlnexusreturned.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\offmultiverseZone_observationroom.png": {
-    "original": "rooms\\offmultiverseZone_observationroom.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\stantonharcourtZone_silentstanton.png": {
-    "original": "rooms\\stantonharcourtZone_silentstanton.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\stantonharcourtZone_stantonharcourt.png": {
-    "original": "rooms\\stantonharcourtZone_stantonharcourt.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\stantonZone_ascendantStanton.png": {
-    "original": "rooms\\stantonZone_ascendantStanton.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\stantonZone_glitchStanton.png": {
-    "original": "rooms\\stantonZone_glitchStanton.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\stantonZone_villagegreen.png": {
-    "original": "rooms\\stantonZone_villagegreen.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "starterframe.png": {
-    "original": "starterframe.png",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "variants\\rooms\\introZone_controlnexus-poster.jpg": {
-    "original": "variants\\rooms\\introZone_controlnexus-poster.jpg",
-    "variants": {},
-    "avif": null,
-    "webp": null
-  },
-  "rooms\\introZone_controlnexus.gif": {
-    "original": "rooms\\introZone_controlnexus.gif",
-    "variants": {},
-    "webm": "optimized\\rooms\\introZone_controlnexus.webm",
-    "sizes": {}
-  },
-  "variants\\rooms\\introZone_controlnexus.mp4": {
-    "original": "variants\\rooms\\introZone_controlnexus.mp4",
-    "variants": {},
-    "webm": "optimized\\variants\\rooms\\introZone_controlnexus.webm",
-    "sizes": {},
-    "mp4": "optimized\\variants\\rooms\\introZone_controlnexus.mp4"
-  },
-  "variants\\rooms\\introZone_controlnexus.webm": {
-    "original": "variants\\rooms\\introZone_controlnexus.webm",
-    "variants": {},
-    "webm": "optimized\\variants\\rooms\\introZone_controlnexus.webm",
-    "sizes": {},
-    "mp4": "optimized\\variants\\rooms\\introZone_controlnexus.mp4"
+  "_optimized": {},
+  "author/geoff_webster_headshot": {
+    "fallback": "/images/author/geoff_webster_headshot.jpg"
+  },
+  "books/findlaters.cover": {
+    "fallback": "/images/books/findlaters.cover.png"
+  },
+  "books/quantum.lattice.cover": {
+    "fallback": "/images/books/quantum.lattice.cover.png"
+  },
+  "fallback": {
+    "fallback": "/images/fallback.png"
+  },
+  "gorstanicon": {
+    "fallback": "/images/gorstanicon.png"
+  },
+  "npcs/Al": {
+    "fallback": "/images/npcs/Al.png"
+  },
+  "npcs/Albie": {
+    "fallback": "/images/npcs/Albie.png"
+  },
+  "npcs/Ayla": {
+    "fallback": "/images/npcs/Ayla.png"
+  },
+  "npcs/Barista": {
+    "fallback": "/images/npcs/Barista.png"
+  },
+  "npcs/Chef": {
+    "fallback": "/images/npcs/Chef.png"
+  },
+  "npcs/Dominic": {
+    "fallback": "/images/npcs/Dominic.png"
+  },
+  "npcs/Librarian": {
+    "fallback": "/images/npcs/Librarian.png"
+  },
+  "npcs/Morthos": {
+    "fallback": "/images/npcs/Morthos.png"
+  },
+  "npcs/MrWendell": {
+    "fallback": "/images/npcs/MrWendell.png"
+  },
+  "npcs/Polly": {
+    "fallback": "/images/npcs/Polly.png"
+  },
+  "npcs/Polly2": {
+    "fallback": "/images/npcs/Polly2.png"
+  },
+  "npcs/artifactChamber": {
+    "fallback": "/images/npcs/artifactChamber.png"
+  },
+  "rooms/artifactChamber": {
+    "fallback": "/images/rooms/artifactChamber.png"
+  },
+  "rooms/burger-joint": {
+    "fallback": "/images/rooms/burger-joint.png"
+  },
+  "rooms/cafe": {
+    "fallback": "/images/rooms/cafe.png"
+  },
+  "rooms/control-nexus": {
+    "fallback": "/images/rooms/control-nexus.png"
+  },
+  "rooms/elfhameZone_elfhame": {
+    "fallback": "/images/rooms/elfhameZone_elfhame.png"
+  },
+  "rooms/elfhameZone_faeglade": {
+    "fallback": "/images/rooms/elfhameZone_faeglade.png"
+  },
+  "rooms/elfhameZone_faelake": {
+    "fallback": "/images/rooms/elfhameZone_faelake.png"
+  },
+  "rooms/elfhameZone_faelakenorthshore": {
+    "fallback": "/images/rooms/elfhameZone_faelakenorthshore.png"
+  },
+  "rooms/elfhameZone_faepalace": {
+    "fallback": "/images/rooms/elfhameZone_faepalace.png"
+  },
+  "rooms/elfhameZone_faepalacedungeon": {
+    "fallback": "/images/rooms/elfhameZone_faepalacedungeon.png"
+  },
+  "rooms/elfhameZone_faepalacedungeons": {
+    "fallback": "/images/rooms/elfhameZone_faepalacedungeons.png"
+  },
+  "rooms/elfhameZone_faepalacemainhall": {
+    "fallback": "/images/rooms/elfhameZone_faepalacemainhall.png"
+  },
+  "rooms/elfhameZone_faepalacerhianonsroom": {
+    "fallback": "/images/rooms/elfhameZone_faepalacerhianonsroom.png"
+  },
+  "rooms/elfhameZone_lucidveil": {
+    "fallback": "/images/rooms/elfhameZone_lucidveil.png"
+  },
+  "rooms/elfhameZone_rhianonschamber": {
+    "fallback": "/images/rooms/elfhameZone_rhianonschamber.png"
+  },
+  "rooms/genericZone_surrealPlaceholder": {
+    "fallback": "/images/rooms/genericZone_surrealPlaceholder.png"
+  },
+  "rooms/glitchZone_failure": {
+    "fallback": "/images/rooms/glitchZone_failure.png"
+  },
+  "rooms/glitchZone_glitchinguniverse": {
+    "fallback": "/images/rooms/glitchZone_glitchinguniverse.png"
+  },
+  "rooms/glitchZone_issuesdetected": {
+    "fallback": "/images/rooms/glitchZone_issuesdetected.png"
+  },
+  "rooms/glitchZone_moreissues": {
+    "fallback": "/images/rooms/glitchZone_moreissues.png"
+  },
+  "rooms/glitchrealm-zoneravenroom": {
+    "fallback": "/images/rooms/glitchrealm-zoneravenroom.png"
+  },
+  "rooms/glitchrealm_datavoid": {
+    "fallback": "/images/rooms/glitchrealm_datavoid.png"
+  },
+  "rooms/glitchrealm_glitchexit": {
+    "fallback": "/images/rooms/glitchrealm_glitchexit.png"
+  },
+  "rooms/glitchrealm_glitchrealmhub": {
+    "fallback": "/images/rooms/glitchrealm_glitchrealmhub.png"
+  },
+  "rooms/gorstanZone_carronspire": {
+    "fallback": "/images/rooms/gorstanZone_carronspire.png"
+  },
+  "rooms/gorstanZone_exit": {
+    "fallback": "/images/rooms/gorstanZone_exit.png"
+  },
+  "rooms/gorstanZone_gorstanhub": {
+    "fallback": "/images/rooms/gorstanZone_gorstanhub.png"
+  },
+  "rooms/gorstanZone_gorstanvillage": {
+    "fallback": "/images/rooms/gorstanZone_gorstanvillage.png"
+  },
+  "rooms/gorstanZone_spare": {
+    "fallback": "/images/rooms/gorstanZone_spare.png"
+  },
+  "rooms/gorstanZone_torridon": {
+    "fallback": "/images/rooms/gorstanZone_torridon.png"
+  },
+  "rooms/gorstanZone_torridonbefore": {
+    "fallback": "/images/rooms/gorstanZone_torridonbefore.png"
+  },
+  "rooms/gorstanZone_torridoninn": {
+    "fallback": "/images/rooms/gorstanZone_torridoninn.png"
+  },
+  "rooms/gorstanZone_torridoninthepast": {
+    "fallback": "/images/rooms/gorstanZone_torridoninthepast.png"
+  },
+  "rooms/hub": {
+    "fallback": "/images/rooms/hub.png"
+  },
+  "rooms/introZone_controlnexus": {
+    "fallback": "/images/rooms/introZone_controlnexus.gif"
+  },
+  "rooms/introZone_controlroom": {
+    "fallback": "/images/rooms/introZone_controlroom.png"
+  },
+  "rooms/introZone_crossing": {
+    "fallback": "/images/rooms/introZone_crossing.png"
+  },
+  "rooms/introZone_hiddenlab": {
+    "fallback": "/images/rooms/introZone_hiddenlab.png"
+  },
+  "rooms/introZone_introreset": {
+    "fallback": "/images/rooms/introZone_introreset.png"
+  },
+  "rooms/introZone_introstreet1": {
+    "fallback": "/images/rooms/introZone_introstreet1.png"
+  },
+  "rooms/introZone_resetroom": {
+    "fallback": "/images/rooms/introZone_resetroom.png"
+  },
+  "rooms/latticeZone_hiddenlibrary": {
+    "fallback": "/images/rooms/latticeZone_hiddenlibrary.png"
+  },
+  "rooms/latticeZone_hub": {
+    "fallback": "/images/rooms/latticeZone_hub.png"
+  },
+  "rooms/latticeZone_lattice": {
+    "fallback": "/images/rooms/latticeZone_lattice.png"
+  },
+  "rooms/latticeZone_latticelibrary": {
+    "fallback": "/images/rooms/latticeZone_latticelibrary.png"
+  },
+  "rooms/latticeZone_libraryofnine": {
+    "fallback": "/images/rooms/latticeZone_libraryofnine.png"
+  },
+  "rooms/latticeZone_primeconfluence": {
+    "fallback": "/images/rooms/latticeZone_primeconfluence.png"
+  },
+  "rooms/latticehub": {
+    "fallback": "/images/rooms/latticehub.png"
+  },
+  "rooms/liminalhub": {
+    "fallback": "/images/rooms/liminalhub.png"
+  },
+  "rooms/londonZone_cafeoffice": {
+    "fallback": "/images/rooms/londonZone_cafeoffice.png"
+  },
+  "rooms/londonZone_dalesapartment": {
+    "fallback": "/images/rooms/londonZone_dalesapartment.png"
+  },
+  "rooms/londonZone_findlaters": {
+    "fallback": "/images/rooms/londonZone_findlaters.png"
+  },
+  "rooms/londonZone_londonhub": {
+    "fallback": "/images/rooms/londonZone_londonhub.png"
+  },
+  "rooms/londonZone_stkatherinesdock": {
+    "fallback": "/images/rooms/londonZone_stkatherinesdock.png"
+  },
+  "rooms/londonZone_trentpark": {
+    "fallback": "/images/rooms/londonZone_trentpark.png"
+  },
+  "rooms/mazeZone_anothermazeroom": {
+    "fallback": "/images/rooms/mazeZone_anothermazeroom.png"
+  },
+  "rooms/mazeZone_exit": {
+    "fallback": "/images/rooms/mazeZone_exit.png"
+  },
+  "rooms/mazeZone_forgottenchamber": {
+    "fallback": "/images/rooms/mazeZone_forgottenchamber.png"
+  },
+  "rooms/mazeZone_introstreetclear": {
+    "fallback": "/images/rooms/mazeZone_introstreetclear.png"
+  },
+  "rooms/mazeZone_labyrinthbend": {
+    "fallback": "/images/rooms/mazeZone_labyrinthbend.png"
+  },
+  "rooms/mazeZone_mazeecho": {
+    "fallback": "/images/rooms/mazeZone_mazeecho.png"
+  },
+  "rooms/mazeZone_mazehub": {
+    "fallback": "/images/rooms/mazeZone_mazehub.png"
+  },
+  "rooms/mazeZone_mazeroom": {
+    "fallback": "/images/rooms/mazeZone_mazeroom.png"
+  },
+  "rooms/mazeZone_mirrorhall": {
+    "fallback": "/images/rooms/mazeZone_mirrorhall.png"
+  },
+  "rooms/mazeZone_misleadchamber": {
+    "fallback": "/images/rooms/mazeZone_misleadchamber.png"
+  },
+  "rooms/mazeZone_pollysbay": {
+    "fallback": "/images/rooms/mazeZone_pollysbay.png"
+  },
+  "rooms/mazeZone_room": {
+    "fallback": "/images/rooms/mazeZone_room.png"
+  },
+  "rooms/mazeZone_secretmazeentry": {
+    "fallback": "/images/rooms/mazeZone_secretmazeentry.png"
+  },
+  "rooms/mazeZone_secrettunnel": {
+    "fallback": "/images/rooms/mazeZone_secrettunnel.png"
+  },
+  "rooms/mazeZone_stillamazeroom": {
+    "fallback": "/images/rooms/mazeZone_stillamazeroom.png"
+  },
+  "rooms/mazeZone_storagechamber": {
+    "fallback": "/images/rooms/mazeZone_storagechamber.png"
+  },
+  "rooms/mazeZone_windingpath": {
+    "fallback": "/images/rooms/mazeZone_windingpath.png"
+  },
+  "rooms/newyorkZone_aevirawarehouse": {
+    "fallback": "/images/rooms/newyorkZone_aevirawarehouse.png"
+  },
+  "rooms/newyorkZone_burgerjoint": {
+    "fallback": "/images/rooms/newyorkZone_burgerjoint.png"
+  },
+  "rooms/newyorkZone_centralpark": {
+    "fallback": "/images/rooms/newyorkZone_centralpark.png"
+  },
+  "rooms/newyorkZone_manhattanhub": {
+    "fallback": "/images/rooms/newyorkZone_manhattanhub.png"
+  },
+  "rooms/newyorkZone_storeroom": {
+    "fallback": "/images/rooms/newyorkZone_storeroom.png"
+  },
+  "rooms/offgorstanZone_ancientslibrary": {
+    "fallback": "/images/rooms/offgorstanZone_ancientslibrary.png"
+  },
+  "rooms/offgorstanZone_ancientsroom": {
+    "fallback": "/images/rooms/offgorstanZone_ancientsroom.png"
+  },
+  "rooms/offgorstanZone_ancientvault": {
+    "fallback": "/images/rooms/offgorstanZone_ancientvault.png"
+  },
+  "rooms/offgorstanZone_arbitercore": {
+    "fallback": "/images/rooms/offgorstanZone_arbitercore.png"
+  },
+  "rooms/offgorstanZone_echochamber": {
+    "fallback": "/images/rooms/offgorstanZone_echochamber.png"
+  },
+  "rooms/offgorstanZone_exit": {
+    "fallback": "/images/rooms/offgorstanZone_exit.png"
+  },
+  "rooms/offgorstanZone_multiversehub": {
+    "fallback": "/images/rooms/offgorstanZone_multiversehub.png"
+  },
+  "rooms/offmultiverseZone_controlnexusreturned": {
+    "fallback": "/images/rooms/offmultiverseZone_controlnexusreturned.png"
+  },
+  "rooms/offmultiverseZone_observationroom": {
+    "fallback": "/images/rooms/offmultiverseZone_observationroom.png"
+  },
+  "rooms/offmultiverseZone_shatteredrealm": {
+    "fallback": "/images/rooms/offmultiverseZone_shatteredrealm.png"
+  },
+  "rooms/placeholder-room": {
+    "fallback": "/images/rooms/placeholder-room.png"
+  },
+  "rooms/spireCourtyard": {
+    "fallback": "/images/rooms/spireCourtyard.png"
+  },
+  "rooms/stantonZone_ascendantStanton": {
+    "fallback": "/images/rooms/stantonZone_ascendantStanton.png"
+  },
+  "rooms/stantonZone_glitchStanton": {
+    "fallback": "/images/rooms/stantonZone_glitchStanton.png"
+  },
+  "rooms/stantonZone_peacefulStanton": {
+    "fallback": "/images/rooms/stantonZone_peacefulStanton.png"
+  },
+  "rooms/stantonZone_villagegreen": {
+    "fallback": "/images/rooms/stantonZone_villagegreen.png"
+  },
+  "rooms/stantonharcourtZone_silentstanton": {
+    "fallback": "/images/rooms/stantonharcourtZone_silentstanton.png"
+  },
+  "rooms/stantonharcourtZone_stantonharcourt": {
+    "fallback": "/images/rooms/stantonharcourtZone_stantonharcourt.png"
+  },
+  "starterframe": {
+    "fallback": "/images/starterframe.png"
+  },
+  "variants/books/findlaters.cover-1200": {
+    "avif": "/images/variants/books/findlaters.cover-1200.avif",
+    "webp": "/images/variants/books/findlaters.cover-1200.webp"
+  },
+  "variants/books/findlaters.cover-1920": {
+    "avif": "/images/variants/books/findlaters.cover-1920.avif",
+    "webp": "/images/variants/books/findlaters.cover-1920.webp"
+  },
+  "variants/books/findlaters.cover-480": {
+    "avif": "/images/variants/books/findlaters.cover-480.avif",
+    "webp": "/images/variants/books/findlaters.cover-480.webp"
+  },
+  "variants/books/findlaters.cover-768": {
+    "avif": "/images/variants/books/findlaters.cover-768.avif",
+    "webp": "/images/variants/books/findlaters.cover-768.webp"
+  },
+  "variants/books/findlaters.cover": {
+    "avif": "/images/variants/books/findlaters.cover.avif",
+    "webp": "/images/variants/books/findlaters.cover.webp"
+  },
+  "variants/books/quantum.lattice.cover-1200": {
+    "avif": "/images/variants/books/quantum.lattice.cover-1200.avif",
+    "webp": "/images/variants/books/quantum.lattice.cover-1200.webp"
+  },
+  "variants/books/quantum.lattice.cover-1920": {
+    "avif": "/images/variants/books/quantum.lattice.cover-1920.avif",
+    "webp": "/images/variants/books/quantum.lattice.cover-1920.webp"
+  },
+  "variants/books/quantum.lattice.cover-480": {
+    "avif": "/images/variants/books/quantum.lattice.cover-480.avif",
+    "webp": "/images/variants/books/quantum.lattice.cover-480.webp"
+  },
+  "variants/books/quantum.lattice.cover-768": {
+    "avif": "/images/variants/books/quantum.lattice.cover-768.avif",
+    "webp": "/images/variants/books/quantum.lattice.cover-768.webp"
+  },
+  "variants/books/quantum.lattice.cover": {
+    "avif": "/images/variants/books/quantum.lattice.cover.avif",
+    "webp": "/images/variants/books/quantum.lattice.cover.webp"
+  },
+  "variants/fallback-1200": {
+    "avif": "/images/variants/fallback-1200.avif",
+    "webp": "/images/variants/fallback-1200.webp"
+  },
+  "variants/fallback-1920": {
+    "avif": "/images/variants/fallback-1920.avif",
+    "webp": "/images/variants/fallback-1920.webp"
+  },
+  "variants/fallback-480": {
+    "avif": "/images/variants/fallback-480.avif",
+    "webp": "/images/variants/fallback-480.webp"
+  },
+  "variants/fallback-768": {
+    "avif": "/images/variants/fallback-768.avif",
+    "webp": "/images/variants/fallback-768.webp"
+  },
+  "variants/fallback": {
+    "avif": "/images/variants/fallback.avif",
+    "webp": "/images/variants/fallback.webp"
+  },
+  "variants/gorstanicon-1200": {
+    "avif": "/images/variants/gorstanicon-1200.avif",
+    "webp": "/images/variants/gorstanicon-1200.webp"
+  },
+  "variants/gorstanicon-1920": {
+    "avif": "/images/variants/gorstanicon-1920.avif",
+    "webp": "/images/variants/gorstanicon-1920.webp"
+  },
+  "variants/gorstanicon-480": {
+    "avif": "/images/variants/gorstanicon-480.avif",
+    "webp": "/images/variants/gorstanicon-480.webp"
+  },
+  "variants/gorstanicon-768": {
+    "avif": "/images/variants/gorstanicon-768.avif",
+    "webp": "/images/variants/gorstanicon-768.webp"
+  },
+  "variants/gorstanicon": {
+    "avif": "/images/variants/gorstanicon.avif",
+    "webp": "/images/variants/gorstanicon.webp"
+  },
+  "variants/npcs/Ayla-1200": {
+    "avif": "/images/variants/npcs/Ayla-1200.avif",
+    "webp": "/images/variants/npcs/Ayla-1200.webp"
+  },
+  "variants/npcs/Ayla-1920": {
+    "avif": "/images/variants/npcs/Ayla-1920.avif",
+    "webp": "/images/variants/npcs/Ayla-1920.webp"
+  },
+  "variants/npcs/Ayla-480": {
+    "avif": "/images/variants/npcs/Ayla-480.avif",
+    "webp": "/images/variants/npcs/Ayla-480.webp"
+  },
+  "variants/npcs/Ayla-768": {
+    "avif": "/images/variants/npcs/Ayla-768.avif",
+    "webp": "/images/variants/npcs/Ayla-768.webp"
+  },
+  "variants/npcs/Ayla": {
+    "avif": "/images/variants/npcs/Ayla.avif",
+    "webp": "/images/variants/npcs/Ayla.webp"
+  },
+  "variants/npcs/Barista-1200": {
+    "avif": "/images/variants/npcs/Barista-1200.avif",
+    "webp": "/images/variants/npcs/Barista-1200.webp"
+  },
+  "variants/npcs/Barista-1920": {
+    "avif": "/images/variants/npcs/Barista-1920.avif",
+    "webp": "/images/variants/npcs/Barista-1920.webp"
+  },
+  "variants/npcs/Barista-480": {
+    "avif": "/images/variants/npcs/Barista-480.avif",
+    "webp": "/images/variants/npcs/Barista-480.webp"
+  },
+  "variants/npcs/Barista-768": {
+    "avif": "/images/variants/npcs/Barista-768.avif",
+    "webp": "/images/variants/npcs/Barista-768.webp"
+  },
+  "variants/npcs/Barista": {
+    "avif": "/images/variants/npcs/Barista.avif",
+    "webp": "/images/variants/npcs/Barista.webp"
+  },
+  "variants/npcs/Librarian-1200": {
+    "avif": "/images/variants/npcs/Librarian-1200.avif",
+    "webp": "/images/variants/npcs/Librarian-1200.webp"
+  },
+  "variants/npcs/Librarian-1920": {
+    "avif": "/images/variants/npcs/Librarian-1920.avif",
+    "webp": "/images/variants/npcs/Librarian-1920.webp"
+  },
+  "variants/npcs/Librarian-480": {
+    "avif": "/images/variants/npcs/Librarian-480.avif",
+    "webp": "/images/variants/npcs/Librarian-480.webp"
+  },
+  "variants/npcs/Librarian-768": {
+    "avif": "/images/variants/npcs/Librarian-768.avif",
+    "webp": "/images/variants/npcs/Librarian-768.webp"
+  },
+  "variants/npcs/Librarian": {
+    "avif": "/images/variants/npcs/Librarian.avif",
+    "webp": "/images/variants/npcs/Librarian.webp"
+  },
+  "variants/npcs/Polly2-1200": {
+    "avif": "/images/variants/npcs/Polly2-1200.avif",
+    "webp": "/images/variants/npcs/Polly2-1200.webp"
+  },
+  "variants/npcs/Polly2-1920": {
+    "avif": "/images/variants/npcs/Polly2-1920.avif",
+    "webp": "/images/variants/npcs/Polly2-1920.webp"
+  },
+  "variants/npcs/Polly2-480": {
+    "avif": "/images/variants/npcs/Polly2-480.avif",
+    "webp": "/images/variants/npcs/Polly2-480.webp"
+  },
+  "variants/npcs/Polly2-768": {
+    "avif": "/images/variants/npcs/Polly2-768.avif",
+    "webp": "/images/variants/npcs/Polly2-768.webp"
+  },
+  "variants/npcs/Polly2": {
+    "avif": "/images/variants/npcs/Polly2.avif",
+    "webp": "/images/variants/npcs/Polly2.webp"
+  },
+  "variants/npcs/artifactChamber-1200": {
+    "avif": "/images/variants/npcs/artifactChamber-1200.avif",
+    "webp": "/images/variants/npcs/artifactChamber-1200.webp"
+  },
+  "variants/npcs/artifactChamber-1920": {
+    "avif": "/images/variants/npcs/artifactChamber-1920.avif",
+    "webp": "/images/variants/npcs/artifactChamber-1920.webp"
+  },
+  "variants/npcs/artifactChamber-480": {
+    "avif": "/images/variants/npcs/artifactChamber-480.avif",
+    "webp": "/images/variants/npcs/artifactChamber-480.webp"
+  },
+  "variants/npcs/artifactChamber-768": {
+    "avif": "/images/variants/npcs/artifactChamber-768.avif",
+    "webp": "/images/variants/npcs/artifactChamber-768.webp"
+  },
+  "variants/npcs/artifactChamber": {
+    "avif": "/images/variants/npcs/artifactChamber.avif",
+    "webp": "/images/variants/npcs/artifactChamber.webp"
+  },
+  "variants/rooms/burger-joint-1200": {
+    "avif": "/images/variants/rooms/burger-joint-1200.avif",
+    "webp": "/images/variants/rooms/burger-joint-1200.webp"
+  },
+  "variants/rooms/burger-joint-1920": {
+    "avif": "/images/variants/rooms/burger-joint-1920.avif",
+    "webp": "/images/variants/rooms/burger-joint-1920.webp"
+  },
+  "variants/rooms/burger-joint-480": {
+    "avif": "/images/variants/rooms/burger-joint-480.avif",
+    "webp": "/images/variants/rooms/burger-joint-480.webp"
+  },
+  "variants/rooms/burger-joint-768": {
+    "avif": "/images/variants/rooms/burger-joint-768.avif",
+    "webp": "/images/variants/rooms/burger-joint-768.webp"
+  },
+  "variants/rooms/burger-joint": {
+    "avif": "/images/variants/rooms/burger-joint.avif",
+    "webp": "/images/variants/rooms/burger-joint.webp"
+  },
+  "variants/rooms/cafe-1200": {
+    "avif": "/images/variants/rooms/cafe-1200.avif",
+    "webp": "/images/variants/rooms/cafe-1200.webp"
+  },
+  "variants/rooms/cafe-1920": {
+    "avif": "/images/variants/rooms/cafe-1920.avif",
+    "webp": "/images/variants/rooms/cafe-1920.webp"
+  },
+  "variants/rooms/cafe-480": {
+    "avif": "/images/variants/rooms/cafe-480.avif",
+    "webp": "/images/variants/rooms/cafe-480.webp"
+  },
+  "variants/rooms/cafe-768": {
+    "avif": "/images/variants/rooms/cafe-768.avif",
+    "webp": "/images/variants/rooms/cafe-768.webp"
+  },
+  "variants/rooms/cafe": {
+    "avif": "/images/variants/rooms/cafe.avif",
+    "webp": "/images/variants/rooms/cafe.webp"
+  },
+  "variants/rooms/control-nexus-1200": {
+    "avif": "/images/variants/rooms/control-nexus-1200.avif",
+    "webp": "/images/variants/rooms/control-nexus-1200.webp"
+  },
+  "variants/rooms/control-nexus-1920": {
+    "avif": "/images/variants/rooms/control-nexus-1920.avif",
+    "webp": "/images/variants/rooms/control-nexus-1920.webp"
+  },
+  "variants/rooms/control-nexus-480": {
+    "avif": "/images/variants/rooms/control-nexus-480.avif",
+    "webp": "/images/variants/rooms/control-nexus-480.webp"
+  },
+  "variants/rooms/control-nexus-768": {
+    "avif": "/images/variants/rooms/control-nexus-768.avif",
+    "webp": "/images/variants/rooms/control-nexus-768.webp"
+  },
+  "variants/rooms/control-nexus": {
+    "avif": "/images/variants/rooms/control-nexus.avif",
+    "webp": "/images/variants/rooms/control-nexus.webp"
+  },
+  "variants/rooms/elfhameZone_elfhame-1200": {
+    "avif": "/images/variants/rooms/elfhameZone_elfhame-1200.avif",
+    "webp": "/images/variants/rooms/elfhameZone_elfhame-1200.webp"
+  },
+  "variants/rooms/elfhameZone_elfhame-1920": {
+    "avif": "/images/variants/rooms/elfhameZone_elfhame-1920.avif",
+    "webp": "/images/variants/rooms/elfhameZone_elfhame-1920.webp"
+  },
+  "variants/rooms/elfhameZone_elfhame-480": {
+    "avif": "/images/variants/rooms/elfhameZone_elfhame-480.avif",
+    "webp": "/images/variants/rooms/elfhameZone_elfhame-480.webp"
+  },
+  "variants/rooms/elfhameZone_elfhame-768": {
+    "avif": "/images/variants/rooms/elfhameZone_elfhame-768.avif",
+    "webp": "/images/variants/rooms/elfhameZone_elfhame-768.webp"
+  },
+  "variants/rooms/elfhameZone_elfhame": {
+    "avif": "/images/variants/rooms/elfhameZone_elfhame.avif",
+    "webp": "/images/variants/rooms/elfhameZone_elfhame.webp"
+  },
+  "variants/rooms/elfhameZone_faeglade-1200": {
+    "avif": "/images/variants/rooms/elfhameZone_faeglade-1200.avif",
+    "webp": "/images/variants/rooms/elfhameZone_faeglade-1200.webp"
+  },
+  "variants/rooms/elfhameZone_faeglade-1920": {
+    "avif": "/images/variants/rooms/elfhameZone_faeglade-1920.avif",
+    "webp": "/images/variants/rooms/elfhameZone_faeglade-1920.webp"
+  },
+  "variants/rooms/elfhameZone_faeglade-480": {
+    "avif": "/images/variants/rooms/elfhameZone_faeglade-480.avif",
+    "webp": "/images/variants/rooms/elfhameZone_faeglade-480.webp"
+  },
+  "variants/rooms/elfhameZone_faeglade-768": {
+    "avif": "/images/variants/rooms/elfhameZone_faeglade-768.avif",
+    "webp": "/images/variants/rooms/elfhameZone_faeglade-768.webp"
+  },
+  "variants/rooms/elfhameZone_faeglade": {
+    "avif": "/images/variants/rooms/elfhameZone_faeglade.avif",
+    "webp": "/images/variants/rooms/elfhameZone_faeglade.webp"
+  },
+  "variants/rooms/elfhameZone_faelake-1200": {
+    "avif": "/images/variants/rooms/elfhameZone_faelake-1200.avif",
+    "webp": "/images/variants/rooms/elfhameZone_faelake-1200.webp"
+  },
+  "variants/rooms/elfhameZone_faelake-1920": {
+    "avif": "/images/variants/rooms/elfhameZone_faelake-1920.avif",
+    "webp": "/images/variants/rooms/elfhameZone_faelake-1920.webp"
+  },
+  "variants/rooms/elfhameZone_faelake-480": {
+    "avif": "/images/variants/rooms/elfhameZone_faelake-480.avif",
+    "webp": "/images/variants/rooms/elfhameZone_faelake-480.webp"
+  },
+  "variants/rooms/elfhameZone_faelake-768": {
+    "avif": "/images/variants/rooms/elfhameZone_faelake-768.avif",
+    "webp": "/images/variants/rooms/elfhameZone_faelake-768.webp"
+  },
+  "variants/rooms/elfhameZone_faelake": {
+    "avif": "/images/variants/rooms/elfhameZone_faelake.avif",
+    "webp": "/images/variants/rooms/elfhameZone_faelake.webp"
+  },
+  "variants/rooms/elfhameZone_faelakenorthshore-1200": {
+    "avif": "/images/variants/rooms/elfhameZone_faelakenorthshore-1200.avif",
+    "webp": "/images/variants/rooms/elfhameZone_faelakenorthshore-1200.webp"
+  },
+  "variants/rooms/elfhameZone_faelakenorthshore-1920": {
+    "avif": "/images/variants/rooms/elfhameZone_faelakenorthshore-1920.avif",
+    "webp": "/images/variants/rooms/elfhameZone_faelakenorthshore-1920.webp"
+  },
+  "variants/rooms/elfhameZone_faelakenorthshore-480": {
+    "avif": "/images/variants/rooms/elfhameZone_faelakenorthshore-480.avif",
+    "webp": "/images/variants/rooms/elfhameZone_faelakenorthshore-480.webp"
+  },
+  "variants/rooms/elfhameZone_faelakenorthshore-768": {
+    "avif": "/images/variants/rooms/elfhameZone_faelakenorthshore-768.avif",
+    "webp": "/images/variants/rooms/elfhameZone_faelakenorthshore-768.webp"
+  },
+  "variants/rooms/elfhameZone_faelakenorthshore": {
+    "avif": "/images/variants/rooms/elfhameZone_faelakenorthshore.avif",
+    "webp": "/images/variants/rooms/elfhameZone_faelakenorthshore.webp"
+  },
+  "variants/rooms/elfhameZone_faepalace-1200": {
+    "avif": "/images/variants/rooms/elfhameZone_faepalace-1200.avif",
+    "webp": "/images/variants/rooms/elfhameZone_faepalace-1200.webp"
+  },
+  "variants/rooms/elfhameZone_faepalace-1920": {
+    "avif": "/images/variants/rooms/elfhameZone_faepalace-1920.avif",
+    "webp": "/images/variants/rooms/elfhameZone_faepalace-1920.webp"
+  },
+  "variants/rooms/elfhameZone_faepalace-480": {
+    "avif": "/images/variants/rooms/elfhameZone_faepalace-480.avif",
+    "webp": "/images/variants/rooms/elfhameZone_faepalace-480.webp"
+  },
+  "variants/rooms/elfhameZone_faepalace-768": {
+    "avif": "/images/variants/rooms/elfhameZone_faepalace-768.avif",
+    "webp": "/images/variants/rooms/elfhameZone_faepalace-768.webp"
+  },
+  "variants/rooms/elfhameZone_faepalace": {
+    "avif": "/images/variants/rooms/elfhameZone_faepalace.avif",
+    "webp": "/images/variants/rooms/elfhameZone_faepalace.webp"
+  },
+  "variants/rooms/elfhameZone_faepalacedungeon-1200": {
+    "avif": "/images/variants/rooms/elfhameZone_faepalacedungeon-1200.avif",
+    "webp": "/images/variants/rooms/elfhameZone_faepalacedungeon-1200.webp"
+  },
+  "variants/rooms/elfhameZone_faepalacedungeon-1920": {
+    "avif": "/images/variants/rooms/elfhameZone_faepalacedungeon-1920.avif",
+    "webp": "/images/variants/rooms/elfhameZone_faepalacedungeon-1920.webp"
+  },
+  "variants/rooms/elfhameZone_faepalacedungeon-480": {
+    "avif": "/images/variants/rooms/elfhameZone_faepalacedungeon-480.avif",
+    "webp": "/images/variants/rooms/elfhameZone_faepalacedungeon-480.webp"
+  },
+  "variants/rooms/elfhameZone_faepalacedungeon-768": {
+    "avif": "/images/variants/rooms/elfhameZone_faepalacedungeon-768.avif",
+    "webp": "/images/variants/rooms/elfhameZone_faepalacedungeon-768.webp"
+  },
+  "variants/rooms/elfhameZone_faepalacedungeon": {
+    "avif": "/images/variants/rooms/elfhameZone_faepalacedungeon.avif",
+    "webp": "/images/variants/rooms/elfhameZone_faepalacedungeon.webp"
+  },
+  "variants/rooms/elfhameZone_lucidveil-1200": {
+    "avif": "/images/variants/rooms/elfhameZone_lucidveil-1200.avif",
+    "webp": "/images/variants/rooms/elfhameZone_lucidveil-1200.webp"
+  },
+  "variants/rooms/elfhameZone_lucidveil-1920": {
+    "avif": "/images/variants/rooms/elfhameZone_lucidveil-1920.avif",
+    "webp": "/images/variants/rooms/elfhameZone_lucidveil-1920.webp"
+  },
+  "variants/rooms/elfhameZone_lucidveil-480": {
+    "avif": "/images/variants/rooms/elfhameZone_lucidveil-480.avif",
+    "webp": "/images/variants/rooms/elfhameZone_lucidveil-480.webp"
+  },
+  "variants/rooms/elfhameZone_lucidveil-768": {
+    "avif": "/images/variants/rooms/elfhameZone_lucidveil-768.avif",
+    "webp": "/images/variants/rooms/elfhameZone_lucidveil-768.webp"
+  },
+  "variants/rooms/elfhameZone_lucidveil": {
+    "avif": "/images/variants/rooms/elfhameZone_lucidveil.avif",
+    "webp": "/images/variants/rooms/elfhameZone_lucidveil.webp"
+  },
+  "variants/rooms/elfhameZone_rhianonschamber-1200": {
+    "avif": "/images/variants/rooms/elfhameZone_rhianonschamber-1200.avif",
+    "webp": "/images/variants/rooms/elfhameZone_rhianonschamber-1200.webp"
+  },
+  "variants/rooms/elfhameZone_rhianonschamber-1920": {
+    "avif": "/images/variants/rooms/elfhameZone_rhianonschamber-1920.avif",
+    "webp": "/images/variants/rooms/elfhameZone_rhianonschamber-1920.webp"
+  },
+  "variants/rooms/elfhameZone_rhianonschamber-480": {
+    "avif": "/images/variants/rooms/elfhameZone_rhianonschamber-480.avif",
+    "webp": "/images/variants/rooms/elfhameZone_rhianonschamber-480.webp"
+  },
+  "variants/rooms/elfhameZone_rhianonschamber-768": {
+    "avif": "/images/variants/rooms/elfhameZone_rhianonschamber-768.avif",
+    "webp": "/images/variants/rooms/elfhameZone_rhianonschamber-768.webp"
+  },
+  "variants/rooms/elfhameZone_rhianonschamber": {
+    "avif": "/images/variants/rooms/elfhameZone_rhianonschamber.avif",
+    "webp": "/images/variants/rooms/elfhameZone_rhianonschamber.webp"
+  },
+  "variants/rooms/genericZone_surrealPlaceholder-1200": {
+    "avif": "/images/variants/rooms/genericZone_surrealPlaceholder-1200.avif",
+    "webp": "/images/variants/rooms/genericZone_surrealPlaceholder-1200.webp"
+  },
+  "variants/rooms/genericZone_surrealPlaceholder-1920": {
+    "avif": "/images/variants/rooms/genericZone_surrealPlaceholder-1920.avif",
+    "webp": "/images/variants/rooms/genericZone_surrealPlaceholder-1920.webp"
+  },
+  "variants/rooms/genericZone_surrealPlaceholder-480": {
+    "avif": "/images/variants/rooms/genericZone_surrealPlaceholder-480.avif",
+    "webp": "/images/variants/rooms/genericZone_surrealPlaceholder-480.webp"
+  },
+  "variants/rooms/genericZone_surrealPlaceholder-768": {
+    "avif": "/images/variants/rooms/genericZone_surrealPlaceholder-768.avif",
+    "webp": "/images/variants/rooms/genericZone_surrealPlaceholder-768.webp"
+  },
+  "variants/rooms/genericZone_surrealPlaceholder": {
+    "avif": "/images/variants/rooms/genericZone_surrealPlaceholder.avif",
+    "webp": "/images/variants/rooms/genericZone_surrealPlaceholder.webp"
+  },
+  "variants/rooms/glitchZone_glitchinguniverse-1200": {
+    "avif": "/images/variants/rooms/glitchZone_glitchinguniverse-1200.avif",
+    "webp": "/images/variants/rooms/glitchZone_glitchinguniverse-1200.webp"
+  },
+  "variants/rooms/glitchZone_glitchinguniverse-1920": {
+    "avif": "/images/variants/rooms/glitchZone_glitchinguniverse-1920.avif",
+    "webp": "/images/variants/rooms/glitchZone_glitchinguniverse-1920.webp"
+  },
+  "variants/rooms/glitchZone_glitchinguniverse-480": {
+    "avif": "/images/variants/rooms/glitchZone_glitchinguniverse-480.avif",
+    "webp": "/images/variants/rooms/glitchZone_glitchinguniverse-480.webp"
+  },
+  "variants/rooms/glitchZone_glitchinguniverse-768": {
+    "avif": "/images/variants/rooms/glitchZone_glitchinguniverse-768.avif",
+    "webp": "/images/variants/rooms/glitchZone_glitchinguniverse-768.webp"
+  },
+  "variants/rooms/glitchZone_glitchinguniverse": {
+    "avif": "/images/variants/rooms/glitchZone_glitchinguniverse.avif",
+    "webp": "/images/variants/rooms/glitchZone_glitchinguniverse.webp"
+  },
+  "variants/rooms/glitchZone_issuesdetected-1200": {
+    "avif": "/images/variants/rooms/glitchZone_issuesdetected-1200.avif",
+    "webp": "/images/variants/rooms/glitchZone_issuesdetected-1200.webp"
+  },
+  "variants/rooms/glitchZone_issuesdetected-1920": {
+    "avif": "/images/variants/rooms/glitchZone_issuesdetected-1920.avif",
+    "webp": "/images/variants/rooms/glitchZone_issuesdetected-1920.webp"
+  },
+  "variants/rooms/glitchZone_issuesdetected-480": {
+    "avif": "/images/variants/rooms/glitchZone_issuesdetected-480.avif",
+    "webp": "/images/variants/rooms/glitchZone_issuesdetected-480.webp"
+  },
+  "variants/rooms/glitchZone_issuesdetected-768": {
+    "avif": "/images/variants/rooms/glitchZone_issuesdetected-768.avif",
+    "webp": "/images/variants/rooms/glitchZone_issuesdetected-768.webp"
+  },
+  "variants/rooms/glitchZone_issuesdetected": {
+    "avif": "/images/variants/rooms/glitchZone_issuesdetected.avif",
+    "webp": "/images/variants/rooms/glitchZone_issuesdetected.webp"
+  },
+  "variants/rooms/glitchZone_moreissues-1200": {
+    "avif": "/images/variants/rooms/glitchZone_moreissues-1200.avif",
+    "webp": "/images/variants/rooms/glitchZone_moreissues-1200.webp"
+  },
+  "variants/rooms/glitchZone_moreissues-1920": {
+    "avif": "/images/variants/rooms/glitchZone_moreissues-1920.avif",
+    "webp": "/images/variants/rooms/glitchZone_moreissues-1920.webp"
+  },
+  "variants/rooms/glitchZone_moreissues-480": {
+    "avif": "/images/variants/rooms/glitchZone_moreissues-480.avif",
+    "webp": "/images/variants/rooms/glitchZone_moreissues-480.webp"
+  },
+  "variants/rooms/glitchZone_moreissues-768": {
+    "avif": "/images/variants/rooms/glitchZone_moreissues-768.avif",
+    "webp": "/images/variants/rooms/glitchZone_moreissues-768.webp"
+  },
+  "variants/rooms/glitchZone_moreissues": {
+    "avif": "/images/variants/rooms/glitchZone_moreissues.avif",
+    "webp": "/images/variants/rooms/glitchZone_moreissues.webp"
+  },
+  "variants/rooms/glitchrealm-zoneravenroom-1200": {
+    "avif": "/images/variants/rooms/glitchrealm-zoneravenroom-1200.avif",
+    "webp": "/images/variants/rooms/glitchrealm-zoneravenroom-1200.webp"
+  },
+  "variants/rooms/glitchrealm-zoneravenroom-1920": {
+    "avif": "/images/variants/rooms/glitchrealm-zoneravenroom-1920.avif",
+    "webp": "/images/variants/rooms/glitchrealm-zoneravenroom-1920.webp"
+  },
+  "variants/rooms/glitchrealm-zoneravenroom-480": {
+    "avif": "/images/variants/rooms/glitchrealm-zoneravenroom-480.avif",
+    "webp": "/images/variants/rooms/glitchrealm-zoneravenroom-480.webp"
+  },
+  "variants/rooms/glitchrealm-zoneravenroom-768": {
+    "avif": "/images/variants/rooms/glitchrealm-zoneravenroom-768.avif",
+    "webp": "/images/variants/rooms/glitchrealm-zoneravenroom-768.webp"
+  },
+  "variants/rooms/glitchrealm-zoneravenroom": {
+    "avif": "/images/variants/rooms/glitchrealm-zoneravenroom.avif",
+    "webp": "/images/variants/rooms/glitchrealm-zoneravenroom.webp"
+  },
+  "variants/rooms/glitchrealm_datavoid-1200": {
+    "avif": "/images/variants/rooms/glitchrealm_datavoid-1200.avif",
+    "webp": "/images/variants/rooms/glitchrealm_datavoid-1200.webp"
+  },
+  "variants/rooms/glitchrealm_datavoid-1920": {
+    "avif": "/images/variants/rooms/glitchrealm_datavoid-1920.avif",
+    "webp": "/images/variants/rooms/glitchrealm_datavoid-1920.webp"
+  },
+  "variants/rooms/glitchrealm_datavoid-480": {
+    "avif": "/images/variants/rooms/glitchrealm_datavoid-480.avif",
+    "webp": "/images/variants/rooms/glitchrealm_datavoid-480.webp"
+  },
+  "variants/rooms/glitchrealm_datavoid-768": {
+    "avif": "/images/variants/rooms/glitchrealm_datavoid-768.avif",
+    "webp": "/images/variants/rooms/glitchrealm_datavoid-768.webp"
+  },
+  "variants/rooms/glitchrealm_datavoid": {
+    "avif": "/images/variants/rooms/glitchrealm_datavoid.avif",
+    "webp": "/images/variants/rooms/glitchrealm_datavoid.webp"
+  },
+  "variants/rooms/glitchrealm_glitchexit-1200": {
+    "avif": "/images/variants/rooms/glitchrealm_glitchexit-1200.avif",
+    "webp": "/images/variants/rooms/glitchrealm_glitchexit-1200.webp"
+  },
+  "variants/rooms/glitchrealm_glitchexit-1920": {
+    "avif": "/images/variants/rooms/glitchrealm_glitchexit-1920.avif",
+    "webp": "/images/variants/rooms/glitchrealm_glitchexit-1920.webp"
+  },
+  "variants/rooms/glitchrealm_glitchexit-480": {
+    "avif": "/images/variants/rooms/glitchrealm_glitchexit-480.avif",
+    "webp": "/images/variants/rooms/glitchrealm_glitchexit-480.webp"
+  },
+  "variants/rooms/glitchrealm_glitchexit-768": {
+    "avif": "/images/variants/rooms/glitchrealm_glitchexit-768.avif",
+    "webp": "/images/variants/rooms/glitchrealm_glitchexit-768.webp"
+  },
+  "variants/rooms/glitchrealm_glitchexit": {
+    "avif": "/images/variants/rooms/glitchrealm_glitchexit.avif",
+    "webp": "/images/variants/rooms/glitchrealm_glitchexit.webp"
+  },
+  "variants/rooms/glitchrealm_glitchrealmhub-1200": {
+    "avif": "/images/variants/rooms/glitchrealm_glitchrealmhub-1200.avif",
+    "webp": "/images/variants/rooms/glitchrealm_glitchrealmhub-1200.webp"
+  },
+  "variants/rooms/glitchrealm_glitchrealmhub-1920": {
+    "avif": "/images/variants/rooms/glitchrealm_glitchrealmhub-1920.avif",
+    "webp": "/images/variants/rooms/glitchrealm_glitchrealmhub-1920.webp"
+  },
+  "variants/rooms/glitchrealm_glitchrealmhub-480": {
+    "avif": "/images/variants/rooms/glitchrealm_glitchrealmhub-480.avif",
+    "webp": "/images/variants/rooms/glitchrealm_glitchrealmhub-480.webp"
+  },
+  "variants/rooms/glitchrealm_glitchrealmhub-768": {
+    "avif": "/images/variants/rooms/glitchrealm_glitchrealmhub-768.avif",
+    "webp": "/images/variants/rooms/glitchrealm_glitchrealmhub-768.webp"
+  },
+  "variants/rooms/glitchrealm_glitchrealmhub": {
+    "avif": "/images/variants/rooms/glitchrealm_glitchrealmhub.avif",
+    "webp": "/images/variants/rooms/glitchrealm_glitchrealmhub.webp"
+  },
+  "variants/rooms/gorstanZone_carronspire-1200": {
+    "avif": "/images/variants/rooms/gorstanZone_carronspire-1200.avif",
+    "webp": "/images/variants/rooms/gorstanZone_carronspire-1200.webp"
+  },
+  "variants/rooms/gorstanZone_carronspire-1920": {
+    "avif": "/images/variants/rooms/gorstanZone_carronspire-1920.avif",
+    "webp": "/images/variants/rooms/gorstanZone_carronspire-1920.webp"
+  },
+  "variants/rooms/gorstanZone_carronspire-480": {
+    "avif": "/images/variants/rooms/gorstanZone_carronspire-480.avif",
+    "webp": "/images/variants/rooms/gorstanZone_carronspire-480.webp"
+  },
+  "variants/rooms/gorstanZone_carronspire-768": {
+    "avif": "/images/variants/rooms/gorstanZone_carronspire-768.avif",
+    "webp": "/images/variants/rooms/gorstanZone_carronspire-768.webp"
+  },
+  "variants/rooms/gorstanZone_carronspire": {
+    "avif": "/images/variants/rooms/gorstanZone_carronspire.avif",
+    "webp": "/images/variants/rooms/gorstanZone_carronspire.webp"
+  },
+  "variants/rooms/gorstanZone_exit-1200": {
+    "avif": "/images/variants/rooms/gorstanZone_exit-1200.avif",
+    "webp": "/images/variants/rooms/gorstanZone_exit-1200.webp"
+  },
+  "variants/rooms/gorstanZone_exit-1920": {
+    "avif": "/images/variants/rooms/gorstanZone_exit-1920.avif",
+    "webp": "/images/variants/rooms/gorstanZone_exit-1920.webp"
+  },
+  "variants/rooms/gorstanZone_exit-480": {
+    "avif": "/images/variants/rooms/gorstanZone_exit-480.avif",
+    "webp": "/images/variants/rooms/gorstanZone_exit-480.webp"
+  },
+  "variants/rooms/gorstanZone_exit-768": {
+    "avif": "/images/variants/rooms/gorstanZone_exit-768.avif",
+    "webp": "/images/variants/rooms/gorstanZone_exit-768.webp"
+  },
+  "variants/rooms/gorstanZone_exit": {
+    "avif": "/images/variants/rooms/gorstanZone_exit.avif",
+    "webp": "/images/variants/rooms/gorstanZone_exit.webp"
+  },
+  "variants/rooms/gorstanZone_gorstanhub-1200": {
+    "avif": "/images/variants/rooms/gorstanZone_gorstanhub-1200.avif",
+    "webp": "/images/variants/rooms/gorstanZone_gorstanhub-1200.webp"
+  },
+  "variants/rooms/gorstanZone_gorstanhub-1920": {
+    "avif": "/images/variants/rooms/gorstanZone_gorstanhub-1920.avif",
+    "webp": "/images/variants/rooms/gorstanZone_gorstanhub-1920.webp"
+  },
+  "variants/rooms/gorstanZone_gorstanhub-480": {
+    "avif": "/images/variants/rooms/gorstanZone_gorstanhub-480.avif",
+    "webp": "/images/variants/rooms/gorstanZone_gorstanhub-480.webp"
+  },
+  "variants/rooms/gorstanZone_gorstanhub-768": {
+    "avif": "/images/variants/rooms/gorstanZone_gorstanhub-768.avif",
+    "webp": "/images/variants/rooms/gorstanZone_gorstanhub-768.webp"
+  },
+  "variants/rooms/gorstanZone_gorstanhub": {
+    "avif": "/images/variants/rooms/gorstanZone_gorstanhub.avif",
+    "webp": "/images/variants/rooms/gorstanZone_gorstanhub.webp"
+  },
+  "variants/rooms/gorstanZone_gorstanvillage-1200": {
+    "avif": "/images/variants/rooms/gorstanZone_gorstanvillage-1200.avif",
+    "webp": "/images/variants/rooms/gorstanZone_gorstanvillage-1200.webp"
+  },
+  "variants/rooms/gorstanZone_gorstanvillage-1920": {
+    "avif": "/images/variants/rooms/gorstanZone_gorstanvillage-1920.avif",
+    "webp": "/images/variants/rooms/gorstanZone_gorstanvillage-1920.webp"
+  },
+  "variants/rooms/gorstanZone_gorstanvillage-480": {
+    "avif": "/images/variants/rooms/gorstanZone_gorstanvillage-480.avif",
+    "webp": "/images/variants/rooms/gorstanZone_gorstanvillage-480.webp"
+  },
+  "variants/rooms/gorstanZone_gorstanvillage-768": {
+    "avif": "/images/variants/rooms/gorstanZone_gorstanvillage-768.avif",
+    "webp": "/images/variants/rooms/gorstanZone_gorstanvillage-768.webp"
+  },
+  "variants/rooms/gorstanZone_gorstanvillage": {
+    "avif": "/images/variants/rooms/gorstanZone_gorstanvillage.avif",
+    "webp": "/images/variants/rooms/gorstanZone_gorstanvillage.webp"
+  },
+  "variants/rooms/gorstanZone_spare-1200": {
+    "avif": "/images/variants/rooms/gorstanZone_spare-1200.avif",
+    "webp": "/images/variants/rooms/gorstanZone_spare-1200.webp"
+  },
+  "variants/rooms/gorstanZone_spare-1920": {
+    "avif": "/images/variants/rooms/gorstanZone_spare-1920.avif",
+    "webp": "/images/variants/rooms/gorstanZone_spare-1920.webp"
+  },
+  "variants/rooms/gorstanZone_spare-480": {
+    "avif": "/images/variants/rooms/gorstanZone_spare-480.avif",
+    "webp": "/images/variants/rooms/gorstanZone_spare-480.webp"
+  },
+  "variants/rooms/gorstanZone_spare-768": {
+    "avif": "/images/variants/rooms/gorstanZone_spare-768.avif",
+    "webp": "/images/variants/rooms/gorstanZone_spare-768.webp"
+  },
+  "variants/rooms/gorstanZone_spare": {
+    "avif": "/images/variants/rooms/gorstanZone_spare.avif",
+    "webp": "/images/variants/rooms/gorstanZone_spare.webp"
+  },
+  "variants/rooms/gorstanZone_torridon-1200": {
+    "avif": "/images/variants/rooms/gorstanZone_torridon-1200.avif",
+    "webp": "/images/variants/rooms/gorstanZone_torridon-1200.webp"
+  },
+  "variants/rooms/gorstanZone_torridon-1920": {
+    "avif": "/images/variants/rooms/gorstanZone_torridon-1920.avif",
+    "webp": "/images/variants/rooms/gorstanZone_torridon-1920.webp"
+  },
+  "variants/rooms/gorstanZone_torridon-480": {
+    "avif": "/images/variants/rooms/gorstanZone_torridon-480.avif",
+    "webp": "/images/variants/rooms/gorstanZone_torridon-480.webp"
+  },
+  "variants/rooms/gorstanZone_torridon-768": {
+    "avif": "/images/variants/rooms/gorstanZone_torridon-768.avif",
+    "webp": "/images/variants/rooms/gorstanZone_torridon-768.webp"
+  },
+  "variants/rooms/gorstanZone_torridon": {
+    "avif": "/images/variants/rooms/gorstanZone_torridon.avif",
+    "webp": "/images/variants/rooms/gorstanZone_torridon.webp"
+  },
+  "variants/rooms/gorstanZone_torridonbefore-1200": {
+    "avif": "/images/variants/rooms/gorstanZone_torridonbefore-1200.avif",
+    "webp": "/images/variants/rooms/gorstanZone_torridonbefore-1200.webp"
+  },
+  "variants/rooms/gorstanZone_torridonbefore-1920": {
+    "avif": "/images/variants/rooms/gorstanZone_torridonbefore-1920.avif",
+    "webp": "/images/variants/rooms/gorstanZone_torridonbefore-1920.webp"
+  },
+  "variants/rooms/gorstanZone_torridonbefore-480": {
+    "avif": "/images/variants/rooms/gorstanZone_torridonbefore-480.avif",
+    "webp": "/images/variants/rooms/gorstanZone_torridonbefore-480.webp"
+  },
+  "variants/rooms/gorstanZone_torridonbefore-768": {
+    "avif": "/images/variants/rooms/gorstanZone_torridonbefore-768.avif",
+    "webp": "/images/variants/rooms/gorstanZone_torridonbefore-768.webp"
+  },
+  "variants/rooms/gorstanZone_torridonbefore": {
+    "avif": "/images/variants/rooms/gorstanZone_torridonbefore.avif",
+    "webp": "/images/variants/rooms/gorstanZone_torridonbefore.webp"
+  },
+  "variants/rooms/gorstanZone_torridoninn-1200": {
+    "avif": "/images/variants/rooms/gorstanZone_torridoninn-1200.avif",
+    "webp": "/images/variants/rooms/gorstanZone_torridoninn-1200.webp"
+  },
+  "variants/rooms/gorstanZone_torridoninn-1920": {
+    "avif": "/images/variants/rooms/gorstanZone_torridoninn-1920.avif",
+    "webp": "/images/variants/rooms/gorstanZone_torridoninn-1920.webp"
+  },
+  "variants/rooms/gorstanZone_torridoninn-480": {
+    "avif": "/images/variants/rooms/gorstanZone_torridoninn-480.avif",
+    "webp": "/images/variants/rooms/gorstanZone_torridoninn-480.webp"
+  },
+  "variants/rooms/gorstanZone_torridoninn-768": {
+    "avif": "/images/variants/rooms/gorstanZone_torridoninn-768.avif",
+    "webp": "/images/variants/rooms/gorstanZone_torridoninn-768.webp"
+  },
+  "variants/rooms/gorstanZone_torridoninn": {
+    "avif": "/images/variants/rooms/gorstanZone_torridoninn.avif",
+    "webp": "/images/variants/rooms/gorstanZone_torridoninn.webp"
+  },
+  "variants/rooms/hub-1200": {
+    "avif": "/images/variants/rooms/hub-1200.avif",
+    "webp": "/images/variants/rooms/hub-1200.webp"
+  },
+  "variants/rooms/hub-1920": {
+    "avif": "/images/variants/rooms/hub-1920.avif",
+    "webp": "/images/variants/rooms/hub-1920.webp"
+  },
+  "variants/rooms/hub-480": {
+    "avif": "/images/variants/rooms/hub-480.avif",
+    "webp": "/images/variants/rooms/hub-480.webp"
+  },
+  "variants/rooms/hub-768": {
+    "avif": "/images/variants/rooms/hub-768.avif",
+    "webp": "/images/variants/rooms/hub-768.webp"
+  },
+  "variants/rooms/hub": {
+    "avif": "/images/variants/rooms/hub.avif",
+    "webp": "/images/variants/rooms/hub.webp"
+  },
+  "variants/rooms/introZone_controlnexus-1200": {
+    "avif": "/images/variants/rooms/introZone_controlnexus-1200.avif",
+    "webp": "/images/variants/rooms/introZone_controlnexus-1200.webp"
+  },
+  "variants/rooms/introZone_controlnexus-1920": {
+    "avif": "/images/variants/rooms/introZone_controlnexus-1920.avif",
+    "webp": "/images/variants/rooms/introZone_controlnexus-1920.webp"
+  },
+  "variants/rooms/introZone_controlnexus-480": {
+    "avif": "/images/variants/rooms/introZone_controlnexus-480.avif",
+    "webp": "/images/variants/rooms/introZone_controlnexus-480.webp"
+  },
+  "variants/rooms/introZone_controlnexus-768": {
+    "avif": "/images/variants/rooms/introZone_controlnexus-768.avif",
+    "webp": "/images/variants/rooms/introZone_controlnexus-768.webp"
+  },
+  "variants/rooms/introZone_controlnexus-poster": {
+    "fallback": "/images/variants/rooms/introZone_controlnexus-poster.jpg"
+  },
+  "variants/rooms/introZone_controlnexus": {
+    "avif": "/images/variants/rooms/introZone_controlnexus.avif",
+    "webp": "/images/variants/rooms/introZone_controlnexus.webp"
+  },
+  "variants/rooms/introZone_controlroom-1200": {
+    "avif": "/images/variants/rooms/introZone_controlroom-1200.avif",
+    "webp": "/images/variants/rooms/introZone_controlroom-1200.webp"
+  },
+  "variants/rooms/introZone_controlroom-1920": {
+    "avif": "/images/variants/rooms/introZone_controlroom-1920.avif",
+    "webp": "/images/variants/rooms/introZone_controlroom-1920.webp"
+  },
+  "variants/rooms/introZone_controlroom-480": {
+    "avif": "/images/variants/rooms/introZone_controlroom-480.avif",
+    "webp": "/images/variants/rooms/introZone_controlroom-480.webp"
+  },
+  "variants/rooms/introZone_controlroom-768": {
+    "avif": "/images/variants/rooms/introZone_controlroom-768.avif",
+    "webp": "/images/variants/rooms/introZone_controlroom-768.webp"
+  },
+  "variants/rooms/introZone_controlroom": {
+    "avif": "/images/variants/rooms/introZone_controlroom.avif",
+    "webp": "/images/variants/rooms/introZone_controlroom.webp"
+  },
+  "variants/rooms/introZone_crossing-1200": {
+    "avif": "/images/variants/rooms/introZone_crossing-1200.avif",
+    "webp": "/images/variants/rooms/introZone_crossing-1200.webp"
+  },
+  "variants/rooms/introZone_crossing-1920": {
+    "avif": "/images/variants/rooms/introZone_crossing-1920.avif",
+    "webp": "/images/variants/rooms/introZone_crossing-1920.webp"
+  },
+  "variants/rooms/introZone_crossing-480": {
+    "avif": "/images/variants/rooms/introZone_crossing-480.avif",
+    "webp": "/images/variants/rooms/introZone_crossing-480.webp"
+  },
+  "variants/rooms/introZone_crossing-768": {
+    "avif": "/images/variants/rooms/introZone_crossing-768.avif",
+    "webp": "/images/variants/rooms/introZone_crossing-768.webp"
+  },
+  "variants/rooms/introZone_crossing": {
+    "avif": "/images/variants/rooms/introZone_crossing.avif",
+    "webp": "/images/variants/rooms/introZone_crossing.webp"
+  },
+  "variants/rooms/introZone_hiddenlab-1200": {
+    "avif": "/images/variants/rooms/introZone_hiddenlab-1200.avif",
+    "webp": "/images/variants/rooms/introZone_hiddenlab-1200.webp"
+  },
+  "variants/rooms/introZone_hiddenlab-1920": {
+    "avif": "/images/variants/rooms/introZone_hiddenlab-1920.avif",
+    "webp": "/images/variants/rooms/introZone_hiddenlab-1920.webp"
+  },
+  "variants/rooms/introZone_hiddenlab-480": {
+    "avif": "/images/variants/rooms/introZone_hiddenlab-480.avif",
+    "webp": "/images/variants/rooms/introZone_hiddenlab-480.webp"
+  },
+  "variants/rooms/introZone_hiddenlab-768": {
+    "avif": "/images/variants/rooms/introZone_hiddenlab-768.avif",
+    "webp": "/images/variants/rooms/introZone_hiddenlab-768.webp"
+  },
+  "variants/rooms/introZone_hiddenlab": {
+    "avif": "/images/variants/rooms/introZone_hiddenlab.avif",
+    "webp": "/images/variants/rooms/introZone_hiddenlab.webp"
+  },
+  "variants/rooms/introZone_introreset-1200": {
+    "avif": "/images/variants/rooms/introZone_introreset-1200.avif",
+    "webp": "/images/variants/rooms/introZone_introreset-1200.webp"
+  },
+  "variants/rooms/introZone_introreset-1920": {
+    "avif": "/images/variants/rooms/introZone_introreset-1920.avif",
+    "webp": "/images/variants/rooms/introZone_introreset-1920.webp"
+  },
+  "variants/rooms/introZone_introreset-480": {
+    "avif": "/images/variants/rooms/introZone_introreset-480.avif",
+    "webp": "/images/variants/rooms/introZone_introreset-480.webp"
+  },
+  "variants/rooms/introZone_introreset-768": {
+    "avif": "/images/variants/rooms/introZone_introreset-768.avif",
+    "webp": "/images/variants/rooms/introZone_introreset-768.webp"
+  },
+  "variants/rooms/introZone_introreset": {
+    "avif": "/images/variants/rooms/introZone_introreset.avif",
+    "webp": "/images/variants/rooms/introZone_introreset.webp"
+  },
+  "variants/rooms/introZone_introstreet1-1200": {
+    "avif": "/images/variants/rooms/introZone_introstreet1-1200.avif",
+    "webp": "/images/variants/rooms/introZone_introstreet1-1200.webp"
+  },
+  "variants/rooms/introZone_introstreet1-1920": {
+    "avif": "/images/variants/rooms/introZone_introstreet1-1920.avif",
+    "webp": "/images/variants/rooms/introZone_introstreet1-1920.webp"
+  },
+  "variants/rooms/introZone_introstreet1-480": {
+    "avif": "/images/variants/rooms/introZone_introstreet1-480.avif",
+    "webp": "/images/variants/rooms/introZone_introstreet1-480.webp"
+  },
+  "variants/rooms/introZone_introstreet1-768": {
+    "avif": "/images/variants/rooms/introZone_introstreet1-768.avif",
+    "webp": "/images/variants/rooms/introZone_introstreet1-768.webp"
+  },
+  "variants/rooms/introZone_introstreet1": {
+    "avif": "/images/variants/rooms/introZone_introstreet1.avif",
+    "webp": "/images/variants/rooms/introZone_introstreet1.webp"
+  },
+  "variants/rooms/introZone_resetroom-1200": {
+    "avif": "/images/variants/rooms/introZone_resetroom-1200.avif",
+    "webp": "/images/variants/rooms/introZone_resetroom-1200.webp"
+  },
+  "variants/rooms/introZone_resetroom-1920": {
+    "avif": "/images/variants/rooms/introZone_resetroom-1920.avif",
+    "webp": "/images/variants/rooms/introZone_resetroom-1920.webp"
+  },
+  "variants/rooms/introZone_resetroom-480": {
+    "avif": "/images/variants/rooms/introZone_resetroom-480.avif",
+    "webp": "/images/variants/rooms/introZone_resetroom-480.webp"
+  },
+  "variants/rooms/introZone_resetroom-768": {
+    "avif": "/images/variants/rooms/introZone_resetroom-768.avif",
+    "webp": "/images/variants/rooms/introZone_resetroom-768.webp"
+  },
+  "variants/rooms/introZone_resetroom": {
+    "avif": "/images/variants/rooms/introZone_resetroom.avif",
+    "webp": "/images/variants/rooms/introZone_resetroom.webp"
+  },
+  "variants/rooms/latticeZone_hiddenlibrary-1200": {
+    "avif": "/images/variants/rooms/latticeZone_hiddenlibrary-1200.avif",
+    "webp": "/images/variants/rooms/latticeZone_hiddenlibrary-1200.webp"
+  },
+  "variants/rooms/latticeZone_hiddenlibrary-1920": {
+    "avif": "/images/variants/rooms/latticeZone_hiddenlibrary-1920.avif",
+    "webp": "/images/variants/rooms/latticeZone_hiddenlibrary-1920.webp"
+  },
+  "variants/rooms/latticeZone_hiddenlibrary-480": {
+    "avif": "/images/variants/rooms/latticeZone_hiddenlibrary-480.avif",
+    "webp": "/images/variants/rooms/latticeZone_hiddenlibrary-480.webp"
+  },
+  "variants/rooms/latticeZone_hiddenlibrary-768": {
+    "avif": "/images/variants/rooms/latticeZone_hiddenlibrary-768.avif",
+    "webp": "/images/variants/rooms/latticeZone_hiddenlibrary-768.webp"
+  },
+  "variants/rooms/latticeZone_hiddenlibrary": {
+    "avif": "/images/variants/rooms/latticeZone_hiddenlibrary.avif",
+    "webp": "/images/variants/rooms/latticeZone_hiddenlibrary.webp"
+  },
+  "variants/rooms/latticeZone_hub-1200": {
+    "avif": "/images/variants/rooms/latticeZone_hub-1200.avif",
+    "webp": "/images/variants/rooms/latticeZone_hub-1200.webp"
+  },
+  "variants/rooms/latticeZone_hub-1920": {
+    "avif": "/images/variants/rooms/latticeZone_hub-1920.avif",
+    "webp": "/images/variants/rooms/latticeZone_hub-1920.webp"
+  },
+  "variants/rooms/latticeZone_hub-480": {
+    "avif": "/images/variants/rooms/latticeZone_hub-480.avif",
+    "webp": "/images/variants/rooms/latticeZone_hub-480.webp"
+  },
+  "variants/rooms/latticeZone_hub-768": {
+    "avif": "/images/variants/rooms/latticeZone_hub-768.avif",
+    "webp": "/images/variants/rooms/latticeZone_hub-768.webp"
+  },
+  "variants/rooms/latticeZone_hub": {
+    "avif": "/images/variants/rooms/latticeZone_hub.avif",
+    "webp": "/images/variants/rooms/latticeZone_hub.webp"
+  },
+  "variants/rooms/latticeZone_lattice-1200": {
+    "avif": "/images/variants/rooms/latticeZone_lattice-1200.avif",
+    "webp": "/images/variants/rooms/latticeZone_lattice-1200.webp"
+  },
+  "variants/rooms/latticeZone_lattice-1920": {
+    "avif": "/images/variants/rooms/latticeZone_lattice-1920.avif",
+    "webp": "/images/variants/rooms/latticeZone_lattice-1920.webp"
+  },
+  "variants/rooms/latticeZone_lattice-480": {
+    "avif": "/images/variants/rooms/latticeZone_lattice-480.avif",
+    "webp": "/images/variants/rooms/latticeZone_lattice-480.webp"
+  },
+  "variants/rooms/latticeZone_lattice-768": {
+    "avif": "/images/variants/rooms/latticeZone_lattice-768.avif",
+    "webp": "/images/variants/rooms/latticeZone_lattice-768.webp"
+  },
+  "variants/rooms/latticeZone_lattice": {
+    "avif": "/images/variants/rooms/latticeZone_lattice.avif",
+    "webp": "/images/variants/rooms/latticeZone_lattice.webp"
+  },
+  "variants/rooms/latticeZone_latticelibrary-1200": {
+    "avif": "/images/variants/rooms/latticeZone_latticelibrary-1200.avif",
+    "webp": "/images/variants/rooms/latticeZone_latticelibrary-1200.webp"
+  },
+  "variants/rooms/latticeZone_latticelibrary-1920": {
+    "avif": "/images/variants/rooms/latticeZone_latticelibrary-1920.avif",
+    "webp": "/images/variants/rooms/latticeZone_latticelibrary-1920.webp"
+  },
+  "variants/rooms/latticeZone_latticelibrary-480": {
+    "avif": "/images/variants/rooms/latticeZone_latticelibrary-480.avif",
+    "webp": "/images/variants/rooms/latticeZone_latticelibrary-480.webp"
+  },
+  "variants/rooms/latticeZone_latticelibrary-768": {
+    "avif": "/images/variants/rooms/latticeZone_latticelibrary-768.avif",
+    "webp": "/images/variants/rooms/latticeZone_latticelibrary-768.webp"
+  },
+  "variants/rooms/latticeZone_latticelibrary": {
+    "avif": "/images/variants/rooms/latticeZone_latticelibrary.avif",
+    "webp": "/images/variants/rooms/latticeZone_latticelibrary.webp"
+  },
+  "variants/rooms/latticeZone_libraryofnine-1200": {
+    "avif": "/images/variants/rooms/latticeZone_libraryofnine-1200.avif",
+    "webp": "/images/variants/rooms/latticeZone_libraryofnine-1200.webp"
+  },
+  "variants/rooms/latticeZone_libraryofnine-1920": {
+    "avif": "/images/variants/rooms/latticeZone_libraryofnine-1920.avif",
+    "webp": "/images/variants/rooms/latticeZone_libraryofnine-1920.webp"
+  },
+  "variants/rooms/latticeZone_libraryofnine-480": {
+    "avif": "/images/variants/rooms/latticeZone_libraryofnine-480.avif",
+    "webp": "/images/variants/rooms/latticeZone_libraryofnine-480.webp"
+  },
+  "variants/rooms/latticeZone_libraryofnine-768": {
+    "avif": "/images/variants/rooms/latticeZone_libraryofnine-768.avif",
+    "webp": "/images/variants/rooms/latticeZone_libraryofnine-768.webp"
+  },
+  "variants/rooms/latticeZone_libraryofnine": {
+    "avif": "/images/variants/rooms/latticeZone_libraryofnine.avif",
+    "webp": "/images/variants/rooms/latticeZone_libraryofnine.webp"
+  },
+  "variants/rooms/latticeZone_primeconfluence-1200": {
+    "avif": "/images/variants/rooms/latticeZone_primeconfluence-1200.avif",
+    "webp": "/images/variants/rooms/latticeZone_primeconfluence-1200.webp"
+  },
+  "variants/rooms/latticeZone_primeconfluence-1920": {
+    "avif": "/images/variants/rooms/latticeZone_primeconfluence-1920.avif",
+    "webp": "/images/variants/rooms/latticeZone_primeconfluence-1920.webp"
+  },
+  "variants/rooms/latticeZone_primeconfluence-480": {
+    "avif": "/images/variants/rooms/latticeZone_primeconfluence-480.avif",
+    "webp": "/images/variants/rooms/latticeZone_primeconfluence-480.webp"
+  },
+  "variants/rooms/latticeZone_primeconfluence-768": {
+    "avif": "/images/variants/rooms/latticeZone_primeconfluence-768.avif",
+    "webp": "/images/variants/rooms/latticeZone_primeconfluence-768.webp"
+  },
+  "variants/rooms/latticeZone_primeconfluence": {
+    "avif": "/images/variants/rooms/latticeZone_primeconfluence.avif",
+    "webp": "/images/variants/rooms/latticeZone_primeconfluence.webp"
+  },
+  "variants/rooms/latticehub-1200": {
+    "avif": "/images/variants/rooms/latticehub-1200.avif",
+    "webp": "/images/variants/rooms/latticehub-1200.webp"
+  },
+  "variants/rooms/latticehub-1920": {
+    "avif": "/images/variants/rooms/latticehub-1920.avif",
+    "webp": "/images/variants/rooms/latticehub-1920.webp"
+  },
+  "variants/rooms/latticehub-480": {
+    "avif": "/images/variants/rooms/latticehub-480.avif",
+    "webp": "/images/variants/rooms/latticehub-480.webp"
+  },
+  "variants/rooms/latticehub-768": {
+    "avif": "/images/variants/rooms/latticehub-768.avif",
+    "webp": "/images/variants/rooms/latticehub-768.webp"
+  },
+  "variants/rooms/latticehub": {
+    "avif": "/images/variants/rooms/latticehub.avif",
+    "webp": "/images/variants/rooms/latticehub.webp"
+  },
+  "variants/rooms/liminalhub-1200": {
+    "avif": "/images/variants/rooms/liminalhub-1200.avif",
+    "webp": "/images/variants/rooms/liminalhub-1200.webp"
+  },
+  "variants/rooms/liminalhub-1920": {
+    "avif": "/images/variants/rooms/liminalhub-1920.avif",
+    "webp": "/images/variants/rooms/liminalhub-1920.webp"
+  },
+  "variants/rooms/liminalhub-480": {
+    "avif": "/images/variants/rooms/liminalhub-480.avif",
+    "webp": "/images/variants/rooms/liminalhub-480.webp"
+  },
+  "variants/rooms/liminalhub-768": {
+    "avif": "/images/variants/rooms/liminalhub-768.avif",
+    "webp": "/images/variants/rooms/liminalhub-768.webp"
+  },
+  "variants/rooms/liminalhub": {
+    "avif": "/images/variants/rooms/liminalhub.avif",
+    "webp": "/images/variants/rooms/liminalhub.webp"
+  },
+  "variants/rooms/londonZone_cafeoffice-1200": {
+    "avif": "/images/variants/rooms/londonZone_cafeoffice-1200.avif",
+    "webp": "/images/variants/rooms/londonZone_cafeoffice-1200.webp"
+  },
+  "variants/rooms/londonZone_cafeoffice-1920": {
+    "avif": "/images/variants/rooms/londonZone_cafeoffice-1920.avif",
+    "webp": "/images/variants/rooms/londonZone_cafeoffice-1920.webp"
+  },
+  "variants/rooms/londonZone_cafeoffice-480": {
+    "avif": "/images/variants/rooms/londonZone_cafeoffice-480.avif",
+    "webp": "/images/variants/rooms/londonZone_cafeoffice-480.webp"
+  },
+  "variants/rooms/londonZone_cafeoffice-768": {
+    "avif": "/images/variants/rooms/londonZone_cafeoffice-768.avif",
+    "webp": "/images/variants/rooms/londonZone_cafeoffice-768.webp"
+  },
+  "variants/rooms/londonZone_cafeoffice": {
+    "avif": "/images/variants/rooms/londonZone_cafeoffice.avif",
+    "webp": "/images/variants/rooms/londonZone_cafeoffice.webp"
+  },
+  "variants/rooms/londonZone_dalesapartment-1200": {
+    "avif": "/images/variants/rooms/londonZone_dalesapartment-1200.avif",
+    "webp": "/images/variants/rooms/londonZone_dalesapartment-1200.webp"
+  },
+  "variants/rooms/londonZone_dalesapartment-1920": {
+    "avif": "/images/variants/rooms/londonZone_dalesapartment-1920.avif",
+    "webp": "/images/variants/rooms/londonZone_dalesapartment-1920.webp"
+  },
+  "variants/rooms/londonZone_dalesapartment-480": {
+    "avif": "/images/variants/rooms/londonZone_dalesapartment-480.avif",
+    "webp": "/images/variants/rooms/londonZone_dalesapartment-480.webp"
+  },
+  "variants/rooms/londonZone_dalesapartment-768": {
+    "avif": "/images/variants/rooms/londonZone_dalesapartment-768.avif",
+    "webp": "/images/variants/rooms/londonZone_dalesapartment-768.webp"
+  },
+  "variants/rooms/londonZone_dalesapartment": {
+    "avif": "/images/variants/rooms/londonZone_dalesapartment.avif",
+    "webp": "/images/variants/rooms/londonZone_dalesapartment.webp"
+  },
+  "variants/rooms/londonZone_findlaters-1200": {
+    "avif": "/images/variants/rooms/londonZone_findlaters-1200.avif",
+    "webp": "/images/variants/rooms/londonZone_findlaters-1200.webp"
+  },
+  "variants/rooms/londonZone_findlaters-1920": {
+    "avif": "/images/variants/rooms/londonZone_findlaters-1920.avif",
+    "webp": "/images/variants/rooms/londonZone_findlaters-1920.webp"
+  },
+  "variants/rooms/londonZone_findlaters-480": {
+    "avif": "/images/variants/rooms/londonZone_findlaters-480.avif",
+    "webp": "/images/variants/rooms/londonZone_findlaters-480.webp"
+  },
+  "variants/rooms/londonZone_findlaters-768": {
+    "avif": "/images/variants/rooms/londonZone_findlaters-768.avif",
+    "webp": "/images/variants/rooms/londonZone_findlaters-768.webp"
+  },
+  "variants/rooms/londonZone_findlaters": {
+    "avif": "/images/variants/rooms/londonZone_findlaters.avif",
+    "webp": "/images/variants/rooms/londonZone_findlaters.webp"
+  },
+  "variants/rooms/londonZone_londonhub-1200": {
+    "avif": "/images/variants/rooms/londonZone_londonhub-1200.avif",
+    "webp": "/images/variants/rooms/londonZone_londonhub-1200.webp"
+  },
+  "variants/rooms/londonZone_londonhub-1920": {
+    "avif": "/images/variants/rooms/londonZone_londonhub-1920.avif",
+    "webp": "/images/variants/rooms/londonZone_londonhub-1920.webp"
+  },
+  "variants/rooms/londonZone_londonhub-480": {
+    "avif": "/images/variants/rooms/londonZone_londonhub-480.avif",
+    "webp": "/images/variants/rooms/londonZone_londonhub-480.webp"
+  },
+  "variants/rooms/londonZone_londonhub-768": {
+    "avif": "/images/variants/rooms/londonZone_londonhub-768.avif",
+    "webp": "/images/variants/rooms/londonZone_londonhub-768.webp"
+  },
+  "variants/rooms/londonZone_londonhub": {
+    "avif": "/images/variants/rooms/londonZone_londonhub.avif",
+    "webp": "/images/variants/rooms/londonZone_londonhub.webp"
+  },
+  "variants/rooms/londonZone_stkatherinesdock-1200": {
+    "avif": "/images/variants/rooms/londonZone_stkatherinesdock-1200.avif",
+    "webp": "/images/variants/rooms/londonZone_stkatherinesdock-1200.webp"
+  },
+  "variants/rooms/londonZone_stkatherinesdock-1920": {
+    "avif": "/images/variants/rooms/londonZone_stkatherinesdock-1920.avif",
+    "webp": "/images/variants/rooms/londonZone_stkatherinesdock-1920.webp"
+  },
+  "variants/rooms/londonZone_stkatherinesdock-480": {
+    "avif": "/images/variants/rooms/londonZone_stkatherinesdock-480.avif",
+    "webp": "/images/variants/rooms/londonZone_stkatherinesdock-480.webp"
+  },
+  "variants/rooms/londonZone_stkatherinesdock-768": {
+    "avif": "/images/variants/rooms/londonZone_stkatherinesdock-768.avif",
+    "webp": "/images/variants/rooms/londonZone_stkatherinesdock-768.webp"
+  },
+  "variants/rooms/londonZone_stkatherinesdock": {
+    "avif": "/images/variants/rooms/londonZone_stkatherinesdock.avif",
+    "webp": "/images/variants/rooms/londonZone_stkatherinesdock.webp"
+  },
+  "variants/rooms/londonZone_trentpark-1200": {
+    "avif": "/images/variants/rooms/londonZone_trentpark-1200.avif",
+    "webp": "/images/variants/rooms/londonZone_trentpark-1200.webp"
+  },
+  "variants/rooms/londonZone_trentpark-1920": {
+    "avif": "/images/variants/rooms/londonZone_trentpark-1920.avif",
+    "webp": "/images/variants/rooms/londonZone_trentpark-1920.webp"
+  },
+  "variants/rooms/londonZone_trentpark-480": {
+    "avif": "/images/variants/rooms/londonZone_trentpark-480.avif",
+    "webp": "/images/variants/rooms/londonZone_trentpark-480.webp"
+  },
+  "variants/rooms/londonZone_trentpark-768": {
+    "avif": "/images/variants/rooms/londonZone_trentpark-768.avif",
+    "webp": "/images/variants/rooms/londonZone_trentpark-768.webp"
+  },
+  "variants/rooms/londonZone_trentpark": {
+    "avif": "/images/variants/rooms/londonZone_trentpark.avif",
+    "webp": "/images/variants/rooms/londonZone_trentpark.webp"
+  },
+  "variants/rooms/mazeZone_exit-1200": {
+    "avif": "/images/variants/rooms/mazeZone_exit-1200.avif",
+    "webp": "/images/variants/rooms/mazeZone_exit-1200.webp"
+  },
+  "variants/rooms/mazeZone_exit-1920": {
+    "avif": "/images/variants/rooms/mazeZone_exit-1920.avif",
+    "webp": "/images/variants/rooms/mazeZone_exit-1920.webp"
+  },
+  "variants/rooms/mazeZone_exit-480": {
+    "avif": "/images/variants/rooms/mazeZone_exit-480.avif",
+    "webp": "/images/variants/rooms/mazeZone_exit-480.webp"
+  },
+  "variants/rooms/mazeZone_exit-768": {
+    "avif": "/images/variants/rooms/mazeZone_exit-768.avif",
+    "webp": "/images/variants/rooms/mazeZone_exit-768.webp"
+  },
+  "variants/rooms/mazeZone_exit": {
+    "avif": "/images/variants/rooms/mazeZone_exit.avif",
+    "webp": "/images/variants/rooms/mazeZone_exit.webp"
+  },
+  "variants/rooms/mazeZone_forgottenchamber-1200": {
+    "avif": "/images/variants/rooms/mazeZone_forgottenchamber-1200.avif",
+    "webp": "/images/variants/rooms/mazeZone_forgottenchamber-1200.webp"
+  },
+  "variants/rooms/mazeZone_forgottenchamber-1920": {
+    "avif": "/images/variants/rooms/mazeZone_forgottenchamber-1920.avif",
+    "webp": "/images/variants/rooms/mazeZone_forgottenchamber-1920.webp"
+  },
+  "variants/rooms/mazeZone_forgottenchamber-480": {
+    "avif": "/images/variants/rooms/mazeZone_forgottenchamber-480.avif",
+    "webp": "/images/variants/rooms/mazeZone_forgottenchamber-480.webp"
+  },
+  "variants/rooms/mazeZone_forgottenchamber-768": {
+    "avif": "/images/variants/rooms/mazeZone_forgottenchamber-768.avif",
+    "webp": "/images/variants/rooms/mazeZone_forgottenchamber-768.webp"
+  },
+  "variants/rooms/mazeZone_forgottenchamber": {
+    "avif": "/images/variants/rooms/mazeZone_forgottenchamber.avif",
+    "webp": "/images/variants/rooms/mazeZone_forgottenchamber.webp"
+  },
+  "variants/rooms/mazeZone_introstreetclear-1200": {
+    "avif": "/images/variants/rooms/mazeZone_introstreetclear-1200.avif",
+    "webp": "/images/variants/rooms/mazeZone_introstreetclear-1200.webp"
+  },
+  "variants/rooms/mazeZone_introstreetclear-1920": {
+    "avif": "/images/variants/rooms/mazeZone_introstreetclear-1920.avif",
+    "webp": "/images/variants/rooms/mazeZone_introstreetclear-1920.webp"
+  },
+  "variants/rooms/mazeZone_introstreetclear-480": {
+    "avif": "/images/variants/rooms/mazeZone_introstreetclear-480.avif",
+    "webp": "/images/variants/rooms/mazeZone_introstreetclear-480.webp"
+  },
+  "variants/rooms/mazeZone_introstreetclear-768": {
+    "avif": "/images/variants/rooms/mazeZone_introstreetclear-768.avif",
+    "webp": "/images/variants/rooms/mazeZone_introstreetclear-768.webp"
+  },
+  "variants/rooms/mazeZone_introstreetclear": {
+    "avif": "/images/variants/rooms/mazeZone_introstreetclear.avif",
+    "webp": "/images/variants/rooms/mazeZone_introstreetclear.webp"
+  },
+  "variants/rooms/mazeZone_mazehub-1200": {
+    "avif": "/images/variants/rooms/mazeZone_mazehub-1200.avif",
+    "webp": "/images/variants/rooms/mazeZone_mazehub-1200.webp"
+  },
+  "variants/rooms/mazeZone_mazehub-1920": {
+    "avif": "/images/variants/rooms/mazeZone_mazehub-1920.avif",
+    "webp": "/images/variants/rooms/mazeZone_mazehub-1920.webp"
+  },
+  "variants/rooms/mazeZone_mazehub-480": {
+    "avif": "/images/variants/rooms/mazeZone_mazehub-480.avif",
+    "webp": "/images/variants/rooms/mazeZone_mazehub-480.webp"
+  },
+  "variants/rooms/mazeZone_mazehub-768": {
+    "avif": "/images/variants/rooms/mazeZone_mazehub-768.avif",
+    "webp": "/images/variants/rooms/mazeZone_mazehub-768.webp"
+  },
+  "variants/rooms/mazeZone_mazehub": {
+    "avif": "/images/variants/rooms/mazeZone_mazehub.avif",
+    "webp": "/images/variants/rooms/mazeZone_mazehub.webp"
+  },
+  "variants/rooms/mazeZone_mirrorhall-1200": {
+    "avif": "/images/variants/rooms/mazeZone_mirrorhall-1200.avif",
+    "webp": "/images/variants/rooms/mazeZone_mirrorhall-1200.webp"
+  },
+  "variants/rooms/mazeZone_mirrorhall-1920": {
+    "avif": "/images/variants/rooms/mazeZone_mirrorhall-1920.avif",
+    "webp": "/images/variants/rooms/mazeZone_mirrorhall-1920.webp"
+  },
+  "variants/rooms/mazeZone_mirrorhall-480": {
+    "avif": "/images/variants/rooms/mazeZone_mirrorhall-480.avif",
+    "webp": "/images/variants/rooms/mazeZone_mirrorhall-480.webp"
+  },
+  "variants/rooms/mazeZone_mirrorhall-768": {
+    "avif": "/images/variants/rooms/mazeZone_mirrorhall-768.avif",
+    "webp": "/images/variants/rooms/mazeZone_mirrorhall-768.webp"
+  },
+  "variants/rooms/mazeZone_mirrorhall": {
+    "avif": "/images/variants/rooms/mazeZone_mirrorhall.avif",
+    "webp": "/images/variants/rooms/mazeZone_mirrorhall.webp"
+  },
+  "variants/rooms/mazeZone_misleadchamber-1200": {
+    "avif": "/images/variants/rooms/mazeZone_misleadchamber-1200.avif",
+    "webp": "/images/variants/rooms/mazeZone_misleadchamber-1200.webp"
+  },
+  "variants/rooms/mazeZone_misleadchamber-1920": {
+    "avif": "/images/variants/rooms/mazeZone_misleadchamber-1920.avif",
+    "webp": "/images/variants/rooms/mazeZone_misleadchamber-1920.webp"
+  },
+  "variants/rooms/mazeZone_misleadchamber-480": {
+    "avif": "/images/variants/rooms/mazeZone_misleadchamber-480.avif",
+    "webp": "/images/variants/rooms/mazeZone_misleadchamber-480.webp"
+  },
+  "variants/rooms/mazeZone_misleadchamber-768": {
+    "avif": "/images/variants/rooms/mazeZone_misleadchamber-768.avif",
+    "webp": "/images/variants/rooms/mazeZone_misleadchamber-768.webp"
+  },
+  "variants/rooms/mazeZone_misleadchamber": {
+    "avif": "/images/variants/rooms/mazeZone_misleadchamber.avif",
+    "webp": "/images/variants/rooms/mazeZone_misleadchamber.webp"
+  },
+  "variants/rooms/mazeZone_pollysbay-1200": {
+    "avif": "/images/variants/rooms/mazeZone_pollysbay-1200.avif",
+    "webp": "/images/variants/rooms/mazeZone_pollysbay-1200.webp"
+  },
+  "variants/rooms/mazeZone_pollysbay-1920": {
+    "avif": "/images/variants/rooms/mazeZone_pollysbay-1920.avif",
+    "webp": "/images/variants/rooms/mazeZone_pollysbay-1920.webp"
+  },
+  "variants/rooms/mazeZone_pollysbay-480": {
+    "avif": "/images/variants/rooms/mazeZone_pollysbay-480.avif",
+    "webp": "/images/variants/rooms/mazeZone_pollysbay-480.webp"
+  },
+  "variants/rooms/mazeZone_pollysbay-768": {
+    "avif": "/images/variants/rooms/mazeZone_pollysbay-768.avif",
+    "webp": "/images/variants/rooms/mazeZone_pollysbay-768.webp"
+  },
+  "variants/rooms/mazeZone_pollysbay": {
+    "avif": "/images/variants/rooms/mazeZone_pollysbay.avif",
+    "webp": "/images/variants/rooms/mazeZone_pollysbay.webp"
+  },
+  "variants/rooms/mazeZone_room-1200": {
+    "avif": "/images/variants/rooms/mazeZone_room-1200.avif",
+    "webp": "/images/variants/rooms/mazeZone_room-1200.webp"
+  },
+  "variants/rooms/mazeZone_room-1920": {
+    "avif": "/images/variants/rooms/mazeZone_room-1920.avif",
+    "webp": "/images/variants/rooms/mazeZone_room-1920.webp"
+  },
+  "variants/rooms/mazeZone_room-480": {
+    "avif": "/images/variants/rooms/mazeZone_room-480.avif",
+    "webp": "/images/variants/rooms/mazeZone_room-480.webp"
+  },
+  "variants/rooms/mazeZone_room-768": {
+    "avif": "/images/variants/rooms/mazeZone_room-768.avif",
+    "webp": "/images/variants/rooms/mazeZone_room-768.webp"
+  },
+  "variants/rooms/mazeZone_room": {
+    "avif": "/images/variants/rooms/mazeZone_room.avif",
+    "webp": "/images/variants/rooms/mazeZone_room.webp"
+  },
+  "variants/rooms/mazeZone_secretmazeentry-1200": {
+    "avif": "/images/variants/rooms/mazeZone_secretmazeentry-1200.avif",
+    "webp": "/images/variants/rooms/mazeZone_secretmazeentry-1200.webp"
+  },
+  "variants/rooms/mazeZone_secretmazeentry-1920": {
+    "avif": "/images/variants/rooms/mazeZone_secretmazeentry-1920.avif",
+    "webp": "/images/variants/rooms/mazeZone_secretmazeentry-1920.webp"
+  },
+  "variants/rooms/mazeZone_secretmazeentry-480": {
+    "avif": "/images/variants/rooms/mazeZone_secretmazeentry-480.avif",
+    "webp": "/images/variants/rooms/mazeZone_secretmazeentry-480.webp"
+  },
+  "variants/rooms/mazeZone_secretmazeentry-768": {
+    "avif": "/images/variants/rooms/mazeZone_secretmazeentry-768.avif",
+    "webp": "/images/variants/rooms/mazeZone_secretmazeentry-768.webp"
+  },
+  "variants/rooms/mazeZone_secretmazeentry": {
+    "avif": "/images/variants/rooms/mazeZone_secretmazeentry.avif",
+    "webp": "/images/variants/rooms/mazeZone_secretmazeentry.webp"
+  },
+  "variants/rooms/mazeZone_secrettunnel-1200": {
+    "avif": "/images/variants/rooms/mazeZone_secrettunnel-1200.avif",
+    "webp": "/images/variants/rooms/mazeZone_secrettunnel-1200.webp"
+  },
+  "variants/rooms/mazeZone_secrettunnel-1920": {
+    "avif": "/images/variants/rooms/mazeZone_secrettunnel-1920.avif",
+    "webp": "/images/variants/rooms/mazeZone_secrettunnel-1920.webp"
+  },
+  "variants/rooms/mazeZone_secrettunnel-480": {
+    "avif": "/images/variants/rooms/mazeZone_secrettunnel-480.avif",
+    "webp": "/images/variants/rooms/mazeZone_secrettunnel-480.webp"
+  },
+  "variants/rooms/mazeZone_secrettunnel-768": {
+    "avif": "/images/variants/rooms/mazeZone_secrettunnel-768.avif",
+    "webp": "/images/variants/rooms/mazeZone_secrettunnel-768.webp"
+  },
+  "variants/rooms/mazeZone_secrettunnel": {
+    "avif": "/images/variants/rooms/mazeZone_secrettunnel.avif",
+    "webp": "/images/variants/rooms/mazeZone_secrettunnel.webp"
+  },
+  "variants/rooms/mazeZone_storagechamber-1200": {
+    "avif": "/images/variants/rooms/mazeZone_storagechamber-1200.avif",
+    "webp": "/images/variants/rooms/mazeZone_storagechamber-1200.webp"
+  },
+  "variants/rooms/mazeZone_storagechamber-1920": {
+    "avif": "/images/variants/rooms/mazeZone_storagechamber-1920.avif",
+    "webp": "/images/variants/rooms/mazeZone_storagechamber-1920.webp"
+  },
+  "variants/rooms/mazeZone_storagechamber-480": {
+    "avif": "/images/variants/rooms/mazeZone_storagechamber-480.avif",
+    "webp": "/images/variants/rooms/mazeZone_storagechamber-480.webp"
+  },
+  "variants/rooms/mazeZone_storagechamber-768": {
+    "avif": "/images/variants/rooms/mazeZone_storagechamber-768.avif",
+    "webp": "/images/variants/rooms/mazeZone_storagechamber-768.webp"
+  },
+  "variants/rooms/mazeZone_storagechamber": {
+    "avif": "/images/variants/rooms/mazeZone_storagechamber.avif",
+    "webp": "/images/variants/rooms/mazeZone_storagechamber.webp"
+  },
+  "variants/rooms/newyorkZone_aevirawarehouse-1200": {
+    "avif": "/images/variants/rooms/newyorkZone_aevirawarehouse-1200.avif",
+    "webp": "/images/variants/rooms/newyorkZone_aevirawarehouse-1200.webp"
+  },
+  "variants/rooms/newyorkZone_aevirawarehouse-1920": {
+    "avif": "/images/variants/rooms/newyorkZone_aevirawarehouse-1920.avif",
+    "webp": "/images/variants/rooms/newyorkZone_aevirawarehouse-1920.webp"
+  },
+  "variants/rooms/newyorkZone_aevirawarehouse-480": {
+    "avif": "/images/variants/rooms/newyorkZone_aevirawarehouse-480.avif",
+    "webp": "/images/variants/rooms/newyorkZone_aevirawarehouse-480.webp"
+  },
+  "variants/rooms/newyorkZone_aevirawarehouse-768": {
+    "avif": "/images/variants/rooms/newyorkZone_aevirawarehouse-768.avif",
+    "webp": "/images/variants/rooms/newyorkZone_aevirawarehouse-768.webp"
+  },
+  "variants/rooms/newyorkZone_aevirawarehouse": {
+    "avif": "/images/variants/rooms/newyorkZone_aevirawarehouse.avif",
+    "webp": "/images/variants/rooms/newyorkZone_aevirawarehouse.webp"
+  },
+  "variants/rooms/newyorkZone_burgerjoint-1200": {
+    "avif": "/images/variants/rooms/newyorkZone_burgerjoint-1200.avif",
+    "webp": "/images/variants/rooms/newyorkZone_burgerjoint-1200.webp"
+  },
+  "variants/rooms/newyorkZone_burgerjoint-1920": {
+    "avif": "/images/variants/rooms/newyorkZone_burgerjoint-1920.avif",
+    "webp": "/images/variants/rooms/newyorkZone_burgerjoint-1920.webp"
+  },
+  "variants/rooms/newyorkZone_burgerjoint-480": {
+    "avif": "/images/variants/rooms/newyorkZone_burgerjoint-480.avif",
+    "webp": "/images/variants/rooms/newyorkZone_burgerjoint-480.webp"
+  },
+  "variants/rooms/newyorkZone_burgerjoint-768": {
+    "avif": "/images/variants/rooms/newyorkZone_burgerjoint-768.avif",
+    "webp": "/images/variants/rooms/newyorkZone_burgerjoint-768.webp"
+  },
+  "variants/rooms/newyorkZone_burgerjoint": {
+    "avif": "/images/variants/rooms/newyorkZone_burgerjoint.avif",
+    "webp": "/images/variants/rooms/newyorkZone_burgerjoint.webp"
+  },
+  "variants/rooms/newyorkZone_centralpark-1200": {
+    "avif": "/images/variants/rooms/newyorkZone_centralpark-1200.avif",
+    "webp": "/images/variants/rooms/newyorkZone_centralpark-1200.webp"
+  },
+  "variants/rooms/newyorkZone_centralpark-1920": {
+    "avif": "/images/variants/rooms/newyorkZone_centralpark-1920.avif",
+    "webp": "/images/variants/rooms/newyorkZone_centralpark-1920.webp"
+  },
+  "variants/rooms/newyorkZone_centralpark-480": {
+    "avif": "/images/variants/rooms/newyorkZone_centralpark-480.avif",
+    "webp": "/images/variants/rooms/newyorkZone_centralpark-480.webp"
+  },
+  "variants/rooms/newyorkZone_centralpark-768": {
+    "avif": "/images/variants/rooms/newyorkZone_centralpark-768.avif",
+    "webp": "/images/variants/rooms/newyorkZone_centralpark-768.webp"
+  },
+  "variants/rooms/newyorkZone_centralpark": {
+    "avif": "/images/variants/rooms/newyorkZone_centralpark.avif",
+    "webp": "/images/variants/rooms/newyorkZone_centralpark.webp"
+  },
+  "variants/rooms/newyorkZone_manhattanhub-1200": {
+    "avif": "/images/variants/rooms/newyorkZone_manhattanhub-1200.avif",
+    "webp": "/images/variants/rooms/newyorkZone_manhattanhub-1200.webp"
+  },
+  "variants/rooms/newyorkZone_manhattanhub-1920": {
+    "avif": "/images/variants/rooms/newyorkZone_manhattanhub-1920.avif",
+    "webp": "/images/variants/rooms/newyorkZone_manhattanhub-1920.webp"
+  },
+  "variants/rooms/newyorkZone_manhattanhub-480": {
+    "avif": "/images/variants/rooms/newyorkZone_manhattanhub-480.avif",
+    "webp": "/images/variants/rooms/newyorkZone_manhattanhub-480.webp"
+  },
+  "variants/rooms/newyorkZone_manhattanhub-768": {
+    "avif": "/images/variants/rooms/newyorkZone_manhattanhub-768.avif",
+    "webp": "/images/variants/rooms/newyorkZone_manhattanhub-768.webp"
+  },
+  "variants/rooms/newyorkZone_manhattanhub": {
+    "avif": "/images/variants/rooms/newyorkZone_manhattanhub.avif",
+    "webp": "/images/variants/rooms/newyorkZone_manhattanhub.webp"
+  },
+  "variants/rooms/newyorkZone_storeroom-1200": {
+    "avif": "/images/variants/rooms/newyorkZone_storeroom-1200.avif",
+    "webp": "/images/variants/rooms/newyorkZone_storeroom-1200.webp"
+  },
+  "variants/rooms/newyorkZone_storeroom-1920": {
+    "avif": "/images/variants/rooms/newyorkZone_storeroom-1920.avif",
+    "webp": "/images/variants/rooms/newyorkZone_storeroom-1920.webp"
+  },
+  "variants/rooms/newyorkZone_storeroom-480": {
+    "avif": "/images/variants/rooms/newyorkZone_storeroom-480.avif",
+    "webp": "/images/variants/rooms/newyorkZone_storeroom-480.webp"
+  },
+  "variants/rooms/newyorkZone_storeroom-768": {
+    "avif": "/images/variants/rooms/newyorkZone_storeroom-768.avif",
+    "webp": "/images/variants/rooms/newyorkZone_storeroom-768.webp"
+  },
+  "variants/rooms/newyorkZone_storeroom": {
+    "avif": "/images/variants/rooms/newyorkZone_storeroom.avif",
+    "webp": "/images/variants/rooms/newyorkZone_storeroom.webp"
+  },
+  "variants/rooms/offgorstanZone_ancientvault-1200": {
+    "avif": "/images/variants/rooms/offgorstanZone_ancientvault-1200.avif",
+    "webp": "/images/variants/rooms/offgorstanZone_ancientvault-1200.webp"
+  },
+  "variants/rooms/offgorstanZone_ancientvault-1920": {
+    "avif": "/images/variants/rooms/offgorstanZone_ancientvault-1920.avif",
+    "webp": "/images/variants/rooms/offgorstanZone_ancientvault-1920.webp"
+  },
+  "variants/rooms/offgorstanZone_ancientvault-480": {
+    "avif": "/images/variants/rooms/offgorstanZone_ancientvault-480.avif",
+    "webp": "/images/variants/rooms/offgorstanZone_ancientvault-480.webp"
+  },
+  "variants/rooms/offgorstanZone_ancientvault-768": {
+    "avif": "/images/variants/rooms/offgorstanZone_ancientvault-768.avif",
+    "webp": "/images/variants/rooms/offgorstanZone_ancientvault-768.webp"
+  },
+  "variants/rooms/offgorstanZone_ancientvault": {
+    "avif": "/images/variants/rooms/offgorstanZone_ancientvault.avif",
+    "webp": "/images/variants/rooms/offgorstanZone_ancientvault.webp"
+  },
+  "variants/rooms/offgorstanZone_exit-1200": {
+    "avif": "/images/variants/rooms/offgorstanZone_exit-1200.avif",
+    "webp": "/images/variants/rooms/offgorstanZone_exit-1200.webp"
+  },
+  "variants/rooms/offgorstanZone_exit-1920": {
+    "avif": "/images/variants/rooms/offgorstanZone_exit-1920.avif",
+    "webp": "/images/variants/rooms/offgorstanZone_exit-1920.webp"
+  },
+  "variants/rooms/offgorstanZone_exit-480": {
+    "avif": "/images/variants/rooms/offgorstanZone_exit-480.avif",
+    "webp": "/images/variants/rooms/offgorstanZone_exit-480.webp"
+  },
+  "variants/rooms/offgorstanZone_exit-768": {
+    "avif": "/images/variants/rooms/offgorstanZone_exit-768.avif",
+    "webp": "/images/variants/rooms/offgorstanZone_exit-768.webp"
+  },
+  "variants/rooms/offgorstanZone_exit": {
+    "avif": "/images/variants/rooms/offgorstanZone_exit.avif",
+    "webp": "/images/variants/rooms/offgorstanZone_exit.webp"
+  },
+  "variants/rooms/offgorstanZone_multiversehub-1200": {
+    "avif": "/images/variants/rooms/offgorstanZone_multiversehub-1200.avif",
+    "webp": "/images/variants/rooms/offgorstanZone_multiversehub-1200.webp"
+  },
+  "variants/rooms/offgorstanZone_multiversehub-1920": {
+    "avif": "/images/variants/rooms/offgorstanZone_multiversehub-1920.avif",
+    "webp": "/images/variants/rooms/offgorstanZone_multiversehub-1920.webp"
+  },
+  "variants/rooms/offgorstanZone_multiversehub-480": {
+    "avif": "/images/variants/rooms/offgorstanZone_multiversehub-480.avif",
+    "webp": "/images/variants/rooms/offgorstanZone_multiversehub-480.webp"
+  },
+  "variants/rooms/offgorstanZone_multiversehub-768": {
+    "avif": "/images/variants/rooms/offgorstanZone_multiversehub-768.avif",
+    "webp": "/images/variants/rooms/offgorstanZone_multiversehub-768.webp"
+  },
+  "variants/rooms/offgorstanZone_multiversehub": {
+    "avif": "/images/variants/rooms/offgorstanZone_multiversehub.avif",
+    "webp": "/images/variants/rooms/offgorstanZone_multiversehub.webp"
+  },
+  "variants/rooms/offmultiverseZone_controlnexusreturned-1200": {
+    "avif": "/images/variants/rooms/offmultiverseZone_controlnexusreturned-1200.avif",
+    "webp": "/images/variants/rooms/offmultiverseZone_controlnexusreturned-1200.webp"
+  },
+  "variants/rooms/offmultiverseZone_controlnexusreturned-1920": {
+    "avif": "/images/variants/rooms/offmultiverseZone_controlnexusreturned-1920.avif",
+    "webp": "/images/variants/rooms/offmultiverseZone_controlnexusreturned-1920.webp"
+  },
+  "variants/rooms/offmultiverseZone_controlnexusreturned-480": {
+    "avif": "/images/variants/rooms/offmultiverseZone_controlnexusreturned-480.avif",
+    "webp": "/images/variants/rooms/offmultiverseZone_controlnexusreturned-480.webp"
+  },
+  "variants/rooms/offmultiverseZone_controlnexusreturned-768": {
+    "avif": "/images/variants/rooms/offmultiverseZone_controlnexusreturned-768.avif",
+    "webp": "/images/variants/rooms/offmultiverseZone_controlnexusreturned-768.webp"
+  },
+  "variants/rooms/offmultiverseZone_controlnexusreturned": {
+    "avif": "/images/variants/rooms/offmultiverseZone_controlnexusreturned.avif",
+    "webp": "/images/variants/rooms/offmultiverseZone_controlnexusreturned.webp"
+  },
+  "variants/rooms/offmultiverseZone_observationroom-1200": {
+    "avif": "/images/variants/rooms/offmultiverseZone_observationroom-1200.avif",
+    "webp": "/images/variants/rooms/offmultiverseZone_observationroom-1200.webp"
+  },
+  "variants/rooms/offmultiverseZone_observationroom-1920": {
+    "avif": "/images/variants/rooms/offmultiverseZone_observationroom-1920.avif",
+    "webp": "/images/variants/rooms/offmultiverseZone_observationroom-1920.webp"
+  },
+  "variants/rooms/offmultiverseZone_observationroom-480": {
+    "avif": "/images/variants/rooms/offmultiverseZone_observationroom-480.avif",
+    "webp": "/images/variants/rooms/offmultiverseZone_observationroom-480.webp"
+  },
+  "variants/rooms/offmultiverseZone_observationroom-768": {
+    "avif": "/images/variants/rooms/offmultiverseZone_observationroom-768.avif",
+    "webp": "/images/variants/rooms/offmultiverseZone_observationroom-768.webp"
+  },
+  "variants/rooms/offmultiverseZone_observationroom": {
+    "avif": "/images/variants/rooms/offmultiverseZone_observationroom.avif",
+    "webp": "/images/variants/rooms/offmultiverseZone_observationroom.webp"
+  },
+  "variants/rooms/stantonZone_ascendantStanton-1200": {
+    "avif": "/images/variants/rooms/stantonZone_ascendantStanton-1200.avif",
+    "webp": "/images/variants/rooms/stantonZone_ascendantStanton-1200.webp"
+  },
+  "variants/rooms/stantonZone_ascendantStanton-1920": {
+    "avif": "/images/variants/rooms/stantonZone_ascendantStanton-1920.avif",
+    "webp": "/images/variants/rooms/stantonZone_ascendantStanton-1920.webp"
+  },
+  "variants/rooms/stantonZone_ascendantStanton-480": {
+    "avif": "/images/variants/rooms/stantonZone_ascendantStanton-480.avif",
+    "webp": "/images/variants/rooms/stantonZone_ascendantStanton-480.webp"
+  },
+  "variants/rooms/stantonZone_ascendantStanton-768": {
+    "avif": "/images/variants/rooms/stantonZone_ascendantStanton-768.avif",
+    "webp": "/images/variants/rooms/stantonZone_ascendantStanton-768.webp"
+  },
+  "variants/rooms/stantonZone_ascendantStanton": {
+    "avif": "/images/variants/rooms/stantonZone_ascendantStanton.avif",
+    "webp": "/images/variants/rooms/stantonZone_ascendantStanton.webp"
+  },
+  "variants/rooms/stantonZone_glitchStanton-1200": {
+    "avif": "/images/variants/rooms/stantonZone_glitchStanton-1200.avif",
+    "webp": "/images/variants/rooms/stantonZone_glitchStanton-1200.webp"
+  },
+  "variants/rooms/stantonZone_glitchStanton-1920": {
+    "avif": "/images/variants/rooms/stantonZone_glitchStanton-1920.avif",
+    "webp": "/images/variants/rooms/stantonZone_glitchStanton-1920.webp"
+  },
+  "variants/rooms/stantonZone_glitchStanton-480": {
+    "avif": "/images/variants/rooms/stantonZone_glitchStanton-480.avif",
+    "webp": "/images/variants/rooms/stantonZone_glitchStanton-480.webp"
+  },
+  "variants/rooms/stantonZone_glitchStanton-768": {
+    "avif": "/images/variants/rooms/stantonZone_glitchStanton-768.avif",
+    "webp": "/images/variants/rooms/stantonZone_glitchStanton-768.webp"
+  },
+  "variants/rooms/stantonZone_glitchStanton": {
+    "avif": "/images/variants/rooms/stantonZone_glitchStanton.avif",
+    "webp": "/images/variants/rooms/stantonZone_glitchStanton.webp"
+  },
+  "variants/rooms/stantonZone_villagegreen-1200": {
+    "avif": "/images/variants/rooms/stantonZone_villagegreen-1200.avif",
+    "webp": "/images/variants/rooms/stantonZone_villagegreen-1200.webp"
+  },
+  "variants/rooms/stantonZone_villagegreen-1920": {
+    "avif": "/images/variants/rooms/stantonZone_villagegreen-1920.avif",
+    "webp": "/images/variants/rooms/stantonZone_villagegreen-1920.webp"
+  },
+  "variants/rooms/stantonZone_villagegreen-480": {
+    "avif": "/images/variants/rooms/stantonZone_villagegreen-480.avif",
+    "webp": "/images/variants/rooms/stantonZone_villagegreen-480.webp"
+  },
+  "variants/rooms/stantonZone_villagegreen-768": {
+    "avif": "/images/variants/rooms/stantonZone_villagegreen-768.avif",
+    "webp": "/images/variants/rooms/stantonZone_villagegreen-768.webp"
+  },
+  "variants/rooms/stantonZone_villagegreen": {
+    "avif": "/images/variants/rooms/stantonZone_villagegreen.avif",
+    "webp": "/images/variants/rooms/stantonZone_villagegreen.webp"
+  },
+  "variants/rooms/stantonharcourtZone_silentstanton-1200": {
+    "avif": "/images/variants/rooms/stantonharcourtZone_silentstanton-1200.avif",
+    "webp": "/images/variants/rooms/stantonharcourtZone_silentstanton-1200.webp"
+  },
+  "variants/rooms/stantonharcourtZone_silentstanton-1920": {
+    "avif": "/images/variants/rooms/stantonharcourtZone_silentstanton-1920.avif",
+    "webp": "/images/variants/rooms/stantonharcourtZone_silentstanton-1920.webp"
+  },
+  "variants/rooms/stantonharcourtZone_silentstanton-480": {
+    "avif": "/images/variants/rooms/stantonharcourtZone_silentstanton-480.avif",
+    "webp": "/images/variants/rooms/stantonharcourtZone_silentstanton-480.webp"
+  },
+  "variants/rooms/stantonharcourtZone_silentstanton-768": {
+    "avif": "/images/variants/rooms/stantonharcourtZone_silentstanton-768.avif",
+    "webp": "/images/variants/rooms/stantonharcourtZone_silentstanton-768.webp"
+  },
+  "variants/rooms/stantonharcourtZone_silentstanton": {
+    "avif": "/images/variants/rooms/stantonharcourtZone_silentstanton.avif",
+    "webp": "/images/variants/rooms/stantonharcourtZone_silentstanton.webp"
+  },
+  "variants/rooms/stantonharcourtZone_stantonharcourt-1200": {
+    "avif": "/images/variants/rooms/stantonharcourtZone_stantonharcourt-1200.avif",
+    "webp": "/images/variants/rooms/stantonharcourtZone_stantonharcourt-1200.webp"
+  },
+  "variants/rooms/stantonharcourtZone_stantonharcourt-1920": {
+    "avif": "/images/variants/rooms/stantonharcourtZone_stantonharcourt-1920.avif",
+    "webp": "/images/variants/rooms/stantonharcourtZone_stantonharcourt-1920.webp"
+  },
+  "variants/rooms/stantonharcourtZone_stantonharcourt-480": {
+    "avif": "/images/variants/rooms/stantonharcourtZone_stantonharcourt-480.avif",
+    "webp": "/images/variants/rooms/stantonharcourtZone_stantonharcourt-480.webp"
+  },
+  "variants/rooms/stantonharcourtZone_stantonharcourt-768": {
+    "avif": "/images/variants/rooms/stantonharcourtZone_stantonharcourt-768.avif",
+    "webp": "/images/variants/rooms/stantonharcourtZone_stantonharcourt-768.webp"
+  },
+  "variants/rooms/stantonharcourtZone_stantonharcourt": {
+    "avif": "/images/variants/rooms/stantonharcourtZone_stantonharcourt.avif",
+    "webp": "/images/variants/rooms/stantonharcourtZone_stantonharcourt.webp"
+  },
+  "variants/starterframe-1200": {
+    "avif": "/images/variants/starterframe-1200.avif",
+    "webp": "/images/variants/starterframe-1200.webp"
+  },
+  "variants/starterframe-1920": {
+    "avif": "/images/variants/starterframe-1920.avif",
+    "webp": "/images/variants/starterframe-1920.webp"
+  },
+  "variants/starterframe-480": {
+    "avif": "/images/variants/starterframe-480.avif",
+    "webp": "/images/variants/starterframe-480.webp"
+  },
+  "variants/starterframe-768": {
+    "avif": "/images/variants/starterframe-768.avif",
+    "webp": "/images/variants/starterframe-768.webp"
+  },
+  "variants/starterframe": {
+    "avif": "/images/variants/starterframe.avif",
+    "webp": "/images/variants/starterframe.webp"
   }
 }
