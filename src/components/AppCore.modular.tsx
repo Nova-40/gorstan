@@ -356,13 +356,13 @@ const AppCoreModularDraft: React.FC = () => {
         onUse={() => modalState.openModal('useItem')}
         onLookAround={lookAround.handleLookAround}
         onPickUp={() => modalState.openModal('pickUp')}
-        onPress={() => commandHandler.handleCommand('press')}
+        onPress={commandHandler.handlePressAction}
         onCoffee={() => commandHandler.handleCommand('coffee')}
         onFullscreen={systemControls.toggleFullscreen}
         onToggleSound={systemControls.toggleSound}
-        onJump={() => commandHandler.handleCommand('jump')}
+        onJump={() => transitions.handleQuickExit('jump')}
         onMove={(direction) => transitions.handleRoomChange(resolveMoveTarget(room, direction))}
-        onSit={() => commandHandler.handleCommand('sit')}
+        onSit={() => transitions.handleQuickExit('sit')}
         onDebugMenu={() => dispatch({ type: 'TOGGLE_DEBUG' })}
         onBackout={navigation.handleBackout}
         onDisarmTrap={() => modalState.openModal('trapManagement')}

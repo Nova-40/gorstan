@@ -37,6 +37,7 @@ interface UseAppCoreCommandHandlerArgs {
 
 interface UseAppCoreCommandHandlerResult {
   readonly handleCommand: (command: string) => void;
+  readonly handlePressAction: () => void;
 }
 
 function recordMessage(dispatch: (action: any) => void, text: string, type: string = 'system'): void {
@@ -69,6 +70,12 @@ export function useAppCoreCommandHandler({
   checkForHints,
   launchMiniQuest,
 }: UseAppCoreCommandHandlerArgs): UseAppCoreCommandHandlerResult {
+  const handlePressAction = useCallback((): void => {
+    dispatch({
+      type: currentRoomId === 'introreset' ? 'PRESS_BLUE_BUTTON' : 'PRESS_ACTION',
+    });
+  }, [dispatch, currentRoomId]);
+
   const handleCommand = useCallback(
     (command: string): void => {
       const lowerCommand = command.toLowerCase().trim();
@@ -231,5 +238,5 @@ export function useAppCoreCommandHandler({
     ],
   );
 
-  return { handleCommand };
+  return { handleCommand, handlePressAction };
 }

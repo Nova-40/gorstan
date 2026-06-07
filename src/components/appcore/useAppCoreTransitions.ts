@@ -41,6 +41,7 @@ interface UseAppCoreTransitionsResult {
   readonly setPreviousRoom: Dispatch<SetStateAction<Room | null>>;
   readonly transitionInfo: ReturnType<typeof useRoomTransition>;
   readonly handleRoomChange: (newRoomId: string) => void;
+  readonly handleQuickExit: (exitName: 'jump' | 'sit') => void;
   readonly handleTeleportComplete: () => void;
   readonly handleRoomTransitionComplete: () => void;
 }
@@ -93,6 +94,18 @@ export function useAppCoreTransitions({
       }
     },
     [currentRoomId, room, roomMap, dispatch],
+  );
+
+  const handleQuickExit = useCallback(
+    (exitName: 'jump' | 'sit') => {
+      const targetRoomId = room?.exits?.[exitName];
+      if (!targetRoomId) {
+        return;
+      }
+
+      handleRoomChange(targetRoomId);
+    },
+    [room, handleRoomChange],
   );
 
   const handleTeleportComplete = useCallback((): void => {
@@ -180,6 +193,7 @@ export function useAppCoreTransitions({
     setPreviousRoom,
     transitionInfo,
     handleRoomChange,
+    handleQuickExit,
     handleTeleportComplete,
     handleRoomTransitionComplete,
   };

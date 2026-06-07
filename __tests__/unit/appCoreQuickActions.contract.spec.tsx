@@ -85,6 +85,66 @@ describe('AppCore quick-action contract', () => {
     },
   );
 
+  it('explicit modular press action preserves legacy introreset blue-button routing', () => {
+    const dispatch = vi.fn();
+
+    const { result } = renderHook(() =>
+      useAppCoreCommandHandler({
+        state: initialGameState,
+        dispatch,
+        room,
+        currentRoomId: 'introreset',
+        inventory: [],
+        npcsInRoom: [],
+        isDemo: false,
+        isDemoActive: false,
+        setIsDemoActive: vi.fn(),
+        setCommandHistory: vi.fn(),
+        setLastMovementAction: vi.fn(),
+        setPreviousRoom: vi.fn(),
+        handleLookAround: vi.fn(),
+        openModal: vi.fn(),
+        checkForHints: vi.fn().mockResolvedValue(undefined),
+        launchMiniQuest: vi.fn(),
+      }),
+    );
+
+    result.current.handlePressAction();
+
+    expect(dispatch).toHaveBeenCalledWith({ type: 'PRESS_BLUE_BUTTON' });
+    expect(dispatch).not.toHaveBeenCalledWith({ type: 'COMMAND_INPUT', payload: 'press' });
+  });
+
+  it('explicit modular press action preserves legacy generic press routing outside introreset', () => {
+    const dispatch = vi.fn();
+
+    const { result } = renderHook(() =>
+      useAppCoreCommandHandler({
+        state: initialGameState,
+        dispatch,
+        room,
+        currentRoomId: room.id,
+        inventory: [],
+        npcsInRoom: [],
+        isDemo: false,
+        isDemoActive: false,
+        setIsDemoActive: vi.fn(),
+        setCommandHistory: vi.fn(),
+        setLastMovementAction: vi.fn(),
+        setPreviousRoom: vi.fn(),
+        handleLookAround: vi.fn(),
+        openModal: vi.fn(),
+        checkForHints: vi.fn().mockResolvedValue(undefined),
+        launchMiniQuest: vi.fn(),
+      }),
+    );
+
+    result.current.handlePressAction();
+
+    expect(dispatch).toHaveBeenCalledWith({ type: 'PRESS_ACTION' });
+    expect(dispatch).not.toHaveBeenCalledWith({ type: 'COMMAND_INPUT', payload: 'press' });
+  });
+
   it('legacy reducer preserves explicit press action semantics', () => {
     const nextState = gameStateReducer(initialGameState as any, { type: 'PRESS_ACTION' } as any);
 
@@ -132,5 +192,85 @@ describe('AppCore quick-action contract', () => {
     result.current.handleRoomChange('jumproom');
 
     expect(dispatch).toHaveBeenCalledWith({ type: 'MOVE_TO_ROOM', payload: 'jumproom' });
+  });
+
+  it('explicit modular jump action resolves room.exits.jump without using parser strings', () => {
+    const dispatch = vi.fn();
+
+    const { result } = renderHook(() =>
+      useAppCoreTransitions({
+        state: initialGameState,
+        dispatch,
+        room,
+        roomMap: {
+          controlnexus: room,
+          jumproom: {
+            id: 'jumproom',
+            title: 'Jump Room',
+            description: ['Reached via jump.'],
+            zone: 'introZone',
+            exits: {},
+            items: [],
+            npcs: [],
+          },
+          sitroom: {
+            id: 'sitroom',
+            title: 'Sit Room',
+            description: ['Reached via sit.'],
+            zone: 'introZone',
+            exits: {},
+            items: [],
+            npcs: [],
+          },
+        },
+        currentRoomId: 'controlnexus',
+        stage: 'game',
+      }),
+    );
+
+    result.current.handleQuickExit('jump');
+
+    expect(dispatch).toHaveBeenCalledWith({ type: 'MOVE_TO_ROOM', payload: 'jumproom' });
+    expect(dispatch).not.toHaveBeenCalledWith({ type: 'COMMAND_INPUT', payload: 'jump' });
+  });
+
+  it('explicit modular sit action resolves room.exits.sit without using parser strings', () => {
+    const dispatch = vi.fn();
+
+    const { result } = renderHook(() =>
+      useAppCoreTransitions({
+        state: initialGameState,
+        dispatch,
+        room,
+        roomMap: {
+          controlnexus: room,
+          jumproom: {
+            id: 'jumproom',
+            title: 'Jump Room',
+            description: ['Reached via jump.'],
+            zone: 'introZone',
+            exits: {},
+            items: [],
+            npcs: [],
+          },
+          sitroom: {
+            id: 'sitroom',
+            title: 'Sit Room',
+            description: ['Reached via sit.'],
+            zone: 'introZone',
+            exits: {},
+            items: [],
+            npcs: [],
+          },
+        },
+        currentRoomId: 'controlnexus',
+        stage: 'game',
+      }),
+    );
+
+    result.current.handleQuickExit('sit');
+
+    expect(dispatch).toHaveBeenCalledWith({ type: 'MOVE_TO_ROOM', payload: 'sitroom' });
+    expect(dispatch).not.toHaveBeenCalledWith({ type: 'COMMAND_INPUT', payload: 'sit' });
   });
 });
