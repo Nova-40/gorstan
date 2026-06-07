@@ -226,7 +226,7 @@ const AppCoreModularDraft: React.FC = () => {
           <UseItemChooser
             inventory={inventory}
             targets={useTargets}
-            onCommand={commandHandler.handleCommand}
+            onUse={inventoryActions.handleUseItem}
             onClose={modalState.closeModal}
           />
         );
@@ -307,7 +307,7 @@ const AppCoreModularDraft: React.FC = () => {
     modalState.closeModal,
     inventory,
     useTargets,
-    commandHandler.handleCommand,
+    inventoryActions.handleUseItem,
     roomItems,
     inventoryActions.handlePickUpItems,
     saveLoad.handleSave,

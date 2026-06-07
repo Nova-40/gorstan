@@ -1,10 +1,10 @@
 /*
   Gorstan – Copyright © 2025 Geoff Webster. All Rights Reserved.
 
-  Parser-backed use-item chooser for the modular AppCore.
+  Structured use-item chooser for the modular AppCore.
 
-  This component deliberately emits text parser commands rather than mutating
-  game state directly. The parser remains the source of truth for item logic.
+  This component dispatches the same reducer-backed item actions as the legacy
+  AppCore use-item flow.
 */
 
 import React, { useState } from 'react';
@@ -12,14 +12,14 @@ import React, { useState } from 'react';
 interface UseItemChooserProps {
   readonly inventory: string[];
   readonly targets: string[];
-  readonly onCommand: (command: string) => void;
+  readonly onUse: (item: string, target?: string) => void;
   readonly onClose: () => void;
 }
 
 const UseItemChooser: React.FC<UseItemChooserProps> = ({
   inventory,
   targets,
-  onCommand,
+  onUse,
   onClose,
 }) => {
   const [selectedUseItem, setSelectedUseItem] = useState<string>('');
@@ -54,10 +54,7 @@ const UseItemChooser: React.FC<UseItemChooserProps> = ({
             type="button"
             disabled={!selectedUseItem}
             onClick={() => {
-              const command = selectedUseTarget
-                ? `use ${selectedUseItem} with ${selectedUseTarget}`
-                : `use ${selectedUseItem}`;
-              onCommand(command);
+              onUse(selectedUseItem, selectedUseTarget || undefined);
               onClose();
               setSelectedUseItem('');
               setSelectedUseTarget('');
@@ -67,7 +64,7 @@ const UseItemChooser: React.FC<UseItemChooserProps> = ({
           </button>
         </>
       )}
-      <p className="modal-hint">This sends the same command as the parser.</p>
+      <p className="modal-hint">Uses the same item action flow as the legacy inventory modal.</p>
     </div>
   );
 };

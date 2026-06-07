@@ -15,6 +15,7 @@ interface UseAppCoreInventoryActionsArgs {
 
 interface UseAppCoreInventoryActionsResult {
   readonly handlePickUpItems: (selectedItems: string[]) => void;
+  readonly handleUseItem: (item: string, target?: string) => void;
 }
 
 export function useAppCoreInventoryActions({
@@ -23,6 +24,18 @@ export function useAppCoreInventoryActions({
   currentRoomId,
   closeModal,
 }: UseAppCoreInventoryActionsArgs): UseAppCoreInventoryActionsResult {
+  const handleUseItem = useCallback(
+    (item: string, target?: string): void => {
+      dispatch({
+        type: target ? 'USE_ITEM_WITH' : 'USE_ITEM',
+        payload: target ? { item, target } : { item },
+      });
+
+      closeModal();
+    },
+    [dispatch, closeModal],
+  );
+
   const handlePickUpItems = useCallback(
     (selectedItems: string[]): void => {
       selectedItems.forEach((item) => {
@@ -64,5 +77,5 @@ export function useAppCoreInventoryActions({
     [state, dispatch, currentRoomId, closeModal],
   );
 
-  return { handlePickUpItems };
+  return { handlePickUpItems, handleUseItem };
 }
