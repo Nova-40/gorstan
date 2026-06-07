@@ -596,18 +596,6 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
         },
       };
     }
-    case 'LOAD_SAVED_GAME': {
-      const newRoomId = 'controlnexus';
-  const newRoom = state.roomMap[newRoomId];
-  const updatedHistory = addRoomDescriptionToHistory(state.history, newRoom ?? null, newRoomId);
-
-      return {
-        ...state,
-        stage: STAGES.GAME,
-        currentRoomId: newRoomId,
-        history: updatedHistory,
-      };
-    }
     case 'LOAD_GAME_FROM_STORAGE': {
       const newRoomId = 'controlnexus';
   const newRoom = state.roomMap[newRoomId];
