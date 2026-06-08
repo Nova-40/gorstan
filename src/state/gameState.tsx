@@ -64,7 +64,6 @@ export const STAGES = {
   SPLASH: 'splash',
   WELCOME: 'welcome',
   NAME_CAPTURE: 'nameCapture',
-  ROUTE_SELECT: 'routeSelect',
   INTRO: 'intro',
   GAME: 'game',
   DEMO: 'demo',
@@ -341,12 +340,6 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
       return {
         ...state,
         player: { ...state.player, name: action.payload as string },
-      };
-
-    case 'SET_ROUTE':
-      return {
-        ...state,
-        selectedRoute: action.payload as string,
       };
 
     case 'ADD_SCORE':
@@ -1166,7 +1159,6 @@ export interface LocalGameState {
   currentRoomId: string;
   previousRoomId?: string;
   roomMap: Record<string, Room>;
-  selectedRoute?: string; // Add route selection support
   miniquestState?: MiniquestState;
   flags: {
     resetButtonPressCount?: number;

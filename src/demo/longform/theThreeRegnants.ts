@@ -16,7 +16,7 @@ export async function startThreeRegnants(): Promise<void> {
 
     setTimeout(() => {
       clearDemo();
-      console.log('[ThreeRegnants] Returning to Choose Your Adventure...');
+      console.log('[ThreeRegnants] Returning to main menu...');
     }, 3000);
   } catch (error) {
     console.error('[ThreeRegnants] Adventure failed:', error);

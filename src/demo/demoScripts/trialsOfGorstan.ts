@@ -32,24 +32,24 @@ export async function startTrialsOfGorstan(): Promise<void> {
     const handleComplete = () => {
       console.log('[TrialsOfGorstan] Demo completed successfully');
 
-      // Clean up and return to Choose Your Adventure
+      // Clean up and return to the main menu
       root.unmount();
       document.body.removeChild(gameContainer);
       clearDemo();
 
-      // In a real implementation, this would navigate back to CYA screen
-      console.log('[TrialsOfGorstan] Returning to Choose Your Adventure...');
+      // In a real implementation, this would navigate back to main menu
+      console.log('[TrialsOfGorstan] Returning to main menu...');
     };
 
     const handleQuit = () => {
       console.log('[TrialsOfGorstan] Player quit the demo');
 
-      // Clean up and return to Choose Your Adventure
+      // Clean up and return to the main menu
       root.unmount();
       document.body.removeChild(gameContainer);
       clearDemo();
 
-      console.log('[TrialsOfGorstan] Returning to Choose Your Adventure...');
+      console.log('[TrialsOfGorstan] Returning to main menu...');
     };
 
     root.render(

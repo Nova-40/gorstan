@@ -16,7 +16,7 @@ export async function startTramlinesOfTime(): Promise<void> {
 
     setTimeout(() => {
       clearDemo();
-      console.log('[TramlinesOfTime] Returning to Choose Your Adventure...');
+      console.log('[TramlinesOfTime] Returning to main menu...');
     }, 3000);
   } catch (error) {
     console.error('[TramlinesOfTime] Demo failed:', error);

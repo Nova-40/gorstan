@@ -42,7 +42,6 @@ import SplashScreen from './SplashScreen';
 import TeletypeIntro from './TeletypeIntro';
 import TerminalConsole from './TerminalConsole';
 import WelcomeScreen from './WelcomeScreen';
-import { RouteSelectScreen } from './RouteSelectScreen';
 import TeleportManager from './animations/TeleportManager';
 import QuickActionsPanel from './QuickActionsPanel';
 import CombatActionsPanel from '../ui/QuickActionsPanel';
@@ -116,7 +115,6 @@ type GameStage =
   | 'splash'
   | 'welcome'
   | 'nameCapture'
-  | 'routeSelect'
   | 'intro'
   | 'demo'
   | 'game'
@@ -2109,11 +2107,11 @@ const AppCore: React.FC = () => {
         <TrialsGame
           onComplete={() => {
             console.log('[AppCore] Trials completed successfully!');
-            dispatch({ type: 'ADVANCE_STAGE', payload: 'routeSelect' });
+            dispatch({ type: 'ADVANCE_STAGE', payload: 'intro' });
           }}
           onQuit={() => {
             console.log('[AppCore] Player quit the trials');
-            dispatch({ type: 'ADVANCE_STAGE', payload: 'routeSelect' });
+            dispatch({ type: 'ADVANCE_STAGE', payload: 'intro' });
           }}
           autoStart={true}
         />
@@ -2125,27 +2123,8 @@ const AppCore: React.FC = () => {
       <PlayerNameCapture
         onNameSubmit={(name: string) => {
           dispatch({ type: 'SET_PLAYER_NAME', payload: name });
-          dispatch({ type: 'ADVANCE_STAGE', payload: 'routeSelect' });
+          dispatch({ type: 'ADVANCE_STAGE', payload: 'intro' });
         }}
-      />
-    );
-  }
-  if (stage === 'routeSelect') {
-    return (
-      <RouteSelectScreen
-        onRouteSelect={(routeId) => {
-          dispatch({ type: 'SET_ROUTE', payload: routeId });
-          // Different paths based on route selection
-          if (routeId === 'demo') {
-            dispatch({ type: 'ADVANCE_STAGE', payload: 'demo' });
-          } else if (routeId === 'short10_trialsofgorstan') {
-            // Special handling for Trials of Gorstan interactive interface
-            dispatch({ type: 'ADVANCE_STAGE', payload: 'trialsGame' });
-          } else {
-            dispatch({ type: 'ADVANCE_STAGE', payload: 'intro' });
-          }
-        }}
-        onCancel={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'welcome' })}
       />
     );
   }

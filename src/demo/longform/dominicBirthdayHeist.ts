@@ -16,7 +16,7 @@ export async function startDominicBirthdayHeist(): Promise<void> {
 
     setTimeout(() => {
       clearDemo();
-      console.log('[DominicBirthdayHeist] Returning to Choose Your Adventure...');
+      console.log('[DominicBirthdayHeist] Returning to main menu...');
     }, 3000);
   } catch (error) {
     console.error('[DominicBirthdayHeist] Adventure failed:', error);
