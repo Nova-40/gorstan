@@ -78,11 +78,35 @@ const DEFAULT_ITEM_ACTIONS: readonly ItemClickAction[] = [
   { label: 'Drop', command: 'drop {item}' },
 ];
 
+export function spritePathForItemId(itemId: string): string {
+  const fileName = itemId
+    .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+    .replace(/[^a-zA-Z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .toLowerCase();
+
+  return `/sprites/items/${fileName}.svg`;
+}
+
+function fallbackPresentationFor(itemId: string): ItemPresentation {
+  const sprite = spritePathForItemId(itemId);
+
+  return {
+    itemId,
+    sprite,
+    inventoryIcon: sprite,
+    droppable: true,
+    defaultDropPosition: { x: 0.5, y: 0.8 },
+    defaultSpriteSize: { width: 46, height: 46 },
+    clickActions: DEFAULT_ITEM_ACTIONS,
+  };
+}
+
 export const ITEM_PRESENTATION: Record<string, ItemPresentation> = {
   goldcoin: {
     itemId: 'goldcoin',
-    sprite: '/sprites/items/gold-coin.png',
-    inventoryIcon: '/sprites/inventory/gold-coin.png',
+    sprite: '/sprites/items/goldcoin.svg',
+    inventoryIcon: '/sprites/items/goldcoin.svg',
     droppable: true,
     defaultDropPosition: { x: 0.5, y: 0.82 },
     defaultSpriteSize: { width: 42, height: 42 },
@@ -91,8 +115,8 @@ export const ITEM_PRESENTATION: Record<string, ItemPresentation> = {
 
   quantumcoin: {
     itemId: 'quantumcoin',
-    sprite: '/sprites/items/quantum-coin.png',
-    inventoryIcon: '/sprites/inventory/quantum-coin.png',
+    sprite: '/sprites/items/quantumcoin.svg',
+    inventoryIcon: '/sprites/items/quantumcoin.svg',
     droppable: true,
     defaultDropPosition: { x: 0.5, y: 0.82 },
     defaultSpriteSize: { width: 46, height: 46 },
@@ -101,8 +125,8 @@ export const ITEM_PRESENTATION: Record<string, ItemPresentation> = {
 
   schrodinger_coin: {
     itemId: 'schrodinger_coin',
-    sprite: '/sprites/items/schrodinger-coin.png',
-    inventoryIcon: '/sprites/inventory/schrodinger-coin.png',
+    sprite: '/sprites/items/schrodinger-coin.svg',
+    inventoryIcon: '/sprites/items/schrodinger-coin.svg',
     droppable: false,
     retainOnDrop: true,
     defaultDropPosition: { x: 0.5, y: 0.82 },
@@ -119,8 +143,8 @@ export const ITEM_PRESENTATION: Record<string, ItemPresentation> = {
 
   coffee: {
     itemId: 'coffee',
-    sprite: '/sprites/items/gorstan-coffee.png',
-    inventoryIcon: '/sprites/inventory/gorstan-coffee.png',
+    sprite: '/sprites/items/coffee.svg',
+    inventoryIcon: '/sprites/items/coffee.svg',
     droppable: true,
     defaultDropPosition: { x: 0.48, y: 0.78 },
     defaultSpriteSize: { width: 44, height: 44 },
@@ -183,8 +207,8 @@ export const ITEM_PRESENTATION: Record<string, ItemPresentation> = {
 
   greasynapkin: {
     itemId: 'greasynapkin',
-    sprite: '/sprites/items/greasy-napkin.png',
-    inventoryIcon: '/sprites/inventory/greasy-napkin.png',
+    sprite: '/sprites/items/greasynapkin.svg',
+    inventoryIcon: '/sprites/items/greasynapkin.svg',
     droppable: true,
     defaultDropPosition: { x: 0.5, y: 0.8 },
     defaultSpriteSize: { width: 56, height: 40 },
@@ -198,8 +222,8 @@ export const ITEM_PRESENTATION: Record<string, ItemPresentation> = {
 
   dominic: {
     itemId: 'dominic',
-    sprite: '/sprites/items/dominic-bowl.png',
-    inventoryIcon: '/sprites/inventory/dominic-bowl.png',
+    sprite: '/sprites/items/dominic.svg',
+    inventoryIcon: '/sprites/items/dominic.svg',
     droppable: false,
     retainOnDrop: true,
     defaultDropPosition: { x: 0.55, y: 0.76 },
@@ -215,7 +239,7 @@ export const ITEM_PRESENTATION: Record<string, ItemPresentation> = {
 };
 
 export function getItemPresentation(itemId: string): ItemPresentation | undefined {
-  return ITEM_PRESENTATION[itemId];
+  return ITEM_PRESENTATION[itemId] ?? fallbackPresentationFor(itemId);
 }
 
 export function getPresentedItem(itemId: string): PresentedItem | undefined {

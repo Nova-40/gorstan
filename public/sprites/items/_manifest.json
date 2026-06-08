@@ -1,0 +1,1422 @@
+[
+  {
+    "id": "ancient_acorn",
+    "name": "Ancient Acorn",
+    "sprite": "/sprites/items/ancient-acorn.svg"
+  },
+  {
+    "id": "ancient_artifact",
+    "name": "Ancient Artifact",
+    "sprite": "/sprites/items/ancient-artifact.svg"
+  },
+  {
+    "id": "ancient_codex",
+    "name": "Ancient Codex",
+    "sprite": "/sprites/items/ancient-codex.svg"
+  },
+  {
+    "id": "ancient_coin",
+    "name": "Ancient Coin",
+    "sprite": "/sprites/items/ancient-coin.svg"
+  },
+  {
+    "id": "ancient_key",
+    "name": "Ancient Key",
+    "sprite": "/sprites/items/ancient-key.svg"
+  },
+  {
+    "id": "ancient_quill",
+    "name": "Ancient Quill",
+    "sprite": "/sprites/items/ancient-quill.svg"
+  },
+  {
+    "id": "ancient_rune",
+    "name": "Ancient Rune",
+    "sprite": "/sprites/items/ancient-rune.svg"
+  },
+  {
+    "id": "ancient_rune_fragment",
+    "name": "Ancient Rune Fragment",
+    "sprite": "/sprites/items/ancient-rune-fragment.svg"
+  },
+  {
+    "id": "ancient_scroll",
+    "name": "Ancient Scroll",
+    "sprite": "/sprites/items/ancient-scroll.svg"
+  },
+  {
+    "id": "ancient_token",
+    "name": "Ancient Token",
+    "sprite": "/sprites/items/ancient-token.svg"
+  },
+  {
+    "id": "ancient_tool",
+    "name": "Ancient Tool",
+    "sprite": "/sprites/items/ancient-tool.svg"
+  },
+  {
+    "id": "ancienttome",
+    "name": "Ancienttome",
+    "sprite": "/sprites/items/ancienttome.svg"
+  },
+  {
+    "id": "apartment_keys",
+    "name": "Apartment Keys",
+    "sprite": "/sprites/items/apartment-keys.svg"
+  },
+  {
+    "id": "architect_genetic_scanner",
+    "name": "Architect Genetic Scanner",
+    "sprite": "/sprites/items/architect-genetic-scanner.svg"
+  },
+  {
+    "id": "architect_recognition_crystal",
+    "name": "Architect Recognition Crystal",
+    "sprite": "/sprites/items/architect-recognition-crystal.svg"
+  },
+  {
+    "id": "balance_crystal",
+    "name": "Balance Crystal",
+    "sprite": "/sprites/items/balance-crystal.svg"
+  },
+  {
+    "id": "batteries",
+    "name": "Batteries",
+    "sprite": "/sprites/items/batteries.svg"
+  },
+  {
+    "id": "bell_fragment",
+    "name": "Bell Fragment",
+    "sprite": "/sprites/items/bell-fragment.svg"
+  },
+  {
+    "id": "binary_shard",
+    "name": "Binary Shard",
+    "sprite": "/sprites/items/binary-shard.svg"
+  },
+  {
+    "id": "boat_schedule",
+    "name": "Boat Schedule",
+    "sprite": "/sprites/items/boat-schedule.svg"
+  },
+  {
+    "id": "briefcase",
+    "name": "Briefcase",
+    "sprite": "/sprites/items/briefcase.svg"
+  },
+  {
+    "id": "broken_code_fragment",
+    "name": "Broken Code Fragment",
+    "sprite": "/sprites/items/broken-code-fragment.svg"
+  },
+  {
+    "id": "broken_crate_splinter",
+    "name": "Broken Crate Splinter",
+    "sprite": "/sprites/items/broken-crate-splinter.svg"
+  },
+  {
+    "id": "broken_reality_core",
+    "name": "Broken Reality Core",
+    "sprite": "/sprites/items/broken-reality-core.svg"
+  },
+  {
+    "id": "burger_menu",
+    "name": "Burger Menu",
+    "sprite": "/sprites/items/burger-menu.svg"
+  },
+  {
+    "id": "business_card_collection",
+    "name": "Business Card Collection",
+    "sprite": "/sprites/items/business-card-collection.svg"
+  },
+  {
+    "id": "business_records",
+    "name": "Business Records",
+    "sprite": "/sprites/items/business-records.svg"
+  },
+  {
+    "id": "butterfly_wing",
+    "name": "Butterfly Wing",
+    "sprite": "/sprites/items/butterfly-wing.svg"
+  },
+  {
+    "id": "carved_stone_fragment",
+    "name": "Carved Stone Fragment",
+    "sprite": "/sprites/items/carved-stone-fragment.svg"
+  },
+  {
+    "id": "celestial_rune",
+    "name": "Celestial Rune",
+    "sprite": "/sprites/items/celestial-rune.svg"
+  },
+  {
+    "id": "chalk_piece",
+    "name": "Chalk Piece",
+    "sprite": "/sprites/items/chalk-piece.svg"
+  },
+  {
+    "id": "cheesebadge",
+    "name": "Cheese Badge of Office",
+    "sprite": "/sprites/items/cheesebadge.svg"
+  },
+  {
+    "id": "childrens_toy",
+    "name": "Childrens Toy",
+    "sprite": "/sprites/items/childrens-toy.svg"
+  },
+  {
+    "id": "cobblestone_piece",
+    "name": "Cobblestone Piece",
+    "sprite": "/sprites/items/cobblestone-piece.svg"
+  },
+  {
+    "id": "codex_of_iterations",
+    "name": "Codex Of Iterations",
+    "sprite": "/sprites/items/codex-of-iterations.svg"
+  },
+  {
+    "id": "coffee",
+    "name": "Gorstan Coffee",
+    "sprite": "/sprites/items/coffee.svg"
+  },
+  {
+    "id": "coffee_shop_menu",
+    "name": "Coffee Shop Menu",
+    "sprite": "/sprites/items/coffee-shop-menu.svg"
+  },
+  {
+    "id": "containment_crystal",
+    "name": "Containment Crystal",
+    "sprite": "/sprites/items/containment-crystal.svg"
+  },
+  {
+    "id": "control_rune",
+    "name": "Control Rune",
+    "sprite": "/sprites/items/control-rune.svg"
+  },
+  {
+    "id": "cooking_oil_containers",
+    "name": "Cooking Oil Containers",
+    "sprite": "/sprites/items/cooking-oil-containers.svg"
+  },
+  {
+    "id": "core_fragment",
+    "name": "Core Fragment",
+    "sprite": "/sprites/items/core-fragment.svg"
+  },
+  {
+    "id": "corrupted_file",
+    "name": "Corrupted File",
+    "sprite": "/sprites/items/corrupted-file.svg"
+  },
+  {
+    "id": "court_scroll",
+    "name": "Court Scroll",
+    "sprite": "/sprites/items/court-scroll.svg"
+  },
+  {
+    "id": "crackedmirror",
+    "name": "Cracked Mirror",
+    "sprite": "/sprites/items/crackedmirror.svg"
+  },
+  {
+    "id": "crystal_badge",
+    "name": "Crystal Badge",
+    "sprite": "/sprites/items/crystal-badge.svg"
+  },
+  {
+    "id": "crystal_datacore",
+    "name": "Crystal Datacore",
+    "sprite": "/sprites/items/crystal-datacore.svg"
+  },
+  {
+    "id": "crystal_fragment",
+    "name": "Crystal Fragment",
+    "sprite": "/sprites/items/crystal-fragment.svg"
+  },
+  {
+    "id": "crystal_index",
+    "name": "Crystal Index",
+    "sprite": "/sprites/items/crystal-index.svg"
+  },
+  {
+    "id": "crystal_sample",
+    "name": "Crystal Sample",
+    "sprite": "/sprites/items/crystal-sample.svg"
+  },
+  {
+    "id": "crystal_shard",
+    "name": "Crystal Shard",
+    "sprite": "/sprites/items/crystal-shard.svg"
+  },
+  {
+    "id": "crystal_water",
+    "name": "Crystal Water",
+    "sprite": "/sprites/items/crystal-water.svg"
+  },
+  {
+    "id": "dales_apartment_key",
+    "name": "Dales Apartment Key",
+    "sprite": "/sprites/items/dales-apartment-key.svg"
+  },
+  {
+    "id": "damp_note",
+    "name": "Damp Note",
+    "sprite": "/sprites/items/damp-note.svg"
+  },
+  {
+    "id": "data_crystal",
+    "name": "Data Crystal",
+    "sprite": "/sprites/items/data-crystal.svg"
+  },
+  {
+    "id": "data_tablet",
+    "name": "Data Tablet",
+    "sprite": "/sprites/items/data-tablet.svg"
+  },
+  {
+    "id": "diagnostic_scanner",
+    "name": "Diagnostic Scanner",
+    "sprite": "/sprites/items/diagnostic-scanner.svg"
+  },
+  {
+    "id": "dimensional_anchor",
+    "name": "Dimensional Anchor",
+    "sprite": "/sprites/items/dimensional-anchor.svg"
+  },
+  {
+    "id": "dimensional_coffee",
+    "name": "Dimensional Coffee",
+    "sprite": "/sprites/items/dimensional-coffee.svg"
+  },
+  {
+    "id": "dimensional_coffee_cup",
+    "name": "Dimensional Coffee Cup",
+    "sprite": "/sprites/items/dimensional-coffee-cup.svg"
+  },
+  {
+    "id": "dimensional_compass",
+    "name": "Dimensional Compass",
+    "sprite": "/sprites/items/dimensional-compass.svg"
+  },
+  {
+    "id": "dimensional_key",
+    "name": "Dimensional Key",
+    "sprite": "/sprites/items/dimensional-key.svg"
+  },
+  {
+    "id": "dimensional_map",
+    "name": "Dimensional Map",
+    "sprite": "/sprites/items/dimensional-map.svg"
+  },
+  {
+    "id": "dimensional_map_fragment",
+    "name": "Dimensional Map Fragment",
+    "sprite": "/sprites/items/dimensional-map-fragment.svg"
+  },
+  {
+    "id": "dimensional_residue",
+    "name": "Dimensional Residue",
+    "sprite": "/sprites/items/dimensional-residue.svg"
+  },
+  {
+    "id": "dimensional_scanner",
+    "name": "Dimensional Scanner",
+    "sprite": "/sprites/items/dimensional-scanner.svg"
+  },
+  {
+    "id": "dimensional_stabilizer",
+    "name": "Dimensional Stabilizer",
+    "sprite": "/sprites/items/dimensional-stabilizer.svg"
+  },
+  {
+    "id": "distorted_map",
+    "name": "Distorted Map",
+    "sprite": "/sprites/items/distorted-map.svg"
+  },
+  {
+    "id": "dock_visitor_map",
+    "name": "Dock Visitor Map",
+    "sprite": "/sprites/items/dock-visitor-map.svg"
+  },
+  {
+    "id": "dominic",
+    "name": "Dominic the Goldfish",
+    "sprite": "/sprites/items/dominic.svg"
+  },
+  {
+    "id": "dungeon_key",
+    "name": "Dungeon Key",
+    "sprite": "/sprites/items/dungeon-key.svg"
+  },
+  {
+    "id": "dusty_scroll",
+    "name": "Dusty Scroll",
+    "sprite": "/sprites/items/dusty-scroll.svg"
+  },
+  {
+    "id": "echo_of_home",
+    "name": "Echo Of Home",
+    "sprite": "/sprites/items/echo-of-home.svg"
+  },
+  {
+    "id": "echo_scroll",
+    "name": "Echo Scroll",
+    "sprite": "/sprites/items/echo-scroll.svg"
+  },
+  {
+    "id": "echo_stone",
+    "name": "Echo Stone",
+    "sprite": "/sprites/items/echo-stone.svg"
+  },
+  {
+    "id": "emergency_beacon",
+    "name": "Emergency Beacon",
+    "sprite": "/sprites/items/emergency-beacon.svg"
+  },
+  {
+    "id": "emergency_cash",
+    "name": "Emergency Cash",
+    "sprite": "/sprites/items/emergency-cash.svg"
+  },
+  {
+    "id": "emergency_contact_list",
+    "name": "Emergency Contact List",
+    "sprite": "/sprites/items/emergency-contact-list.svg"
+  },
+  {
+    "id": "emergency_override_key",
+    "name": "Emergency Override Key",
+    "sprite": "/sprites/items/emergency-override-key.svg"
+  },
+  {
+    "id": "emergency_whistle",
+    "name": "Emergency Whistle",
+    "sprite": "/sprites/items/emergency-whistle.svg"
+  },
+  {
+    "id": "enchanted_trinket",
+    "name": "Enchanted Trinket",
+    "sprite": "/sprites/items/enchanted-trinket.svg"
+  },
+  {
+    "id": "encrypted_tome",
+    "name": "Encrypted Tome",
+    "sprite": "/sprites/items/encrypted-tome.svg"
+  },
+  {
+    "id": "energy_lens",
+    "name": "Energy Lens",
+    "sprite": "/sprites/items/energy-lens.svg"
+  },
+  {
+    "id": "energy_map",
+    "name": "Energy Map",
+    "sprite": "/sprites/items/energy-map.svg"
+  },
+  {
+    "id": "energy_node",
+    "name": "Energy Node",
+    "sprite": "/sprites/items/energy-node.svg"
+  },
+  {
+    "id": "error_log",
+    "name": "Error Log",
+    "sprite": "/sprites/items/error-log.svg"
+  },
+  {
+    "id": "error_log_fragment",
+    "name": "Error Log Fragment",
+    "sprite": "/sprites/items/error-log-fragment.svg"
+  },
+  {
+    "id": "error_patch",
+    "name": "Error Patch",
+    "sprite": "/sprites/items/error-patch.svg"
+  },
+  {
+    "id": "experiment_notes",
+    "name": "Experiment Notes",
+    "sprite": "/sprites/items/experiment-notes.svg"
+  },
+  {
+    "id": "fae_flower",
+    "name": "Fae Flower",
+    "sprite": "/sprites/items/fae-flower.svg"
+  },
+  {
+    "id": "fae_grimoire",
+    "name": "Fae Grimoire",
+    "sprite": "/sprites/items/fae-grimoire.svg"
+  },
+  {
+    "id": "failed_reset_log",
+    "name": "Failed Reset Log",
+    "sprite": "/sprites/items/failed-reset-log.svg"
+  },
+  {
+    "id": "fallen_autumn_leaves",
+    "name": "Fallen Autumn Leaves",
+    "sprite": "/sprites/items/fallen-autumn-leaves.svg"
+  },
+  {
+    "id": "fallen_leaves",
+    "name": "Fallen Leaves",
+    "sprite": "/sprites/items/fallen-leaves.svg"
+  },
+  {
+    "id": "fate_altering_note",
+    "name": "Fate Altering Note",
+    "sprite": "/sprites/items/fate-altering-note.svg"
+  },
+  {
+    "id": "firstaidkit",
+    "name": "First Aid Kit",
+    "sprite": "/sprites/items/firstaidkit.svg"
+  },
+  {
+    "id": "flashlight",
+    "name": "Flashlight",
+    "sprite": "/sprites/items/flashlight.svg"
+  },
+  {
+    "id": "floating_scroll",
+    "name": "Floating Scroll",
+    "sprite": "/sprites/items/floating-scroll.svg"
+  },
+  {
+    "id": "flower_petals",
+    "name": "Flower Petals",
+    "sprite": "/sprites/items/flower-petals.svg"
+  },
+  {
+    "id": "forgotten_notebook",
+    "name": "Forgotten Notebook",
+    "sprite": "/sprites/items/forgotten-notebook.svg"
+  },
+  {
+    "id": "fountain_coin",
+    "name": "Fountain Coin",
+    "sprite": "/sprites/items/fountain-coin.svg"
+  },
+  {
+    "id": "fragmented_code",
+    "name": "Fragmented Code",
+    "sprite": "/sprites/items/fragmented-code.svg"
+  },
+  {
+    "id": "fragmented_memory",
+    "name": "Fragmented Memory",
+    "sprite": "/sprites/items/fragmented-memory.svg"
+  },
+  {
+    "id": "fragmented_note",
+    "name": "Fragmented Note",
+    "sprite": "/sprites/items/fragmented-note.svg"
+  },
+  {
+    "id": "fresh_bread",
+    "name": "Fresh Bread",
+    "sprite": "/sprites/items/fresh-bread.svg"
+  },
+  {
+    "id": "fresh_stew",
+    "name": "Fresh Stew",
+    "sprite": "/sprites/items/fresh-stew.svg"
+  },
+  {
+    "id": "ghost_packet",
+    "name": "Ghost Packet",
+    "sprite": "/sprites/items/ghost-packet.svg"
+  },
+  {
+    "id": "glitch_crystal",
+    "name": "Glitch Crystal",
+    "sprite": "/sprites/items/glitch-crystal.svg"
+  },
+  {
+    "id": "glitch_fragment",
+    "name": "Glitch Fragment",
+    "sprite": "/sprites/items/glitch-fragment.svg"
+  },
+  {
+    "id": "glowing_moss",
+    "name": "Glowing Moss",
+    "sprite": "/sprites/items/glowing-moss.svg"
+  },
+  {
+    "id": "glowing_shell",
+    "name": "Glowing Shell",
+    "sprite": "/sprites/items/glowing-shell.svg"
+  },
+  {
+    "id": "gold_coin",
+    "name": "Gold Coin",
+    "sprite": "/sprites/items/gold-coin.svg"
+  },
+  {
+    "id": "goldcoin",
+    "name": "Gold Coin",
+    "sprite": "/sprites/items/goldcoin.svg"
+  },
+  {
+    "id": "golden_shard",
+    "name": "Golden Shard",
+    "sprite": "/sprites/items/golden-shard.svg"
+  },
+  {
+    "id": "goldfish_food",
+    "name": "Goldfish Food",
+    "sprite": "/sprites/items/goldfish-food.svg"
+  },
+  {
+    "id": "greasy_napkin_with_plans",
+    "name": "Greasy Napkin With Plans",
+    "sprite": "/sprites/items/greasy-napkin-with-plans.svg"
+  },
+  {
+    "id": "greasynapkin",
+    "name": "Greasy Napkin",
+    "sprite": "/sprites/items/greasynapkin.svg"
+  },
+  {
+    "id": "herbal_poultice",
+    "name": "Herbal Poultice",
+    "sprite": "/sprites/items/herbal-poultice.svg"
+  },
+  {
+    "id": "hot_sauce_bottles",
+    "name": "Hot Sauce Bottles",
+    "sprite": "/sprites/items/hot-sauce-bottles.svg"
+  },
+  {
+    "id": "hub_map_fragment",
+    "name": "Hub Map Fragment",
+    "sprite": "/sprites/items/hub-map-fragment.svg"
+  },
+  {
+    "id": "important_documents",
+    "name": "Important Documents",
+    "sprite": "/sprites/items/important-documents.svg"
+  },
+  {
+    "id": "infinite_scroll",
+    "name": "Infinite Scroll",
+    "sprite": "/sprites/items/infinite-scroll.svg"
+  },
+  {
+    "id": "inscribed_scroll",
+    "name": "Inscribed Scroll",
+    "sprite": "/sprites/items/inscribed-scroll.svg"
+  },
+  {
+    "id": "inventory_clipboard",
+    "name": "Inventory Clipboard",
+    "sprite": "/sprites/items/inventory-clipboard.svg"
+  },
+  {
+    "id": "ivy_branch",
+    "name": "Ivy Branch",
+    "sprite": "/sprites/items/ivy-branch.svg"
+  },
+  {
+    "id": "judgment_token",
+    "name": "Judgment Token",
+    "sprite": "/sprites/items/judgment-token.svg"
+  },
+  {
+    "id": "key_tome_1",
+    "name": "Key Tome 1",
+    "sprite": "/sprites/items/key-tome-1.svg"
+  },
+  {
+    "id": "key_tome_2",
+    "name": "Key Tome 2",
+    "sprite": "/sprites/items/key-tome-2.svg"
+  },
+  {
+    "id": "key_tome_3",
+    "name": "Key Tome 3",
+    "sprite": "/sprites/items/key-tome-3.svg"
+  },
+  {
+    "id": "key_tome_4",
+    "name": "Key Tome 4",
+    "sprite": "/sprites/items/key-tome-4.svg"
+  },
+  {
+    "id": "key_tome_5",
+    "name": "Key Tome 5",
+    "sprite": "/sprites/items/key-tome-5.svg"
+  },
+  {
+    "id": "key_tome_6",
+    "name": "Key Tome 6",
+    "sprite": "/sprites/items/key-tome-6.svg"
+  },
+  {
+    "id": "key_tome_7",
+    "name": "Key Tome 7",
+    "sprite": "/sprites/items/key-tome-7.svg"
+  },
+  {
+    "id": "key_tome_8",
+    "name": "Key Tome 8",
+    "sprite": "/sprites/items/key-tome-8.svg"
+  },
+  {
+    "id": "key_tome_9",
+    "name": "Key Tome 9",
+    "sprite": "/sprites/items/key-tome-9.svg"
+  },
+  {
+    "id": "kitchen_equipment",
+    "name": "Kitchen Equipment",
+    "sprite": "/sprites/items/kitchen-equipment.svg"
+  },
+  {
+    "id": "lantern_fragment",
+    "name": "Lantern Fragment",
+    "sprite": "/sprites/items/lantern-fragment.svg"
+  },
+  {
+    "id": "lattice_control_interface",
+    "name": "Lattice Control Interface",
+    "sprite": "/sprites/items/lattice-control-interface.svg"
+  },
+  {
+    "id": "light_fragment",
+    "name": "Light Fragment",
+    "sprite": "/sprites/items/light-fragment.svg"
+  },
+  {
+    "id": "lily_pad",
+    "name": "Lily Pad",
+    "sprite": "/sprites/items/lily-pad.svg"
+  },
+  {
+    "id": "lily_pad_essence",
+    "name": "Lily Pad Essence",
+    "sprite": "/sprites/items/lily-pad-essence.svg"
+  },
+  {
+    "id": "local_newspaper",
+    "name": "Local Newspaper",
+    "sprite": "/sprites/items/local-newspaper.svg"
+  },
+  {
+    "id": "lost_packet",
+    "name": "Lost Packet",
+    "sprite": "/sprites/items/lost-packet.svg"
+  },
+  {
+    "id": "loyalty_card",
+    "name": "Loyalty Card",
+    "sprite": "/sprites/items/loyalty-card.svg"
+  },
+  {
+    "id": "magical_focus",
+    "name": "Magical Focus",
+    "sprite": "/sprites/items/magical-focus.svg"
+  },
+  {
+    "id": "map",
+    "name": "Detailed Map",
+    "sprite": "/sprites/items/map.svg"
+  },
+  {
+    "id": "market_token",
+    "name": "Market Token",
+    "sprite": "/sprites/items/market-token.svg"
+  },
+  {
+    "id": "maze_map_fragment",
+    "name": "Maze Map Fragment",
+    "sprite": "/sprites/items/maze-map-fragment.svg"
+  },
+  {
+    "id": "meaningful_receipt",
+    "name": "Meaningful Receipt",
+    "sprite": "/sprites/items/meaningful-receipt.svg"
+  },
+  {
+    "id": "medallion",
+    "name": "Medallion",
+    "sprite": "/sprites/items/medallion.svg"
+  },
+  {
+    "id": "memory_fragment",
+    "name": "Memory Fragment",
+    "sprite": "/sprites/items/memory-fragment.svg"
+  },
+  {
+    "id": "memory_triggering_photo",
+    "name": "Memory Triggering Photo",
+    "sprite": "/sprites/items/memory-triggering-photo.svg"
+  },
+  {
+    "id": "message_bottle",
+    "name": "Message Bottle",
+    "sprite": "/sprites/items/message-bottle.svg"
+  },
+  {
+    "id": "message_stone",
+    "name": "Message Stone",
+    "sprite": "/sprites/items/message-stone.svg"
+  },
+  {
+    "id": "mirror_fragment",
+    "name": "Mirror Fragment",
+    "sprite": "/sprites/items/mirror-fragment.svg"
+  },
+  {
+    "id": "mirror_shard",
+    "name": "Mirror Shard",
+    "sprite": "/sprites/items/mirror-shard.svg"
+  },
+  {
+    "id": "mist_shard",
+    "name": "Mist Shard",
+    "sprite": "/sprites/items/mist-shard.svg"
+  },
+  {
+    "id": "moldy_grain",
+    "name": "Moldy Grain",
+    "sprite": "/sprites/items/moldy-grain.svg"
+  },
+  {
+    "id": "moonlight_orb",
+    "name": "Moonlight Orb",
+    "sprite": "/sprites/items/moonlight-orb.svg"
+  },
+  {
+    "id": "mug_of_ale",
+    "name": "Mug Of Ale",
+    "sprite": "/sprites/items/mug-of-ale.svg"
+  },
+  {
+    "id": "multiversal_map",
+    "name": "Multiversal Map",
+    "sprite": "/sprites/items/multiversal-map.svg"
+  },
+  {
+    "id": "mysterious_amulet",
+    "name": "Mysterious Amulet",
+    "sprite": "/sprites/items/mysterious-amulet.svg"
+  },
+  {
+    "id": "mysterious_key",
+    "name": "Mysterious Key",
+    "sprite": "/sprites/items/mysterious-key.svg"
+  },
+  {
+    "id": "mysterious_note",
+    "name": "Mysterious Note",
+    "sprite": "/sprites/items/mysterious-note.svg"
+  },
+  {
+    "id": "mysterymeat",
+    "name": "Mystery Meat",
+    "sprite": "/sprites/items/mysterymeat.svg"
+  },
+  {
+    "id": "napkin_dispenser",
+    "name": "Napkin Dispenser",
+    "sprite": "/sprites/items/napkin-dispenser.svg"
+  },
+  {
+    "id": "navigation_crystal",
+    "name": "Navigation Crystal",
+    "sprite": "/sprites/items/navigation-crystal.svg"
+  },
+  {
+    "id": "null_pointer",
+    "name": "Null Pointer",
+    "sprite": "/sprites/items/null-pointer.svg"
+  },
+  {
+    "id": "oak_leaf",
+    "name": "Oak Leaf",
+    "sprite": "/sprites/items/oak-leaf.svg"
+  },
+  {
+    "id": "obelisk_key",
+    "name": "Obelisk Key",
+    "sprite": "/sprites/items/obelisk-key.svg"
+  },
+  {
+    "id": "observation_log",
+    "name": "Observation Log",
+    "sprite": "/sprites/items/observation-log.svg"
+  },
+  {
+    "id": "observation_pass",
+    "name": "Observation Pass",
+    "sprite": "/sprites/items/observation-pass.svg"
+  },
+  {
+    "id": "observer_feather",
+    "name": "Observer Feather",
+    "sprite": "/sprites/items/observer-feather.svg"
+  },
+  {
+    "id": "old_banner",
+    "name": "Old Banner",
+    "sprite": "/sprites/items/old-banner.svg"
+  },
+  {
+    "id": "old_lantern",
+    "name": "Old Lantern",
+    "sprite": "/sprites/items/old-lantern.svg"
+  },
+  {
+    "id": "old_map",
+    "name": "Old Map",
+    "sprite": "/sprites/items/old-map.svg"
+  },
+  {
+    "id": "old_map_fragment",
+    "name": "Old Map Fragment",
+    "sprite": "/sprites/items/old-map-fragment.svg"
+  },
+  {
+    "id": "oldboot",
+    "name": "Old Boot",
+    "sprite": "/sprites/items/oldboot.svg"
+  },
+  {
+    "id": "operator_badge",
+    "name": "Operator Badge",
+    "sprite": "/sprites/items/operator-badge.svg"
+  },
+  {
+    "id": "oyster_card_dimensional",
+    "name": "Dimensional Oyster Card",
+    "sprite": "/sprites/items/oyster-card-dimensional.svg"
+  },
+  {
+    "id": "park_map",
+    "name": "Park Map",
+    "sprite": "/sprites/items/park-map.svg"
+  },
+  {
+    "id": "park_map_nyc",
+    "name": "Park Map (NYC)",
+    "sprite": "/sprites/items/park-map-nyc.svg"
+  },
+  {
+    "id": "path_marker",
+    "name": "Path Marker",
+    "sprite": "/sprites/items/path-marker.svg"
+  },
+  {
+    "id": "pattern_chart",
+    "name": "Pattern Chart",
+    "sprite": "/sprites/items/pattern-chart.svg"
+  },
+  {
+    "id": "pattern_fragment",
+    "name": "Pattern Fragment",
+    "sprite": "/sprites/items/pattern-fragment.svg"
+  },
+  {
+    "id": "pearl_sand",
+    "name": "Pearl Sand",
+    "sprite": "/sprites/items/pearl-sand.svg"
+  },
+  {
+    "id": "permapen",
+    "name": "PermaPen",
+    "sprite": "/sprites/items/permapen.svg"
+  },
+  {
+    "id": "personal_note",
+    "name": "Personal Note",
+    "sprite": "/sprites/items/personal-note.svg"
+  },
+  {
+    "id": "photo_albums",
+    "name": "Photo Albums",
+    "sprite": "/sprites/items/photo-albums.svg"
+  },
+  {
+    "id": "pine_cone",
+    "name": "Pine Cone",
+    "sprite": "/sprites/items/pine-cone.svg"
+  },
+  {
+    "id": "platform_map_fragment",
+    "name": "Platform Map Fragment",
+    "sprite": "/sprites/items/platform-map-fragment.svg"
+  },
+  {
+    "id": "polly_gift",
+    "name": "Polly's Gift",
+    "sprite": "/sprites/items/polly-gift.svg"
+  },
+  {
+    "id": "pond_stone",
+    "name": "Pond Stone",
+    "sprite": "/sprites/items/pond-stone.svg"
+  },
+  {
+    "id": "portal_energy_detector",
+    "name": "Portal Energy Detector",
+    "sprite": "/sprites/items/portal-energy-detector.svg"
+  },
+  {
+    "id": "portal_shard",
+    "name": "Portal Shard",
+    "sprite": "/sprites/items/portal-shard.svg"
+  },
+  {
+    "id": "portal_stabilizer",
+    "name": "Portal Stabilizer",
+    "sprite": "/sprites/items/portal-stabilizer.svg"
+  },
+  {
+    "id": "primitive_artifact",
+    "name": "Primitive Artifact",
+    "sprite": "/sprites/items/primitive-artifact.svg"
+  },
+  {
+    "id": "prophetic_newspaper",
+    "name": "Prophetic Newspaper",
+    "sprite": "/sprites/items/prophetic-newspaper.svg"
+  },
+  {
+    "id": "psychic_paper_fragment",
+    "name": "Psychic Paper Fragment",
+    "sprite": "/sprites/items/psychic-paper-fragment.svg"
+  },
+  {
+    "id": "quantum_coffee",
+    "name": "Quantum Coffee",
+    "sprite": "/sprites/items/quantum-coffee.svg"
+  },
+  {
+    "id": "quantum_manipulation_primer",
+    "name": "Quantum Manipulation Primer",
+    "sprite": "/sprites/items/quantum-manipulation-primer.svg"
+  },
+  {
+    "id": "quantum_stabilizer_shard",
+    "name": "Quantum Stabilizer Shard",
+    "sprite": "/sprites/items/quantum-stabilizer-shard.svg"
+  },
+  {
+    "id": "quantum_transit_guide",
+    "name": "Quantum Transit Guide",
+    "sprite": "/sprites/items/quantum-transit-guide.svg"
+  },
+  {
+    "id": "quantumcoin",
+    "name": "Quantum Coin",
+    "sprite": "/sprites/items/quantumcoin.svg"
+  },
+  {
+    "id": "reality_anchor",
+    "name": "Reality Anchor",
+    "sprite": "/sprites/items/reality-anchor.svg"
+  },
+  {
+    "id": "reality_anchor_core",
+    "name": "Reality Anchor Core",
+    "sprite": "/sprites/items/reality-anchor-core.svg"
+  },
+  {
+    "id": "reality_anchor_token",
+    "name": "Reality Anchor Token",
+    "sprite": "/sprites/items/reality-anchor-token.svg"
+  },
+  {
+    "id": "reality_compass",
+    "name": "Reality Compass",
+    "sprite": "/sprites/items/reality-compass.svg"
+  },
+  {
+    "id": "reality_scar_analyzer",
+    "name": "Reality Scar Analyzer",
+    "sprite": "/sprites/items/reality-scar-analyzer.svg"
+  },
+  {
+    "id": "reality_shard",
+    "name": "Reality Shard",
+    "sprite": "/sprites/items/reality-shard.svg"
+  },
+  {
+    "id": "receipt_with_date",
+    "name": "Receipt With Date",
+    "sprite": "/sprites/items/receipt-with-date.svg"
+  },
+  {
+    "id": "recursive_log",
+    "name": "Recursive Log",
+    "sprite": "/sprites/items/recursive-log.svg"
+  },
+  {
+    "id": "redacted-register-fragment",
+    "name": "Redacted Register Fragment",
+    "sprite": "/sprites/items/redacted-register-fragment.svg"
+  },
+  {
+    "id": "reflection_note",
+    "name": "Reflection Note",
+    "sprite": "/sprites/items/reflection-note.svg"
+  },
+  {
+    "id": "reflection_shard",
+    "name": "Reflection Shard",
+    "sprite": "/sprites/items/reflection-shard.svg"
+  },
+  {
+    "id": "remote_control",
+    "name": "Remote Control",
+    "sprite": "/sprites/items/remote-control.svg"
+  },
+  {
+    "id": "repair_protocol_manual",
+    "name": "Repair Protocol Manual",
+    "sprite": "/sprites/items/repair-protocol-manual.svg"
+  },
+  {
+    "id": "resonant_crystal",
+    "name": "Resonant Crystal",
+    "sprite": "/sprites/items/resonant-crystal.svg"
+  },
+  {
+    "id": "restaurant_supplies",
+    "name": "Restaurant Supplies",
+    "sprite": "/sprites/items/restaurant-supplies.svg"
+  },
+  {
+    "id": "royal_insignia",
+    "name": "Royal Insignia",
+    "sprite": "/sprites/items/royal-insignia.svg"
+  },
+  {
+    "id": "runbag",
+    "name": "Runbag",
+    "sprite": "/sprites/items/runbag.svg"
+  },
+  {
+    "id": "runic_rubbing_paper",
+    "name": "Runic Rubbing Paper",
+    "sprite": "/sprites/items/runic-rubbing-paper.svg"
+  },
+  {
+    "id": "rusted_coin",
+    "name": "Rusted Coin",
+    "sprite": "/sprites/items/rusted-coin.svg"
+  },
+  {
+    "id": "rusted_key",
+    "name": "Rusted Key",
+    "sprite": "/sprites/items/rusted-key.svg"
+  },
+  {
+    "id": "rusty_nail",
+    "name": "Rusty Nail",
+    "sprite": "/sprites/items/rusty-nail.svg"
+  },
+  {
+    "id": "safe_combination",
+    "name": "Safe Combination",
+    "sprite": "/sprites/items/safe-combination.svg"
+  },
+  {
+    "id": "salt_and_pepper",
+    "name": "Salt And Pepper",
+    "sprite": "/sprites/items/salt-and-pepper.svg"
+  },
+  {
+    "id": "scroll-ai",
+    "name": "AI Ethics Scroll",
+    "sprite": "/sprites/items/scroll-ai.svg"
+  },
+  {
+    "id": "scroll-constitution",
+    "name": "Final Constitution Scroll",
+    "sprite": "/sprites/items/scroll-constitution.svg"
+  },
+  {
+    "id": "scroll-lore",
+    "name": "Lore Scroll",
+    "sprite": "/sprites/items/scroll-lore.svg"
+  },
+  {
+    "id": "scrollofwisdom",
+    "name": "Scrollofwisdom",
+    "sprite": "/sprites/items/scrollofwisdom.svg"
+  },
+  {
+    "id": "sealed_scroll",
+    "name": "Sealed Scroll",
+    "sprite": "/sprites/items/sealed-scroll.svg"
+  },
+  {
+    "id": "shard_of_reality",
+    "name": "Shard Of Reality",
+    "sprite": "/sprites/items/shard-of-reality.svg"
+  },
+  {
+    "id": "shard-gorcore",
+    "name": "Gor Core Shard",
+    "sprite": "/sprites/items/shard-gorcore.svg"
+  },
+  {
+    "id": "shared_calendar",
+    "name": "Shared Calendar",
+    "sprite": "/sprites/items/shared-calendar.svg"
+  },
+  {
+    "id": "shimmering_stone",
+    "name": "Shimmering Stone",
+    "sprite": "/sprites/items/shimmering-stone.svg"
+  },
+  {
+    "id": "silver_branch",
+    "name": "Silver Branch",
+    "sprite": "/sprites/items/silver-branch.svg"
+  },
+  {
+    "id": "silver_chain",
+    "name": "Silver Chain",
+    "sprite": "/sprites/items/silver-chain.svg"
+  },
+  {
+    "id": "silver_sand",
+    "name": "Silver Sand",
+    "sprite": "/sprites/items/silver-sand.svg"
+  },
+  {
+    "id": "smooth_pebble",
+    "name": "Smooth Pebble",
+    "sprite": "/sprites/items/smooth-pebble.svg"
+  },
+  {
+    "id": "sockpuppet",
+    "name": "Sock Puppet",
+    "sprite": "/sprites/items/sockpuppet.svg"
+  },
+  {
+    "id": "soft_bed",
+    "name": "Soft Bed",
+    "sprite": "/sprites/items/soft-bed.svg"
+  },
+  {
+    "id": "spare_napkins",
+    "name": "Spare Napkins",
+    "sprite": "/sprites/items/spare-napkins.svg"
+  },
+  {
+    "id": "special_menu",
+    "name": "Special Menu",
+    "sprite": "/sprites/items/special-menu.svg"
+  },
+  {
+    "id": "spiced_tea",
+    "name": "Spiced Tea",
+    "sprite": "/sprites/items/spiced-tea.svg"
+  },
+  {
+    "id": "spire_key",
+    "name": "Spire Key",
+    "sprite": "/sprites/items/spire-key.svg"
+  },
+  {
+    "id": "staff_key_ring",
+    "name": "Staff Key Ring",
+    "sprite": "/sprites/items/staff-key-ring.svg"
+  },
+  {
+    "id": "star_map",
+    "name": "Star Map",
+    "sprite": "/sprites/items/star-map.svg"
+  },
+  {
+    "id": "starlight_fragment",
+    "name": "Starlight Fragment",
+    "sprite": "/sprites/items/starlight-fragment.svg"
+  },
+  {
+    "id": "station_schedule",
+    "name": "Station Schedule",
+    "sprite": "/sprites/items/station-schedule.svg"
+  },
+  {
+    "id": "stone_fragment",
+    "name": "Stone Fragment",
+    "sprite": "/sprites/items/stone-fragment.svg"
+  },
+  {
+    "id": "street_musician_coin",
+    "name": "Street Musician Coin",
+    "sprite": "/sprites/items/street-musician-coin.svg"
+  },
+  {
+    "id": "sunlight_crystal",
+    "name": "Sunlight Crystal",
+    "sprite": "/sprites/items/sunlight-crystal.svg"
+  },
+  {
+    "id": "supplier_contact_list",
+    "name": "Supplier Contact List",
+    "sprite": "/sprites/items/supplier-contact-list.svg"
+  },
+  {
+    "id": "system_backup_core",
+    "name": "System Backup Core",
+    "sprite": "/sprites/items/system-backup-core.svg"
+  },
+  {
+    "id": "tacticaldisplay_datacard",
+    "name": "Tacticaldisplay Datacard",
+    "sprite": "/sprites/items/tacticaldisplay-datacard.svg"
+  },
+  {
+    "id": "temporal_compass",
+    "name": "Temporal Compass",
+    "sprite": "/sprites/items/temporal-compass.svg"
+  },
+  {
+    "id": "temporal_device",
+    "name": "Temporal Device",
+    "sprite": "/sprites/items/temporal-device.svg"
+  },
+  {
+    "id": "temporal_lens",
+    "name": "Temporal Lens",
+    "sprite": "/sprites/items/temporal-lens.svg"
+  },
+  {
+    "id": "temporal_paradox_detector",
+    "name": "Temporal Paradox Detector",
+    "sprite": "/sprites/items/temporal-paradox-detector.svg"
+  },
+  {
+    "id": "temporal_residue",
+    "name": "Temporal Residue",
+    "sprite": "/sprites/items/temporal-residue.svg"
+  },
+  {
+    "id": "thames_water_sample",
+    "name": "Thames Water Sample",
+    "sprite": "/sprites/items/thames-water-sample.svg"
+  },
+  {
+    "id": "torn_fabric_scrap",
+    "name": "Torn Fabric Scrap",
+    "sprite": "/sprites/items/torn-fabric-scrap.svg"
+  },
+  {
+    "id": "tourist_camera",
+    "name": "Tourist Camera",
+    "sprite": "/sprites/items/tourist-camera.svg"
+  },
+  {
+    "id": "towel",
+    "name": "Towel",
+    "sprite": "/sprites/items/towel.svg"
+  },
+  {
+    "id": "transition_crystal",
+    "name": "Transition Crystal",
+    "sprite": "/sprites/items/transition-crystal.svg"
+  },
+  {
+    "id": "travel_brochures",
+    "name": "Travel Brochures",
+    "sprite": "/sprites/items/travel-brochures.svg"
+  },
+  {
+    "id": "travel_pass_multiverse",
+    "name": "Multiverse Travel Pass",
+    "sprite": "/sprites/items/travel-pass-multiverse.svg"
+  },
+  {
+    "id": "traveler_note",
+    "name": "Traveler Note",
+    "sprite": "/sprites/items/traveler-note.svg"
+  },
+  {
+    "id": "travelers_note",
+    "name": "Travelers Note",
+    "sprite": "/sprites/items/travelers-note.svg"
+  },
+  {
+    "id": "universal_index",
+    "name": "Universal Index",
+    "sprite": "/sprites/items/universal-index.svg"
+  },
+  {
+    "id": "unstable_code_shard",
+    "name": "Unstable Code Shard",
+    "sprite": "/sprites/items/unstable-code-shard.svg"
+  },
+  {
+    "id": "unstable_compass",
+    "name": "Unstable Compass",
+    "sprite": "/sprites/items/unstable-compass.svg"
+  },
+  {
+    "id": "unstable_rune",
+    "name": "Unstable Rune",
+    "sprite": "/sprites/items/unstable-rune.svg"
+  },
+  {
+    "id": "unstable_stack",
+    "name": "Unstable Stack",
+    "sprite": "/sprites/items/unstable-stack.svg"
+  },
+  {
+    "id": "village_token",
+    "name": "Village Token",
+    "sprite": "/sprites/items/village-token.svg"
+  },
+  {
+    "id": "weathered_map",
+    "name": "Weathered Map",
+    "sprite": "/sprites/items/weathered-map.svg"
+  },
+  {
+    "id": "weathered_plaque",
+    "name": "Weathered Plaque",
+    "sprite": "/sprites/items/weathered-plaque.svg"
+  },
+  {
+    "id": "whisper_note",
+    "name": "Whisper Note",
+    "sprite": "/sprites/items/whisper-note.svg"
+  },
+  {
+    "id": "whisper_stone",
+    "name": "Whisper Stone",
+    "sprite": "/sprites/items/whisper-stone.svg"
+  },
+  {
+    "id": "white_stone",
+    "name": "White Stone",
+    "sprite": "/sprites/items/white-stone.svg"
+  },
+  {
+    "id": "wild_herb",
+    "name": "Wild Herb",
+    "sprite": "/sprites/items/wild-herb.svg"
+  },
+  {
+    "id": "wildflower",
+    "name": "Wildflower",
+    "sprite": "/sprites/items/wildflower.svg"
+  },
+  {
+    "id": "worn_compass",
+    "name": "Worn Compass",
+    "sprite": "/sprites/items/worn-compass.svg"
+  },
+  {
+    "id": "worn_shoe",
+    "name": "Worn Shoe",
+    "sprite": "/sprites/items/worn-shoe.svg"
+  }
+]

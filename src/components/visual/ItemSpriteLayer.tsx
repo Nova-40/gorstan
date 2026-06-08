@@ -46,17 +46,64 @@ function getRoomItemName(state: any, roomId: string, itemId: string): string | u
     : undefined;
 }
 
+function getRoomItemIds(state: any, roomId: string): string[] {
+  const roomItems = state?.roomMap?.[roomId]?.items;
+  if (!Array.isArray(roomItems)) return [];
+
+  return roomItems
+    .map((item: any) => {
+      if (typeof item === 'string') return item;
+      return item?.id ?? item?.itemId ?? '';
+    })
+    .filter(Boolean);
+}
+
+function autoPlacementFor(itemId: string, index: number, count: number): RoomItemPlacement {
+  const columns = Math.min(Math.max(count, 1), 5);
+  const column = index % columns;
+  const row = Math.floor(index / columns);
+  const gap = columns > 1 ? 64 / (columns - 1) : 0;
+  const x = columns === 1 ? 50 : 18 + column * gap;
+  const y = 82 - (row % 2) * 8;
+  const presentation = getItemPresentation(itemId);
+
+  return {
+    itemId,
+    x,
+    y,
+    coordinateUnit: 'percent',
+    width: presentation?.defaultSpriteSize?.width ?? 46,
+    height: presentation?.defaultSpriteSize?.height ?? 46,
+    anchor: 'bottomCenter',
+    zIndex: 11 + row,
+    className: 'room-item-sprite--auto',
+    debugLabel: itemId,
+  };
+}
+
+function mergePlacementsWithRoomItems(
+  placements: readonly RoomItemPlacement[],
+  state: any,
+  roomId: string,
+): RoomItemPlacement[] {
+  const explicitItemIds = new Set(placements.map((placement) => placement.itemId));
+  const missingItemIds = getRoomItemIds(state, roomId).filter((itemId) => !explicitItemIds.has(itemId));
+  const autoPlacements = missingItemIds.map((itemId, index) =>
+    autoPlacementFor(itemId, index, missingItemIds.length),
+  );
+
+  return [...placements, ...autoPlacements];
+}
+
 const ItemSpriteLayer: React.FC<ItemSpriteLayerProps> = ({
   placements = [],
   state,
   roomId,
   debug = false,
 }) => {
-  if (!placements.length) {
-    return null;
-  }
+  const allPlacements = mergePlacementsWithRoomItems(placements, state, roomId);
 
-  const visiblePlacements = placements.filter((placement) => {
+  const visiblePlacements = allPlacements.filter((placement) => {
     if (!isVisibleByGate(placement, state)) return false;
     return isItemInCurrentRoom(state, placement.itemId, roomId);
   });
