@@ -2067,15 +2067,19 @@ const AppCore: React.FC = () => {
   }
   if (stage === 'welcome') {
     return (
-      <WelcomeScreen
-        onBegin={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'nameCapture' })}
-        onLoadGame={() => dispatch({ type: 'LOAD_SAVED_GAME' })}
-        onStartDemo={() => {
-          // Set demo-specific player name and skip nameCapture
-          dispatch({ type: 'SET_PLAYER_NAME', payload: 'Demo Player' });
-          dispatch({ type: 'ADVANCE_STAGE', payload: 'demo' });
-        }}
-      />
+      <>
+        <WelcomeScreen
+          onBegin={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'nameCapture' })}
+          onLoadGame={() => openModal('saveGame')}
+          hasSavedGames={saveSlots.length > 0}
+          onStartDemo={() => {
+            // Set demo-specific player name and skip nameCapture
+            dispatch({ type: 'SET_PLAYER_NAME', payload: 'Demo Player' });
+            dispatch({ type: 'ADVANCE_STAGE', payload: 'demo' });
+          }}
+        />
+        {renderModalContent()}
+      </>
     );
   }
   if (stage === 'demo') {

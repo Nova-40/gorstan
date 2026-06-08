@@ -24,10 +24,16 @@ import '../ui/theme.css';
 interface WelcomeScreenProps {
   onBegin: () => void;
   onLoadGame: () => void;
+  hasSavedGames?: boolean;
   onStartDemo?: () => void;
 }
 
-const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onStartDemo }) => {
+const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
+  onBegin,
+  onLoadGame,
+  hasSavedGames = false,
+  onStartDemo,
+}) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [showIdleCountdown, setShowIdleCountdown] = React.useState(false);
   const [idleTimeRemaining, setIdleTimeRemaining] = React.useState(150); // 2.5 minutes
@@ -142,7 +148,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl text-lg shadow-md transition-all min-w-[180px]"
               type="button"
             >
-              Load Saved Game
+              {hasSavedGames ? 'Continue' : 'Load Saved Game'}
             </button>
 
             {onStartDemo && (
