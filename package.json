@@ -9,8 +9,8 @@
     "build": "node ./scripts/generate-optimized.cjs && vite build",
     "preview": "vite preview",
     "test": "vitest --run",
-    "validate:rooms": "vitest src/rooms/__tests__/rooms_validation.test.ts --run",
-    "validate:rooms-cli": "node ./scripts/validateRooms.cjs",
+    "validate:rooms": "vitest __tests__/unit/roomSchema.spec.ts __tests__/unit/validateAllRooms.spec.ts --run",
+    "validate:rooms-cli": "vitest __tests__/unit/validateAllRooms.spec.ts --run",
     "test:run": "vitest --run",
     "analyze": "node ./scripts/generate-optimized.cjs && vite build"
   },

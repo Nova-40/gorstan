@@ -4,6 +4,7 @@ import MenuCard from '../ui/MenuCard';
 import UIButton from '../ui/Button';
 import LicenseModal from '../LicenseModal';
 import SmartImage from '../media/SmartImage';
+import { BUILD_VERSION, GAME_STATUS } from '../../config/version';
 
 interface MainMenuProps {
   onBegin: () => void;
@@ -22,12 +23,18 @@ const MainMenu: React.FC<MainMenuProps> = ({ onBegin, onLoadGame, onStartDemo, o
       <div className="max-w-4xl w-full p-6">
         <div className="mb-6 text-center">
           <h1 className="text-4xl font-bold text-crt-green">Gorstan — Adventures Across the Lattice</h1>
+          <p className="mt-2 font-mono text-sm text-cyan-300">
+            {GAME_STATUS} · build {BUILD_VERSION} · parser-first illustrated adventure
+          </p>
         </div>
 
         <MenuGrid>
           <MenuCard title="Start New Adventure">
             <div className="p-2">
               <div className="mb-2 text-crt-green">Begin a fresh playthrough and shape the story with your choices.</div>
+              <div className="mb-3 text-sm text-crt-green/75">
+                Type commands, click mapped room details, and choose how badly to trust the Lattice.
+              </div>
               <UIButton onClick={onBegin} variant="primary">Start Adventure</UIButton>
             </div>
           </MenuCard>

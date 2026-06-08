@@ -10,6 +10,7 @@
 import React from 'react';
 
 import CommandInput from '../CommandInput';
+import OpeningBriefing from '../OpeningBriefing';
 import type { NPC } from '../../types/NPCTypes';
 import type { AppCoreDirectionAvailability, AppCoreDirectionTitles } from './AppCoreTypes';
 import {
@@ -143,6 +144,8 @@ const GameShell: React.FC<GameShellProps> = ({
           />
         </React.Suspense>
       </div>
+
+      <OpeningBriefing onCommand={onCommand} />
     </>
   );
 };

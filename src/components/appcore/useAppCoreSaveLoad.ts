@@ -44,6 +44,26 @@ function getSavedCurrentRoom(saveFile: SaveFile, fallbackRoomId: string): string
   return typeof currentRoom === 'string' && currentRoom.length > 0 ? currentRoom : fallbackRoomId;
 }
 
+function resolveSavedRoomId(
+  saveFile: SaveFile,
+  gameState: any,
+  currentRoomMap: Record<string, unknown> | undefined,
+  fallbackRoomId: string,
+): string {
+  const candidate = getSavedCurrentRoom(saveFile, gameState?.currentRoomId || fallbackRoomId);
+  const savedRoomMap = gameState?.roomMap;
+  const roomMap =
+    savedRoomMap && typeof savedRoomMap === 'object'
+      ? (savedRoomMap as Record<string, unknown>)
+      : currentRoomMap;
+
+  if (roomMap?.[candidate]) return candidate;
+  if (roomMap?.[fallbackRoomId]) return fallbackRoomId;
+
+  const firstRoomId = roomMap ? Object.keys(roomMap)[0] : '';
+  return firstRoomId || fallbackRoomId;
+}
+
 function getSavedInventory(saveFile: SaveFile, gameState: any): string[] {
   const progressInventory = saveFile.progress.storylineProgress?.inventory;
   if (Array.isArray(progressInventory)) return progressInventory.filter((item): item is string => typeof item === 'string');
@@ -157,7 +177,12 @@ export function useAppCoreSaveLoad({ state, dispatch, closeModal }: UseAppCoreSa
         }
 
         const gameState = saveFile.gameState;
-        const savedRoomId = getSavedCurrentRoom(saveFile, gameState?.currentRoomId || state.currentRoomId || 'controlnexus');
+        const savedRoomId = resolveSavedRoomId(
+          saveFile,
+          gameState,
+          state.roomMap,
+          state.currentRoomId || 'controlnexus',
+        );
         const savedFlags = getSavedFlags(saveFile, gameState);
         const savedInventory = getSavedInventory(saveFile, gameState);
 
@@ -178,6 +203,9 @@ export function useAppCoreSaveLoad({ state, dispatch, closeModal }: UseAppCoreSa
         });
 
         recordMessage(dispatch, `Loaded save "${saveFile.playerName || slotId}"`);
+        if (savedRoomId !== getSavedCurrentRoom(saveFile, savedRoomId)) {
+          recordMessage(dispatch, 'Saved room was unavailable; returned to a safe starting room.', 'warning');
+        }
         await loadSaveSlots();
         closeModal();
       } catch (error) {

@@ -48,20 +48,27 @@ export function useAppCoreRoomLifecycle({
   const [lastShownRoomDescription, setLastShownRoomDescription] = useState<string | null>(null);
 
   useEffect(() => {
+    const roomMap = state.roomMap && typeof state.roomMap === 'object' ? state.roomMap : {};
+    const roomMapLoaded = Object.keys(roomMap).length > 0;
+    if (!roomMapLoaded) return;
+
     if (!room && currentRoomId && !roomFallbackAttempted) {
+      const fallbackRoomId = roomMap.controlnexus ? 'controlnexus' : Object.keys(roomMap)[0];
+      if (!fallbackRoomId) return;
+
       dispatch({
         type: 'ADD_MESSAGE',
         payload: {
           id: Date.now().toString(),
-          text: `Room transition failed: Room '${currentRoomId}' does not exist. Returning to Control Nexus.`,
+          text: `Room transition failed: Room '${currentRoomId}' does not exist. Returning to ${fallbackRoomId}.`,
           type: 'error',
           timestamp: Date.now(),
         },
       });
-      dispatch({ type: 'UPDATE_GAME_STATE', payload: { currentRoomId: 'controlnexus' } });
+      dispatch({ type: 'MOVE_TO_ROOM', payload: fallbackRoomId });
       setRoomFallbackAttempted(true);
     }
-  }, [room, currentRoomId, dispatch, roomFallbackAttempted, setRoomFallbackAttempted]);
+  }, [room, currentRoomId, dispatch, roomFallbackAttempted, setRoomFallbackAttempted, state.roomMap]);
 
   useEffect(() => {
     if (room && room.id) {

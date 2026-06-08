@@ -72,6 +72,19 @@ export function useAppCoreTransitions({
       console.log('[AppCore] handleRoomChange called with:', newRoomId);
       if (newRoomId === currentRoomId) return;
 
+      if (!roomMap[newRoomId]) {
+        dispatch({
+          type: 'ADD_MESSAGE',
+          payload: {
+            id: `unknown-room-${Date.now()}`,
+            text: `Room transition refused: '${newRoomId}' is not in the loaded room map.`,
+            type: 'error',
+            timestamp: Date.now(),
+          },
+        });
+        return;
+      }
+
       if (room) {
         setPreviousRoom(room);
       }

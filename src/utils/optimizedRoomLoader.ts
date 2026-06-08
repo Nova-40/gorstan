@@ -38,11 +38,12 @@ interface LazyRoomRegistry {
  * Optimized lazy-loading room registry
  * Only loads room modules when actually needed
  */
-// Build a lazy registry using Vite's import.meta.glob so Vite can statically analyze room modules.
-// Use globEager to synchronously import room modules at build time and then
-// wrap them in promise-returning loaders.
+// Build a lazy registry using Vite's eager glob import so room modules are
+// statically analyzed and available synchronously at runtime.
 type RoomModule = { default?: Room } | Room;
-const eagerModules = (import.meta as unknown as { globEager: (pattern: string) => Record<string, RoomModule> }).globEager('../rooms/*.ts');
+const eagerModules = import.meta.glob('../rooms/*.ts', {
+  eager: true,
+}) as Record<string, RoomModule>;
 
   const lazyRoomRegistry: LazyRoomRegistry = Object.keys(eagerModules).reduce((acc, path) => {
   const segments = path.replace(/\\/g, '/').split('/');
