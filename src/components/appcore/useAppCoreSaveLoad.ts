@@ -213,7 +213,7 @@ export function useAppCoreSaveLoad({ state, dispatch, closeModal }: UseAppCoreSa
         recordMessage(dispatch, `Failed to load game: ${error}`, 'error');
       }
     },
-    [dispatch, closeModal, loadSaveSlots, state.currentRoomId],
+    [dispatch, closeModal, loadSaveSlots, state.currentRoomId, state.roomMap],
   );
 
   const handleDeleteSave = useCallback(
