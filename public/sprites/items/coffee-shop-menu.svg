@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="72" viewBox="0 0 96 72" role="img" aria-label="Coffee shop menu">
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff7db"/>
+      <stop offset="1" stop-color="#d7b36a"/>
+    </linearGradient>
+  </defs>
+  <path d="M17 7h50l12 12v46H17z" fill="url(#paper)" stroke="#5b3518" stroke-width="3"/>
+  <path d="M67 7v13h12" fill="#b9893e" stroke="#5b3518" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M29 24h32M29 34h38M29 44h32M29 54h24" stroke="#4a2a16" stroke-width="4" stroke-linecap="round"/>
+  <path d="M17 7h50l12 12" fill="none" stroke="#fff1bf" stroke-width="2" opacity=".75"/>
+</svg>

@@ -148,15 +148,22 @@ const RoomRenderer: React.FC = () => {
   const itemPlacements = (visualRoom.itemPlacements || []) as RoomItemPlacement[];
   const roomEffects = (visualRoom.effects || []) as RoomEffect[];
   const showVisualDebug = Boolean(state.settings?.debugMode || state.flags?.showClickableHotspots);
+  const roomImageSrc = room.image
+    ? room.image.startsWith('/')
+      ? room.image
+      : room.image.includes('/')
+        ? `/images/${room.image}`
+        : `/images/rooms/${room.image}`
+    : '';
 
   return (
     <div className="room-container flex flex-col h-full bg-black rounded-lg shadow-inner overflow-hidden border border-green-600">
       {room.image ? (
         <div className="room-image-wrapper h-full w-full overflow-hidden clickable-room-wrapper">
-          {room.image.toLowerCase().endsWith('.gif') ? (
-            <SmartVideo src={`/images/${room.image}`} className="w-full h-full object-cover" />
+          {/\.(mp4|webm|ogg)$/i.test(room.image) ? (
+            <SmartVideo src={roomImageSrc} className="w-full h-full object-cover" />
           ) : (
-            <SmartImage src={`/images/${room.image}`} alt={room.title} className="w-full h-full object-cover" sizes="100vw" />
+            <SmartImage src={roomImageSrc} alt={room.title} className="w-full h-full object-cover" sizes="100vw" />
           )}
 
           <ItemSpriteLayer

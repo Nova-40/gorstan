@@ -1,5 +1,5 @@
 import React from 'react';
-import manifest from '../../../public/images/_optimized.json';
+import manifest from '../../lib/optimized';
 
 type Props = {
   src: string; // relative path under /images
@@ -9,26 +9,41 @@ type Props = {
 };
 
 export default function SmartImage({ src, alt = '', className, sizes = '100vw' }: Props) {
-  const typedManifest: Record<string, any> = manifest as any;
-  const key = src.replace(/^\//, '').replace(/^images\//, '');
-  const info = typedManifest[key];
+  if (/\.gif$/i.test(src)) {
+    return <img src={src} alt={alt} className={className} loading="lazy" />;
+  }
 
-  if (!info) {
-    // Fallback to plain img
+  const typedManifest: Record<string, any> = manifest as any;
+  const keyWithExtension = src.replace(/^\//, '').replace(/^images\//, '');
+  const key = keyWithExtension.replace(/\.[a-z0-9]+$/i, '');
+  const info = typedManifest[keyWithExtension] ?? typedManifest[key];
+  const fallback = info?.fallback ?? src;
+  const variantBase = `variants/${key}`;
+  const variant = typedManifest[variantBase];
+  const variantWidths = [480, 768, 1200, 1920]
+    .map((width) => ({ width, info: typedManifest[`${variantBase}-${width}`] }))
+    .filter((candidate) => candidate.info?.webp || candidate.info?.avif);
+
+  if (!variant && !variantWidths.length) {
     return <img src={src} alt={alt} className={className} />;
   }
 
-  const sources = (info.variants || []).map((v: any) => ({ width: v.width || null, webp: `/${v.webp}`, avif: `/${v.avif}` }));
-  // Build srcset strings
-  const avifSrcSet = sources.map((s: any) => `${s.avif} ${s.width}w`).join(', ');
-  const webpSrcSet = sources.map((s: any) => `${s.webp} ${s.width}w`).join(', ');
-  const imgSrc = `/${info.variants[0].webp}`;
+  const avifSrcSet = variantWidths
+    .filter((candidate) => candidate.info.avif)
+    .map((candidate) => `${candidate.info.avif} ${candidate.width}w`)
+    .join(', ');
+  const webpSrcSet = variantWidths
+    .filter((candidate) => candidate.info.webp)
+    .map((candidate) => `${candidate.info.webp} ${candidate.width}w`)
+    .join(', ');
 
   return (
     <picture>
-      <source type="image/avif" srcSet={avifSrcSet} sizes={sizes} />
-      <source type="image/webp" srcSet={webpSrcSet} sizes={sizes} />
-      <img src={imgSrc} alt={alt} className={className} loading="lazy" />
+      {avifSrcSet && <source type="image/avif" srcSet={avifSrcSet} sizes={sizes} />}
+      {webpSrcSet && <source type="image/webp" srcSet={webpSrcSet} sizes={sizes} />}
+      {variant?.avif && <source type="image/avif" srcSet={variant.avif} />}
+      {variant?.webp && <source type="image/webp" srcSet={variant.webp} />}
+      <img src={fallback} alt={alt} className={className} loading="lazy" />
     </picture>
   );
 }

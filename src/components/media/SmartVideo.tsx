@@ -1,5 +1,5 @@
 import React from 'react';
-import manifest from '../../../public/images/_optimized.json';
+import manifest from '../../lib/optimized';
 
 type Props = {
   src: string; // relative path under /images

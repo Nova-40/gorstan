@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="86" height="56" viewBox="0 0 86 56" role="img" aria-label="Loyalty card">
+  <rect x="5" y="8" width="76" height="40" rx="7" fill="#123f3a" stroke="#a7f3d0" stroke-width="3"/>
+  <path d="M13 18h30M13 28h18" stroke="#d1fae5" stroke-width="4" stroke-linecap="round"/>
+  <g fill="#fbbf24" stroke="#78350f" stroke-width="1.5">
+    <circle cx="53" cy="29" r="5"/>
+    <circle cx="67" cy="29" r="5"/>
+    <circle cx="53" cy="41" r="5"/>
+    <circle cx="67" cy="41" r="5"/>
+  </g>
+  <path d="M7 16c22 9 45 9 72 0" stroke="#34d399" stroke-width="2" opacity=".55"/>
+</svg>

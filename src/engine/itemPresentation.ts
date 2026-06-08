@@ -127,6 +127,60 @@ export const ITEM_PRESENTATION: Record<string, ItemPresentation> = {
     clickActions: DEFAULT_ITEM_ACTIONS,
   },
 
+  coffee_shop_menu: {
+    itemId: 'coffee_shop_menu',
+    sprite: '/sprites/items/coffee-shop-menu.svg',
+    inventoryIcon: '/sprites/items/coffee-shop-menu.svg',
+    droppable: false,
+    defaultDropPosition: { x: 0.58, y: 0.68 },
+    defaultSpriteSize: { width: 58, height: 44 },
+    clickActions: [
+      { label: 'Read', command: 'read coffee shop menu', primary: true },
+      { label: 'Examine', command: 'inspect coffee shop menu' },
+    ],
+  },
+
+  local_newspaper: {
+    itemId: 'local_newspaper',
+    sprite: '/sprites/items/local-newspaper.svg',
+    inventoryIcon: '/sprites/items/local-newspaper.svg',
+    droppable: false,
+    defaultDropPosition: { x: 0.21, y: 0.68 },
+    defaultSpriteSize: { width: 62, height: 38 },
+    clickActions: [
+      { label: 'Read', command: 'read local newspaper', primary: true },
+      { label: 'Examine', command: 'inspect local newspaper' },
+    ],
+  },
+
+  loyalty_card: {
+    itemId: 'loyalty_card',
+    sprite: '/sprites/items/loyalty-card.svg',
+    inventoryIcon: '/sprites/items/loyalty-card.svg',
+    droppable: true,
+    defaultDropPosition: { x: 0.56, y: 0.72 },
+    defaultSpriteSize: { width: 48, height: 32 },
+    clickActions: [
+      { label: 'Examine', command: 'inspect loyalty card', primary: true },
+      { label: 'Take', command: 'take loyalty card' },
+      { label: 'Use', command: 'use loyalty card' },
+    ],
+  },
+
+  forgotten_notebook: {
+    itemId: 'forgotten_notebook',
+    sprite: '/sprites/items/forgotten-notebook.svg',
+    inventoryIcon: '/sprites/items/forgotten-notebook.svg',
+    droppable: true,
+    defaultDropPosition: { x: 0.2, y: 0.73 },
+    defaultSpriteSize: { width: 44, height: 52 },
+    clickActions: [
+      { label: 'Read', command: 'read forgotten notebook', primary: true },
+      { label: 'Take', command: 'take forgotten notebook' },
+      { label: 'Examine', command: 'inspect forgotten notebook' },
+    ],
+  },
+
   greasynapkin: {
     itemId: 'greasynapkin',
     sprite: '/sprites/items/greasy-napkin.png',
@@ -171,17 +225,15 @@ export function getPresentedItem(itemId: string): PresentedItem | undefined {
     return undefined;
   }
 
-  return {
-    ...item,
-    presentation: getItemPresentation(itemId),
-  };
+  const presentation = getItemPresentation(itemId);
+  return presentation ? { ...item, presentation } : { ...item };
 }
 
 export function getPresentedItems(): PresentedItem[] {
-  return ITEMS.map((item) => ({
-    ...item,
-    presentation: getItemPresentation(item.id),
-  }));
+  return ITEMS.map((item) => {
+    const presentation = getItemPresentation(item.id);
+    return presentation ? { ...item, presentation } : { ...item };
+  });
 }
 
 export function listObjectCatalogue(): ItemCatalogueEntry[] {
@@ -193,9 +245,9 @@ export function listObjectCatalogue(): ItemCatalogueEntry[] {
       name: item.name,
       description: item.description,
       portable: item.portable,
-      category: item.category,
-      rarity: item.rarity,
-      spawnRooms: item.spawnRooms,
+      ...(item.category ? { category: item.category } : {}),
+      ...(item.rarity ? { rarity: item.rarity } : {}),
+      ...(item.spawnRooms ? { spawnRooms: item.spawnRooms } : {}),
       traits: item.traits,
       hasSprite: Boolean(presentation?.sprite),
       hasInventoryIcon: Boolean(presentation?.inventoryIcon),

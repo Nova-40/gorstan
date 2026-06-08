@@ -107,6 +107,32 @@ export function useAppCoreCommandHandler({
         return;
       }
 
+      if (lowerCommand === 'debug hotspots' || lowerCommand === 'hotspot debug') {
+        const nextValue = !Boolean(state.flags?.showClickableHotspots);
+        dispatch({
+          type: 'SET_FLAG',
+          payload: { flag: 'showClickableHotspots', value: nextValue },
+        });
+        recordMessage(
+          dispatch,
+          `Hotspot debug ${nextValue ? 'enabled' : 'disabled'}.`,
+          'info',
+        );
+        return;
+      }
+
+      if (lowerCommand.startsWith('debug room ')) {
+        const targetRoomId = lowerCommand.replace('debug room ', '').trim();
+        if (!targetRoomId || !state.roomMap?.[targetRoomId]) {
+          recordMessage(dispatch, `Unknown debug room '${targetRoomId}'.`, 'error');
+          return;
+        }
+
+        dispatch({ type: 'MOVE_TO_ROOM', payload: targetRoomId });
+        recordMessage(dispatch, `Debug room jump: ${targetRoomId}.`, 'info');
+        return;
+      }
+
       if (lowerCommand.startsWith('play ')) {
         const [, id] = lowerCommand.split(/\s+/);
         if (!id) return;
