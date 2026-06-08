@@ -63,7 +63,6 @@ const aliases: Record<string, string> = {
   talk: 'speak',
   chat: 'speak',
   ask: 'speak',
-  help: 'ayla',
   hint: 'ayla',
   guidance: 'ayla',
   detect: 'search',
@@ -103,6 +102,17 @@ export function processCommand({
         const targetRoomId = currentRoom.exits[direction];
         const targetRoom = gameState.roomMap[targetRoomId];
 
+        if (!targetRoom) {
+          return {
+            messages: [
+              {
+                text: `The exit marked "${direction}" resolves to "${targetRoomId}", but that room is not currently loaded.`,
+                type: 'error',
+              },
+            ],
+          };
+        }
+
         messages.push({ text: `You go ${direction}.`, type: 'info' });
         updates = {
           currentRoomId: targetRoomId,
@@ -112,12 +122,10 @@ export function processCommand({
           },
         };
 
-        if (targetRoom) {
-          const entryResult = processRoomEntry(targetRoom, gameState);
-          messages.push(...entryResult.messages);
-          if (entryResult.updates) {
-            updates = { ...updates, ...entryResult.updates };
-          }
+        const entryResult = processRoomEntry(targetRoom, gameState);
+        messages.push(...entryResult.messages);
+        if (entryResult.updates) {
+          updates = { ...updates, ...entryResult.updates };
         }
 
         return { messages, updates };
@@ -191,6 +199,7 @@ export function processCommand({
       };
     }
 
+    case 'inspect':
     case 'look': {
       const descriptionLines = Array.isArray(currentRoom.description)
         ? currentRoom.description
@@ -254,15 +263,19 @@ export function processCommand({
       return { messages };
     }
 
-    case 'help': {
+    case 'help':
+    case 'about':
+    case 'instructions': {
       const helpMessages: TerminalMessage[] = [
-        { text: '--- Common Commands ---', type: 'system' },
-        { text: 'go [direction] - Move in a direction', type: 'system' },
-        { text: 'look - Examine your surroundings', type: 'system' },
-        { text: 'get [item] - Take an item', type: 'system' },
-        { text: 'use [item] - Use an item from inventory', type: 'system' },
-        { text: "inventory - Check what you're carrying", type: 'system' },
-        { text: 'help - Show this help message', type: 'system' },
+        { text: '--- Gorstan Beta 4 Field Briefing ---', type: 'system' },
+        { text: 'This is a parser-first illustrated adventure. Type commands; click mapped room controls when available. Both routes go through the same command parser, because dual paperwork is how realities collapse.', type: 'system' },
+        { text: 'look / inspect [thing] - Inspect the room, an item, a hotspot, or a suspiciously confident machine.', type: 'system' },
+        { text: 'go [direction] - Move through an exit. Direction buttons and exit interactions issue the same movement commands.', type: 'system' },
+        { text: 'take [item] / inventory / use [item] - Manage what you are carrying.', type: 'system' },
+        { text: 'talk to [npc] - Start a conversation if someone is present. Ayla may be helpful, which she will deny for procedural reasons.', type: 'system' },
+        { text: 'status - Show current room, route state, and exits.', type: 'system' },
+        { text: 'save/load - Use the save modal. If a save is missing or malformed, Gorstan should complain politely and continue.', type: 'system' },
+        { text: 'debug hotspots - Toggle hotspot outlines where debug mode is enabled or you are repairing reality with a ruler.', type: 'system' },
       ];
 
       return { messages: helpMessages };

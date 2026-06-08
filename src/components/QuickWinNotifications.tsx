@@ -168,7 +168,9 @@ export const QuickWinNotifications: React.FC<QuickWinNotificationsProps> = ({ cl
   useEffect(() => {
     const handleNotification = (event: CustomEvent<NotificationData>) => {
       const newNotification = { ...event.detail, id: Date.now().toString() };
-      setNotifications((prev) => [...prev, newNotification]);
+      window.setTimeout(() => {
+        setNotifications((prev) => [...prev, newNotification]);
+      }, 0);
     };
 
     window.addEventListener('gorstan-notification' as any, handleNotification);
@@ -194,6 +196,10 @@ export const QuickWinNotifications: React.FC<QuickWinNotificationsProps> = ({ cl
 
 // Utility function to trigger notifications
 export const showNotification = (notification: Omit<NotificationData, 'id'>) => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
   const event = new CustomEvent('gorstan-notification', { detail: notification });
   window.dispatchEvent(event);
 };

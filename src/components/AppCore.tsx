@@ -15,7 +15,7 @@
 */
 
 // src/components/AppCore.tsx
-// Gorstan Game Beta 3
+// Gorstan Game Beta 4
 // Gorstan and characters (c) Geoff Webster 2025
 // Main game controller UI and logic routing.
 
@@ -49,6 +49,7 @@ import CombatActionsPanel from '../ui/QuickActionsPanel';
 import BlueButtonWarningModal from './BlueButtonWarningModal';
 import QuickWinNotifications from './QuickWinNotifications';
 import ProgressDashboard from './ProgressDashboard';
+import OpeningBriefing from './OpeningBriefing';
 
 import { useFlags } from '../hooks/useFlags';
 import { useGameState } from '../state/gameState';
@@ -71,6 +72,7 @@ import { handleRoomEntry } from '../engine/roomEventHandler';
 import { getAllRoomsAsObject } from '../utils/roomLoader';
 import { getFallbackRooms } from '../utils/roomLoaderFallback';
 import { performanceMonitor } from '../utils/performanceMonitor';
+import { safeGetStorageItem, safeRemoveStorageItem, safeSetStorageItem } from '../utils/safeStorage';
 import { onRoomEntry, periodicConversationCheck } from '../npc/triggers';
 import { getTrapByRoom } from '../engine/trapController';
 
@@ -152,6 +154,36 @@ interface IntroCompletionData {
 interface Item {
   name: string;
   [key: string]: any;
+}
+
+function recordAppMessage(
+  dispatch: (action: any) => void,
+  text: string,
+  type: 'system' | 'error' | 'warning' | 'info' = 'system',
+): void {
+  dispatch({
+    type: 'RECORD_MESSAGE',
+    payload: {
+      id: `appcore-${Date.now()}`,
+      text,
+      type,
+      timestamp: Date.now(),
+    },
+  });
+}
+
+function resolveRoomId(
+  roomMap: Record<string, Room>,
+  candidate: unknown,
+  fallbackRoomId = 'controlnexus',
+): string {
+  if (typeof candidate === 'string' && candidate && roomMap[candidate]) {
+    return candidate;
+  }
+  if (roomMap[fallbackRoomId]) {
+    return fallbackRoomId;
+  }
+  return Object.keys(roomMap)[0] || fallbackRoomId;
 }
 
 /**
@@ -237,6 +269,15 @@ const AppCore: React.FC = () => {
     (newRoomId: string) => {
       console.log('[AppCore] handleRoomChange called with:', newRoomId);
       if (newRoomId !== currentRoomId) {
+        if (!roomMap[newRoomId]) {
+          recordAppMessage(
+            dispatch,
+            `Room transition refused: '${newRoomId}' is not in the loaded room map.`,
+            'error',
+          );
+          return;
+        }
+
         // Store current room in history before moving
         setRoomHistory((prev) => [...prev, currentRoomId]);
         // Update previousRoom to current room before changing
@@ -268,7 +309,7 @@ const AppCore: React.FC = () => {
         }
       }
     },
-    [state.currentRoomId, setTeleportType, dispatch],
+    [state.currentRoomId, state.roomMap, setTeleportType, dispatch],
   );
 
   const handleBackout = useCallback((): void => {
@@ -386,9 +427,12 @@ const AppCore: React.FC = () => {
   const loadSaveSlots = useCallback(async () => {
     try {
       // Load traditional save slots for compatibility
-      const saved = localStorage.getItem('gorstan_save_slots');
+      const saved = safeGetStorageItem('gorstan_save_slots');
       if (saved) {
-        setSaveSlots(JSON.parse(saved));
+        const parsedSlots = JSON.parse(saved);
+        if (Array.isArray(parsedSlots)) {
+          setSaveSlots(parsedSlots);
+        }
       }
 
       // Check for save files that need migration
@@ -514,7 +558,13 @@ const AppCore: React.FC = () => {
           });
 
           setSaveSlots(newSlots);
-          localStorage.setItem('gorstan_save_slots', JSON.stringify(newSlots));
+          if (!safeSetStorageItem('gorstan_save_slots', JSON.stringify(newSlots))) {
+            recordAppMessage(
+              dispatch,
+              'Save slot list could not be stored; browser storage is unavailable.',
+              'warning',
+            );
+          }
 
           dispatch({
             type: 'RECORD_MESSAGE',
@@ -532,15 +582,7 @@ const AppCore: React.FC = () => {
         closeModal();
       } catch (error) {
         console.error('Failed to save game:', error);
-        dispatch({
-          type: 'RECORD_MESSAGE',
-          payload: {
-            id: `save-error-${Date.now()}`,
-            text: `Failed to save game: ${error}`,
-            type: 'error',
-            timestamp: Date.now(),
-          },
-        });
+        recordAppMessage(dispatch, `Failed to save game: ${error}`, 'error');
       }
     },
     [state, saveSlots, dispatch, closeModal],
@@ -556,10 +598,11 @@ const AppCore: React.FC = () => {
           // Load the save data
           if (saveFile.gameState) {
             const gameState = saveFile.gameState;
+            const savedRoomId = resolveRoomId(roomMap, gameState.currentRoomId || 'controlnexus');
 
-            dispatch({ type: 'ADVANCE_STAGE', payload: gameState.stage });
-            dispatch({ type: 'SET_PLAYER_NAME', payload: gameState.player.name });
-            dispatch({ type: 'MOVE_TO_ROOM', payload: gameState.currentRoomId });
+            dispatch({ type: 'ADVANCE_STAGE', payload: 'game' });
+            dispatch({ type: 'SET_PLAYER_NAME', payload: gameState.player?.name || saveFile.playerName || 'Player' });
+            dispatch({ type: 'MOVE_TO_ROOM', payload: savedRoomId });
 
             // Restore flags
             Object.entries(gameState.flags || {}).forEach(([flag, value]) => {
@@ -571,6 +614,14 @@ const AppCore: React.FC = () => {
               gameState.player.inventory.forEach((item: string) => {
                 dispatch({ type: 'ADD_TO_INVENTORY', payload: item });
               });
+            }
+
+            if (savedRoomId !== gameState.currentRoomId) {
+              recordAppMessage(
+                dispatch,
+                'Saved room was unavailable; returned to a safe starting room.',
+                'warning',
+              );
             }
           }
 
@@ -603,16 +654,16 @@ const AppCore: React.FC = () => {
         });
       }
     },
-    [dispatch, closeModal, loadSaveSlots],
+    [dispatch, closeModal, loadSaveSlots, roomMap],
   );
 
   const handleDeleteSave = useCallback(
     (slotId: string) => {
       try {
-        localStorage.removeItem(`gorstan_save_${slotId}`);
+        safeRemoveStorageItem(`gorstan_save_${slotId}`);
         const newSlots = saveSlots.filter((slot) => slot.id !== slotId);
         setSaveSlots(newSlots);
-        localStorage.setItem('gorstan_save_slots', JSON.stringify(newSlots));
+        safeSetStorageItem('gorstan_save_slots', JSON.stringify(newSlots));
 
         dispatch({
           type: 'RECORD_MESSAGE',
@@ -1530,20 +1581,27 @@ const AppCore: React.FC = () => {
 
   // Enhanced room validation effect with proper typing
   useEffect(() => {
+    const loadedRoomMap = state.roomMap && typeof state.roomMap === 'object' ? state.roomMap : {};
+    const roomMapLoaded = Object.keys(loadedRoomMap).length > 0;
+    if (!roomMapLoaded) {
+      return;
+    }
+
     if (!room && currentRoomId && !roomFallbackAttempted) {
+      const fallbackRoomId = resolveRoomId(loadedRoomMap, 'controlnexus');
       dispatch({
         type: 'ADD_MESSAGE',
         payload: {
           id: Date.now().toString(),
-          text: `Room transition failed: Room '${currentRoomId}' does not exist. Returning to Control Nexus.`,
+          text: `Room transition failed: Room '${currentRoomId}' does not exist. Returning to ${fallbackRoomId}.`,
           type: 'error',
           timestamp: Date.now(),
         },
       });
-      dispatch({ type: 'UPDATE_GAME_STATE', payload: { currentRoomId: 'controlnexus' } });
+      dispatch({ type: 'MOVE_TO_ROOM', payload: fallbackRoomId });
       setRoomFallbackAttempted(true);
     }
-  }, [room, currentRoomId, dispatch, roomFallbackAttempted]);
+  }, [room, currentRoomId, dispatch, roomFallbackAttempted, state.roomMap]);
 
   // Enhanced room transition effect with proper typing
   useEffect(() => {
@@ -2303,6 +2361,8 @@ const AppCore: React.FC = () => {
 
       {/* Quick Win Notifications System */}
       <QuickWinNotifications />
+
+      <OpeningBriefing onCommand={handleCommand} />
     </div>
   );
 };

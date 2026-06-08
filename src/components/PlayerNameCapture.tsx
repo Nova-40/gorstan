@@ -33,23 +33,25 @@ const GorstanIcon = () => (
 
 // Variable declaration
 const instructionsScreens = [
-  `Welcome to Gorstan, a text-driven adventure across reality, bureaucracy, and the multiverse.
+  `Welcome to Gorstan Beta 4, a parser-first illustrated adventure across reality, bureaucracy, and the multiverse.
 
 HOW TO PLAY:
 • Type commands into the terminal (e.g., "go north", "take coffee", "use blue button")
-• Click direction/action buttons for quick navigation
-• Interact with objects and NPCs by typing or clicking
+• Click mapped exits, room controls, and action buttons where the interface supports them
+• Clicks send ordinary parser commands; the visual layer does not make separate story rules
 • Some puzzles require careful reading or experimentation
-• Use your codex and achievements for clues`,
+• Use Help, Look, Inventory, NPCs, and Status when the universe becomes administratively rude`,
   `TIPS:
 • Pay attention to room descriptions and what NPCs say
-• Saving is automatic; returning players resume your last session
+• Save/load is available from the save modal and supporting controls
 • Certain names unlock special content (try your real one?)
 • Not everything is as it seems, and resets may reveal new paths
 
 COMMAND EXAMPLES:
 • "look" or "examine" — describe the room/item
 • "inventory" — see what you're carrying
+• "status" — print current room and exit information
+• "help" or "about" — print the Beta 4 field briefing
 • "talk to [npc]" — speak with a character
 • "use [item]" — use or activate an item
 • "reset" — attempt a reality reset
