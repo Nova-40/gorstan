@@ -71,7 +71,7 @@ import { handleRoomEntry } from '../engine/roomEventHandler';
 import { getAllRoomsAsObject } from '../utils/roomLoader';
 import { getFallbackRooms } from '../utils/roomLoaderFallback';
 import { performanceMonitor } from '../utils/performanceMonitor';
-import { safeGetStorageItem, safeRemoveStorageItem, safeSetStorageItem } from '../utils/safeStorage';
+import { safeGetStorageItem, safeSetStorageItem } from '../utils/safeStorage';
 import { onRoomEntry, periodicConversationCheck } from '../npc/triggers';
 import { getTrapByRoom } from '../engine/trapController';
 
@@ -80,7 +80,7 @@ import { InventoryModal } from './InventoryModal';
 import ModalOverlay from './ModalOverlay';
 import PickUpItemModal from './PickUpItemModal';
 import SaveGameModal from './SaveGameModal';
-import { SaveManager } from '../services/SaveManager';
+import { SaveManager, parseSaveSlotId } from '../services/SaveManager';
 import NPCConsole from './NPCConsole';
 import EnhancedNPCConsole from './EnhancedNPCConsole';
 import Modal from './Modal';
@@ -136,6 +136,61 @@ type OpenModalType =
   | null;
 
 type TeleportType = 'fractal' | 'trek' | null;
+
+type SaveSlotView = {
+  id: number;
+  name: string;
+  playerName: string;
+  currentRoom: string;
+  timestamp: number;
+  score: number;
+  playTime: number;
+};
+
+function readLegacySaveSlots(): SaveSlotView[] {
+  const saved = safeGetStorageItem('gorstan_save_slots');
+  if (!saved) {
+    return [];
+  }
+
+  try {
+    const parsedSlots = JSON.parse(saved);
+    if (!Array.isArray(parsedSlots)) {
+      return [];
+    }
+
+    return parsedSlots
+      .map((slot) => {
+        const slotId = parseSaveSlotId(slot?.id);
+        if (slotId === null) {
+          return null;
+        }
+
+        return {
+          id: slotId,
+          name:
+            typeof slot?.name === 'string' && slot.name.trim().length > 0
+              ? slot.name
+              : `Slot ${slotId + 1}`,
+          playerName:
+            typeof slot?.playerName === 'string' && slot.playerName.trim().length > 0
+              ? slot.playerName
+              : 'Player',
+          currentRoom:
+            typeof slot?.currentRoom === 'string' && slot.currentRoom.trim().length > 0
+              ? slot.currentRoom
+              : 'Unknown',
+          timestamp: typeof slot?.timestamp === 'number' ? slot.timestamp : 0,
+          score: typeof slot?.score === 'number' ? slot.score : 0,
+          playTime: typeof slot?.playTime === 'number' ? slot.playTime : 0,
+        };
+      })
+      .filter((slot): slot is SaveSlotView => slot !== null);
+  } catch (error) {
+    console.warn('Ignored malformed legacy save slot list:', error);
+    return [];
+  }
+}
 
 /**
  * Interface for intro completion data with proper typing
@@ -239,17 +294,7 @@ const AppCore: React.FC = () => {
   const [npcBehaviors, setNpcBehaviors] = useState<Record<string, string>>({});
 
   // Save game state - Enhanced with migration support
-  const [saveSlots, setSaveSlots] = useState<
-    Array<{
-      id: string;
-      name: string;
-      playerName: string;
-      currentRoom: string;
-      timestamp: number;
-      score: number;
-      playTime: number;
-    }>
-  >([]);
+  const [saveSlots, setSaveSlots] = useState<SaveSlotView[]>([]);
 
   // System state with enhanced typing
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
@@ -425,45 +470,40 @@ const AppCore: React.FC = () => {
   const loadSaveSlots = useCallback(async () => {
     // Load traditional save slots for compatibility. Malformed legacy data should not block
     // modern save discovery or startup.
-    let legacySlots: typeof saveSlots = [];
-    const saved = safeGetStorageItem('gorstan_save_slots');
-    if (saved) {
-      try {
-        const parsedSlots = JSON.parse(saved);
-        if (Array.isArray(parsedSlots)) {
-          legacySlots = parsedSlots;
-        }
-      } catch (error) {
-        console.warn('Ignored malformed legacy save slot list:', error);
-      }
-    }
+    const legacySlots = readLegacySaveSlots();
 
     try {
-      // Check for save files that need migration
       const saveSlotInfos = await SaveManager.listSlots();
       const modernSlots = saveSlotInfos.map((slot) => ({
-        id: slot.slot.toString(),
-        name: slot.playerName,
+        id: slot.slot,
+        name: slot.saveName,
         playerName: slot.playerName,
-        currentRoom: 'Unknown', // Would need to be extracted from gameState if needed
+        currentRoom: slot.currentRoom,
         timestamp: Date.parse(slot.timestamp),
-        score: 0, // Would need to be extracted from gameState if needed
-        playTime: 0, // Would need to be extracted from gameState if needed
+        score: slot.totalScore,
+        playTime: slot.playTime,
       }));
 
-      setSaveSlots(modernSlots.length > 0 ? modernSlots : legacySlots);
+      setSaveSlots((modernSlots.length > 0 ? modernSlots : legacySlots).sort((a, b) => a.id - b.id));
     } catch (error) {
       console.error('Failed to load save slots:', error);
-      setSaveSlots(legacySlots);
+      setSaveSlots(legacySlots.sort((a, b) => a.id - b.id));
     }
   }, []);
 
   const handleSave = useCallback(
-    async (slotId: string, slotName: string) => {
+    async (slotId: number, slotName: string) => {
+      const parsedSlotId = parseSaveSlotId(slotId);
+      if (parsedSlotId === null) {
+        recordAppMessage(dispatch, `Refused save: invalid slot "${slotId}".`, 'error');
+        return;
+      }
+
       try {
         // Create enhanced save file structure
         const saveFile = {
           version: 7, // Current version
+          saveName: slotName,
           playerName: state.player.name || 'Player',
           progress: {
             questsCompleted: 0, // Calculate based on game state
@@ -547,13 +587,13 @@ const AppCore: React.FC = () => {
         };
 
         // Use enhanced SaveManager with migration support
-        const result = await SaveManager.save(parseInt(slotId), saveFile);
+        const result = await SaveManager.save(parsedSlotId, saveFile);
 
         if (result.success) {
           // Update traditional save slots for UI compatibility
-          const newSlots = saveSlots.filter((slot) => slot.id !== slotId);
+          const newSlots = saveSlots.filter((slot) => slot.id !== parsedSlotId);
           newSlots.push({
-            id: slotId,
+            id: parsedSlotId,
             name: slotName,
             playerName: saveFile.playerName,
             currentRoom: saveFile.progress.storylineProgress?.currentRoom || state.currentRoomId,
@@ -562,8 +602,9 @@ const AppCore: React.FC = () => {
             playTime: state.metadata?.playTime || 0,
           });
 
-          setSaveSlots(newSlots);
-          if (!safeSetStorageItem('gorstan_save_slots', JSON.stringify(newSlots))) {
+          const sortedSlots = newSlots.sort((a, b) => a.id - b.id);
+          setSaveSlots(sortedSlots);
+          if (!safeSetStorageItem('gorstan_save_slots', JSON.stringify(sortedSlots))) {
             recordAppMessage(
               dispatch,
               'Save slot list could not be stored; browser storage is unavailable.',
@@ -594,10 +635,16 @@ const AppCore: React.FC = () => {
   );
 
   const handleLoad = useCallback(
-    async (slotId: string) => {
+    async (slotId: number) => {
+      const parsedSlotId = parseSaveSlotId(slotId);
+      if (parsedSlotId === null) {
+        recordAppMessage(dispatch, `Refused load: invalid slot "${slotId}".`, 'error');
+        return;
+      }
+
       try {
         // Use enhanced SaveManager with automatic migration
-        const saveFile = await SaveManager.load(parseInt(slotId));
+        const saveFile = await SaveManager.load(parsedSlotId);
 
         if (saveFile) {
           // Load the save data
@@ -663,12 +710,23 @@ const AppCore: React.FC = () => {
   );
 
   const handleDeleteSave = useCallback(
-    (slotId: string) => {
+    (slotId: number) => {
+      const parsedSlotId = parseSaveSlotId(slotId);
+      if (parsedSlotId === null) {
+        recordAppMessage(dispatch, `Refused delete: invalid slot "${slotId}".`, 'error');
+        return;
+      }
+
       try {
-        safeRemoveStorageItem(`gorstan_save_${slotId}`);
-        const newSlots = saveSlots.filter((slot) => slot.id !== slotId);
-        setSaveSlots(newSlots);
-        safeSetStorageItem('gorstan_save_slots', JSON.stringify(newSlots));
+        if (!SaveManager.deleteSave(parsedSlotId)) {
+          recordAppMessage(dispatch, `Failed to delete save slot ${parsedSlotId + 1}.`, 'error');
+          return;
+        }
+
+        const newSlots = saveSlots.filter((slot) => slot.id !== parsedSlotId);
+        const sortedSlots = newSlots.sort((a, b) => a.id - b.id);
+        setSaveSlots(sortedSlots);
+        safeSetStorageItem('gorstan_save_slots', JSON.stringify(sortedSlots));
 
         dispatch({
           type: 'RECORD_MESSAGE',
