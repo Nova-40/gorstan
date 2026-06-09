@@ -4,6 +4,7 @@
 */
 
 import type { LocalGameState } from '../types/GameTypes';
+import { safeGetStorageItem, safeRemoveStorageItem, safeSetStorageItem } from '../utils/safeStorage';
 
 export interface SaveFile {
   version: number;
@@ -132,7 +133,13 @@ export class SaveManager {
       }
 
       const key = `save_slot_${slot}`;
-      localStorage.setItem(key, JSON.stringify(finalSaveFile));
+      if (!safeSetStorageItem(key, JSON.stringify(finalSaveFile))) {
+        return {
+          success: false,
+          message: 'Save failed: local storage is unavailable',
+          warnings: ['Browser storage is unavailable or full'],
+        };
+      }
 
       return {
         success: true,
@@ -153,7 +160,7 @@ export class SaveManager {
   static async load(slot: number): Promise<SaveFile | null> {
     try {
       const key = `save_slot_${slot}`;
-      const data = localStorage.getItem(key);
+      const data = safeGetStorageItem(key);
       if (!data) {
         return null;
       }
@@ -182,7 +189,7 @@ export class SaveManager {
     for (let i = 0; i < 10; i++) {
       try {
         const key = `save_slot_${i}`;
-        const data = localStorage.getItem(key);
+        const data = safeGetStorageItem(key);
 
         if (data) {
           const saveFile: SaveFile = JSON.parse(data);
@@ -214,8 +221,7 @@ export class SaveManager {
   static deleteSave(slot: number): boolean {
     try {
       const key = `save_slot_${slot}`;
-      localStorage.removeItem(key);
-      return true;
+      return safeRemoveStorageItem(key);
     } catch (error) {
       console.error('[SaveManager] Delete failed:', error);
       return false;
@@ -242,7 +248,7 @@ export class SaveManager {
   static clearAllSaves(): void {
     for (let i = 0; i < 10; i++) {
       const key = `save_slot_${i}`;
-      localStorage.removeItem(key);
+      safeRemoveStorageItem(key);
     }
   }
 }

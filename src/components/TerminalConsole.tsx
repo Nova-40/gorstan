@@ -42,8 +42,7 @@ const TerminalConsole: React.FC<TerminalConsoleProps> = ({ messages = [], clear 
     }
   }, [messages]);
 
-  // Variable declaration
-  const filteredMessages = clear ? [] : messages.filter((msg) => msg.type === 'narrative');
+  const filteredMessages = clear ? [] : messages;
 
   // JSX return block or main return
   return (
@@ -52,7 +51,7 @@ const TerminalConsole: React.FC<TerminalConsoleProps> = ({ messages = [], clear 
       className="bg-black text-green-400 font-mono text-sm p-2 h-full overflow-y-auto border border-green-600 rounded"
     >
       {filteredMessages.map((msg, idx) => (
-        <div key={msg.id + '-' + idx} className="terminal-line terminal-lore">
+        <div key={msg.id + '-' + idx} className={`terminal-line terminal-${msg.type}`}>
           {msg.text}
         </div>
       ))}

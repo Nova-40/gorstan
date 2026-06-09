@@ -67,7 +67,7 @@ export async function startConsolidatedShowcase(): Promise<void> {
     console.log('[ConsolidatedShowcase] Showcase completed successfully');
     setTimeout(() => {
       clearDemo();
-      console.log('[ConsolidatedShowcase] Returning to Choose Your Adventure...');
+      console.log('[ConsolidatedShowcase] Returning to main menu...');
     }, 3000);
   } catch (error) {
     console.error('[ConsolidatedShowcase] Showcase failed:', error);

@@ -16,7 +16,7 @@ export async function startGladeOfEchoes(): Promise<void> {
 
     setTimeout(() => {
       clearDemo();
-      console.log('[GladeOfEchoes] Returning to Choose Your Adventure...');
+      console.log('[GladeOfEchoes] Returning to main menu...');
     }, 3000);
   } catch (error) {
     console.error('[GladeOfEchoes] Demo failed:', error);

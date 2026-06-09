@@ -16,7 +16,7 @@ export async function startFractureOfTheNine(): Promise<void> {
 
     setTimeout(() => {
       clearDemo();
-      console.log('[FractureOfTheNine] Returning to Choose Your Adventure...');
+      console.log('[FractureOfTheNine] Returning to main menu...');
     }, 3000);
   } catch (error) {
     console.error('[FractureOfTheNine] Adventure failed:', error);

@@ -40,14 +40,15 @@ interface NpcDisplayProps {
 
 const NpcDisplay: React.FC<NpcDisplayProps> = ({ npc }) => {
   // Variable declaration
-  const Icon = npcIconMap[npc.name.toLowerCase()] || UserCircle;
+  const displayName = npc.name ?? npc.id ?? 'Unknown visitor';
+  const Icon = npcIconMap[displayName.toLowerCase()] || UserCircle;
   // Variable declaration
-  const description = npc.entryMessage || `${npc.name} is here.`;
+  const description = npc.entryMessage || `${displayName} is here.`;
   // JSX return block or main return
   return (
     <div className="npc-item flex items-center space-x-2" title={description}>
       <Icon size={20} className="text-green-400" />
-      <span className="npc-name font-medium text-green-300">{npc.name}</span>
+      <span className="npc-name font-medium text-green-300">{displayName}</span>
     </div>
   );
 };
@@ -96,7 +97,7 @@ const RoomRenderer: React.FC = () => {
 
       // Variable declaration
       const roomData = room as any;
-      if (roomData.traps && roomData.traps.length > 0 && !state.player?.flags?.trapsDisabled) {
+      if (Array.isArray(roomData.traps) && roomData.traps.length > 0 && !state.player?.flags?.trapsDisabled) {
         // Variable declaration
         const activeTrap = roomData.traps.find((trap: any) => !trap.triggered);
         if (activeTrap) {
@@ -131,8 +132,24 @@ const RoomRenderer: React.FC = () => {
     );
   }
 
-  // Variable declaration
-  const hasExtraDetails = room.items && room.items.length > 0;
+  const roomData = room as any;
+  const roomImageSrc = room.image
+    ? room.image.startsWith('/')
+      ? room.image
+      : room.image.includes('/')
+        ? `/images/${room.image}`
+        : `/images/${room.image}`
+    : '';
+  const roomHotspots = Array.isArray(roomData.clickHotspots)
+    ? roomData.clickHotspots
+    : Array.isArray(roomData.hotspots)
+      ? roomData.hotspots
+      : [];
+  const itemPlacements = Array.isArray(roomData.itemPlacements) ? roomData.itemPlacements : [];
+  const roomEffects = Array.isArray(roomData.effects) ? roomData.effects : [];
+  void roomHotspots;
+  void itemPlacements;
+  void roomEffects;
 
   // JSX return block or main return
   return (
@@ -141,11 +158,11 @@ const RoomRenderer: React.FC = () => {
       {room.image ? (
         <div className="room-image-wrapper h-full w-full overflow-hidden">
           <img
-            src={`/images/${room.image}`}
+            src={roomImageSrc}
             alt={room.title}
             className="w-full h-full object-cover"
             onError={(e) => {
-              console.log(`Failed to load image: /images/${room.image}`);
+              console.log(`Failed to load image: ${roomImageSrc}`);
               e.currentTarget.style.display = 'none';
             }}
           />

@@ -5,10 +5,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 
-// Common loading states
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-
-// Adding default React import for useAsyncCallback
+export interface LoadingState {
   isLoading: boolean;
   error: string | null;
   data?: unknown;

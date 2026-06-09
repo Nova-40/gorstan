@@ -16,7 +16,7 @@
 
 // src/components/WelcomeScreen.tsx
 import React, { useEffect, useRef } from 'react';
-import { getVersionString } from '../config/version';
+import { GAME_STATUS, getVersionString } from '../config/version';
 import RadialCountdown from '../ui/RadialCountdown';
 import { attachWelcomeIdleAutostart, detachWelcomeIdleAutostart } from '../engine/idleAutostart';
 import '../ui/theme.css';
@@ -24,10 +24,16 @@ import '../ui/theme.css';
 interface WelcomeScreenProps {
   onBegin: () => void;
   onLoadGame: () => void;
+  hasSavedGames?: boolean;
   onStartDemo?: () => void;
 }
 
-const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onStartDemo }) => {
+const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
+  onBegin,
+  onLoadGame,
+  hasSavedGames = false,
+  onStartDemo,
+}) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [showIdleCountdown, setShowIdleCountdown] = React.useState(false);
   const [idleTimeRemaining, setIdleTimeRemaining] = React.useState(150); // 2.5 minutes
@@ -91,11 +97,11 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
           className="w-[72px] h-[72px] rounded-full shadow-md"
         />
         Welcome to Gorstan
-        <span className="text-lg text-yellow-400 ml-2">(Beta 2)</span>
+        <span className="text-lg text-yellow-400 ml-2">({GAME_STATUS})</span>
       </h1>
       <p className="text-md md:text-lg text-center max-w-2xl mb-6">
-        A multiverse simulation of coffee, consequence, and quantum possibility. Tread carefully.
-        The rabbit is watching.
+        A parser-first illustrated adventure of coffee, consequence, and quantum possibility.
+        Type commands, use the panels, and trust the paperwork only when cornered.
       </p>
 
       <div className="flex flex-col items-center">
@@ -142,7 +148,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin, onLoadGame, onSt
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl text-lg shadow-md transition-all min-w-[180px]"
               type="button"
             >
-              Load Saved Game
+              {hasSavedGames ? 'Continue' : 'Load Saved Game'}
             </button>
 
             {onStartDemo && (

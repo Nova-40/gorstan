@@ -98,7 +98,7 @@ export class Artifact {
       const quip = quips[Math.floor(Math.random() * quips.length)];
       console.log(`[System] ${quip}`);
       console.log('');
-      console.log('[Demo Complete - Returning to Choose Your Adventure]');
+      console.log('[Demo Complete - Returning to main menu]');
     }, 2000);
   }
 

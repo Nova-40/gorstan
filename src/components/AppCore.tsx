@@ -15,7 +15,7 @@
 */
 
 // src/components/AppCore.tsx
-// Gorstan Game Beta 3
+// Gorstan Game Beta 4
 // Gorstan and characters (c) Geoff Webster 2025
 // Main game controller UI and logic routing.
 
@@ -42,13 +42,13 @@ import SplashScreen from './SplashScreen';
 import TeletypeIntro from './TeletypeIntro';
 import TerminalConsole from './TerminalConsole';
 import WelcomeScreen from './WelcomeScreen';
-import { RouteSelectScreen } from './RouteSelectScreen';
 import TeleportManager from './animations/TeleportManager';
 import QuickActionsPanel from './QuickActionsPanel';
 import CombatActionsPanel from '../ui/QuickActionsPanel';
 import BlueButtonWarningModal from './BlueButtonWarningModal';
 import QuickWinNotifications from './QuickWinNotifications';
 import ProgressDashboard from './ProgressDashboard';
+import OpeningBriefing from './OpeningBriefing';
 
 import { useFlags } from '../hooks/useFlags';
 import { useGameState } from '../state/gameState';
@@ -71,6 +71,7 @@ import { handleRoomEntry } from '../engine/roomEventHandler';
 import { getAllRoomsAsObject } from '../utils/roomLoader';
 import { getFallbackRooms } from '../utils/roomLoaderFallback';
 import { performanceMonitor } from '../utils/performanceMonitor';
+import { safeGetStorageItem, safeRemoveStorageItem, safeSetStorageItem } from '../utils/safeStorage';
 import { onRoomEntry, periodicConversationCheck } from '../npc/triggers';
 import { getTrapByRoom } from '../engine/trapController';
 
@@ -114,7 +115,6 @@ type GameStage =
   | 'splash'
   | 'welcome'
   | 'nameCapture'
-  | 'routeSelect'
   | 'intro'
   | 'demo'
   | 'game'
@@ -152,6 +152,36 @@ interface IntroCompletionData {
 interface Item {
   name: string;
   [key: string]: any;
+}
+
+function recordAppMessage(
+  dispatch: (action: any) => void,
+  text: string,
+  type: 'system' | 'error' | 'warning' | 'info' = 'system',
+): void {
+  dispatch({
+    type: 'RECORD_MESSAGE',
+    payload: {
+      id: `appcore-${Date.now()}`,
+      text,
+      type,
+      timestamp: Date.now(),
+    },
+  });
+}
+
+function resolveRoomId(
+  roomMap: Record<string, Room>,
+  candidate: unknown,
+  fallbackRoomId = 'controlnexus',
+): string {
+  if (typeof candidate === 'string' && candidate && roomMap[candidate]) {
+    return candidate;
+  }
+  if (roomMap[fallbackRoomId]) {
+    return fallbackRoomId;
+  }
+  return Object.keys(roomMap)[0] || fallbackRoomId;
 }
 
 /**
@@ -237,6 +267,15 @@ const AppCore: React.FC = () => {
     (newRoomId: string) => {
       console.log('[AppCore] handleRoomChange called with:', newRoomId);
       if (newRoomId !== currentRoomId) {
+        if (!roomMap[newRoomId]) {
+          recordAppMessage(
+            dispatch,
+            `Room transition refused: '${newRoomId}' is not in the loaded room map.`,
+            'error',
+          );
+          return;
+        }
+
         // Store current room in history before moving
         setRoomHistory((prev) => [...prev, currentRoomId]);
         // Update previousRoom to current room before changing
@@ -268,7 +307,7 @@ const AppCore: React.FC = () => {
         }
       }
     },
-    [state.currentRoomId, setTeleportType, dispatch],
+    [state.currentRoomId, state.roomMap, setTeleportType, dispatch],
   );
 
   const handleBackout = useCallback((): void => {
@@ -384,30 +423,40 @@ const AppCore: React.FC = () => {
 
   // Enhanced save game functions with migration support
   const loadSaveSlots = useCallback(async () => {
-    try {
-      // Load traditional save slots for compatibility
-      const saved = localStorage.getItem('gorstan_save_slots');
-      if (saved) {
-        setSaveSlots(JSON.parse(saved));
+    // Load traditional save slots for compatibility. Malformed legacy data should not block
+    // modern save discovery or startup.
+    let legacySlots: typeof saveSlots = [];
+    const saved = safeGetStorageItem('gorstan_save_slots');
+    if (saved) {
+      try {
+        const parsedSlots = JSON.parse(saved);
+        if (Array.isArray(parsedSlots)) {
+          legacySlots = parsedSlots;
+        }
+      } catch (error) {
+        console.warn('Ignored malformed legacy save slot list:', error);
       }
+    }
 
+    try {
       // Check for save files that need migration
       const saveSlotInfos = await SaveManager.listSlots();
-      setSaveSlots(
-        saveSlotInfos.map((slot) => ({
-          id: slot.slot.toString(),
-          name: slot.playerName,
-          playerName: slot.playerName,
-          currentRoom: 'Unknown', // Would need to be extracted from gameState if needed
-          timestamp: Date.parse(slot.timestamp),
-          score: 0, // Would need to be extracted from gameState if needed
-          playTime: 0, // Would need to be extracted from gameState if needed
-        })),
-      );
+      const modernSlots = saveSlotInfos.map((slot) => ({
+        id: slot.slot.toString(),
+        name: slot.playerName,
+        playerName: slot.playerName,
+        currentRoom: 'Unknown', // Would need to be extracted from gameState if needed
+        timestamp: Date.parse(slot.timestamp),
+        score: 0, // Would need to be extracted from gameState if needed
+        playTime: 0, // Would need to be extracted from gameState if needed
+      }));
+
+      setSaveSlots(modernSlots.length > 0 ? modernSlots : legacySlots);
     } catch (error) {
       console.error('Failed to load save slots:', error);
+      setSaveSlots(legacySlots);
     }
-  }, [dispatch]);
+  }, []);
 
   const handleSave = useCallback(
     async (slotId: string, slotName: string) => {
@@ -514,7 +563,13 @@ const AppCore: React.FC = () => {
           });
 
           setSaveSlots(newSlots);
-          localStorage.setItem('gorstan_save_slots', JSON.stringify(newSlots));
+          if (!safeSetStorageItem('gorstan_save_slots', JSON.stringify(newSlots))) {
+            recordAppMessage(
+              dispatch,
+              'Save slot list could not be stored; browser storage is unavailable.',
+              'warning',
+            );
+          }
 
           dispatch({
             type: 'RECORD_MESSAGE',
@@ -532,15 +587,7 @@ const AppCore: React.FC = () => {
         closeModal();
       } catch (error) {
         console.error('Failed to save game:', error);
-        dispatch({
-          type: 'RECORD_MESSAGE',
-          payload: {
-            id: `save-error-${Date.now()}`,
-            text: `Failed to save game: ${error}`,
-            type: 'error',
-            timestamp: Date.now(),
-          },
-        });
+        recordAppMessage(dispatch, `Failed to save game: ${error}`, 'error');
       }
     },
     [state, saveSlots, dispatch, closeModal],
@@ -556,10 +603,11 @@ const AppCore: React.FC = () => {
           // Load the save data
           if (saveFile.gameState) {
             const gameState = saveFile.gameState;
+            const savedRoomId = resolveRoomId(roomMap, gameState.currentRoomId || 'controlnexus');
 
-            dispatch({ type: 'ADVANCE_STAGE', payload: gameState.stage });
-            dispatch({ type: 'SET_PLAYER_NAME', payload: gameState.player.name });
-            dispatch({ type: 'MOVE_TO_ROOM', payload: gameState.currentRoomId });
+            dispatch({ type: 'ADVANCE_STAGE', payload: 'game' });
+            dispatch({ type: 'SET_PLAYER_NAME', payload: gameState.player?.name || saveFile.playerName || 'Player' });
+            dispatch({ type: 'MOVE_TO_ROOM', payload: savedRoomId });
 
             // Restore flags
             Object.entries(gameState.flags || {}).forEach(([flag, value]) => {
@@ -571,6 +619,14 @@ const AppCore: React.FC = () => {
               gameState.player.inventory.forEach((item: string) => {
                 dispatch({ type: 'ADD_TO_INVENTORY', payload: item });
               });
+            }
+
+            if (savedRoomId !== gameState.currentRoomId) {
+              recordAppMessage(
+                dispatch,
+                'Saved room was unavailable; returned to a safe starting room.',
+                'warning',
+              );
             }
           }
 
@@ -603,16 +659,16 @@ const AppCore: React.FC = () => {
         });
       }
     },
-    [dispatch, closeModal, loadSaveSlots],
+    [dispatch, closeModal, loadSaveSlots, roomMap],
   );
 
   const handleDeleteSave = useCallback(
     (slotId: string) => {
       try {
-        localStorage.removeItem(`gorstan_save_${slotId}`);
+        safeRemoveStorageItem(`gorstan_save_${slotId}`);
         const newSlots = saveSlots.filter((slot) => slot.id !== slotId);
         setSaveSlots(newSlots);
-        localStorage.setItem('gorstan_save_slots', JSON.stringify(newSlots));
+        safeSetStorageItem('gorstan_save_slots', JSON.stringify(newSlots));
 
         dispatch({
           type: 'RECORD_MESSAGE',
@@ -1530,20 +1586,27 @@ const AppCore: React.FC = () => {
 
   // Enhanced room validation effect with proper typing
   useEffect(() => {
+    const loadedRoomMap = state.roomMap && typeof state.roomMap === 'object' ? state.roomMap : {};
+    const roomMapLoaded = Object.keys(loadedRoomMap).length > 0;
+    if (!roomMapLoaded) {
+      return;
+    }
+
     if (!room && currentRoomId && !roomFallbackAttempted) {
+      const fallbackRoomId = resolveRoomId(loadedRoomMap, 'controlnexus');
       dispatch({
         type: 'ADD_MESSAGE',
         payload: {
           id: Date.now().toString(),
-          text: `Room transition failed: Room '${currentRoomId}' does not exist. Returning to Control Nexus.`,
+          text: `Room transition failed: Room '${currentRoomId}' does not exist. Returning to ${fallbackRoomId}.`,
           type: 'error',
           timestamp: Date.now(),
         },
       });
-      dispatch({ type: 'UPDATE_GAME_STATE', payload: { currentRoomId: 'controlnexus' } });
+      dispatch({ type: 'MOVE_TO_ROOM', payload: fallbackRoomId });
       setRoomFallbackAttempted(true);
     }
-  }, [room, currentRoomId, dispatch, roomFallbackAttempted]);
+  }, [room, currentRoomId, dispatch, roomFallbackAttempted, state.roomMap]);
 
   // Enhanced room transition effect with proper typing
   useEffect(() => {
@@ -2011,15 +2074,19 @@ const AppCore: React.FC = () => {
   }
   if (stage === 'welcome') {
     return (
-      <WelcomeScreen
-        onBegin={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'nameCapture' })}
-        onLoadGame={() => dispatch({ type: 'LOAD_SAVED_GAME' })}
-        onStartDemo={() => {
-          // Set demo-specific player name and skip nameCapture
-          dispatch({ type: 'SET_PLAYER_NAME', payload: 'Demo Player' });
-          dispatch({ type: 'ADVANCE_STAGE', payload: 'demo' });
-        }}
-      />
+      <>
+        <WelcomeScreen
+          onBegin={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'nameCapture' })}
+          onLoadGame={() => openModal('saveGame')}
+          hasSavedGames={saveSlots.length > 0}
+          onStartDemo={() => {
+            // Set demo-specific player name and skip nameCapture
+            dispatch({ type: 'SET_PLAYER_NAME', payload: 'Demo Player' });
+            dispatch({ type: 'ADVANCE_STAGE', payload: 'demo' });
+          }}
+        />
+        {renderModalContent()}
+      </>
     );
   }
   if (stage === 'demo') {
@@ -2051,11 +2118,11 @@ const AppCore: React.FC = () => {
         <TrialsGame
           onComplete={() => {
             console.log('[AppCore] Trials completed successfully!');
-            dispatch({ type: 'ADVANCE_STAGE', payload: 'routeSelect' });
+            dispatch({ type: 'ADVANCE_STAGE', payload: 'intro' });
           }}
           onQuit={() => {
             console.log('[AppCore] Player quit the trials');
-            dispatch({ type: 'ADVANCE_STAGE', payload: 'routeSelect' });
+            dispatch({ type: 'ADVANCE_STAGE', payload: 'intro' });
           }}
           autoStart={true}
         />
@@ -2067,27 +2134,8 @@ const AppCore: React.FC = () => {
       <PlayerNameCapture
         onNameSubmit={(name: string) => {
           dispatch({ type: 'SET_PLAYER_NAME', payload: name });
-          dispatch({ type: 'ADVANCE_STAGE', payload: 'routeSelect' });
+          dispatch({ type: 'ADVANCE_STAGE', payload: 'intro' });
         }}
-      />
-    );
-  }
-  if (stage === 'routeSelect') {
-    return (
-      <RouteSelectScreen
-        onRouteSelect={(routeId) => {
-          dispatch({ type: 'SET_ROUTE', payload: routeId });
-          // Different paths based on route selection
-          if (routeId === 'demo') {
-            dispatch({ type: 'ADVANCE_STAGE', payload: 'demo' });
-          } else if (routeId === 'short10_trialsofgorstan') {
-            // Special handling for Trials of Gorstan interactive interface
-            dispatch({ type: 'ADVANCE_STAGE', payload: 'trialsGame' });
-          } else {
-            dispatch({ type: 'ADVANCE_STAGE', payload: 'intro' });
-          }
-        }}
-        onCancel={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'welcome' })}
       />
     );
   }
@@ -2303,6 +2351,8 @@ const AppCore: React.FC = () => {
 
       {/* Quick Win Notifications System */}
       <QuickWinNotifications />
+
+      <OpeningBriefing onCommand={handleCommand} />
     </div>
   );
 };

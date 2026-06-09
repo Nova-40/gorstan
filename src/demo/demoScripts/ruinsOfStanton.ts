@@ -16,7 +16,7 @@ export async function startRuinsOfStanton(): Promise<void> {
 
     setTimeout(() => {
       clearDemo();
-      console.log('[RuinsOfStanton] Returning to Choose Your Adventure...');
+      console.log('[RuinsOfStanton] Returning to main menu...');
     }, 3000);
   } catch (error) {
     console.error('[RuinsOfStanton] Demo failed:', error);

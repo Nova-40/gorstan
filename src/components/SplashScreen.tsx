@@ -19,6 +19,8 @@
 
 import React, { useEffect } from 'react';
 
+import { GAME_STATUS } from '../config/version';
+
 type SplashScreenProps = {
   onComplete: () => void;
 };
@@ -70,7 +72,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
             `,
           }}
         >
-          The Game Beta 2
+          The Game {GAME_STATUS}
         </p>
 
         {}

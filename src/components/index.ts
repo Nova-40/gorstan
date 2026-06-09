@@ -7,7 +7,6 @@
 export * from './ui';
 
 // Route System Components
-export { RouteSelectScreen } from './RouteSelectScreen';
 export { InGameHUD } from './InGameHUD';
 export { RouteManagerProvider, RouteWrapper, useRouteManager } from './RouteManager';
 
