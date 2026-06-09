@@ -423,33 +423,40 @@ const AppCore: React.FC = () => {
 
   // Enhanced save game functions with migration support
   const loadSaveSlots = useCallback(async () => {
-    try {
-      // Load traditional save slots for compatibility
-      const saved = safeGetStorageItem('gorstan_save_slots');
-      if (saved) {
+    // Load traditional save slots for compatibility. Malformed legacy data should not block
+    // modern save discovery or startup.
+    let legacySlots: typeof saveSlots = [];
+    const saved = safeGetStorageItem('gorstan_save_slots');
+    if (saved) {
+      try {
         const parsedSlots = JSON.parse(saved);
         if (Array.isArray(parsedSlots)) {
-          setSaveSlots(parsedSlots);
+          legacySlots = parsedSlots;
         }
+      } catch (error) {
+        console.warn('Ignored malformed legacy save slot list:', error);
       }
+    }
 
+    try {
       // Check for save files that need migration
       const saveSlotInfos = await SaveManager.listSlots();
-      setSaveSlots(
-        saveSlotInfos.map((slot) => ({
-          id: slot.slot.toString(),
-          name: slot.playerName,
-          playerName: slot.playerName,
-          currentRoom: 'Unknown', // Would need to be extracted from gameState if needed
-          timestamp: Date.parse(slot.timestamp),
-          score: 0, // Would need to be extracted from gameState if needed
-          playTime: 0, // Would need to be extracted from gameState if needed
-        })),
-      );
+      const modernSlots = saveSlotInfos.map((slot) => ({
+        id: slot.slot.toString(),
+        name: slot.playerName,
+        playerName: slot.playerName,
+        currentRoom: 'Unknown', // Would need to be extracted from gameState if needed
+        timestamp: Date.parse(slot.timestamp),
+        score: 0, // Would need to be extracted from gameState if needed
+        playTime: 0, // Would need to be extracted from gameState if needed
+      }));
+
+      setSaveSlots(modernSlots.length > 0 ? modernSlots : legacySlots);
     } catch (error) {
       console.error('Failed to load save slots:', error);
+      setSaveSlots(legacySlots);
     }
-  }, [dispatch]);
+  }, []);
 
   const handleSave = useCallback(
     async (slotId: string, slotName: string) => {
