@@ -19,9 +19,10 @@
 
 import React, { useState } from 'react';
 import { Save, Download, Trash2, Calendar, Clock } from 'lucide-react';
+import { MAX_SAVE_SLOTS } from '../services/SaveManager';
 
 interface SaveSlot {
-  id: string;
+  id: number;
   name: string;
   playerName: string;
   currentRoom: string;
@@ -33,9 +34,9 @@ interface SaveSlot {
 interface SaveGameModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (slotId: string, slotName: string) => void;
-  onLoad: (slotId: string) => void;
-  onDelete: (slotId: string) => void;
+  onSave: (slotId: number, slotName: string) => void;
+  onLoad: (slotId: number) => void;
+  onDelete: (slotId: number) => void;
   saveSlots: SaveSlot[];
 }
 
@@ -48,7 +49,7 @@ const SaveGameModal: React.FC<SaveGameModalProps> = ({
   saveSlots,
 }) => {
   const [newSaveName, setNewSaveName] = useState('');
-  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
 
   if (!isOpen) {
     return null;
@@ -65,9 +66,22 @@ const SaveGameModal: React.FC<SaveGameModalProps> = ({
     return `${hours}h ${minutes}m`;
   };
 
+  const sortedSaveSlots = [...saveSlots].sort((a, b) => a.id - b.id);
+  const selectedSave = sortedSaveSlots.find((slot) => slot.id === selectedSlot) ?? null;
+
   const handleSave = () => {
     if (newSaveName.trim()) {
-      const slotId = `save_${Date.now()}`;
+      const occupiedSlots = new Set(sortedSaveSlots.map((slot) => slot.id));
+      const firstAvailableSlot = Array.from({ length: MAX_SAVE_SLOTS }, (_, index) => index).find(
+        (slot) => !occupiedSlots.has(slot),
+      );
+      const oldestSlot = [...sortedSaveSlots].sort((a, b) => a.timestamp - b.timestamp)[0];
+      const slotId = selectedSlot ?? firstAvailableSlot ?? oldestSlot?.id;
+
+      if (slotId === undefined) {
+        return;
+      }
+
       onSave(slotId, newSaveName.trim());
       setNewSaveName('');
     }
@@ -98,7 +112,7 @@ const SaveGameModal: React.FC<SaveGameModalProps> = ({
         <div className="modal-body">
           {/* New Save Section */}
           <div className="save-section">
-            <h3>Create New Save</h3>
+            <h3>{selectedSave ? `Overwrite Slot ${selectedSave.id + 1}` : 'Create New Save'}</h3>
             <div className="save-input-group">
               <input
                 type="text"
@@ -111,9 +125,13 @@ const SaveGameModal: React.FC<SaveGameModalProps> = ({
               />
               <button onClick={handleSave} disabled={!newSaveName.trim()} className="save-button">
                 <Save size={16} />
-                Save
+                {selectedSave ? 'Overwrite' : 'Save'}
               </button>
             </div>
+            <p className="text-sm text-gray-400 mt-2">
+              Saves use slots 1-{MAX_SAVE_SLOTS}. Select a slot below to overwrite it, otherwise
+              Gorstan uses the first empty slot.
+            </p>
           </div>
 
           {/* Existing Saves Section */}
@@ -125,14 +143,16 @@ const SaveGameModal: React.FC<SaveGameModalProps> = ({
               </div>
             ) : (
               <div className="saves-list">
-                {saveSlots.map((slot) => (
+                {sortedSaveSlots.map((slot) => (
                   <div
                     key={slot.id}
                     className={`save-slot ${selectedSlot === slot.id ? 'selected' : ''}`}
                     onClick={() => setSelectedSlot(slot.id)}
                   >
                     <div className="save-info">
-                      <div className="save-name">{slot.name}</div>
+                      <div className="save-name">
+                        Slot {slot.id + 1}: {slot.name}
+                      </div>
                       <div className="save-details">
                         <span className="player-name">{slot.playerName}</span>
                         <span className="current-room">{slot.currentRoom}</span>

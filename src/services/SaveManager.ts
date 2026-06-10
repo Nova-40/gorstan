@@ -8,6 +8,7 @@ import { safeGetStorageItem, safeRemoveStorageItem, safeSetStorageItem } from '.
 
 export interface SaveFile {
   version: number;
+  saveName?: string;
   playerName: string;
   progress: {
     questsCompleted: number;
@@ -35,9 +36,13 @@ export interface SaveFile {
 
 export interface SaveSlotInfo {
   slot: number;
+  saveName: string;
   playerName: string;
+  currentRoom: string;
   timestamp: string;
   version: number;
+  totalScore: number;
+  playTime: number;
   needsMigration: boolean;
   compatible: boolean;
   size: number;
@@ -51,8 +56,36 @@ export interface SaveOperation {
   warnings?: string[];
 }
 
+export const MAX_SAVE_SLOTS = 10;
+
+export function isValidSaveSlot(slot: unknown): slot is number {
+  return typeof slot === 'number' && Number.isInteger(slot) && slot >= 0 && slot < MAX_SAVE_SLOTS;
+}
+
+export function parseSaveSlotId(value: unknown): number | null {
+  if (typeof value === 'number') {
+    return isValidSaveSlot(value) ? value : null;
+  }
+
+  if (typeof value !== 'string') {
+    return null;
+  }
+
+  const trimmed = value.trim();
+  if (!/^\d+$/.test(trimmed)) {
+    return null;
+  }
+
+  const parsed = Number(trimmed);
+  return isValidSaveSlot(parsed) ? parsed : null;
+}
+
 export class SaveManager {
   public static CURRENT_VERSION = 7;
+
+  private static getSaveSlotKey(slot: number): string | null {
+    return isValidSaveSlot(slot) ? `save_slot_${slot}` : null;
+  }
 
   /**
    * Modern validation for save files
@@ -101,6 +134,14 @@ export class SaveManager {
    * Modern save operation without legacy migration
    */
   static async save(slot: number, saveFile: SaveFile): Promise<SaveOperation> {
+    if (!isValidSaveSlot(slot)) {
+      return {
+        success: false,
+        message: `Save failed: invalid slot "${slot}"`,
+        warnings: ['Saves must target a numeric slot between 0 and 9'],
+      };
+    }
+
     try {
       // Validate before saving
       if (!this.validate(saveFile)) {
@@ -129,10 +170,24 @@ export class SaveManager {
         if (saveFileForChecksum.metadata) {
           delete saveFileForChecksum.metadata.checksum;
         }
-        finalSaveFile.metadata!.checksum = this.generateChecksum(saveFileForChecksum);
+        finalSaveFile.metadata = {
+          saveVersion: finalSaveFile.metadata?.saveVersion ?? this.CURRENT_VERSION,
+          gameVersion: finalSaveFile.metadata?.gameVersion ?? '3.8.8',
+          features: finalSaveFile.metadata?.features,
+          compatibility: finalSaveFile.metadata?.compatibility,
+          checksum: this.generateChecksum(saveFileForChecksum),
+        };
       }
 
-      const key = `save_slot_${slot}`;
+      const key = this.getSaveSlotKey(slot);
+      if (!key) {
+        return {
+          success: false,
+          message: `Save failed: invalid slot "${slot}"`,
+          warnings: ['Saves must target a numeric slot between 0 and 9'],
+        };
+      }
+
       if (!safeSetStorageItem(key, JSON.stringify(finalSaveFile))) {
         return {
           success: false,
@@ -158,8 +213,16 @@ export class SaveManager {
    * Modern load operation without legacy migration
    */
   static async load(slot: number): Promise<SaveFile | null> {
+    if (!isValidSaveSlot(slot)) {
+      console.warn(`[SaveManager] Ignored invalid slot id: ${slot}`);
+      return null;
+    }
+
     try {
-      const key = `save_slot_${slot}`;
+      const key = this.getSaveSlotKey(slot);
+      if (!key) {
+        return null;
+      }
       const data = safeGetStorageItem(key);
       if (!data) {
         return null;
@@ -186,20 +249,28 @@ export class SaveManager {
   static async listSlots(): Promise<SaveSlotInfo[]> {
     const slots: SaveSlotInfo[] = [];
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < MAX_SAVE_SLOTS; i++) {
       try {
-        const key = `save_slot_${i}`;
+        const key = this.getSaveSlotKey(i);
+        if (!key) {
+          continue;
+        }
         const data = safeGetStorageItem(key);
 
         if (data) {
           const saveFile: SaveFile = JSON.parse(data);
 
           if (this.validate(saveFile)) {
+            const gameState = saveFile.gameState;
             slots.push({
               slot: i,
+              saveName: saveFile.saveName || saveFile.playerName || `Slot ${i + 1}`,
               playerName: saveFile.playerName,
+              currentRoom: gameState?.currentRoomId || 'Unknown',
               timestamp: saveFile.timestamp,
               version: saveFile.version,
+              totalScore: saveFile.progress.totalScore || 0,
+              playTime: saveFile.progress.totalPlayTime || 0,
               needsMigration: false, // No migration needed in modern system
               compatible: true, // All modern saves are compatible
               size: data.length,
@@ -219,8 +290,16 @@ export class SaveManager {
    * Delete a save slot
    */
   static deleteSave(slot: number): boolean {
+    if (!isValidSaveSlot(slot)) {
+      console.warn(`[SaveManager] Ignored invalid slot delete request: ${slot}`);
+      return false;
+    }
+
     try {
-      const key = `save_slot_${slot}`;
+      const key = this.getSaveSlotKey(slot);
+      if (!key) {
+        return false;
+      }
       return safeRemoveStorageItem(key);
     } catch (error) {
       console.error('[SaveManager] Delete failed:', error);
@@ -246,9 +325,11 @@ export class SaveManager {
    * Clear all save data (for development/testing)
    */
   static clearAllSaves(): void {
-    for (let i = 0; i < 10; i++) {
-      const key = `save_slot_${i}`;
-      safeRemoveStorageItem(key);
+    for (let i = 0; i < MAX_SAVE_SLOTS; i++) {
+      const key = this.getSaveSlotKey(i);
+      if (key) {
+        safeRemoveStorageItem(key);
+      }
     }
   }
 }
