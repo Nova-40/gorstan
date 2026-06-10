@@ -49,6 +49,27 @@ const controlnexus: Room = {
     sit: 'hiddenlab',
   },
 
+  map: {
+    zone: 'Intro',
+    coordinates: { x: 0, y: 0 },
+  },
+
+  actions: [
+    { id: 'inspect-console', label: 'Inspect Console', command: 'inspect console' },
+    { id: 'inspect-chair', label: 'Inspect Chair', command: 'inspect chair' },
+    { id: 'inspect-screens', label: 'Inspect Screens', command: 'inspect screens' },
+  ],
+
+  hotspots: [
+    { id: 'console', label: 'Console', description: 'The main control console glows with dormant authority.', x: 44, y: 38, width: 16, height: 18, command: 'inspect console' },
+    { id: 'chair', label: 'Command Chair', description: 'A neural-linked chair facing the nexus controls.', x: 60, y: 58, width: 12, height: 18, command: 'inspect chair' },
+    { id: 'screens', label: 'Wall Screens', description: 'Dark displays flicker with dimensional telemetry.', x: 18, y: 20, width: 18, height: 14, command: 'inspect screens' },
+  ],
+
+  effects: [
+    { id: 'nexus-hum', kind: 'ambient', label: 'Dormant systems hum' },
+  ],
+
   items: [],
 
   interactables: {

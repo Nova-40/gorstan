@@ -17,12 +17,210 @@
 // Gorstan and characters (c) Geoff Webster 2025
 // Parses and processes player commands.
 
-import { Room } from '../types/Room';
+import { Room, RoomItem } from '../types/Room';
 import { TerminalMessage } from '../components/TerminalConsole';
 
+import { resolveBlueButtonPress } from './buttonPress';
 import { handleCrossingInteraction, resetCrossingState } from './crossingController';
+import { resolveDominicPickupAttempt } from './dominicPickupConversation';
 import { searchForTraps, canPlayerDisarmTrap } from './trapDetection';
+import {
+  disarmTrap as disarmProceduralTrap,
+  getTrapByRoom,
+  resetTrap as resetProceduralTrap,
+  triggerTrap as triggerProceduralTrap,
+} from './trapController';
 import { LocalGameState } from '../state/gameState';
+import { getCanonicalHotspots } from './worldModel';
+
+function normaliseLookupValue(value: string): string {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, '');
+}
+
+function resolveInputAlias(input: string): string {
+  const trimmedInput = input.toLowerCase().trim();
+  const directAlias = aliases[trimmedInput];
+
+  if (directAlias) {
+    return directAlias;
+  }
+
+  const prefixAlias = Object.entries(aliases)
+    .sort((left, right) => right[0].length - left[0].length)
+    .find(([alias]) => trimmedInput.startsWith(`${alias} `));
+
+  if (!prefixAlias) {
+    return trimmedInput;
+  }
+
+  const [alias, replacement] = prefixAlias;
+  return `${replacement} ${trimmedInput.slice(alias.length + 1)}`.trim();
+}
+
+function findRoomItem(currentRoom: Room, noun: string): { inventoryName: string; roomValue: string | RoomItem } | null {
+  if (!noun || !currentRoom.items?.length) {
+    return null;
+  }
+
+  const wanted = normaliseLookupValue(noun);
+
+  for (const item of currentRoom.items) {
+    if (typeof item === 'string') {
+      if (normaliseLookupValue(item) === wanted) {
+        return { inventoryName: item, roomValue: item };
+      }
+      continue;
+    }
+
+    const candidateNames = [item.name, item.id].filter((value): value is string => Boolean(value));
+    if (candidateNames.some((value) => normaliseLookupValue(value) === wanted)) {
+      return { inventoryName: item.name || item.id, roomValue: item };
+    }
+  }
+
+  return null;
+}
+
+function resolveRoomId(gameState: LocalGameState, rawTarget: string): string | null {
+  if (!rawTarget) {
+    return null;
+  }
+
+  const wanted = normaliseLookupValue(rawTarget);
+
+  for (const [roomId, room] of Object.entries(gameState.roomMap || {})) {
+    const labels = [roomId, room.id, room.title, (room as Record<string, unknown>).name]
+      .filter((value): value is string => typeof value === 'string' && value.length > 0);
+
+    if (labels.some((value) => normaliseLookupValue(value) === wanted)) {
+      return roomId;
+    }
+  }
+
+  return null;
+}
+
+function withAchievement(metadata: LocalGameState['metadata'], achievementId: string) {
+  const existing = metadata?.achievements || [];
+  if (existing.includes(achievementId)) {
+    return metadata;
+  }
+
+  return {
+    ...metadata,
+    achievements: [...existing, achievementId],
+  };
+}
+
+function canUseDebugCommands(gameState: LocalGameState): boolean {
+  return Boolean(gameState.settings?.debugMode) || gameState.player?.name === 'Geoff';
+}
+
+function getStaticTrap(currentRoom: Room): any | null {
+  const roomTraps = currentRoom.traps?.filter((trap: any) => !trap.triggered) || [];
+  return roomTraps[0] || null;
+}
+
+function getTrapSeverityLabel(trap: any): string {
+  return trap?.severity || 'dangerous';
+}
+
+function updateStaticTrapState(
+  currentRoom: Room,
+  gameState: LocalGameState,
+  trapId: string,
+  patch: (trap: any) => any,
+): Partial<LocalGameState> {
+  const updatedRoom = {
+    ...currentRoom,
+    traps:
+      currentRoom.traps?.map((trap: any) =>
+        trap.id === trapId
+          ? patch(trap)
+          : trap,
+      ) || [],
+  };
+
+  return {
+    roomMap: {
+      ...gameState.roomMap,
+      [currentRoom.id]: updatedRoom,
+    },
+  };
+}
+
+function buildStaticTrapTriggerResult(currentRoom: Room, gameState: LocalGameState, trap: any): CommandResult {
+  const damage = trap.effect?.damage || trap.damage || 0;
+  const nextHealth = Math.max(0, (gameState.player.health || 100) - damage);
+  const nextFlags = { ...gameState.flags };
+
+  if (trap.effect?.flagsSet) {
+    trap.effect.flagsSet.forEach((flagName: string) => {
+      nextFlags[flagName] = true;
+    });
+  }
+
+  return {
+    messages: [
+      { text: `⚠️ Trap triggered: ${trap.description || 'A hidden mechanism snaps into action.'}`, type: 'error' },
+      ...(damage > 0
+        ? [{ text: `You take ${damage} damage! Health: ${nextHealth}`, type: 'error' as const }]
+        : []),
+    ],
+    updates: {
+      flags: nextFlags,
+      player: {
+        ...gameState.player,
+        health: nextHealth,
+      },
+      ...updateStaticTrapState(currentRoom, gameState, trap.id, (existingTrap: any) => ({
+        ...existingTrap,
+        triggered: true,
+      })),
+    },
+  };
+}
+
+function getTrapInspectionMessage(currentRoom: Room, gameState: LocalGameState): CommandResult {
+  const proceduralTrap = getTrapByRoom(currentRoom.id);
+  if (proceduralTrap && !proceduralTrap.triggered) {
+    const disarmability = proceduralTrap.disarmable ? 'It looks disarmable.' : 'It does not look safely disarmable.';
+    return {
+      messages: [
+        {
+          text: `You inspect the trap: ${proceduralTrap.description}. ${disarmability}`,
+          type: 'info',
+        },
+      ],
+    };
+  }
+
+  const staticTrap = getStaticTrap(currentRoom);
+  if (staticTrap) {
+    const disarmResult = canPlayerDisarmTrap(
+      staticTrap,
+      gameState.player.traits || [],
+      gameState.player.inventory || [],
+    );
+
+    return {
+      messages: [
+        {
+          text: `You inspect the trap: ${staticTrap.description || 'A dangerous mechanism blocks your path.'}`,
+          type: 'info',
+        },
+        {
+          text: disarmResult.canDisarm
+            ? `It may be disarmed with ${disarmResult.method || 'careful handling'}${disarmResult.chance ? ` (${Math.round(disarmResult.chance * 100)}% chance)` : ''}.`
+            : 'You do not yet have the skills or tools to safely disarm it.',
+          type: disarmResult.canDisarm ? 'system' : 'error',
+        },
+      ],
+    };
+  }
+
+  return { messages: [{ text: 'There is no active trap here to inspect.', type: 'error' }] };
+}
 
 /**
  * CommandParserParams interface for processing commands
@@ -69,7 +267,47 @@ const aliases: Record<string, string> = {
   find: 'search',
   'look for': 'search',
   'check for': 'search',
+  n: 'go north',
+  s: 'go south',
+  e: 'go east',
+  w: 'go west',
+  u: 'go up',
+  d: 'go down',
 };
+
+const DIRECTION_COMMANDS = new Set(['north', 'south', 'east', 'west', 'up', 'down']);
+
+function findInspectableTarget(currentRoom: Room, noun: string): { label: string; description?: string } | null {
+  if (!noun) {
+    return null;
+  }
+
+  const lowered = noun.toLowerCase();
+  const itemMatch = currentRoom.items?.find((item) => {
+    const name = typeof item === 'string' ? item : item.name;
+    return name.toLowerCase() === lowered;
+  });
+
+  if (itemMatch) {
+    return {
+      label: typeof itemMatch === 'string' ? itemMatch : itemMatch.name,
+      description: typeof itemMatch === 'string' ? undefined : itemMatch.description,
+    };
+  }
+
+  const hotspotMatch = getCanonicalHotspots(currentRoom).find(
+    (hotspot) => hotspot.label.toLowerCase() === lowered || hotspot.id === lowered,
+  );
+
+  if (hotspotMatch) {
+    return {
+      label: hotspotMatch.label,
+      description: hotspotMatch.description,
+    };
+  }
+
+  return null;
+}
 
 /**
  * Parses and processes player commands
@@ -86,10 +324,19 @@ export function processCommand({
     };
   }
 
-  const resolvedInput = aliases[input.toLowerCase().trim()] || input.toLowerCase().trim();
+  const trimmedOriginalInput = input.trim();
+  const resolvedInput = resolveInputAlias(input);
   const commandParts = resolvedInput.split(' ');
   const verb = commandParts[0];
   const noun = commandParts.slice(1).join(' ');
+
+  if (DIRECTION_COMMANDS.has(verb)) {
+    return processCommand({
+      input: `go ${verb}`,
+      currentRoom,
+      gameState,
+    });
+  }
 
   const messages: TerminalMessage[] = [];
   let updates: Partial<LocalGameState> = {};
@@ -201,6 +448,22 @@ export function processCommand({
 
     case 'inspect':
     case 'look': {
+      if (noun === 'trap') {
+        return getTrapInspectionMessage(currentRoom, gameState);
+      }
+
+      const target = findInspectableTarget(currentRoom, noun);
+      if (target) {
+        return {
+          messages: [
+            {
+              text: target.description || `You study the ${target.label}, but it remains inscrutable.`,
+              type: 'lore',
+            },
+          ],
+        };
+      }
+
       const descriptionLines = Array.isArray(currentRoom.description)
         ? currentRoom.description
         : [currentRoom.description];
@@ -255,12 +518,295 @@ export function processCommand({
         return { messages: [{ text: 'What do you want to use?', type: 'error' }] };
       }
 
+      if (noun.includes(' with ')) {
+        const [rawItem, rawTarget] = noun.split(' with ');
+        const item = rawItem.trim();
+        const target = rawTarget.trim();
+
+        if (!gameState.player.inventory.includes(item)) {
+          return { messages: [{ text: `You don't have a ${item} to use.`, type: 'error' }] };
+        }
+
+        if (
+          (item === 'batteries' && target === 'torch') ||
+          (item === 'torch' && target === 'batteries')
+        ) {
+          if (gameState.flags?.batteriesInserted) {
+            return {
+              messages: [{ text: 'You insert the batteries into the torch. It flickers to life.', type: 'info' }],
+              updates: {
+                flags: {
+                  ...gameState.flags,
+                  torchReady: true,
+                },
+              },
+            };
+          }
+
+          return {
+            messages: [{ text: 'You need to insert the batteries first.', type: 'error' }],
+          };
+        }
+
+        return {
+          messages: [{ text: `You try using the ${item} with the ${target}.`, type: 'info' }],
+        };
+      }
+
       if (!gameState.player.inventory.includes(noun)) {
         return { messages: [{ text: `You don't have a ${noun} to use.`, type: 'error' }] };
       }
 
+      if (noun === 'batteries') {
+        return {
+          messages: [{ text: 'You insert the batteries.', type: 'info' }],
+          updates: {
+            flags: {
+              ...gameState.flags,
+              batteriesInserted: true,
+            },
+          },
+        };
+      }
+
       messages.push({ text: `You use the ${noun}.`, type: 'info' });
       return { messages };
+    }
+
+    case 'pick': {
+      const requestedItem = noun === 'up' ? '' : noun.startsWith('up ') ? noun.slice(3).trim() : noun;
+
+      if (!requestedItem) {
+        return { messages: [{ text: 'What do you want to pick up?', type: 'error' }] };
+      }
+
+      const roomItem = findRoomItem(currentRoom, requestedItem);
+      if (!roomItem) {
+        return {
+          messages: [{ text: `There is no ${requestedItem} here to pick up.`, type: 'error' }],
+        };
+      }
+
+      if (gameState.player.inventory.includes(roomItem.inventoryName)) {
+        return {
+          messages: [{ text: `You already have ${roomItem.inventoryName}.`, type: 'info' }],
+        };
+      }
+
+      if (
+        normaliseLookupValue(roomItem.inventoryName) === 'dominic' &&
+        currentRoom.id === 'dalesapartment'
+      ) {
+        const outcome = resolveDominicPickupAttempt(gameState);
+
+        if (!outcome.completePickup) {
+          return {
+            messages: outcome.messages.map((text) => ({ text, type: text.startsWith('*DOMINIC') ? 'lore' : 'info' })),
+            updates: {
+              flags: outcome.nextFlags,
+            },
+          };
+        }
+
+        const dominicRoomUpdates =
+          currentRoom.items?.length && typeof currentRoom.items[0] === 'string'
+            ? (currentRoom.items as string[]).filter((item) => item !== roomItem.roomValue)
+            : (currentRoom.items as RoomItem[]).filter(
+                (item) => item.id !== (roomItem.roomValue as RoomItem).id,
+              );
+
+        return {
+          messages: outcome.messages.map((text) => ({ text, type: text.startsWith('*DOMINIC') ? 'lore' : 'info' })),
+          updates: {
+            flags: outcome.nextFlags,
+            player: {
+              ...gameState.player,
+              inventory: [...gameState.player.inventory, 'deadfish'],
+            },
+            roomMap: {
+              ...gameState.roomMap,
+              [currentRoom.id]: {
+                ...currentRoom,
+                items: dominicRoomUpdates,
+              },
+            },
+          },
+        };
+      }
+
+      let updatedItems: Room['items'];
+
+      if (currentRoom.items?.length && typeof currentRoom.items[0] === 'string') {
+        updatedItems = (currentRoom.items as string[]).filter((item) => item !== roomItem.roomValue);
+      } else {
+        const matchedItem = roomItem.roomValue as RoomItem;
+        updatedItems = (currentRoom.items as RoomItem[]).filter(
+          (item) => item.id !== matchedItem.id && item.name !== matchedItem.name,
+        );
+      }
+
+      const updatedFlags = { ...gameState.flags };
+
+      if (normaliseLookupValue(roomItem.inventoryName) === 'runbag') {
+        updatedFlags.hasRunbag = true;
+      }
+
+      return {
+        messages: [{ text: `You pick up ${roomItem.inventoryName}.`, type: 'info' }],
+        updates: {
+          flags: updatedFlags,
+          player: {
+            ...gameState.player,
+            inventory: [...gameState.player.inventory, roomItem.inventoryName],
+          },
+          roomMap: {
+            ...gameState.roomMap,
+            [currentRoom.id]: {
+              ...currentRoom,
+              items: updatedItems,
+            },
+          },
+        },
+      };
+    }
+
+    case 'press': {
+      if (currentRoom.id === 'introreset' || noun === 'button' || noun === 'blue button') {
+        const outcome = resolveBlueButtonPress(gameState);
+        return {
+          messages: outcome.nextState.history.slice(gameState.history.length).map((message) => ({
+            text: message.text,
+            type:
+              message.type === 'error' || message.type === 'warning'
+                ? 'error'
+                : message.type === 'narrative' || message.type === 'dialogue'
+                  ? 'lore'
+                  : 'info',
+          })),
+          updates: {
+            flags: outcome.nextState.flags,
+            player: outcome.nextState.player,
+          },
+        };
+      }
+
+      if (noun === 'reboot') {
+        return processCommand({
+          input: 'start reboot',
+          currentRoom,
+          gameState,
+        });
+      }
+
+      return {
+        messages: [{ text: 'You press something, but nothing happens.', type: 'info' }],
+      };
+    }
+
+    case 'start': {
+      if (noun !== 'reboot') {
+        break;
+      }
+
+      if (gameState.flags?.multiverse_reboot_pending || gameState.flags?.multiverse_reboot_active) {
+        return {
+          messages: [{ text: 'The reboot sequence is already underway.', type: 'info' }],
+        };
+      }
+
+      return {
+        messages: [{ text: 'Reality shudders. A multiverse reboot sequence begins.', type: 'system' }],
+        updates: {
+          flags: {
+            ...gameState.flags,
+            multiverse_reboot_pending: true,
+          },
+        },
+      };
+    }
+
+    case 'confirm': {
+      if (noun !== 'reboot') {
+        break;
+      }
+
+      if (!gameState.flags?.multiverse_reboot_pending) {
+        return {
+          messages: [{ text: 'There is no reboot waiting to be confirmed.', type: 'error' }],
+        };
+      }
+
+      return {
+        messages: [{ text: 'Reboot confirmation accepted. Hold on to whatever still feels real.', type: 'system' }],
+        updates: {
+          flags: {
+            ...gameState.flags,
+            multiverse_reboot_pending: true,
+            multiverse_reboot_active: true,
+            show_reset_sequence: true,
+          },
+        },
+      };
+    }
+
+    case 'complete': {
+      if (noun !== 'reboot') {
+        break;
+      }
+
+      if (!gameState.flags?.multiverse_reboot_active) {
+        return {
+          messages: [{ text: 'The reboot sequence is not active.', type: 'error' }],
+        };
+      }
+
+      return {
+        messages: [
+          { text: 'You awaken with a faint sense of déjà vu. The multiverse has been rebooted.', type: 'lore' },
+        ],
+        updates: {
+          currentRoomId: 'introstart',
+          metadata: withAchievement(gameState.metadata, 'multiverse_rebooter'),
+          player: {
+            ...gameState.player,
+            currentRoom: 'introstart',
+            flags: {
+              ...gameState.player.flags,
+              bluePressCount: 0,
+            },
+          },
+          flags: {
+            ...gameState.flags,
+            multiverse_reboot_pending: false,
+            multiverse_reboot_active: false,
+            show_reset_sequence: false,
+          },
+        },
+      };
+    }
+
+    case 'cancel': {
+      if (noun !== 'reboot') {
+        break;
+      }
+
+      if (!gameState.flags?.multiverse_reboot_pending && !gameState.flags?.multiverse_reboot_active) {
+        return {
+          messages: [{ text: 'No reboot is currently in progress.', type: 'error' }],
+        };
+      }
+
+      return {
+        messages: [{ text: 'The reboot sequence is cancelled.', type: 'system' }],
+        updates: {
+          flags: {
+            ...gameState.flags,
+            multiverse_reboot_pending: false,
+            multiverse_reboot_active: false,
+            show_reset_sequence: false,
+          },
+        },
+      };
     }
 
     case 'help':
@@ -299,15 +845,17 @@ export function processCommand({
         }
       }
 
+      const npcQuery = noun.startsWith('to ') ? noun.slice(3).trim() : noun;
+
       // Check if the specified NPC is in the room
       const targetNPC = gameState.npcsInRoom?.find((npc: any) => {
         const name = typeof npc === 'string' ? npc : npc.name;
-        return name.toLowerCase().includes(noun.toLowerCase());
+        return name.toLowerCase().includes(npcQuery.toLowerCase());
       });
 
       if (!targetNPC) {
         return {
-          messages: [{ text: `You don't see anyone named "${noun}" here.`, type: 'error' }],
+          messages: [{ text: `You don't see anyone named "${npcQuery}" here.`, type: 'error' }],
         };
       }
 
@@ -373,6 +921,213 @@ export function processCommand({
       return { messages: statusMessages };
     }
 
+    case 'teleport':
+    case 'warp': {
+      const targetRoomId = resolveRoomId(gameState, noun);
+
+      if (!targetRoomId) {
+        return {
+          messages: [{ text: `Unknown destination: ${noun || 'unspecified'}.`, type: 'error' }],
+        };
+      }
+
+      const targetRoom = gameState.roomMap[targetRoomId];
+      if (!targetRoom) {
+        return {
+          messages: [{ text: `Destination ${targetRoomId} is not currently loaded.`, type: 'error' }],
+        };
+      }
+
+      const achievementId = 'interdimensional_traveler';
+      return {
+        messages: [
+          {
+            text: `Reality bends. You arrive at ${targetRoom.title || targetRoom.id}.`,
+            type: 'lore',
+          },
+        ],
+        updates: {
+          currentRoomId: targetRoomId,
+          metadata: withAchievement(gameState.metadata, achievementId),
+          player: {
+            ...gameState.player,
+            currentRoom: targetRoomId,
+          },
+        },
+      };
+    }
+
+    case 'debug': {
+      if (!canUseDebugCommands(gameState)) {
+        return {
+          messages: [{ text: 'Debug commands are disabled.', type: 'error' }],
+        };
+      }
+
+      if (noun === 'clear flags') {
+        return {
+          messages: [{ text: '[DEBUG] All flags cleared.', type: 'system' }],
+          updates: {
+            flags: {},
+          },
+        };
+      }
+
+      if (noun.startsWith('set flag ')) {
+        const originalPrefix = 'debug set flag ';
+        const rawArgs = trimmedOriginalInput.toLowerCase().startsWith(originalPrefix)
+          ? trimmedOriginalInput.slice(originalPrefix.length).trim()
+          : noun.slice('set flag '.length).trim();
+        const [flagName, ...rawValueParts] = rawArgs.split(' ');
+        const rawValue = rawValueParts.join(' ').trim();
+
+        if (!flagName) {
+          return {
+            messages: [{ text: 'Usage: debug set flag <name> [value]', type: 'error' }],
+          };
+        }
+
+        const value =
+          rawValue === ''
+            ? true
+            : rawValue === 'true'
+              ? true
+              : rawValue === 'false'
+                ? false
+                : /^-?\d+(\.\d+)?$/.test(rawValue)
+                  ? Number(rawValue)
+                  : rawValue;
+
+        return {
+          messages: [{ text: `[DEBUG] Flag ${flagName} set to ${String(value)}.`, type: 'system' }],
+          updates: {
+            flags: {
+              ...gameState.flags,
+              [flagName]: value,
+            },
+          },
+        };
+      }
+
+      if (noun.startsWith('warp ')) {
+        return processCommand({
+          input: `teleport ${noun.slice(5).trim()}`,
+          currentRoom,
+          gameState,
+        });
+      }
+
+      if (noun.startsWith('give ')) {
+        const itemId = noun.slice(5).trim();
+        if (!itemId) {
+          return {
+            messages: [{ text: 'Usage: debug give <item>', type: 'error' }],
+          };
+        }
+
+        return {
+          messages: [{ text: `[DEBUG] Added ${itemId} to inventory.`, type: 'system' }],
+          updates: {
+            player: {
+              ...gameState.player,
+              inventory: gameState.player.inventory.includes(itemId)
+                ? gameState.player.inventory
+                : [...gameState.player.inventory, itemId],
+            },
+          },
+        };
+      }
+
+      if (noun.startsWith('unlock achievement ')) {
+        const achievementId = noun.replace('unlock achievement ', '').trim();
+        if (!achievementId) {
+          return {
+            messages: [{ text: 'Usage: debug unlock achievement <id>', type: 'error' }],
+          };
+        }
+
+        return {
+          messages: [{ text: `[DEBUG] Achievement ${achievementId} unlocked.`, type: 'system' }],
+          updates: {
+            metadata: withAchievement(gameState.metadata, achievementId),
+          },
+        };
+      }
+
+      if (noun === 'show exits') {
+        const exits = Object.keys(currentRoom.exits || {});
+        return {
+          messages: [{ text: exits.length > 0 ? `Exits: ${exits.join(', ')}` : 'Exits: none', type: 'system' }],
+        };
+      }
+
+      if (noun === 'show flags') {
+        const visibleFlags = Object.entries(gameState.flags || {})
+          .filter(([, value]) => Boolean(value))
+          .map(([flag]) => flag);
+        return {
+          messages: [{ text: visibleFlags.length > 0 ? `Flags: ${visibleFlags.join(', ')}` : 'Flags: none', type: 'system' }],
+        };
+      }
+
+      if (noun === 'validate world') {
+        const invalidExits = Object.entries(gameState.roomMap).flatMap(([roomId, roomEntry]) =>
+          Object.entries(roomEntry.exits || {})
+            .filter(([, targetRoomId]) => targetRoomId && !gameState.roomMap[targetRoomId])
+            .map(([direction, targetRoomId]) => `${roomId}:${direction}->${targetRoomId}`),
+        );
+
+        return {
+          messages: [
+            {
+              text:
+                invalidExits.length > 0
+                  ? `World validation found invalid exits: ${invalidExits.join(', ')}`
+                  : 'World validation passed for loaded exits.',
+              type: invalidExits.length > 0 ? 'error' : 'system',
+            },
+          ],
+        };
+      }
+
+      if (noun === 'reset trap') {
+        const proceduralReset = resetProceduralTrap(currentRoom.id);
+        const staticTrap = getStaticTrap({
+          ...currentRoom,
+          traps: currentRoom.traps?.filter((trap: any) => trap.triggered),
+        } as Room);
+
+        if (proceduralReset) {
+          return {
+            messages: [{ text: 'Trap reset for debugging.', type: 'system' }],
+          };
+        }
+
+        if (staticTrap) {
+          return {
+            messages: [{ text: 'Trap reset for debugging.', type: 'system' }],
+            updates: updateStaticTrapState(currentRoom, gameState, staticTrap.id, (trap: any) => ({
+              ...trap,
+              triggered: false,
+            })),
+          };
+        }
+
+        return {
+          messages: [{ text: 'No trap is available to reset.', type: 'error' }],
+        };
+      }
+
+      return {
+        messages: [
+          {
+            text: 'Available debug commands: debug warp <room>, debug set flag <name> [value], debug clear flags',
+            type: 'system',
+          },
+        ],
+      };
+    }
+
     case 'search': {
       if (noun.includes('trap') || noun === '' || noun.includes('danger')) {
         const searchResult = searchForTraps(currentRoom, gameState);
@@ -403,6 +1158,27 @@ export function processCommand({
 
     case 'disarm': {
       if (noun.includes('trap') || noun === 'trap') {
+        const proceduralTrap = getTrapByRoom(currentRoom.id);
+        if (proceduralTrap && !proceduralTrap.triggered) {
+          if (!proceduralTrap.disarmable) {
+            return {
+              messages: [{ text: 'This trap cannot be safely disarmed.', type: 'error' }],
+            };
+          }
+
+          const disarmed = disarmProceduralTrap(currentRoom.id, 'careful manipulation');
+          return {
+            messages: [
+              {
+                text: disarmed
+                  ? `🔧 Success! You disarm the ${getTrapSeverityLabel(proceduralTrap)} trap.`
+                  : 'Disarmament failed.',
+                type: disarmed ? 'lore' : 'error',
+              },
+            ],
+          };
+        }
+
         // Find traps in the current room
         const roomTraps = currentRoom.traps?.filter((trap: any) => !trap.triggered) || [];
 
@@ -478,6 +1254,63 @@ export function processCommand({
       };
     }
 
+    case 'trigger': {
+      if (noun !== 'trap') {
+        break;
+      }
+
+      const proceduralTrap = getTrapByRoom(currentRoom.id);
+      if (proceduralTrap && !proceduralTrap.triggered) {
+        const triggeredTrap = triggerProceduralTrap(currentRoom.id);
+        if (!triggeredTrap) {
+          return { messages: [{ text: 'The trap refuses to trigger.', type: 'error' }] };
+        }
+
+        return {
+          messages: [
+            {
+              text: `💥 The ${getTrapSeverityLabel(triggeredTrap)} trap activates! ${triggeredTrap.description}`,
+              type: 'error',
+            },
+          ],
+        };
+      }
+
+      const staticTrap = getStaticTrap(currentRoom);
+      if (staticTrap) {
+        return buildStaticTrapTriggerResult(currentRoom, gameState, staticTrap);
+      }
+
+      return { messages: [{ text: 'There is no active trap here to trigger.', type: 'error' }] };
+    }
+
+    case 'escape': {
+      if (noun !== 'trap') {
+        break;
+      }
+
+      const activeTrap = getTrapByRoom(currentRoom.id) || getStaticTrap(currentRoom);
+      if (!activeTrap) {
+        return {
+          messages: [{ text: 'There is no active trap here to escape from.', type: 'error' }],
+        };
+      }
+
+      if (Math.random() < 0.5) {
+        return {
+          messages: [
+            { text: '🏃‍♂️💨 You panic and retreat quickly, just avoiding the trap!', type: 'system' },
+          ],
+        };
+      }
+
+      return processCommand({
+        input: 'trigger trap',
+        currentRoom,
+        gameState,
+      });
+    }
+
     default: {
       // Try crossing interaction handler first
       const crossingResult = handleCrossingInteraction(input, gameState);
@@ -508,6 +1341,8 @@ export function processCommand({
       return { messages: [{ text: "I don't understand that command.", type: 'error' }] };
     }
   }
+
+  return { messages: [{ text: "I don't understand that command.", type: 'error' }] };
 }
 
 /**

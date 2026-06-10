@@ -51,6 +51,27 @@ const dalesapartment: Room = {
     kitchen: 'dales_kitchen',
   },
 
+  map: {
+    zone: 'London',
+    coordinates: { x: 1, y: 2 },
+  },
+
+  actions: [
+    { id: 'inspect-fish-tank', label: 'Inspect Fish Tank', command: 'inspect fish_tank' },
+    { id: 'inspect-wall-photos', label: 'Inspect Wall Photos', command: 'inspect wall_photos' },
+    { id: 'search-sofa', label: 'Search Sofa', command: 'inspect living_room_sofa' },
+  ],
+
+  hotspots: [
+    { id: 'fish-tank', label: 'Fish Tank', description: 'Dominic circles a carefully maintained tank.', x: 68, y: 34, width: 18, height: 24, command: 'inspect fish_tank' },
+    { id: 'sofa', label: 'Living Room Sofa', description: 'A perfectly arranged sofa that looks almost staged.', x: 30, y: 54, width: 22, height: 18, command: 'inspect living_room_sofa' },
+    { id: 'wall-photos', label: 'Wall Photos', description: 'Shared memories line the apartment wall in careful symmetry.', x: 16, y: 18, width: 20, height: 18, command: 'inspect wall_photos' },
+  ],
+
+  effects: [
+    { id: 'tank-bubbling', kind: 'ambient', label: 'Fish tank bubbling' },
+  ],
+
   items: [
     'apartment_keys',
     'photo_albums',

@@ -29,6 +29,7 @@ interface EnhancedNPCConsoleProps {
   npcs: NPC[]; // Support multiple NPCs for group conversations
   activeNpcId?: string; // Primary NPC for single conversations
   onClose: () => void;
+  onIssueCommand?: (command: string) => void;
   onSendMessage: (message: string, npcId: string) => void;
   playerName: string;
   isGroupConversation?: boolean;
@@ -39,6 +40,7 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
   npcs,
   activeNpcId,
   onClose,
+  onIssueCommand,
   onSendMessage,
   playerName,
   isGroupConversation = false,
@@ -383,7 +385,7 @@ const EnhancedNPCConsole: React.FC<EnhancedNPCConsoleProps> = ({
 
       // Trigger multiverse reset after delay
       setTimeout(() => {
-        dispatch({ type: 'SET_FLAG', payload: { flag: 'multiverse_reboot_pending', value: true } });
+        onIssueCommand?.('start reboot');
       }, 3000);
 
       return; // Don't continue with normal response

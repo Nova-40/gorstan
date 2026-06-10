@@ -195,7 +195,6 @@ export type GameAction =
   | { type: 'ADD_VISITED_ROOM'; payload: string }
   | { type: 'SET_FLAG'; payload: { key: string; value: boolean | number | string } }
   | { type: 'CLEAR_FLAG'; payload: string }
-  | { type: 'SET_FLAGS'; payload: Record<string, boolean | number | string> }
   | { type: 'SET_NPCS_IN_ROOM'; payload: NPC[] }
   | { type: 'ADD_NPC_TO_ROOM'; payload: string }
   | { type: 'REMOVE_NPC_FROM_ROOM'; payload: string }
@@ -218,8 +217,6 @@ export type GameAction =
   | { type: 'PRESS_BLUE_BUTTON' }
   | { type: 'DISMISS_BLUE_BUTTON_WARNING' }
   | { type: 'PRESS_ACTION' }
-  | { type: 'START_MULTIVERSE_REBOOT' }
-  | { type: 'SHOW_RESET_SEQUENCE' }
   | { type: 'ADD_HISTORY'; payload: string }
   | { type: 'CLEAR_HISTORY' }
   | { type: 'SET_HISTORY'; payload: GameMessage[] }

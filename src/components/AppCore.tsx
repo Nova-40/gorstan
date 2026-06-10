@@ -49,6 +49,8 @@ import BlueButtonWarningModal from './BlueButtonWarningModal';
 import QuickWinNotifications from './QuickWinNotifications';
 import ProgressDashboard from './ProgressDashboard';
 import OpeningBriefing from './OpeningBriefing';
+import WalkthroughPanel from './WalkthroughPanel';
+import GameShellV2 from './GameShellV2';
 
 import { useFlags } from '../hooks/useFlags';
 import { useGameState } from '../state/gameState';
@@ -59,6 +61,8 @@ import { useRoomTransition } from '../hooks/useRoomTransition';
 import { useWendellLogic } from '../hooks/useWendellLogic';
 
 import { initializeAchievementEngine } from '../logic/achievementEngine';
+import { deriveAchievementView } from '../logic/achievementEngine';
+import { getAllAchievements } from '../logic/achievementEngine';
 import { initializeScoreManager } from '../state/scoreManager';
 import { initializeCodexTracker } from '../logic/codexTracker';
 import { initializeMiniquests } from '../engine/miniquestInitializer';
@@ -107,6 +111,7 @@ import type { NPC, NPCMood } from '../types/NPCTypes';
 import { demoController } from '../demo/demoController';
 import { isDemoEnvironment } from '../demo/demoGate';
 import type { GameTransition } from '../types/GameTypes';
+import { deriveCompassOptions, deriveWorldMap, getUseTargetLabels } from '../engine/worldModel';
 
 /**
  * Enhanced type definitions for better type safety
@@ -125,11 +130,19 @@ type GameStage =
   | 'transition_dramatic_wait';
 
 type OpenModalType =
+  | 'gameControl'
+  | 'character'
   | 'inventory'
+  | 'journal'
+  | 'history'
   | 'useItem'
   | 'look'
   | 'pickUp'
   | 'saveGame'
+  | 'map'
+  | 'achievements'
+  | 'compass'
+  | 'hotspotVisibility'
   | 'npcConsole'
   | 'npcSelection'
   | 'trapManagement'
@@ -232,6 +245,7 @@ const AppCore: React.FC = () => {
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [roomEntryTime, setRoomEntryTime] = useState<number>(Date.now());
   const [aylaHintSystem] = useState(() => new AylaHintSystem());
+  const parserInputRef = useRef<HTMLInputElement | null>(null);
 
   // AI Usage Monitoring state
   const [gameplayUpdates, setGameplayUpdates] = useState<GameplayUpdate[]>([]);
@@ -258,6 +272,7 @@ const AppCore: React.FC = () => {
   const [roomFallbackAttempted, setRoomFallbackAttempted] = useState<boolean>(false);
   const [roomHistory, setRoomHistory] = useState<string[]>([]);
   const [showPerformanceDashboard, setShowPerformanceDashboard] = useState<boolean>(false);
+  const [hotspotsVisible, setHotspotsVisible] = useState<boolean>(false);
 
   // Demo system state
   const [isDemoActive, setIsDemoActive] = useState<boolean>(false);
@@ -393,6 +408,16 @@ const AppCore: React.FC = () => {
   const currentRoomId: string = state.currentRoomId || 'controlnexus';
   const room: Room | undefined = roomMap[currentRoomId];
   const stage: GameStage = (state.stage as GameStage) || 'splash';
+  const walkthroughQuery = useMemo(() => {
+    if (typeof window === 'undefined') {
+      return null;
+    }
+    return new URLSearchParams(window.location.search).get('walkthrough');
+  }, []);
+  const walkthroughEnabled = import.meta.env.DEV
+    ? Boolean(walkthroughQuery) || Boolean(state.settings?.debugMode)
+    : false;
+  const walkthroughAutoStart = import.meta.env.DEV && walkthroughQuery === 'auto';
 
   // Initialize hooks with proper typing
   useOptimizedEffects(state, dispatch, room);
@@ -420,6 +445,10 @@ const AppCore: React.FC = () => {
   const handleDisarmTrap = useCallback(() => {
     openModal('trapManagement');
   }, [openModal]);
+
+  const toggleHotspotVisibility = useCallback(() => {
+    setHotspotsVisible((previous) => !previous);
+  }, []);
 
   // Enhanced save game functions with migration support
   const loadSaveSlots = useCallback(async () => {
@@ -1022,6 +1051,18 @@ const AppCore: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (stage !== 'game' || modal) {
+      return;
+    }
+
+    const focusFrame = requestAnimationFrame(() => {
+      parserInputRef.current?.focus();
+    });
+
+    return () => cancelAnimationFrame(focusFrame);
+  }, [stage, modal]);
+
   // Enhanced look around handler with better type safety
   const handleLookAround = useCallback((): void => {
     if (lookModalTimeoutRef.current) {
@@ -1195,11 +1236,75 @@ const AppCore: React.FC = () => {
         'pick up': 'pickUp',
         get: 'pickUp',
         take: 'pickUp',
+        save: 'saveGame',
+        load: 'saveGame',
+        map: 'map',
+        achievements: 'achievements',
+        achievement: 'achievements',
+        compass: 'compass',
+        controls: 'gameControl',
+        settings: 'gameControl',
       };
 
       const modalCommand: OpenModalType = modalCommands[lowerCmd];
       if (modalCommand) {
         modalCommand === 'look' ? handleLookAround() : openModal(modalCommand);
+        return;
+      }
+
+      if (lowerCmd === 'hotspots' || lowerCmd === 'toggle hotspots' || lowerCmd === 'debug hotspots') {
+        toggleHotspotVisibility();
+        dispatch({
+          type: 'ADD_MESSAGE',
+          payload: {
+            id: Date.now().toString(),
+            text: hotspotsVisible ? 'Hotspot overlays hidden.' : 'Hotspot overlays shown.',
+            type: 'system',
+            timestamp: Date.now(),
+          },
+        });
+        return;
+      }
+
+      const canUseDebugCommands = Boolean(state.settings?.debugMode) || playerName === 'Geoff';
+
+      if (canUseDebugCommands && lowerCmd === 'show exits') {
+        dispatch({ type: 'COMMAND_INPUT', payload: 'debug show exits' });
+        return;
+      }
+
+      if (canUseDebugCommands && lowerCmd === 'show flags') {
+        dispatch({ type: 'COMMAND_INPUT', payload: 'debug show flags' });
+        return;
+      }
+
+      if (canUseDebugCommands && lowerCmd === 'show room') {
+        handleLookAround();
+        return;
+      }
+
+      if (canUseDebugCommands && lowerCmd.startsWith('teleport ')) {
+        dispatch({ type: 'COMMAND_INPUT', payload: cmd });
+        return;
+      }
+
+      if (canUseDebugCommands && lowerCmd.startsWith('give ')) {
+        dispatch({ type: 'COMMAND_INPUT', payload: `debug ${lowerCmd}` });
+        return;
+      }
+
+      if (canUseDebugCommands && lowerCmd.startsWith('set flag ')) {
+        dispatch({ type: 'COMMAND_INPUT', payload: `debug ${cmd}` });
+        return;
+      }
+
+      if (canUseDebugCommands && lowerCmd.startsWith('unlock achievement ')) {
+        dispatch({ type: 'COMMAND_INPUT', payload: `debug ${lowerCmd}` });
+        return;
+      }
+
+      if (canUseDebugCommands && lowerCmd === 'validate world') {
+        dispatch({ type: 'COMMAND_INPUT', payload: 'debug validate world' });
         return;
       }
 
@@ -1239,6 +1344,7 @@ const AppCore: React.FC = () => {
       const movementCommands: string[] = ['sit', 'north', 'south', 'east', 'west', 'up', 'down'];
       const isMovementCommand: boolean =
         movementCommands.includes(lowerCmd) ||
+        lowerCmd.startsWith('go ') ||
         lowerCmd.includes('portal') ||
         lowerCmd.includes('enter') ||
         lowerCmd.includes('step');
@@ -1363,52 +1469,32 @@ const AppCore: React.FC = () => {
       currentRoomId,
       isDemo,
       isDemoActive,
+      hotspotsVisible,
+      playerName,
+      state.flags,
+      state.settings?.debugMode,
+      roomMap,
+      handleRoomChange,
+      toggleHotspotVisibility,
     ],
   );
 
   // Enhanced pickup handler with proper type safety and Dominic special logic
   const handlePickUpItems = useCallback(
     (selectedItems: string[]): void => {
+      const parserBackedItems: string[] = [];
+
       selectedItems.forEach((item: string) => {
-        if (item === 'Run Bag') {
-          dispatch({ type: 'SET_RUNBAG_FLAG', payload: true });
-          dispatch({ type: 'INCREASE_INVENTORY_CAPACITY' });
-
-          // Score for finding useful items
-          try {
-            const { applyScoreForEvent } = require('../state/scoreEffects');
-            applyScoreForEvent('find.hidden.item');
-          } catch (error) {
-            console.warn('Failed to apply score for item pickup:', error);
-          }
-        } else if (item === 'dominic' && currentRoomId === 'dalesapartment') {
-          // Enhanced Dominic conversation system
-          import('../engine/dominicPickupConversation').then((mod) => {
-            const preventPickup = mod.handleDominicPickupAttempt(state, dispatch);
-
-            if (!preventPickup) {
-              // Player insisted after warnings - allow pickup with consequences
-              dispatch({ type: 'ADD_TO_INVENTORY', payload: 'deadfish' });
-              dispatch({ type: 'SET_FLAG', payload: { flag: 'dominicIsDead', value: true } });
-              dispatch({
-                type: 'REMOVE_ITEM_FROM_ROOM',
-                payload: { roomId: 'dalesapartment', item: 'dominic' },
-              });
-
-              // Trigger stalker behavior
-              dispatch({
-                type: 'SET_FLAG',
-                payload: { flag: 'pollyVengeanceActive', value: true },
-              });
-            }
-          });
-        } else {
-          dispatch({ type: 'ADD_TO_INVENTORY', payload: item });
-        }
+        parserBackedItems.push(item);
       });
+
+      parserBackedItems.forEach((item) => {
+        handleCommand(`pick up ${item}`);
+      });
+
       closeModal();
     },
-    [dispatch, closeModal, currentRoomId, state],
+    [closeModal, handleCommand],
   );
 
   // Enhanced teleport completion handler with proper typing
@@ -1894,20 +1980,114 @@ const AppCore: React.FC = () => {
 
   // Enhanced modal content rendering with proper typing
   const renderModalContent = useStableCallback((): React.ReactNode => {
+    const mapZones = deriveWorldMap(state.roomMap, currentRoomId, state.player.visitedRooms || []);
+    const achievementView = deriveAchievementView(state.metadata?.achievements || []);
+    const achievementStats = {
+      total: achievementView.length,
+      unlocked: achievementView.filter((achievement) => achievement.unlocked).length,
+      hiddenRemaining: achievementView.filter(
+        (achievement) => achievement.hidden && !achievement.unlocked,
+      ).length,
+    };
+
     switch (modal) {
       case 'inventory':
         return <InventoryModal items={inventory} onClose={closeModal} />;
+      case 'character':
+        return (
+          <Modal visible={true} onClose={closeModal} title="Character" pinned={true}>
+            <div className="space-y-4 text-sm text-white max-h-[32rem] overflow-auto">
+              <div className="rounded border border-green-900 bg-black/30 px-3 py-3">
+                <div className="text-lg font-semibold text-green-100">{playerName}</div>
+                <div className="text-xs text-green-300">Current room: {room?.title || currentRoomId}</div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="rounded border border-green-900 px-3 py-2">
+                  <div className="text-xs uppercase tracking-wide text-green-400">Health</div>
+                  <div className="text-xl font-semibold">{state.player.health}/{state.player.maxHealth || 100}</div>
+                </div>
+                <div className="rounded border border-green-900 px-3 py-2">
+                  <div className="text-xs uppercase tracking-wide text-green-400">Score</div>
+                  <div className="text-xl font-semibold">{state.player.score || 0}</div>
+                </div>
+                <div className="rounded border border-green-900 px-3 py-2">
+                  <div className="text-xs uppercase tracking-wide text-green-400">Visited Rooms</div>
+                  <div className="text-xl font-semibold">{state.player.visitedRooms?.length || 0}</div>
+                </div>
+                <div className="rounded border border-green-900 px-3 py-2">
+                  <div className="text-xs uppercase tracking-wide text-green-400">Achievements</div>
+                  <div className="text-xl font-semibold">{state.metadata?.achievements?.length || 0}</div>
+                </div>
+              </div>
+              <div className="rounded border border-green-900 px-3 py-2">
+                <div className="mb-2 text-xs uppercase tracking-wide text-green-400">Traits</div>
+                {state.player.traits?.length ? (
+                  <div className="flex flex-wrap gap-2">
+                    {state.player.traits.map((trait) => (
+                      <span key={trait} className="rounded bg-green-950/70 px-2 py-1 text-xs text-green-100">
+                        {trait}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-green-300">No traits recorded yet.</div>
+                )}
+              </div>
+            </div>
+          </Modal>
+        );
+      case 'journal': {
+        const codexCount = Object.keys(state.metadata?.codexEntries || {}).length;
+        const questCount = state.quests?.length || 0;
+        const completedMiniquests = (state.player as any).completedMiniquests?.length || 0;
+        return (
+          <Modal visible={true} onClose={closeModal} title="Journal" pinned={true}>
+            <div className="space-y-4 text-sm text-white max-h-[32rem] overflow-auto">
+              <div className="rounded border border-green-900 bg-black/30 px-3 py-2 text-green-100">
+                UI v2 journal shell is now permanent. Detailed quest and codex authoring can expand into this panel without changing the shell.
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="rounded border border-green-900 px-3 py-2">
+                  <div className="text-xs uppercase tracking-wide text-green-400">Quests</div>
+                  <div className="text-xl font-semibold">{questCount}</div>
+                </div>
+                <div className="rounded border border-green-900 px-3 py-2">
+                  <div className="text-xs uppercase tracking-wide text-green-400">Codex Entries</div>
+                  <div className="text-xl font-semibold">{codexCount}</div>
+                </div>
+                <div className="rounded border border-green-900 px-3 py-2">
+                  <div className="text-xs uppercase tracking-wide text-green-400">Miniquests</div>
+                  <div className="text-xl font-semibold">{completedMiniquests}</div>
+                </div>
+              </div>
+              <div className="rounded border border-green-900 px-3 py-2">
+                <div className="mb-2 font-semibold text-green-100">Available Notes</div>
+                <ul className="list-disc space-y-1 pl-5 text-green-200">
+                  <li>Quest detail view is not fully surfaced in UI v2 yet.</li>
+                  <li>Codex detail browsing can be added here later using existing codex state.</li>
+                  <li>Parser-first gameplay remains unchanged while the shell stabilises.</li>
+                </ul>
+              </div>
+            </div>
+          </Modal>
+        );
+      }
+      case 'history':
+        return (
+          <Modal visible={true} onClose={closeModal} title="History" pinned={true}>
+            <div className="h-[28rem]">
+              <TerminalConsole messages={state.history} />
+            </div>
+          </Modal>
+        );
       case 'useItem':
         return (
           <UseItemModal
             inventory={inventory}
-            environmentItems={room.environment || []}
+            environmentItems={getUseTargetLabels(room)}
             onClose={closeModal}
             onUse={(item: string, target?: string) => {
-              dispatch({
-                type: target ? 'USE_ITEM_WITH' : 'USE_ITEM',
-                payload: target ? { item, target } : { item },
-              });
+              handleCommand(target ? `use ${item} with ${target}` : `use ${item}`);
               closeModal();
             }}
           />
@@ -1936,6 +2116,174 @@ const AppCore: React.FC = () => {
             saveSlots={saveSlots}
           />
         );
+      case 'gameControl':
+        return (
+          <Modal visible={true} onClose={closeModal} title="Game Control" pinned={true}>
+            <div className="space-y-3 text-sm text-white">
+              <button className="w-full rounded bg-green-800 px-3 py-2 text-left" onClick={() => handleCommand('save')}>
+                Save or Load
+              </button>
+              <button className="w-full rounded bg-green-800 px-3 py-2 text-left" onClick={toggleSound}>
+                {soundOn ? 'Mute audio' : 'Enable audio'}
+              </button>
+              <button className="w-full rounded bg-green-800 px-3 py-2 text-left" onClick={() => dispatch({ type: 'ADVANCE_STAGE', payload: 'welcome' })}>
+                Return to title
+              </button>
+              <button className="w-full rounded bg-green-800 px-3 py-2 text-left" onClick={() => setShowPerformanceDashboard((previous) => !previous)}>
+                {showPerformanceDashboard ? 'Hide diagnostics' : 'Show diagnostics'}
+              </button>
+            </div>
+          </Modal>
+        );
+      case 'hotspotVisibility':
+        return (
+          <Modal visible={true} onClose={closeModal} title="Hotspot Visibility" pinned={true}>
+            <div className="space-y-4 text-sm text-white">
+              <div className="rounded border border-green-900 bg-black/30 px-3 py-2 text-green-100">
+                {hotspotsVisible
+                  ? 'Interactive hotspot markers are currently visible in the scene.'
+                  : 'Interactive hotspot markers are currently hidden in the scene.'}
+              </div>
+              <button
+                className="w-full rounded bg-green-800 px-3 py-2 text-left"
+                onClick={() => {
+                  toggleHotspotVisibility();
+                  closeModal();
+                }}
+              >
+                {hotspotsVisible ? 'Hide hotspot markers' : 'Show hotspot markers'}
+              </button>
+              <div className="rounded border border-green-900 px-3 py-2 text-green-200">
+                Use this while navigating the new shell if you want authored interaction targets to stand out visually.
+              </div>
+            </div>
+          </Modal>
+        );
+      case 'map':
+        return (
+          <Modal visible={true} onClose={closeModal} title="World Map" pinned={true}>
+            <div className="space-y-4 text-sm text-white max-h-[28rem] overflow-auto">
+              <div className="rounded border border-green-900 bg-black/30 px-3 py-2 text-green-100">
+                <div className="font-semibold">Current room: {room?.title || currentRoomId}</div>
+                <div>
+                  Visited rooms: {(state.player.visitedRooms || []).length} / {Object.keys(state.roomMap).length}
+                </div>
+              </div>
+              {mapZones.map((zone) => (
+                <div key={zone.id} className="rounded border border-green-900 px-3 py-2">
+                  <div className="mb-2 flex items-center justify-between">
+                    <div className="font-semibold text-green-100">{zone.label}</div>
+                    <div className="text-xs text-green-300">
+                      {zone.visitedCount}/{zone.rooms.length} visited
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    {zone.rooms.map((entry) => (
+                      <div
+                        key={entry.id}
+                        className={`rounded px-2 py-2 ${entry.isCurrent ? 'bg-green-900/70' : entry.isVisited ? 'bg-green-950/50' : 'bg-black/20'}`}
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <div>
+                            <div className="font-medium text-white">
+                              {entry.isCurrent ? 'Current: ' : entry.isVisited ? 'Visited: ' : 'Unvisited: '}
+                              {entry.title}
+                            </div>
+                            <div className="text-xs text-green-300">{entry.id}</div>
+                          </div>
+                          {entry.coordinates && (
+                            <div className="text-xs text-green-300">
+                              ({entry.coordinates.x}, {entry.coordinates.y})
+                            </div>
+                          )}
+                        </div>
+                        <div className="mt-1 text-xs text-green-200">
+                          {entry.exits.length > 0 ? entry.exits.join(' • ') : 'No authored exits listed'}
+                        </div>
+                        <div className="mt-1 text-xs text-green-400">
+                          {entry.actions} actions • {entry.hotspots} hotspots
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Modal>
+        );
+      case 'achievements':
+        return (
+          <Modal visible={true} onClose={closeModal} title="Achievements" pinned={true}>
+            <div className="space-y-3 text-sm text-white max-h-80 overflow-auto">
+              <div className="rounded border border-green-900 bg-black/30 px-3 py-2 text-green-100">
+                <div className="font-semibold">
+                  {achievementStats.unlocked}/{achievementStats.total} unlocked
+                </div>
+                <div className="text-xs text-green-300">
+                  {achievementStats.hiddenRemaining} hidden achievements remain unrevealed
+                </div>
+              </div>
+              {achievementView.map((achievement) => (
+                <div key={achievement.id} className="rounded border border-green-900 px-3 py-2">
+                  <div className="font-semibold">
+                    {achievement.unlocked
+                      ? 'Unlocked'
+                      : achievement.hidden
+                        ? 'Secret'
+                        : 'Locked'}
+                    : {achievement.label}
+                  </div>
+                  {(achievement.unlocked || !achievement.hidden) && achievement.description && (
+                    <div className="text-green-200">{achievement.description}</div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </Modal>
+        );
+      case 'compass': {
+        const compassOptions = deriveCompassOptions(room);
+        return (
+          <Modal visible={true} onClose={closeModal} title="Actions & Navigation" pinned={true}>
+            <div className="space-y-4 text-sm text-white">
+              <div>
+                <div className="mb-2 font-semibold">Movement</div>
+                <div className="grid grid-cols-2 gap-2">
+                  {compassOptions.movement.map((entry) => (
+                    <button
+                      key={entry.direction}
+                      className="rounded bg-green-800 px-3 py-2 text-left"
+                      onClick={() => {
+                        handleCommand(`go ${entry.direction}`);
+                        closeModal();
+                      }}
+                    >
+                      {entry.direction}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <div className="mb-2 font-semibold">Room Actions</div>
+                <div className="grid grid-cols-2 gap-2">
+                  {compassOptions.actions.map((entry) => (
+                    <button
+                      key={entry.id}
+                      className="rounded bg-green-800 px-3 py-2 text-left"
+                      onClick={() => {
+                        handleCommand(entry.command);
+                        closeModal();
+                      }}
+                    >
+                      {entry.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </Modal>
+        );
+      }
       case 'npcConsole':
         return isGroupConversation ? (
           <EnhancedNPCConsole
@@ -1944,6 +2292,7 @@ const AppCore: React.FC = () => {
             activeNpcId={selectedNPC?.id}
             isGroupConversation={true}
             onClose={closeModal}
+            onIssueCommand={handleCommand}
             onSendMessage={handleNPCMessage}
             playerName={playerName}
           />
@@ -1981,7 +2330,12 @@ const AppCore: React.FC = () => {
         );
       case 'trapManagement':
         return (
-          <TrapManagementModal isOpen={true} onClose={closeModal} currentRoomId={currentRoomId} />
+          <TrapManagementModal
+            isOpen={true}
+            onClose={closeModal}
+            currentRoomId={currentRoomId}
+            onIssueCommand={handleCommand}
+          />
         );
       default:
         return null;
@@ -2000,6 +2354,10 @@ const AppCore: React.FC = () => {
     dispatch,
     roomMap,
     currentRoomId,
+    handleCommand,
+    soundOn,
+    toggleSound,
+    showPerformanceDashboard,
   ]);
 
   // Enhanced guard rails with proper type checking
@@ -2170,8 +2528,40 @@ const AppCore: React.FC = () => {
     return <div className="appcore-loading">Loading room context...</div>;
   }
 
+  const achievementView = deriveAchievementView(state.metadata?.achievements || []);
+  const achievementStats = {
+    total: achievementView.length,
+    unlocked: achievementView.filter((achievement) => achievement.unlocked).length,
+    hiddenRemaining: achievementView.filter(
+      (achievement) => achievement.hidden && !achievement.unlocked,
+    ).length,
+  };
+  const compassOptions = deriveCompassOptions(room);
+  const journalSummary = {
+    questCount: state.quests?.length || 0,
+    codexCount: Object.keys(state.metadata?.codexEntries || {}).length,
+    note:
+      'Existing quest, codex, and miniquest state can expand into this panel without another shell rewrite.',
+  };
+  const toolbarActions = [
+    { id: 'character', label: 'Character', onClick: () => openModal('character') },
+    { id: 'inventory', label: 'Inventory', onClick: () => openModal('inventory') },
+    { id: 'journal', label: 'Journal', onClick: () => openModal('journal') },
+    { id: 'history', label: 'History', onClick: () => openModal('history') },
+    { id: 'actions', label: 'Actions & Navigation', onClick: () => openModal('compass') },
+    {
+      id: 'hotspots',
+      label: hotspotsVisible ? 'Hotspots On' : 'Hotspots Off',
+      onClick: () => openModal('hotspotVisibility'),
+      isActive: hotspotsVisible,
+    },
+    { id: 'map', label: 'World Map', onClick: () => openModal('map') },
+    { id: 'achievements', label: 'Achievements', onClick: () => openModal('achievements') },
+    { id: 'controls', label: 'Game Control', onClick: () => openModal('gameControl') },
+  ];
+
   return (
-    <div className="appcore-grid">
+    <div>
       {/* Demo mode indicator */}
       {isDemoActive && (
         <div className="fixed top-0 left-0 right-0 z-50 bg-purple-900 text-white text-center py-2 px-4 font-bold">
@@ -2179,7 +2569,7 @@ const AppCore: React.FC = () => {
         </div>
       )}
 
-      <MultiverseRebootSequence />
+      <MultiverseRebootSequence onIssueCommand={handleCommand} />
       <RoomTransition
         isActive={roomTransitionActive && transitionInfo.shouldAnimate}
         transitionType={transitionInfo.transitionType}
@@ -2191,98 +2581,43 @@ const AppCore: React.FC = () => {
         }}
       />
 
-      <div className="quad quad-1">
-        <RoomRenderer />
-        {/* Compact Progress Display in corner */}
-        <div className="absolute top-2 left-2">
-          <ProgressDashboard compact={true} className="w-48" />
-        </div>
-      </div>
+      <GameShellV2
+        playerName={playerName}
+        roomTitle={room.title || currentRoomId}
+        roomId={currentRoomId}
+        roomZone={room.zone}
+        toolbarActions={toolbarActions}
+        scene={
+          <div className="relative h-full">
+            <RoomRenderer onIssueCommand={handleCommand} showHotspots={hotspotsVisible} />
+            <div className="absolute left-2 top-2 hidden xl:block">
+              <ProgressDashboard compact={true} className="w-48" />
+            </div>
+          </div>
+        }
+        parserBar={
+          <CommandInput ref={parserInputRef} onCommand={handleCommand} playerName={playerName} />
+        }
+        npcsInRoom={npcsInRoom}
+        onTalkToNPC={handleOpenNPCConsole}
+        inventoryItems={inventory}
+        history={state.history}
+        hotspotsVisible={hotspotsVisible}
+        characterSummary={{
+          health: state.player.health,
+          maxHealth: state.player.maxHealth || 100,
+          score: state.player.score || 0,
+          visitedRooms: state.player.visitedRooms?.length || 0,
+          achievementCount: achievementStats.unlocked,
+        }}
+        journalSummary={journalSummary}
+        actionSummary={{
+          movement: compassOptions.movement.map((entry) => entry.direction),
+          actions: compassOptions.actions.map((entry) => entry.label),
+        }}
+      />
 
-      <div className="quad quad-2">
-        <TerminalConsole messages={state.history} />
-      </div>
-
-      <div className="quad quad-3">
-        <PlayerStatsPanel />
-        <CommandInput onCommand={handleCommand} playerName={playerName} />
-        <PresentNPCsPanel npcs={npcsInRoom} onTalkToNPC={handleOpenNPCConsole} />
-      </div>
-
-      <div className="quad quad-4">
-        <QuickActionsPanel
-          availableDirections={availableDirections}
-          directionRoomTitles={directionRoomTitles}
-          onShowInventory={() => openModal('inventory')}
-          onUse={() => openModal('useItem')}
-          onLookAround={handleLookAround}
-          onPickUp={() => openModal('pickUp')}
-          onPress={() => {
-            if (currentRoomId === 'introreset') {
-              dispatch({ type: 'PRESS_BLUE_BUTTON' });
-            } else {
-              dispatch({ type: 'PRESS_ACTION' });
-            }
-          }}
-          onCoffee={() => dispatch({ type: 'COFFEE_ACTION' })}
-          onFullscreen={toggleFullscreen}
-          isFullscreen={isFullscreen}
-          soundOn={soundOn}
-          onToggleSound={toggleSound}
-          isDemoActive={isDemoActive}
-          onJump={() => {
-            const currentRoom = state.roomMap[state.currentRoomId];
-            const jumpRoomId = currentRoom?.exits?.jump;
-            if (jumpRoomId) {
-              handleRoomChange(jumpRoomId);
-            } else {
-              console.warn('🚫 Jump exit not found from current room:', state.currentRoomId);
-            }
-          }}
-          onMove={(direction: string) => {
-            console.log('[AppCore] onMove called with direction:', direction);
-            const currentRoom = state.roomMap[state.currentRoomId];
-            console.log('[AppCore] Current room from state.roomMap:', currentRoom);
-            const nextRoomId = currentRoom?.exits?.[direction];
-            console.log('[AppCore] Next room ID:', nextRoomId);
-            if (nextRoomId) {
-              handleRoomChange(nextRoomId);
-            } else {
-              console.warn('🚧 Invalid direction or no exit:', direction);
-            }
-          }}
-          onSit={() => {
-            console.log('[AppCore] onSit called');
-            const currentRoom = state.roomMap[state.currentRoomId];
-            console.log('[AppCore] Current room from state.roomMap:', currentRoom);
-            const sitRoomId = currentRoom?.exits?.sit;
-            console.log('[AppCore] Sit room ID:', sitRoomId);
-            if (sitRoomId) {
-              handleRoomChange(sitRoomId);
-            } else {
-              console.warn('🚫 Sit exit not found from current room:', state.currentRoomId);
-            }
-          }}
-          playerName={playerName}
-          ctrlClickOnInstructions={hasFlag('ctrlClickOnInstructions')}
-          onDebugMenu={() => dispatch({ type: 'OPEN_DEBUG' })}
-          onBackout={handleBackout}
-          canBackout={roomHistory.length > 0}
-          currentRoomId={currentRoomId}
-          npcsInRoom={npcsInRoom}
-          onTalkToNPC={handleOpenNPCConsole}
-          hasActiveTraps={hasActiveTraps}
-          onDisarmTrap={handleDisarmTrap}
-        />
-      </div>
-
-      {hasFlag('showInventory') && (
-        <div className="quad quad-4 inventory-container">
-          <InventoryPanel />
-        </div>
-      )}
-
-      {hasFlag('showDebugPanel') && <DebugPanel />}
+      {hasFlag('showDebugPanel') && <DebugPanel onCommand={handleCommand} />}
 
       {/* Combat Actions Panel - only show during combat */}
       <CombatActionsPanel />
@@ -2353,6 +2688,15 @@ const AppCore: React.FC = () => {
       <QuickWinNotifications />
 
       <OpeningBriefing onCommand={handleCommand} />
+      <WalkthroughPanel
+        enabled={walkthroughEnabled}
+        autoStart={walkthroughAutoStart}
+        currentRoomId={currentRoomId}
+        history={state.history}
+        onCommand={handleCommand}
+        roomMap={roomMap}
+        stage={stage}
+      />
     </div>
   );
 };

@@ -29,7 +29,8 @@ interface TravelMenuProps {
   destinations: string[];
   title: string;
   subtitle?: string;
-  onTeleport: (destination: string) => void;
+  onIssueCommand?: (command: string) => void;
+  onTeleport?: (destination: string) => void;
   onClose: () => void;
   roomsPerPage?: number;
 }
@@ -85,6 +86,7 @@ const TravelMenu: React.FC<TravelMenuProps> = ({
   destinations,
   title,
   subtitle,
+  onIssueCommand,
   onTeleport,
   onClose,
   roomsPerPage = 6,
@@ -139,7 +141,11 @@ const TravelMenu: React.FC<TravelMenuProps> = ({
   // Variable declaration
   const onAnimationComplete = () => {
     if (selectedDestinationId) {
-      onTeleport(selectedDestinationId);
+      if (onIssueCommand) {
+        onIssueCommand(`teleport ${selectedDestinationId}`);
+      } else {
+        onTeleport?.(selectedDestinationId);
+      }
       onClose();
     }
     setIsAnimating(false);

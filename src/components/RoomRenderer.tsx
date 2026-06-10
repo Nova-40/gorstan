@@ -23,6 +23,7 @@ import { Bone, Fish, Bot, UserCircle, ChefHat, Shield } from 'lucide-react';
 
 import { RoomNPC } from '../types/Room';
 
+import { getCanonicalEffects, getCanonicalHotspots, getRoomFlags } from '../engine/worldModel';
 import { useGameState } from '../state/gameState';
 
 const npcIconMap: Record<string, React.ElementType> = {
@@ -53,7 +54,12 @@ const NpcDisplay: React.FC<NpcDisplayProps> = ({ npc }) => {
   );
 };
 
-const RoomRenderer: React.FC = () => {
+interface RoomRendererProps {
+  onIssueCommand?: (command: string) => void;
+  showHotspots?: boolean;
+}
+
+const RoomRenderer: React.FC<RoomRendererProps> = ({ onIssueCommand, showHotspots = false }) => {
   const { state, dispatch } = useGameState();
   // Variable declaration
   const room = state.roomMap?.[state.currentRoomId];
@@ -101,7 +107,7 @@ const RoomRenderer: React.FC = () => {
         // Variable declaration
         const activeTrap = roomData.traps.find((trap: any) => !trap.triggered);
         if (activeTrap) {
-          dispatch({ type: 'TRIGGER_TRAP', payload: activeTrap });
+          dispatch({ type: 'COMMAND_INPUT', payload: 'trigger trap' });
         }
       }
 
@@ -140,23 +146,20 @@ const RoomRenderer: React.FC = () => {
         ? `/images/${room.image}`
         : `/images/${room.image}`
     : '';
-  const roomHotspots = Array.isArray(roomData.clickHotspots)
-    ? roomData.clickHotspots
-    : Array.isArray(roomData.hotspots)
-      ? roomData.hotspots
-      : [];
+  const roomHotspots = getCanonicalHotspots(
+    room,
+    getRoomFlags(state.flags as Record<string, string | number | boolean>, state.player?.flags),
+  );
   const itemPlacements = Array.isArray(roomData.itemPlacements) ? roomData.itemPlacements : [];
-  const roomEffects = Array.isArray(roomData.effects) ? roomData.effects : [];
-  void roomHotspots;
+  const roomEffects = getCanonicalEffects(room);
   void itemPlacements;
-  void roomEffects;
 
   // JSX return block or main return
   return (
     <div className="room-container flex flex-col h-full bg-black rounded-lg shadow-inner overflow-hidden border border-green-600">
       {}
       {room.image ? (
-        <div className="room-image-wrapper h-full w-full overflow-hidden">
+        <div className="room-image-wrapper h-full w-full overflow-hidden relative">
           <img
             src={roomImageSrc}
             alt={room.title}
@@ -166,6 +169,43 @@ const RoomRenderer: React.FC = () => {
               e.currentTarget.style.display = 'none';
             }}
           />
+          {roomEffects.length > 0 && (
+            <div className="absolute inset-0 pointer-events-none">
+              {roomEffects.map((effect) => (
+                <div key={effect.id} className="absolute top-2 right-2 bg-black/50 text-xs text-green-200 px-2 py-1 rounded">
+                  {effect.label || effect.kind}
+                </div>
+              ))}
+            </div>
+          )}
+          {roomHotspots.length > 0 && (
+            <svg
+              className="absolute inset-0 h-full w-full"
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              {roomHotspots.map((hotspot) => (
+                <g key={hotspot.id}>
+                  <title>{hotspot.description || hotspot.label}</title>
+                  <rect
+                    x={hotspot.x}
+                    y={hotspot.y}
+                    width={hotspot.width}
+                    height={hotspot.height}
+                    rx="1"
+                    fill={showHotspots ? 'rgba(34, 197, 94, 0.15)' : 'transparent'}
+                    stroke={showHotspots ? 'rgba(74, 222, 128, 0.95)' : 'transparent'}
+                    strokeWidth={showHotspots ? 0.6 : 0}
+                    className="cursor-pointer"
+                    onClick={() =>
+                      onIssueCommand?.(hotspot.command || `inspect ${hotspot.label.toLowerCase()}`)
+                    }
+                  />
+                </g>
+              ))}
+            </svg>
+          )}
         </div>
       ) : (
         <div className="room-no-image h-full w-full flex items-center justify-center bg-gray-900 text-green-600">

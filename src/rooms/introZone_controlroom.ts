@@ -51,6 +51,27 @@ const controlroom: Room = {
     down: 'hiddenlab',
   },
 
+  map: {
+    zone: 'Intro',
+    coordinates: { x: -1, y: 0 },
+  },
+
+  actions: [
+    { id: 'inspect-tactical-display', label: 'Inspect Tactical Display', command: 'inspect tactical_display' },
+    { id: 'inspect-emergency-panel', label: 'Inspect Emergency Panel', command: 'inspect emergency_panel' },
+    { id: 'inspect-central-console', label: 'Inspect Central Console', command: 'inspect central_console' },
+  ],
+
+  hotspots: [
+    { id: 'tactical-display', label: 'Tactical Display', description: 'A wall-sized dimensional network readout.', x: 58, y: 20, width: 26, height: 18, command: 'inspect tactical_display' },
+    { id: 'emergency-panel', label: 'Emergency Panel', description: 'A red-lit override panel for critical systems.', x: 20, y: 32, width: 14, height: 18, command: 'inspect emergency_panel' },
+    { id: 'central-console', label: 'Central Console', description: 'Master controls sit at the heart of the room.', x: 42, y: 54, width: 16, height: 18, command: 'inspect central_console' },
+  ],
+
+  effects: [
+    { id: 'emergency-lighting', kind: 'overlay', label: 'Emergency lighting' },
+  ],
+
   items: [
     'tacticaldisplay_datacard',
     'emergency_override_key',

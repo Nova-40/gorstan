@@ -51,6 +51,27 @@ const findlaterscornercoffeeshop: Room = {
     east: 'trentpark',
   },
 
+  map: {
+    zone: 'London',
+    coordinates: { x: 1, y: 1 },
+  },
+
+  actions: [
+    { id: 'inspect-barista', label: 'Inspect Barista', command: 'inspect barista' },
+    { id: 'inspect-corner-booth', label: 'Inspect Corner Booth', command: 'inspect corner_booth' },
+    { id: 'inspect-wall-photos', label: 'Inspect Wall Photos', command: 'inspect wall_photos' },
+  ],
+
+  hotspots: [
+    { id: 'barista', label: 'Barista', description: 'The barista is already preparing a familiar order.', x: 60, y: 28, width: 16, height: 22, command: 'inspect barista' },
+    { id: 'corner-booth', label: 'Corner Booth', description: 'A booth that feels suspiciously like your usual seat.', x: 18, y: 52, width: 22, height: 18, command: 'inspect corner_booth' },
+    { id: 'wall-photos', label: 'Wall Photos', description: 'Neighborhood history watches from the brick walls.', x: 22, y: 18, width: 18, height: 16, command: 'inspect wall_photos' },
+  ],
+
+  effects: [
+    { id: 'cafe-jazz', kind: 'ambient', label: 'Soft jazz and coffeehouse chatter' },
+  ],
+
   items: [
     'coffee_shop_menu',
     'local_newspaper',

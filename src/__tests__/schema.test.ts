@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import { RoomSchema, SaveDataSchema } from '../schema/room';
+import { CanonicalRoomSchema, RoomSchema, SaveDataSchema, SaveStateSchema } from '../schema/room';
 import { assert, safeParse, isValid } from '../schema/assert';
 
 describe('Schema Validation', () => {
@@ -123,12 +123,60 @@ describe('Schema Validation', () => {
     });
   });
 
+  describe('CanonicalRoomSchema', () => {
+    test('validates canonical room data with actions and hotspots', () => {
+      const canonicalRoom = {
+        id: 'controlnexus',
+        title: 'Control Nexus',
+        description: 'A room full of suspiciously obedient panels.',
+        exits: [{ direction: 'north', targetRoomId: 'controlroom', label: 'North' }],
+        actions: [{ id: 'listen', label: 'Listen', command: 'listen' }],
+        hotspots: [
+          {
+            id: 'console',
+            label: 'Console',
+            x: 10,
+            y: 20,
+            width: 15,
+            height: 10,
+            command: 'inspect console',
+          },
+        ],
+        effects: [],
+      };
+
+      expect(() => assert(canonicalRoom, CanonicalRoomSchema)).not.toThrow();
+    });
+  });
+
+  describe('SaveStateSchema', () => {
+    test('persists achievements, flags, inventory, and room id', () => {
+      const saveState = {
+        version: 1,
+        currentRoomId: 'controlnexus',
+        inventory: ['torch'],
+        flags: { torchReady: true, bluePressCount: 2 },
+        achievements: [
+          {
+            id: 'button_botherer',
+            title: 'Button Botherer',
+            description: 'Pressed the forbidden button too many times.',
+            unlocked: true,
+          },
+        ],
+        timestamp: new Date().toISOString(),
+      };
+
+      expect(() => assert(saveState, SaveStateSchema)).not.toThrow();
+    });
+  });
+
   describe('Assert utility functions', () => {
     test('assert throws descriptive errors', () => {
       const invalid = { id: '' };
 
       expect(() => assert(invalid, RoomSchema, 'test room')).toThrow(
-        expect.stringMatching(/test room|Invalid data structure/),
+        /test room|Invalid data structure/,
       );
     });
 

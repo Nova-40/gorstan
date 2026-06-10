@@ -22,6 +22,7 @@
 import React, { createContext, useContext, useReducer, Dispatch } from 'react';
 
 import { processCommand } from '../engine/commandParser';
+import { resolveBlueButtonPress } from '../engine/buttonPress';
 import { unlockAchievement } from '../logic/achievementEngine';
 import { Room } from '../types/Room';
 import { Player, GameAction, GameMessage, MiniquestState, Quest } from '../types/GameTypes';
@@ -136,55 +137,13 @@ export const initialGameState: LocalGameState = {
 
 // --- Helper: Blue Button Press ---
 export const handleBlueButtonPress = (state: LocalGameState): LocalGameState => {
-  const currentCount =
-    typeof state.player.flags?.bluePressCount === 'number' ? state.player.flags.bluePressCount : 0;
-  const nextCount = currentCount + 1;
+  const outcome = resolveBlueButtonPress(state);
 
-  if (nextCount === 1) {
-    const warningMessage: GameMessage = {
-      id: `blue-button-first-${Date.now()}`,
-      text: '🟦 You pressed the blue button. A panel lights up with a stern warning...',
-      type: 'system',
-      timestamp: Date.now(),
-    };
-
-    return {
-      ...state,
-      player: {
-        ...state.player,
-        flags: {
-          ...state.player.flags,
-          bluePressCount: nextCount,
-          showBlueButtonWarning: true,
-        },
-      },
-      history: [...state.history, warningMessage],
-    };
-  } else {
-    const finalWarningMessage: GameMessage = {
-      id: `blue-button-final-${Date.now()}`,
-      text: '🟦 You pressed the button again despite all warnings. Reality begins to unravel...',
-      type: 'error',
-      timestamp: Date.now(),
-    };
-
-    return {
-      ...state,
-      player: {
-        ...state.player,
-        flags: {
-          ...state.player.flags,
-          bluePressCount: 0,
-          showBlueButtonWarning: false,
-        },
-      },
-      flags: {
-        ...state.flags,
-        multiverse_reboot_pending: true,
-      },
-      history: [...state.history, finalWarningMessage],
-    };
+  if (outcome.achievementId) {
+    unlockAchievement(outcome.achievementId);
   }
+
+  return outcome.nextState;
 };
 
 // --- Reducer ---
@@ -823,43 +782,6 @@ export const gameStateReducer = (state: LocalGameState, action: GameAction): Loc
             ...state.player.flags,
             showBlueButtonWarning: false,
           },
-        },
-      };
-
-    // --- Reset (narrative/transition) ---
-    case 'START_MULTIVERSE_REBOOT': {
-      const completionMessage: GameMessage = {
-        id: `multiverse-reset-${Date.now()}`,
-        text: 'You awaken with a faint sense of déjà vu. Everything feels familiar yet different...',
-        type: 'narrative',
-        timestamp: Date.now(),
-      };
-      return {
-        ...state,
-        currentRoomId: 'introstart',
-        player: {
-          ...state.player,
-          flags: {
-            ...state.player.flags,
-            bluePressCount: 0,
-          },
-        },
-        flags: {
-          ...state.flags,
-          multiverse_reboot_active: false,
-          multiverse_reboot_pending: false,
-          show_reset_sequence: false,
-        },
-        history: [...state.history, completionMessage],
-      };
-    }
-    case 'SHOW_RESET_SEQUENCE':
-      return {
-        ...state,
-        transition: 'reset_sequence',
-        flags: {
-          ...state.flags,
-          show_reset_sequence: true,
         },
       };
 

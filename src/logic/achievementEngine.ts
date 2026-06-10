@@ -24,6 +24,15 @@ interface AchievementDefinition {
   id: string;
   label: string;
   description?: string;
+  hidden?: boolean;
+}
+
+export interface AchievementView {
+  id: string;
+  label: string;
+  description?: string;
+  hidden: boolean;
+  unlocked: boolean;
 }
 
 const achievementDefinitions: AchievementDefinition[] = [
@@ -92,6 +101,12 @@ const achievementDefinitions: AchievementDefinition[] = [
     id: 'hub_hopper',
     label: 'Hub Hopper',
     description: 'Used the remote control to visit multiple hub locations',
+  },
+  {
+    id: 'forbidden_button_botherer',
+    label: 'Button Botherer',
+    description: 'Ignored the warnings and summoned Mr. Wendel anyway.',
+    hidden: true,
   },
 ];
 
@@ -229,6 +244,16 @@ export function getAchievementStats(unlockedIds: string[] = []): {
   const percentage = Math.round((unlocked / total) * 100);
 
   return { total, unlocked, percentage };
+}
+
+export function deriveAchievementView(unlockedIds: string[] = []): AchievementView[] {
+  return achievementDefinitions.map((achievement) => ({
+    id: achievement.id,
+    label: achievement.label,
+    description: achievement.description,
+    hidden: Boolean(achievement.hidden),
+    unlocked: unlockedIds.includes(achievement.id),
+  }));
 }
 
 // Export the achievement definitions for use in UI components

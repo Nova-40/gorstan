@@ -22,7 +22,8 @@ import React, { useState } from 'react';
 import { Button } from './button';
 
 interface TeleportationMenuProps {
-  onTeleport: (destination: string) => void;
+  onIssueCommand?: (command: string) => void;
+  onTeleport?: (destination: string) => void;
   onClose: () => void;
   hasRemoteControl: boolean;
   hasNavigationCrystal: boolean;
@@ -160,6 +161,7 @@ const crystalDestinations: Destination[] = [
 ];
 
 const TeleportationMenu: React.FC<TeleportationMenuProps> = ({
+  onIssueCommand,
   onTeleport,
   onClose,
   hasRemoteControl,
@@ -181,7 +183,11 @@ const TeleportationMenu: React.FC<TeleportationMenuProps> = ({
 
   // Variable declaration
   const handleTeleport = (destinationId: string) => {
-    onTeleport(destinationId);
+    if (onIssueCommand) {
+      onIssueCommand(`teleport ${destinationId}`);
+    } else {
+      onTeleport?.(destinationId);
+    }
     onClose();
   };
 

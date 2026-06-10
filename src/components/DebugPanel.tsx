@@ -20,20 +20,16 @@
 import React from 'react';
 import { useGameState } from '../state/gameState';
 
-const DebugPanel: React.FC = () => {
-  const { state, dispatch } = useGameState();
+interface DebugPanelProps {
+  onCommand: (command: string) => void;
+}
+
+const DebugPanel: React.FC<DebugPanelProps> = ({ onCommand }) => {
+  const { state } = useGameState();
 
   // Variable declaration
   const clearFlags = () => {
-    dispatch({ type: 'CLEAR_ALL_FLAGS' });
-    dispatch({
-      type: 'ADD_MESSAGE',
-      payload: {
-        text: '[DEBUG] All flags cleared.',
-        type: 'system',
-        timestamp: Date.now(),
-      },
-    });
+    onCommand('debug clear flags');
   };
 
   // Variable declaration
@@ -43,29 +39,19 @@ const DebugPanel: React.FC = () => {
   return (
     <div className="debug-panel">
       <button
-        onClick={() =>
-          dispatch({ type: 'SET_ROOM', payload: { roomId: 'offgorstanZone_ancientvault' } })
-        }
+        onClick={() => onCommand('debug warp offgorstanZone_ancientvault')}
       >
         Warp: Ancient Vault
       </button>
       <button
-        onClick={() =>
-          dispatch({ type: 'SET_ROOM', payload: { roomId: 'offmultiverseZone_shatteredrealm' } })
-        }
+        onClick={() => onCommand('debug warp offmultiverseZone_shatteredrealm')}
       >
         Warp: Shattered Realm
       </button>
-      <button
-        onClick={() =>
-          dispatch({ type: 'SET_FLAG', payload: { key: 'napkinExtrapolated', value: true } })
-        }
-      >
+      <button onClick={() => onCommand('debug set flag napkinExtrapolated true')}>
         Set Flag: Napkin Extrapolated
       </button>
-      <button
-        onClick={() => dispatch({ type: 'SET_FLAG', payload: { key: 'sidedWith', value: 'al' } })}
-      >
+      <button onClick={() => onCommand('debug set flag sidedWith al')}>
         Set Flag: Sided with Al
       </button>
       <h3>Debug Panel</h3>

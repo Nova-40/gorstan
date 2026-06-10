@@ -40,8 +40,12 @@ const rebootSequence: RebootMessage[] = [
   { text: 'Multiverse reboot complete.', delay: 5000, type: 'info' },
 ];
 
-const MultiverseRebootSequence: React.FC = () => {
-  const { state, dispatch } = useGameState();
+interface MultiverseRebootSequenceProps {
+  onIssueCommand: (command: string) => void;
+}
+
+const MultiverseRebootSequence: React.FC<MultiverseRebootSequenceProps> = ({ onIssueCommand }) => {
+  const { state } = useGameState();
   // React state declaration
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const [displayedMessages, setDisplayedMessages] = useState<RebootMessage[]>([]);
@@ -71,39 +75,10 @@ const MultiverseRebootSequence: React.FC = () => {
           setTimeout(() => {
             setIsComplete(true);
 
-            import('../logic/achievementEngine').then(({ unlockAchievement }) => {
-              unlockAchievement('multiverse_rebooter');
-            });
-
-            dispatch({
-              type: 'CHANGE_ROOM',
-              payload: 'crossing',
-            });
-
-            dispatch({
-              type: 'SET_FLAGS',
-              payload: {
-                ...state.flags,
-                multiverse_reboot_pending: false,
-                multiverse_reboot_active: false,
-                show_reset_sequence: false,
-              },
-            });
+            onIssueCommand('complete reboot');
 
             setFadeStage('none');
             setFadeOpacity(0);
-
-            setTimeout(() => {
-              dispatch({
-                type: 'ADD_MESSAGE',
-                payload: {
-                  id: `reboot-complete-${Date.now()}`,
-                  text: 'You awaken with a faint sense of déjà vu. The multiverse has been rebooted.',
-                  type: 'narrative',
-                  timestamp: Date.now(),
-                },
-              });
-            }, 1000);
           }, 1500);
         }
       }, currentMessage.delay);
@@ -120,8 +95,7 @@ const MultiverseRebootSequence: React.FC = () => {
     state.flags?.show_reset_sequence,
     isComplete,
     fadeStage,
-    dispatch,
-    state.flags,
+    onIssueCommand,
   ]);
 
   // React effect hook
@@ -142,8 +116,7 @@ const MultiverseRebootSequence: React.FC = () => {
 
         rebootTimeoutId = setTimeout(() => {
           setFadeStage('reboot');
-          dispatch({ type: 'START_MULTIVERSE_REBOOT' });
-          dispatch({ type: 'SHOW_RESET_SEQUENCE' });
+          onIssueCommand('confirm reboot');
         }, 2000);
       }, 1000);
 
@@ -154,7 +127,7 @@ const MultiverseRebootSequence: React.FC = () => {
         clearTimeout(rebootTimeoutId);
       };
     }
-  }, [state.flags?.multiverse_reboot_pending, state.flags?.multiverse_reboot_active, dispatch]);
+  }, [state.flags?.multiverse_reboot_pending, state.flags?.multiverse_reboot_active, onIssueCommand]);
 
   if (!state.flags?.multiverse_reboot_pending && fadeStage === 'none') {
     return null;

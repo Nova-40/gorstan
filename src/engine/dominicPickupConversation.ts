@@ -1,194 +1,90 @@
-// src/engine/dominicPickupConversation.ts
-// Enhanced Dominic conversation system for pickup attempts
-// Gorstan Game Beta 1 - Code License MIT
-
-import type { GameAction } from '../types/GameTypes';
 import type { LocalGameState } from '../state/gameState';
-import type { Dispatch } from 'react';
 
-interface PickupConversationState {
-  attempts: number;
-  warnings: number;
-  lastAttemptTime: number;
-  hasBeenWarned: boolean;
-  playerInsisted: boolean;
+export interface DominicPickupOutcome {
+  messages: string[];
+  nextFlags: LocalGameState['flags'];
+  completePickup: boolean;
 }
 
-// Track Dominic pickup conversation state
-const conversationStates = new Map<string, PickupConversationState>();
-
-export function getPickupConversationState(playerId: string): PickupConversationState {
-  if (!conversationStates.has(playerId)) {
-    conversationStates.set(playerId, {
-      attempts: 0,
-      warnings: 0,
-      lastAttemptTime: 0,
-      hasBeenWarned: false,
-      playerInsisted: false,
-    });
-  }
-  return conversationStates.get(playerId)!;
+function getAttempts(state: LocalGameState): number {
+  return typeof state.flags?.dominicPickupAttempts === 'number' ? state.flags.dominicPickupAttempts : 0;
 }
 
-export function handleDominicPickupAttempt(
-  state: LocalGameState,
-  dispatch: Dispatch<GameAction>,
-): boolean {
-  const playerId = state.player?.name || 'Player';
-  const convState = getPickupConversationState(playerId);
-  const now = Date.now();
+function hasInsisted(state: LocalGameState): boolean {
+  return Boolean(state.flags?.dominicPickupInsisted);
+}
 
-  // Check if this is in Dale's apartment
+export function resolveDominicPickupAttempt(state: LocalGameState): DominicPickupOutcome {
+  const attempts = getAttempts(state) + 1;
+  const insisted = hasInsisted(state);
+  const nextFlags: LocalGameState['flags'] = {
+    ...state.flags,
+    dominicPickupAttempts: attempts,
+  };
+
   if (state.currentRoomId !== 'dalesapartment') {
-    return false; // Normal pickup behavior for wandering Dominic
+    return {
+      messages: [],
+      nextFlags,
+      completePickup: true,
+    };
   }
 
-  convState.attempts++;
-  convState.lastAttemptTime = now;
+  if (attempts === 1) {
+    return {
+      messages: [
+        '🐟 As you reach for Dominic, he swims to the far side of his tank and looks at you with intelligent, worried eyes.',
+        '*DOMINIC speaks in a voice only you can hear* "Please... I\'m safe here. Taking me from my tank would be... unpleasant for both of us."',
+      ],
+      nextFlags,
+      completePickup: false,
+    };
+  }
 
-  // First attempt - gentle discouragement
-  if (convState.attempts === 1) {
-    dispatch({
-      type: 'ADD_MESSAGE',
-      payload: {
-        id: Date.now().toString(),
-        text: '🐟 As you reach for Dominic, he swims to the far side of his tank and looks at you with intelligent, worried eyes.',
-        type: 'system',
-        timestamp: now,
+  if (attempts === 2) {
+    return {
+      messages: [
+        '🐟 Dominic swims frantically as you approach again, his distress clearly visible.',
+        '*DOMINIC\'s voice grows more desperate* "Listen to me carefully - I\'ve been through this before. It never ends well. There are consequences to taking me from this place."',
+        "*DOMINIC continues* \"I'm not just a pet. I'm... aware. And I'm telling you: leave me be. For both our sakes.\"",
+      ],
+      nextFlags: {
+        ...nextFlags,
+        dominicPickupWarned: true,
       },
-    });
-
-    // Trigger Dominic conversation
-    setTimeout(() => {
-      dispatch({
-        type: 'ADD_MESSAGE',
-        payload: {
-          id: (Date.now() + 1).toString(),
-          text: '*DOMINIC speaks in a voice only you can hear* "Please... I\'m safe here. Taking me from my tank would be... unpleasant for both of us."',
-          type: 'npc',
-          timestamp: now + 1000,
-        },
-      });
-    }, 1500);
-
-    return true; // Prevent pickup
+      completePickup: false,
+    };
   }
 
-  // Second attempt - more urgent
-  if (convState.attempts === 2) {
-    dispatch({
-      type: 'ADD_MESSAGE',
-      payload: {
-        id: Date.now().toString(),
-        text: '🐟 Dominic swims frantically as you approach again, his distress clearly visible.',
-        type: 'system',
-        timestamp: now,
+  if (attempts === 3 && !insisted) {
+    return {
+      messages: [
+        '🐟 Despite his previous warnings, you reach for Dominic once more. He stops swimming and fixes you with a steady, knowing gaze.',
+        "*DOMINIC's voice is sad but resolute* \"I see. You're determined to ignore my warnings. Very well... but know this: taking me will mark you. Others will know what you've done. Polly will know.\"",
+        '*DOMINIC\'s voice drops to a whisper* "If you truly insist on this path, try once more. But remember - I warned you. The guilt is yours to carry."',
+      ],
+      nextFlags: {
+        ...nextFlags,
+        dominicPickupInsisted: true,
       },
-    });
-
-    setTimeout(() => {
-      dispatch({
-        type: 'ADD_MESSAGE',
-        payload: {
-          id: (Date.now() + 1).toString(),
-          text: '*DOMINIC\'s voice grows more desperate* "Listen to me carefully - I\'ve been through this before. It never ends well. There are consequences to taking me from this place."',
-          type: 'npc',
-          timestamp: now + 1000,
-        },
-      });
-    }, 1500);
-
-    setTimeout(() => {
-      dispatch({
-        type: 'ADD_MESSAGE',
-        payload: {
-          id: (Date.now() + 2).toString(),
-          text: "*DOMINIC continues* \"I'm not just a pet. I'm... aware. And I'm telling you: leave me be. For both our sakes.\"",
-          type: 'npc',
-          timestamp: now + 3000,
-        },
-      });
-    }, 3500);
-
-    convState.hasBeenWarned = true;
-    return true; // Prevent pickup
+      completePickup: false,
+    };
   }
 
-  // Third attempt - final warning
-  if (convState.attempts === 3 && !convState.playerInsisted) {
-    dispatch({
-      type: 'ADD_MESSAGE',
-      payload: {
-        id: Date.now().toString(),
-        text: '🐟 Despite his previous warnings, you reach for Dominic once more. He stops swimming and fixes you with a steady, knowing gaze.',
-        type: 'system',
-        timestamp: now,
-      },
-    });
-
-    setTimeout(() => {
-      dispatch({
-        type: 'ADD_MESSAGE',
-        payload: {
-          id: (Date.now() + 1).toString(),
-          text: "*DOMINIC's voice is sad but resolute* \"I see. You're determined to ignore my warnings. Very well... but know this: taking me will mark you. Others will know what you've done. Polly will know.\"",
-          type: 'npc',
-          timestamp: now + 1000,
-        },
-      });
-    }, 1500);
-
-    setTimeout(() => {
-      dispatch({
-        type: 'ADD_MESSAGE',
-        payload: {
-          id: (Date.now() + 2).toString(),
-          text: '*DOMINIC\'s voice drops to a whisper* "If you truly insist on this path, try once more. But remember - I warned you. The guilt is yours to carry."',
-          type: 'npc',
-          timestamp: now + 3500,
-        },
-      });
-    }, 4000);
-
-    convState.playerInsisted = true;
-    return true; // Prevent pickup, but next attempt will succeed
-  }
-
-  // Fourth attempt or beyond - allow pickup with consequences
-  if (convState.attempts >= 4 || convState.playerInsisted) {
-    dispatch({
-      type: 'ADD_MESSAGE',
-      payload: {
-        id: Date.now().toString(),
-        text: '🐟 Dominic stops resisting and allows you to take him, but his eyes are filled with sadness and resignation.',
-        type: 'system',
-        timestamp: now,
-      },
-    });
-
-    setTimeout(() => {
-      dispatch({
-        type: 'ADD_MESSAGE',
-        payload: {
-          id: (Date.now() + 1).toString(),
-          text: '*DOMINIC\'s final words* "So be it. But remember this moment when the consequences find you. I tried to save us both."',
-          type: 'npc',
-          timestamp: now + 1000,
-        },
-      });
-    }, 1500);
-
-    // Set flags for consequences
-    dispatch({ type: 'SET_FLAG', payload: { flag: 'dominicTakenAfterWarning', value: true } });
-    dispatch({
-      type: 'SET_FLAG',
-      payload: { flag: 'dominicWarningsIgnored', value: convState.attempts },
-    });
-
-    return false; // Allow pickup with consequences
-  }
-
-  return true; // Prevent pickup (fallback)
+  return {
+    messages: [
+      '🐟 Dominic stops resisting and allows you to take him, but his eyes are filled with sadness and resignation.',
+      '*DOMINIC\'s final words* "So be it. But remember this moment when the consequences find you. I tried to save us both."',
+    ],
+    nextFlags: {
+      ...nextFlags,
+      dominicTakenAfterWarning: true,
+      dominicWarningsIgnored: attempts,
+      dominicIsDead: true,
+      pollyVengeanceActive: true,
+    },
+    completePickup: true,
+  };
 }
 
 // Enhanced responses for different conversation contexts
