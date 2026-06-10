@@ -49,6 +49,7 @@ import BlueButtonWarningModal from './BlueButtonWarningModal';
 import QuickWinNotifications from './QuickWinNotifications';
 import ProgressDashboard from './ProgressDashboard';
 import OpeningBriefing from './OpeningBriefing';
+import WalkthroughPanel from './WalkthroughPanel';
 
 import { useFlags } from '../hooks/useFlags';
 import { useGameState } from '../state/gameState';
@@ -393,6 +394,15 @@ const AppCore: React.FC = () => {
   const currentRoomId: string = state.currentRoomId || 'controlnexus';
   const room: Room | undefined = roomMap[currentRoomId];
   const stage: GameStage = (state.stage as GameStage) || 'splash';
+  const walkthroughQuery = useMemo(() => {
+    if (typeof window === 'undefined') {
+      return null;
+    }
+
+    return new URLSearchParams(window.location.search).get('walkthrough');
+  }, []);
+  const walkthroughEnabled = import.meta.env.DEV ? Boolean(walkthroughQuery) : false;
+  const walkthroughAutoStart = import.meta.env.DEV && walkthroughQuery === 'auto';
 
   // Initialize hooks with proper typing
   useOptimizedEffects(state, dispatch, room);
@@ -2353,6 +2363,15 @@ const AppCore: React.FC = () => {
       <QuickWinNotifications />
 
       <OpeningBriefing onCommand={handleCommand} />
+      <WalkthroughPanel
+        enabled={walkthroughEnabled}
+        autoStart={walkthroughAutoStart}
+        currentRoomId={currentRoomId}
+        history={state.history}
+        onCommand={handleCommand}
+        roomMap={roomMap}
+        stage={stage}
+      />
     </div>
   );
 };
