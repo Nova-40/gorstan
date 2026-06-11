@@ -1,0 +1,1232 @@
+# Gorstan active/orphan file audit - clean pass
+
+Static audit excluding restore/archive/build directories. Do not delete candidates without manual review and validation.
+
+## protected (173)
+
+- `.eslintrc.cjs` — protected path or likely entry/test/config/runtime/docs/public area
+- `.eslintrc.js` — protected path or likely entry/test/config/runtime/docs/public area
+- `docs/TODO.md` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 6 file(s); empty file
+  - referenced by: `src/__tests__/integration/demoMode.test.tsx`, `src/combat/CombatSystem.ts`, `src/components/AmbientFX/AnimatedBackdrop.test.tsx`, `src/demo/demoController.ts`, `src/npc/__tests__/movePolicy.test.ts`
+- `docs/action-plan.md` — protected path or likely entry/test/config/runtime/docs/public area; empty file
+- `docs/ai-miniquest-implementation.md` — protected path or likely entry/test/config/runtime/docs/public area
+- `docs/baseline-analysis.md` — protected path or likely entry/test/config/runtime/docs/public area; empty file
+- `docs/cost-effective-ai-options.md` — protected path or likely entry/test/config/runtime/docs/public area
+- `docs/efficiency-improvements.md` — protected path or likely entry/test/config/runtime/docs/public area; empty file
+- `docs/gameplay-flow-optimisation.md` — protected path or likely entry/test/config/runtime/docs/public area; empty file
+- `docs/gameplay-improvements.md` — protected path or likely entry/test/config/runtime/docs/public area; empty file
+- `docs/gorstan-critical-review.md` — protected path or likely entry/test/config/runtime/docs/public area; empty file
+- `docs/groq-integration-complete.md` — protected path or likely entry/test/config/runtime/docs/public area
+- `docs/groq-integration-guide.md` — protected path or likely entry/test/config/runtime/docs/public area
+- `docs/heuristic-flow-evaluation.md` — protected path or likely entry/test/config/runtime/docs/public area; empty file
+- `docs/integration-summary.md` — protected path or likely entry/test/config/runtime/docs/public area
+- `docs/mushroom-field-enhancement.md` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 1 file(s)
+  - referenced by: `docs/integration-summary.md`
+- `docs/no-filter-findings.md` — protected path or likely entry/test/config/runtime/docs/public area; empty file
+- `docs/now-phase-summary.md` — protected path or likely entry/test/config/runtime/docs/public area; empty file
+- `docs/npcs/wandering.md` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 33 file(s); empty file
+  - referenced by: `README.md`, `docs/groq-integration-complete.md`, `docs/production-deployment-complete.md`, `src/components/AIMonitorDisplay.tsx`, `src/components/AppCore.tsx`
+- `docs/phase10-performance-optimization.md` — protected path or likely entry/test/config/runtime/docs/public area; empty file
+- `docs/phase2-progress.md` — protected path or likely entry/test/config/runtime/docs/public area; empty file
+- `docs/playtest-transcripts/P1.md` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 1 file(s); empty file
+  - referenced by: `package-lock.json`
+- `docs/playtest-transcripts/P2.md` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 1 file(s); empty file
+  - referenced by: `package-lock.json`
+- `docs/playtest-transcripts/P3.md` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 1 file(s); empty file
+  - referenced by: `package-lock.json`
+- `docs/production-deployment-complete.md` — protected path or likely entry/test/config/runtime/docs/public area
+- `docs/quality-report.md` — protected path or likely entry/test/config/runtime/docs/public area; empty file
+- `docs/restore-from-release.md` — protected path or likely entry/test/config/runtime/docs/public area; empty file
+- `docs/vercel-ai-sdk-analysis.md` — protected path or likely entry/test/config/runtime/docs/public area
+- `eslint.config.js` — protected path or likely entry/test/config/runtime/docs/public area
+- `index.html` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 110 file(s)
+  - referenced by: `README.md`, `deploy.js`, `jest.config.json`, `package.json`, `sbom.json`
+- `package-lock.json` — protected path or likely entry/test/config/runtime/docs/public area
+- `package.json` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 375 file(s)
+  - referenced by: `EULA.md`, `README.md`, `package-lock.json`, `postcss.config.js`, `sbom.json`
+- `public/data/celebrate/buddhist.json` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 6 file(s)
+  - referenced by: `public/data/celebrate/index.json`, `src/celebrate/celebrateController.tsx`, `src/celebrate/celebrateGate.ts`, `src/celebrate/data/index.json`, `src/celebrate/gen/build-all.ts`
+- `public/data/celebrate/chinese.json` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 6 file(s)
+  - referenced by: `public/data/celebrate/index.json`, `src/celebrate/celebrateController.tsx`, `src/celebrate/celebrateGate.ts`, `src/celebrate/data/index.json`, `src/celebrate/gen/build-all.ts`
+- `public/data/celebrate/christian.json` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 6 file(s)
+  - referenced by: `public/data/celebrate/index.json`, `src/celebrate/celebrateController.tsx`, `src/celebrate/celebrateGate.ts`, `src/celebrate/data/index.json`, `src/celebrate/gen/build-all.ts`
+- `public/data/celebrate/hindu.json` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 6 file(s)
+  - referenced by: `public/data/celebrate/index.json`, `src/celebrate/celebrateController.tsx`, `src/celebrate/celebrateGate.ts`, `src/celebrate/data/index.json`, `src/celebrate/gen/build-all.ts`
+- `public/data/celebrate/index.json` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 111 file(s)
+  - referenced by: `README.md`, `deploy.js`, `index.html`, `jest.config.json`, `package.json`
+- `public/data/celebrate/islamic.json` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 5 file(s)
+  - referenced by: `public/data/celebrate/index.json`, `src/celebrate/celebrateController.tsx`, `src/celebrate/celebrateGate.ts`, `src/celebrate/data/index.json`, `src/celebrate/gen/build-all.ts`
+- `public/data/celebrate/jewish.json` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 6 file(s)
+  - referenced by: `public/data/celebrate/index.json`, `src/celebrate/assets/celebrationIcons.tsx`, `src/celebrate/celebrateController.tsx`, `src/celebrate/celebrateGate.ts`, `src/celebrate/data/index.json`
+- `public/data/celebrate/seasonal.json` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 21 file(s)
+  - referenced by: `docs/vercel-ai-sdk-analysis.md`, `public/data/celebrate/index.json`, `src/celebrate.tsx`, `src/celebrate/celebrateController.tsx`, `src/celebrate/celebrateGate.ts`
+- `public/data/celebrate/shinto.json` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 6 file(s)
+  - referenced by: `public/data/celebrate/index.json`, `src/celebrate/celebrateController.tsx`, `src/celebrate/celebrateGate.ts`, `src/celebrate/data/index.json`, `src/celebrate/gen/build-all.ts`
+- `public/data/celebrate/sikh.json` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 6 file(s)
+  - referenced by: `public/data/celebrate/index.json`, `src/celebrate/celebrateController.tsx`, `src/celebrate/celebrateGate.ts`, `src/celebrate/data/index.json`, `src/celebrate/gen/build-all.ts`
+- `public/deploy-check.html` — protected path or likely entry/test/config/runtime/docs/public area
+- `public/style.css` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 109 file(s)
+  - referenced by: `docs/ai-miniquest-implementation.md`, `package-lock.json`, `public/deploy-check.html`, `sbom.json`, `src/celebrate/celebrateController.tsx`
+- `src/App.tsx` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 2 file(s)
+  - referenced by: `src/example/App.test.tsx`, `src/main.tsx`
+- `src/__tests__/ErrorBoundary.test.tsx` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/__tests__/basic.test.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/__tests__/goldenPaths.test.ts` — protected path or likely entry/test/config/runtime/docs/public area; path/name suggests legacy/deprecated/backup/old copy
+- `src/__tests__/hooks.test.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/__tests__/integration/demoMode.test.tsx` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/__tests__/integration/demoValidation.test.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/__tests__/roomGraph.test.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/__tests__/saveMigration.test.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/__tests__/schema.test.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/__tests__/unit/automation/demoLogic.test.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/__tests__/unit/combat/CombatSystem.test.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/__tests__/unit/components/CommandInput.test.tsx` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/__tests__/unit/engine/commandParser.test.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/__tests__/unit/state/gameState.test.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/components/AppCore.tsx` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 1 file(s)
+  - referenced by: `src/App.tsx`
+- `src/components/GameShellV2.tsx` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/engine/FinalBattle.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/GameEngine.d.ts` — protected path or likely entry/test/config/runtime/docs/public area; empty file
+- `src/engine/GameEngine.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/GameEngine.tsx` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/GameOverHandler.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/GameStateManager.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 4 file(s)
+  - referenced by: `src/engine/FinalBattle.ts`, `src/engine/TutorialManager.ts`, `src/engine/teleportSystem.ts`, `src/rooms/RoomObjectives.ts`
+- `src/engine/MagicSystem.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 4 file(s)
+  - referenced by: `src/engine/FinalBattle.ts`, `src/engine/GameStateManager.ts`, `src/engine/TutorialManager.ts`, `src/ui/MagicModal.tsx`
+- `src/engine/NPCTypes.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 22 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/components/EnhancedNPCConsole.tsx`, `src/components/NPCConsole.tsx`, `src/components/NPCSelectionModal.tsx`, `src/components/PresentNPCsPanel.tsx`
+- `src/engine/PlayerState.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/RecapEngine.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/RoomEngine.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/TutorialManager.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/VictoryHandler.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/VisualEffectsManager.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/achievementEngine.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 11 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/components/MultiverseRebootSequence.tsx`, `src/components/ProgressDashboard.tsx`, `src/engine/deathEngine.ts`, `src/engine/librarianController.ts`
+- `src/engine/ambientAudioPlayer.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/aylaChatHandler.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/blueButtonLogic.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/commandParser.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 2 file(s)
+  - referenced by: `src/state/gameState.tsx`, `src/ui/QuickActionsPanel.tsx`
+- `src/engine/crossingController.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 1 file(s)
+  - referenced by: `src/engine/commandParser.ts`
+- `src/engine/deathEngine.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 5 file(s)
+  - referenced by: `src/engine/dominicLogic.ts`, `src/engine/mrWendellController.ts`, `src/engine/specialDeathEffects.ts`, `src/engine/trapDeathLogic.ts`, `src/puzzles/zspecLibrarianGate.ts`
+- `src/engine/debugCommands.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/dialogueEngine.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 1 file(s)
+  - referenced by: `src/engine/dialogueUtils.ts`
+- `src/engine/dialogueUtils.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/dominicLogic.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 1 file(s)
+  - referenced by: `src/engine/resetRoomLogic.ts`
+- `src/engine/dominicPickupConversation.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/engine/dynamicEncounterEngine.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/engineFlags.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/enhancedWanderingNPCController.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/extrapolatorLogic.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/idleAutostart.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 1 file(s)
+  - referenced by: `src/components/WelcomeScreen.tsx`
+- `src/engine/inventory.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/itemEngine.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/items.d.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/items.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 5 file(s)
+  - referenced by: `src/components/PickupSelectionModal.tsx`, `src/engine/inventory.ts`, `src/engine/itemEngine.ts`, `src/utils/globalItemValidator.ts`, `src/utils/itemSystemIntegration.ts`
+- `src/engine/librarianController.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/livesManager.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/miniquestCommands.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/miniquestController.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 5 file(s)
+  - referenced by: `src/engine/miniquestCommands.ts`, `src/scripts/testAIMiniquests.ts`, `src/scripts/testUnifiedAI.ts`, `src/services/aylaHintSystem.ts`, `src/services/unifiedAI.ts`
+- `src/engine/miniquestEngine.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 1 file(s)
+  - referenced by: `src/engine/miniquestInitializer.ts`
+- `src/engine/miniquestInitializer.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 3 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/engine/miniquestController.ts`, `src/services/aiMiniquestService.ts`
+- `src/engine/mrWendellController.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/npcEngine.d.ts` — protected path or likely entry/test/config/runtime/docs/public area; empty file
+- `src/engine/npcEngine.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/engine/npcIdleLines.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/npcIntervention.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/npcMemory.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 7 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/components/NPCConsole.tsx`, `src/engine/npcEngine.ts`, `src/engine/npcSpawner.ts`, `src/engine/stalkerBehaviors.ts`
+- `src/engine/npcSpawner.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/puzzleCommands.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/puzzleController.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 1 file(s)
+  - referenced by: `src/engine/puzzleCommands.ts`
+- `src/engine/puzzleEngine.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 1 file(s)
+  - referenced by: `src/engine/puzzleController.ts`
+- `src/engine/resetEngine.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/resetRoomLogic.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/roomEventHandler.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/engine/roomRegistry.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 6 file(s)
+  - referenced by: `src/__tests__/roomGraph.test.ts`, `src/data/index.ts`, `src/routes/graph.ts`, `src/scripts/validateRoomGraph.ts`, `src/utils/roomLoader.ts`
+- `src/engine/roomRouter.d.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/roomRouter.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 1 file(s)
+  - referenced by: `src/puzzles/zspecLibrarianGate.ts`
+- `src/engine/roomSchema.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/sceneEngine.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/specialDeathEffects.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 3 file(s)
+  - referenced by: `src/engine/extrapolatorLogic.ts`, `src/engine/resetRoomLogic.ts`, `src/npcs/pollyStalkerLogic.ts`
+- `src/engine/stalkerBehaviors.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/state/demoState.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 2 file(s)
+  - referenced by: `src/demo/demoRouter.ts`, `src/mechanics/trials/TrialsController.ts`
+- `src/engine/storyProgress.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/teleportSystem.d.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/teleportSystem.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/trapController.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 3 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/components/TrapManagementModal.tsx`, `src/engine/trapDetection.ts`
+- `src/engine/trapController.tsx` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 3 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/components/TrapManagementModal.tsx`, `src/engine/trapDetection.ts`
+- `src/engine/trapDeathLogic.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/engine/trapDetection.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 3 file(s)
+  - referenced by: `src/components/TrapManagementModal.tsx`, `src/engine/commandParser.ts`, `src/engine/roomEventHandler.ts`
+- `src/engine/trapEngine.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 3 file(s)
+  - referenced by: `src/engine/roomEventHandler.ts`, `src/engine/trapDetection.ts`, `src/utils/trapSystemValidator.ts`
+- `src/engine/trapSystem.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 1 file(s)
+  - referenced by: `src/components/TrapBadge.tsx`
+- `src/engine/wanderingNPCController.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 2 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/engine/roomEventHandler.ts`
+- `src/engine/wanderingNPCDialogue.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/main.js` — protected path or likely entry/test/config/runtime/docs/public area; empty file
+- `src/main.tsx` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/roomRegistry.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 6 file(s)
+  - referenced by: `src/__tests__/roomGraph.test.ts`, `src/data/index.ts`, `src/routes/graph.ts`, `src/scripts/validateRoomGraph.ts`, `src/utils/roomLoader.ts`
+- `src/services/SaveManager.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 3 file(s)
+  - referenced by: `src/__tests__/saveMigration.test.ts`, `src/components/AppCore.tsx`, `src/components/SaveGameModal.tsx`
+- `src/state/Item.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 2 file(s)
+  - referenced by: `src/engine/TutorialManager.ts`, `src/items/scrolls.ts`
+- `src/state/Player.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 4 file(s)
+  - referenced by: `src/engine/FinalBattle.ts`, `src/engine/GameStateManager.ts`, `src/engine/TutorialManager.ts`, `src/state/Item.ts`
+- `src/state/PlayerState.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/state/dispatch.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 1 file(s)
+  - referenced by: `src/npcs/pollyStalkerLogic.ts`
+- `src/state/flagRegistry.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 8 file(s)
+  - referenced by: `src/engine/GameOverHandler.ts`, `src/engine/VictoryHandler.ts`, `src/hooks/useFlags.ts`, `src/hooks/useLibrarianLogic.ts`, `src/hooks/useNPCController.ts`
+- `src/state/gameState.tsx` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 89 file(s)
+  - referenced by: `docs/groq-integration-guide.md`, `examples/interNPCExamples.ts`, `src/App.tsx`, `src/__tests__/integration/demoValidation.test.ts`, `src/components/AITestPanel.tsx`
+- `src/state/miniquestTracker.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/state/puzzleIndex.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/state/scoreEffects.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/state/scoreManager.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 3 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/logic/codexTracker.ts`, `src/state/scoreEffects.ts`
+- `src/state/stateUtils.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/test-utils/__mocks__/fileMock.js` — protected path or likely entry/test/config/runtime/docs/public area; empty file
+- `src/test-utils/__mocks__/version.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 4 file(s); empty file
+  - referenced by: `src/components/OpeningBriefing.tsx`, `src/components/SplashScreen.tsx`, `src/components/WelcomeScreen.tsx`, `src/components/WelcomeScreenNew.tsx`
+- `src/test-utils/mockGameState.ts` — protected path or likely entry/test/config/runtime/docs/public area; empty file
+- `src/test-utils/mockRoomData.ts` — protected path or likely entry/test/config/runtime/docs/public area; empty file
+- `src/test-utils/setupTests.ts` — protected path or likely entry/test/config/runtime/docs/public area; empty file
+- `src/test-utils/testHelpers.ts` — protected path or likely entry/test/config/runtime/docs/public area; empty file
+- `src/test/GameFlowIntegration.test.tsx` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/test/GraphFunctions.test.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/test/ImplementationVerification.test.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/test/RouteIntegration.test.tsx` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/test/mockRoomRegistry.ts` — protected path or likely entry/test/config/runtime/docs/public area; empty file
+- `src/test/setupTests.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/test/vitest-conversion-template.ts` — protected path or likely entry/test/config/runtime/docs/public area; empty file
+- `src/testPolyfills.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 1 file(s)
+  - referenced by: `src/setupTests.ts`
+- `src/walkthrough/scripts.test.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `src/walkthrough/scripts.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 2 file(s)
+  - referenced by: `src/components/WalkthroughPanel.tsx`, `src/walkthrough/scripts.test.ts`
+- `src/walkthrough/types.ts` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 3 file(s)
+  - referenced by: `src/components/WalkthroughPanel.tsx`, `src/walkthrough/scripts.test.ts`, `src/walkthrough/scripts.ts`
+- `tsconfig.eslint.json` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 3 file(s)
+  - referenced by: `.eslintrc.cjs`, `.eslintrc.js`, `eslint.config.js`
+- `tsconfig.json` — protected path or likely entry/test/config/runtime/docs/public area; referenced by 10 file(s)
+  - referenced by: `.eslintrc.cjs`, `.eslintrc.js`, `README.md`, `eslint.config.js`, `package-lock.json`
+- `tsconfig.node.json` — protected path or likely entry/test/config/runtime/docs/public area
+- `vite.config.d.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `vite.config.js` — protected path or likely entry/test/config/runtime/docs/public area
+- `vite.config.ts` — protected path or likely entry/test/config/runtime/docs/public area
+- `vitest.config.ts` — protected path or likely entry/test/config/runtime/docs/public area
+
+## referenced (400)
+
+- `.netlify/state.json` — referenced by 222 file(s)
+  - referenced by: `README.md`, `docs/ai-miniquest-implementation.md`, `docs/cost-effective-ai-options.md`, `docs/groq-integration-complete.md`, `docs/groq-integration-guide.md`
+- `.reports/README.md` — referenced by 1 file(s)
+  - referenced by: `sbom.json`
+- `.vscode/settings.json` — referenced by 31 file(s)
+  - referenced by: `.eslintrc.cjs`, `.eslintrc.js`, `docs/ai-miniquest-implementation.md`, `docs/groq-integration-guide.md`, `eslint.config.js`
+- `EULA.md` — referenced by 369 file(s)
+  - referenced by: `README.md`, `postcss.config.js`, `scripts/update-license.js`, `src/App.tsx`, `src/GameTypes.ts`
+- `README.md` — referenced by 1 file(s)
+  - referenced by: `sbom.json`
+- `knip.json` — referenced by 1 file(s)
+  - referenced by: `sbom.json`
+- `sbom.json` — referenced by 1 file(s)
+  - referenced by: `scripts/backup-local.mjs`
+- `src/GameTypes.ts` — referenced by 45 file(s)
+  - referenced by: `src/__tests__/saveMigration.test.ts`, `src/components/AppCore.tsx`, `src/components/GameShellV2.tsx`, `src/components/TerminalConsole.tsx`, `src/components/WalkthroughPanel.tsx`
+- `src/NPCTypes.ts` — referenced by 22 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/components/EnhancedNPCConsole.tsx`, `src/components/NPCConsole.tsx`, `src/components/NPCSelectionModal.tsx`, `src/components/PresentNPCsPanel.tsx`
+- `src/audio/ensureAudioPrimed.ts` — referenced by 1 file(s)
+  - referenced by: `src/demo/DemoDirector.tsx`
+- `src/audio/sfx.ts` — referenced by 10 file(s)
+  - referenced by: `src/combat/CombatSystem.ts`, `src/combat/HitResolver.ts`, `src/magic/MagicSystem.ts`, `src/magic/spells/Blink.ts`, `src/magic/spells/ChainLightning.ts`
+- `src/celebrate.tsx` — referenced by 1 file(s)
+  - referenced by: `src/App.tsx`
+- `src/celebrate/README.md` — referenced by 1 file(s); empty file
+  - referenced by: `sbom.json`
+- `src/celebrate/celebrateController.tsx` — referenced by 1 file(s)
+  - referenced by: `src/celebrate/index.ts`
+- `src/celebrate/celebrateGate.ts` — referenced by 3 file(s)
+  - referenced by: `src/celebrate/celebrateController.tsx`, `src/celebrate/index.ts`, `src/celebrate/test/CelebrationTest.tsx`
+- `src/celebrate/data/buddhist.json` — referenced by 6 file(s)
+  - referenced by: `public/data/celebrate/index.json`, `src/celebrate/celebrateController.tsx`, `src/celebrate/celebrateGate.ts`, `src/celebrate/data/index.json`, `src/celebrate/gen/build-all.ts`
+- `src/celebrate/data/chinese.json` — referenced by 6 file(s)
+  - referenced by: `public/data/celebrate/index.json`, `src/celebrate/celebrateController.tsx`, `src/celebrate/celebrateGate.ts`, `src/celebrate/data/index.json`, `src/celebrate/gen/build-all.ts`
+- `src/celebrate/data/christian.json` — referenced by 6 file(s)
+  - referenced by: `public/data/celebrate/index.json`, `src/celebrate/celebrateController.tsx`, `src/celebrate/celebrateGate.ts`, `src/celebrate/data/index.json`, `src/celebrate/gen/build-all.ts`
+- `src/celebrate/data/hindu.json` — referenced by 6 file(s)
+  - referenced by: `public/data/celebrate/index.json`, `src/celebrate/celebrateController.tsx`, `src/celebrate/celebrateGate.ts`, `src/celebrate/data/index.json`, `src/celebrate/gen/build-all.ts`
+- `src/celebrate/data/index.json` — referenced by 111 file(s)
+  - referenced by: `README.md`, `deploy.js`, `index.html`, `jest.config.json`, `package.json`
+- `src/celebrate/data/islamic.json` — referenced by 5 file(s)
+  - referenced by: `public/data/celebrate/index.json`, `src/celebrate/celebrateController.tsx`, `src/celebrate/celebrateGate.ts`, `src/celebrate/data/index.json`, `src/celebrate/gen/build-all.ts`
+- `src/celebrate/data/jewish.json` — referenced by 6 file(s)
+  - referenced by: `public/data/celebrate/index.json`, `src/celebrate/assets/celebrationIcons.tsx`, `src/celebrate/celebrateController.tsx`, `src/celebrate/celebrateGate.ts`, `src/celebrate/data/index.json`
+- `src/celebrate/data/seasonal.json` — referenced by 21 file(s)
+  - referenced by: `docs/vercel-ai-sdk-analysis.md`, `public/data/celebrate/index.json`, `src/celebrate.tsx`, `src/celebrate/celebrateController.tsx`, `src/celebrate/celebrateGate.ts`
+- `src/celebrate/data/shinto.json` — referenced by 6 file(s)
+  - referenced by: `public/data/celebrate/index.json`, `src/celebrate/celebrateController.tsx`, `src/celebrate/celebrateGate.ts`, `src/celebrate/data/index.json`, `src/celebrate/gen/build-all.ts`
+- `src/celebrate/data/sikh.json` — referenced by 6 file(s)
+  - referenced by: `public/data/celebrate/index.json`, `src/celebrate/celebrateController.tsx`, `src/celebrate/celebrateGate.ts`, `src/celebrate/data/index.json`, `src/celebrate/gen/build-all.ts`
+- `src/celebrate/gen/build-all.ts` — referenced by 1 file(s)
+  - referenced by: `src/celebrate/gen/run-generator.ts`
+- `src/celebrate/gen/build-buddhist.ts` — referenced by 1 file(s)
+  - referenced by: `src/celebrate/gen/build-all.ts`
+- `src/celebrate/gen/build-chinese.ts` — referenced by 1 file(s)
+  - referenced by: `src/celebrate/gen/build-all.ts`
+- `src/celebrate/gen/build-christian.ts` — referenced by 1 file(s)
+  - referenced by: `src/celebrate/gen/build-all.ts`
+- `src/celebrate/gen/build-hindu.ts` — referenced by 1 file(s)
+  - referenced by: `src/celebrate/gen/build-all.ts`
+- `src/celebrate/gen/build-islam.ts` — referenced by 1 file(s)
+  - referenced by: `src/celebrate/gen/build-all.ts`
+- `src/celebrate/gen/build-judaism.ts` — referenced by 1 file(s)
+  - referenced by: `src/celebrate/gen/build-all.ts`
+- `src/celebrate/gen/build-seasonal.ts` — referenced by 1 file(s)
+  - referenced by: `src/celebrate/gen/build-all.ts`
+- `src/celebrate/gen/build-shinto.ts` — referenced by 1 file(s)
+  - referenced by: `src/celebrate/gen/build-all.ts`
+- `src/celebrate/gen/build-sikh.ts` — referenced by 1 file(s)
+  - referenced by: `src/celebrate/gen/build-all.ts`
+- `src/celebrate/gen/util.ts` — referenced by 13 file(s)
+  - referenced by: `src/celebrate/celebrateController.tsx`, `src/celebrate/celebrateGate.ts`, `src/celebrate/gen/build-all.ts`, `src/celebrate/gen/build-buddhist.ts`, `src/celebrate/gen/build-chinese.ts`
+- `src/celebrate/index.ts` — referenced by 4 file(s)
+  - referenced by: `src/celebrate/test/CelebrationTest.tsx`, `src/components/AppCore.tsx`, `src/engine/GameStateManager.ts`, `src/engine/MagicSystem.ts`
+- `src/combat/CombatSystem.ts` — referenced by 1 file(s)
+  - referenced by: `src/ai/UtilityAI.ts`
+- `src/combat/HitResolver.ts` — referenced by 5 file(s)
+  - referenced by: `src/combat/CombatSystem.ts`, `src/magic/spells/ChainLightning.ts`, `src/magic/spells/FireBolt.ts`, `src/magic/spells/FrostNova.ts`, `tests/unit/combat.test.ts`
+- `src/combat/README.md` — referenced by 1 file(s)
+  - referenced by: `sbom.json`
+- `src/components/AIMonitorDisplay.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/AmbientFX/AnimatedBackdrop.tsx` — referenced by 3 file(s)
+  - referenced by: `src/components/AmbientFX/index.ts`, `src/components/AmbientFX/specs.ts`, `src/fx/roomFxRegistry.ts`
+- `src/components/AmbientFX/index.ts` — referenced by 4 file(s)
+  - referenced by: `src/celebrate/test/CelebrationTest.tsx`, `src/components/AppCore.tsx`, `src/engine/GameStateManager.ts`, `src/engine/MagicSystem.ts`
+- `src/components/AmbientFX/specs.ts` — referenced by 1 file(s)
+  - referenced by: `src/fx/roomFxRegistry.ts`
+- `src/components/AylaHintPopup.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/BlueButtonWarningModal.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/ChallengeSystem.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/PlayerStatsPanel.tsx`
+- `src/components/CollectionDisplay.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/PlayerStatsPanel.tsx`
+- `src/components/CommandInput.tsx` — referenced by 2 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/engine/GameEngine.tsx`
+- `src/components/DebugPanel.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/EnhancedNPCConsole.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/IconButton.tsx` — referenced by 2 file(s)
+  - referenced by: `src/components/GameShellV2.tsx`, `src/components/QuickActionsPanel.tsx`
+- `src/components/InGameHUD.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/index.ts`
+- `src/components/InventoryModal.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/MiniquestInterface.tsx` — referenced by 1 file(s)
+  - referenced by: `src/engine/miniquestController.ts`
+- `src/components/Modal.tsx` — referenced by 7 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/components/InGameHUD.tsx`, `src/components/QuantumMagicScreen.tsx`, `src/components/TrapManagementModal.tsx`, `src/components/ui/DiscoveryModal.tsx`
+- `src/components/ModalOverlay.css` — referenced by 3 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/components/ModalOverlay.tsx`, `src/components/PickUpItemModal.tsx`
+- `src/components/ModalOverlay.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/MultiverseRebootSequence.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/NPCBanterToggle.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/InterNPCDemo.tsx`
+- `src/components/NPCConsole.tsx` — referenced by 3 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/npcs/pollyBayInterrogation.ts`, `src/puzzles/zspecLibrarianGate.ts`
+- `src/components/NPCSelectionModal.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/OpeningBriefing.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/PerformanceDashboard.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/PickUpItemModal.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/PlayerNameCapture.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/PlayerStatsPanel.css` — referenced by 1 file(s)
+  - referenced by: `src/components/PlayerStatsPanel.tsx`
+- `src/components/PresentNPCsPanel.css` — referenced by 2 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/components/PresentNPCsPanel.tsx`
+- `src/components/PresentNPCsPanel.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/ProgressDashboard.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/PlayerStatsPanel.tsx`
+- `src/components/PuzzleInterface.tsx` — referenced by 2 file(s)
+  - referenced by: `src/engine/puzzleController.ts`, `src/engine/puzzleEngine.ts`
+- `src/components/QuantumMagicScreen.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/index.ts`
+- `src/components/QuickActionsPanel.css` — referenced by 7 file(s)
+  - referenced by: `scripts/smoke/smoke-test.js`, `scripts/test-movement.js`, `src/combat/README.md`, `src/components/AppCore.tsx`, `src/components/QuickActionsPanel.tsx`
+- `src/components/QuickActionsPanel.tsx` — referenced by 2 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/engine/GameEngine.tsx`
+- `src/components/QuickWinNotifications.tsx` — referenced by 3 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/components/ChallengeSystem.tsx`, `src/components/SocialSharing.tsx`
+- `src/components/RavenInteraction.tsx` — referenced by 1 file(s)
+  - referenced by: `src/rooms/glitchrealm/RavenChamberRoom.tsx`
+- `src/components/RoomRenderer.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/RouteManager.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/index.ts`
+- `src/components/SaveGameModal.tsx` — referenced by 2 file(s)
+  - referenced by: `src/__tests__/saveMigration.test.ts`, `src/components/AppCore.tsx`
+- `src/components/ShadowEncountersScreen.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/index.ts`
+- `src/components/SocialSharing.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/PlayerStatsPanel.tsx`
+- `src/components/SplashScreen.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/StartPromptDialog.tsx` — referenced by 1 file(s)
+  - referenced by: `src/demo/DemoDirector.tsx`
+- `src/components/TeletypeIntro.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/TerminalConsole.css` — referenced by 8 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/components/TerminalConsole.tsx`, `src/engine/GameEngine.tsx`, `src/engine/commandParser.ts`, `src/engine/dominicLogic.ts`
+- `src/components/TerminalConsole.tsx` — referenced by 7 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/engine/GameEngine.tsx`, `src/engine/commandParser.ts`, `src/engine/dominicLogic.ts`, `src/engine/trapDeathLogic.ts`
+- `src/components/TrapManagementModal.css` — referenced by 2 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/components/TrapManagementModal.tsx`
+- `src/components/TrapManagementModal.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/TrialsGame.tsx` — referenced by 3 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/components/TrialsTestPage.tsx`, `src/demo/demoScripts/trialsOfGorstan.ts`
+- `src/components/UnifiedAIPopup.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/UnifiedModal.tsx` — referenced by 2 file(s)
+  - referenced by: `src/components/DramaticWaitTransitionOverlay.tsx`, `src/components/HelpModal.tsx`
+- `src/components/UseItemModal.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/WalkthroughPanel.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/WelcomeScreen.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/animations/DramaticWaitTransition.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/animations/FractalTeleportOverlay.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/animations/TeleportManager.tsx`
+- `src/components/animations/JumpTransition.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/animations/RoomTransition.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/animations/SipTransition.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/animations/TeleportManager.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/animations/TeleportTransition.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/TravelMenu.tsx`
+- `src/components/animations/TrekTeleportOverlay.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/animations/TeleportManager.tsx`
+- `src/components/animations/WaitTransition.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/button.tsx` — referenced by 2 file(s)
+  - referenced by: `src/components/TeleportationMenu.tsx`, `src/components/TravelMenu.tsx`
+- `src/components/debug/DebugPanel.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/components/index.ts` — referenced by 4 file(s)
+  - referenced by: `src/celebrate/test/CelebrationTest.tsx`, `src/components/AppCore.tsx`, `src/engine/GameStateManager.ts`, `src/engine/MagicSystem.ts`
+- `src/components/layout/MobileGameLayout.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/EnhancedApp.tsx`
+- `src/components/modalStyles.css` — referenced by 2 file(s)
+  - referenced by: `src/components/UnifiedModal.tsx`, `src/components/ui/ResponsiveUI.tsx`
+- `src/components/pollyHanky.json` — referenced by 1 file(s)
+  - referenced by: `src/components/final_gate_logic.json`
+- `src/components/pollyToken.json` — referenced by 1 file(s)
+  - referenced by: `src/components/final_gate_logic.json`
+- `src/components/ui/ArtifactBondDisplay.tsx` — referenced by 2 file(s)
+  - referenced by: `src/components/ui/ArtifactJournal.tsx`, `src/components/ui/index.ts`
+- `src/components/ui/ArtifactCard.tsx` — referenced by 2 file(s)
+  - referenced by: `src/components/QuantumMagicScreen.tsx`, `src/components/ui/index.ts`
+- `src/components/ui/ArtifactJournal.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/ui/index.ts`
+- `src/components/ui/ArtifactLoreViewer.tsx` — referenced by 2 file(s)
+  - referenced by: `src/components/ui/ArtifactJournal.tsx`, `src/components/ui/index.ts`
+- `src/components/ui/ArtifactVisionViewer.tsx` — referenced by 2 file(s)
+  - referenced by: `src/components/ui/ArtifactJournal.tsx`, `src/components/ui/index.ts`
+- `src/components/ui/Badge.tsx` — referenced by 8 file(s)
+  - referenced by: `src/components/InGameHUD.tsx`, `src/components/QuantumMagicScreen.tsx`, `src/components/ui/ArtifactCard.tsx`, `src/components/ui/DiscoveryModal.tsx`, `src/components/ui/ObjectiveList.tsx`
+- `src/components/ui/Button.tsx` — referenced by 6 file(s)
+  - referenced by: `src/components/InGameHUD.tsx`, `src/components/QuantumMagicScreen.tsx`, `src/components/ui/ArtifactCard.tsx`, `src/components/ui/DiscoveryModal.tsx`, `src/components/ui/SkillTree.tsx`
+- `src/components/ui/Card.tsx` — referenced by 5 file(s)
+  - referenced by: `src/components/InGameHUD.tsx`, `src/components/QuantumMagicScreen.tsx`, `src/components/ui/ArtifactCard.tsx`, `src/components/ui/SkillTree.tsx`, `src/components/ui/index.ts`
+- `src/components/ui/Countdown.tsx` — referenced by 2 file(s)
+  - referenced by: `src/components/InGameHUD.tsx`, `src/components/ui/index.ts`
+- `src/components/ui/DiscoveryModal.tsx` — referenced by 2 file(s)
+  - referenced by: `src/components/QuantumMagicScreen.tsx`, `src/components/ui/index.ts`
+- `src/components/ui/Modal.tsx` — referenced by 7 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/components/InGameHUD.tsx`, `src/components/QuantumMagicScreen.tsx`, `src/components/TrapManagementModal.tsx`, `src/components/ui/DiscoveryModal.tsx`
+- `src/components/ui/ObjectiveList.tsx` — referenced by 2 file(s)
+  - referenced by: `src/components/InGameHUD.tsx`, `src/components/ui/index.ts`
+- `src/components/ui/ResponsiveUI.tsx` — referenced by 2 file(s)
+  - referenced by: `src/components/EnhancedApp.tsx`, `src/components/layout/MobileGameLayout.tsx`
+- `src/components/ui/RouteBadge.tsx` — referenced by 2 file(s)
+  - referenced by: `src/components/InGameHUD.tsx`, `src/components/ui/index.ts`
+- `src/components/ui/ShadowEncounterLog.tsx` — referenced by 2 file(s)
+  - referenced by: `src/components/ShadowEncountersScreen.tsx`, `src/components/ui/index.ts`
+- `src/components/ui/ShadowEntityDisplay.tsx` — referenced by 2 file(s)
+  - referenced by: `src/components/ShadowEncountersScreen.tsx`, `src/components/ui/index.ts`
+- `src/components/ui/SkillTree.tsx` — referenced by 2 file(s)
+  - referenced by: `src/components/QuantumMagicScreen.tsx`, `src/components/ui/index.ts`
+- `src/components/ui/Toast.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/ui/index.ts`
+- `src/components/ui/Tooltip.tsx` — referenced by 2 file(s)
+  - referenced by: `src/components/ui/ArtifactCard.tsx`, `src/components/ui/index.ts`
+- `src/components/ui/index.ts` — referenced by 4 file(s)
+  - referenced by: `src/celebrate/test/CelebrationTest.tsx`, `src/components/AppCore.tsx`, `src/engine/GameStateManager.ts`, `src/engine/MagicSystem.ts`
+- `src/config.ts` — referenced by 2 file(s)
+  - referenced by: `src/seasonal/seasonalController.ts`, `vitest.config.ts`
+- `src/config/mode.ts` — referenced by 4 file(s)
+  - referenced by: `src/demo/DemoCompletion.tsx`, `src/demo/demoSave.ts`, `src/ui/DemoRibbon.tsx`, `src/utils/storage.ts`
+- `src/config/version.ts` — referenced by 4 file(s)
+  - referenced by: `src/components/OpeningBriefing.tsx`, `src/components/SplashScreen.tsx`, `src/components/WelcomeScreen.tsx`, `src/components/WelcomeScreenNew.tsx`
+- `src/data/artifactArc.ts` — referenced by 6 file(s)
+  - referenced by: `src/components/ui/ArtifactBondDisplay.tsx`, `src/components/ui/ArtifactJournal.tsx`, `src/components/ui/ArtifactLoreViewer.tsx`, `src/components/ui/ArtifactVisionViewer.tsx`, `src/data/artifactArc.ts`
+- `src/data/ayla/edgeCases.json` — referenced by 1 file(s)
+  - referenced by: `src/services/AylaService.ts`
+- `src/data/ayla/intents.json` — referenced by 2 file(s)
+  - referenced by: `src/npc/intent.ts`, `src/services/AylaService.ts`
+- `src/data/balance.ts` — referenced by 11 file(s)
+  - referenced by: `src/ai/UtilityAI.ts`, `src/combat/CombatSystem.ts`, `src/combat/HitResolver.ts`, `src/combat/PostureSystem.ts`, `src/magic/spells/Blink.ts`
+- `src/data/index.ts` — referenced by 4 file(s)
+  - referenced by: `src/celebrate/test/CelebrationTest.tsx`, `src/components/AppCore.tsx`, `src/engine/GameStateManager.ts`, `src/engine/MagicSystem.ts`
+- `src/data/itemDescriptions.ts` — referenced by 2 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/data/index.ts`
+- `src/data/logicPuzzles.ts` — referenced by 4 file(s)
+  - referenced by: `src/components/ui/PuzzleCollectionBrowser.tsx`, `src/components/ui/PuzzleSolver.tsx`, `src/data/logicPuzzles.ts`, `src/services/logicPuzzleService.ts`
+- `src/data/lore/books.json` — referenced by 27 file(s)
+  - referenced by: `README.md`, `src/components/CreditsScreen.tsx`, `src/components/WelcomeScreen.tsx`, `src/components/WelcomeScreenNew.tsx`, `src/data/ayla/edgeCases.json`
+- `src/data/lore/books.schema.ts` — referenced by 1 file(s)
+  - referenced by: `src/services/bookLore.ts`
+- `src/data/lore/store.json` — referenced by 62 file(s)
+  - referenced by: `.eslintrc.cjs`, `.eslintrc.js`, `docs/groq-integration-guide.md`, `docs/production-deployment-complete.md`, `package-lock.json`
+- `src/data/lore/store.schema.ts` — referenced by 1 file(s)
+  - referenced by: `src/services/bookStore.ts`
+- `src/data/quantumMagic.ts` — referenced by 15 file(s)
+  - referenced by: `src/components/QuantumMagicScreen.tsx`, `src/components/ui/ArtifactCard.tsx`, `src/components/ui/DiscoveryModal.tsx`, `src/components/ui/SkillTree.tsx`, `src/data/index.ts`
+- `src/data/roomMiniquests.ts` — referenced by 2 file(s)
+  - referenced by: `src/data/index.ts`, `src/engine/miniquestInitializer.ts`
+- `src/data/roomObjectivesConfig.ts` — referenced by 2 file(s)
+  - referenced by: `src/data/index.ts`, `src/rooms/RoomObjectives.ts`
+- `src/data/roomRegistry.ts` — referenced by 6 file(s)
+  - referenced by: `src/__tests__/roomGraph.test.ts`, `src/data/index.ts`, `src/routes/graph.ts`, `src/scripts/validateRoomGraph.ts`, `src/utils/roomLoader.ts`
+- `src/data/shadowEncounters.ts` — referenced by 7 file(s)
+  - referenced by: `src/components/ShadowEncountersScreen.tsx`, `src/components/ui/ShadowEncounterLog.tsx`, `src/components/ui/ShadowEntityDisplay.tsx`, `src/data/index.ts`, `src/data/shadowEncounters.ts`
+- `src/data/validationResults.ts` — referenced by 1 file(s)
+  - referenced by: `src/data/index.ts`
+- `src/demo/ConsolidatedShowcase.ts` — referenced by 1 file(s)
+  - referenced by: `src/demo/demoRouter.ts`
+- `src/demo/DemoShadowState.ts` — referenced by 1 file(s)
+  - referenced by: `src/demo/DemoDirector.tsx`
+- `src/demo/StartPromptDialog.tsx` — referenced by 1 file(s)
+  - referenced by: `src/demo/DemoDirector.tsx`
+- `src/demo/demoController.ts` — referenced by 2 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/demo/demoGate.ts`
+- `src/demo/demoGate.ts` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/demo/demoRouter.ts` — referenced by 9 file(s)
+  - referenced by: `src/demo/ConsolidatedShowcase.ts`, `src/demo/demoScripts/gladeOfEchoes.ts`, `src/demo/demoScripts/ruinsOfStanton.ts`, `src/demo/demoScripts/tramlinesOfTime.ts`, `src/demo/demoScripts/trialsOfGorstan.ts`
+- `src/demo/demoScripts/gladeOfEchoes.ts` — referenced by 1 file(s)
+  - referenced by: `src/demo/demoRouter.ts`
+- `src/demo/demoScripts/ruinsOfStanton.ts` — referenced by 1 file(s)
+  - referenced by: `src/demo/demoRouter.ts`
+- `src/demo/demoScripts/tramlinesOfTime.ts` — referenced by 1 file(s)
+  - referenced by: `src/demo/demoRouter.ts`
+- `src/demo/demoScripts/trialsOfGorstan.ts` — referenced by 2 file(s)
+  - referenced by: `src/demo/ConsolidatedShowcase.ts`, `src/demo/demoRouter.ts`
+- `src/demo/longform/dominicBirthdayHeist.ts` — referenced by 1 file(s)
+  - referenced by: `src/demo/demoRouter.ts`
+- `src/demo/longform/fractureOfTheNine.ts` — referenced by 1 file(s)
+  - referenced by: `src/demo/demoRouter.ts`
+- `src/demo/longform/theThreeRegnants.ts` — referenced by 1 file(s)
+  - referenced by: `src/demo/demoRouter.ts`
+- `src/hooks/index.ts` — referenced by 4 file(s)
+  - referenced by: `src/celebrate/test/CelebrationTest.tsx`, `src/components/AppCore.tsx`, `src/engine/GameStateManager.ts`, `src/engine/MagicSystem.ts`
+- `src/hooks/useEventListener.ts` — referenced by 1 file(s)
+  - referenced by: `src/hooks/index.ts`
+- `src/hooks/useFlags.ts` — referenced by 6 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/hooks/useLibrarianLogic.ts`, `src/hooks/useNPCController.ts`, `src/hooks/useOptimizedEffects.ts`, `src/hooks/useSystemInitialization.ts`
+- `src/hooks/useLibrarianLogic.ts` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/hooks/useModuleLoader.ts` — referenced by 4 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/hooks/useNPCController.ts`, `src/hooks/useOptimizedEffects.ts`, `src/hooks/useSystemInitialization.ts`
+- `src/hooks/useOptimizedEffects.ts` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/hooks/useRoomTransition.ts` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/hooks/useStableCallback.ts` — referenced by 1 file(s)
+  - referenced by: `src/hooks/index.ts`
+- `src/hooks/useTimers.ts` — referenced by 3 file(s)
+  - referenced by: `src/hooks/useNPCController.ts`, `src/hooks/useOptimizedEffects.ts`, `src/hooks/useSystemInitialization.ts`
+- `src/hooks/useTrialsGameState.ts` — referenced by 1 file(s)
+  - referenced by: `src/components/TrialsGame.tsx`
+- `src/hooks/useWendellLogic.ts` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/index.css` — referenced by 111 file(s)
+  - referenced by: `README.md`, `deploy.js`, `index.html`, `jest.config.json`, `package.json`
+- `src/logic/achievementEngine.ts` — referenced by 11 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/components/MultiverseRebootSequence.tsx`, `src/components/ProgressDashboard.tsx`, `src/engine/deathEngine.ts`, `src/engine/librarianController.ts`
+- `src/logic/codexTracker.ts` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/logic/dominicLogic.ts` — referenced by 1 file(s)
+  - referenced by: `src/engine/resetRoomLogic.ts`
+- `src/magic/MagicSystem.ts` — referenced by 4 file(s)
+  - referenced by: `src/engine/FinalBattle.ts`, `src/engine/GameStateManager.ts`, `src/engine/TutorialManager.ts`, `src/ui/MagicModal.tsx`
+- `src/mechanics/caves/Artifact.ts` — referenced by 1 file(s)
+  - referenced by: `src/mechanics/caves/CaveMaze.ts`
+- `src/mechanics/caves/CaveMaze.ts` — referenced by 1 file(s)
+  - referenced by: `src/mechanics/trials/TrialsController.ts`
+- `src/mechanics/trials/MushroomField.ts` — referenced by 2 file(s)
+  - referenced by: `src/hooks/useTrialsGameState.ts`, `src/mechanics/trials/TrialsController.ts`
+- `src/mechanics/trials/RandomRocks.ts` — referenced by 1 file(s)
+  - referenced by: `src/mechanics/trials/TrialsController.ts`
+- `src/mechanics/trials/RockField.ts` — referenced by 1 file(s)
+  - referenced by: `src/mechanics/trials/TrialsController.ts`
+- `src/mechanics/trials/StreamReset.ts` — referenced by 1 file(s)
+  - referenced by: `src/mechanics/trials/TrialsController.ts`
+- `src/mechanics/trials/TrialsController.ts` — referenced by 1 file(s)
+  - referenced by: `src/hooks/useTrialsGameState.ts`
+- `src/npc/README.md` — referenced by 1 file(s); empty file
+  - referenced by: `sbom.json`
+- `src/npc/accessibilityProvider.ts` — referenced by 2 file(s)
+  - referenced by: `src/npc/__tests__/accessibilityProvider.test.ts`, `src/npc/movementExecution.ts`
+- `src/npc/allianceMemory.ts` — referenced by 3 file(s)
+  - referenced by: `src/npc/__tests__/allianceMemory.test.ts`, `src/npc/__tests__/controlRoomEncounter.test.ts`, `src/npc/controlRoomEncounter.ts`
+- `src/npc/ayla/aylaResponder.ts` — referenced by 2 file(s)
+  - referenced by: `src/components/NPCConsole.tsx`, `src/engine/npcEngine.ts`
+- `src/npc/ayla/personality.ts` — referenced by 1 file(s)
+  - referenced by: `src/npc/ayla/aylaResponder.ts`
+- `src/npc/context.ts` — referenced by 4 file(s)
+  - referenced by: `src/npc/conversation.ts`, `src/npc/index.ts`, `src/npc/proactive.ts`, `src/npc/respond.ts`
+- `src/npc/controlRoomEncounter.ts` — referenced by 1 file(s)
+  - referenced by: `src/npc/__tests__/controlRoomEncounter.test.ts`
+- `src/npc/conversation.ts` — referenced by 1 file(s)
+  - referenced by: `src/npc/index.ts`
+- `src/npc/conversationBus.ts` — referenced by 1 file(s)
+  - referenced by: `src/npc/talk.ts`
+- `src/npc/errorHandling.ts` — referenced by 3 file(s)
+  - referenced by: `src/npc/__tests__/errorHandling.test.ts`, `src/npc/__tests__/integration-simple.test.ts`, `src/npc/movementExecution.ts`
+- `src/npc/groupChatLogic.ts` — referenced by 2 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/components/EnhancedNPCConsole.tsx`
+- `src/npc/index.ts` — referenced by 4 file(s)
+  - referenced by: `src/celebrate/test/CelebrationTest.tsx`, `src/components/AppCore.tsx`, `src/engine/GameStateManager.ts`, `src/engine/MagicSystem.ts`
+- `src/npc/intent.ts` — referenced by 3 file(s)
+  - referenced by: `src/npc/conversation.ts`, `src/npc/index.ts`, `src/npc/respond.ts`
+- `src/npc/memory.ts` — referenced by 4 file(s)
+  - referenced by: `src/npc/conversation.ts`, `src/npc/index.ts`, `src/npc/proactive.ts`, `src/npc/respond.ts`
+- `src/npc/movePolicy.ts` — referenced by 3 file(s)
+  - referenced by: `src/npc/__tests__/movePolicy.simple.test.ts`, `src/npc/__tests__/movePolicy.test.ts`, `src/npc/movementExecution.ts`
+- `src/npc/movementExecution.ts` — referenced by 3 file(s)
+  - referenced by: `src/npc/__tests__/integration-simple.test.ts`, `src/npc/__tests__/movementExecution.test.ts`, `src/npc/__tests__/zoneAwareMovement.test.ts`
+- `src/npc/npcMemory.ts` — referenced by 7 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/components/NPCConsole.tsx`, `src/engine/npcEngine.ts`, `src/engine/npcSpawner.ts`, `src/engine/stalkerBehaviors.ts`
+- `src/npc/npcPresence.ts` — referenced by 4 file(s)
+  - referenced by: `src/npc/__tests__/movementExecution.test.ts`, `src/npc/__tests__/npcPresence.test.ts`, `src/npc/__tests__/zoneAwareMovement.test.ts`, `src/npc/movementExecution.ts`
+- `src/npc/performanceOptimizer.ts` — referenced by 3 file(s)
+  - referenced by: `src/npc/__tests__/integration-simple.test.ts`, `src/npc/__tests__/performanceOptimizer.test.ts`, `src/npc/movementExecution.ts`
+- `src/npc/personas.ts` — referenced by 4 file(s)
+  - referenced by: `src/npc/conversation.ts`, `src/npc/index.ts`, `src/npc/proactive.ts`, `src/npc/respond.ts`
+- `src/npc/proactive.ts` — referenced by 2 file(s)
+  - referenced by: `src/npc/conversation.ts`, `src/npc/index.ts`
+- `src/npc/profiles.ts` — referenced by 1 file(s)
+  - referenced by: `src/npc/conversationBus.ts`
+- `src/npc/registry.ts` — referenced by 3 file(s)
+  - referenced by: `src/npc/conversationBus.ts`, `src/npc/talk.ts`, `src/npc/triggers.ts`
+- `src/npc/respond.ts` — referenced by 2 file(s)
+  - referenced by: `src/npc/conversation.ts`, `src/npc/index.ts`
+- `src/npc/style.ts` — referenced by 1 file(s)
+  - referenced by: `src/npc/conversationBus.ts`
+- `src/npc/talk.ts` — referenced by 4 file(s)
+  - referenced by: `examples/interNPCExamples.ts`, `src/components/InterNPCDemo.tsx`, `src/npc/groupChatLogic.ts`, `src/npc/triggers.ts`
+- `src/npc/triggers.ts` — referenced by 3 file(s)
+  - referenced by: `examples/interNPCExamples.ts`, `src/components/AppCore.tsx`, `src/components/NPCConversationTest.tsx`
+- `src/npc/wanderActivation.ts` — referenced by 1 file(s)
+  - referenced by: `src/npc/__tests__/wanderActivation.test.ts`
+- `src/npc/wanderScheduler.ts` — referenced by 4 file(s)
+  - referenced by: `src/npc/__tests__/wanderScheduler.simple.test.ts`, `src/npc/__tests__/wanderScheduler.test.ts`, `src/npc/movementExecution.ts`, `src/npc/wanderActivation.ts`
+- `src/npc/wanderers.ts` — referenced by 1 file(s)
+  - referenced by: `src/npcs/npcMemory.ts`
+- `src/npc/wendell/AI.ts` — referenced by 1 file(s)
+  - referenced by: `src/npc/wendell/View.tsx`
+- `src/npc/wendell/questions.ts` — referenced by 1 file(s)
+  - referenced by: `src/npc/wendell/AI.ts`
+- `src/npc/zoneAwareness.ts` — referenced by 3 file(s)
+  - referenced by: `src/npc/__tests__/zoneAwareMovement.test.ts`, `src/npc/__tests__/zoneAwareness.test.ts`, `src/npc/movementExecution.ts`
+- `src/npcs/npcMemory.ts` — referenced by 7 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/components/NPCConsole.tsx`, `src/engine/npcEngine.ts`, `src/engine/npcSpawner.ts`, `src/engine/stalkerBehaviors.ts`
+- `src/npcs/wanderers.ts` — referenced by 1 file(s)
+  - referenced by: `src/npcs/npcMemory.ts`
+- `src/reducers/conversations.ts` — referenced by 1 file(s)
+  - referenced by: `src/state/gameState.tsx`
+- `src/rooms/Room.ts` — referenced by 106 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/components/RoomRenderer.tsx`, `src/components/WalkthroughPanel.tsx`, `src/data/roomRegistry.ts`, `src/engine/FinalBattle.ts`
+- `src/rooms/RoomObjectives.ts` — referenced by 2 file(s)
+  - referenced by: `src/components/RoomObjectivePanel.tsx`, `src/engine/TutorialManager.ts`
+- `src/rooms/elfhameZone_elfhame.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/elfhameZone_faeglade.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/elfhameZone_faelake.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/elfhameZone_faelakenorthshore.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/elfhameZone_faepalacedungeons.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/elfhameZone_faepalacemainhall.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/elfhameZone_faepalacerhianonsroom.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/glitchZone_datavoid.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/glitchZone_failure.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/glitchZone_glitchinguniverse.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/glitchZone_issuesdetected.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/glitchZone_moreissues.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/glitchZone_ravenchamber.ts` — referenced by 2 file(s)
+  - referenced by: `src/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/gorstanZone_carronspire.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/gorstanZone_gorstanhub.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/gorstanZone_gorstanvillage.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/gorstanZone_torridon.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/gorstanZone_torridoninn.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/gorstanZone_torridoninthepast.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/introZone_controlnexus.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/introZone_controlroom.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/introZone_crossing.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/introZone_hiddenlab.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/introZone_introreset.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/introZone_introstart.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/latticeZone_hiddenlibrary.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/latticeZone_lattice.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/latticeZone_latticehub.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/latticeZone_latticelibrary.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/latticeZone_latticeobservationentrance.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/latticeZone_latticeobservatory.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/latticeZone_latticespire.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/latticeZone_libraryofnine.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/londonZone_cafeoffice.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/londonZone_dalesapartment.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/londonZone_findlaters.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/londonZone_findlaterscornercoffeeshop.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/londonZone_londonhub.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/londonZone_stkatherinesdock.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/londonZone_trentpark.ts` — referenced by 5 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`, `src/utils/optimizedRoomLoader.ts`
+- `src/rooms/mazeZone_anothermazeroom.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/mazeZone_forgottenchamber.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/mazeZone_labyrinthbend.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/mazeZone_mazeecho.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/mazeZone_mazehub.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/mazeZone_mazeroom.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/mazeZone_mirrorhall.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/mazeZone_misleadchamber.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/mazeZone_pollysbay.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/mazeZone_secretmazeentry.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/mazeZone_secrettunnel.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/mazeZone_stillamazeroom.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/mazeZone_storagechamber.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/mazeZone_windingpath.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/multiZone_liminalhub.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/newyorkZone_aevirawarehouse.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/newyorkZone_burgerjoint.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/newyorkZone_centralpark.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/newyorkZone_greasystoreroom.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/newyorkZone_manhattanhub.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/offgorstanZone_ancientslibrary.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/offgorstanZone_ancientsroom.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/offgorstanZone_ancientvault.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/offgorstanZone_arbitercore.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/offgorstanZone_echochamber.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/offmultiverseZone_shatteredrealm.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/roomRegistry.ts` — referenced by 6 file(s)
+  - referenced by: `src/__tests__/roomGraph.test.ts`, `src/data/index.ts`, `src/routes/graph.ts`, `src/scripts/validateRoomGraph.ts`, `src/utils/roomLoader.ts`
+- `src/rooms/stantonZone_ascendantStanton.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/stantonZone_glitchStanton.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/stantonZone_peacefulStanton.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/stantonZone_silentStanton.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/stantonZone_stantonharcourt.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/rooms/stantonZone_villagegreen.ts` — referenced by 4 file(s)
+  - referenced by: `src/data/roomRegistry.ts`, `src/engine/roomRegistry.ts`, `src/roomRegistry.ts`, `src/rooms/roomRegistry.ts`
+- `src/routes/goldenPaths.ts` — referenced by 1 file(s); path/name suggests legacy/deprecated/backup/old copy
+  - referenced by: `src/__tests__/goldenPaths.test.ts`
+- `src/routes/graph.ts` — referenced by 1 file(s)
+  - referenced by: `src/__tests__/goldenPaths.test.ts`
+- `src/routes/manifest.ts` — referenced by 1 file(s)
+  - referenced by: `src/components/RouteManager.tsx`
+- `src/schema/assert.ts` — referenced by 1 file(s)
+  - referenced by: `src/__tests__/schema.test.ts`
+- `src/schema/room.ts` — referenced by 1 file(s)
+  - referenced by: `src/__tests__/schema.test.ts`
+- `src/seasonal/ChristmasOverlay.tsx` — referenced by 1 file(s)
+  - referenced by: `src/seasonal/OverlayPortal.tsx`
+- `src/seasonal/May13Overlay.tsx` — referenced by 1 file(s)
+  - referenced by: `src/seasonal/OverlayPortal.tsx`
+- `src/seasonal/a11y/BaseDialog.tsx` — referenced by 6 file(s)
+  - referenced by: `src/seasonal/ChristmasOverlay.tsx`, `src/seasonal/EasterEggOverlay.tsx`, `src/seasonal/May13Overlay.tsx`, `src/seasonal/overlays/ChristmasOverlay.tsx`, `src/seasonal/overlays/EasterOverlay.tsx`
+- `src/seasonal/hooks/usePrefersReducedMotion.ts` — referenced by 3 file(s)
+  - referenced by: `src/seasonal/ChristmasOverlay.tsx`, `src/seasonal/EasterEggOverlay.tsx`, `src/seasonal/May13Overlay.tsx`
+- `src/seasonal/overlayBus.ts` — referenced by 3 file(s)
+  - referenced by: `src/seasonal/OverlayPortal.tsx`, `src/seasonal/seasonalController.ts`, `src/ui/OverlayPortal.tsx`
+- `src/seasonal/overlays/ChristmasOverlay.tsx` — referenced by 1 file(s)
+  - referenced by: `src/seasonal/OverlayPortal.tsx`
+- `src/seasonal/overlays/EasterOverlay.tsx` — referenced by 1 file(s)
+  - referenced by: `src/seasonal/OverlayPortal.tsx`
+- `src/seasonal/overlays/May13Overlay.tsx` — referenced by 1 file(s)
+  - referenced by: `src/seasonal/OverlayPortal.tsx`
+- `src/seasonal/seasonalController.ts` — referenced by 1 file(s)
+  - referenced by: `src/seasonal/useSeasonalController.ts`
+- `src/seasonal/seasonalFlags.ts` — referenced by 1 file(s)
+  - referenced by: `src/seasonal/seasonalGate.ts`
+- `src/seasonal/seasonalGate.ts` — referenced by 2 file(s)
+  - referenced by: `src/seasonal/__tests__/seasonalGate.spec.ts`, `src/seasonal/seasonalController.ts`
+- `src/seasonal/useSeasonalController.ts` — referenced by 1 file(s)
+  - referenced by: `src/celebrate.tsx`
+- `src/services/AylaService.ts` — referenced by 1 file(s)
+  - referenced by: `src/npc/ayla/aylaResponder.ts`
+- `src/services/DeviceProfiler.ts` — referenced by 2 file(s)
+  - referenced by: `src/hooks/usePerformanceManager.ts`, `src/services/PerformanceManager.ts`
+- `src/services/PerformanceManager.ts` — referenced by 1 file(s)
+  - referenced by: `src/hooks/usePerformanceManager.ts`
+- `src/services/aiMiniquestService.ts` — referenced by 4 file(s)
+  - referenced by: `src/engine/miniquestController.ts`, `src/scripts/testAIMiniquests.ts`, `src/services/aylaHintSystem.ts`, `src/services/unifiedAI.ts`
+- `src/services/aiUsageMonitor.ts` — referenced by 3 file(s)
+  - referenced by: `src/components/AIMonitorDisplay.tsx`, `src/components/AppCore.tsx`, `src/services/npcAI.ts`
+- `src/services/aylaHintSystem.ts` — referenced by 3 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/components/AylaHintPopup.tsx`, `src/services/unifiedAI.ts`
+- `src/services/bookLore.ts` — referenced by 1 file(s)
+  - referenced by: `src/npc/ayla/aylaResponder.ts`
+- `src/services/bookStore.ts` — referenced by 1 file(s)
+  - referenced by: `src/npc/ayla/aylaResponder.ts`
+- `src/services/dynamicContentGenerator.ts` — referenced by 1 file(s)
+  - referenced by: `src/services/unifiedAI.ts`
+- `src/services/groqAI.ts` — referenced by 9 file(s)
+  - referenced by: `docs/groq-integration-guide.md`, `src/components/AITestPanel.tsx`, `src/components/EnhancedNPCConsole.tsx`, `src/services/aiMiniquestService.ts`, `src/services/aylaHintSystem.ts`
+- `src/services/index.ts` — referenced by 4 file(s)
+  - referenced by: `src/celebrate/test/CelebrationTest.tsx`, `src/components/AppCore.tsx`, `src/engine/GameStateManager.ts`, `src/engine/MagicSystem.ts`
+- `src/services/npcAI.ts` — referenced by 3 file(s)
+  - referenced by: `src/components/AIMonitorDisplay.tsx`, `src/components/AppCore.tsx`, `src/services/npcDialogueTriggers.ts`
+- `src/services/objectivesService.ts` — referenced by 1 file(s)
+  - referenced by: `src/services/index.ts`
+- `src/services/quantumMagicService.ts` — referenced by 1 file(s)
+  - referenced by: `src/services/index.ts`
+- `src/services/shadowEncounterService.ts` — referenced by 1 file(s)
+  - referenced by: `src/services/index.ts`
+- `src/services/timeboxService.ts` — referenced by 1 file(s)
+  - referenced by: `src/services/index.ts`
+- `src/services/unifiedAI.ts` — referenced by 3 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/components/UnifiedAIPopup.tsx`, `src/scripts/testUnifiedAI.ts`
+- `src/status/StatusSystem.ts` — referenced by 11 file(s)
+  - referenced by: `src/ai/UtilityAI.ts`, `src/combat/CombatSystem.ts`, `src/combat/HitResolver.ts`, `src/combat/PostureSystem.ts`, `src/magic/spells/Blink.ts`
+- `src/styles/GameUI.css` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/styles/ModalOverlay.css` — referenced by 3 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/components/ModalOverlay.tsx`, `src/components/PickUpItemModal.tsx`
+- `src/styles/PerformanceDashboard.css` — referenced by 2 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/components/PerformanceDashboard.tsx`
+- `src/styles/enhanced-npc-console.css` — referenced by 1 file(s)
+  - referenced by: `src/components/EnhancedNPCConsole.tsx`
+- `src/styles/fade.css` — referenced by 34 file(s)
+  - referenced by: `sbom.json`, `src/audio/sfx.ts`, `src/celebrate/celebrateController.tsx`, `src/components/EnhancedNPCConsole.tsx`, `src/components/MultiverseRebootSequence.tsx`
+- `src/tailwind.css` — referenced by 9 file(s)
+  - referenced by: `README.md`, `package-lock.json`, `package.json`, `postcss.config.js`, `sbom.json`
+- `src/theme/index.ts` — referenced by 4 file(s)
+  - referenced by: `src/celebrate/test/CelebrationTest.tsx`, `src/components/AppCore.tsx`, `src/engine/GameStateManager.ts`, `src/engine/MagicSystem.ts`
+- `src/theme/tokens.css` — referenced by 11 file(s)
+  - referenced by: `docs/cost-effective-ai-options.md`, `docs/groq-integration-complete.md`, `docs/groq-integration-guide.md`, `docs/production-deployment-complete.md`, `docs/vercel-ai-sdk-analysis.md`
+- `src/types/GameTypes.ts` — referenced by 45 file(s)
+  - referenced by: `src/__tests__/saveMigration.test.ts`, `src/components/AppCore.tsx`, `src/components/GameShellV2.tsx`, `src/components/TerminalConsole.tsx`, `src/components/WalkthroughPanel.tsx`
+- `src/types/MiniquestTypes.ts` — referenced by 1 file(s)
+  - referenced by: `src/data/roomMiniquests.ts`
+- `src/types/NPCTypes.ts` — referenced by 22 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/components/EnhancedNPCConsole.tsx`, `src/components/NPCConsole.tsx`, `src/components/NPCSelectionModal.tsx`, `src/components/PresentNPCsPanel.tsx`
+- `src/types/Room.d.ts` — referenced by 1 file(s)
+  - referenced by: `src/rooms/glitchZone_ravenchamber_room.ts`
+- `src/types/RoomTypes.ts` — referenced by 4 file(s)
+  - referenced by: `src/components/RoomEditor.tsx`, `src/engine/roomRegistry.ts`, `src/types/NPCTypes.d.ts`, `src/utils/trapSystemValidator.ts`
+- `src/types/artifactArc.ts` — referenced by 6 file(s)
+  - referenced by: `src/components/ui/ArtifactBondDisplay.tsx`, `src/components/ui/ArtifactJournal.tsx`, `src/components/ui/ArtifactLoreViewer.tsx`, `src/components/ui/ArtifactVisionViewer.tsx`, `src/data/artifactArc.ts`
+- `src/types/combat.ts` — referenced by 18 file(s)
+  - referenced by: `src/ai/UtilityAI.ts`, `src/combat/CombatSystem.ts`, `src/combat/HitResolver.ts`, `src/combat/PostureSystem.ts`, `src/combat/TargetingSystem.ts`
+- `src/types/dialogue.ts` — referenced by 5 file(s)
+  - referenced by: `src/npc/conversationBus.ts`, `src/npc/profiles.ts`, `src/npc/style.ts`, `src/reducers/conversations.ts`, `src/state/gameState.tsx`
+- `src/types/entities.ts` — referenced by 2 file(s)
+  - referenced by: `src/ai/Archetypes.ts`, `tests/unit/combat.test.ts`
+- `src/types/enums.ts` — referenced by 13 file(s)
+  - referenced by: `src/ai/Archetypes.ts`, `src/ai/UtilityAI.ts`, `src/combat/CombatSystem.ts`, `src/combat/HitResolver.ts`, `src/combat/TargetingSystem.ts`
+- `src/types/index.ts` — referenced by 4 file(s)
+  - referenced by: `src/celebrate/test/CelebrationTest.tsx`, `src/components/AppCore.tsx`, `src/engine/GameStateManager.ts`, `src/engine/MagicSystem.ts`
+- `src/types/logicPuzzles.ts` — referenced by 4 file(s)
+  - referenced by: `src/components/ui/PuzzleCollectionBrowser.tsx`, `src/components/ui/PuzzleSolver.tsx`, `src/data/logicPuzzles.ts`, `src/services/logicPuzzleService.ts`
+- `src/types/npcMemory.ts` — referenced by 7 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/components/NPCConsole.tsx`, `src/engine/npcEngine.ts`, `src/engine/npcSpawner.ts`, `src/engine/stalkerBehaviors.ts`
+- `src/types/quantumMagic.ts` — referenced by 15 file(s)
+  - referenced by: `src/components/QuantumMagicScreen.tsx`, `src/components/ui/ArtifactCard.tsx`, `src/components/ui/DiscoveryModal.tsx`, `src/components/ui/SkillTree.tsx`, `src/data/index.ts`
+- `src/types/routes.ts` — referenced by 9 file(s)
+  - referenced by: `src/components/InGameHUD.tsx`, `src/components/RouteManager.tsx`, `src/routes/manifest.ts`, `src/services/objectivesService.ts`, `src/services/shadowEncounterService.ts`
+- `src/types/shadowEncounters.ts` — referenced by 7 file(s)
+  - referenced by: `src/components/ShadowEncountersScreen.tsx`, `src/components/ui/ShadowEncounterLog.tsx`, `src/components/ui/ShadowEntityDisplay.tsx`, `src/data/index.ts`, `src/data/shadowEncounters.ts`
+- `src/ui/ErrorBoundary.tsx` — referenced by 1 file(s)
+  - referenced by: `src/__tests__/ErrorBoundary.test.tsx`
+- `src/ui/NPCConsole.ts` — referenced by 3 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/npcs/pollyBayInterrogation.ts`, `src/puzzles/zspecLibrarianGate.ts`
+- `src/ui/QuickActionsPanel.tsx` — referenced by 2 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/engine/GameEngine.tsx`
+- `src/ui/RadialCountdown.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/WelcomeScreen.tsx`
+- `src/ui/TerminalConsole.ts` — referenced by 7 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/engine/GameEngine.tsx`, `src/engine/commandParser.ts`, `src/engine/dominicLogic.ts`, `src/engine/trapDeathLogic.ts`
+- `src/ui/TrialsGameScreens.css` — referenced by 1 file(s)
+  - referenced by: `src/components/TrialsGame.tsx`
+- `src/ui/TrialsInterface.css` — referenced by 3 file(s)
+  - referenced by: `docs/integration-summary.md`, `src/components/TrialsGame.tsx`, `src/ui/TrialsInterface.tsx`
+- `src/ui/TrialsInterface.tsx` — referenced by 1 file(s)
+  - referenced by: `src/components/TrialsGame.tsx`
+- `src/ui/overlayBus.ts` — referenced by 3 file(s)
+  - referenced by: `src/seasonal/OverlayPortal.tsx`, `src/seasonal/seasonalController.ts`, `src/ui/OverlayPortal.tsx`
+- `src/ui/theme.css` — referenced by 32 file(s)
+  - referenced by: `README.md`, `sbom.json`, `src/__tests__/saveMigration.test.ts`, `src/components/AppCore.tsx`, `src/components/PickUpItemModal.tsx`
+- `src/utils/accessibility.ts` — referenced by 1 file(s)
+  - referenced by: `src/components/EnhancedApp.tsx`
+- `src/utils/assetOptimization.tsx` — referenced by 1 file(s)
+  - referenced by: `src/utils/index.ts`
+- `src/utils/asyncUtils.ts` — referenced by 1 file(s)
+  - referenced by: `src/utils/index.ts`
+- `src/utils/aylaBrain.ts` — referenced by 2 file(s)
+  - referenced by: `src/npc/ayla/aylaResponder.ts`, `src/npcs/npcMemory.ts`
+- `src/utils/cn.ts` — referenced by 15 file(s)
+  - referenced by: `src/components/InGameHUD.tsx`, `src/components/QuantumMagicScreen.tsx`, `src/components/ui/ArtifactCard.tsx`, `src/components/ui/Badge.tsx`, `src/components/ui/Button.tsx`
+- `src/utils/consoleTools.ts` — referenced by 4 file(s)
+  - referenced by: `src/engine/GameOverHandler.ts`, `src/engine/RecapEngine.ts`, `src/engine/VictoryHandler.ts`, `src/engine/roomRouter.ts`
+- `src/utils/enhancedNPCResponse.ts` — referenced by 4 file(s)
+  - referenced by: `src/components/EnhancedNPCConsole.tsx`, `src/components/NPCConsole.tsx`, `src/engine/wanderingNPCDialogue.ts`, `src/npc/conversationBus.ts`
+- `src/utils/gameStateOptimizer.ts` — referenced by 1 file(s)
+  - referenced by: `src/components/PerformanceDashboard.tsx`
+- `src/utils/globalItemValidator.ts` — referenced by 1 file(s)
+  - referenced by: `src/utils/itemSystemIntegration.ts`
+- `src/utils/hookUtils.ts` — referenced by 1 file(s)
+  - referenced by: `src/utils/index.ts`
+- `src/utils/index.ts` — referenced by 4 file(s)
+  - referenced by: `src/celebrate/test/CelebrationTest.tsx`, `src/components/AppCore.tsx`, `src/engine/GameStateManager.ts`, `src/engine/MagicSystem.ts`
+- `src/utils/lazyLoading.tsx` — referenced by 2 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/utils/index.ts`
+- `src/utils/mobileOptimization.ts` — referenced by 3 file(s)
+  - referenced by: `src/components/EnhancedApp.tsx`, `src/components/layout/MobileGameLayout.tsx`, `src/components/ui/ResponsiveUI.tsx`
+- `src/utils/npcConversationHistory.ts` — referenced by 2 file(s)
+  - referenced by: `src/utils/enhancedNPCResponse.ts`, `src/utils/npcKnowledgeBase.ts`
+- `src/utils/npcKnowledgeBase.ts` — referenced by 1 file(s)
+  - referenced by: `src/utils/enhancedNPCResponse.ts`
+- `src/utils/objectUtils.ts` — referenced by 1 file(s)
+  - referenced by: `src/utils/index.ts`
+- `src/utils/optimizedRoomLoader.ts` — referenced by 1 file(s)
+  - referenced by: `src/components/PerformanceDashboard.tsx`
+- `src/utils/performanceMonitor.ts` — referenced by 2 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/components/PerformanceDashboard.tsx`
+- `src/utils/performanceOptimization.ts` — referenced by 2 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/utils/index.ts`
+- `src/utils/performanceOptimization.tsx` — referenced by 2 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/utils/index.ts`
+- `src/utils/playerLoc.ts` — referenced by 1 file(s)
+  - referenced by: `src/npcs/pollyBayInterrogation.ts`
+- `src/utils/playerNameUtils.ts` — referenced by 5 file(s)
+  - referenced by: `src/components/EnhancedNPCConsole.tsx`, `src/components/NPCConsole.tsx`, `src/engine/wanderingNPCDialogue.ts`, `src/utils/enhancedNPCResponse.ts`, `src/utils/npcKnowledgeBase.ts`
+- `src/utils/quantumMagicHelpers.ts` — referenced by 1 file(s)
+  - referenced by: `src/utils/index.ts`
+- `src/utils/random.ts` — referenced by 2 file(s)
+  - referenced by: `src/engine/wanderingNPCController.ts`, `src/engine/wanderingNPCDialogue.ts`
+- `src/utils/roomGraphValidator.ts` — referenced by 1 file(s)
+  - referenced by: `src/scripts/validateRoomGraph.ts`
+- `src/utils/roomLoader.ts` — referenced by 2 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/hooks/useSystemInitialization.ts`
+- `src/utils/roomLoaderFallback.ts` — referenced by 1 file(s)
+  - referenced by: `src/components/AppCore.tsx`
+- `src/utils/roomUtils.ts` — referenced by 1 file(s)
+  - referenced by: `src/utils/aylaBrain.ts`
+- `src/utils/safeStorage.ts` — referenced by 3 file(s)
+  - referenced by: `src/components/AppCore.tsx`, `src/components/OpeningBriefing.tsx`, `src/services/SaveManager.ts`
+- `src/utils/soundUtils.ts` — referenced by 4 file(s)
+  - referenced by: `src/components/SoundToggle.tsx`, `src/engine/deathEngine.ts`, `src/engine/dominicLogic.ts`, `src/engine/specialDeathEffects.ts`
+- `src/utils/storage.ts` — referenced by 1 file(s)
+  - referenced by: `src/demo/demoSave.ts`
+- `src/utils/stringUtils.ts` — referenced by 1 file(s)
+  - referenced by: `src/utils/index.ts`
+- `src/utils/validationUtils.ts` — referenced by 1 file(s)
+  - referenced by: `src/utils/index.ts`
+- `src/vfx/cues.ts` — referenced by 5 file(s)
+  - referenced by: `src/combat/CombatSystem.ts`, `src/combat/HitResolver.ts`, `src/magic/MagicSystem.ts`, `src/magic/spells/TimeDilation.ts`, `src/status/StatusSystem.ts`
+
+## review (0)
+
+
+## orphan-candidate (177)
+
+- `VERCEL_MIGRATION_BACKUP.md` — no import/text reference found by static audit; path/name suggests legacy/deprecated/backup/old copy; empty file
+- `deploy.js` — no import/text reference found by static audit
+- `e2e/accessibility.spec.ts` — no import/text reference found by static audit; empty file
+- `e2e/routes.spec.ts` — no import/text reference found by static audit; empty file
+- `env.d.ts` — no import/text reference found by static audit
+- `examples/interNPCExamples.ts` — no import/text reference found by static audit
+- `jest.config.json` — no import/text reference found by static audit
+- `postcss.config.cjs` — no import/text reference found by static audit; empty file
+- `postcss.config.js` — no import/text reference found by static audit
+- `scripts/backup-local.mjs` — no import/text reference found by static audit; path/name suggests legacy/deprecated/backup/old copy
+- `scripts/backup-restore-test.mjs` — no import/text reference found by static audit; path/name suggests legacy/deprecated/backup/old copy
+- `scripts/backup-verify.mjs` — no import/text reference found by static audit; path/name suggests legacy/deprecated/backup/old copy
+- `scripts/bump-version.js` — no import/text reference found by static audit
+- `scripts/compiled/smoke.cjs` — no import/text reference found by static audit
+- `scripts/compiled/smoke.js` — no import/text reference found by static audit
+- `scripts/convert-jest-to-vitest.js` — no import/text reference found by static audit
+- `scripts/fix-imports.mjs` — no import/text reference found by static audit
+- `scripts/smoke.ts` — no import/text reference found by static audit
+- `scripts/smoke/smoke-test.js` — no import/text reference found by static audit
+- `scripts/test-movement.js` — no import/text reference found by static audit
+- `scripts/update-license.js` — no import/text reference found by static audit
+- `scripts/ux-audit.mjs` — no import/text reference found by static audit
+- `scripts/verify-deployment.js` — no import/text reference found by static audit
+- `src/ai/Archetypes.ts` — no import/text reference found by static audit
+- `src/ai/UtilityAI.ts` — no import/text reference found by static audit
+- `src/audio/audioMap.ts` — no import/text reference found by static audit
+- `src/celebrate/assets/celebrationIcons.tsx` — no import/text reference found by static audit
+- `src/celebrate/gen/run-generator.ts` — no import/text reference found by static audit
+- `src/celebrate/test/CelebrationTest.tsx` — no import/text reference found by static audit
+- `src/combat/PostureSystem.ts` — no import/text reference found by static audit
+- `src/combat/TargetingSystem.ts` — no import/text reference found by static audit
+- `src/components/AITestPanel.tsx` — no import/text reference found by static audit
+- `src/components/AmbientFX/AnimatedBackdrop.test.tsx` — no import/text reference found by static audit
+- `src/components/CombatActionsPanel.tsx` — no import/text reference found by static audit
+- `src/components/CreditsScreen.tsx` — no import/text reference found by static audit
+- `src/components/DramaticWaitTransitionOverlay.tsx` — no import/text reference found by static audit
+- `src/components/EnhancedApp.tsx` — no import/text reference found by static audit
+- `src/components/HelpModal.tsx` — no import/text reference found by static audit
+- `src/components/InterNPCDemo.tsx` — no import/text reference found by static audit
+- `src/components/InventoryPanel.tsx` — no import/text reference found by static audit
+- `src/components/MultiverseResetScreen.tsx` — no import/text reference found by static audit
+- `src/components/NPCConversationTest.tsx` — no import/text reference found by static audit
+- `src/components/NPCDialogue.tsx` — no import/text reference found by static audit
+- `src/components/PickupSelectionModal.tsx` — no import/text reference found by static audit
+- `src/components/PlayerStatsPanel.tsx` — no import/text reference found by static audit
+- `src/components/ResetScreen.tsx` — no import/text reference found by static audit
+- `src/components/RoomEditor.tsx` — no import/text reference found by static audit
+- `src/components/RoomObjectivePanel.tsx` — no import/text reference found by static audit
+- `src/components/SoundToggle.tsx` — no import/text reference found by static audit
+- `src/components/TeleportationMenu.tsx` — no import/text reference found by static audit
+- `src/components/ToastPanel.tsx` — no import/text reference found by static audit
+- `src/components/TrapBadge.tsx` — no import/text reference found by static audit
+- `src/components/TravelMenu.tsx` — no import/text reference found by static audit
+- `src/components/TrialsTestPage.tsx` — no import/text reference found by static audit
+- `src/components/WelcomeScreenNew.tsx` — no import/text reference found by static audit
+- `src/components/final_gate_logic.json` — no import/text reference found by static audit
+- `src/components/frameWrapper.css` — no import/text reference found by static audit
+- `src/components/moralFramework.ts` — no import/text reference found by static audit
+- `src/components/npc_dominic.json` — no import/text reference found by static audit
+- `src/components/ui/PuzzleCollectionBrowser.tsx` — no import/text reference found by static audit
+- `src/components/ui/PuzzleSolver.tsx` — no import/text reference found by static audit
+- `src/components/ui/SaveMigrationUI.tsx` — no import/text reference found by static audit; empty file
+- `src/data/encounters.ts` — no import/text reference found by static audit
+- `src/data/talents.ts` — no import/text reference found by static audit
+- `src/demo/DemoCompletion.tsx` — no import/text reference found by static audit
+- `src/demo/DemoDirector.tsx` — no import/text reference found by static audit
+- `src/demo/allowlist.ts` — no import/text reference found by static audit
+- `src/demo/demoSave.ts` — no import/text reference found by static audit
+- `src/example/App.test.tsx` — no import/text reference found by static audit
+- `src/fx/roomFxRegistry.ts` — no import/text reference found by static audit
+- `src/hooks/useGroupConversation.ts` — no import/text reference found by static audit
+- `src/hooks/useNPCController.ts` — no import/text reference found by static audit
+- `src/hooks/usePerformance.ts` — no import/text reference found by static audit
+- `src/hooks/usePerformanceManager.ts` — no import/text reference found by static audit
+- `src/hooks/usePerformanceOptimizations.tsx` — no import/text reference found by static audit
+- `src/hooks/useSystemInitialization.ts` — no import/text reference found by static audit
+- `src/items/scrolls.ts` — no import/text reference found by static audit
+- `src/logic/askAylaEngine.ts` — no import/text reference found by static audit
+- `src/logic/dreamRoomEvents.ts` — no import/text reference found by static audit
+- `src/logic/hiddenScrolls.ts` — no import/text reference found by static audit
+- `src/magic/spells/Blink.ts` — no import/text reference found by static audit
+- `src/magic/spells/ChainLightning.ts` — no import/text reference found by static audit
+- `src/magic/spells/FireBolt.ts` — no import/text reference found by static audit
+- `src/magic/spells/FrostNova.ts` — no import/text reference found by static audit
+- `src/magic/spells/TimeDilation.ts` — no import/text reference found by static audit
+- `src/magic/spells/Ward.ts` — no import/text reference found by static audit
+- `src/npc/COMPLETION_REPORT.md` — no import/text reference found by static audit; empty file
+- `src/npc/DEPLOYMENT_GUIDE.md` — no import/text reference found by static audit; empty file
+- `src/npc/INTEGRATION_TEST_REPORT.md` — no import/text reference found by static audit; empty file
+- `src/npc/__tests__/accessibilityProvider.test.ts` — no import/text reference found by static audit
+- `src/npc/__tests__/allianceMemory.test.ts` — no import/text reference found by static audit
+- `src/npc/__tests__/controlRoomEncounter.test.ts` — no import/text reference found by static audit
+- `src/npc/__tests__/errorHandling.test.ts` — no import/text reference found by static audit
+- `src/npc/__tests__/integration-simple.test.ts` — no import/text reference found by static audit
+- `src/npc/__tests__/integration.test.ts` — no import/text reference found by static audit
+- `src/npc/__tests__/movePolicy.simple.test.ts` — no import/text reference found by static audit
+- `src/npc/__tests__/movePolicy.test.ts` — no import/text reference found by static audit
+- `src/npc/__tests__/movementExecution.test.ts` — no import/text reference found by static audit
+- `src/npc/__tests__/npcPresence.test.ts` — no import/text reference found by static audit
+- `src/npc/__tests__/performanceOptimizer.test.ts` — no import/text reference found by static audit
+- `src/npc/__tests__/wanderActivation.test.ts` — no import/text reference found by static audit
+- `src/npc/__tests__/wanderScheduler.simple.test.ts` — no import/text reference found by static audit
+- `src/npc/__tests__/wanderScheduler.test.ts` — no import/text reference found by static audit
+- `src/npc/__tests__/zoneAwareMovement.test.ts` — no import/text reference found by static audit
+- `src/npc/__tests__/zoneAwareness.test.ts` — no import/text reference found by static audit
+- `src/npc/ayla/enhancedCapabilities.ts` — no import/text reference found by static audit
+- `src/npc/enhancedIntelligence.ts` — no import/text reference found by static audit
+- `src/npc/wendell/View.tsx` — no import/text reference found by static audit
+- `src/npc/wendell/guardrails.ts` — no import/text reference found by static audit
+- `src/npc/wendell/persona.ts` — no import/text reference found by static audit
+- `src/npc/wendell/wendellAI.ts` — no import/text reference found by static audit; empty file
+- `src/npc/wendell/wendellGuardrails.ts` — no import/text reference found by static audit; empty file
+- `src/npc/wendell/wendellPersona.ts` — no import/text reference found by static audit; empty file
+- `src/npc/wendell/wendellQuestions.ts` — no import/text reference found by static audit; empty file
+- `src/npc/wendell/wendellView.tsx` — no import/text reference found by static audit; empty file
+- `src/npcs/npcMemory.d.ts` — no import/text reference found by static audit
+- `src/npcs/pollyBayInterrogation.ts` — no import/text reference found by static audit
+- `src/npcs/pollyStalkerLogic.ts` — no import/text reference found by static audit
+- `src/npcs/wanderers_new.ts` — no import/text reference found by static audit
+- `src/puzzles/artifactPuzzle.ts` — no import/text reference found by static audit
+- `src/puzzles/zspecLibrarianGate.ts` — no import/text reference found by static audit
+- `src/quests/unlockMagicQuest.ts` — no import/text reference found by static audit
+- `src/rooms/artifactChamber.ts` — no import/text reference found by static audit
+- `src/rooms/glitchZone_ravenchamber_room.ts` — no import/text reference found by static audit
+- `src/rooms/glitchrealm/RavenChamberRoom.tsx` — no import/text reference found by static audit
+- `src/rooms/spireCourtyard.ts` — no import/text reference found by static audit
+- `src/scripts/testAIMiniquests.ts` — no import/text reference found by static audit
+- `src/scripts/testUnifiedAI.ts` — no import/text reference found by static audit
+- `src/scripts/validateRoomGraph.ts` — no import/text reference found by static audit
+- `src/seasonal/EasterEggOverlay.tsx` — no import/text reference found by static audit
+- `src/seasonal/OverlayPortal.tsx` — no import/text reference found by static audit
+- `src/seasonal/__tests__/seasonalGate.spec.ts` — no import/text reference found by static audit
+- `src/services/ai/clients/groqClient.ts` — no import/text reference found by static audit; empty file
+- `src/services/artifactArcService.ts` — no import/text reference found by static audit
+- `src/services/logicPuzzleService.ts` — no import/text reference found by static audit
+- `src/services/loreSystem.ts` — no import/text reference found by static audit
+- `src/services/npcDialogueTriggers.ts` — no import/text reference found by static audit
+- `src/setupTests.ts` — no import/text reference found by static audit
+- `src/status/effects.ts` — no import/text reference found by static audit
+- `src/styles/MagicAnimations.css` — no import/text reference found by static audit; empty file
+- `src/types.d.ts` — no import/text reference found by static audit
+- `src/types/NPCTypes.d.ts` — no import/text reference found by static audit
+- `src/types/PlayerState.ts` — no import/text reference found by static audit
+- `src/types/animateTeletype.ts` — no import/text reference found by static audit
+- `src/types/npcMemory.d.ts` — no import/text reference found by static audit
+- `src/types/random.d.ts` — no import/text reference found by static audit
+- `src/types/types.d.ts` — no import/text reference found by static audit
+- `src/ui/BusyIndicator.tsx` — no import/text reference found by static audit
+- `src/ui/DemoRibbon.tsx` — no import/text reference found by static audit
+- `src/ui/MagicModal.tsx` — no import/text reference found by static audit
+- `src/ui/OverlayPortal.tsx` — no import/text reference found by static audit
+- `src/ui/SkipLink.tsx` — no import/text reference found by static audit
+- `src/utils/animateTeletype.ts` — no import/text reference found by static audit
+- `src/utils/aylaHintEngine.ts` — no import/text reference found by static audit
+- `src/utils/aylaHintUtils.ts` — no import/text reference found by static audit
+- `src/utils/consoleMessages.ts` — no import/text reference found by static audit
+- `src/utils/debugWorldLoader.ts` — no import/text reference found by static audit
+- `src/utils/inventoryRules.ts` — no import/text reference found by static audit
+- `src/utils/itemSystemIntegration.ts` — no import/text reference found by static audit
+- `src/utils/itemValidator.ts` — no import/text reference found by static audit
+- `src/utils/npcUtils.ts` — no import/text reference found by static audit
+- `src/utils/random.d.ts` — no import/text reference found by static audit
+- `src/utils/roomNPCCleaner.ts` — no import/text reference found by static audit
+- `src/utils/saveMigration.ts` — no import/text reference found by static audit; empty file
+- `src/utils/stateUtils.ts` — no import/text reference found by static audit
+- `src/utils/trapSystemValidator.ts` — no import/text reference found by static audit
+- `src/utils/trapTester.ts` — no import/text reference found by static audit
+- `src/vite-env.d.ts` — no import/text reference found by static audit
+- `tailwind.config.js` — no import/text reference found by static audit; empty file
+- `tailwind.config.mjs` — no import/text reference found by static audit
+- `test-migration.html` — no import/text reference found by static audit
+- `tests/unit/combat.test.ts` — no import/text reference found by static audit
+- `tests/unit/components/AmbientFX/integration.test.ts` — no import/text reference found by static audit; empty file
+- `tests/unit/fx/roomFxRegistry.test.ts` — no import/text reference found by static audit; empty file
+- `tests/unit/roomRouter.test.ts` — no import/text reference found by static audit; empty file
+- `tests/unit/traps.integration.test.ts` — no import/text reference found by static audit; empty file
+- `vite-env.d.ts` — no import/text reference found by static audit; empty file
+

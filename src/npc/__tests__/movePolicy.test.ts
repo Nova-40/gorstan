@@ -244,10 +244,16 @@ describe('MovePolicy', () => {
         allowTeleportFallback: false,
       };
 
-      const decision = decideMove(context, policy);
+      const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0);
 
-      expect(decision.targetRoom).toBe('home');
-      expect(decision.reason).toContain('Return to home');
+      try {
+        const decision = decideMove(context, policy);
+
+        expect(decision.targetRoom).toBe('home');
+        expect(decision.reason).toContain('Return to home');
+      } finally {
+        randomSpy.mockRestore();
+      }
     });
 
     test('should fallback to random when no home room', () => {
