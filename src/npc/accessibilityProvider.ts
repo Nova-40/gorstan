@@ -454,12 +454,12 @@ export class NPCAccessibilityProvider {
     }
 
     // Detect prefers-reduced-motion
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false) {
       this.settings.reduceMotion = true;
     }
 
     // Detect prefers-contrast
-    if (window.matchMedia('(prefers-contrast: high)').matches) {
+    if (window.matchMedia?.('(prefers-contrast: high)')?.matches ?? false) {
       this.settings.highContrast = true;
     }
 
