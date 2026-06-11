@@ -42,6 +42,11 @@ import {
 } from 'lucide-react';
 import IconButton from './IconButton';
 
+const movementTooltip = (direction: string, destination?: string) =>
+  destination ? `Go ${direction} to ${destination}` : `Go ${direction}`;
+
+const actionTooltip = (description: string) => description;
+
 /**
  * Props interface for the QuickActionsPanel component
  * Enhanced with comprehensive typing for all game actions and controls
@@ -258,6 +263,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
             key="north"
             icon={<ArrowUp />}
             title={`North${directionRoomTitles.north ? ` (${directionRoomTitles.north})` : ''}`}
+            tooltipContent={movementTooltip('north', directionRoomTitles.north)}
             onClick={() => {
               console.log('[QuickActions] North button clicked');
               onMove('north');
@@ -270,6 +276,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
             key="south"
             icon={<ArrowDown />}
             title={`South${directionRoomTitles.south ? ` (${directionRoomTitles.south})` : ''}`}
+            tooltipContent={movementTooltip('south', directionRoomTitles.south)}
             onClick={() => {
               console.log('[QuickActions] South button clicked');
               onMove('south');
@@ -282,6 +289,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
             key="west"
             icon={<ArrowLeft />}
             title={`West${directionRoomTitles.west ? ` (${directionRoomTitles.west})` : ''}`}
+            tooltipContent={movementTooltip('west', directionRoomTitles.west)}
             onClick={() => {
               console.log('[QuickActions] West button clicked');
               onMove('west');
@@ -294,6 +302,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
             key="up"
             icon={<ArrowUp />}
             title={`Up${directionRoomTitles.up ? ` (${directionRoomTitles.up})` : ''}`}
+            tooltipContent={movementTooltip('up', directionRoomTitles.up)}
             onClick={() => {
               console.log('[QuickActions] Up button clicked');
               onMove('up');
@@ -306,6 +315,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
             key="down"
             icon={<ArrowDown />}
             title={`Down${directionRoomTitles.down ? ` (${directionRoomTitles.down})` : ''}`}
+            tooltipContent={movementTooltip('down', directionRoomTitles.down)}
             onClick={() => {
               console.log('[QuickActions] Down button clicked');
               onMove('down');
@@ -318,6 +328,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
             key="east"
             icon={<ArrowRight />}
             title={`East${directionRoomTitles.east ? ` (${directionRoomTitles.east})` : ''}`}
+            tooltipContent={movementTooltip('east', directionRoomTitles.east)}
             onClick={() => {
               console.log('[QuickActions] East button clicked');
               onMove('east');
@@ -330,11 +341,20 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
             key="jump"
             icon={<Redo />}
             title={`Jump${directionRoomTitles.jump ? ` (${directionRoomTitles.jump})` : ''}`}
+            tooltipContent={
+              directionRoomTitles.jump
+                ? `Jump to ${directionRoomTitles.jump}`
+                : 'Jump using the current room action'
+            }
             onClick={() => {
               console.log('[QuickActions] Jump button clicked');
               onJump();
             }}
-            aria-label="Jump to different location"
+            aria-label={
+              directionRoomTitles.jump
+                ? `Jump to ${directionRoomTitles.jump}`
+                : 'Jump to a different location'
+            }
           />
         )}
         {availableDirections.sit && (
@@ -342,12 +362,25 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
             key="sit"
             icon={isSitting ? <PersonStanding /> : <Armchair />}
             title={`${isSitting ? 'Standing up...' : 'Sit'}${directionRoomTitles.sit ? ` (${directionRoomTitles.sit})` : ''}`}
+            tooltipContent={
+              isSitting
+                ? 'Finishing the current sitting action'
+                : directionRoomTitles.sit
+                  ? `Sit and travel to ${directionRoomTitles.sit}`
+                  : 'Sit in the current chair'
+            }
             onClick={() => {
               console.log('[QuickActions] Sit button clicked');
               handleSit();
             }}
             disabled={isSitting}
-            aria-label={isSitting ? 'Currently sitting, please wait' : 'Sit down'}
+            aria-label={
+              isSitting
+                ? 'Currently sitting, please wait'
+                : directionRoomTitles.sit
+                  ? `Sit and travel to ${directionRoomTitles.sit}`
+                  : 'Sit down'
+            }
           />
         )}
       </>
@@ -364,6 +397,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
           key="look"
           icon={<Eye />}
           title="Look Around"
+          tooltipContent={actionTooltip('Inspect the current room and visible details')}
           onClick={onLookAround}
           aria-label="Look around the current area"
         />
@@ -371,6 +405,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
           key="pickup"
           icon={<Grab />}
           title="Pick Up Item"
+          tooltipContent={actionTooltip('Pick up visible items in the current area')}
           onClick={onPickUp}
           aria-label="Pick up items in the area"
         />
@@ -378,6 +413,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
           key="use"
           icon={<MousePointerClick />}
           title="Use Item"
+          tooltipContent={actionTooltip('Use or interact with an item through the current room flow')}
           onClick={onUse}
           aria-label="Use or interact with items"
         />
@@ -385,6 +421,11 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
           key="inventory"
           icon={<Backpack />}
           title={isDemoActive ? 'Inventory (disabled during demo)' : 'Inventory'}
+          tooltipContent={
+            isDemoActive
+              ? actionTooltip('Inventory is disabled while the demo is running')
+              : actionTooltip('Open your carried items and inventory controls')
+          }
           onClick={isDemoActive ? () => {} : onShowInventory}
           aria-label="Open inventory"
           disabled={isDemoActive}
@@ -393,6 +434,11 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
           key="press"
           icon={<Hand />}
           title={currentRoomId === 'introreset' ? '🟦 BLUE BUTTON' : 'Press'}
+          tooltipContent={
+            currentRoomId === 'introreset'
+              ? actionTooltip('Press the blue button in the current room')
+              : actionTooltip('Press a visible switch, button, or interactable control')
+          }
           onClick={onPress}
           aria-label={
             currentRoomId === 'introreset'
@@ -404,6 +450,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
           key="coffee"
           icon={<Coffee />}
           title="Throw or Drink Coffee (essential game mechanic)"
+          tooltipContent={actionTooltip('Use the coffee action available in the current context')}
           onClick={onCoffee}
           aria-label="Coffee-related actions - because caffeine is life"
         />
@@ -414,6 +461,11 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
             npcsInRoom.length > 0
               ? `Talk to ${npcsInRoom.length === 1 ? npcsInRoom[0].name || npcsInRoom[0] : 'NPCs'}`
               : 'Talk to NPC/Help'
+          }
+          tooltipContent={
+            npcsInRoom.length > 0
+              ? `Talk to ${npcsInRoom.length === 1 ? npcsInRoom[0].name || npcsInRoom[0] : `${npcsInRoom.length} nearby NPCs`}`
+              : 'Open help or NPC conversation guidance'
           }
           onClick={handleTalk}
           aria-label={
@@ -427,6 +479,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
               <img src="/images/Caution.png" alt="Trap Warning" style={{ width: 20, height: 20 }} />
             }
             title="Manage Traps"
+            tooltipContent={actionTooltip('Inspect or disarm active traps in this area')}
             onClick={onDisarmTrap}
             aria-label="Manage traps in this area"
           />
@@ -457,6 +510,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
           key="sound"
           icon={soundOn ? <Volume2 /> : <VolumeX />}
           title={soundOn ? 'Sound On (Click to Mute)' : 'Sound Off (Click to Enable)'}
+          tooltipContent={soundOn ? 'Mute game audio' : 'Enable game audio'}
           onClick={onToggleSound}
           aria-label={soundOn ? 'Mute audio' : 'Enable audio'}
         />
@@ -464,6 +518,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
           key="fullscreen"
           icon={isFullscreen ? <Minimize2 /> : <Maximize2 />}
           title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+          tooltipContent={isFullscreen ? 'Exit fullscreen mode' : 'Enter fullscreen mode'}
           onClick={onFullscreen}
           aria-label={isFullscreen ? 'Exit fullscreen mode' : 'Enter fullscreen mode'}
         />
@@ -471,6 +526,9 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
           key="backout"
           icon={<Undo />}
           title={canBackout ? 'Back to Previous Room' : 'Cannot go back (no previous room)'}
+          tooltipContent={
+            canBackout ? 'Return to the previous room through the normal command flow' : 'No previous room is available'
+          }
           onClick={handleBackout}
           disabled={!canBackout}
           aria-label={canBackout ? 'Return to previous room' : 'No previous room to return to'}
@@ -480,6 +538,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
             key="debug"
             icon={<Bug />}
             title="Debug Menu (Developer Access)"
+            tooltipContent={actionTooltip('Open the developer debug menu')}
             onClick={onDebugMenu}
             aria-label="Open debug menu"
           />

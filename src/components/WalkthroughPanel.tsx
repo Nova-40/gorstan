@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Maximize2, Minimize2 } from 'lucide-react';
 
 import type { GameMessage } from '../types/GameTypes';
 import type { Room } from '../types/Room';
@@ -66,6 +67,7 @@ const WalkthroughPanel: React.FC<WalkthroughPanelProps> = ({
   const [activeScript, setActiveScript] = useState<WalkthroughScript | null>(null);
   const [activeStep, setActiveStep] = useState<ActiveStep | null>(null);
   const [copyStatus, setCopyStatus] = useState<string>('');
+  const [isMinimized, setIsMinimized] = useState<boolean>(true);
 
   const autoStartedRef = useRef(false);
   const stepTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -153,6 +155,7 @@ const WalkthroughPanel: React.FC<WalkthroughPanelProps> = ({
       resetRun(script);
       stepOnceRef.current = stepOnce;
       setDelayMs((currentDelay) => currentDelay || script.defaultDelayMs || DEFAULT_DELAY_MS);
+      setIsMinimized(false);
       setStatus('running');
     },
     [resetRun, selectedScriptId, stage, walkthroughContext],
@@ -372,8 +375,24 @@ const WalkthroughPanel: React.FC<WalkthroughPanelProps> = ({
   const summary = report?.summary;
   const stepCount = activeScript?.steps.length || selectedScriptPreview.steps.length;
 
+  if (isMinimized) {
+    return (
+      <button
+        type="button"
+        onClick={() => setIsMinimized(false)}
+        className="fixed bottom-4 left-4 z-[70] flex items-center gap-2 rounded-full border border-emerald-500/70 bg-slate-950/95 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-emerald-100 shadow-2xl backdrop-blur"
+      >
+        <Maximize2 size={14} />
+        Walkthrough
+        <span className="rounded-full border border-emerald-500/40 px-2 py-0.5 text-[10px] text-emerald-300">
+          {status}
+        </span>
+      </button>
+    );
+  }
+
   return (
-    <aside className="fixed bottom-4 left-4 z-[70] w-[420px] max-w-[calc(100vw-2rem)] rounded-lg border border-emerald-500 bg-slate-950/95 text-emerald-100 shadow-2xl backdrop-blur">
+    <aside className="fixed bottom-4 left-4 z-[70] flex max-h-[calc(100dvh-1rem)] w-[420px] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-lg border border-emerald-500 bg-slate-950/95 text-emerald-100 shadow-2xl backdrop-blur">
       <div className="border-b border-emerald-500/40 px-4 py-3">
         <div className="flex items-center justify-between gap-3">
           <div>
@@ -382,13 +401,23 @@ const WalkthroughPanel: React.FC<WalkthroughPanelProps> = ({
               Developer-only audit runner. Commands go through the ordinary parser path.
             </p>
           </div>
-          <span className="rounded border border-emerald-500/40 px-2 py-1 text-[11px] uppercase tracking-wide text-emerald-300">
-            {status}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="rounded border border-emerald-500/40 px-2 py-1 text-[11px] uppercase tracking-wide text-emerald-300">
+              {status}
+            </span>
+            <button
+              type="button"
+              onClick={() => setIsMinimized(true)}
+              className="rounded border border-emerald-500/40 p-2 text-emerald-300 transition-colors hover:bg-emerald-950"
+              title="Minimise walkthrough panel"
+            >
+              <Minimize2 size={14} />
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="space-y-4 px-4 py-4 text-sm">
+      <div className="min-h-0 space-y-4 overflow-y-auto px-4 py-4 text-sm">
         <label className="block">
           <span className="mb-1 block text-xs uppercase tracking-wide text-emerald-300/80">
             Script

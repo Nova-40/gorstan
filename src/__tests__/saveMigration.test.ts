@@ -51,7 +51,7 @@ function createGameState(overrides: Partial<LocalGameState> = {}): LocalGameStat
     },
     metadata: {
       resetCount: 0,
-      version: '3.8.8',
+      version: '3.9.0',
       lastSaved: null,
       playTime: 123,
       achievements: [],
@@ -78,7 +78,7 @@ function createSaveFile(overrides: Partial<SaveFile> = {}): SaveFile {
     gameState: createGameState(),
     metadata: {
       saveVersion: SaveManager.CURRENT_VERSION,
-      gameVersion: '3.8.8',
+      gameVersion: '3.9.0',
     },
     ...overrides,
   };
