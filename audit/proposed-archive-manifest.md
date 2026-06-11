@@ -1,0 +1,586 @@
+# Proposed archive manifest - first classification
+
+This is a classification aid only. No files have been moved or deleted.
+
+## Summary
+
+- archive-candidate-empty: 13
+- keep-review-config: 5
+- keep-review-tests: 26
+- keep-review-types-setup: 10
+- manual-review-demo: 4
+- manual-review-feature-module: 13
+- manual-review-npc: 8
+- manual-review-other: 27
+- manual-review-room-content: 4
+- manual-review-service-utils: 20
+- manual-review-ui-component: 29
+- review-scripts: 18
+
+## archive-candidate-empty (13)
+
+- `VERCEL_MIGRATION_BACKUP.md`
+  - audit reason: no import/text reference found by static audit; path/name suggests legacy/deprecated/backup/old copy; empty file
+  - classification: Empty file and no static reference found.
+- `src/components/ui/SaveMigrationUI.tsx`
+  - audit reason: no import/text reference found by static audit; empty file
+  - classification: Empty file and no static reference found.
+- `src/npc/COMPLETION_REPORT.md`
+  - audit reason: no import/text reference found by static audit; empty file
+  - classification: Empty file and no static reference found.
+- `src/npc/DEPLOYMENT_GUIDE.md`
+  - audit reason: no import/text reference found by static audit; empty file
+  - classification: Empty file and no static reference found.
+- `src/npc/INTEGRATION_TEST_REPORT.md`
+  - audit reason: no import/text reference found by static audit; empty file
+  - classification: Empty file and no static reference found.
+- `src/npc/wendell/wendellAI.ts`
+  - audit reason: no import/text reference found by static audit; empty file
+  - classification: Empty file and no static reference found.
+- `src/npc/wendell/wendellGuardrails.ts`
+  - audit reason: no import/text reference found by static audit; empty file
+  - classification: Empty file and no static reference found.
+- `src/npc/wendell/wendellPersona.ts`
+  - audit reason: no import/text reference found by static audit; empty file
+  - classification: Empty file and no static reference found.
+- `src/npc/wendell/wendellQuestions.ts`
+  - audit reason: no import/text reference found by static audit; empty file
+  - classification: Empty file and no static reference found.
+- `src/npc/wendell/wendellView.tsx`
+  - audit reason: no import/text reference found by static audit; empty file
+  - classification: Empty file and no static reference found.
+- `src/services/ai/clients/groqClient.ts`
+  - audit reason: no import/text reference found by static audit; empty file
+  - classification: Empty file and no static reference found.
+- `src/styles/MagicAnimations.css`
+  - audit reason: no import/text reference found by static audit; empty file
+  - classification: Empty file and no static reference found.
+- `src/utils/saveMigration.ts`
+  - audit reason: no import/text reference found by static audit; empty file
+  - classification: Empty file and no static reference found.
+
+## keep-review-config (5)
+
+- `jest.config.json`
+  - audit reason: no import/text reference found by static audit
+  - classification: Configuration file; may be tool-loaded by convention.
+- `postcss.config.cjs`
+  - audit reason: no import/text reference found by static audit; empty file
+  - classification: Configuration file; may be tool-loaded by convention.
+- `postcss.config.js`
+  - audit reason: no import/text reference found by static audit
+  - classification: Configuration file; may be tool-loaded by convention.
+- `tailwind.config.js`
+  - audit reason: no import/text reference found by static audit; empty file
+  - classification: Configuration file; may be tool-loaded by convention.
+- `tailwind.config.mjs`
+  - audit reason: no import/text reference found by static audit
+  - classification: Configuration file; may be tool-loaded by convention.
+
+## keep-review-tests (26)
+
+- `e2e/accessibility.spec.ts`
+  - audit reason: no import/text reference found by static audit; empty file
+  - classification: Test file; may be discovered by Vitest/Playwright rather than imported.
+- `e2e/routes.spec.ts`
+  - audit reason: no import/text reference found by static audit; empty file
+  - classification: Test file; may be discovered by Vitest/Playwright rather than imported.
+- `src/components/AmbientFX/AnimatedBackdrop.test.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: Test file; may be discovered by Vitest/Playwright rather than imported.
+- `src/example/App.test.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: Test file; may be discovered by Vitest/Playwright rather than imported.
+- `src/npc/__tests__/accessibilityProvider.test.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Test file; may be discovered by Vitest/Playwright rather than imported.
+- `src/npc/__tests__/allianceMemory.test.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Test file; may be discovered by Vitest/Playwright rather than imported.
+- `src/npc/__tests__/controlRoomEncounter.test.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Test file; may be discovered by Vitest/Playwright rather than imported.
+- `src/npc/__tests__/errorHandling.test.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Test file; may be discovered by Vitest/Playwright rather than imported.
+- `src/npc/__tests__/integration-simple.test.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Test file; may be discovered by Vitest/Playwright rather than imported.
+- `src/npc/__tests__/integration.test.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Test file; may be discovered by Vitest/Playwright rather than imported.
+- `src/npc/__tests__/movePolicy.simple.test.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Test file; may be discovered by Vitest/Playwright rather than imported.
+- `src/npc/__tests__/movePolicy.test.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Test file; may be discovered by Vitest/Playwright rather than imported.
+- `src/npc/__tests__/movementExecution.test.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Test file; may be discovered by Vitest/Playwright rather than imported.
+- `src/npc/__tests__/npcPresence.test.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Test file; may be discovered by Vitest/Playwright rather than imported.
+- `src/npc/__tests__/performanceOptimizer.test.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Test file; may be discovered by Vitest/Playwright rather than imported.
+- `src/npc/__tests__/wanderActivation.test.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Test file; may be discovered by Vitest/Playwright rather than imported.
+- `src/npc/__tests__/wanderScheduler.simple.test.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Test file; may be discovered by Vitest/Playwright rather than imported.
+- `src/npc/__tests__/wanderScheduler.test.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Test file; may be discovered by Vitest/Playwright rather than imported.
+- `src/npc/__tests__/zoneAwareMovement.test.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Test file; may be discovered by Vitest/Playwright rather than imported.
+- `src/npc/__tests__/zoneAwareness.test.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Test file; may be discovered by Vitest/Playwright rather than imported.
+- `src/seasonal/__tests__/seasonalGate.spec.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Test file; may be discovered by Vitest/Playwright rather than imported.
+- `tests/unit/combat.test.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Test file; may be discovered by Vitest/Playwright rather than imported.
+- `tests/unit/components/AmbientFX/integration.test.ts`
+  - audit reason: no import/text reference found by static audit; empty file
+  - classification: Test file; may be discovered by Vitest/Playwright rather than imported.
+- `tests/unit/fx/roomFxRegistry.test.ts`
+  - audit reason: no import/text reference found by static audit; empty file
+  - classification: Test file; may be discovered by Vitest/Playwright rather than imported.
+- `tests/unit/roomRouter.test.ts`
+  - audit reason: no import/text reference found by static audit; empty file
+  - classification: Test file; may be discovered by Vitest/Playwright rather than imported.
+- `tests/unit/traps.integration.test.ts`
+  - audit reason: no import/text reference found by static audit; empty file
+  - classification: Test file; may be discovered by Vitest/Playwright rather than imported.
+
+## keep-review-types-setup (10)
+
+- `env.d.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Type/setup file; often used by TypeScript/Vitest by convention rather than import.
+- `src/npcs/npcMemory.d.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Type/setup file; often used by TypeScript/Vitest by convention rather than import.
+- `src/types.d.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Type/setup file; often used by TypeScript/Vitest by convention rather than import.
+- `src/types/NPCTypes.d.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Type/setup file; often used by TypeScript/Vitest by convention rather than import.
+- `src/types/npcMemory.d.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Type/setup file; often used by TypeScript/Vitest by convention rather than import.
+- `src/types/random.d.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Type/setup file; often used by TypeScript/Vitest by convention rather than import.
+- `src/types/types.d.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Type/setup file; often used by TypeScript/Vitest by convention rather than import.
+- `src/utils/random.d.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Type/setup file; often used by TypeScript/Vitest by convention rather than import.
+- `src/vite-env.d.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Type/setup file; often used by TypeScript/Vitest by convention rather than import.
+- `vite-env.d.ts`
+  - audit reason: no import/text reference found by static audit; empty file
+  - classification: Type/setup file; often used by TypeScript/Vitest by convention rather than import.
+
+## manual-review-demo (4)
+
+- `src/demo/DemoCompletion.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: Demo flow file; may be manually routed or retained intentionally.
+- `src/demo/DemoDirector.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: Demo flow file; may be manually routed or retained intentionally.
+- `src/demo/allowlist.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Demo flow file; may be manually routed or retained intentionally.
+- `src/demo/demoSave.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Demo flow file; may be manually routed or retained intentionally.
+
+## manual-review-feature-module (13)
+
+- `src/ai/Archetypes.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Feature module; may be dormant or legacy.
+- `src/ai/UtilityAI.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Feature module; may be dormant or legacy.
+- `src/combat/PostureSystem.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Feature module; may be dormant or legacy.
+- `src/combat/TargetingSystem.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Feature module; may be dormant or legacy.
+- `src/data/encounters.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Feature module; may be dormant or legacy.
+- `src/data/talents.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Feature module; may be dormant or legacy.
+- `src/magic/spells/Blink.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Feature module; may be dormant or legacy.
+- `src/magic/spells/ChainLightning.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Feature module; may be dormant or legacy.
+- `src/magic/spells/FireBolt.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Feature module; may be dormant or legacy.
+- `src/magic/spells/FrostNova.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Feature module; may be dormant or legacy.
+- `src/magic/spells/TimeDilation.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Feature module; may be dormant or legacy.
+- `src/magic/spells/Ward.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Feature module; may be dormant or legacy.
+- `src/quests/unlockMagicQuest.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Feature module; may be dormant or legacy.
+
+## manual-review-npc (8)
+
+- `src/npc/ayla/enhancedCapabilities.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: NPC subsystem file; likely historical/experimental but needs subsystem review.
+- `src/npc/enhancedIntelligence.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: NPC subsystem file; likely historical/experimental but needs subsystem review.
+- `src/npc/wendell/View.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: NPC subsystem file; likely historical/experimental but needs subsystem review.
+- `src/npc/wendell/guardrails.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: NPC subsystem file; likely historical/experimental but needs subsystem review.
+- `src/npc/wendell/persona.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: NPC subsystem file; likely historical/experimental but needs subsystem review.
+- `src/npcs/pollyBayInterrogation.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: NPC subsystem file; likely historical/experimental but needs subsystem review.
+- `src/npcs/pollyStalkerLogic.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: NPC subsystem file; likely historical/experimental but needs subsystem review.
+- `src/npcs/wanderers_new.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: NPC subsystem file; likely historical/experimental but needs subsystem review.
+
+## manual-review-other (27)
+
+- `examples/interNPCExamples.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: No static reference found; needs manual classification.
+- `src/audio/audioMap.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: No static reference found; needs manual classification.
+- `src/celebrate/assets/celebrationIcons.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: No static reference found; needs manual classification.
+- `src/celebrate/gen/run-generator.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: No static reference found; needs manual classification.
+- `src/celebrate/test/CelebrationTest.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: No static reference found; needs manual classification.
+- `src/fx/roomFxRegistry.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: No static reference found; needs manual classification.
+- `src/hooks/useGroupConversation.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: No static reference found; needs manual classification.
+- `src/hooks/useNPCController.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: No static reference found; needs manual classification.
+- `src/hooks/usePerformance.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: No static reference found; needs manual classification.
+- `src/hooks/usePerformanceManager.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: No static reference found; needs manual classification.
+- `src/hooks/usePerformanceOptimizations.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: No static reference found; needs manual classification.
+- `src/hooks/useSystemInitialization.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: No static reference found; needs manual classification.
+- `src/items/scrolls.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: No static reference found; needs manual classification.
+- `src/puzzles/artifactPuzzle.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: No static reference found; needs manual classification.
+- `src/puzzles/zspecLibrarianGate.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: No static reference found; needs manual classification.
+- `src/seasonal/EasterEggOverlay.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: No static reference found; needs manual classification.
+- `src/seasonal/OverlayPortal.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: No static reference found; needs manual classification.
+- `src/setupTests.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: No static reference found; needs manual classification.
+- `src/status/effects.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: No static reference found; needs manual classification.
+- `src/types/PlayerState.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: No static reference found; needs manual classification.
+- `src/types/animateTeletype.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: No static reference found; needs manual classification.
+- `src/ui/BusyIndicator.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: No static reference found; needs manual classification.
+- `src/ui/DemoRibbon.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: No static reference found; needs manual classification.
+- `src/ui/MagicModal.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: No static reference found; needs manual classification.
+- `src/ui/OverlayPortal.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: No static reference found; needs manual classification.
+- `src/ui/SkipLink.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: No static reference found; needs manual classification.
+- `test-migration.html`
+  - audit reason: no import/text reference found by static audit
+  - classification: No static reference found; needs manual classification.
+
+## manual-review-room-content (4)
+
+- `src/rooms/artifactChamber.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Room/content file; may be registry/dynamic/content related. Do not delete blindly.
+- `src/rooms/glitchZone_ravenchamber_room.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Room/content file; may be registry/dynamic/content related. Do not delete blindly.
+- `src/rooms/glitchrealm/RavenChamberRoom.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: Room/content file; may be registry/dynamic/content related. Do not delete blindly.
+- `src/rooms/spireCourtyard.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Room/content file; may be registry/dynamic/content related. Do not delete blindly.
+
+## manual-review-service-utils (20)
+
+- `src/logic/askAylaEngine.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Service/utility/logic file; may be indirectly used or legacy.
+- `src/logic/dreamRoomEvents.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Service/utility/logic file; may be indirectly used or legacy.
+- `src/logic/hiddenScrolls.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Service/utility/logic file; may be indirectly used or legacy.
+- `src/services/artifactArcService.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Service/utility/logic file; may be indirectly used or legacy.
+- `src/services/logicPuzzleService.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Service/utility/logic file; may be indirectly used or legacy.
+- `src/services/loreSystem.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Service/utility/logic file; may be indirectly used or legacy.
+- `src/services/npcDialogueTriggers.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Service/utility/logic file; may be indirectly used or legacy.
+- `src/utils/animateTeletype.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Service/utility/logic file; may be indirectly used or legacy.
+- `src/utils/aylaHintEngine.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Service/utility/logic file; may be indirectly used or legacy.
+- `src/utils/aylaHintUtils.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Service/utility/logic file; may be indirectly used or legacy.
+- `src/utils/consoleMessages.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Service/utility/logic file; may be indirectly used or legacy.
+- `src/utils/debugWorldLoader.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Service/utility/logic file; may be indirectly used or legacy.
+- `src/utils/inventoryRules.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Service/utility/logic file; may be indirectly used or legacy.
+- `src/utils/itemSystemIntegration.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Service/utility/logic file; may be indirectly used or legacy.
+- `src/utils/itemValidator.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Service/utility/logic file; may be indirectly used or legacy.
+- `src/utils/npcUtils.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Service/utility/logic file; may be indirectly used or legacy.
+- `src/utils/roomNPCCleaner.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Service/utility/logic file; may be indirectly used or legacy.
+- `src/utils/stateUtils.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Service/utility/logic file; may be indirectly used or legacy.
+- `src/utils/trapSystemValidator.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Service/utility/logic file; may be indirectly used or legacy.
+- `src/utils/trapTester.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Service/utility/logic file; may be indirectly used or legacy.
+
+## manual-review-ui-component (29)
+
+- `src/components/AITestPanel.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/CombatActionsPanel.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/CreditsScreen.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/DramaticWaitTransitionOverlay.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/EnhancedApp.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/HelpModal.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/InterNPCDemo.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/InventoryPanel.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/MultiverseResetScreen.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/NPCConversationTest.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/NPCDialogue.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/PickupSelectionModal.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/PlayerStatsPanel.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/ResetScreen.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/RoomEditor.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/RoomObjectivePanel.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/SoundToggle.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/TeleportationMenu.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/ToastPanel.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/TrapBadge.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/TravelMenu.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/TrialsTestPage.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/WelcomeScreenNew.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/final_gate_logic.json`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/frameWrapper.css`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/moralFramework.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/npc_dominic.json`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/ui/PuzzleCollectionBrowser.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+- `src/components/ui/PuzzleSolver.tsx`
+  - audit reason: no import/text reference found by static audit
+  - classification: UI/component file; may be legacy, future, routed dynamically, or genuinely unused.
+
+## review-scripts (18)
+
+- `deploy.js`
+  - audit reason: no import/text reference found by static audit
+  - classification: Script/utility file; check package.json and current workflow before archiving.
+- `scripts/backup-local.mjs`
+  - audit reason: no import/text reference found by static audit; path/name suggests legacy/deprecated/backup/old copy
+  - classification: Script/utility file; check package.json and current workflow before archiving.
+- `scripts/backup-restore-test.mjs`
+  - audit reason: no import/text reference found by static audit; path/name suggests legacy/deprecated/backup/old copy
+  - classification: Script/utility file; check package.json and current workflow before archiving.
+- `scripts/backup-verify.mjs`
+  - audit reason: no import/text reference found by static audit; path/name suggests legacy/deprecated/backup/old copy
+  - classification: Script/utility file; check package.json and current workflow before archiving.
+- `scripts/bump-version.js`
+  - audit reason: no import/text reference found by static audit
+  - classification: Script/utility file; check package.json and current workflow before archiving.
+- `scripts/compiled/smoke.cjs`
+  - audit reason: no import/text reference found by static audit
+  - classification: Script/utility file; check package.json and current workflow before archiving.
+- `scripts/compiled/smoke.js`
+  - audit reason: no import/text reference found by static audit
+  - classification: Script/utility file; check package.json and current workflow before archiving.
+- `scripts/convert-jest-to-vitest.js`
+  - audit reason: no import/text reference found by static audit
+  - classification: Script/utility file; check package.json and current workflow before archiving.
+- `scripts/fix-imports.mjs`
+  - audit reason: no import/text reference found by static audit
+  - classification: Script/utility file; check package.json and current workflow before archiving.
+- `scripts/smoke.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Script/utility file; check package.json and current workflow before archiving.
+- `scripts/smoke/smoke-test.js`
+  - audit reason: no import/text reference found by static audit
+  - classification: Script/utility file; check package.json and current workflow before archiving.
+- `scripts/test-movement.js`
+  - audit reason: no import/text reference found by static audit
+  - classification: Script/utility file; check package.json and current workflow before archiving.
+- `scripts/update-license.js`
+  - audit reason: no import/text reference found by static audit
+  - classification: Script/utility file; check package.json and current workflow before archiving.
+- `scripts/ux-audit.mjs`
+  - audit reason: no import/text reference found by static audit
+  - classification: Script/utility file; check package.json and current workflow before archiving.
+- `scripts/verify-deployment.js`
+  - audit reason: no import/text reference found by static audit
+  - classification: Script/utility file; check package.json and current workflow before archiving.
+- `src/scripts/testAIMiniquests.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Script/utility file; check package.json and current workflow before archiving.
+- `src/scripts/testUnifiedAI.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Script/utility file; check package.json and current workflow before archiving.
+- `src/scripts/validateRoomGraph.ts`
+  - audit reason: no import/text reference found by static audit
+  - classification: Script/utility file; check package.json and current workflow before archiving.
+
