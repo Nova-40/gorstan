@@ -32,9 +32,7 @@ const SipTransition = lazyFeature(() => import('./animations/SipTransition'));
 const WaitTransition = lazyFeature(() => import('./animations/WaitTransition'));
 import MultiverseRebootSequence from './MultiverseRebootSequence';
 import PlayerNameCapture from './PlayerNameCapture';
-import PlayerStatsPanel from './PlayerStatsPanel';
 import PresentNPCsPanel from './PresentNPCsPanel';
-import InventoryPanel from './InventoryPanel';
 import DebugPanel from './DebugPanel';
 import RoomRenderer from './RoomRenderer';
 import RoomTransition from './animations/RoomTransition';
@@ -47,9 +45,24 @@ import QuickActionsPanel from './QuickActionsPanel';
 import CombatActionsPanel from '../ui/QuickActionsPanel';
 import BlueButtonWarningModal from './BlueButtonWarningModal';
 import QuickWinNotifications from './QuickWinNotifications';
-import ProgressDashboard from './ProgressDashboard';
 import OpeningBriefing from './OpeningBriefing';
 import WalkthroughPanel from './WalkthroughPanel';
+import GameShellV2 from './GameShellV2';
+
+const formatExitLabel = (exitKey: string): string => {
+  if (!exitKey) {
+    return 'Exit';
+  }
+
+  return exitKey
+    .replace(/[_-]+/g, ' ')
+    .replace(/\b\w/g, (character) => character.toUpperCase());
+};
+
+const commandForExit = (exitKey: string): string => {
+  const normalizedExit = exitKey.toLowerCase().trim();
+  return `go ${normalizedExit}`;
+};
 
 import { useFlags } from '../hooks/useFlags';
 import { useGameState } from '../state/gameState';
@@ -1304,15 +1317,29 @@ const AppCore: React.FC = () => {
       }
 
       // Enhanced movement tracking with proper typing
-      const movementCommands: string[] = ['sit', 'north', 'south', 'east', 'west', 'up', 'down'];
+      const movementAction = lowerCmd.startsWith('go ') ? lowerCmd.slice(3).trim() : lowerCmd;
+      const movementCommands: string[] = [
+        'sit',
+        'jump',
+        'north',
+        'south',
+        'east',
+        'west',
+        'up',
+        'down',
+        'back',
+        'out',
+        'portal',
+      ];
       const isMovementCommand: boolean =
-        movementCommands.includes(lowerCmd) ||
-        lowerCmd.includes('portal') ||
-        lowerCmd.includes('enter') ||
-        lowerCmd.includes('step');
+        lowerCmd.startsWith('go ') ||
+        movementCommands.includes(movementAction) ||
+        movementAction.includes('portal') ||
+        movementAction.includes('enter') ||
+        movementAction.includes('step');
 
       if (isMovementCommand) {
-        setLastMovementAction(lowerCmd);
+        setLastMovementAction(movementAction);
         // For movement commands, store current room in history and update previousRoom
         if (room) {
           setRoomHistory((prev) => [...prev, currentRoomId]);
@@ -2238,8 +2265,42 @@ const AppCore: React.FC = () => {
     return <div className="appcore-loading">Loading room context...</div>;
   }
 
+  const availableExitEntries = Object.entries(availableDirections).filter(([, isAvailable]) =>
+    Boolean(isAvailable),
+  );
+  const achievementCount = state.metadata?.achievements?.length || 0;
+  const latestAchievement = state.metadata?.achievements?.[achievementCount - 1] || null;
+  const recentCommands = commandHistory.slice(-5).reverse();
+  const recentHistoryPreview = state.history
+    .filter((message) => message.text.trim().length > 0)
+    .slice(-4)
+    .reverse();
+  const mapExitEntries = Object.entries(room?.exits || {}).reduce<
+    Array<{
+      exitKey: string;
+      destinationRoomId: string;
+      destinationLabel: string;
+      command: string;
+    }>
+  >((entries, [exitKey, destinationRoomId]) => {
+    if (typeof destinationRoomId !== 'string' || destinationRoomId.length === 0) {
+      return entries;
+    }
+
+    entries.push({
+      exitKey,
+      destinationRoomId,
+      destinationLabel: roomMap[destinationRoomId]?.title ?? destinationRoomId,
+      command: commandForExit(exitKey),
+    });
+
+    return entries;
+  }, []);
+  const inventoryPreviewItems = inventory.slice(0, 4);
+  const npcPreviewItems = npcsInRoom.slice(0, 4);
+
   return (
-    <div className="appcore-grid">
+    <div>
       {/* Demo mode indicator */}
       {isDemoActive && (
         <div className="fixed top-0 left-0 right-0 z-50 bg-purple-900 text-white text-center py-2 px-4 font-bold">
@@ -2259,98 +2320,315 @@ const AppCore: React.FC = () => {
         }}
       />
 
-      <div className="quad quad-1">
-        <RoomRenderer />
-        {/* Compact Progress Display in corner */}
-        <div className="absolute top-2 left-2">
-          <ProgressDashboard compact={true} className="w-48" />
-        </div>
-      </div>
-
-      <div className="quad quad-2">
-        <TerminalConsole messages={state.history} />
-      </div>
-
-      <div className="quad quad-3">
-        <PlayerStatsPanel />
-        <CommandInput onCommand={handleCommand} playerName={playerName} />
-        <PresentNPCsPanel npcs={npcsInRoom} onTalkToNPC={handleOpenNPCConsole} />
-      </div>
-
-      <div className="quad quad-4">
-        <QuickActionsPanel
-          availableDirections={availableDirections}
-          directionRoomTitles={directionRoomTitles}
-          onShowInventory={() => openModal('inventory')}
-          onUse={() => openModal('useItem')}
-          onLookAround={handleLookAround}
-          onPickUp={() => openModal('pickUp')}
-          onPress={() => {
-            if (currentRoomId === 'introreset') {
-              dispatch({ type: 'PRESS_BLUE_BUTTON' });
-            } else {
-              dispatch({ type: 'PRESS_ACTION' });
-            }
-          }}
-          onCoffee={() => dispatch({ type: 'COFFEE_ACTION' })}
-          onFullscreen={toggleFullscreen}
-          isFullscreen={isFullscreen}
-          soundOn={soundOn}
-          onToggleSound={toggleSound}
-          isDemoActive={isDemoActive}
-          onJump={() => {
-            const currentRoom = state.roomMap[state.currentRoomId];
-            const jumpRoomId = currentRoom?.exits?.jump;
-            if (jumpRoomId) {
-              handleRoomChange(jumpRoomId);
-            } else {
-              console.warn('🚫 Jump exit not found from current room:', state.currentRoomId);
-            }
-          }}
-          onMove={(direction: string) => {
-            console.log('[AppCore] onMove called with direction:', direction);
-            const currentRoom = state.roomMap[state.currentRoomId];
-            console.log('[AppCore] Current room from state.roomMap:', currentRoom);
-            const nextRoomId = currentRoom?.exits?.[direction];
-            console.log('[AppCore] Next room ID:', nextRoomId);
-            if (nextRoomId) {
-              handleRoomChange(nextRoomId);
-            } else {
-              console.warn('🚧 Invalid direction or no exit:', direction);
-            }
-          }}
-          onSit={() => {
-            console.log('[AppCore] onSit called');
-            const currentRoom = state.roomMap[state.currentRoomId];
-            console.log('[AppCore] Current room from state.roomMap:', currentRoom);
-            const sitRoomId = currentRoom?.exits?.sit;
-            console.log('[AppCore] Sit room ID:', sitRoomId);
-            if (sitRoomId) {
-              handleRoomChange(sitRoomId);
-            } else {
-              console.warn('🚫 Sit exit not found from current room:', state.currentRoomId);
-            }
-          }}
-          playerName={playerName}
-          ctrlClickOnInstructions={hasFlag('ctrlClickOnInstructions')}
-          onDebugMenu={() => dispatch({ type: 'OPEN_DEBUG' })}
-          onBackout={handleBackout}
-          canBackout={roomHistory.length > 0}
-          currentRoomId={currentRoomId}
-          npcsInRoom={npcsInRoom}
-          onTalkToNPC={handleOpenNPCConsole}
-          hasActiveTraps={hasActiveTraps}
-          onDisarmTrap={handleDisarmTrap}
-        />
-      </div>
-
-      {hasFlag('showInventory') && (
-        <div className="quad quad-4 inventory-container">
-          <InventoryPanel />
-        </div>
-      )}
-
-      {hasFlag('showDebugPanel') && <DebugPanel />}
+      <GameShellV2
+        roomId={currentRoomId}
+        roomTitle={room.title || currentRoomId}
+        scene={<RoomRenderer />}
+        messages={state.history}
+        commandBar={<CommandInput onCommand={handleCommand} playerName={playerName} />}
+        characterPanel={
+          <div className="space-y-3 text-sm text-green-100">
+            <div>
+              <div className="text-xs uppercase tracking-wide text-green-500">Player</div>
+              <div className="text-lg font-semibold text-green-50">{playerName}</div>
+            </div>
+            <div className="grid gap-2 text-sm text-green-300">
+              <div>Current room: {room.title || currentRoomId}</div>
+              <div>Inventory items: {inventory.length}</div>
+              <div>Achievements unlocked: {achievementCount}</div>
+            </div>
+          </div>
+        }
+        journalPanel={
+          <div className="space-y-3 text-sm text-green-100">
+            <div className="text-xs uppercase tracking-wide text-green-500">Journal</div>
+            {recentCommands.length > 0 ? (
+              <div className="space-y-2 font-mono text-sm text-green-300">
+                {recentCommands.map((command, index) => (
+                  <div key={`${command}-${index}`} className="rounded-lg bg-green-950/40 px-3 py-2">
+                    {command}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-green-400/80">
+                Your recent parser commands will appear here once you start exploring.
+              </div>
+            )}
+          </div>
+        }
+        actionsPanel={
+          <QuickActionsPanel
+            availableDirections={availableDirections}
+            directionRoomTitles={directionRoomTitles}
+            onShowInventory={() => openModal('inventory')}
+            onUse={() => openModal('useItem')}
+            onLookAround={handleLookAround}
+            onPickUp={() => openModal('pickUp')}
+            onPress={() => {
+              if (currentRoomId === 'introreset') {
+                dispatch({ type: 'PRESS_BLUE_BUTTON' });
+              } else {
+                dispatch({ type: 'PRESS_ACTION' });
+              }
+            }}
+            onCoffee={() => dispatch({ type: 'COFFEE_ACTION' })}
+            onFullscreen={toggleFullscreen}
+            isFullscreen={isFullscreen}
+            soundOn={soundOn}
+            onToggleSound={toggleSound}
+            isDemoActive={isDemoActive}
+            onJump={() => {
+              handleCommand(commandForExit('jump'));
+            }}
+            onMove={(direction: string) => {
+              handleCommand(commandForExit(direction));
+            }}
+            onSit={() => {
+              handleCommand(commandForExit('sit'));
+            }}
+            playerName={playerName}
+            ctrlClickOnInstructions={hasFlag('ctrlClickOnInstructions')}
+            onDebugMenu={() => dispatch({ type: 'OPEN_DEBUG' })}
+            onBackout={handleBackout}
+            canBackout={roomHistory.length > 0}
+            currentRoomId={currentRoomId}
+            npcsInRoom={npcsInRoom}
+            onTalkToNPC={handleOpenNPCConsole}
+            hasActiveTraps={hasActiveTraps}
+            onDisarmTrap={handleDisarmTrap}
+          />
+        }
+        mapPanel={
+          <div className="space-y-3 text-sm text-green-100">
+            <div className="text-xs uppercase tracking-wide text-green-500">Map</div>
+            <div className="rounded-lg bg-green-950/40 px-3 py-3">
+              <div className="font-semibold text-green-50">{room.title || currentRoomId}</div>
+              <div className="text-xs text-green-400">{currentRoomId}</div>
+            </div>
+            <div className="space-y-2 overflow-y-auto pr-1">
+              {mapExitEntries.length > 0 ? (
+                mapExitEntries.map(({ exitKey, destinationRoomId, destinationLabel, command }) => (
+                  <button
+                    key={`${exitKey}-${destinationRoomId}`}
+                    type="button"
+                    onClick={() => handleCommand(command)}
+                    title={`${formatExitLabel(exitKey)}: ${destinationLabel}`}
+                    aria-label={`${formatExitLabel(exitKey)}: ${destinationLabel}`}
+                    className="flex w-full items-center justify-between gap-3 rounded-lg border border-green-900/60 bg-black/30 px-3 py-2 text-left text-green-200 transition hover:border-green-700 hover:bg-green-950/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-300 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                  >
+                    <span className="text-xs uppercase tracking-wide text-green-500">
+                      {formatExitLabel(exitKey)}
+                    </span>
+                    <span className="min-w-0 flex-1 truncate text-right text-sm text-green-100">
+                      {destinationLabel}
+                    </span>
+                  </button>
+                ))
+              ) : (
+                <div className="rounded-lg border border-green-900/60 bg-black/30 px-3 py-3 text-green-400/80">
+                  No visible exits are available from this room.
+                </div>
+              )}
+            </div>
+            {availableExitEntries.length > 0 && (
+              <div className="text-xs text-green-500">
+                Selecting a destination routes through the parser command path.
+              </div>
+            )}
+          </div>
+        }
+        historyPanel={
+          <div className="h-80">
+            <TerminalConsole messages={state.history} />
+          </div>
+        }
+        npcsPanel={
+          npcsInRoom.length > 0 ? (
+            <PresentNPCsPanel npcs={npcsInRoom} onTalkToNPC={handleOpenNPCConsole} />
+          ) : (
+            <div className="text-sm text-green-400/80">No NPCs are visible in this room right now.</div>
+          )
+        }
+        achievementsPanel={
+          <div className="space-y-3 text-sm text-green-100">
+            <div className="text-xs uppercase tracking-wide text-green-500">Achievements</div>
+            <div className="rounded-lg bg-green-950/40 px-3 py-3 text-green-300">
+              Unlocked: {achievementCount}
+            </div>
+            <div className="text-green-400/80">
+              Achievement progress remains tracked in state and can be expanded further without changing parser flow.
+            </div>
+          </div>
+        }
+        statusPanel={
+          <div className="grid gap-3 text-sm text-green-100 md:grid-cols-2">
+            <div className="rounded-lg border border-green-900/60 bg-green-950/30 px-3 py-3">
+              <div className="text-xs uppercase tracking-wide text-green-500">Health</div>
+              <div className="text-xl font-semibold text-green-50">
+                {state.player.health}/{state.player.maxHealth || 100}
+              </div>
+            </div>
+            <div className="rounded-lg border border-green-900/60 bg-green-950/30 px-3 py-3">
+              <div className="text-xs uppercase tracking-wide text-green-500">Score</div>
+              <div className="text-xl font-semibold text-green-50">{state.player.score || 0}</div>
+            </div>
+            <div className="rounded-lg border border-green-900/60 bg-green-950/30 px-3 py-3">
+              <div className="text-xs uppercase tracking-wide text-green-500">Visited Rooms</div>
+              <div className="text-xl font-semibold text-green-50">
+                {state.player.visitedRooms?.length || 0}
+              </div>
+            </div>
+            <div className="rounded-lg border border-green-900/60 bg-green-950/30 px-3 py-3">
+              <div className="text-xs uppercase tracking-wide text-green-500">Active Room</div>
+              <div className="text-base font-semibold text-green-50">{room.title || currentRoomId}</div>
+            </div>
+          </div>
+        }
+        onOpenInventory={() => openModal('inventory')}
+        onOpenSaveGame={() => openModal('saveGame')}
+        onTriggerHotspots={handleLookAround}
+        npcCount={npcsInRoom.length}
+        hoverPreviews={{
+          character: (
+            <>
+              <div className="font-semibold text-green-50">{playerName}</div>
+              <div className="text-sm text-green-300">{room.title || currentRoomId}</div>
+              <div className="text-xs text-green-400">
+                Health {state.player.health}/{state.player.maxHealth || 100} • Score {state.player.score || 0}
+              </div>
+            </>
+          ),
+          inventory: inventoryPreviewItems.length > 0 ? (
+            <>
+              <div className="text-xs text-green-400">Carried items</div>
+              <div className="space-y-1">
+                {inventoryPreviewItems.map((item) => (
+                  <div key={item} className="truncate rounded-lg bg-green-950/40 px-2 py-1 text-sm text-green-100">
+                    {item}
+                  </div>
+                ))}
+              </div>
+              {inventory.length > inventoryPreviewItems.length && (
+                <div className="text-xs text-green-500">+{inventory.length - inventoryPreviewItems.length} more</div>
+              )}
+            </>
+          ) : (
+            <div className="text-sm text-green-400">Nothing carried.</div>
+          ),
+          journal: recentCommands.length > 0 ? (
+            <>
+              <div className="text-xs text-green-400">Latest note</div>
+              <div className="rounded-lg bg-green-950/40 px-2 py-2 text-sm text-green-100">
+                {recentCommands[0]}
+              </div>
+            </>
+          ) : (
+            <div className="text-sm text-green-400">No active journal entry.</div>
+          ),
+          actions: availableExitEntries.length > 0 ? (
+            <>
+              <div className="text-xs text-green-400">Available movement</div>
+              <div className="flex flex-wrap gap-2">
+                {mapExitEntries.slice(0, 6).map(({ exitKey, destinationLabel }) => (
+                  <div key={exitKey} className="rounded-lg bg-green-950/40 px-2 py-1 text-xs text-green-200">
+                    {formatExitLabel(exitKey)}: {destinationLabel}
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="text-sm text-green-400">No immediate movement options.</div>
+          ),
+          hotspots: (
+            <>
+              <div className="text-xs text-green-400">Hotspot inspection</div>
+              <div className="text-sm text-green-100">
+                Use the hotspot action to inspect the current room through the parser-first path.
+              </div>
+              <div className="text-xs text-green-500">
+                Visible exits: {mapExitEntries.length}
+              </div>
+            </>
+          ),
+          map: mapExitEntries.length > 0 ? (
+            <div className="space-y-1">
+              {mapExitEntries.slice(0, 5).map(({ exitKey, destinationLabel }) => (
+                <div key={exitKey} className="flex items-center justify-between gap-3 rounded-lg bg-green-950/40 px-2 py-1 text-sm">
+                  <span className="text-xs uppercase tracking-wide text-green-500">
+                    {formatExitLabel(exitKey)}
+                  </span>
+                  <span className="truncate text-right text-green-100">{destinationLabel}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-sm text-green-400">No visible exits.</div>
+          ),
+          history: recentHistoryPreview.length > 0 ? (
+            <div className="space-y-1 font-mono text-xs text-green-100">
+              {recentHistoryPreview.map((message) => (
+                <div key={message.id} className="truncate rounded-lg bg-green-950/40 px-2 py-1">
+                  {message.text}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-sm text-green-400">No recent history yet.</div>
+          ),
+          npcs: npcPreviewItems.length > 0 ? (
+            <>
+              <div className="text-xs text-green-400">Nearby</div>
+              <div className="space-y-1">
+                {npcPreviewItems.map((npc) => (
+                  <div key={npc.id} className="rounded-lg bg-green-950/40 px-2 py-1 text-sm text-green-100">
+                    {npc.name}
+                  </div>
+                ))}
+              </div>
+              {npcsInRoom.length > npcPreviewItems.length && (
+                <div className="text-xs text-green-500">+{npcsInRoom.length - npcPreviewItems.length} more nearby</div>
+              )}
+            </>
+          ) : (
+            <div className="text-sm text-green-400">No one nearby.</div>
+          ),
+          achievements: achievementCount > 0 ? (
+            <>
+              <div className="text-sm text-green-100">Unlocked: {achievementCount}</div>
+              <div className="text-xs text-green-400">
+                Latest: {latestAchievement}
+              </div>
+            </>
+          ) : (
+            <div className="text-sm text-green-400">No achievements yet.</div>
+          ),
+          status: (
+            <div className="grid grid-cols-2 gap-2 text-sm">
+              <div className="rounded-lg bg-green-950/40 px-2 py-1.5 text-green-100">
+                Health {state.player.health}/{state.player.maxHealth || 100}
+              </div>
+              <div className="rounded-lg bg-green-950/40 px-2 py-1.5 text-green-100">
+                Score {state.player.score || 0}
+              </div>
+              <div className="rounded-lg bg-green-950/40 px-2 py-1.5 text-green-100">
+                Room {room.title || currentRoomId}
+              </div>
+              <div className="rounded-lg bg-green-950/40 px-2 py-1.5 text-green-100">
+                Visited {state.player.visitedRooms?.length || 0}
+              </div>
+            </div>
+          ),
+          save: (
+            <>
+              <div className="text-sm text-green-100">Save, load, and game controls</div>
+              <div className="text-xs text-green-400">
+                Open the full Save / Game panel to manage slots and session options.
+              </div>
+            </>
+          ),
+        }}
+      />
 
       {/* Combat Actions Panel - only show during combat */}
       <CombatActionsPanel />
