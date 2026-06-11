@@ -15,7 +15,7 @@
 */
 
 // src/main.tsx
-// Gorstan Game Beta 4
+// Gorstan Game Beta 5
 // Gorstan and characters (c) Geoff Webster 2025
 // Game module.
 

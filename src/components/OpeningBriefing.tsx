@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { BUILD_VERSION, GAME_STATUS } from '../config/version';
 import { safeGetStorageItem, safeSetStorageItem } from '../utils/safeStorage';
 
-const BRIEFING_STORAGE_KEY = 'gorstan.openingBriefing.dismissed.beta4';
+const BRIEFING_STORAGE_KEY = 'gorstan.openingBriefing.dismissed.beta5';
 
 interface OpeningBriefingProps {
   readonly onCommand: (command: string) => void;

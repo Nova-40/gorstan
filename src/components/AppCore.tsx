@@ -15,7 +15,7 @@
 */
 
 // src/components/AppCore.tsx
-// Gorstan Game Beta 4
+// Gorstan Game Beta 5
 // Gorstan and characters (c) Geoff Webster 2025
 // Main game controller UI and logic routing.
 
@@ -588,7 +588,7 @@ const AppCore: React.FC = () => {
               cheatMode: state.settings?.cheatMode ?? false,
             },
             metadata: {
-              version: state.metadata?.version || '3.8.8',
+              version: state.metadata?.version || '3.9.0',
               playTime: state.metadata?.playTime ?? 0,
               lastSaved:
                 typeof state.metadata?.lastSaved === 'string'
@@ -600,7 +600,7 @@ const AppCore: React.FC = () => {
           },
           metadata: {
             saveVersion: 7,
-            gameVersion: '3.8.8',
+            gameVersion: '3.9.0',
             features: ['save_migration_v7', 'backward_compatibility', 'data_integrity_checking'],
             compatibility: {
               minGameVersion: '3.8.0',

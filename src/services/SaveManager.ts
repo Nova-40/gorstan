@@ -159,7 +159,7 @@ export class SaveManager {
         metadata: {
           ...saveFile.metadata,
           saveVersion: this.CURRENT_VERSION,
-          gameVersion: '3.8.8',
+          gameVersion: '3.9.0',
           features: ['modern_save_system', 'data_integrity_checking', 'automatic_optimization'],
         },
       };
@@ -172,7 +172,7 @@ export class SaveManager {
         }
         finalSaveFile.metadata = {
           saveVersion: finalSaveFile.metadata?.saveVersion ?? this.CURRENT_VERSION,
-          gameVersion: finalSaveFile.metadata?.gameVersion ?? '3.8.8',
+          gameVersion: finalSaveFile.metadata?.gameVersion ?? '3.9.0',
           features: finalSaveFile.metadata?.features,
           compatibility: finalSaveFile.metadata?.compatibility,
           checksum: this.generateChecksum(saveFileForChecksum),

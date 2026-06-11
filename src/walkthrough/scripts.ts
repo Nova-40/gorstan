@@ -89,9 +89,9 @@ export function buildBaselineStartupWalkthrough({
     },
     {
       id: 'startup-help',
-      label: 'Print the Beta 4 field briefing',
+      label: 'Print the Beta 5 field briefing',
       command: 'help',
-      expectedText: 'Gorstan Beta 4 Field Briefing',
+      expectedText: 'Gorstan Beta 5 Field Briefing',
       notePrompt:
         'Does the parser-first help text explain typing, clicking, exits, and save/load cleanly?',
       stopOnFailure: true,

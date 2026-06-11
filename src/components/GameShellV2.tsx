@@ -146,7 +146,7 @@ const GameShellV2: React.FC<GameShellV2Props> = ({
         <div className="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-4">
           <div className="min-w-0">
             <div className="text-[10px] uppercase tracking-[0.35em] text-green-500">
-              Gorstan Beta 4
+              Gorstan Beta 5
             </div>
             <h1 className="truncate text-lg font-semibold text-green-100">{roomTitle}</h1>
             <div className="text-xs text-green-500">{roomId}</div>

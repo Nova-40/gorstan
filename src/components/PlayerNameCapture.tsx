@@ -33,7 +33,7 @@ const GorstanIcon = () => (
 
 // Variable declaration
 const instructionsScreens = [
-  `Welcome to Gorstan Beta 4, a parser-first illustrated adventure across reality, bureaucracy, and the multiverse.
+  `Welcome to Gorstan Beta 5, a parser-first illustrated adventure across reality, bureaucracy, and the multiverse.
 
 HOW TO PLAY:
 • Type commands into the terminal (e.g., "go north", "take coffee", "use blue button")
@@ -51,7 +51,7 @@ COMMAND EXAMPLES:
 • "look" or "examine" — describe the room/item
 • "inventory" — see what you're carrying
 • "status" — print current room and exit information
-• "help" or "about" — print the Beta 4 field briefing
+• "help" or "about" — print the Beta 5 field briefing
 • "talk to [npc]" — speak with a character
 • "use [item]" — use or activate an item
 • "reset" — attempt a reality reset

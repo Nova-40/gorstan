@@ -267,7 +267,7 @@ export function processCommand({
     case 'about':
     case 'instructions': {
       const helpMessages: TerminalMessage[] = [
-        { text: '--- Gorstan Beta 4 Field Briefing ---', type: 'system' },
+        { text: '--- Gorstan Beta 5 Field Briefing ---', type: 'system' },
         { text: 'This is a parser-first illustrated adventure. Type commands; click mapped room controls when available. Both routes go through the same command parser, because dual paperwork is how realities collapse.', type: 'system' },
         { text: 'look / inspect [thing] - Inspect the room, an item, a hotspot, or a suspiciously confident machine.', type: 'system' },
         { text: 'go [direction] - Move through an exit. Direction buttons and exit interactions issue the same movement commands.', type: 'system' },
