@@ -1,0 +1,236 @@
+name: Secure Backup Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+  packages: write
+  id-token: write # Required for cosign keyless signing
+
+jobs:
+  secure-backup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate SBOM
+        run: npm run sbom
+
+      - name: Build project (verification)
+        run: npm run build
+
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Load backup configuration
+        id: config
+        run: |
+          echo "Loaded backup configuration"
+          cat backup/include.exclude.json
+
+      - name: Create secure source archive
+        run: |
+          # Create staging directory
+          mkdir -p .backup-staging
+
+          # Copy included files based on configuration
+          # Source files
+          cp -r src .backup-staging/ 2>/dev/null || true
+          cp -r public .backup-staging/ 2>/dev/null || true
+          cp -r examples .backup-staging/ 2>/dev/null || true
+          cp -r scripts .backup-staging/ 2>/dev/null || true
+          cp -r tests .backup-staging/ 2>/dev/null || true
+          cp -r docs .backup-staging/ 2>/dev/null || true
+          cp -r backup .backup-staging/ 2>/dev/null || true
+          cp -r .github .backup-staging/ 2>/dev/null || true
+
+          # Configuration files
+          cp package.json .backup-staging/ 2>/dev/null || true
+          cp package-lock.json .backup-staging/ 2>/dev/null || true
+          cp tsconfig*.json .backup-staging/ 2>/dev/null || true
+          cp vite.config.* .backup-staging/ 2>/dev/null || true
+          cp tailwind.config.mjs .backup-staging/ 2>/dev/null || true
+          cp postcss.config.js .backup-staging/ 2>/dev/null || true
+          cp jest.config.js .backup-staging/ 2>/dev/null || true
+          cp vitest.config.ts .backup-staging/ 2>/dev/null || true
+          cp vitest.setup.ts .backup-staging/ 2>/dev/null || true
+          cp eslint.config.js .backup-staging/ 2>/dev/null || true
+          cp knip.json .backup-staging/ 2>/dev/null || true
+          cp .gitignore .backup-staging/ 2>/dev/null || true
+          cp .npmrc .backup-staging/ 2>/dev/null || true
+          cp README.md .backup-staging/ 2>/dev/null || true
+          cp LICENSE .backup-staging/ 2>/dev/null || true
+          cp EULA.md .backup-staging/ 2>/dev/null || true
+          cp DEPLOYMENT.md .backup-staging/ 2>/dev/null || true
+          cp README_BACKUP.md .backup-staging/ 2>/dev/null || true
+          cp .env.example .backup-staging/ 2>/dev/null || true
+          cp env.d.ts .backup-staging/ 2>/dev/null || true
+          cp vercel.json .backup-staging/ 2>/dev/null || true
+          cp index.html .backup-staging/ 2>/dev/null || true
+          cp sbom.json .backup-staging/ 2>/dev/null || true
+
+          # Create archive
+          cd .backup-staging
+          zip -r ../gorstan-${{ steps.version.outputs.VERSION }}-src.zip . -x "*.git*" "node_modules/*" "dist/*" ".vercel/*" ".aws/*" ".env" ".env.local" ".env.production"
+          cd ..
+
+          # Verify archive
+          echo "Archive contents:"
+          unzip -l gorstan-${{ steps.version.outputs.VERSION }}-src.zip | head -20
+
+      - name: Generate checksums
+        run: |
+          sha256sum gorstan-${{ steps.version.outputs.VERSION }}-src.zip > SHA256SUMS.txt
+          sha256sum sbom.json >> SHA256SUMS.txt
+          echo "Generated checksums:"
+          cat SHA256SUMS.txt
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3
+        with:
+          cosign-release: 'v2.2.4'
+
+      - name: Sign checksums with cosign (keyless)
+        run: |
+          cosign sign-blob --yes --output-signature SHA256SUMS.txt.sig SHA256SUMS.txt
+          echo "Signature created: SHA256SUMS.txt.sig"
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.version.outputs.VERSION }}
+          release_name: Gorstan ${{ steps.version.outputs.VERSION }}
+          body: |
+            ## Gorstan ${{ steps.version.outputs.VERSION }}
+
+            Secure backup release with cryptographic signatures.
+
+            ### Artifacts
+            - `gorstan-${{ steps.version.outputs.VERSION }}-src.zip` - Complete source archive
+            - `sbom.json` - Software Bill of Materials
+            - `SHA256SUMS.txt` - SHA-256 checksums for all artifacts
+            - `SHA256SUMS.txt.sig` - Cosign signature (keyless)
+
+            ### Verification
+            ```bash
+            # Verify checksums
+            sha256sum -c SHA256SUMS.txt
+
+            # Verify signature (requires cosign)
+            cosign verify-blob \
+              --certificate-identity-regexp=".*" \
+              --certificate-oidc-issuer-regexp=".*" \
+              --signature SHA256SUMS.txt.sig \
+              SHA256SUMS.txt
+            ```
+
+            ### Restore
+            ```bash
+            unzip gorstan-${{ steps.version.outputs.VERSION }}-src.zip
+            cd gorstan-${{ steps.version.outputs.VERSION }}-src
+            npm ci
+            npm run build
+            ```
+
+            For detailed restore instructions, see [README_BACKUP.md](README_BACKUP.md).
+          draft: false
+          prerelease: false
+
+      - name: Upload source archive
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./gorstan-${{ steps.version.outputs.VERSION }}-src.zip
+          asset_name: gorstan-${{ steps.version.outputs.VERSION }}-src.zip
+          asset_content_type: application/zip
+
+      - name: Upload SBOM
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./sbom.json
+          asset_name: sbom.json
+          asset_content_type: application/json
+
+      - name: Upload checksums
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./SHA256SUMS.txt
+          asset_name: SHA256SUMS.txt
+          asset_content_type: text/plain
+
+      - name: Upload signature
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./SHA256SUMS.txt.sig
+          asset_name: SHA256SUMS.txt.sig
+          asset_content_type: application/octet-stream
+
+      # Optional S3 upload (only if AWS secrets are configured)
+      - name: Configure AWS credentials (optional)
+        if: ${{ env.AWS_BUCKET != '' }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
+        env:
+          AWS_BUCKET: ${{ secrets.AWS_BUCKET }}
+
+      - name: Upload to S3 with KMS encryption (optional)
+        if: ${{ env.AWS_BUCKET != '' }}
+        run: |
+          aws s3 cp gorstan-${{ steps.version.outputs.VERSION }}-src.zip s3://${{ secrets.AWS_BUCKET }}/backups/ \
+            --sse aws:kms \
+            --sse-kms-key-id ${{ secrets.AWS_KMS_KEY_ID }}
+
+          aws s3 cp sbom.json s3://${{ secrets.AWS_BUCKET }}/backups/ \
+            --sse aws:kms \
+            --sse-kms-key-id ${{ secrets.AWS_KMS_KEY_ID }}
+
+          aws s3 cp SHA256SUMS.txt s3://${{ secrets.AWS_BUCKET }}/backups/ \
+            --sse aws:kms \
+            --sse-kms-key-id ${{ secrets.AWS_KMS_KEY_ID }}
+
+          aws s3 cp SHA256SUMS.txt.sig s3://${{ secrets.AWS_BUCKET }}/backups/ \
+            --sse aws:kms \
+            --sse-kms-key-id ${{ secrets.AWS_KMS_KEY_ID }}
+
+          echo "Backup uploaded to S3 with KMS encryption"
+        env:
+          AWS_BUCKET: ${{ secrets.AWS_BUCKET }}
+
+      - name: Cleanup
+        run: |
+          rm -rf .backup-staging
+          echo "Cleanup completed"

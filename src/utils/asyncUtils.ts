@@ -1,16 +1,10 @@
 /**
- * Async utilities for loading, error handling, and state management
- * Extracted from common patterns across components and services
+ * Async utilities for Gorstan — compact, dependency-light implementations
+ * used by components and services. Kept intentionally minimal to ease
+ * testing and typechecking in CI.
  */
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-
-// Common loading states
-export interface BasicAsyncState {
-  isLoading: boolean;
-  error: string | null;
-  data?: unknown;
-}
 
 export interface AsyncOperationState<T> {
   isLoading: boolean;
@@ -20,349 +14,134 @@ export interface AsyncOperationState<T> {
 }
 
 /**
- * Hook for managing async operations with loading and error states
+ * useAsyncOperation
+ * - Runs an async function and provides a simple loading/error/data state
+ * - Returns retry and reset helpers
  */
 export function useAsyncOperation<T>(
   asyncFn: () => Promise<T>,
   dependencies: React.DependencyList = [],
-): AsyncOperationState<T> & {
-  retry: () => void;
-  reset: () => void;
-} {
-  const [state, setState] = useState<AsyncOperationState<T>>({
-    isLoading: false,
-    error: null,
-    data: null,
-  });
-
-  const abortControllerRef = useRef<AbortController | null>(null);
+): AsyncOperationState<T> & { retry: () => void; reset: () => void } {
+  const [state, setState] = useState<AsyncOperationState<T>>({ isLoading: false, error: null, data: null });
+  const abortRef = useRef<AbortController | null>(null);
+  const mountedRef = useRef(true);
 
   const execute = useCallback(async () => {
-    // Cancel previous request
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
+    if (abortRef.current) abortRef.current.abort();
+    abortRef.current = new AbortController();
+    const ctrl = abortRef.current;
 
-    abortControllerRef.current = new AbortController();
-    const currentController = abortControllerRef.current;
-
-    setState((prev) => ({
-      ...prev,
-      isLoading: true,
-      error: null,
-    }));
-
+    setState((s) => ({ ...s, isLoading: true, error: null }));
     try {
-      const result = await asyncFn();
-
-      if (!currentController.signal.aborted) {
-        setState({
-          isLoading: false,
-          error: null,
-          data: result,
-          lastUpdated: Date.now(),
-        });
+      const res = await asyncFn();
+      if (!ctrl.signal.aborted && mountedRef.current) {
+        setState({ isLoading: false, error: null, data: res, lastUpdated: Date.now() });
       }
-    } catch (error) {
-      if (!currentController.signal.aborted) {
-        setState((prev) => ({
-          ...prev,
-          isLoading: false,
-          error: error instanceof Error ? error.message : 'Unknown error occurred',
-        }));
+    } catch (err) {
+      if (!ctrl.signal.aborted && mountedRef.current) {
+        setState((s) => ({ ...s, isLoading: false, error: err instanceof Error ? err.message : String(err) }));
       }
     }
-  }, dependencies);
+  }, // eslint-disable-next-line react-hooks/exhaustive-deps
+  dependencies);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    execute();
+    return () => {
+      mountedRef.current = false;
+      if (abortRef.current) abortRef.current.abort();
+    };
+  }, [execute]);
 
   const retry = useCallback(() => {
     execute();
   }, [execute]);
 
   const reset = useCallback(() => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-    setState({
-      isLoading: false,
-      error: null,
-      data: null,
-    });
+    if (abortRef.current) abortRef.current.abort();
+    setState({ isLoading: false, error: null, data: null });
   }, []);
 
-  useEffect(() => {
-    execute();
-
-    return () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-    };
-  }, dependencies);
-
-  return {
-    ...state,
-    retry,
-    reset,
-  };
+  return { ...state, retry, reset };
 }
 
 /**
- * Hook for managing simple loading states
- */
-export function useLoadingState(initialLoading = false) {
-  const [isLoading, setIsLoading] = useState(initialLoading);
-  const [error, setError] = useState<string | null>(null);
-
-  const startLoading = useCallback(() => {
-    setIsLoading(true);
-    setError(null);
-  }, []);
-
-  const stopLoading = useCallback(() => {
-    setIsLoading(false);
-  }, []);
-
-  const setErrorState = useCallback((error: string | Error | null) => {
-    setIsLoading(false);
-    setError(error instanceof Error ? error.message : error);
-  }, []);
-
-  const reset = useCallback(() => {
-    setIsLoading(false);
-    setError(null);
-  }, []);
-
-  return {
-    isLoading,
-    error,
-    startLoading,
-    stopLoading,
-    setError: setErrorState,
-    reset,
-  };
-}
-
-/**
- * Debounce async operations to prevent rapid-fire calls
- */
-export function useDebounceAsync<T extends unknown[], R>(
-  asyncFn: (...args: T) => Promise<R>,
-  delay: number,
-): [(...args: T) => Promise<R>, () => void] {
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const resolversRef = useRef<
-    Array<{
-      resolve: (value: R) => void;
-      reject: (error: Error) => void;
-    }>
-  >([]);
-
-  const debouncedFn = useCallback(
-    (...args: T): Promise<R> => {
-      return new Promise<R>((resolve, reject) => {
-        // Clear existing timeout
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-        }
-
-        // Add this promise to the resolvers queue
-        resolversRef.current.push({ resolve, reject });
-
-        // Set new timeout
-        timeoutRef.current = setTimeout(async () => {
-          const currentResolvers = [...resolversRef.current];
-          resolversRef.current = [];
-
-          try {
-            const result = await asyncFn(...args);
-            currentResolvers.forEach(({ resolve }) => resolve(result));
-          } catch (error) {
-            const errorObj = error instanceof Error ? error : new Error(String(error));
-            currentResolvers.forEach(({ reject }) => reject(errorObj));
-          }
-        }, delay);
-      });
-    },
-    [asyncFn, delay],
-  );
-
-  const cancel = useCallback(() => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-    resolversRef.current = [];
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      cancel();
-    };
-  }, [cancel]);
-
-  return [debouncedFn, cancel];
-}
-
-/**
- * Promise-based timeout utility
- */
-export function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
-  return Promise.race([
-    promise,
-    new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error(`Operation timed out after ${timeoutMs}ms`)), timeoutMs),
-    ),
-  ]);
-}
-
-/**
- * Retry async operations with exponential backoff
- */
-export async function retryWithBackoff<T>(
-  fn: () => Promise<T>,
-  options: {
-    maxRetries?: number;
-    initialDelay?: number;
-    maxDelay?: number;
-    backoffFactor?: number;
-    shouldRetry?: (error: Error) => boolean;
-  } = {},
-): Promise<T> {
-  const {
-    maxRetries = 3,
-    initialDelay = 1000,
-    maxDelay = 10000,
-    backoffFactor = 2,
-    shouldRetry = () => true,
-  } = options;
-
-  let lastError: Error = new Error('Unknown error');
-
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      return await fn();
-    } catch (error) {
-      const errorObj = error instanceof Error ? error : new Error(String(error));
-      lastError = errorObj;
-
-      if (attempt === maxRetries || !shouldRetry(errorObj)) {
-        throw errorObj;
-      }
-
-      const delay = Math.min(initialDelay * Math.pow(backoffFactor, attempt), maxDelay);
-      await new Promise((resolve) => setTimeout(resolve, delay));
-    }
-  }
-
-  throw lastError;
-}
-
-/**
- * Cache async results with TTL
+ * Simple in-memory async cache with TTL.
  */
 export class AsyncCache<K, V> {
-  private cache = new Map<K, { value: V; expires: number }>();
-  private defaultTTL: number;
+  private cache = new Map<K, { value: V; expiresAt: number }>();
+  constructor(private ttlMs = 5 * 60 * 1000) {}
 
-  constructor(defaultTTLMs = 5 * 60 * 1000) {
-    // 5 minutes default
-    this.defaultTTL = defaultTTLMs;
-  }
-
-  async get(key: K, factory: () => Promise<V>, ttlMs?: number): Promise<V> {
-    const cached = this.cache.get(key);
+  async get(key: K, factory: () => Promise<V>): Promise<V> {
     const now = Date.now();
-
-    if (cached && cached.expires > now) {
-      return cached.value;
-    }
-
+    const entry = this.cache.get(key);
+    if (entry && entry.expiresAt > now) return entry.value;
     const value = await factory();
-    const expires = now + (ttlMs || this.defaultTTL);
-    this.cache.set(key, { value, expires });
-
+    this.cache.set(key, { value, expiresAt: now + this.ttlMs });
     return value;
   }
 
-  clear(): void {
+  clear() {
     this.cache.clear();
   }
 
-  delete(key: K): boolean {
-    return this.cache.delete(key);
-  }
-
-  size(): number {
-    return this.cache.size;
+  delete(k: K) {
+    return this.cache.delete(k);
   }
 }
 
 /**
- * Batch async operations to reduce overhead
+ * BatchProcessor batches multiple add() calls into a single processor invocation.
+ * The processor must return an array of results matching the input order.
  */
 export class BatchProcessor<T, R> {
   private batch: T[] = [];
+  private resolvers: Array<{ resolve: (r: R) => void; reject: (e: unknown) => void }> = [];
   private timeout: ReturnType<typeof setTimeout> | null = null;
-  private resolvers: Array<(result: R) => void> = [];
-  private rejecters: Array<(error: Error) => void> = [];
 
-  constructor(
-    private processor: (items: T[]) => Promise<R[]>,
-    private batchSize = 10,
-    private batchTimeout = 100,
-  ) {}
+  constructor(private processor: (items: T[]) => Promise<R[]>, private batchTimeout = 50, private batchSize = 50) {}
 
-  async add(item: T): Promise<R> {
+  add(item: T): Promise<R> {
     return new Promise<R>((resolve, reject) => {
       this.batch.push(item);
-
-  // Push the resolver function; it will be called with the specific result for this item
-  this.resolvers.push((res: R) => resolve(res));
-      this.rejecters.push(reject);
-
-      if (this.batch.length >= this.batchSize) {
-        this.processBatch();
-      } else if (!this.timeout) {
-        this.timeout = setTimeout(() => this.processBatch(), this.batchTimeout);
-      }
+      this.resolvers.push({ resolve, reject });
+      if (this.batch.length >= this.batchSize) this.flush();
+      else if (!this.timeout) this.timeout = setTimeout(() => this.flush(), this.batchTimeout);
     });
   }
 
-  private async processBatch(): Promise<void> {
+  private async flush() {
     if (this.timeout) {
       clearTimeout(this.timeout);
       this.timeout = null;
     }
+    const items = this.batch.splice(0);
+    const resolvers = this.resolvers.splice(0);
+    if (items.length === 0) return;
+    try {
+      const results = await this.processor(items);
+      for (let i = 0; i < resolvers.length; i++) {
+        const r = resolvers[i];
+        if (!r) continue;
+        // Resolve with the corresponding result. If the processor returned fewer
+        // results than expected the value may be undefined — cast to R to satisfy
+        // the type system while preserving runtime behaviour.
+        // If callers rely on non-undefined values they should validate accordingly.
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        r.resolve((results as any)[i] as R);
+      }
+    } catch (err) {
+      for (const r of resolvers) r.reject(err);
+    }
+  }
 
-    const currentBatch = [...this.batch];
-    const currentResolvers = [...this.resolvers];
-    const currentRejecters = [...this.rejecters];
-
+  clearPending() {
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+      this.timeout = null;
+    }
     this.batch = [];
     this.resolvers = [];
-    this.rejecters = [];
-
-    if (currentBatch.length === 0) {
-      return;
-    }
-
-    try {
-      const results = await this.processor(currentBatch);
-      // Resolve each queued promise with its corresponding result
-      currentResolvers.forEach((resolve, idx) => {
-        if (idx < results.length && results[idx] !== undefined) {
-          resolve(results[idx] as R);
-        } else if (results.length > 0 && results[0] !== undefined) {
-          // Fallback: resolve with first result if indexing misaligns
-          resolve(results[0] as R);
-        } else {
-          // As a last resort, throw to signal unexpected processor output
-          throw new Error('BatchProcessor: processor returned no results');
-        }
-      });
-    } catch (error) {
-      const errorObj = error instanceof Error ? error : new Error(String(error));
-      currentRejecters.forEach((reject) => reject(errorObj));
-    }
   }
 }

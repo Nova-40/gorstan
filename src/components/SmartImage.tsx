@@ -1,11 +1,11 @@
 import React from 'react';
-import manifest from '/public/images/_optimized.json';
-import { pickOptimized } from '@/lib/optimized';
+import { pickOptimized } from '../lib/optimized';
 
 type Props = React.ImgHTMLAttributes<HTMLImageElement> & { src: string; alt?: string };
 
 export default function SmartImage({ src, alt = '', ...rest }: Props) {
-  const { avif, webp, fallback } = pickOptimized(src, manifest as any);
+  const entry = pickOptimized(src) || {};
+  const { avif, webp, fallback } = entry;
   return (
     <picture>
       {avif && <source srcSet={avif} type="image/avif" />}
