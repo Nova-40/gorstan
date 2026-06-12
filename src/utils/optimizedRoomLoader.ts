@@ -54,6 +54,9 @@ const lazyRoomRegistry: LazyRoomRegistry = {
   issuesdetected: () => import('../rooms/glitchZone_issuesdetected').then((m) => m.default),
   moreissues: () => import('../rooms/glitchZone_moreissues').then((m) => m.default),
   ravenchamber: () => import('../rooms/glitchZone_ravenchamber').then((m) => m.default),
+  glitchZone_ravenchamber: () => import('../rooms/glitchZone_ravenchamber').then((m) => m.default),
+  artifactChamber: () => import('../rooms/artifactChamber').then((m) => m.default),
+  spireCourtyard: () => import('../rooms/spireCourtyard').then((m) => m.default),
 
   // Gorstan Zone - lazy loaded
   carronspire: () => import('../rooms/gorstanZone_carronspire').then((m) => m.default),

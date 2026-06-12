@@ -29,6 +29,8 @@ import anothermazeroom from './mazeZone_anothermazeroom';
 
 import arbitercore from './offgorstanZone_arbitercore';
 
+import artifactChamber from './artifactChamber';
+
 import ascendantStanton from './stantonZone_ascendantStanton';
 
 import burgerjoint from './newyorkZone_burgerjoint';
@@ -74,6 +76,8 @@ import findlaterscornercoffeeshop from './londonZone_findlaterscornercoffeeshop'
 import forgottenchamber from './mazeZone_forgottenchamber';
 
 import glitchinguniverse from './glitchZone_glitchinguniverse';
+
+import ravenchamber from './glitchZone_ravenchamber';
 
 import glitchStanton from './stantonZone_glitchStanton';
 
@@ -139,6 +143,8 @@ import shatteredrealm from './offmultiverseZone_shatteredrealm';
 
 import silentStanton from './stantonZone_silentStanton';
 
+import spireCourtyard from './spireCourtyard';
+
 import stantonharcourt from './stantonZone_stantonharcourt';
 
 import stillamazeroom from './mazeZone_stillamazeroom';
@@ -173,6 +179,9 @@ const roomRegistry = {
   glitchinguniverse,
   issuesdetected,
   moreissues,
+  ravenchamber,
+  artifactChamber,
+  spireCourtyard,
   carronspire,
   gorstanhub,
   gorstanvillage,
