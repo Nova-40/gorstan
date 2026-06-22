@@ -44,6 +44,12 @@ const findlaterscornercoffeeshop: Room & { clickHotspots: CafeHotspot[] } = {
   image: 'londonzone_findlaters.png',
   ambientAudio: 'cozy_cafe_ambience.mp3',
 
+  visualScene: {
+    id: 'gorstan-cafe-vertical-slice',
+    ambient: 'cafe-warmth',
+    testId: 'gorstan-cafe-ambient',
+  },
+
   consoleIntro: [
     ">> FINDLATER'S CORNER COFFEE SHOP - NEIGHBORHOOD ESTABLISHMENT",
     '>> Location: CORNER OF FINDLATER STREET AND MEMORY LANE',

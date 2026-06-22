@@ -19,7 +19,32 @@
 
 import { Room } from '../types/Room';
 
-const dalesapartment: Room = {
+type DaleHotspot = {
+  id: string;
+  label: string;
+  command: string;
+  description: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  visible?: boolean;
+};
+
+type DaleVisualScene = {
+  id: string;
+  ambient: string;
+  testId: string;
+};
+
+type DaleRoom = Room & {
+  visualScene: DaleVisualScene;
+  clickHotspots: DaleHotspot[];
+  commandAliases: Record<string, string>;
+  itemDescriptions: Record<string, string>;
+};
+
+const dalesapartment: DaleRoom = {
   id: 'dalesapartment',
   zone: 'londonZone',
   title: "Dale and Polly's Apartment",
