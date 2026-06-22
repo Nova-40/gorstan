@@ -100,6 +100,53 @@ const normalizeHotspot = (hotspot: unknown, index: number): NormalizedRoomHotspo
   };
 };
 
+const cafeAmbientCss = `
+  .gorstan-cafe-ambient {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .gorstan-cafe-ambient::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 72% 24%, rgba(255, 196, 120, 0.28), transparent 24%),
+      linear-gradient(115deg, transparent 0%, rgba(255, 224, 170, 0.16) 44%, transparent 64%);
+    mix-blend-mode: screen;
+    opacity: 0.72;
+  }
+
+  .gorstan-cafe-ambient::after {
+    content: '';
+    position: absolute;
+    left: 55%;
+    top: 48%;
+    width: 18%;
+    height: 28%;
+    border-radius: 9999px;
+    background: radial-gradient(circle, rgba(255,255,255,0.25), transparent 62%);
+    filter: blur(13px);
+    animation: gorstan-cafe-steam 4.8s ease-in-out infinite;
+  }
+
+  @keyframes gorstan-cafe-steam {
+    0% { opacity: 0.08; transform: translate3d(-10%, 14%, 0) scale(0.82); }
+    50% { opacity: 0.24; transform: translate3d(0, -8%, 0) scale(1.04); }
+    100% { opacity: 0.08; transform: translate3d(10%, -26%, 0) scale(1.2); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gorstan-cafe-ambient::after {
+      animation: none;
+      opacity: 0.12;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+`;
+
 const RoomRenderer: React.FC = () => {
   const { state, dispatch } = useGameState();
   // Variable declaration
@@ -180,6 +227,7 @@ const RoomRenderer: React.FC = () => {
   }
 
   const roomData = room as any;
+  const isCafeVisualSlice = room.id === 'findlaterscornercoffeeshop';
   const roomImageSrc = room.image
     ? room.image.startsWith('/')
       ? room.image
@@ -205,12 +253,25 @@ const RoomRenderer: React.FC = () => {
     dispatch({ type: 'COMMAND_INPUT', payload: hotspot.command });
   };
 
+  const handleHotspotKeyDown = (
+    event: React.KeyboardEvent<HTMLButtonElement>,
+    hotspot: NormalizedRoomHotspot
+  ) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handleHotspotCommand(hotspot);
+    }
+  };
+
   // JSX return block or main return
   return (
     <div className="room-container flex flex-col h-full bg-black rounded-lg shadow-inner overflow-hidden border border-green-600">
-      {}
+      {isCafeVisualSlice && <style>{cafeAmbientCss}</style>}
       {room.image ? (
-        <div className="room-image-wrapper relative h-full w-full overflow-hidden">
+        <div
+          className="room-image-wrapper relative h-full w-full overflow-hidden"
+          data-visual-scene={isCafeVisualSlice ? 'gorstan-cafe-vertical-slice' : undefined}
+        >
           <img
             src={roomImageSrc}
             alt={room.title}
@@ -221,6 +282,14 @@ const RoomRenderer: React.FC = () => {
             }}
           />
 
+          {isCafeVisualSlice && (
+            <div
+              className="gorstan-cafe-ambient"
+              data-testid="gorstan-cafe-ambient"
+              aria-hidden="true"
+            />
+          )}
+
           {roomHotspots.map((hotspot) => (
             <button
               key={hotspot.id}
@@ -229,7 +298,7 @@ const RoomRenderer: React.FC = () => {
               title={hotspot.description || `${hotspot.label} (${hotspot.command})`}
               data-hotspot-id={hotspot.id}
               data-command={hotspot.command}
-              className="group absolute rounded border border-green-300/50 bg-black/10 text-left text-xs text-green-100 outline-none transition hover:border-green-200 hover:bg-green-500/20 focus:border-green-100 focus:bg-green-500/25 focus:ring-2 focus:ring-green-300/80"
+              className="group absolute rounded-lg border border-green-200/45 bg-black/15 text-left text-xs text-green-100 outline-none ring-1 ring-black/20 backdrop-blur-[1px] transition hover:border-green-100 hover:bg-green-400/20 hover:shadow-[0_0_18px_rgba(134,239,172,0.28)] focus:border-green-100 focus:bg-green-400/25 focus:ring-2 focus:ring-green-200/90 focus:shadow-[0_0_22px_rgba(187,247,208,0.35)]"
               style={{
                 left: `${hotspot.x}%`,
                 top: `${hotspot.y}%`,
@@ -238,8 +307,9 @@ const RoomRenderer: React.FC = () => {
                 transform: 'translate(-50%, -50%)',
               }}
               onClick={() => handleHotspotCommand(hotspot)}
+              onKeyDown={(event) => handleHotspotKeyDown(event, hotspot)}
             >
-              <span className="pointer-events-none absolute left-1 top-1 hidden max-w-40 rounded bg-black/80 px-2 py-1 font-mono text-[10px] uppercase tracking-wide text-green-100 group-hover:block group-focus:block">
+              <span className="pointer-events-none absolute left-1 top-1 hidden max-w-44 rounded bg-black/85 px-2 py-1 font-mono text-[10px] uppercase tracking-wide text-green-50 shadow-lg group-hover:block group-focus:block">
                 {hotspot.label}
               </span>
             </button>
@@ -254,7 +324,6 @@ const RoomRenderer: React.FC = () => {
         </div>
       )}
 
-      {}
       {room.music && (
         <audio autoPlay loop>
           <source src={room.music} type="audio/mpeg" />
