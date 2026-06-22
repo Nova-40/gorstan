@@ -155,6 +155,32 @@ const findlaterscornercoffeeshop: Room & { clickHotspots: CafeHotspot[] } = {
     'forgotten_notebook',
   ],
 
+  commandAliases: {
+    counter: 'coffee_counter',
+    coffee_counter: 'coffee_counter',
+    coffeecounter: 'coffee_counter',
+    photos: 'wall_photos',
+    photo: 'wall_photos',
+    wall_photos: 'wall_photos',
+    pictures: 'wall_photos',
+    booth: 'corner_booth',
+    corner_booth: 'corner_booth',
+    menu: 'coffee_shop_menu',
+    coffee_menu: 'coffee_shop_menu',
+    coffee_shop_menu: 'coffee_shop_menu',
+    barista: 'barista',
+  },
+
+  itemDescriptions: {
+    coffee_shop_menu:
+      "The menu offers the ordinary things — flat whites, espressos, pastries — but the house special is written as DIMENSIONAL BLEND in chalk that looks recently erased and then written again.",
+  },
+
+  conversationResponses: {
+    barista:
+      '"Usual?" the barista asks, already reaching for a cup. Her smile suggests she remembers rather more about your visits than you currently do.',
+  },
+
   interactables: {
     barista: {
       description:
