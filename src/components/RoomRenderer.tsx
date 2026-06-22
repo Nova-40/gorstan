@@ -38,6 +38,43 @@ interface NpcDisplayProps {
   npc: RoomNPC;
 }
 
+type RoomHotspot = {
+  id?: string;
+  label?: string;
+  command?: string;
+  description?: string;
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+  visible?: boolean;
+};
+
+const toPercentage = (value: unknown, fallback: number): number => {
+  if (typeof value !== 'number' || Number.isNaN(value)) {
+    return fallback;
+  }
+
+  return Math.min(100, Math.max(0, value));
+};
+
+const normalizeHotspot = (hotspot: unknown, index: number): Required<Pick<RoomHotspot, 'id' | 'label' | 'command' | 'x' | 'y' | 'width' | 'height'>> &
+  Pick<RoomHotspot, 'description'> => {
+  const data = hotspot && typeof hotspot === 'object' ? (hotspot as RoomHotspot) : {};
+  const fallbackLabel = data.id ? data.id.replace(/[_-]+/g, ' ') : `Hotspot ${index + 1}`;
+
+  return {
+    id: data.id || `room-hotspot-${index}`,
+    label: data.label || fallbackLabel,
+    command: data.command || '',
+    description: data.description,
+    x: toPercentage(data.x, 50),
+    y: toPercentage(data.y, 50),
+    width: toPercentage(data.width, 12),
+    height: toPercentage(data.height, 12),
+  };
+};
+
 const NpcDisplay: React.FC<NpcDisplayProps> = ({ npc }) => {
   // Variable declaration
   const displayName = npc.name ?? npc.id ?? 'Unknown visitor';
@@ -140,23 +177,30 @@ const RoomRenderer: React.FC = () => {
         ? `/images/${room.image}`
         : `/images/${room.image}`
     : '';
-  const roomHotspots = Array.isArray(roomData.clickHotspots)
+  const roomHotspots = (Array.isArray(roomData.clickHotspots)
     ? roomData.clickHotspots
     : Array.isArray(roomData.hotspots)
       ? roomData.hotspots
-      : [];
+      : [])
+    .filter((hotspot: RoomHotspot) => hotspot?.visible !== false)
+    .map(normalizeHotspot)
+    .filter((hotspot: ReturnType<typeof normalizeHotspot>) => hotspot.command.trim().length > 0);
   const itemPlacements = Array.isArray(roomData.itemPlacements) ? roomData.itemPlacements : [];
   const roomEffects = Array.isArray(roomData.effects) ? roomData.effects : [];
-  void roomHotspots;
   void itemPlacements;
   void roomEffects;
+  void looked;
+
+  const handleHotspotCommand = (hotspot: ReturnType<typeof normalizeHotspot>) => {
+    dispatch({ type: 'COMMAND_INPUT', payload: hotspot.command });
+  };
 
   // JSX return block or main return
   return (
     <div className="room-container flex flex-col h-full bg-black rounded-lg shadow-inner overflow-hidden border border-green-600">
       {}
       {room.image ? (
-        <div className="room-image-wrapper h-full w-full overflow-hidden">
+        <div className="room-image-wrapper relative h-full w-full overflow-hidden">
           <img
             src={roomImageSrc}
             alt={room.title}
@@ -166,6 +210,28 @@ const RoomRenderer: React.FC = () => {
               e.currentTarget.style.display = 'none';
             }}
           />
+
+          {roomHotspots.map((hotspot) => (
+            <button
+              key={hotspot.id}
+              type="button"
+              aria-label={`${hotspot.label}: ${hotspot.command}`}
+              title={hotspot.description || `${hotspot.label} (${hotspot.command})`}
+              className="group absolute rounded border border-green-300/50 bg-black/10 text-left text-xs text-green-100 outline-none transition hover:border-green-200 hover:bg-green-500/20 focus:border-green-100 focus:bg-green-500/25 focus:ring-2 focus:ring-green-300/80"
+              style={{
+                left: `${hotspot.x}%`,
+                top: `${hotspot.y}%`,
+                width: `${hotspot.width}%`,
+                height: `${hotspot.height}%`,
+                transform: 'translate(-50%, -50%)',
+              }}
+              onClick={() => handleHotspotCommand(hotspot)}
+            >
+              <span className="pointer-events-none absolute left-1 top-1 hidden max-w-40 rounded bg-black/80 px-2 py-1 font-mono text-[10px] uppercase tracking-wide text-green-100 group-hover:block group-focus:block">
+                {hotspot.label}
+              </span>
+            </button>
+          ))}
         </div>
       ) : (
         <div className="room-no-image h-full w-full flex items-center justify-center bg-gray-900 text-green-600">
