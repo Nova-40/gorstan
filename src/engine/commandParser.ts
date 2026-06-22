@@ -71,6 +71,130 @@ const aliases: Record<string, string> = {
   'check for': 'search',
 };
 
+type RoomCommandData = Room & {
+  commandAliases?: Record<string, string>;
+  itemDescriptions?: Record<string, string>;
+  conversationResponses?: Record<string, string>;
+};
+
+const normalizeCommandInput = (input: string): string => {
+  const cleaned = input.toLowerCase().trim().replace(/\s+/g, ' ');
+
+  if (aliases[cleaned]) {
+    return aliases[cleaned];
+  }
+
+  const phraseAliases: Array<[RegExp, string]> = [
+    [/^look at\s+/, 'inspect '],
+    [/^look into\s+/, 'inspect '],
+    [/^look through\s+/, 'inspect '],
+    [/^talk to\s+/, 'speak '],
+    [/^speak to\s+/, 'speak '],
+    [/^chat to\s+/, 'speak '],
+    [/^ask\s+/, 'speak '],
+  ];
+
+  for (const [pattern, replacement] of phraseAliases) {
+    if (pattern.test(cleaned)) {
+      return cleaned.replace(pattern, replacement);
+    }
+  }
+
+  const [rawVerb, ...rest] = cleaned.split(' ');
+  const verb = aliases[rawVerb] || rawVerb;
+
+  return [verb, ...rest].filter(Boolean).join(' ');
+};
+
+const normalizeTargetText = (target: string): string => {
+  return target
+    .toLowerCase()
+    .trim()
+    .replace(/^at\s+/, '')
+    .replace(/^to\s+/, '')
+    .replace(/^(the|a|an)\s+/, '')
+    .replace(/[\s-]+/g, '_');
+};
+
+const getItemId = (item: unknown): string | null => {
+  if (typeof item === 'string') {
+    return item;
+  }
+
+  if (item && typeof item === 'object') {
+    const itemData = item as { id?: string; name?: string };
+    return itemData.id || itemData.name || null;
+  }
+
+  return null;
+};
+
+const getItemDisplayName = (item: unknown): string | null => {
+  if (typeof item === 'string') {
+    return item.replace(/_/g, ' ');
+  }
+
+  if (item && typeof item === 'object') {
+    const itemData = item as { id?: string; name?: string };
+    return itemData.name || itemData.id?.replace(/_/g, ' ') || null;
+  }
+
+  return null;
+};
+
+const resolveRoomTarget = (noun: string, currentRoom: Room): string => {
+  const roomData = currentRoom as RoomCommandData;
+  const normalized = normalizeTargetText(noun);
+  const directAlias = roomData.commandAliases?.[normalized] || roomData.commandAliases?.[noun.toLowerCase().trim()];
+
+  if (directAlias) {
+    return directAlias;
+  }
+
+  const interactableKeys = Object.keys((currentRoom as any).interactables || {});
+  const interactableMatch = interactableKeys.find((key) => normalizeTargetText(key) === normalized);
+
+  if (interactableMatch) {
+    return interactableMatch;
+  }
+
+  const itemMatch = (currentRoom.items || []).find((item) => {
+    const id = getItemId(item);
+    const name = getItemDisplayName(item);
+    return (
+      (id && normalizeTargetText(id) === normalized) ||
+      (name && normalizeTargetText(name) === normalized)
+    );
+  });
+
+  return getItemId(itemMatch) || normalized;
+};
+
+const describeRoomTarget = (target: string, currentRoom: Room): TerminalMessage[] | null => {
+  const roomData = currentRoom as RoomCommandData;
+  const interactable = (currentRoom as any).interactables?.[target];
+
+  if (interactable?.description) {
+    return [{ text: interactable.description, type: 'lore' }];
+  }
+
+  const item = (currentRoom.items || []).find((candidate) => getItemId(candidate) === target);
+
+  if (item) {
+    const displayName = getItemDisplayName(item) || target.replace(/_/g, ' ');
+    const itemDescription = roomData.itemDescriptions?.[target];
+
+    return [
+      {
+        text: itemDescription || `You examine the ${displayName}. It seems worth remembering.`,
+        type: itemDescription ? 'lore' : 'info',
+      },
+    ];
+  }
+
+  return null;
+};
+
 /**
  * Parses and processes player commands
  */
@@ -86,7 +210,7 @@ export function processCommand({
     };
   }
 
-  const resolvedInput = aliases[input.toLowerCase().trim()] || input.toLowerCase().trim();
+  const resolvedInput = normalizeCommandInput(input);
   const commandParts = resolvedInput.split(' ');
   const verb = commandParts[0];
   const noun = commandParts.slice(1).join(' ');
@@ -201,6 +325,19 @@ export function processCommand({
 
     case 'inspect':
     case 'look': {
+      if (noun) {
+        const target = resolveRoomTarget(noun, currentRoom);
+        const targetMessages = describeRoomTarget(target, currentRoom);
+
+        if (targetMessages) {
+          return { messages: targetMessages };
+        }
+
+        return {
+          messages: [{ text: `You don't see anything obvious called "${noun}" here.`, type: 'error' }],
+        };
+      }
+
       const descriptionLines = Array.isArray(currentRoom.description)
         ? currentRoom.description
         : [currentRoom.description];
@@ -306,6 +443,22 @@ export function processCommand({
       });
 
       if (!targetNPC) {
+        const target = resolveRoomTarget(noun, currentRoom);
+        const roomData = currentRoom as RoomCommandData;
+        const conversationResponse = roomData.conversationResponses?.[target];
+        const interactable = (currentRoom as any).interactables?.[target];
+
+        if (conversationResponse || interactable?.description) {
+          return {
+            messages: [
+              {
+                text: conversationResponse || interactable.description,
+                type: conversationResponse ? 'lore' : 'info',
+              },
+            ],
+          };
+        }
+
         return {
           messages: [{ text: `You don't see anyone named "${noun}" here.`, type: 'error' }],
         };

@@ -19,7 +19,19 @@
 
 import { Room } from '../types/Room';
 
-const findlaterscornercoffeeshop: Room = {
+type CafeHotspot = {
+  id: string;
+  label: string;
+  command: string;
+  description: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  visible?: boolean;
+};
+
+const findlaterscornercoffeeshop: Room & { clickHotspots: CafeHotspot[] } = {
   id: 'findlaterscornercoffeeshop',
   zone: 'londonZone',
   title: "Findlater's Corner Coffee Shop",
@@ -51,6 +63,89 @@ const findlaterscornercoffeeshop: Room = {
     east: 'trentpark',
   },
 
+  clickHotspots: [
+    {
+      id: 'cafe-office-exit',
+      label: 'Café Office',
+      command: 'go north',
+      description: 'Go through to the café office.',
+      x: 50,
+      y: 18,
+      width: 16,
+      height: 16,
+    },
+    {
+      id: 'dales-apartment-exit',
+      label: "Dale's Apartment",
+      command: 'go south',
+      description: "Leave the café and return toward Dale's apartment.",
+      x: 49,
+      y: 88,
+      width: 18,
+      height: 16,
+    },
+    {
+      id: 'trent-park-exit',
+      label: 'Trent Park',
+      command: 'go east',
+      description: 'Head east toward Trent Park.',
+      x: 88,
+      y: 55,
+      width: 14,
+      height: 24,
+    },
+    {
+      id: 'barista',
+      label: 'Barista',
+      command: 'talk barista',
+      description: 'Talk to the friendly barista.',
+      x: 63,
+      y: 48,
+      width: 12,
+      height: 22,
+    },
+    {
+      id: 'coffee-counter',
+      label: 'Coffee Counter',
+      command: 'examine coffee_counter',
+      description: 'Examine the polished wooden counter and espresso machine.',
+      x: 58,
+      y: 62,
+      width: 28,
+      height: 18,
+    },
+    {
+      id: 'corner-booth',
+      label: 'Corner Booth',
+      command: 'examine corner_booth',
+      description: 'Examine the booth that feels like it might once have been your spot.',
+      x: 22,
+      y: 63,
+      width: 22,
+      height: 18,
+    },
+    {
+      id: 'wall-photos',
+      label: 'Wall Photos',
+      command: 'examine wall_photos',
+      description: 'Study the photographs of the neighbourhood through the decades.',
+      x: 30,
+      y: 31,
+      width: 22,
+      height: 16,
+    },
+    {
+      id: 'menu',
+      label: 'Coffee Shop Menu',
+      command: 'examine coffee_shop_menu',
+      description: 'Read the menu and its suspiciously familiar specials.',
+      x: 72,
+      y: 30,
+      width: 18,
+      height: 14,
+    },
+  ],
+
   items: [
     'coffee_shop_menu',
     'local_newspaper',
@@ -59,6 +154,32 @@ const findlaterscornercoffeeshop: Room = {
     'business_card_collection',
     'forgotten_notebook',
   ],
+
+  commandAliases: {
+    counter: 'coffee_counter',
+    coffee_counter: 'coffee_counter',
+    coffeecounter: 'coffee_counter',
+    photos: 'wall_photos',
+    photo: 'wall_photos',
+    wall_photos: 'wall_photos',
+    pictures: 'wall_photos',
+    booth: 'corner_booth',
+    corner_booth: 'corner_booth',
+    menu: 'coffee_shop_menu',
+    coffee_menu: 'coffee_shop_menu',
+    coffee_shop_menu: 'coffee_shop_menu',
+    barista: 'barista',
+  },
+
+  itemDescriptions: {
+    coffee_shop_menu:
+      "The menu offers the ordinary things — flat whites, espressos, pastries — but the house special is written as DIMENSIONAL BLEND in chalk that looks recently erased and then written again.",
+  },
+
+  conversationResponses: {
+    barista:
+      '"Usual?" the barista asks, already reaching for a cup. Her smile suggests she remembers rather more about your visits than you currently do.',
+  },
 
   interactables: {
     barista: {
