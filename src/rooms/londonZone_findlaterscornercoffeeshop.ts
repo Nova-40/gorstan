@@ -29,7 +29,7 @@ const findlaterscornercoffeeshop: Room = {
     'Behind the polished wooden counter, a friendly barista with bright eyes and a warm smile has already begun preparing a coffee before you even approached. She works with practiced efficiency, as if she knew exactly what you wanted.',
     "The morning light streams through large windows, casting golden patterns across the worn wooden floors. This place has the comfortable feel of somewhere you've spent countless hours, even though the specific memories remain frustratingly just out of reach.",
   ],
-  image: 'londonZone_findlaters.png',
+  image: 'londonzone_findlaters.png',
   ambientAudio: 'cozy_cafe_ambience.mp3',
 
   consoleIntro: [

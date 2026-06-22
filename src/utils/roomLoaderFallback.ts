@@ -25,7 +25,7 @@ const emergencyRooms: Record<string, Room> = {
     title: 'Control Nexus',
     description:
       'You are in the central control nexus. This is the heart of the multiverse navigation system. Strange lights pulse from crystalline structures embedded in the walls.',
-    image: 'introZone_controlnexus.png',
+    image: 'introzone_controlnexus.png',
     zone: 'introZone',
     flags: {} as any,
     exits: {
@@ -42,7 +42,7 @@ const emergencyRooms: Record<string, Room> = {
     title: 'Control Room',
     description:
       'A high-tech control room with banks of monitors and control panels. The air hums with electronic activity.',
-    image: 'introZone_controlroom.png',
+    image: 'introzone_controlroom.png',
     zone: 'introZone',
     flags: {} as any,
     exits: {

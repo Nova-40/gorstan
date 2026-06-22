@@ -29,7 +29,7 @@ const findlaters: Room = {
     'Other patrons sit at their tables, but they move with a dreamlike quality, their conversations creating a gentle murmur that sounds almost like distant whispers. Time itself seems to flow differently here.',
     "This is clearly the same cafe, but existing in a moment suspended between realities - a special instance where the ordinary rules don't quite apply and profound encounters become possible.",
   ].join('\n'),
-  image: 'londonZone_findlaters.png',
+  image: 'londonzone_findlaters.png',
 
   consoleIntro: [
     ">> FINDLATER'S CAFE - SPECIAL DIMENSIONAL INSTANCE",

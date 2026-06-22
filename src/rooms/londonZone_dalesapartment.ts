@@ -29,7 +29,7 @@ const dalesapartment: Room = {
     "In one corner of the lounge, a large fish tank bubbles quietly. Inside, a single goldfish named Dominic swims in lazy circles, seemingly the only living thing that doesn't conform to the apartment's rigid organization.",
     "The level of tidiness borders on obsessive - it's as if someone has been maintaining this place as a shrine, keeping everything exactly as it was meant to be, waiting for its occupants to return.",
   ],
-  image: 'londonZone_dalesapartment.png',
+  image: 'londonzone_dalesapartment.png',
   ambientAudio: 'apartment_ambience.mp3',
 
   consoleIntro: [

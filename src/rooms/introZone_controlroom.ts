@@ -29,7 +29,7 @@ const controlroom: Room = {
     'Emergency lighting casts a red tint over everything, and warning indicators flash intermittently. A large tactical display dominates the far wall, showing a complex web of dimensional pathways.',
     'The air is thick with tension and the acrid smell of overworked electronics. This is clearly where critical decisions are made.',
   ],
-  image: 'introZone_controlroom.png',
+  image: 'introzone_controlroom.png',
   ambientAudio: 'control_room_ambience.mp3',
 
   consoleIntro: [

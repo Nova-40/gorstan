@@ -28,7 +28,7 @@ const controlnexus: Room = {
     'Thick cables snake across the polished floor like technological vines, converging at a central console. A single command chair faces this nexus of control, its ergonomic form suggesting long periods of monitoring.',
     'The air carries a faint ozone scent, and you can hear the subtle hum of sleeping systems waiting to be awakened. This place feels like the nerve center of something vast and important.',
   ],
-  image: 'introZone_controlnexus.gif',
+  image: 'introzone_controlnexus.png',
   ambientAudio: 'lowhum.mp3',
 
   consoleIntro: [
