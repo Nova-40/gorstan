@@ -50,6 +50,69 @@ type RoomHotspot = {
   visible?: boolean;
 };
 
+const findlatersHotspots: RoomHotspot[] = [
+  {
+    id: 'findlaters-door-south',
+    label: "Dale's apartment",
+    command: 'go south',
+    description: "Leave the cafe and head back towards Dale's apartment.",
+    x: 50,
+    y: 88,
+    width: 18,
+    height: 12,
+  },
+  {
+    id: 'findlaters-cafe-office',
+    label: 'Cafe office door',
+    command: 'go north',
+    description: 'Try the door to the cafe office.',
+    x: 79,
+    y: 45,
+    width: 14,
+    height: 30,
+  },
+  {
+    id: 'findlaters-trent-park-exit',
+    label: 'East exit',
+    command: 'go east',
+    description: 'Head east towards Trent Park.',
+    x: 93,
+    y: 58,
+    width: 11,
+    height: 34,
+  },
+  {
+    id: 'findlaters-dimensional-door',
+    label: 'Dimensional door',
+    command: 'go dimensional_door',
+    description: 'Investigate the door being unusually casual about dimensional physics.',
+    x: 14,
+    y: 47,
+    width: 15,
+    height: 32,
+  },
+  {
+    id: 'findlaters-significant-table',
+    label: 'Significant table',
+    command: 'examine significant_table',
+    description: 'Examine the table pulsing gently with narrative importance.',
+    x: 55,
+    y: 66,
+    width: 24,
+    height: 16,
+  },
+  {
+    id: 'findlaters-menu-board',
+    label: 'Temporal menu board',
+    command: 'examine temporal_menu_board',
+    description: 'Read the menu board before it changes its mind again.',
+    x: 66,
+    y: 24,
+    width: 21,
+    height: 15,
+  },
+];
+
 const toPercentage = (value: unknown, fallback: number): number => {
   if (typeof value !== 'number' || Number.isNaN(value)) {
     return fallback;
@@ -177,11 +240,13 @@ const RoomRenderer: React.FC = () => {
         ? `/images/${room.image}`
         : `/images/${room.image}`
     : '';
-  const roomHotspots = (Array.isArray(roomData.clickHotspots)
+  const configuredHotspots = Array.isArray(roomData.clickHotspots)
     ? roomData.clickHotspots
     : Array.isArray(roomData.hotspots)
       ? roomData.hotspots
-      : [])
+      : [];
+  const fallbackHotspots = room.id === 'findlaters' ? findlatersHotspots : [];
+  const roomHotspots = (configuredHotspots.length > 0 ? configuredHotspots : fallbackHotspots)
     .filter((hotspot: RoomHotspot) => hotspot?.visible !== false)
     .map(normalizeHotspot)
     .filter((hotspot: ReturnType<typeof normalizeHotspot>) => hotspot.command.trim().length > 0);
