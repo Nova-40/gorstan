@@ -18,6 +18,7 @@
 // Renders room descriptions and image logic.
 
 import aevirawarehouse from './newyorkZone_aevirawarehouse';
+import alveiraworkshop from './newyorkZone_alveiraworkshop';
 
 import ancientslibrary from './offgorstanZone_ancientslibrary';
 
@@ -48,6 +49,8 @@ import controlroom from './introZone_controlroom';
 import crossing from './introZone_crossing';
 
 import dalesapartment from './londonZone_dalesapartment';
+import dalesBedroom from './londonZone_dales_bedroom';
+import dalesKitchen from './londonZone_dales_kitchen';
 
 import datavoid from './glitchZone_datavoid';
 
@@ -204,6 +207,8 @@ const roomRegistry = {
   libraryofnine,
   cafeoffice,
   dalesapartment,
+  [dalesBedroom.id]: dalesBedroom,
+  [dalesKitchen.id]: dalesKitchen,
   findlaters,
   findlaterscornercoffeeshop,
   londonhub,
@@ -225,6 +230,7 @@ const roomRegistry = {
   windingpath,
   liminalhub,
   aevirawarehouse,
+  alveiraworkshop,
   burgerjoint,
   centralpark,
   greasystoreroom,

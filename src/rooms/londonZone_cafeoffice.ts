@@ -46,10 +46,13 @@ const cafeoffice: Room = {
   ],
 
   exits: {
-    south: 'cafe',
+    south: 'findlaterscornercoffeeshop',
   },
 
-  items: [
+  items: ['office_chair'],
+  // office_chair is handled by parser-first command logic in commandParser.ts.
+  // First sit records cafe_office_chair_sat_once; later sit records cafe_office_chair_ready.
+  legacyItems: [
     'important_documents',
     'staff_key_ring',
     'business_records',

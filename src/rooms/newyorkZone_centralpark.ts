@@ -32,6 +32,55 @@ const centralpark: Room = {
   image: 'newyorkZone_centralpark.png',
   ambientAudio: 'nyc_park_ambience.mp3',
 
+  visualScene: {
+    id: 'central-park-visual-slice',
+    ambient: 'park-daylight',
+    testId: 'central-park-visual-scene',
+  },
+
+  clickHotspots: [
+    {
+      id: 'burger-joint-exit',
+      x: 3,
+      y: 44,
+      width: 14,
+      height: 26,
+      label: 'Burger Joint',
+      command: 'go west',
+      description: 'Go west to the burger joint.',
+    },
+    {
+      id: 'warehouse-route',
+      x: 76,
+      y: 35,
+      width: 17,
+      height: 25,
+      label: 'Warehouse',
+      command: 'go warehouse',
+      description: 'Try the warehouse route.',
+    },
+    {
+      id: 'manhattan-hub-route',
+      x: 42,
+      y: 70,
+      width: 18,
+      height: 16,
+      label: 'New York Hub',
+      command: 'go south',
+      description: 'Head toward Manhattan Hub once access is unlocked.',
+    },
+    {
+      id: 'alveira-workshop-route',
+      x: 24,
+      y: 68,
+      width: 16,
+      height: 18,
+      label: 'Hidden Workshop',
+      command: 'go down',
+      description: 'Find the concealed route down to the hidden Alveira Workshop.',
+    },
+  ],
+
   consoleIntro: [
     '>> CENTRAL PARK - MANHATTAN, NEW YORK CITY',
     '>> Location status: PUBLIC PARKLAND - High pedestrian traffic',
@@ -47,8 +96,6 @@ const centralpark: Room = {
 
   exits: {
     west: 'burgerjoint',
-    east: 'aevirawarehouse',
-    south: 'manhattenhub',
 
     portal: 'stkatherinesdock',
   },
