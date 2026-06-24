@@ -48,7 +48,7 @@ const centralpark: Room = {
   exits: {
     west: 'burgerjoint',
     east: 'aevirawarehouse',
-    south: 'manhattenhub',
+    south: 'manhattanhub',
 
     portal: 'stkatherinesdock',
   },

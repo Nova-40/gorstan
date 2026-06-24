@@ -14,7 +14,7 @@
   Full licence terms: see EULA.md in the project root.
 */
 
-// Goimport { Room } from '../types/RoomTypes';stan and characters (c) Geoff Webster 2025
+// Gorstan and characters (c) Geoff Webster 2025
 // Renders room descriptions and image logic.
 
 import elfhame from '../rooms/elfhameZone_elfhame';
