@@ -39,7 +39,7 @@ const alveiraworkshop = {
     'At the centre of the room stands a chair: plain, functional, and very obviously not plain or functional. Its metal frame carries the quiet confidence of machinery that has already decided where you are going.',
     'The air smells faintly of warm dust, ozone, old paper and coffee. Somewhere inside the walls, a relay clicks with patient disapproval.',
   ],
-  image: 'newyork_alveiraworkshop.png',
+  image: 'newyorkZone_manhattanhub.png',
   ambientAudio: 'alveira_workshop_ambience.mp3',
 
   visualScene: {

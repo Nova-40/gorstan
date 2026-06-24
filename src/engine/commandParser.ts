@@ -203,16 +203,44 @@ const describeRoomTarget = (target: string, currentRoom: Room): TerminalMessage[
 const getBooleanFlag = (gameState: any, flagName: string): boolean =>
   Boolean(gameState?.flags?.[flagName] ?? gameState?.gameFlags?.[flagName] ?? gameState?.[flagName]);
 
-const setBooleanFlagUpdate = (flagName: string): Partial<LocalGameState> =>
+const getExistingFlags = (gameState: any): Record<string, boolean> => ({
+  ...(gameState?.flags || {}),
+  ...(gameState?.gameFlags || {}),
+});
+
+const setBooleanFlagUpdate = (
+  gameState: LocalGameState,
+  flagName: string
+): Partial<LocalGameState> =>
   ({
     flags: {
+      ...getExistingFlags(gameState),
       [flagName]: true,
     },
   }) as Partial<LocalGameState>;
 
-const mergeBooleanFlagUpdates = (...flagNames: string[]): Partial<LocalGameState> =>
+const mergeBooleanFlagUpdates = (
+  gameState: LocalGameState,
+  ...flagNames: string[]
+): Partial<LocalGameState> =>
   ({
-    flags: Object.fromEntries(flagNames.map((flagName) => [flagName, true])),
+    flags: {
+      ...getExistingFlags(gameState),
+      ...Object.fromEntries(flagNames.map((flagName) => [flagName, true])),
+    },
+  }) as Partial<LocalGameState>;
+
+const roomTransitionUpdate = (
+  gameState: LocalGameState,
+  roomId: string
+): Partial<LocalGameState> =>
+  ({
+    currentRoomId: roomId,
+    currentRoom: roomId,
+    player: {
+      ...((gameState as any).player || {}),
+      currentRoom: roomId,
+    },
   }) as Partial<LocalGameState>;
 
 const handleCafeOfficeChairCommand = (
@@ -231,15 +259,34 @@ const handleCafeOfficeChairCommand = (
     normalized.includes('office chair') ||
     normalized.includes('seat');
 
-  const chairVerb =
-    normalized.startsWith('sit') ||
-    normalized.startsWith('use') ||
+  const inspectionVerb =
     normalized.startsWith('inspect') ||
     normalized.startsWith('examine') ||
     normalized.startsWith('look at') ||
     normalized.startsWith('look');
 
-  if (!mentionsChair || !chairVerb) {
+  const activationVerb =
+    normalized.startsWith('sit') ||
+    normalized.startsWith('use') ||
+    normalized.startsWith('activate');
+
+  if (!mentionsChair) {
+    return null;
+  }
+
+  if (inspectionVerb && !activationVerb) {
+    return {
+      messages: [
+        {
+          text:
+            'It is a comfortable office chair with a faint, precise vibration running through it. It feels less like furniture and more like a high-tech gadget making a very poor attempt at office camouflage.',
+          type: 'lore',
+        },
+      ],
+    };
+  }
+
+  if (!activationVerb) {
     return null;
   }
 
@@ -254,7 +301,7 @@ const handleCafeOfficeChairCommand = (
           type: 'system',
         },
       ],
-      updates: setBooleanFlagUpdate('cafe_office_chair_sat_once'),
+      updates: setBooleanFlagUpdate(gameState, 'cafe_office_chair_sat_once'),
     };
   }
 
@@ -266,7 +313,7 @@ const handleCafeOfficeChairCommand = (
         type: 'system',
       },
     ],
-    updates: setBooleanFlagUpdate('cafe_office_chair_ready'),
+    updates: setBooleanFlagUpdate(gameState, 'cafe_office_chair_ready'),
   };
 };
 
@@ -291,7 +338,7 @@ const handleNewYorkChainCommand = (
     if (rudeToChef) {
       return {
         messages: [{ text: 'The chef stops wiping the counter and gives you a look that has ended better careers than yours. Whatever instructions he may have had are no longer on offer.', type: 'system' }],
-        updates: mergeBooleanFlagUpdates('chef_offended', 'chef_refuses_instructions'),
+        updates: mergeBooleanFlagUpdates(gameState, 'chef_offended', 'chef_refuses_instructions'),
       };
     }
 
@@ -299,13 +346,13 @@ const handleNewYorkChainCommand = (
       if (hasAnyFlag(gameState, 'chef_offended', 'chef_refuses_instructions')) {
         return {
           messages: [{ text: 'The chef hears the word “instructions” and becomes very interested in cleaning an already clean patch of counter. You are not getting the passcode from him now.', type: 'system' }],
-          updates: mergeBooleanFlagUpdates('chef_refuses_instructions'),
+          updates: mergeBooleanFlagUpdates(gameState, 'chef_refuses_instructions'),
         };
       }
 
       return {
         messages: [{ text: 'The chef leans in just far enough to make this feel unofficial. “Warehouse. Ask for Albie. The passcode is AEVIRA. Say it cleanly, and do not improvise. People who improvise make paperwork.”', type: 'system' }],
-        updates: mergeBooleanFlagUpdates('chef_instruction_hint_received', 'chef_instructions_received', 'warehouse_route_unlocked', 'warehouse_passcode_known', 'chef_likes_player', 'chef_authorization_received'),
+        updates: mergeBooleanFlagUpdates(gameState, 'chef_instruction_hint_received', 'chef_instructions_received', 'warehouse_route_unlocked', 'warehouse_passcode_known', 'chef_likes_player', 'chef_authorization_received'),
       };
     }
 
@@ -313,13 +360,13 @@ const handleNewYorkChainCommand = (
       if (hasAnyFlag(gameState, 'chef_offended', 'chef_refuses_instructions')) {
         return {
           messages: [{ text: 'The chef keeps his expression professionally flat. “Kitchen is open. Conversation is closed.”', type: 'system' }],
-          updates: mergeBooleanFlagUpdates('chef_refuses_instructions'),
+          updates: mergeBooleanFlagUpdates(gameState, 'chef_refuses_instructions'),
         };
       }
 
       return {
         messages: [{ text: 'The chef gives you a short nod. “You look like someone who has been sent somewhere without being told enough. Happens more than you’d think. I might have instructions, if you ask properly.”', type: 'system' }],
-        updates: mergeBooleanFlagUpdates('chef_instruction_hint_received', 'warehouse_route_unlocked', 'chef_likes_player'),
+        updates: mergeBooleanFlagUpdates(gameState, 'chef_instruction_hint_received', 'warehouse_route_unlocked', 'chef_likes_player'),
       };
     }
 
@@ -330,7 +377,7 @@ const handleNewYorkChainCommand = (
 
       return {
         messages: [{ text: 'The chef nods toward the door. “Mind the floor. It has opinions.”', type: 'system' }],
-        updates: { currentRoomId: 'greasystoreroom' } as Partial<LocalGameState>,
+        updates: roomTransitionUpdate(gameState, 'greasystoreroom'),
       };
     }
   }
@@ -345,7 +392,7 @@ const handleNewYorkChainCommand = (
 
       return {
         messages: [{ text: 'A service route between trees and traffic resolves into something much less public. The Aevira Warehouse waits ahead.', type: 'system' }],
-        updates: { currentRoomId: 'aevirawarehouse' } as Partial<LocalGameState>,
+        updates: roomTransitionUpdate(gameState, 'aevirawarehouse'),
       };
     }
 
@@ -376,7 +423,7 @@ const handleNewYorkChainCommand = (
             type: 'system',
           },
         ],
-        updates: { currentRoomId: 'alveiraworkshop' } as Partial<LocalGameState>,
+        updates: roomTransitionUpdate(gameState, 'alveiraworkshop'),
       };
     }
 
@@ -395,18 +442,41 @@ const handleNewYorkChainCommand = (
             type: 'system',
           },
         ],
-        updates: { currentRoomId: 'manhattanhub' } as Partial<LocalGameState>,
+        updates: roomTransitionUpdate(gameState, 'manhattanhub'),
       };
     }
   }
 
   if (roomId === 'alveiraworkshop') {
-    const wantsChair =
+    const mentionsWorkshopChair =
       normalized.includes('chair') ||
-      normalized.includes('transporter') ||
-      normalized.includes('sit');
+      normalized.includes('transporter');
 
-    if (wantsChair) {
+    const inspectsWorkshopChair =
+      mentionsWorkshopChair &&
+      (normalized.startsWith('inspect') ||
+        normalized.startsWith('examine') ||
+        normalized.startsWith('look'));
+
+    const activatesWorkshopChair =
+      mentionsWorkshopChair &&
+      (normalized.startsWith('sit') ||
+        normalized.startsWith('use') ||
+        normalized.startsWith('activate'));
+
+    if (inspectsWorkshopChair && !activatesWorkshopChair) {
+      return {
+        messages: [
+          {
+            text:
+              'The workshop chair looks plain only in the way a trapdoor looks like flooring. Its arm panel is warm, live, and waiting for the one command chairs traditionally fear most: sitting.',
+            type: 'lore',
+          },
+        ],
+      };
+    }
+
+    if (activatesWorkshopChair) {
       return {
         messages: [
           {
@@ -416,8 +486,9 @@ const handleNewYorkChainCommand = (
           },
         ],
         updates: {
-          currentRoomId: 'ancientsroom',
+          ...roomTransitionUpdate(gameState, 'ancientsroom'),
           flags: {
+            ...getExistingFlags(gameState),
             alveira_workshop_chair_used: true,
             off_world_route_opened: true,
           },
@@ -434,7 +505,7 @@ const handleNewYorkChainCommand = (
       if (!hasAnyFlag(gameState, 'warehouse_passcode_known', 'chef_instructions_received')) {
         return {
           messages: [{ text: 'Albie listens, waits, and then points back toward Central Park with the professional courtesy of a man returning misdelivered post. “No passcode, no warehouse.”', type: 'system' }],
-          updates: { currentRoomId: 'centralpark' } as Partial<LocalGameState>,
+          updates: roomTransitionUpdate(gameState, 'centralpark'),
         };
       }
 
@@ -444,7 +515,7 @@ const handleNewYorkChainCommand = (
 
       return {
         messages: [{ text: '“AEVIRA,” you say. Albie studies you for a long second, then steps aside. “Briefcase is on the table. Open it, and the city will know what to do next.”', type: 'system' }],
-        updates: mergeBooleanFlagUpdates('warehouse_access_granted', 'albie_passcode_accepted', 'briefcase_puzzle_active'),
+        updates: mergeBooleanFlagUpdates(gameState, 'warehouse_access_granted', 'albie_passcode_accepted', 'briefcase_puzzle_active'),
       };
     }
 
@@ -455,7 +526,7 @@ const handleNewYorkChainCommand = (
 
       return {
         messages: [{ text: 'The briefcase lock gives way with a precise, expensive click. Somewhere back in Central Park, two routes quietly become official: down to the hidden Alveira Workshop, and onward to Manhattan Hub.', type: 'system' }],
-        updates: mergeBooleanFlagUpdates('briefcase_puzzle_solved', 'briefcase_opened', 'alveira_workshop_unlocked', 'new_york_hub_unlocked'),
+        updates: mergeBooleanFlagUpdates(gameState, 'briefcase_puzzle_solved', 'briefcase_opened', 'alveira_workshop_unlocked', 'new_york_hub_unlocked'),
       };
     }
   }

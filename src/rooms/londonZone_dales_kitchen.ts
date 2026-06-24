@@ -24,7 +24,7 @@ type VisualSceneRoom = Room & {
 const dalesKitchen = {
   id: 'dales_kitchen',
   title: "Dale's Kitchen",
-  zone: 'london',
+  zone: 'londonZone',
   RoomDefinition: 'standard',
   description:
     "Dale's kitchen is compact, practical, and faintly over-qualified for toast. Clean counters, a kettle, stacked mugs, and a fridge covered in small reminders make it feel lived-in without being careless. It is the kind of room where serious plans are accidentally made while waiting for water to boil.",

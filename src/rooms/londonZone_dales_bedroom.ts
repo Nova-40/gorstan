@@ -24,7 +24,7 @@ type VisualSceneRoom = Room & {
 const dalesBedroom = {
   id: 'dales_bedroom',
   title: "Dale's Bedroom",
-  zone: 'london',
+  zone: 'londonZone',
   RoomDefinition: 'standard',
   description:
     "Dale's bedroom is quiet, tidy in the way rooms become tidy when someone has decided not to disturb them too much. A bed is made with careful corners, a small bedside table holds ordinary domestic archaeology, and the wardrobe door sits just slightly ajar. There is a softness here that does not ask to be noticed, which naturally makes it impossible to ignore.",
