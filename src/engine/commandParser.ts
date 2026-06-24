@@ -198,6 +198,73 @@ const describeRoomTarget = (target: string, currentRoom: Room): TerminalMessage[
 /**
  * Parses and processes player commands
  */
+
+
+const getBooleanFlag = (gameState: any, flagName: string): boolean =>
+  Boolean(gameState?.flags?.[flagName] ?? gameState?.gameFlags?.[flagName] ?? gameState?.[flagName]);
+
+const setBooleanFlagUpdate = (flagName: string): Partial<LocalGameState> =>
+  ({
+    flags: {
+      [flagName]: true,
+    },
+  }) as Partial<LocalGameState>;
+
+const handleCafeOfficeChairCommand = (
+  input: string,
+  currentRoom: Room,
+  gameState: LocalGameState
+): CommandResult | null => {
+  const normalized = input.trim().toLowerCase().replace(/\s+/g, ' ');
+
+  if (currentRoom?.id !== 'cafeoffice') {
+    return null;
+  }
+
+  const mentionsChair =
+    normalized.includes('chair') ||
+    normalized.includes('office chair') ||
+    normalized.includes('seat');
+
+  const chairVerb =
+    normalized.startsWith('sit') ||
+    normalized.startsWith('use') ||
+    normalized.startsWith('inspect') ||
+    normalized.startsWith('examine') ||
+    normalized.startsWith('look at') ||
+    normalized.startsWith('look');
+
+  if (!mentionsChair || !chairVerb) {
+    return null;
+  }
+
+  const hasSatBefore = getBooleanFlag(gameState, 'cafe_office_chair_sat_once');
+
+  if (!hasSatBefore) {
+    return {
+      messages: [
+        {
+          text:
+            'It is a comfortable office chair. There is a strange vibration through it, and it feels warm — not warm like someone was just sitting here, warm like some sort of high-tech gadget pretending not to be.',
+          type: 'system',
+        },
+      ],
+      updates: setBooleanFlagUpdate('cafe_office_chair_sat_once'),
+    };
+  }
+
+  return {
+    messages: [
+      {
+        text:
+          'You sit in the office chair again. The vibration recognises the repetition with bureaucratic satisfaction. Something inside the chair wakes up, but it is clearly waiting for its destination logic to be wired before doing anything rash.',
+        type: 'system',
+      },
+    ],
+    updates: setBooleanFlagUpdate('cafe_office_chair_ready'),
+  };
+};
+
 export function processCommand({
   input,
   currentRoom,
@@ -211,6 +278,11 @@ export function processCommand({
   }
 
   const resolvedInput = normalizeCommandInput(input);
+  const cafeOfficeChairResult = handleCafeOfficeChairCommand(resolvedInput, currentRoom, gameState);
+  if (cafeOfficeChairResult) {
+    return cafeOfficeChairResult;
+  }
+
   const commandParts = resolvedInput.split(' ');
   const verb = commandParts[0];
   const noun = commandParts.slice(1).join(' ');

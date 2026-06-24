@@ -48,6 +48,8 @@ import controlroom from './introZone_controlroom';
 import crossing from './introZone_crossing';
 
 import dalesapartment from './londonZone_dalesapartment';
+import dalesBedroom from './londonZone_dales_bedroom';
+import dalesKitchen from './londonZone_dales_kitchen';
 
 import datavoid from './glitchZone_datavoid';
 
@@ -204,6 +206,8 @@ const roomRegistry = {
   libraryofnine,
   cafeoffice,
   dalesapartment,
+  dalesBedroom,
+  dalesKitchen,
   findlaters,
   findlaterscornercoffeeshop,
   londonhub,

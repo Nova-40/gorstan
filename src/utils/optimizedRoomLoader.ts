@@ -81,6 +81,8 @@ const lazyRoomRegistry: LazyRoomRegistry = {
   // London Zone - lazy loaded
   cafeoffice: () => import('../rooms/londonZone_cafeoffice').then((m) => m.default),
   dalesapartment: () => import('../rooms/londonZone_dalesapartment').then((m) => m.default),
+  dales_bedroom: () => import('../rooms/londonZone_dales_bedroom').then((m) => m.default),
+  dales_kitchen: () => import('../rooms/londonZone_dales_kitchen').then((m) => m.default),
   findlaters: () => import('../rooms/londonZone_findlaters').then((m) => m.default),
   findlaterscornercoffeeshop: () =>
     import('../rooms/londonZone_findlaterscornercoffeeshop').then((m) => m.default),

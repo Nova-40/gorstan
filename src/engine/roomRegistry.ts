@@ -51,6 +51,8 @@ import latticespire from '../rooms/latticeZone_latticespire';
 import libraryofnine from '../rooms/latticeZone_libraryofnine';
 import cafeoffice from '../rooms/londonZone_cafeoffice';
 import dalesapartment from '../rooms/londonZone_dalesapartment';
+import dalesBedroom from '../rooms/londonZone_dales_bedroom';
+import dalesKitchen from '../rooms/londonZone_dales_kitchen';
 import findlaters from '../rooms/londonZone_findlaters';
 import findlaterscornercoffeeshop from '../rooms/londonZone_findlaterscornercoffeeshop';
 import londonhub from '../rooms/londonZone_londonhub';
@@ -126,6 +128,8 @@ export const roomRegistry: Record<string, Room> = {
   [libraryofnine.id]: libraryofnine,
   [cafeoffice.id]: cafeoffice,
   [dalesapartment.id]: dalesapartment,
+  [dalesBedroom.id]: dalesBedroom,
+  [dalesKitchen.id]: dalesKitchen,
   [findlaters.id]: findlaters,
   [findlaterscornercoffeeshop.id]: findlaterscornercoffeeshop,
   [londonhub.id]: londonhub,
