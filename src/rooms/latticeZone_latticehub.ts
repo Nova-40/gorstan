@@ -29,7 +29,7 @@ const latticehub: Room = {
     "As you enter, the chamber's defenses activate - but something extraordinary happens. The lethal energy barriers flicker and fade, the guardian constructs power down, and the quantum locks disengage with soft chimes of recognition.",
     'A melodic voice echoes through the chamber: "Welcome home, Architect. The Lattice recognizes your essence. The long plan nears completion." The room treats you not as an intruder, but as its rightful inheritor.',
   ],
-  image: 'latticehub.png',
+  image: 'lattice_hub.png',
   ambientAudio: 'quantum_lattice_core.mp3',
 
   consoleIntro: [

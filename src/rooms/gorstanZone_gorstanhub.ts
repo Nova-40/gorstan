@@ -28,7 +28,7 @@ const gorstanhub: Room = {
     'Stalls line the square, offering everything from enchanted trinkets to steaming mugs of spiced tea. At the center stands a grand fountain, its waters shimmering with faint magical energy.',
     'Paths branch out in all directions, each promising adventure, secrets, or perhaps a way home.',
   ],
-  image: 'gorstanZone_gorstanhub.png',
+  image: 'gorstan_hub.png',
   ambientAudio: 'market_square.mp3',
 
   consoleIntro: [

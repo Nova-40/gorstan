@@ -29,7 +29,7 @@ const glitchinguniverse: Room = {
     'Occasionally, you glimpse echoes of familiar places—rooms, faces, memories—before they dissolve into static. The only constant is the overwhelming sense that reality is on the verge of collapse.',
     'A swirling vortex pulses at the center of this realm, drawing in debris and stray code from broken worlds. It might be your only way out, but it radiates instability and danger.',
   ],
-  image: 'glitchZone_glitchinguniverse.png',
+  image: 'glitch_hub.png',
   ambientAudio: 'glitch_maelstrom.mp3',
 
   consoleIntro: [

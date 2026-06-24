@@ -29,7 +29,7 @@ const introreset: Room = {
     'Mounted on the far wall is a large, bright blue button enclosed in a protective transparent case. Whatever you do, do not press it. The psychic paper next to it flickers with warnings that seem oddly personal. It feels as though the button is aware of you. Above it, a sign made of what appears to be psychic paper shifts and changes, always displaying text in whatever language you can read.',
     'The air itself feels thick with potential, as if this place exists at the intersection of multiple realities. You can sense that choices made here will have far-reaching consequences.',
   ],
-  image: 'introZone_resetroom.png',
+  image: 'introzone_introreset.png',
   ambientAudio: 'dimensional_distortion.mp3',
 
   consoleIntro: [

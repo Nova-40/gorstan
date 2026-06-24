@@ -29,7 +29,7 @@ const latticespire: Room = {
     'A spiral ramp winds upward, offering a dizzying view of the lattice network below.',
     'At the summit, a control node glows with immense power, humming with the resonance of the entire zone.',
   ],
-  image: 'latticeZone_hub.png',
+  image: 'lattice_hub.png',
   ambientAudio: 'spire_resonance.mp3',
 
   consoleIntro: [

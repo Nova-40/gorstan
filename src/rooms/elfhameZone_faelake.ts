@@ -29,7 +29,7 @@ const faelake: Room = {
     'Ancient willows drape their branches into the water, their leaves rustling with whispers of secrets from across the dimensions. The air here is cool and filled with the scent of night-blooming flowers and distant rain.',
     'This is a place of deep magic and profound peace. You sense that the lake serves as a window between worlds, and that its depths hold mysteries beyond mortal comprehension.',
   ],
-  image: 'elfhameZone_faelake.png',
+  image: 'elhame_lake.png',
   ambientAudio: 'fae_lake_ambience.mp3',
 
   consoleIntro: [

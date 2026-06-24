@@ -199,7 +199,7 @@ The active registered room list is sourced from `src/rooms/roomRegistry.ts`. The
 ### faeglade — The Faerie Glade / Elfhame forest shrine candidate
 
 - Source room file: `src/rooms/elfhameZone_faeglade.ts`
-- Current/proposed image: `elfhameZone_faeglade.png`
+- Current/proposed image: `elfhame_woods.png`
 - Background image description: Circular moonlit clearing beneath ancient oaks forming a natural cathedral. Standing stones create a shrine-like ring, with impossible flowers and soft Fae light. No Fae figures baked into the image.
 - Background must not include: Fae characters, removable magical items, readable script.
 - Fixed background features: ancient oaks, standing stones, clearing floor, directional paths, moonlit canopy.

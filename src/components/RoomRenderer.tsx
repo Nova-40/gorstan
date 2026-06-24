@@ -65,6 +65,12 @@ type RoomHotspot = {
   visible?: boolean;
 };
 
+type VisualSceneMetadata = {
+  id?: string;
+  ambient?: 'cafe-warmth' | 'apartment-light' | string;
+  testId?: string;
+};
+
 type NormalizedRoomHotspot = {
   id: string;
   label: string;
@@ -100,15 +106,15 @@ const normalizeHotspot = (hotspot: unknown, index: number): NormalizedRoomHotspo
   };
 };
 
-const cafeAmbientCss = `
-  .gorstan-cafe-ambient {
+const visualSceneCss = `
+  .visual-scene-ambient {
     pointer-events: none;
     position: absolute;
     inset: 0;
     overflow: hidden;
   }
 
-  .gorstan-cafe-ambient::before {
+  .visual-scene-ambient::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -119,7 +125,14 @@ const cafeAmbientCss = `
     opacity: 0.72;
   }
 
-  .gorstan-cafe-ambient::after {
+  .visual-scene-ambient--apartment-light::before {
+    background:
+      radial-gradient(circle at 76% 18%, rgba(210, 235, 255, 0.22), transparent 26%),
+      linear-gradient(108deg, transparent 0%, rgba(245, 250, 255, 0.14) 38%, transparent 66%);
+    opacity: 0.62;
+  }
+
+  .visual-scene-ambient::after {
     content: '';
     position: absolute;
     left: 55%;
@@ -129,17 +142,17 @@ const cafeAmbientCss = `
     border-radius: 9999px;
     background: radial-gradient(circle, rgba(255,255,255,0.25), transparent 62%);
     filter: blur(13px);
-    animation: gorstan-cafe-steam 4.8s ease-in-out infinite;
+    animation: visual-scene-cafe-steam 4.8s ease-in-out infinite;
   }
 
-  @keyframes gorstan-cafe-steam {
+  @keyframes visual-scene-cafe-steam {
     0% { opacity: 0.08; transform: translate3d(-10%, 14%, 0) scale(0.82); }
     50% { opacity: 0.24; transform: translate3d(0, -8%, 0) scale(1.04); }
     100% { opacity: 0.08; transform: translate3d(10%, -26%, 0) scale(1.2); }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .gorstan-cafe-ambient::after {
+    .visual-scene-ambient::after {
       animation: none;
       opacity: 0.12;
       transform: translate3d(0, 0, 0);
@@ -227,7 +240,10 @@ const RoomRenderer: React.FC = () => {
   }
 
   const roomData = room as any;
-  const isCafeVisualSlice = room.id === 'findlaterscornercoffeeshop';
+  const visualScene = roomData.visualScene as VisualSceneMetadata | undefined;
+  const visualSceneId = visualScene?.id;
+  const visualSceneAmbient = visualScene?.ambient;
+  const visualSceneTestId = visualScene?.testId || (visualSceneId ? `${visualSceneId}-ambient` : undefined);
   const roomImageSrc = room.image
     ? room.image.startsWith('/')
       ? room.image
@@ -266,11 +282,11 @@ const RoomRenderer: React.FC = () => {
   // JSX return block or main return
   return (
     <div className="room-container flex flex-col h-full bg-black rounded-lg shadow-inner overflow-hidden border border-green-600">
-      {isCafeVisualSlice && <style>{cafeAmbientCss}</style>}
+      {visualSceneAmbient && <style>{visualSceneCss}</style>}
       {room.image ? (
         <div
           className="room-image-wrapper relative h-full w-full overflow-hidden"
-          data-visual-scene={isCafeVisualSlice ? 'gorstan-cafe-vertical-slice' : undefined}
+          data-visual-scene={visualSceneId}
         >
           <img
             src={roomImageSrc}
@@ -282,10 +298,10 @@ const RoomRenderer: React.FC = () => {
             }}
           />
 
-          {isCafeVisualSlice && (
+          {visualSceneAmbient && (
             <div
-              className="gorstan-cafe-ambient"
-              data-testid="gorstan-cafe-ambient"
+              className={`visual-scene-ambient visual-scene-ambient--${visualSceneAmbient}`}
+              data-testid={visualSceneTestId}
               aria-hidden="true"
             />
           )}

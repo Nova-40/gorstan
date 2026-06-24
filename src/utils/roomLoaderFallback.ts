@@ -75,7 +75,7 @@ const emergencyRooms: Record<string, Room> = {
     title: 'Gorstan Hub',
     description:
       'The central hub of Gorstan, a mystical realm of ancient power. Mist swirls around stone archways leading to various parts of this magical land.',
-    image: 'gorstanZone_gorstanhub.png',
+    image: 'gorstan_hub.png',
     zone: 'gorstanZone',
     flags: {} as any,
     exits: {
