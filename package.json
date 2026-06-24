@@ -101,7 +101,7 @@
     "test-exclude": "^7.0.1"
   },
   "engines": {
-    "node": "20.x"
+    "node": "24.x"
   },
   "author": "Geoff Webster",
   "license": "All Rights Reserved"
