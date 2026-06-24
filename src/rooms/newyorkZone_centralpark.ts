@@ -69,6 +69,16 @@ const centralpark: Room = {
       command: 'go south',
       description: 'Head toward Manhattan Hub once access is unlocked.',
     },
+    {
+      id: 'alveira-workshop-route',
+      x: 24,
+      y: 68,
+      width: 16,
+      height: 18,
+      label: 'Hidden Workshop',
+      command: 'go down',
+      description: 'Find the concealed route down to the hidden Alveira Workshop.',
+    },
   ],
 
   consoleIntro: [
@@ -86,7 +96,6 @@ const centralpark: Room = {
 
   exits: {
     west: 'burgerjoint',
-    south: 'manhattanhub',
 
     portal: 'stkatherinesdock',
   },

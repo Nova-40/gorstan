@@ -18,6 +18,7 @@
 // Renders room descriptions and image logic.
 
 import aevirawarehouse from './newyorkZone_aevirawarehouse';
+import alveiraworkshop from './newyorkZone_alveiraworkshop';
 
 import ancientslibrary from './offgorstanZone_ancientslibrary';
 
@@ -229,6 +230,7 @@ const roomRegistry = {
   windingpath,
   liminalhub,
   aevirawarehouse,
+  alveiraworkshop,
   burgerjoint,
   centralpark,
   greasystoreroom,

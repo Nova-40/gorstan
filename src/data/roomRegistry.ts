@@ -74,6 +74,7 @@ import storagechamber from '../rooms/mazeZone_storagechamber';
 import windingpath from '../rooms/mazeZone_windingpath';
 import liminalhub from '../rooms/multiZone_liminalhub';
 import aevirawarehouse from '../rooms/newyorkZone_aevirawarehouse';
+import alveiraworkshop from '../rooms/newyorkZone_alveiraworkshop';
 import burgerjoint from '../rooms/newyorkZone_burgerjoint';
 import centralpark from '../rooms/newyorkZone_centralpark';
 import greasystoreroom from '../rooms/newyorkZone_greasystoreroom';
@@ -151,6 +152,7 @@ export const roomRegistry: Record<string, Room> = {
   [windingpath.id]: windingpath,
   [liminalhub.id]: liminalhub,
   [aevirawarehouse.id]: aevirawarehouse,
+  [alveiraworkshop.id]: alveiraworkshop,
   [burgerjoint.id]: burgerjoint,
   [centralpark.id]: centralpark,
   [greasystoreroom.id]: greasystoreroom,

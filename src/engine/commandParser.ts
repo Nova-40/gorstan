@@ -349,10 +349,80 @@ const handleNewYorkChainCommand = (
       };
     }
 
+    const wantsWorkshop =
+      normalized === 'go down' ||
+      normalized === 'go workshop' ||
+      normalized.includes('alveira workshop') ||
+      normalized.includes('hidden workshop');
+
+    if (wantsWorkshop) {
+      if (!hasAnyFlag(gameState, 'alveira_workshop_unlocked', 'briefcase_puzzle_solved')) {
+        return {
+          messages: [
+            {
+              text:
+                'The park remains stubbornly ordinary. No concealed workshop route presents itself yet, which is either reassuring or very poor customer service.',
+              type: 'system',
+            },
+          ],
+        };
+      }
+
+      return {
+        messages: [
+          {
+            text:
+              'A maintenance stair that was definitely not there before resolves beneath the trees. You descend into the hidden Alveira Workshop.',
+            type: 'system',
+          },
+        ],
+        updates: { currentRoomId: 'alveiraworkshop' } as Partial<LocalGameState>,
+      };
+    }
+
     const wantsHub = normalized === 'go south' || normalized.includes('new york hub') || normalized.includes('manhattan hub') || normalized.includes('manhattanhub');
 
-    if (wantsHub && !hasAnyFlag(gameState, 'briefcase_puzzle_solved', 'new_york_hub_unlocked')) {
-      return { messages: [{ text: 'The route toward the New York Hub refuses to become definite. Apparently Manhattan now requires a briefcase-based precondition. Typical.', type: 'system' }] };
+    if (wantsHub) {
+      if (!hasAnyFlag(gameState, 'briefcase_puzzle_solved', 'new_york_hub_unlocked')) {
+        return { messages: [{ text: 'The route toward the New York Hub refuses to become definite. Apparently Manhattan now requires a briefcase-based precondition. Typical.', type: 'system' }] };
+      }
+
+      return {
+        messages: [
+          {
+            text:
+              'The city folds its transit logic into something more useful. The route to Manhattan Hub is now open.',
+            type: 'system',
+          },
+        ],
+        updates: { currentRoomId: 'manhattanhub' } as Partial<LocalGameState>,
+      };
+    }
+  }
+
+  if (roomId === 'alveiraworkshop') {
+    const wantsChair =
+      normalized.includes('chair') ||
+      normalized.includes('transporter') ||
+      normalized.includes('sit');
+
+    if (wantsChair) {
+      return {
+        messages: [
+          {
+            text:
+              'You sit in the workshop chair. The relays click with professional satisfaction, the room folds inward, and the chair deposits you in the Ancients’ Room with only a mild sense of administrative judgement.',
+            type: 'system',
+          },
+        ],
+        updates: {
+          currentRoomId: 'ancientsroom',
+          flags: {
+            alveira_workshop_chair_used: true,
+            off_world_route_opened: true,
+          },
+        } as Partial<LocalGameState>,
+      };
     }
   }
 
