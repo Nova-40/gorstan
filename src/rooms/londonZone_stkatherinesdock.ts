@@ -30,7 +30,7 @@ const stkatherinesdock: Room = {
     "The portal pulses gently with an otherworldly light, casting dancing reflections on the Thames water below. Despite its obviously supernatural nature, the few people nearby seem oblivious to its presence, walking past as if it simply isn't there.",
     "The portal hovers at just the right height - you could step through it carefully, or if you're feeling adventurous, take a running jump right through the dimensional gateway.",
   ],
-  image: 'londonZone_stkatherinesdock.png',
+  image: 'londonzone_stkatherinesdock.png',
   ambientAudio: 'dock_ambience_with_portal.mp3',
 
   consoleIntro: [

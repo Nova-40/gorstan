@@ -28,7 +28,7 @@ const mazehub: Room = {
     'The walls here are marked with faded symbols, and the floor is worn smooth by countless footsteps.',
     "A faint breeze stirs the air, carrying distant echoes from the maze's winding corridors.",
   ],
-  image: 'mazeZone_mazehub.png',
+  image: 'maze_hub.png',
   ambientAudio: 'maze_hub_ambience.mp3',
 
   consoleIntro: [

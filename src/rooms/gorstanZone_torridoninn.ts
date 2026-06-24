@@ -28,7 +28,7 @@ const torridoninn: Room = {
     'A roaring fire crackles in the hearth, and the sound of laughter and clinking mugs echoes through the common room.',
     'Wooden beams overhead are hung with dried herbs, and a friendly innkeeper greets you from behind the bar.',
   ],
-  image: 'gorstanZone_torridoninn.png',
+  image: 'gorstan_torridon_inn.png',
   ambientAudio: 'inn_ambience.mp3',
 
   consoleIntro: [

@@ -29,7 +29,7 @@ const faelakenorthshore: Room = {
     'The air here carries the scent of water lilies and distant spices, mixed with the ozone-like smell of concentrated magic. Butterflies with wings like stained glass flutter between the flowering bushes that line the path.',
     'This feels like a place of transition - between the wild magic of the lake and the more ordered power of the palace above. The very stones seem to hum with anticipation.',
   ],
-  image: 'elfhameZone_faelakenorthshore.png',
+  image: 'elhame_lake.png',
   ambientAudio: 'fae_shore_ambience.mp3',
 
   consoleIntro: [

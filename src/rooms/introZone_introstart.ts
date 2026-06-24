@@ -29,7 +29,7 @@ const introstart: Room = {
     "The shadows here are deeper than they should be, and you can't shake the feeling that you're being watched. Shapes seem to move at the edge of your vision, but when you turn to look, there's nothing there.",
     'This place feels like the echo of something significant - a moment frozen in time where reality itself might have shifted. The very air hums with residual energy from some cosmic event.',
   ],
-  image: 'introZone_introreset.png',
+  image: 'introzone_introreset.png',
   ambientAudio: 'eerie_silence.mp3',
 
   consoleIntro: [

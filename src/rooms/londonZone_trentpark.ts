@@ -29,7 +29,7 @@ const trentpark: Room = {
     'In the center of a small grove stands a single wooden chair, weathered but sturdy, placed with deliberate intention. Around its base, carved into the earth itself, are symbols and runes that seem to pulse with an otherworldly energy.',
     'The sensation of being watched is almost overwhelming here. Eyes seem to track your every movement from the shadows between the trees, though you can never quite spot the watchers themselves.',
   ],
-  image: 'londonZone_trentpark.png',
+  image: 'londonzone_trentpark.png',
   ambientAudio: 'park_ambience_with_mystery.mp3',
 
   consoleIntro: [

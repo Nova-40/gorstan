@@ -28,7 +28,7 @@ const carronspire: Room = {
     'Wind howls around the spire, carrying whispers of forgotten legends. The ground is littered with fragments of old banners and the remains of long-extinct flora.',
     'A narrow, spiraling staircase winds up the outside of the spire, vanishing into the mist above. At the base, a weathered plaque hints at secrets hidden within.',
   ],
-  image: 'gorstanZone_carronspire.png',
+  image: 'gorstan_carronspire.png',
   ambientAudio: 'windy_peak.mp3',
 
   consoleIntro: [

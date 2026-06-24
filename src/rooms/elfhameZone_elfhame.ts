@@ -29,7 +29,7 @@ const elfhame: Room = {
     'The very air thrums with power, and you sense that this place exists outside the normal flow of time. Everything here feels both ancient beyond measure and eternally young.',
     'In the distance, you can glimpse the spires of a magnificent palace rising above the treeline, its crystalline walls catching and reflecting the eternal sunset that bathes this realm.',
   ],
-  image: 'elfhameZone_elfhame.png',
+  image: 'elfhame_hub.png',
   ambientAudio: 'fae_realm_ambience.mp3',
 
   consoleIntro: [

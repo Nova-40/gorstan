@@ -29,7 +29,7 @@ const faeglade: Room = {
     'Flowers of impossible colors bloom in abundance here - deep purples that seem to contain starlight, blues that shift like deep ocean waters, and golds that pulse with inner fire. Their fragrance carries hints of distant places and forgotten dreams.',
     'This is clearly a place of great significance to the Fae, a nexus where their magic flows strongest. You can feel the weight of countless years and the presence of ancient powers.',
   ],
-  image: 'elfhameZone_faeglade.png',
+  image: 'elfhame_woods.png',
   ambientAudio: 'faerie_glade_ambience.mp3',
 
   consoleIntro: [

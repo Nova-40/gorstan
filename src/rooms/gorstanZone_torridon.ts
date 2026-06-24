@@ -28,7 +28,7 @@ const torridon: Room = {
     'A narrow path leads toward the heart of the settlement, while another winds off into the misty highlands.',
     'Travelers and traders pass by, exchanging news and goods. The area feels both welcoming and full of untold stories.',
   ],
-  image: 'gorstanZone_torridon.png',
+  image: 'gorstan_torridon.png',
   ambientAudio: 'windy_fields.mp3',
 
   consoleIntro: [
