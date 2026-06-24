@@ -29,8 +29,57 @@ const burgerjoint: Room = {
     'Behind the counter, menu boards display simple offerings - burgers, fries, sodas, and not much else. This is the kind of place that does one thing and does it perfectly.',
     "The chef looks up as you enter, wiping his hands on his apron. He has the weathered look of someone who's seen it all, but his eyes hold a sharpness that suggests there's more to this place than meets the eye.",
   ],
-  image: 'newyorkZone_burgerjoint.png',
+  image: 'newyork_burger_joint.png',
   ambientAudio: 'burger_joint_ambience.mp3',
+
+  visualScene: {
+    id: 'burger-joint-visual-slice',
+    ambient: 'burger-warmth',
+    testId: 'burger-joint-visual-scene',
+  },
+
+  clickHotspots: [
+    {
+      id: 'chef',
+      x: 55,
+      y: 28,
+      width: 18,
+      height: 34,
+      label: 'Chef',
+      command: 'speak chef',
+      description: 'Talk to the chef behind the counter.',
+    },
+    {
+      id: 'ask-chef-instructions',
+      x: 73,
+      y: 32,
+      width: 16,
+      height: 30,
+      label: 'Instructions',
+      command: 'speak chef instructions',
+      description: 'Ask the chef whether he has instructions.',
+    },
+    {
+      id: 'storeroom-door',
+      x: 83,
+      y: 30,
+      width: 12,
+      height: 42,
+      label: 'Store Room',
+      command: 'go storeroom',
+      description: 'Try the greasy store room door.',
+    },
+    {
+      id: 'central-park-exit',
+      x: 3,
+      y: 38,
+      width: 14,
+      height: 32,
+      label: 'Central Park',
+      command: 'go east',
+      description: 'Return east to Central Park.',
+    },
+  ],
 
   consoleIntro: [
     '>> 233 BLEECKER STREET - NEIGHBORHOOD BURGER JOINT',
@@ -48,7 +97,7 @@ const burgerjoint: Room = {
   exits: {
     east: 'centralpark',
 
-    storeroom: 'burgerjoint_storeroom',
+    storeroom: 'greasystoreroom',
   },
 
   items: ['burger_menu', 'napkin_dispenser', 'salt_and_pepper', 'hot_sauce_bottles'],

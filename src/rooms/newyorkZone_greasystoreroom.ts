@@ -29,8 +29,47 @@ const greasystoreroom: Room = {
     "Despite the greasy atmosphere, Chef Tony clearly keeps this space organized and functional. He's made it clear that anything here is yours to take if you need it.",
     'Your eye is drawn to several items scattered on the floor near the back - they seem oddly out of place in a restaurant storage room.',
   ],
-  image: 'newyorkZone_storeroom.png',
+  image: 'newyork_greasystoreroom.png',
   ambientAudio: 'storeroom_ambience.mp3',
+
+  visualScene: {
+    id: 'greasy-store-room-visual-slice',
+    ambient: 'greasy-storage',
+    testId: 'greasy-store-room-visual-scene',
+  },
+
+  clickHotspots: [
+    {
+      id: 'burger-joint-exit',
+      x: 5,
+      y: 34,
+      width: 14,
+      height: 36,
+      label: 'Burger Joint',
+      command: 'go north',
+      description: 'Return to the burger joint.',
+    },
+    {
+      id: 'greasy-napkin',
+      x: 44,
+      y: 62,
+      width: 14,
+      height: 12,
+      label: 'Greasy Napkin',
+      command: 'inspect greasy_napkin_with_plans',
+      description: 'Inspect the greasy napkin with plans.',
+    },
+    {
+      id: 'gold-coin',
+      x: 61,
+      y: 65,
+      width: 10,
+      height: 10,
+      label: 'Gold Coin',
+      command: 'inspect gold_coin',
+      description: 'Inspect the gold coin.',
+    },
+  ],
 
   consoleIntro: [
     '>> BURGER JOINT STOREROOM - STORAGE AND SUPPLY AREA',
