@@ -306,7 +306,7 @@ const RoomRenderer: React.FC = () => {
             />
           )}
 
-          {roomHotspots.map((hotspot) => (
+          {roomHotspots.map((hotspot: any) => (
             <button
               key={hotspot.id}
               type="button"

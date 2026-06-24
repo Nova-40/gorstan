@@ -59,14 +59,14 @@ const dalesapartment: DaleRoom = {
 
   visualScene: {
     id: 'dales-apartment-visual-slice',
-    backgroundImage: 'londonzone_dalesapartment.png',
-    altText: "Dale's Apartment living room visual scene",
-    ambientLayer: 'domestic-apartment',
+    ambient: 'domestic-apartment',
+    testId: 'dales-apartment-visual-scene',
   },
 
   clickHotspots: [
     {
       id: 'findlaters-cafe',
+      description: "Return north to Findlater's Corner Coffee Shop.",
       label: "Findlater's Café",
       command: 'go north',
       x: 42,
@@ -76,6 +76,7 @@ const dalesapartment: DaleRoom = {
     },
     {
       id: 'bedroom',
+      description: "Go through to Dale's bedroom.",
       label: 'Bedroom',
       command: 'go bedroom',
       x: 7,
@@ -85,6 +86,7 @@ const dalesapartment: DaleRoom = {
     },
     {
       id: 'kitchen',
+      description: "Go through to Dale's kitchen.",
       label: 'Kitchen',
       command: 'go kitchen',
       x: 78,
@@ -94,6 +96,7 @@ const dalesapartment: DaleRoom = {
     },
     {
       id: 'fish-tank',
+      description: 'Examine Dominic’s aquarium.',
       label: 'Fish Tank',
       command: 'examine fish_tank',
       x: 62,
@@ -103,6 +106,7 @@ const dalesapartment: DaleRoom = {
     },
     {
       id: 'dominic',
+      description: 'Examine Dominic the goldfish.',
       label: 'Dominic',
       command: 'examine dominic_goldfish',
       x: 66,
@@ -112,6 +116,7 @@ const dalesapartment: DaleRoom = {
     },
     {
       id: 'living-room-sofa',
+      description: 'Examine the modern sofa.',
       label: 'Sofa',
       command: 'examine living_room_sofa',
       x: 26,
@@ -121,6 +126,7 @@ const dalesapartment: DaleRoom = {
     },
     {
       id: 'coffee-table',
+      description: 'Examine the coffee table.',
       label: 'Coffee Table',
       command: 'examine coffee_table',
       x: 43,
@@ -130,6 +136,7 @@ const dalesapartment: DaleRoom = {
     },
     {
       id: 'wall-photos',
+      description: 'Examine the photographs on the wall.',
       label: 'Wall Photos',
       command: 'examine wall_photos',
       x: 31,
@@ -138,6 +145,37 @@ const dalesapartment: DaleRoom = {
       height: 14,
     },
   ],
+
+  commandAliases: {
+    'fish tank': 'fish_tank',
+    aquarium: 'fish_tank',
+    dominic: 'dominic_goldfish',
+    goldfish: 'dominic_goldfish',
+    sofa: 'living_room_sofa',
+    couch: 'living_room_sofa',
+    table: 'coffee_table',
+    'coffee table': 'coffee_table',
+    photos: 'wall_photos',
+    photographs: 'wall_photos',
+    pictures: 'wall_photos',
+    'wall photos': 'wall_photos',
+  },
+
+  itemDescriptions: {
+    dominic:
+      'Dominic the goldfish circles the aquarium with the faint air of a creature who has seen several realities and disapproved of most of them.',
+    dominic_goldfish:
+      'Dominic the goldfish circles the aquarium with the faint air of a creature who has seen several realities and disapproved of most of them.',
+    sofa:
+      'A modern sofa, comfortable enough to suggest good intentions and slightly too many cushions.',
+    living_room_sofa:
+      'A modern sofa, comfortable enough to suggest good intentions and slightly too many cushions.',
+    photos:
+      'The photographs show small, ordinary moments from Dale’s life, arranged with more care than he would probably admit.',
+    wall_photos:
+      'The photographs show small, ordinary moments from Dale’s life, arranged with more care than he would probably admit.',
+  },
+
 
 
   consoleIntro: [
