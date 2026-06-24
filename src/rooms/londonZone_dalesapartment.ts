@@ -57,6 +57,89 @@ const dalesapartment: DaleRoom = {
   image: 'londonzone_dalesapartment.png',
   ambientAudio: 'apartment_ambience.mp3',
 
+  visualScene: {
+    id: 'dales-apartment-visual-slice',
+    backgroundImage: 'londonzone_dalesapartment.png',
+    altText: "Dale's Apartment living room visual scene",
+    ambientLayer: 'domestic-apartment',
+  },
+
+  clickHotspots: [
+    {
+      id: 'findlaters-cafe',
+      label: "Findlater's Café",
+      command: 'go north',
+      x: 42,
+      y: 8,
+      width: 16,
+      height: 16,
+    },
+    {
+      id: 'bedroom',
+      label: 'Bedroom',
+      command: 'go bedroom',
+      x: 7,
+      y: 28,
+      width: 15,
+      height: 24,
+    },
+    {
+      id: 'kitchen',
+      label: 'Kitchen',
+      command: 'go kitchen',
+      x: 78,
+      y: 26,
+      width: 15,
+      height: 24,
+    },
+    {
+      id: 'fish-tank',
+      label: 'Fish Tank',
+      command: 'examine fish_tank',
+      x: 62,
+      y: 42,
+      width: 14,
+      height: 15,
+    },
+    {
+      id: 'dominic',
+      label: 'Dominic',
+      command: 'examine dominic_goldfish',
+      x: 66,
+      y: 45,
+      width: 7,
+      height: 7,
+    },
+    {
+      id: 'living-room-sofa',
+      label: 'Sofa',
+      command: 'examine living_room_sofa',
+      x: 26,
+      y: 58,
+      width: 27,
+      height: 19,
+    },
+    {
+      id: 'coffee-table',
+      label: 'Coffee Table',
+      command: 'examine coffee_table',
+      x: 43,
+      y: 68,
+      width: 18,
+      height: 11,
+    },
+    {
+      id: 'wall-photos',
+      label: 'Wall Photos',
+      command: 'examine wall_photos',
+      x: 31,
+      y: 18,
+      width: 22,
+      height: 14,
+    },
+  ],
+
+
   consoleIntro: [
     ">> RESIDENTIAL APARTMENT - DALE & POLLY'S HOME",
     '>> Security status: PRIVATE RESIDENCE - Unauthorized access detected',
@@ -88,6 +171,24 @@ const dalesapartment: DaleRoom = {
   ],
 
   interactables: {
+    dominic: {
+      description:
+        'Dominic the goldfish circles the aquarium with the faint air of a creature who has seen several realities and disapproved of most of them.',
+      actions: ['examine', 'talk_to', 'watch_swimming'],
+      requires: [],
+    },
+    sofa: {
+      description:
+        'A modern sofa, comfortable enough to suggest good intentions and slightly too many cushions.',
+      actions: ['examine'],
+      requires: [],
+    },
+    photos: {
+      description:
+        'The photographs show small, ordinary moments from Dale’s life, arranged with more care than he would probably admit.',
+      actions: ['examine'],
+      requires: [],
+    },
     fish_tank: {
       description:
         'A large, well-maintained aquarium with crystal-clear water. Dominic the goldfish swims contentedly among plastic plants and a small castle.',

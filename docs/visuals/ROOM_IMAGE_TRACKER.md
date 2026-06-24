@@ -66,40 +66,40 @@ Generated from:
 | `generated_but_not_mapped` | Caution | `Caution.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | Chef | `Chef.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | Dominic | `Dominic.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
-| `generated_but_not_mapped` | elfhameZone elfhame | `elfhameZone_elfhame.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
-| `generated_but_not_mapped` | elfhameZone faeglade | `elfhameZone_faeglade.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
-| `generated_but_not_mapped` | elfhameZone faelakenorthshore | `elfhameZone_faelakenorthshore.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
-| `generated_but_not_mapped` | elfhameZone faelake | `elfhameZone_faelake.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
+| `generated_but_not_mapped` | elfhameZone elfhame | `elfhame_hub.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
+| `generated_but_not_mapped` | elfhameZone faeglade | `elfhame_woods.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
+| `generated_but_not_mapped` | elfhameZone faelakenorthshore | `elhame_lake.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
+| `generated_but_not_mapped` | elfhameZone faelake | `elhame_lake.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | elfhameZone faepalacedungeon | `elfhameZone_faepalacedungeon.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
-| `generated_but_not_mapped` | elfhameZone faepalace | `elfhameZone_faepalace.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
+| `generated_but_not_mapped` | elfhameZone faepalace | `elfhame_palace.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | elfhameZone lucidveil | `elfhameZone_lucidveil.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | elfhameZone rhianonschamber | `elfhameZone_rhianonschamber.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | fallback | `fallback.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | genericZone surrealPlaceholder | `genericZone_surrealPlaceholder.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | glitchrealm datavoid | `glitchrealm_datavoid.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | glitchrealm glitchexit | `glitchrealm_glitchexit.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
-| `generated_but_not_mapped` | glitchrealm glitchrealmhub | `glitchrealm_glitchrealmhub.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
+| `generated_but_not_mapped` | glitchrealm glitchrealmhub | `glitch_hub.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | glitchrealm-zoneravenroom | `glitchrealm-zoneravenroom.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
-| `generated_but_not_mapped` | glitchZone glitchinguniverse | `glitchZone_glitchinguniverse.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
+| `generated_but_not_mapped` | glitchZone glitchinguniverse | `glitch_hub.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | glitchZone issuesdetected | `glitchZone_issuesdetected.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | glitchZone moreissues | `glitchZone_moreissues.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | gorstanicon | `gorstanicon.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
-| `generated_but_not_mapped` | gorstanZone carronspire | `gorstanZone_carronspire.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
+| `generated_but_not_mapped` | gorstanZone carronspire | `gorstan_carronspire.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | gorstanZone exit | `gorstanZone_exit.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
-| `generated_but_not_mapped` | gorstanZone gorstanhub | `gorstanZone_gorstanhub.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
+| `generated_but_not_mapped` | gorstanZone gorstanhub | `gorstan_hub.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | gorstanZone gorstanvillage | `gorstanZone_gorstanvillage.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | gorstanZone spare | `gorstanZone_spare.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
-| `generated_but_not_mapped` | gorstanZone torridonbefore | `gorstanZone_torridonbefore.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
-| `generated_but_not_mapped` | gorstanZone torridoninn | `gorstanZone_torridoninn.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
-| `generated_but_not_mapped` | gorstanZone torridon | `gorstanZone_torridon.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
+| `generated_but_not_mapped` | gorstanZone torridonbefore | `gorstan_torridon_ruined.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
+| `generated_but_not_mapped` | gorstanZone torridoninn | `gorstan_torridon_inn.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
+| `generated_but_not_mapped` | gorstanZone torridon | `gorstan_torridon.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | introZone crossing | `introZone_crossing.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | introZone hiddenlab | `introZone_hiddenlab.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
-| `generated_but_not_mapped` | introZone introreset | `introZone_introreset.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
+| `generated_but_not_mapped` | introZone introreset | `introzone_introreset.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | introZone introstreet1 | `introZone_introstreet1.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
-| `generated_but_not_mapped` | introZone resetroom | `introZone_resetroom.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
-| `generated_but_not_mapped` | latticehub | `latticehub.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
+| `generated_but_not_mapped` | introZone resetroom | `introzone_introreset.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
+| `generated_but_not_mapped` | latticehub | `lattice_hub.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | latticeZone hiddenlibrary | `latticeZone_hiddenlibrary.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
-| `generated_but_not_mapped` | latticeZone hub | `latticeZone_hub.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
+| `generated_but_not_mapped` | latticeZone hub | `lattice_hub.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | latticeZone latticelibrary | `latticeZone_latticelibrary.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | latticeZone lattice | `latticeZone_lattice.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | latticeZone libraryofnine | `latticeZone_libraryofnine.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
@@ -108,12 +108,12 @@ Generated from:
 | `generated_but_not_mapped` | liminalhub | `liminalhub.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | londonZone cafeoffice | `londonZone_cafeoffice.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | londonZone londonhub | `londonZone_londonhub.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
-| `generated_but_not_mapped` | londonZone stkatherinesdock | `londonZone_stkatherinesdock.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
-| `generated_but_not_mapped` | londonZone trentpark | `londonZone_trentpark.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
+| `generated_but_not_mapped` | londonZone stkatherinesdock | `londonzone_stkatherinesdock.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
+| `generated_but_not_mapped` | londonZone trentpark | `londonzone_trentpark.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | mazeZone exit | `mazeZone_exit.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | mazeZone forgottenchamber | `mazeZone_forgottenchamber.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | mazeZone introstreetclear | `mazeZone_introstreetclear.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
-| `generated_but_not_mapped` | mazeZone mazehub | `mazeZone_mazehub.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
+| `generated_but_not_mapped` | mazeZone mazehub | `maze_hub.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | mazeZone mirrorhall | `mazeZone_mirrorhall.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | mazeZone misleadchamber | `mazeZone_misleadchamber.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
 | `generated_but_not_mapped` | mazeZone pollysbay | `mazeZone_pollysbay.png` | yes | no | PNG exists in public/images but is not yet mapped in this tracker; confirm canonical room/status |
