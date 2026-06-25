@@ -96,10 +96,24 @@ export async function loadCelebrationIndex(): Promise<CelebrationIndex | null> {
 }
 
 /**
+ * Format a Date as a local YYYY-MM-DD key.
+ *
+ * Do not use toISOString() here: in UK summer time, a local midnight Date can
+ * serialise to the previous UTC date, which would make solstice/equinox and
+ * other date-bound celebrations miss by one day.
+ */
+export function toLocalDateKey(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+/**
  * Check if a date falls within a celebration span
  */
 export function isDateInSpan(date: Date, span: Span): boolean {
-  const dateStr = date.toISOString().split('T')[0]; // YYYY-MM-DD format
+  const dateStr = toLocalDateKey(date); // YYYY-MM-DD format, using local calendar date
   return dateStr >= span.start && dateStr <= span.end;
 }
 
