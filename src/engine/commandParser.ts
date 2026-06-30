@@ -885,9 +885,7 @@ export function processCommand({
         }
 
         return {
-          messages: messages.length > 0
-            ? messages
-            : [{ text: 'You search the area carefully.', type: 'system' }],
+          messages,
           updates: searchResult.updates,
         };
       }
@@ -903,11 +901,27 @@ export function processCommand({
       if (noun.includes('trap') || noun === 'trap') {
         const disarmResult = attemptDisarmTrap(currentRoom, gameState);
 
+        const legacyTrapUpdates =
+          disarmResult.updates?.flags && currentRoom.traps?.some((trap: any) => trap.id === disarmResult.trap?.id)
+            ? {
+                roomMap: {
+                  ...gameState.roomMap,
+                  [currentRoom.id]: {
+                    ...currentRoom,
+                    traps: currentRoom.traps.map((trap: any) =>
+                      trap.id === disarmResult.trap?.id ? { ...trap, triggered: true } : trap,
+                    ),
+                  },
+                },
+              }
+            : {};
+
         return {
-          messages: disarmResult.messages.length > 0
-            ? disarmResult.messages
-            : [{ text: 'There are no active traps here to disarm.', type: 'system' }],
-          updates: disarmResult.updates,
+          messages: disarmResult.messages,
+          updates: {
+            ...disarmResult.updates,
+            ...legacyTrapUpdates,
+          },
         };
       }
 
