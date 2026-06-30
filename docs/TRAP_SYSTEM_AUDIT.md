@@ -15,6 +15,7 @@ Status: active canonical authored trap path.
 Used for:
 
 - authored/static room trap metadata
+- room-entry trap warnings
 - trap detection/search
 - canonical disarm results
 - trap debug flags
@@ -24,20 +25,6 @@ Used for:
 This is the preferred path for authored room traps.
 
 ## Compatibility / legacy paths still live
-
-### `src/engine/trapDetection.ts`
-
-Status: live compatibility adapter.
-
-Reason retained:
-
-- `roomEventHandler.ts` still imports `detectTrapsOnEntry`.
-- It bridges room-entry trap warning behaviour onto `canonicalTrapEngine`.
-
-Retirement condition:
-
-- Room-entry trap handling should call `canonicalTrapEngine` directly.
-- Once that is done and tests pass, `trapDetection.ts` can be retired.
 
 ### `src/engine/trapEngine.ts`
 
@@ -65,9 +52,20 @@ Reason retained:
 Retirement condition:
 
 - Either rewire the modal/debug trap UI to the canonical adapter, or remove the modal path if it is no longer part of the active UX.
-- Do not delete while `AppCore` and `TrapManagementModal` still import it.
+- `TrapManagementModal` still has local legacy disarm-analysis behaviour, but no longer depends on `trapDetection.ts`.
+- Do not delete `trapController.tsx` while `AppCore` and `TrapManagementModal` still import it.
 
 ## Removed as orphaned
+
+### `src/engine/trapDetection.ts`
+
+Status: removed.
+
+Reason:
+
+- Retired compatibility adapter.
+- Room-entry authored trap warnings now call `canonicalTrapEngine.detectTrap()` directly from `roomEventHandler.ts`.
+- No longer required as an intermediate trap-detection wrapper.
 
 ### `src/engine/trapSystem.ts`
 
