@@ -7,7 +7,6 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Wrench, Clock, Shield, Search } from 'lucide-react';
 import { useGameState } from '../state/gameState';
 import { getTrapByRoom, disarmTrap } from '../engine/trapController';
-import { canPlayerDisarmTrap } from '../engine/trapDetection';
 import Modal from './Modal';
 import './TrapManagementModal.css';
 
@@ -26,6 +25,31 @@ interface TrapManagementState {
   trapDetails: any;
   playerActions: string[];
   riskLevel: 'low' | 'medium' | 'high' | 'extreme';
+}
+
+function canPlayerDisarmTrap(
+  trap: any,
+  playerTraits: string[],
+  playerItems: string[],
+): { canDisarm: boolean; method?: string; chance?: number } {
+  if (trap?.disarmable === false) {
+    return { canDisarm: false };
+  }
+
+  const requirements = Array.isArray(trap?.disarmRequires) ? trap.disarmRequires : [];
+  const hasAllRequirements = requirements.every((requirement: string) =>
+    playerTraits.includes(requirement) || playerItems.includes(requirement),
+  );
+
+  if (!hasAllRequirements) {
+    return { canDisarm: false };
+  }
+
+  return {
+    canDisarm: true,
+    method: requirements.length > 0 ? requirements.join(', ') : 'careful inspection',
+    chance: 1,
+  };
 }
 
 const TrapManagementModal: React.FC<TrapManagementModalProps> = ({

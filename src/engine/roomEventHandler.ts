@@ -22,7 +22,7 @@ import { LocalGameState } from '../state/gameState';
 import { Room } from '../types/Room';
 import { Dispatch } from 'react';
 import { maybeTriggerInquisitionTrap } from './trapEngine';
-import { detectTrapsOnEntry } from './trapDetection';
+import { detectTrap } from './canonicalTrapEngine';
 
 /**
  * Handles room entry events, including special encounters
@@ -32,15 +32,16 @@ export function handleRoomEntry(
   gameState: LocalGameState,
   dispatch: Dispatch<GameAction>,
 ): void {
-  // Check for traps when entering room
-  const trapDetection = detectTrapsOnEntry(room, gameState);
-  if (trapDetection.detected && trapDetection.warning) {
+  // Check authored traps when entering a room through the canonical trap adapter.
+  const trapDetection = detectTrap(room, gameState, false);
+  if (trapDetection.detected && trapDetection.messages.length > 0) {
+    const trapSeverity = trapDetection.trap?.severity;
     let messageType: 'system' | 'warning' | 'error' = 'warning';
 
-    // Adjust message type based on severity
-    if (trapDetection.severity === 'extreme') {
+    // Preserve the previous room-entry warning severity behaviour.
+    if (trapSeverity === 'lethal') {
       messageType = 'error';
-    } else if (trapDetection.severity === 'low') {
+    } else if (trapSeverity === 'light') {
       messageType = 'system';
     }
 
@@ -48,14 +49,14 @@ export function handleRoomEntry(
       type: 'ADD_MESSAGE',
       payload: {
         id: `trap-warning-${Date.now()}`,
-        text: trapDetection.warning,
+        text: trapDetection.messages.map((message) => message.text).join('\n'),
         type: messageType,
         timestamp: Date.now(),
       },
     });
 
     // Add disarm hint if applicable
-    if (trapDetection.canDisarm) {
+    if (trapDetection.trap?.disarmable !== false) {
       dispatch({
         type: 'ADD_MESSAGE',
         payload: {
