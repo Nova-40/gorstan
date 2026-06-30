@@ -41,6 +41,7 @@ import {
   MessageCircleQuestion,
 } from 'lucide-react';
 import IconButton from './IconButton';
+import DebugPanel from './DebugPanel';
 
 const movementTooltip = (direction: string, destination?: string) =>
   destination ? `Go ${direction} to ${destination}` : `Go ${direction}`;
@@ -87,7 +88,7 @@ interface QuickActionsPanelProps {
   onSit: () => void;
   playerName: string;
   ctrlClickOnInstructions: boolean;
-  onDebugMenu: () => void;
+  onDebugMenu?: () => void;
   onBackout: () => void;
   canBackout: boolean;
   currentRoomId: string; // Add this new prop
@@ -127,7 +128,6 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
   onToggleSound,
   onJump,
   onSit,
-  onDebugMenu,
   playerName,
   ctrlClickOnInstructions,
   onBackout,
@@ -141,6 +141,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
 }) => {
   // State hooks properly placed inside component
   const [isSitting, setIsSitting] = useState<boolean>(false);
+  const [showDebugPanel, setShowDebugPanel] = useState<boolean>(false);
   const backoutSoundRef = useRef<HTMLAudioElement | null>(null);
   const sitTimerRef = useRef<number | null>(null);
   const resetTimerRef = useRef<number | null>(null);
@@ -497,6 +498,8 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
       npcsInRoom,
       hasActiveTraps,
       onDisarmTrap,
+      isDemoActive,
+      currentRoomId,
     ],
   );
 
@@ -531,7 +534,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
           }
           onClick={handleBackout}
           disabled={!canBackout}
-          aria-label={canBackout ? 'Return to previous room' : 'No previous room to return to'}
+          aria-label={canBackout ? 'Return to previous room' : 'No previous room to return'}
         />
         {showDebug && (
           <IconButton
@@ -539,7 +542,7 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
             icon={<Bug />}
             title="Debug Menu (Developer Access)"
             tooltipContent={actionTooltip('Open the developer debug menu')}
-            onClick={onDebugMenu}
+            onClick={() => setShowDebugPanel((isOpen) => !isOpen)}
             aria-label="Open debug menu"
           />
         )}
@@ -553,34 +556,37 @@ const QuickActionsPanel: React.FC<QuickActionsPanelProps> = ({
       canBackout,
       handleBackout,
       showDebug,
-      onDebugMenu,
     ],
   );
 
   return (
-    <div
-      className="quick-actions-panel flex flex-wrap gap-2 justify-center p-4 bg-black/30 backdrop-blur rounded-xl"
-      role="toolbar"
-      aria-label="Game Action Controls"
-    >
-      {/* Movement Controls */}
-      <div className="contents" role="group" aria-label="Movement">
-        {directionButtons}
+    <>
+      <div
+        className="quick-actions-panel flex flex-wrap gap-2 justify-center p-4 bg-black/30 backdrop-blur rounded-xl"
+        role="toolbar"
+        aria-label="Game Action Controls"
+      >
+        {/* Movement Controls */}
+        <div className="contents" role="group" aria-label="Movement">
+          {directionButtons}
+        </div>
+
+        {/* Core Game Actions */}
+        <div className="contents" role="group" aria-label="Game Actions">
+          {coreActionButtons}
+        </div>
+
+        {/* System Controls */}
+        <div className="contents" role="group" aria-label="System Controls">
+          {systemControlButtons}
+        </div>
+
+        {/* Audio element for backout fail sound - Core Logic Preserved */}
+        <audio ref={backoutSoundRef} src="/audio/fail.wav" preload="auto" aria-hidden="true" />
       </div>
 
-      {/* Core Game Actions */}
-      <div className="contents" role="group" aria-label="Game Actions">
-        {coreActionButtons}
-      </div>
-
-      {/* System Controls */}
-      <div className="contents" role="group" aria-label="System Controls">
-        {systemControlButtons}
-      </div>
-
-      {/* Audio element for backout fail sound - Core Logic Preserved */}
-      <audio ref={backoutSoundRef} src="/audio/fail.wav" preload="auto" aria-hidden="true" />
-    </div>
+      {showDebugPanel && <DebugPanel onClose={() => setShowDebugPanel(false)} />}
+    </>
   );
 };
 
