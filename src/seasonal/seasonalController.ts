@@ -15,16 +15,15 @@
 */
 
 // src/seasonal/seasonalController.ts
-// Seasonal events controller - Gorstan Game Beta 1
+// Legacy Gorstan-specific seasonal controller.
+//
+// Calendar-backed celebrations such as Christmas, Easter, Lunar New Year,
+// solstices/equinoxes, etc. are handled by src/celebrate/celebrateGate.ts and
+// src/celebrate/celebrateController.tsx. This legacy controller is now kept only
+// for Gorstan-specific May 13 flavour until that event has its own canonical
+// calendar/flavour mapping.
 
-import {
-  isChristmasDay,
-  isEasterWindow,
-  isMay13,
-  shouldShowOncePerYear,
-  markShown,
-  inLondonNow,
-} from './seasonalGate';
+import { isMay13, shouldShowOncePerYear, markShown, inLondonNow } from './seasonalGate';
 import { overlayBus } from './overlayBus';
 import { config } from '../config';
 
@@ -32,46 +31,29 @@ export function maybeShowSeasonalOverlay(dispatch?: any) {
   if (!config.enableSeasonal) {
     return;
   }
+
   const now = inLondonNow();
-  const y = now.getFullYear();
-
+  const year = now.getFullYear();
   const forced = config.forceSeason as 'christmas' | 'easter' | 'may13' | null | undefined;
-  if (forced === 'christmas') {
-    return triggerXmas(y);
+
+  // Christmas and Easter are intentionally no-ops here. They are now owned by
+  // the canonical JSON-backed celebration controller to prevent duplicate
+  // overlays and divergent date logic.
+  if (forced === 'christmas' || forced === 'easter') {
+    console.info(
+      `[seasonalController] Ignoring forced ${forced}; calendar celebrations are handled by src/celebrate/.`,
+    );
+    return;
   }
-  if (forced === 'easter') {
-    return triggerEaster(y);
-  }
+
   if (forced === 'may13') {
-    return triggerMay13(y, dispatch);
+    return triggerMay13(year, dispatch);
   }
 
-  // Christmas Day
-  if (isChristmasDay(now) && shouldShowOncePerYear(`christmas-${y}`)) {
-    triggerXmas(y);
+  // May 13 (author's birthday / Gorstan-specific flavour)
+  if (isMay13(now) && shouldShowOncePerYear(`may13-${year}`)) {
+    triggerMay13(year, dispatch);
   }
-
-  // Easter window (Palm Sunday to Easter Monday)
-  if (isEasterWindow(now) && shouldShowOncePerYear(`easter-${y}`)) {
-    triggerEaster(y);
-  }
-
-  // May 13 (author's birthday)
-  if (isMay13(now) && shouldShowOncePerYear(`may13-${y}`)) {
-    triggerMay13(y, dispatch);
-  }
-}
-
-function triggerXmas(year: number) {
-  console.log(`🎄 Christmas overlay triggered for ${year}`);
-  overlayBus.showOverlay('christmas');
-  markShown(`christmas-${year}`);
-}
-
-function triggerEaster(year: number) {
-  console.log(`🐰 Easter overlay triggered for ${year}`);
-  overlayBus.showOverlay('easter');
-  markShown(`easter-${year}`);
 }
 
 function triggerMay13(year: number, dispatch?: any) {
