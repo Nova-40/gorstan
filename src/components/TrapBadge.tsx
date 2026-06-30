@@ -1,8 +1,12 @@
 import React from 'react';
-import { Trap } from '../engine/trapSystem';
+
+type TrapBadgeTrap = {
+  id: string;
+  description: string;
+};
 
 type TrapBadgeProps = {
-  traps: Trap[];
+  traps: TrapBadgeTrap[];
 };
 
 const TrapBadge: React.FC<TrapBadgeProps> = ({ traps }) => {
