@@ -21,7 +21,7 @@ import { Room } from '../types/Room';
 import { TerminalMessage } from '../components/TerminalConsole';
 
 import { handleCrossingInteraction, resetCrossingState } from './crossingController';
-import { searchForTraps, canPlayerDisarmTrap } from './trapDetection';
+import { searchTraps, attemptDisarmTrap } from './canonicalTrapEngine';
 import { LocalGameState } from '../state/gameState';
 
 /**
@@ -874,23 +874,22 @@ export function processCommand({
 
     case 'search': {
       if (noun.includes('trap') || noun === '' || noun.includes('danger')) {
-        const searchResult = searchForTraps(currentRoom, gameState);
+        const searchResult = searchTraps(currentRoom, gameState);
+        const messages: TerminalMessage[] = [...searchResult.messages];
 
-        const messages: TerminalMessage[] = [
-          {
-            text: searchResult.warning || 'You search the area carefully.',
-            type: searchResult.detected ? 'info' : 'system',
-          },
-        ];
-
-        if (searchResult.detected && searchResult.canDisarm) {
+        if (searchResult.detected && searchResult.trap?.disarmable !== false) {
           messages.push({
             text: '💡 This trap might be disarmable. Try "disarm trap" if you have the right tools.',
             type: 'system',
           });
         }
 
-        return { messages };
+        return {
+          messages: messages.length > 0
+            ? messages
+            : [{ text: 'You search the area carefully.', type: 'system' }],
+          updates: searchResult.updates,
+        };
       }
 
       return {
@@ -902,74 +901,14 @@ export function processCommand({
 
     case 'disarm': {
       if (noun.includes('trap') || noun === 'trap') {
-        // Find traps in the current room
-        const roomTraps = currentRoom.traps?.filter((trap: any) => !trap.triggered) || [];
+        const disarmResult = attemptDisarmTrap(currentRoom, gameState);
 
-        if (roomTraps.length === 0) {
-          return {
-            messages: [{ text: 'There are no active traps here to disarm.', type: 'system' }],
-          };
-        }
-
-        const trap = roomTraps[0]; // Disarm the first active trap
-        const playerTraits = gameState.player.traits || [];
-        const playerItems = gameState.player.inventory || [];
-
-        const disarmResult = canPlayerDisarmTrap(trap, playerTraits, playerItems);
-
-        if (!disarmResult.canDisarm) {
-          return {
-            messages: [
-              {
-                text: 'This trap cannot be disarmed, or you lack the necessary skills/tools.',
-                type: 'error',
-              },
-            ],
-          };
-        }
-
-        // Attempt disarmament
-        const success = Math.random() < (disarmResult.chance || 0.3);
-
-        if (success) {
-          // Mark trap as triggered/disarmed
-          const updatedTraps =
-            currentRoom.traps?.map((t: any) =>
-              t.id === trap.id ? { ...t, triggered: true } : t,
-            ) || [];
-
-          const messages: TerminalMessage[] = [
-            {
-              text: `🔧 Success! You carefully disarm the ${trap.severity || 'dangerous'} trap using ${disarmResult.method}.`,
-              type: 'lore',
-            },
-            { text: '✅ The area is now safe to proceed.', type: 'system' },
-          ];
-
-          // Update room state
-          const updatedRoom = { ...currentRoom, traps: updatedTraps };
-
-          return {
-            messages,
-            updates: {
-              roomMap: {
-                ...gameState.roomMap,
-                [currentRoom.id]: updatedRoom,
-              },
-            },
-          };
-        } else {
-          return {
-            messages: [
-              { text: `💥 Your disarmament attempt fails! The trap activates!`, type: 'error' },
-              { text: `${trap.description || 'The trap springs, causing harm!'}`, type: 'error' },
-              {
-                text: `💔 You take ${Math.min(trap.damage || 10, 15)} damage. Be more careful next time.`,
-                type: 'error',
-              },
-            ],
-          };
-        }
+        return {
+          messages: disarmResult.messages.length > 0
+            ? disarmResult.messages
+            : [{ text: 'There are no active traps here to disarm.', type: 'system' }],
+          updates: disarmResult.updates,
+        };
       }
 
       return {
