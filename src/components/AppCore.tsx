@@ -61,6 +61,7 @@ import {
   handleAppCoreDemoCommand,
   useAppCoreDemoTeleport,
 } from './appCore/useAppCoreDemoTeleport';
+import { useAppCoreAiAyla } from './appCore/useAppCoreAiAyla';
 
 import { useFlags } from '../hooks/useFlags';
 import { useGameState } from '../state/gameState';
@@ -105,11 +106,8 @@ const NPCSelectionModal = lazyFeature(() => import('./NPCSelectionModal'));
 const PerformanceDashboard = lazyFeature(() => import('./PerformanceDashboard'));
 import { AylaHintSystem } from '../services/aylaHintSystem';
 import type { AylaHintResponse } from '../services/aylaHintSystem';
-import { unifiedAI } from '../services/unifiedAI';
 import type { AIGuidanceResponse } from '../services/unifiedAI';
-import { aiUsageMonitor } from '../services/aiUsageMonitor';
 import type { GameplayUpdate } from '../services/aiUsageMonitor';
-import { npcAI } from '../services/npcAI';
 import { itemDescriptions } from '../data/itemDescriptions';
 
 import type { Room } from '../types/Room';
@@ -410,26 +408,6 @@ const AppCore: React.FC = () => {
     roomMap,
   });
 
-  // Setup AI Usage Monitoring and NPC AI Integration
-  useEffect(() => {
-    // Subscribe to AI usage updates
-    const unsubscribe = aiUsageMonitor.onUpdate((update) => {
-      setGameplayUpdates((prev) => [...prev.slice(-19), update]); // Keep last 20 updates
-
-      // Console logging for real-time monitoring
-      if (update.type === 'ai_interaction') {
-        console.log('[AI Monitor] AI Interaction:', update.data);
-      }
-    });
-
-    // Track initial room visit
-    if (currentRoomId) {
-      aiUsageMonitor.trackRoomVisit(currentRoomId, state);
-    }
-
-    return unsubscribe;
-  }, [currentRoomId, state]);
-
   // Demo system initialization
   useEffect(() => {
     if (isDemo && dispatch) {
@@ -453,60 +431,22 @@ const AppCore: React.FC = () => {
     }
   }, [isDemo, dispatch, stage]);
 
-  // NPC AI Behavior Generation
-  useEffect(() => {
-    const generateNPCBehaviors = async () => {
-      if (!room || npcsInRoom.length === 0) {
-        return;
-      }
-
-      for (const npc of npcsInRoom) {
-        try {
-          const npcProfile = npcAI.getAllNPCs().find((p) => p.npcId === npc.id);
-          if (!npcProfile) {
-            continue;
-          }
-
-          const context = {
-            npcProfile,
-            currentRoom: room,
-            playerPresent: true,
-            gameState: state,
-            recentPlayerActions: commandHistory.slice(-5),
-            timeInRoom: Date.now() - roomEntryTime,
-            nearbyNPCs: npcsInRoom.map((n) => n.id).filter((id) => id !== npc.id),
-          };
-
-          const behavior = await npcAI.generateNPCBehavior(context);
-          if (behavior && behavior.shouldDisplay) {
-            setNpcBehaviors((prev) => ({
-              ...prev,
-              [npc.id]: behavior.content,
-            }));
-
-            // Display behavior in console if significant
-            if (behavior.priority === 'high' || behavior.type === 'callout') {
-              dispatch({
-                type: 'ADD_MESSAGE',
-                payload: {
-                  id: Date.now().toString(),
-                  text: `**${npc.name}**: ${behavior.content}`,
-                  type: 'npc',
-                  timestamp: Date.now(),
-                },
-              });
-            }
-          }
-        } catch (error) {
-          console.warn(`[NPC AI] Behavior generation failed for ${npc.id}:`, error);
-        }
-      }
-    };
-
-    // Generate behaviors after a short delay when room/NPCs change
-    const timeout = setTimeout(generateNPCBehaviors, 2000);
-    return () => clearTimeout(timeout);
-  }, [room, npcsInRoom, commandHistory, roomEntryTime, state, dispatch]);
+  const { checkForHints, trackAiCommand } = useAppCoreAiAyla({
+    state,
+    dispatch,
+    room,
+    npcsInRoom,
+    commandHistory,
+    roomEntryTime,
+    currentRoomId,
+    aylaHintSystem,
+    currentHint,
+    currentGuidance,
+    setCurrentHint,
+    setCurrentGuidance,
+    setGameplayUpdates,
+    setNpcBehaviors,
+  });
 
   const {
     handleOpenNPCConsole,
@@ -614,71 +554,6 @@ const AppCore: React.FC = () => {
     openModal('look');
     lookModalTimeoutRef.current = setTimeout(closeModal, 6000);
   }, [room, npcsInRoom, openModal, closeModal]);
-
-  // Enhanced hint checking function with unified AI
-  const checkForHints = useCallback(
-    async (cmd: string, _lowerCmd: string) => {
-      if (!aylaHintSystem || currentHint || currentGuidance) {
-        return;
-      }
-
-      // Check if this was a failed command (we can check this by looking at recent messages)
-      const recentMessages = state.messages.slice(-3);
-      const hasFailureMessage = recentMessages.some(
-        (msg) =>
-          msg.text.includes("don't understand") ||
-          msg.text.includes("can't") ||
-          msg.text.includes('no one') ||
-          msg.text.includes("don't see") ||
-          msg.text.includes('not here') ||
-          msg.type === 'error',
-      );
-
-      // Also check for repeated commands or signs of being stuck
-      const recentCommands = commandHistory.slice(-5);
-      const hasRepeatedCommands = recentCommands.filter((c) => c === cmd).length >= 2;
-      const hasVariousFailedAttempts = recentCommands.length >= 3;
-
-      if (hasFailureMessage || hasRepeatedCommands || hasVariousFailedAttempts) {
-        try {
-          // Try unified AI first for comprehensive guidance
-          const unifiedContext = {
-            gameState: state,
-            currentRoom: room!,
-            recentCommands: commandHistory,
-            timeInRoom: Date.now() - roomEntryTime,
-            failedAttempts: hasFailureMessage ? [cmd] : [],
-          };
-
-          const unifiedGuidance = await unifiedAI.getUnifiedGuidance(unifiedContext);
-
-          if (unifiedGuidance) {
-            setCurrentGuidance(unifiedGuidance);
-            return;
-          }
-
-          // Fallback to traditional Ayla hint system
-          const context = {
-            currentRoom: room!,
-            gameState: state,
-            recentCommands: commandHistory,
-            timeInRoom: Date.now() - roomEntryTime,
-            failedAttempts: hasFailureMessage ? [cmd] : [],
-            stuckDuration: Date.now() - roomEntryTime,
-          };
-
-          const hintResponse = await aylaHintSystem.shouldAylaInterrupt(context);
-
-          if (hintResponse) {
-            setCurrentHint(hintResponse);
-          }
-        } catch (error) {
-          console.warn('Failed to generate hint:', error);
-        }
-      }
-    },
-    [aylaHintSystem, currentHint, currentGuidance, state, commandHistory, room, roomEntryTime],
-  );
 
   // Enhanced command handler with better type safety
   const handleCommand = useCallback(
@@ -828,7 +703,7 @@ const AppCore: React.FC = () => {
         !lowerCmd.includes('unknown') &&
         !lowerCmd.includes("can't") &&
         !lowerCmd.includes('invalid');
-      aiUsageMonitor.trackCommand(cmd, isSuccessfulCommand, currentRoomId);
+      trackAiCommand(cmd, isSuccessfulCommand, currentRoomId);
 
       // Check for hint opportunities after command processing
       checkForHints(cmd, lowerCmd);
@@ -843,6 +718,8 @@ const AppCore: React.FC = () => {
       currentRoomId,
       isDemo,
       isDemoActive,
+      checkForHints,
+      trackAiCommand,
     ],
   );
 
