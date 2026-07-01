@@ -200,7 +200,7 @@ jobs:
       # Optional S3 upload (only if AWS secrets are configured)
       - name: Configure AWS credentials (optional)
         if: ${{ env.AWS_BUCKET != '' }}
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
