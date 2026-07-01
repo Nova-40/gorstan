@@ -48,21 +48,14 @@ import QuickWinNotifications from './QuickWinNotifications';
 import OpeningBriefing from './OpeningBriefing';
 import WalkthroughPanel from './WalkthroughPanel';
 import GameShellV2 from './GameShellV2';
-
-const formatExitLabel = (exitKey: string): string => {
-  if (!exitKey) {
-    return 'Exit';
-  }
-
-  return exitKey
-    .replace(/[_-]+/g, ' ')
-    .replace(/\b\w/g, (character) => character.toUpperCase());
-};
-
-const commandForExit = (exitKey: string): string => {
-  const normalizedExit = exitKey.toLowerCase().trim();
-  return `go ${normalizedExit}`;
-};
+import {
+  commandForExit,
+  formatExitLabel,
+  readLegacySaveSlots,
+  recordAppMessage,
+  resolveRoomId,
+} from './appCore/appCoreHelpers';
+import type { SaveSlotView } from './appCore/appCoreHelpers';
 
 import { useFlags } from '../hooks/useFlags';
 import { useGameState } from '../state/gameState';
@@ -85,7 +78,7 @@ import { handleRoomEntry } from '../engine/roomEventHandler';
 import { getAllRoomsAsObject } from '../utils/roomLoader';
 import { getFallbackRooms } from '../utils/roomLoaderFallback';
 import { performanceMonitor } from '../utils/performanceMonitor';
-import { safeGetStorageItem, safeSetStorageItem } from '../utils/safeStorage';
+import { safeSetStorageItem } from '../utils/safeStorage';
 import { onRoomEntry, periodicConversationCheck } from '../npc/triggers';
 import { getTrapByRoom } from '../engine/trapController';
 
@@ -151,61 +144,6 @@ type OpenModalType =
 
 type TeleportType = 'fractal' | 'trek' | null;
 
-type SaveSlotView = {
-  id: number;
-  name: string;
-  playerName: string;
-  currentRoom: string;
-  timestamp: number;
-  score: number;
-  playTime: number;
-};
-
-function readLegacySaveSlots(): SaveSlotView[] {
-  const saved = safeGetStorageItem('gorstan_save_slots');
-  if (!saved) {
-    return [];
-  }
-
-  try {
-    const parsedSlots = JSON.parse(saved);
-    if (!Array.isArray(parsedSlots)) {
-      return [];
-    }
-
-    return parsedSlots
-      .map((slot) => {
-        const slotId = parseSaveSlotId(slot?.id);
-        if (slotId === null) {
-          return null;
-        }
-
-        return {
-          id: slotId,
-          name:
-            typeof slot?.name === 'string' && slot.name.trim().length > 0
-              ? slot.name
-              : `Slot ${slotId + 1}`,
-          playerName:
-            typeof slot?.playerName === 'string' && slot.playerName.trim().length > 0
-              ? slot.playerName
-              : 'Player',
-          currentRoom:
-            typeof slot?.currentRoom === 'string' && slot.currentRoom.trim().length > 0
-              ? slot.currentRoom
-              : 'Unknown',
-          timestamp: typeof slot?.timestamp === 'number' ? slot.timestamp : 0,
-          score: typeof slot?.score === 'number' ? slot.score : 0,
-          playTime: typeof slot?.playTime === 'number' ? slot.playTime : 0,
-        };
-      })
-      .filter((slot): slot is SaveSlotView => slot !== null);
-  } catch (error) {
-    console.warn('Ignored malformed legacy save slot list:', error);
-    return [];
-  }
-}
-
 /**
  * Interface for intro completion data with proper typing
  */
@@ -221,36 +159,6 @@ interface IntroCompletionData {
 interface Item {
   name: string;
   [key: string]: any;
-}
-
-function recordAppMessage(
-  dispatch: (action: any) => void,
-  text: string,
-  type: 'system' | 'error' | 'warning' | 'info' = 'system',
-): void {
-  dispatch({
-    type: 'RECORD_MESSAGE',
-    payload: {
-      id: `appcore-${Date.now()}`,
-      text,
-      type,
-      timestamp: Date.now(),
-    },
-  });
-}
-
-function resolveRoomId(
-  roomMap: Record<string, Room>,
-  candidate: unknown,
-  fallbackRoomId = 'controlnexus',
-): string {
-  if (typeof candidate === 'string' && candidate && roomMap[candidate]) {
-    return candidate;
-  }
-  if (roomMap[fallbackRoomId]) {
-    return fallbackRoomId;
-  }
-  return Object.keys(roomMap)[0] || fallbackRoomId;
 }
 
 /**
