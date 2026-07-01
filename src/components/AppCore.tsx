@@ -55,6 +55,7 @@ import {
   resolveRoomId,
 } from './appCore/appCoreHelpers';
 import { useAppCoreSaveSlots } from './appCore/useAppCoreSaveSlots';
+import { useAppCoreNpcModals } from './appCore/useAppCoreNpcModals';
 
 import { useFlags } from '../hooks/useFlags';
 import { useGameState } from '../state/gameState';
@@ -502,119 +503,20 @@ const AppCore: React.FC = () => {
     return () => clearTimeout(timeout);
   }, [room, npcsInRoom, commandHistory, roomEntryTime, state, dispatch]);
 
-  // NPC Console functions
-  const handleOpenNPCConsole = useCallback(
-    (npc?: NPC) => {
-      if (npc) {
-        // Specific NPC provided
-        setSelectedNPC(npc);
-        openModal('npcConsole');
-      } else if (npcsInRoom.length === 1) {
-        // Single NPC in room
-        setSelectedNPC(npcsInRoom[0]);
-        openModal('npcConsole');
-      } else if (npcsInRoom.length > 1) {
-        // Multiple NPCs - show selection modal
-        openModal('npcSelection');
-      } else {
-        // No NPCs present - default to Ayla
-        const aylaHelper: NPC = {
-          id: 'ayla',
-          name: 'Ayla',
-          location: 'universal', // Ayla is available universally as a helper
-          description: 'Your helpful guide through the game',
-          portrait: '/images/Ayla.png',
-          mood: 'helpful' as NPCMood,
-          memory: {
-            interactions: 0,
-            lastInteraction: Date.now(),
-            playerActions: [],
-            relationship: 50,
-            knownFacts: [],
-          },
-        };
-        setSelectedNPC(aylaHelper);
-        openModal('npcConsole');
-      }
-    },
-    [npcsInRoom, openModal],
-  );
-
-  const handleTalkToAyla = useCallback(() => {
-    // Switch from NPC selection to talking to Ayla directly
-    const aylaHelper: NPC = {
-      id: 'ayla',
-      name: 'Ayla',
-      location: 'universal',
-      description: 'Your helpful guide through the game',
-      portrait: '/images/Ayla.png',
-      mood: 'helpful' as NPCMood,
-      memory: {
-        interactions: 0,
-        lastInteraction: Date.now(),
-        playerActions: [],
-        relationship: 50,
-        knownFacts: [],
-      },
-    };
-    setSelectedNPC(aylaHelper);
-    openModal('npcConsole');
-  }, [openModal]);
-
-  const handleNPCMessage = useCallback(
-    (message: string, npcId: string) => {
-      // Send message to NPC engine
-      npcReact(npcId, message, state);
-
-      // Note: Conversation logging is handled within NPCConsole to prevent double-echo
-      // Only log significant game-affecting interactions to main console
-    },
-    [dispatch, state],
-  );
-
-  // Handle NPC selection from selection modal
-  const handleSelectNPC = useCallback(
-    (npc: NPC) => {
-      setSelectedNPC(npc);
-      openModal('npcConsole');
-    },
-    [openModal],
-  );
-
-  // Handle group conversation
-  const handleGroupConversation = useCallback(() => {
-    // Add group conversation history message
-    dispatch({
-      type: 'RECORD_MESSAGE',
-      payload: {
-        id: `group-chat-start-${Date.now()}`,
-        text: `🗣️ You begin a group conversation with ${npcsInRoom.map((npc) => npc.name).join(', ')}.`,
-        type: 'narrative',
-        timestamp: Date.now(),
-      },
-    });
-
-    // Set group conversation mode and open with first NPC as primary
-    setIsGroupConversation(true);
-    setSelectedNPC(npcsInRoom[0] || null);
-    openModal('npcConsole');
-  }, [dispatch, npcsInRoom, openModal]);
-
-  // Monitor for NPC console flag
-  useEffect(() => {
-    if (state.flags?.openNPCConsole) {
-      const npcId = state.flags.openNPCConsole;
-      const targetNPC = npcsInRoom.find(
-        (npc: NPC) => npc.id === npcId || npc.name.toLowerCase() === npcId.toLowerCase(),
-      );
-
-      if (targetNPC) {
-        handleOpenNPCConsole(targetNPC);
-        // Clear the flag
-        dispatch({ type: 'SET_FLAG', payload: { flag: 'openNPCConsole', value: null } });
-      }
-    }
-  }, [state.flags?.openNPCConsole, npcsInRoom, handleOpenNPCConsole, dispatch]);
+  const {
+    handleOpenNPCConsole,
+    handleTalkToAyla,
+    handleNPCMessage,
+    handleSelectNPC,
+    handleGroupConversation,
+  } = useAppCoreNpcModals({
+    state,
+    dispatch,
+    npcsInRoom,
+    openModal,
+    setSelectedNPC,
+    setIsGroupConversation,
+  });
 
   // Monitor for save menu flag
   useEffect(() => {
