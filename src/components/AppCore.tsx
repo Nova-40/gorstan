@@ -56,6 +56,7 @@ import {
 } from './appCore/appCoreHelpers';
 import { useAppCoreSaveSlots } from './appCore/useAppCoreSaveSlots';
 import { useAppCoreNpcModals } from './appCore/useAppCoreNpcModals';
+import { useAppCoreKeyboardControls } from './appCore/useAppCoreKeyboardControls';
 
 import { useFlags } from '../hooks/useFlags';
 import { useGameState } from '../state/gameState';
@@ -553,70 +554,7 @@ const AppCore: React.FC = () => {
     }
   }, [state.flags?.triggerTeleport, dispatch]);
 
-  // Enhanced keyboard handler with proper typing
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent): void => {
-      if (e.key === 'Escape' && modal) {
-        closeModal();
-      }
-      if (e.ctrlKey && e.key === 's') {
-        e.preventDefault();
-        openModal('saveGame');
-      }
-      if (e.ctrlKey && e.key === 'p') {
-        e.preventDefault();
-        setShowPerformanceDashboard(true);
-      }
-      if (e.ctrlKey && e.key === 'a') {
-        e.preventDefault();
-        setShowAIMonitor(!showAIMonitor);
-      }
-      if (e.key.toLowerCase() === 't' && !modal && stage === 'game') {
-        // Talk to NPC shortcut
-        if (npcsInRoom.length === 1) {
-          handleOpenNPCConsole(npcsInRoom[0]);
-        } else if (npcsInRoom.length > 1) {
-          // Show list of available NPCs
-          dispatch({
-            type: 'RECORD_MESSAGE',
-            payload: {
-              id: `npc-list-${Date.now()}`,
-              text: `NPCs available: ${npcsInRoom.map((npc) => npc.name).join(', ')}. Click on one or use "talk [name]"`,
-              type: 'info',
-              timestamp: Date.now(),
-            },
-          });
-        } else {
-          dispatch({
-            type: 'RECORD_MESSAGE',
-            payload: {
-              id: `no-npcs-${Date.now()}`,
-              text: 'There is no one here to talk to.',
-              type: 'error',
-              timestamp: Date.now(),
-            },
-          });
-        }
-      }
-      if (e.key === 'Escape' && isDemoActive) {
-        // Skip demo with ESC key
-        e.preventDefault();
-        demoController.skipDemo();
-        setIsDemoActive(false);
-        dispatch({
-          type: 'RECORD_MESSAGE',
-          payload: {
-            id: `demo-skip-${Date.now()}`,
-            text: '🎬 Demo skipped. You now have full control.',
-            type: 'system',
-            timestamp: Date.now(),
-          },
-        });
-      }
-    };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [
+  useAppCoreKeyboardControls({
     modal,
     closeModal,
     openModal,
@@ -625,17 +563,11 @@ const AppCore: React.FC = () => {
     stage,
     dispatch,
     isDemoActive,
-  ]);
-
-  // Enhanced cleanup effect with proper typing
-  useEffect(() => {
-    return () => {
-      if (lookModalTimeoutRef.current) {
-        clearTimeout(lookModalTimeoutRef.current);
-        lookModalTimeoutRef.current = null;
-      }
-    };
-  }, []);
+    setIsDemoActive,
+    setShowPerformanceDashboard,
+    setShowAIMonitor,
+    lookModalTimeoutRef,
+  });
 
   // Enhanced look around handler with better type safety
   const handleLookAround = useCallback((): void => {
