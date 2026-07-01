@@ -62,13 +62,13 @@ import {
   useAppCoreDemoTeleport,
 } from './appCore/useAppCoreDemoTeleport';
 import { useAppCoreAiAyla } from './appCore/useAppCoreAiAyla';
+import { useAppCoreRoomPresentation } from './appCore/useAppCoreRoomPresentation';
 
 import { useFlags } from '../hooks/useFlags';
 import { useGameState } from '../state/gameState';
 import { useLibrarianLogic } from '../hooks/useLibrarianLogic';
 import { useModuleLoader } from '../hooks/useModuleLoader';
 import { useOptimizedEffects } from '../hooks/useOptimizedEffects';
-import { useRoomTransition } from '../hooks/useRoomTransition';
 import { useWendellLogic } from '../hooks/useWendellLogic';
 
 import { initializeAchievementEngine } from '../logic/achievementEngine';
@@ -829,47 +829,14 @@ const AppCore: React.FC = () => {
     });
   }, [dispatch]);
 
-  // Enhanced room transition info with proper typing
-  const transitionInfo = useRoomTransition(previousRoom, room, lastMovementAction);
-
-  // Enhanced direction state with proper typing and memoization
-  const availableDirections = useMemo(() => {
-    const directions = {
-      north: Boolean(room?.exits?.north),
-      south: Boolean(room?.exits?.south),
-      east: Boolean(room?.exits?.east),
-      west: Boolean(room?.exits?.west),
-      jump: Boolean(room?.exits?.jump),
-      sit: Boolean(room?.exits?.sit),
-      up: Boolean(room?.exits?.up),
-      down: Boolean(room?.exits?.down),
-    };
-
-    // Debug logging to see what's happening
-    console.log('[AppCore] Current stage:', stage);
-    console.log('[AppCore] Current room:', currentRoomId);
-    console.log('[AppCore] Room object:', room);
-    console.log('[AppCore] Room exits:', room?.exits);
-    console.log('[AppCore] Available directions:', directions);
-
-    return directions;
-  }, [room?.exits, currentRoomId, stage]);
-
-  const directionRoomTitles = useMemo(
-    () => ({
-      north: room?.exits?.north ? (roomMap[room.exits.north]?.title ?? room.exits.north) : '',
-      south: room?.exits?.south ? (roomMap[room.exits.south]?.title ?? room.exits.south) : '',
-      east: room?.exits?.east ? (roomMap[room.exits.east]?.title ?? room.exits.east) : '',
-      west: room?.exits?.west ? (roomMap[room.exits.west]?.title ?? room.exits.west) : '',
-      jump: room?.exits?.jump ? (roomMap[room.exits.jump]?.title ?? room.exits.jump) : '',
-      sit: room?.exits?.sit ? (roomMap[room.exits.sit]?.title ?? room.exits.sit) : '',
-      up: room?.exits?.up ? (roomMap[room.exits.up]?.title ?? room.exits.up) : '',
-      down: room?.exits?.down ? (roomMap[room.exits.down]?.title ?? room.exits.down) : '',
-      back: room?.exits?.back ? (roomMap[room.exits.back]?.title ?? room.exits.back) : '',
-      out: room?.exits?.out ? (roomMap[room.exits.out]?.title ?? room.exits.out) : '',
-    }),
-    [room?.exits, roomMap],
-  );
+  const { transitionInfo, availableDirections, directionRoomTitles } = useAppCoreRoomPresentation({
+    room,
+    previousRoom,
+    lastMovementAction,
+    roomMap,
+    currentRoomId,
+    stage,
+  });
 
   // Enhanced room validation effect with proper typing
   useEffect(() => {
